@@ -17,53 +17,12 @@ edit_menu.my_group&gt;end("My Edit Functions").end</menu-path>
  <dsl-interpreter-name/>
  <text>import pya
 import math
-#import numpy
 
-from kqcircuit.pcells.coplanar_waveguide import TLine
-from kqcircuit.pcells.circle import Circle
-
-"""
-This sample PCell implements a library called "MyLib" with a single PCell that
-draws a circle. It demonstrates the basic implementation techniques for a PCell 
-and how to use the "guiding shape" feature to implement a handle for the circle
-radius.
-
-NOTE: after changing the code, the macro needs to be rerun to install the new
-implementation. The macro is also set to "auto run" to install the PCell 
-when KLayout is run.
-"""
+from kqcircuit.kqcircuit import KQCircuitLibrary
 
 
-class QCircuitLibrary(pya.Library):
-  """
-  The library where we will put the PCell into 
-  """
 
-  def __init__(self):
-  
-    # Set the description
-    self.description = "Library for superconducting quantum circuits."
-    
-    # Create the PCell declarations
-    self.layout().register_pcell("Circle", Circle())
-    self.layout().register_pcell("Transmissionline", TLine())
-    self.layout().register_pcell("Chip", TLine())
-    self.layout().register_pcell("Meander", TLine())
-    self.layout().register_pcell("Swissmon", TLine())
-    self.layout().register_pcell("FingerCap", TLine())
-    self.layout().register_pcell("TJunction", TLine())
-    self.layout().register_pcell("Launcher", TLine())
-    # That would be the place to put in more PCells ...
-    
-    self.register("KQCircuit")
-
-
-# Print sys.path for debugging
-import sys
-for path in sys.path:
-  print(path)
-  
 # Instantiate and register the library
-QCircuitLibrary()
+KQCircuitLibrary()
 </text>
 </klayout-macro>
