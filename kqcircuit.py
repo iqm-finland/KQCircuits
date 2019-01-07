@@ -3,6 +3,7 @@ from kqcircuit.pcells.waveguide_cop import WaveguideCopStreight
 from kqcircuit.pcells.waveguide_cop import WaveguideCopCurve
 from kqcircuit.pcells.waveguide_cop import WaveguideCop
 from kqcircuit.pcells.circle import Circle
+from kqcircuit.pcells.chip import ChipFrame
 
 
 import sys
@@ -31,7 +32,7 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("Waveguide", WaveguideCop())
     self.layout().register_pcell("Waveguide streight", WaveguideCopStreight())
     self.layout().register_pcell("Waveguide curved", WaveguideCopCurve())
-    self.layout().register_pcell("Chip", WaveguideCopCurve())
+    self.layout().register_pcell("Chip", ChipFrame())
     self.layout().register_pcell("Meander", WaveguideCopCurve())
     self.layout().register_pcell("Swissmon", WaveguideCopCurve())
     self.layout().register_pcell("FingerCap", WaveguideCopCurve())

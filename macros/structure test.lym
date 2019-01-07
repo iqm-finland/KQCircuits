@@ -90,11 +90,11 @@ for x in range(0,n):
   
 guideline = pya.DPath(points,5)
 
-c1 = layout.create_cell("Waveguide", "KQCircuit", {
-  "path": guideline
-})
+#c1 = layout.create_cell("Waveguide", "KQCircuit", {
+#  "path": guideline
+#})
 
-cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(200, -400))))
+#cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(200, -400))))
 
 # Circles
 
@@ -112,10 +112,10 @@ def circle(n, step, offset, shift):
   cell.insert(pya.DCellInstArray(c1.cell_index(), shift))
 
 
-circle(30, -1/10, 0, pya.DTrans(pya.DVector(0, 200)))
-circle(6, -1/2, 0, pya.DTrans(pya.DVector(0, -300)))
-circle(6, -1/2, 0.25, pya.DTrans(pya.DVector(0, -800)))
-circle(6, 1/2, 0.25, pya.DTrans(pya.DVector(0, -1200)))
+#circle(30, -1/10, 0, pya.DTrans(pya.DVector(0, 200)))
+#circle(6, -1/2, 0, pya.DTrans(pya.DVector(0, -300)))
+#circle(6, -1/2, 0.25, pya.DTrans(pya.DVector(0, -800)))
+#circle(6, 1/2, 0.25, pya.DTrans(pya.DVector(0, -1200)))
 
 
 layout_view.add_missing_layers()</text>
