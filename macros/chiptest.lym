@@ -16,6 +16,7 @@ edit_menu.my_group&gt;end("KQCircuit").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>import pya
+import numpy
 from kqcircuit.defaults import default_layers
 
 # Create the layout
@@ -56,17 +57,75 @@ def standard_layers():
     
 standard_layers()
 
-c1 = layout.create_cell("Chip", "KQCircuit", {})
-print(c1)
-cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-c1 = layout.create_cell("TEXT", "Basic", {
-  "layer": l["Optical lit. 1"], 
-  "text": "Test 44",
-  "mag": 100.0
-})
-print(c1)
+c1 = layout.create_cell("Chip frame", "KQCircuit", {})
+#print("using",c1.version)
 cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(0, 0))))
 
 
-</text>
+
+protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["Grid avoidance"]))).merged()
+print(default_layers["Grid avoidance"])
+cell.shapes(layout.layer(default_layers["Annotations"])).insert(protection)
+print("protection merged", protection.area())
+
+
+
+def empty_regions(protection, box, deph=0, n = 3, debuglayer=-99):
+  polygons=[]
+  if deph&lt;0:
+    return polygons
+    
+  
+  grid_region = pya.Region(box)  
+  overlaping_regions = grid_region.overlapping(protection)
+  if (overlaping_regions.is_empty()):
+    cell.shapes(debuglayer).insert(grid_region)
+    return polygons
+  else:      
+    for x in numpy.linspace(box.p1.x, box.p2.x, n, endpoint=False):
+      for y in numpy.linspace(box.p1.y, box.p2.y, n, endpoint=False):  
+        subbox = pya.Box(pya.Point(x,y), pya.Point(x+box.width()/n,y+box.height()/n))
+        empty_regions(protection, subbox,deph-1, n, debuglayer)
+    
+#fill_grid(pya.DBox(cell.bbox().p1*layout.dbu,cell.bbox().p2*layout.dbu),layout.layer(default_layers["Grid"]))
+
+import time
+if False:
+  start = time.time()
+  
+  empty_regions(protection, pya.Box(cell.bbox().p1,cell.bbox().p2),
+    deph=2,
+    n=2,
+    debuglayer=layout.layer(default_layers["Electron beam lit. 1"])
+    )
+  
+  end = time.time()
+  print(end - start)
+
+if False:
+  start = time.time()
+  
+  empty_regions(protection, pya.Box(cell.bbox().p1,cell.bbox().p2),
+    deph=1,
+    n=8,
+    debuglayer=layout.layer(default_layers["Electron beam lit. 2"]))
+  end = time.time()
+  print(end - start)
+
+
+def make_grid(box, grid_step = 10*5, grid_size = 5*5,gridlayer=-1):  
+  grid_region = pya.Region()
+  for y in numpy.arange(box.p1.x, box.p2.x, grid_step):
+    for x in numpy.arange(box.p1.y, box.p2.y, grid_step): 
+      hole = pya.DBox(x,y,x+grid_size,y+grid_size)*(1/layout.dbu)
+      grid_region.insert(hole)
+  groundgrid = grid_region-protection
+  cell.shapes(gridlayer).insert(groundgrid)
+      
+if True:
+  grid_area = pya.DBox(cell.bbox().p1*layout.dbu,cell.bbox().p2*layout.dbu)
+  layernumber = layout.layer(default_layers["Grid"])
+  make_grid(grid_area, gridlayer=layernumber)
+
+#protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["Grid avoidance"]))).merged()</text>
 </klayout-macro>

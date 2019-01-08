@@ -3,13 +3,14 @@ from kqcircuit.pcells.waveguide_cop import WaveguideCopStreight
 from kqcircuit.pcells.waveguide_cop import WaveguideCopCurve
 from kqcircuit.pcells.waveguide_cop import WaveguideCop
 from kqcircuit.pcells.circle import Circle
-from kqcircuit.pcells.chip import ChipFrame
+from kqcircuit.pcells.chip_frame import ChipFrame
 
 
 import sys
 import inspect
 from importlib import reload
 reload(sys.modules[WaveguideCop.__module__])
+reload(sys.modules[ChipFrame.__module__])
 
 """
 Quantum Circuits in KLayout
@@ -32,7 +33,7 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("Waveguide", WaveguideCop())
     self.layout().register_pcell("Waveguide streight", WaveguideCopStreight())
     self.layout().register_pcell("Waveguide curved", WaveguideCopCurve())
-    self.layout().register_pcell("Chip", ChipFrame())
+    self.layout().register_pcell("Chip frame", ChipFrame())
     self.layout().register_pcell("Meander", WaveguideCopCurve())
     self.layout().register_pcell("Swissmon", WaveguideCopCurve())
     self.layout().register_pcell("FingerCap", WaveguideCopCurve())
@@ -40,6 +41,7 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("Launcher", WaveguideCopCurve())
     
     self.register("KQCircuit")
+    print("instance",ChipFrame.version)
     
     
 
