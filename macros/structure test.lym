@@ -16,7 +16,8 @@ edit_menu.my_group&gt;end("KQCircuit").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>import pya
-
+import numpy
+from kqcircuit.defaults import default_layers
 
 #from kqcircuit.kqcircuit import KQCircuitLibrary
 
@@ -112,10 +113,10 @@ def circle(n, step, offset, shift):
   cell.insert(pya.DCellInstArray(c1.cell_index(), shift))
 
 
-#circle(30, -1/10, 0, pya.DTrans(pya.DVector(0, 200)))
-#circle(6, -1/2, 0, pya.DTrans(pya.DVector(0, -300)))
-#circle(6, -1/2, 0.25, pya.DTrans(pya.DVector(0, -800)))
-#circle(6, 1/2, 0.25, pya.DTrans(pya.DVector(0, -1200)))
+circle(30, -1/10, 0, pya.DTrans(pya.DVector(0, 200)))
+circle(6, -1/2, 0, pya.DTrans(pya.DVector(0, -300)))
+circle(6, -1/2, 0.25, pya.DTrans(pya.DVector(0, -800)))
+circle(6, 1/2, 0.25, pya.DTrans(pya.DVector(0, -1200)))
 
 
 layout_view.add_missing_layers()</text>

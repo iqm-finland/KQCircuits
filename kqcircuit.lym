@@ -20,8 +20,6 @@ import math
 
 from kqcircuit.kqcircuit import KQCircuitLibrary
 
-
-
 # Instantiate and register the library
 KQCircuitLibrary()
 </text>

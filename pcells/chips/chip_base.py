@@ -18,7 +18,7 @@ def border_points(x_min,x_max,y_min,y_max,w):
   ]
   return points
     
-class ChipFrame(KQCirvuitPCell):
+class ChipBase(KQCirvuitPCell):
   """
   The PCell declaration for an arbitrary waveguide
   """
@@ -109,7 +109,7 @@ class ChipFrame(KQCirvuitPCell):
     self.cell.shapes(self.layout.layer(self.lp)).insert(protection)                   
 
   def produce_impl(self): 
-
+    print("layout above",self.layout)
     self.produce_dicing_edge()
     
     
