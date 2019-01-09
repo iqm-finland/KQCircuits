@@ -38,7 +38,6 @@ class WaveguideCopStreight(KQCirvuitPCell):
   def __init__(self):
     super().__init__()
     self.param("l", self.TypeDouble, "Length", default = math.pi)
-    self.margin = 5
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -94,7 +93,6 @@ class WaveguideCopCurve(KQCirvuitPCell):
   def __init__(self):
     super().__init__()
     self.param("alpha", self.TypeDouble, "Curve angle", default = math.pi)
-    self.margin = 5
    
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -204,7 +202,7 @@ class WaveguideCop(KQCirvuitPCell):
         "b": self.b,
         "alpha": alpha2-alpha1, # TODO: Finish the list,
         "n": self.n,
-        "ru": self.r
+        "r": self.r
       })
       transf = pya.DCplxTrans(1, alpha1/math.pi*180.0-v1.vprod_sign(v2)*90, False, corner)
       self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))

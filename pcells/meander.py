@@ -9,6 +9,7 @@ class MeanderCenter(KQCirvuitPCell):
 
   def __init__(self):
     super().__init__()
+    # TODO Remove coordinates from PCell parameters.
     self.param("start", self.TypeShape, "Start", default = pya.DPoint(0,0))
     self.param("end", self.TypeShape, "End", default = pya.DPoint(200,0))
     self.param("length", self.TypeDouble, "Length (um)", default = 400)
@@ -16,7 +17,7 @@ class MeanderCenter(KQCirvuitPCell):
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Meander(m=%.1d,l=%.1f)".format(meanders,length)
+    return "Meander(m=%.1d,l=%.1f)".format(self.meanders, self.length)
       
   def coerce_parameters_impl(self):
     self.meanders = max(self.meanders,2)

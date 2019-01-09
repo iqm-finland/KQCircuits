@@ -22,6 +22,9 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
     self.param("n", self.TypeInt, "Number of points on turns", 
       default = default_circuit_params["n"])  
     self.param("r", self.TypeDouble, "Turn radius (um)", 
-      default = default_circuit_params["r"])   
+      default = default_circuit_params["r"])
+    
+    # margin for protection layer
+    self.margin = 5 # this can have a different meaning for different cells
     
     self.refpoints = {"base":pya.DVector(0,0)}

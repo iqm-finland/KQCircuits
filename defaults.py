@@ -21,7 +21,7 @@ for name, index in default_layers_dict.items():
     
 default_circuit_params = {
   "a": 10, # Width of center conductor (um)
-  "b": 10, # Width of gap (um)
+  "b": 6, # Width of gap (um)
   "r": 20, # Number of points on turns
   "n": 64, # Turn radius (um)
 }

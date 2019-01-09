@@ -31,7 +31,7 @@ class ChipBase(KQCirvuitPCell):
     self.param("name_mask", self.TypeString, "Name of the mask", default = "M99")
     self.param("name_chip", self.TypeString, "Name of the chip", default = "CTest")
     self.param("name_copy", self.TypeString, "Name of the copy", default = "AA")
-    self.margin = 100
+    self.text_margin = 100
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -50,41 +50,49 @@ class ChipBase(KQCirvuitPCell):
   def transformation_from_shape_impl(self):
     return pya.Trans()    
   
+  def produce_launcher(self, pos, direction, name=""):
+    subcell = self.layout.create_cell("Launcher", "KQCircuit", 
+                                    {"name": name})
+    if isinstance(direction, str):
+      direction = {"E": 0, "W": 180, "S": -90, "N": 90}[direction]
+    print("Launcher:",direction,pos)
+    transf = pya.DCplxTrans(1, direction, False, pos)    
+    self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
+    
   def produce_label(self, label, location, origin):  
     # text cell
-    c1 = self.layout.create_cell("TEXT", "Basic", {
+    subcell = self.layout.create_cell("TEXT", "Basic", {
       "layer": self.lo, 
       "text": label,
       "mag": 500.0
     })
     
     # relative placement with margin
-    margin = (self.dice_width + self.margin)/self.layout.dbu
+    margin = (self.dice_width + self.text_margin)/self.layout.dbu
     trans = pya.DTrans(location + {
         "bottomleft": pya.Vector(
-          c1.bbox().p1.x-margin, 
-          c1.bbox().p1.y-margin),      
+          subcell.bbox().p1.x-margin, 
+          subcell.bbox().p1.y-margin),      
         "topleft": pya.Vector(
-          c1.bbox().p1.x-margin, 
-          c1.bbox().p2.y+margin),
+          subcell.bbox().p1.x-margin, 
+          subcell.bbox().p2.y+margin),
         "topright": pya.Vector(
-          c1.bbox().p2.x+margin, 
-          c1.bbox().p2.y+margin),
+          subcell.bbox().p2.x+margin, 
+          subcell.bbox().p2.y+margin),
         "bottomright": pya.Vector(
-          c1.bbox().p2.x+margin, 
-          c1.bbox().p1.y-margin),
+          subcell.bbox().p2.x+margin, 
+          subcell.bbox().p1.y-margin),
       }[origin]*self.layout.dbu*(-1))
-    self.cell.insert(pya.DCellInstArray(c1.cell_index(), trans))
+    self.cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
     
     # protection layer with margin
     protection = pya.DBox(pya.Point(
-          c1.bbox().p1.x-margin, 
-          c1.bbox().p1.y-margin)*self.layout.dbu,
+          subcell.bbox().p1.x-margin, 
+          subcell.bbox().p1.y-margin)*self.layout.dbu,
           pya.Point(
-          c1.bbox().p2.x+margin, 
-          c1.bbox().p2.y+margin)*self.layout.dbu
+          subcell.bbox().p2.x+margin, 
+          subcell.bbox().p2.y+margin)*self.layout.dbu
         )
-    print("Transform",trans)
     self.cell.shapes(self.layout.layer(self.lp)).insert(
       trans.trans(protection))
     
@@ -93,8 +101,7 @@ class ChipBase(KQCirvuitPCell):
     x_min = min(self.box.p1.x, self.box.p2.x)
     x_max = max(self.box.p1.x, self.box.p2.x)
     y_min = min(self.box.p1.y, self.box.p2.y)
-    y_max = max(self.box.p1.y, self.box.p2.y)
-    
+    y_max = max(self.box.p1.y, self.box.p2.y)    
     
     shape = pya.DPolygon(border_points(
                       x_min,x_max,
@@ -109,24 +116,20 @@ class ChipBase(KQCirvuitPCell):
     self.cell.shapes(self.layout.layer(self.lp)).insert(protection)                   
 
   def produce_impl(self): 
-    print("layout above",self.layout)
-    self.produce_dicing_edge()
-    
+    self.produce_dicing_edge()    
     
     x_min = min(self.box.p1.x, self.box.p2.x)
     x_min = min(self.box.p1.x, self.box.p2.x)
     x_max = max(self.box.p1.x, self.box.p2.x)
     y_min = min(self.box.p1.y, self.box.p2.y)
-    y_max = max(self.box.p1.y, self.box.p2.y)
-    
+    y_max = max(self.box.p1.y, self.box.p2.y)    
     
     self.produce_label(self.name_mask, 
                       pya.DPoint(x_min, y_max),"topleft")
     self.produce_label(self.name_chip, 
                       pya.DPoint(x_max, y_max),"topright")
     self.produce_label(self.name_copy, 
-                      pya.DPoint(x_max, y_min),"bottomright")
-                      
-    self.produce_label("Testtext", 
+                      pya.DPoint(x_max, y_min),"bottomright")                      
+    self.produce_label("MAGIC?", 
                       pya.DPoint(x_min, y_min),"bottomleft")
     

@@ -40,8 +40,10 @@ layout_view.clear_layers()
 import sys
 import kqcircuit.kqcircuit
 import kqcircuit.pcells.meander
+import kqcircuit.pcells.launcher
 from importlib import reload
 reload(kqcircuit.pcells.meander)
+reload(kqcircuit.pcells.launcher)
 reload(kqcircuit)
 reload(kqcircuit)
 kqcircuit.kqcircuit.KQCircuitLibrary()

@@ -13,7 +13,6 @@ class TestChip(ChipBase):
     super().__init__()
     self.param("freqQ1", self.TypeDouble, "Frequency QB1 (GHz)", default = 100)
     self.param("freqRR1", self.TypeDouble, "Frequency RR1 (GHz)", default = 100)
-    self.margin = 100
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -35,15 +34,22 @@ class TestChip(ChipBase):
   def produce_impl(self): 
     super().produce_impl()
     
-    
     # Launcher
-    launcher_positions = [
-      (pya.DPoint(1000,3000),"w"),      
-      (pya.DPoint(9000,3000),"e"),
+    launchers = [
+      (pya.DPoint(1800,2800),"W","IN"),      
+      (pya.DPoint(8200,2800),"E","OUT"),      
+      (pya.DPoint(1800,7200),"W","IN"),      
+      (pya.DPoint(8200,7200),"E","OUT"),
+      (pya.DPoint(2800,1800),"S","Unused"),      
+      (pya.DPoint(2800,8200),"N","Unused"),      
+      (pya.DPoint(7200,1800),"S","Unused"),      
+      (pya.DPoint(7200,8200),"N","Unused")
     ]
+    for launcher in launchers:
+      self.produce_launcher(launcher[0],launcher[1],launcher[2])
     
     # Waveguide
-    guideline = pya.DPath([launcher_positions[0][0],launcher_positions[1][0]],1)
+    #guideline = pya.DPath([launchers[0][0],launchers[1][0]],1)
     #waveguide1 = self.layout.create_cell("Waveguide", "KQCircuit", {
     #  "path": gudieline
     #})
@@ -51,8 +57,8 @@ class TestChip(ChipBase):
     
     
     c1 = self.layout.create_cell("Meander", "KQCircuit", {
-      "start": launcher_positions[0][0],
-      "end": launcher_positions[1][0],
+      "start": launchers[0][0],
+      "end": launchers[1][0],
       "length": 8000*2,
       "meanders": 10
     })
