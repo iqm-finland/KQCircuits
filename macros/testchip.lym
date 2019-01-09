@@ -34,7 +34,13 @@ else:
   cell_view = pya.CellView.active()
   layout = cell_view.layout()
 
+# Delete all cells 
+layout_view.clear_layers()
 
+import sys
+import kqcircuit
+from importlib import reload
+reload(kqcircuit)
 
 # Top cell
 cell = layout.create_cell("Chip T99") # A new cell into the layout
@@ -58,5 +64,10 @@ standard_layers()
 
 c1 = layout.create_cell("Test", "KQChip", {})
 cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-</text>
+
+
+
+layout_view.add_missing_layers()
+layout_view.zoom_fit()
+layout_view.max_hier()</text>
 </klayout-macro>

@@ -38,6 +38,7 @@ class WaveguideCopStreight(KQCirvuitPCell):
   def __init__(self):
     super().__init__()
     self.param("l", self.TypeDouble, "Length", default = math.pi)
+    self.margin = 5
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -54,6 +55,7 @@ class WaveguideCopStreight(KQCirvuitPCell):
           
   def produce_impl(self):
     # Refpoint in the first end   
+    # Left gap
     pts = [
       pya.DPoint(0, self.a/2+0),
       pya.DPoint(self.l, self.a/2+0),
@@ -62,7 +64,7 @@ class WaveguideCopStreight(KQCirvuitPCell):
     ]
     shape = pya.DPolygon(pts)    
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)        
-    
+    # Right gap    
     pts = [
       pya.DPoint(0, -self.a/2+0),
       pya.DPoint(self.l, -self.a/2+0),
@@ -71,6 +73,16 @@ class WaveguideCopStreight(KQCirvuitPCell):
     ]
     shape = pya.DPolygon(pts)  
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)   
+    # Protection layer
+    w = self.a/2 + self.b + self.margin
+    pts = [
+      pya.DPoint(0, -w),
+      pya.DPoint(self.l, -w),
+      pya.DPoint(self.l, w),
+      pya.DPoint(0, w)
+    ]
+    shape = pya.DPolygon(pts)  
+    self.cell.shapes(self.layout.layer(self.lp)).insert(shape)   
 
 class WaveguideCopCurve(KQCirvuitPCell):
   """
@@ -82,6 +94,7 @@ class WaveguideCopCurve(KQCirvuitPCell):
   def __init__(self):
     super().__init__()
     self.param("alpha", self.TypeDouble, "Curve angle", default = math.pi)
+    self.margin = 5
    
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -97,11 +110,11 @@ class WaveguideCopCurve(KQCirvuitPCell):
     None
           
   def produce_impl(self):
-    print("drawing a corner")
     # Refpoint in the center of the turn
     alphastart = 0
     alphastop = self.alpha
     
+    # Left gap
     pts = []  
     R = self.ru-self.a/2
     pts += arc(R,alphastart,alphastop,self.n)
@@ -109,7 +122,7 @@ class WaveguideCopCurve(KQCirvuitPCell):
     pts += arc(R,alphastop,alphastart,self.n)     
     shape = pya.DPolygon(pts)
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)        
-      
+    # Right gap
     pts = []  
     R = self.ru+self.a/2
     pts += arc(R,alphastart,alphastop,self.n)
@@ -117,7 +130,14 @@ class WaveguideCopCurve(KQCirvuitPCell):
     pts += arc(R,alphastop,alphastart,self.n)
     shape = pya.DPolygon(pts)
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)   
-
+    # Protection layer
+    pts = []  
+    R = self.ru-self.a/2-self.b-self.margin
+    pts += arc(R,alphastart,alphastop,self.n)
+    R = self.ru+self.a/2+self.b+self.margin
+    pts += arc(R,alphastop,alphastart,self.n)     
+    shape = pya.DPolygon(pts)
+    self.cell.shapes(self.layout.layer(self.lp)).insert(shape)        
     
 class WaveguideCop(KQCirvuitPCell):
   """
