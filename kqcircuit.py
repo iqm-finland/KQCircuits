@@ -11,6 +11,7 @@ import sys
 import inspect
 from importlib import reload
 reload(sys.modules[WaveguideCop.__module__])
+reload(sys.modules[WaveguideCop.__module__])
 reload(sys.modules[WaveguideCopCurve.__module__])
 reload(sys.modules[ChipBase.__module__])
 reload(sys.modules[TestChip.__module__])

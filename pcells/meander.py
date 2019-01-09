@@ -16,8 +16,8 @@ class MeanderCenter(KQCirvuitPCell):
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Waveguide(a=" + ('%.1f' % self.a) + ",b=" + ('%.1f' % self.b) + ")"
-  
+    return "Meander(m=%.1d,l=%.1f)".format(meanders,length)
+      
   def coerce_parameters_impl(self):
     self.meanders = max(self.meanders,2)
 
@@ -35,13 +35,13 @@ class MeanderCenter(KQCirvuitPCell):
   def produce_impl(self):          
     points = [pya.DPoint(0,0)]    
     l_direct = self.start.distance(self.end)    
-    l_rest = l_direct - self.meanders*2*self.ru
-    l_single_meander = (l_direct - self.length + self.meanders*(math.pi-4)*self.ru)/(2-2*self.meanders)
+    l_rest = l_direct - self.meanders*2*self.r
+    l_single_meander = (l_direct - self.length + self.meanders*(math.pi-4)*self.r)/(2-2*self.meanders)
     
     points.append(pya.DPoint(l_rest/2,0))
     for i in range(self.meanders):      
-      points.append(pya.DPoint(l_rest/2 + i*2*self.ru, ((-1)**(i%2))*l_single_meander))
-      points.append(pya.DPoint(l_rest/2 + (i+1)*2*self.ru, ((-1)**(i%2))*l_single_meander))    
+      points.append(pya.DPoint(l_rest/2 + i*2*self.r, ((-1)**(i%2))*l_single_meander))
+      points.append(pya.DPoint(l_rest/2 + (i+1)*2*self.r, ((-1)**(i%2))*l_single_meander))    
     points.append(pya.DPoint(l_direct-l_rest/2,0))
     points.append(pya.DPoint(l_direct,0))
     

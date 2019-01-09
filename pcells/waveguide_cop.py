@@ -116,25 +116,25 @@ class WaveguideCopCurve(KQCirvuitPCell):
     
     # Left gap
     pts = []  
-    R = self.ru-self.a/2
+    R = self.r-self.a/2
     pts += arc(R,alphastart,alphastop,self.n)
-    R = self.ru-self.a/2-self.b
+    R = self.r-self.a/2-self.b
     pts += arc(R,alphastop,alphastart,self.n)     
     shape = pya.DPolygon(pts)
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)        
     # Right gap
     pts = []  
-    R = self.ru+self.a/2
+    R = self.r+self.a/2
     pts += arc(R,alphastart,alphastop,self.n)
-    R = self.ru+self.a/2+self.b
+    R = self.r+self.a/2+self.b
     pts += arc(R,alphastop,alphastart,self.n)
     shape = pya.DPolygon(pts)
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)   
     # Protection layer
     pts = []  
-    R = self.ru-self.a/2-self.b-self.margin
+    R = self.r-self.a/2-self.b-self.margin
     pts += arc(R,alphastart,alphastop,self.n)
-    R = self.ru+self.a/2+self.b+self.margin
+    R = self.r+self.a/2+self.b+self.margin
     pts += arc(R,alphastop,alphastart,self.n)     
     shape = pya.DPolygon(pts)
     self.cell.shapes(self.layout.layer(self.lp)).insert(shape)        
@@ -179,14 +179,14 @@ class WaveguideCop(KQCirvuitPCell):
       alpha1 = math.atan2(v1.y,v1.x)
       alpha2 = math.atan2(v2.y,v2.x)
       alphacorner = (((math.pi-(alpha2 - alpha1))/2)+alpha2)
-      distcorner = v1.vprod_sign(v2)*self.ru / math.sin((math.pi-(alpha2-alpha1))/2)
+      distcorner = v1.vprod_sign(v2)*self.r / math.sin((math.pi-(alpha2-alpha1))/2)
       corner = crossing + pya.DVector(math.cos(alphacorner)*distcorner, math.sin(alphacorner)*distcorner)
       #self.cell.shapes(self.layout.layer(self.la)).insert(pya.DText("%f, %f, %f" % (alpha2-alpha1,distcorner,v1.vprod_sign(v2)),corner.x,corner.y))  
             
       # Streight segment before the corner
       segment_start = segment_last
       segment_end = points[i+1]
-      cut = v1.vprod_sign(v2)*self.ru / math.tan((math.pi-(alpha2-alpha1))/2)
+      cut = v1.vprod_sign(v2)*self.r / math.tan((math.pi-(alpha2-alpha1))/2)
       l = segment_start.distance(segment_end)-cut
       angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
       subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
@@ -204,7 +204,7 @@ class WaveguideCop(KQCirvuitPCell):
         "b": self.b,
         "alpha": alpha2-alpha1, # TODO: Finish the list,
         "n": self.n,
-        "ru": self.ru
+        "ru": self.r
       })
       transf = pya.DCplxTrans(1, alpha1/math.pi*180.0-v1.vprod_sign(v2)*90, False, corner)
       self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))

@@ -37,13 +37,14 @@ else:
 # Delete all cells 
 layout_view.clear_layers()
 
-#import sys
-#import kqcircuit.kqcircuit
-#import kqcircuit.pcells.meander
-#from importlib import reload
-#reload(kqcircuit.pcells.meander)
-#reload(kqcircuit)
-#kqcircuit.kqcircuit.KQCircuitLibrary()
+import sys
+import kqcircuit.kqcircuit
+import kqcircuit.pcells.meander
+from importlib import reload
+reload(kqcircuit.pcells.meander)
+reload(kqcircuit)
+reload(kqcircuit)
+kqcircuit.kqcircuit.KQCircuitLibrary()
 
 # Top cell
 cell = layout.create_cell("Chip T99") # A new cell into the layout

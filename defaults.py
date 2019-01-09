@@ -13,9 +13,15 @@ default_layers_dict = {
 
 }
 
+
 # pya layer information
 default_layers = {}
 for name, index in default_layers_dict.items():
   default_layers[name] = pya.LayerInfo(index[0], index[1], name)
-  
-print(default_layers)
+    
+default_circuit_params = {
+  "a": 10, # Width of center conductor (um)
+  "b": 10, # Width of gap (um)
+  "r": 20, # Number of points on turns
+  "n": 64, # Turn radius (um)
+}

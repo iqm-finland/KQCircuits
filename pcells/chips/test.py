@@ -53,7 +53,8 @@ class TestChip(ChipBase):
     c1 = self.layout.create_cell("Meander", "KQCircuit", {
       "start": launcher_positions[0][0],
       "end": launcher_positions[1][0],
-      "length": 8000*2
+      "length": 8000*2,
+      "meanders": 10
     })
       
     #self.cell.shapes(self.layout.layer(self.lo)).insert(guideline)
