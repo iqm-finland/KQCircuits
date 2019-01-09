@@ -32,7 +32,7 @@ def arc(R, start, stop, n):
      
 class WaveguideCopStreight(KQCirvuitPCell):
   """
-  The PCell declaration of a streight segment of a transmission line
+  The PCell declaration of a streight segment of a coplanar waveguide
   """
 
   def __init__(self):
@@ -86,7 +86,7 @@ class WaveguideCopStreight(KQCirvuitPCell):
 
 class WaveguideCopCurve(KQCirvuitPCell):
   """
-  The PCell declaration of a curved segment of a transmission line
+  The PCell declaration of a curved segment of a coplanar waveguide.
   
   Cordinate origin is left at the center of the arch.
   """
@@ -141,7 +141,7 @@ class WaveguideCopCurve(KQCirvuitPCell):
     
 class WaveguideCop(KQCirvuitPCell):
   """
-  The PCell declaration for an arbitrary waveguide
+  The PCell declaration for an arbitrary coplanar waveguide
   """
 
   def __init__(self):
@@ -181,7 +181,7 @@ class WaveguideCop(KQCirvuitPCell):
       alphacorner = (((math.pi-(alpha2 - alpha1))/2)+alpha2)
       distcorner = v1.vprod_sign(v2)*self.ru / math.sin((math.pi-(alpha2-alpha1))/2)
       corner = crossing + pya.DVector(math.cos(alphacorner)*distcorner, math.sin(alphacorner)*distcorner)
-      self.cell.shapes(self.layout.layer(self.la)).insert(pya.DText("%f, %f, %f" % (alpha2-alpha1,distcorner,v1.vprod_sign(v2)),corner.x,corner.y))  
+      #self.cell.shapes(self.layout.layer(self.la)).insert(pya.DText("%f, %f, %f" % (alpha2-alpha1,distcorner,v1.vprod_sign(v2)),corner.x,corner.y))  
             
       # Streight segment before the corner
       segment_start = segment_last
@@ -195,7 +195,6 @@ class WaveguideCop(KQCirvuitPCell):
         "l": l # TODO: Finish the list
       })
       transf = pya.DCplxTrans(1,angle,False,pya.DVector(segment_start))
-      print("segment",subcell,type(corner),type(transf))
       self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf))
       segment_last = points[i+1]+v2*(1/v2.abs())*cut
       
@@ -208,7 +207,6 @@ class WaveguideCop(KQCirvuitPCell):
         "ru": self.ru
       })
       transf = pya.DCplxTrans(1, alpha1/math.pi*180.0-v1.vprod_sign(v2)*90, False, corner)
-      print("curve",subcell,type(corner),type(transf))
       self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))
     
     # Last segement
@@ -223,6 +221,5 @@ class WaveguideCop(KQCirvuitPCell):
       "l": l # TODO: Finish the list
     })
     transf = pya.DCplxTrans(1,angle,False,pya.DVector(segment_start))    
-    print("DCell",subcell.cell_index(),transf)
     self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
      
