@@ -40,3 +40,8 @@ Python 3.* is usually available out of box, but the latest KLayout has to be bui
 ## Windows
 Python has to be availble in the path of linked in KLayout python path. See KLayout doc.
 
+
+# Known issues
+
+* Waveguides at arbitrary angles have 1 nm gaps in between due to finite precision of arithmetics.
+* KLayout crashes if a definition of child PCell is updated. As a workaround delete the cell before updating.
