@@ -2,6 +2,14 @@ KLayout macros for microwave circuits.
 
 # Installation of KQCircuit
 
+## Recuirements
+Tested with 
+* Python 3.5.2, 
+* KLayout 0.25.6
+
+Required packages
+* numpy
+
 ## Linux
 Typical location for local macros, which you can edit:
 ```
