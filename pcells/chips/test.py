@@ -50,8 +50,10 @@ class TestChip(ChipBase):
     #self.cell.insert(waveguide1)
     
     
-    c1 = self.layout.create_cell("Waveguide", "KQCircuit", {
-      "path": guideline
+    c1 = self.layout.create_cell("Meander", "KQCircuit", {
+      "start": launcher_positions[0][0],
+      "end": launcher_positions[1][0],
+      "length": 8000*2
     })
       
     #self.cell.shapes(self.layout.layer(self.lo)).insert(guideline)
