@@ -21,7 +21,6 @@ reload(sys.modules[TestChip.__module__])
 reload(sys.modules[MeanderCenter.__module__])
 
 
-
 """
 Quantum Circuits in KLayout
 """
@@ -33,10 +32,10 @@ class KQCircuitLibrary(pya.Library):
   """
 
   def __init__(self):
-  
+
     # Set the description
     self.description = "Library for superconducting quantum circuits."
-    
+
     # Create the PCell declarations
     self.layout().register_pcell("Waveguide", WaveguideCop())
     self.layout().register_pcell("Waveguide streight", WaveguideCopStreight())
@@ -47,9 +46,8 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("TJunction", WaveguideCopCurve())
     self.layout().register_pcell("Launcher", Launcher())
     self.layout().register_pcell("Chip base", ChipBase())
-    
+
     self.register("KQCircuit")
-    
     
 
 # Instantiate and register the library
@@ -62,16 +60,15 @@ class KQChipLibrary(pya.Library):
   """
 
   def __init__(self):
-  
+
     # Set the description
     self.description = "Implementation of chips using KQCircuits."
-    
+
     # Create the PCell declarations
     self.layout().register_pcell("Test", TestChip())
-    
+
     self.register("KQChip")
-    
-    
+
 
 # Instantiate and register the library
 KQChipLibrary()

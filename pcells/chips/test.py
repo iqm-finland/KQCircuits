@@ -16,7 +16,7 @@ class TestChip(ChipBase):
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return("TestChipV%.2D".format(version))
+    return("TestChipV{}".format(version))
   
   def coerce_parameters_impl(self):
     None

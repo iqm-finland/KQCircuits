@@ -130,6 +130,6 @@ class ChipBase(KQCirvuitPCell):
                       pya.DPoint(x_max, y_max),"topright")
     self.produce_label(self.name_copy, 
                       pya.DPoint(x_max, y_min),"bottomright")                      
-    self.produce_label("MAGIC?", 
+    self.produce_label("AALTO", 
                       pya.DPoint(x_min, y_min),"bottomleft")
     

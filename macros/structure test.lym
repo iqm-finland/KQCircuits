@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
- <description>QCD Standardd chip</description>
+ <description>Draws all structures</description>
  <version>0.1</version>
  <category>pymacros</category>
  <prolog/>
@@ -10,7 +10,7 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
- <group-name/>
+ <group-name>KQCircuit</group-name>
  <menu-path>
 edit_menu.my_group&gt;end("KQCircuit").end</menu-path>
  <interpreter>python</interpreter>
