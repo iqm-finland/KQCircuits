@@ -20,8 +20,11 @@
 *.tar
 *.zip
 
-# Cash
+# Cashe
 __pycache__
+
+# IntelliJ
+.idea
 
 # Logs and databases #
 ######################
