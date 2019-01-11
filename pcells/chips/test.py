@@ -54,16 +54,20 @@ class TestChip(ChipBase):
     #  "path": gudieline
     #})
     #self.cell.insert(waveguide1)
-    
-    
-    c1 = self.layout.create_cell("Meander", "KQCircuit", {
+    #self.cell.shapes(self.layout.layer(self.lo)).insert(guideline)
+      
+    # Meander
+    meander = self.layout.create_cell("Meander", "KQCircuit", {
       "start": launchers[0][0],
       "end": launchers[1][0],
       "length": 8000*2,
       "meanders": 10
-    })
+    })    
+    self.cell.insert(pya.DCellInstArray(meander.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    # Swissmon      
+    swissmon = self.layout.create_cell("Swissmon", "KQCircuit", {})  
+    self.cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DTrans(pya.DVector(5000, 5000))))
       
-    #self.cell.shapes(self.layout.layer(self.lo)).insert(guideline)
-    self.cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(0, 0))))
 
 
