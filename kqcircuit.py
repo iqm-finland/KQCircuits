@@ -1,4 +1,5 @@
 import pya
+import os
 from kqcircuit.pcells.waveguide_cop import WaveguideCopStreight
 from kqcircuit.pcells.waveguide_cop import WaveguideCopCurve
 from kqcircuit.pcells.waveguide_cop import WaveguideCop
@@ -27,7 +28,6 @@ reload(sys.modules[Swissmon.__module__])
 Quantum Circuits in KLayout
 """
 
-
 class KQCircuitLibrary(pya.Library):
   """
   Quantum Circuits in KLayout
@@ -37,6 +37,10 @@ class KQCircuitLibrary(pya.Library):
 
     # Set the description
     self.description = "Library for superconducting quantum circuits."
+        
+    # Load fixed library cells
+    self.path_kqcircuit = os.path.dirname(__file__)    
+    self.layout().read(os.path.join(self.path_kqcircuit, "shapes", "squids.oas"))
 
     # Create the PCell declarations
     self.layout().register_pcell("Waveguide", WaveguideCop())
@@ -50,10 +54,10 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("Chip base", ChipBase())
 
     self.register("KQCircuit")
-    
 
 # Instantiate and register the library
 KQCircuitLibrary()
+
 
 
 class KQChipLibrary(pya.Library):
@@ -71,6 +75,6 @@ class KQChipLibrary(pya.Library):
 
     self.register("KQChip")
 
-
-# Instantiate and register the library
+# Instance the libraries 
+KQCircuitLibrary()
 KQChipLibrary()

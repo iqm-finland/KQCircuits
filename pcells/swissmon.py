@@ -1,5 +1,8 @@
 import pya
 import math
+import os
+
+from kqcircuit.defaults import default_layers
 from kqcircuit.pcells.kqcircuit_pcell import KQCirvuitPCell
 
 class Swissmon(KQCirvuitPCell):
@@ -8,7 +11,11 @@ class Swissmon(KQCirvuitPCell):
   """
 
   def __init__(self):
-    super().__init__()
+    super().__init__()    
+    self.param("le1", self.TypeLayer, "Layer electron beam 1", 
+      default = default_layers["Electron beam lit. 1"])      
+    self.param("le2", self.TypeLayer, "Layer electron beam 2", 
+      default = default_layers["Electron beam lit. 2"])
     self.param("len_direct", self.TypeDouble, "Length between the ports (um)", default = 400)
     self.param("len_finger", self.TypeDouble, "Length of the fingers (um)", default = 50)
     self.param("fingers", self.TypeInt, "Number of fingers (at least 2)", default = 3)
@@ -57,12 +64,21 @@ class Swissmon(KQCirvuitPCell):
               p+pya.DVector(math.copysign(s, p.x),math.copysign(s, p.y)) for p in cross_points
               ])    
     cross.insert_hole(cross_points)
-    #cross_rounded = cross.round_corners(self.corner_r/self.layout.dbu, self.corner_r/self.layout.dbu, self.n)
-    cross_rounded = cross.round_corners(self.corner_r-self.gap_width/2, self.corner_r+self.gap_width/2, self.n)
-    self.cell.shapes(self.layout.layer(self.lo)).insert(cross_rounded)
+    cross_rounded = cross.round_corners(self.corner_r, self.corner_r, self.n)
+    #cross_rounded = cross.round_corners(self.corner_r-self.gap_width/2, self.corner_r+self.gap_width/2, self.n)
+    #self.cell.shapes(self.layout.layer(self.lo)).insert(cross_rounded)
     self.cell.shapes(self.layout.layer(self.la)).insert(cross)
     
     cross_protection = pya.DPolygon([
                         p+pya.DVector(math.copysign(s+self.margin, p.x),math.copysign(s+self.margin, p.y)) for p in cross_points
                         ])    
     self.cell.shapes(self.layout.layer(self.lp)).insert(cross_protection)
+    
+    
+    # SQUID from template
+    squid_cell =  self.layout.create_cell("SQUID", "KQCircuit")
+    
+    region_unetch = pya.Region(squid_cell.shapes(temp_layout.layer(default_layers["Unetch 1"])))
+    region_etch = pya.Region([cross_rounded])-region_unetch
+    self.cell.shapes(self.lo).insert(region_etch)
+    
