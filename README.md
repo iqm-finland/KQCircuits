@@ -38,8 +38,16 @@ Python 3.* is usually available out of box, but the latest KLayout has to be bui
 
 
 ## Windows
-Python has to be availble in the path of linked in KLayout python path. See KLayout doc.
 
+Instructions:
+1. Download latest KLayout *64 bit version* or, if you have KLayout already, check from "Help->About" that the embedded Python is compiled with 64 bit GCC.
+2. Install "Python_packages_for_KLayout" KLayout package from `Tools->Manage packages`.
+
+Explanation:
+On windows everything is slightly complicated as it does not provide a nice infrastructure.
+The embedded python has to be compiled with the same compiler, as the rest of KLayout. 
+The good news is, that minimalistic Python is included in KLayout for windows. However, it is hard to add any less standard python modules.
+KQC requires numpy. Luckly a precompiled version is available in KLayouts package manager. The numpy in the package seems to be compiled on a 64 bit system, and thus your KLayout also has to be 64 bit.
 
 # Known issues
 
