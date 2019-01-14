@@ -28,3 +28,13 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
     self.margin = 5 # this can have a different meaning for different cells
     
     self.refpoints = {"base":pya.DVector(0,0)}
+    
+  def produce_impl(self):
+    # call the super.produce_impl once all the refpoints have been added to self.refpoints
+    # add all ref points to user properties and draw to annotations    
+    for name, refpoint in self.refpoints.items():
+      self.cell.set_property(name, refpoint)      
+      #self.cell.shapes(self.layout.layer(self.la)).insert(pya.DPath([pya.DPoint(0,0),pya.DPoint(0,0)+refpoint],1))
+      text = pya.DText(name, refpoint.x, refpoint.y)
+      self.cell.shapes(self.layout.layer(self.la)).insert(text)
+    self.cell.refpoints = self.refpoints

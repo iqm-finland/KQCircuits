@@ -44,6 +44,7 @@ import kqcircuit.pcells.launcher
 from importlib import reload
 reload(kqcircuit.pcells.meander)
 reload(kqcircuit.pcells.launcher)
+reload(kqcircuit.pcells.launcher)
 reload(kqcircuit)
 reload(kqcircuit)
 kqcircuit.kqcircuit.KQCircuitLibrary()

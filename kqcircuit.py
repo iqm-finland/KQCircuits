@@ -14,14 +14,15 @@ import kqcircuit.defaults
 import sys
 import inspect
 from importlib import reload
+
 reload(kqcircuit.defaults)
 reload(sys.modules[Swissmon.__module__])
-#reload(sys.modules[WaveguideCop.__module__])
-#reload(sys.modules[WaveguideCopCurve.__module__])
-#reload(sys.modules[ChipBase.__module__])
-#reload(sys.modules[Launcher.__module__])
-#reload(sys.modules[TestChip.__module__])
-#reload(sys.modules[MeanderCenter.__module__])
+reload(sys.modules[WaveguideCop.__module__])
+reload(sys.modules[WaveguideCopCurve.__module__])
+reload(sys.modules[ChipBase.__module__])
+reload(sys.modules[Launcher.__module__])
+reload(sys.modules[TestChip.__module__])
+reload(sys.modules[MeanderCenter.__module__])
 
 
 """
