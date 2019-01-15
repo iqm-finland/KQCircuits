@@ -144,7 +144,9 @@ class WaveguideCop(KQCirvuitPCell):
 
   def __init__(self):
     super().__init__()
-    self.param("path", self.TypeShape, "TLine", default = pya.DPath([pya.DPoint(0,0),pya.DPoint(1,0)],1))
+    self.param("path", self.TypeShape, "TLine", default = pya.DPath([pya.DPoint(0,0),pya.DPoint(100,0)],1))
+    self.param("term1", self.TypeDouble, "Termination length start (um)", default = 0)
+    self.param("term2", self.TypeDouble, "Termination length end (um)", default = 0)
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -162,10 +164,28 @@ class WaveguideCop(KQCirvuitPCell):
     
   def transformation_from_shape_impl(self):
     return pya.Trans()
-    
+  
+  def produce_end_termination(self, i_point_1, i_point_2, term_len):
+    # Termination is after point2. Point1 determines the direction.
+    # Negative term_len does not make any sense.
+    points = [point for point in self.path.each_point()]
+    a = self.a
+    b = self.b
+    if term_len>0:
+      v = (points[i_point_2]-points[i_point_1])*(1/points[i_point_1].distance(points[i_point_2]))
+      u = pya.DTrans.R270.trans(v)
+      poly = pya.DPolygon([u*(a/2+b),u*(a/2+b)+v*(term_len),u*(-a/2-b)+v*(term_len),u*(-a/2-b)])
+      shift_start = pya.DTrans(pya.DVector(points[i_point_2]))
+      self.cell.shapes(self.layout.layer(self.lo)).insert(poly.transform(shift_start))
+      # protection
+      poly2 = pya.DPolygon([u*(a/2+b+self.margin),u*(a/2+b+self.margin)+v*(term_len+self.margin),u*(-a/2-b-self.margin)+v*(term_len+self.margin),u*(-a/2-b-self.margin)])
+      self.cell.shapes(self.layout.layer(self.lp)).insert(poly2.transform(shift_start))
   
   def produce_impl(self):      
     points = [point for point in self.path.each_point()]
+    
+    # Termination before the first segment
+    self.produce_end_termination(1, 0, self.term1)
     
     # For each segment except the last
     segment_last = points[0]
@@ -212,6 +232,9 @@ class WaveguideCop(KQCirvuitPCell):
     segment_end = points[-1]
     l = segment_start.distance(segment_end)
     angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
+    
+    # Terminate the end
+    self.produce_end_termination(-2, -1, self.term2)
 
     subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
       "a": self.a,
