@@ -74,20 +74,20 @@ class DemoChip(ChipBase):
     swissmon_instance = self.cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DCplxTrans(1, -90, False, swissmon_pos_v)))
 
     print("Transformation:",pya.DCplxTrans(1, -90, False, swissmon_pos_v))
-    swissmon_refpoints_abs = self.get_refpoints(swissmon, pya.DCplxTrans(1, -90, False, swissmon_pos_v))        
+    swissmon_refpoints_abs = self.get_refpoints(swissmon, swissmon_instance.dtrans)        
 
     port_qubit_dr = swissmon_refpoints_abs["port_drive"]            
     port_qubit_fl = swissmon_refpoints_abs["port_flux"]
     port_qubit_ro = swissmon_refpoints_abs["port_cplr1"]
-
+    
     # Driveline 
     driveline = self.layout.create_cell("Waveguide", "KQCircuit", {
       "term2" : self.b,
       "path": pya.DPath([
                   launchers[5][0], 
                   launchers[5][0]+pya.DVector(0,-self.r),         
-                  pya.DPoint(0,0)+port_qubit_dr+pya.DVector(0,self.r), 
-                  pya.DPoint(0,0)+port_qubit_dr
+                  port_qubit_dr+pya.DVector(0,self.r), 
+                  port_qubit_dr
                 ],1)
     })    
     self.cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
@@ -97,10 +97,53 @@ class DemoChip(ChipBase):
       "path": pya.DPath([
                   launchers[2][0], 
                   launchers[2][0]+pya.DVector(self.r,0),         
-                  pya.DPoint(0,0)+port_qubit_fl+pya.DVector(-self.r,0), 
-                  pya.DPoint(0,0)+port_qubit_fl
+                  port_qubit_fl+pya.DVector(-self.r,0), 
+                  port_qubit_fl
                 ],1)
     })    
     self.cell.insert(pya.DCellInstArray(fluxline.cell_index(), pya.DTrans()))
+        
+    # Capacitor J
+    capj = self.layout.create_cell("FingerCap", "KQCircuit", {
+      "finger_number": 2
+    })    
+    capj_inst = self.cell.insert(pya.DCellInstArray(capj.cell_index(), pya.DTrans(pya.DVector(5400, 7200))))
+    capj_refpoints_abs = self.get_refpoints(capj, capj_inst.dtrans)        
+    print("capj_refpoints_abs",capj_refpoints_abs)
+    
+    # Capacitor kappa
+    capk = self.layout.create_cell("FingerCap", "KQCircuit", {
+      "finger_number": 8
+    })    
+    capk_inst = self.cell.insert(pya.DCellInstArray(capk.cell_index(), pya.DTrans(pya.DVector(7800, 7200))))
+    capk_refpoints_abs = self.get_refpoints(capk, capk_inst.dtrans)  
 
 
+    # Readout resonator    
+    readout = self.layout.create_cell("Meander", "KQCircuit", {
+      "start": port_qubit_ro,
+      "end": capj_refpoints_abs["port_a"],
+      "length": 8000,
+      "meanders": 20
+    })    
+    self.cell.insert(pya.DCellInstArray(readout.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    # Purcell filter
+    purcell = self.layout.create_cell("Meander", "KQCircuit", {
+      "start": capj_refpoints_abs["port_b"],
+      "end": capk_refpoints_abs["port_a"],
+      "length": 7500,
+      "meanders": 20
+    })    
+    self.cell.insert(pya.DCellInstArray(purcell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+
+    # Output line
+    outputline = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  capk_refpoints_abs["port_b"], 
+                  capk_refpoints_abs["port_b"]+pya.DVector(self.r,0),         
+                  launchers[3][0]+pya.DVector(-self.r,0), 
+                  launchers[3][0]+pya.DVector(0,0)
+                ],1)
+    })    
+    self.cell.insert(pya.DCellInstArray(outputline.cell_index(), pya.DTrans()))

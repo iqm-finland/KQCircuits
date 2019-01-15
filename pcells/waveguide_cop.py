@@ -144,7 +144,7 @@ class WaveguideCop(KQCirvuitPCell):
 
   def __init__(self):
     super().__init__()
-    self.param("path", self.TypeShape, "TLine", default = pya.DPath([pya.DPoint(0,0),pya.DPoint(100,0)],1))
+    self.param("path", self.TypeShape, "TLine", default = pya.DPath([pya.DPoint(0,0),pya.DPoint(100,0)],0))
     self.param("term1", self.TypeDouble, "Termination length start (um)", default = 0)
     self.param("term2", self.TypeDouble, "Termination length end (um)", default = 0)
 
@@ -170,6 +170,7 @@ class WaveguideCop(KQCirvuitPCell):
     # Negative term_len does not make any sense.
     points = [point for point in self.path.each_point()]
     a = self.a
+    
     b = self.b
     if term_len>0:
       v = (points[i_point_2]-points[i_point_1])*(1/points[i_point_1].distance(points[i_point_2]))
