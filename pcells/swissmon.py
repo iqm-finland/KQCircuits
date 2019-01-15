@@ -91,7 +91,7 @@ class Swissmon(KQCirvuitPCell):
       
     # add ref point
     port_ref = pya.DPoint(0, -fa-l1-l2)
-    self.refpoints["flux_port"] = transf.trans(port_ref)
+    self.refpoints["port_flux"] = transf.trans(port_ref)
     
     
   def produce_chargeline(self):
@@ -104,7 +104,7 @@ class Swissmon(KQCirvuitPCell):
       
     # add ref point
     port_ref = pya.DPoint(-w/2-g-b-a/2, -3*g-l)
-    self.refpoints["drive_port"] = port_ref
+    self.refpoints["port_drive"] = port_ref
   
   def produce_coupler(self, cpl_nr):
     # shortscript
@@ -166,7 +166,7 @@ class Swissmon(KQCirvuitPCell):
       
     # add ref point
     port_ref = pya.DPoint(0,b)
-    self.refpoints["cplr_port{}".format(cpl_nr)] = (rotation*transf).trans(port_ref)
+    self.refpoints["port_cplr{}".format(cpl_nr)] = (rotation*transf).trans(port_ref)
 
   def produce_cross_and_squid(self):
     # shorthand
