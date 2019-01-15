@@ -1,6 +1,7 @@
 import pya
 import math
 from kqcircuit.pcells.chips.chip_base import ChipBase
+from kqcircuit.defaults import default_layers
 
 version = 1
     
@@ -61,14 +62,23 @@ class TestChip(ChipBase):
     swissmon = self.layout.create_cell("Swissmon", "KQCircuit", {
       "cpl_length": [0,160,0]
     })  
-    self.cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DCplxTrans(1, 90, False, pya.DVector(2800, 7200))))
-    port_qubit_dr = swissmon.refpoints["cplr_port0"]
-    port_qubit_ro = swissmon.refpoints["cplr_port1"]
+    swissmon_pos_v = pya.DVector(2800, 7200)
+    swissmon_instance = self.cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DCplxTrans(1, -90, False, swissmon_pos_v)))
+    
+    swissmon_refpoints = {}    
+    for shape in swissmon.shapes(self.layout.layer(default_layers["Annotations"])).each():
+      print(shape.type())
+      if shape.type()==pya.Shape.TText:
+        swissmon_refpoints[shape.text_string] = swissmon_instance.trans.trans(shape.text_dpos)
+        print(swissmon_refpoints[shape.text_string])
+    port_qubit_dr = swissmon_refpoints["cplr_port0"]
+    port_qubit_ro = swissmon_refpoints["cplr_port1"]
 
     # Driveline 
     waveguide1 = self.layout.create_cell("Waveguide", "KQCircuit", {
-      "path": [launchers[6][0], port_qubit_dr]
+      "path": pya.DPath([launchers[5][0], pya.DPoint(0, 0)+swissmon_pos_v+port_qubit_dr],1)
     })
-    self.cell.insert(waveguide1)
+    
+    self.cell.insert(pya.DCellInstArray(waveguide1.cell_index(), pya.DCplxTrans(1, 0, False, pya.DVector(0, 0))))
 
 
