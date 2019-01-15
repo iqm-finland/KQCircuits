@@ -7,6 +7,6 @@ Launcher for connecting wirebonds. Deafault wirebond direction to west, waveguid
 
 **Origin:** Waveguide port  
 
-![launcher](/images/launcher.png)
+![launcher](/documentation/images/launcher.png)
 
     
