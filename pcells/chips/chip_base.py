@@ -2,6 +2,10 @@ import pya
 import math
 from kqcircuit.pcells.kqcircuit_pcell import KQCirvuitPCell
 
+import sys
+from importlib import reload
+reload(sys.modules[KQCirvuitPCell.__module__])
+
 def border_points(x_min,x_max,y_min,y_max,w):
   points = [
     pya.DPoint(x_min, y_min),
@@ -58,7 +62,7 @@ class ChipBase(KQCirvuitPCell):
     print("Launcher:",direction,pos)
     transf = pya.DCplxTrans(1, direction, False, pos)    
     self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
-    
+  
   def produce_label(self, label, location, origin):  
     # text cell
     subcell = self.layout.create_cell("TEXT", "Basic", {

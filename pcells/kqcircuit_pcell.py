@@ -37,3 +37,12 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
       text = pya.DText(name, refpoint.x, refpoint.y)
       self.cell.shapes(self.layout.layer(self.la)).insert(text)
     self.cell.refpoints = self.refpoints
+
+
+  def get_refpoints(self, cell, cell_transf = pya.DTrans()):
+    refpoints = {}
+    for shape in cell.shapes(self.layout.layer(default_layers["Annotations"])).each():
+      if shape.type()==pya.Shape.TText:
+        refpoints[shape.text_string] = cell_transf.trans(pya.DPoint(shape.text_dpos))
+      
+    return refpoints

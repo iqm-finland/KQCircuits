@@ -3,9 +3,13 @@ import math
 from kqcircuit.pcells.chips.chip_base import ChipBase
 from kqcircuit.defaults import default_layers
 
+import sys
+from importlib import reload
+reload(sys.modules[ChipBase.__module__])
+
 version = 1
     
-class TestChip(ChipBase):
+class DemoChip(ChipBase):
   """
   The PCell declaration for an arbitrary waveguide
   """
@@ -62,23 +66,41 @@ class TestChip(ChipBase):
     swissmon = self.layout.create_cell("Swissmon", "KQCircuit", {
       "cpl_length": [0,160,0]
     })  
-    swissmon_pos_v = pya.DVector(2800, 7200)
-    swissmon_instance = self.cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DCplxTrans(1, -90, False, swissmon_pos_v)))
     
-    swissmon_refpoints = {}    
-    for shape in swissmon.shapes(self.layout.layer(default_layers["Annotations"])).each():
-      print(shape.type())
-      if shape.type()==pya.Shape.TText:
-        swissmon_refpoints[shape.text_string] = swissmon_instance.trans.trans(shape.text_dpos)
-        print(swissmon_refpoints[shape.text_string])
-    port_qubit_dr = swissmon_refpoints["cplr_port0"]
-    port_qubit_ro = swissmon_refpoints["cplr_port1"]
+    
+    swissmon_refpoints_rel = self.get_refpoints(swissmon)        
+        
+    swissmon_pos_v = pya.DVector(2800-swissmon_refpoints_rel["port_drive"].y, 7200) 
+    swissmon_instance = self.cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DCplxTrans(1, -90, False, swissmon_pos_v)))
+
+    print("Transformation:",pya.DCplxTrans(1, -90, False, swissmon_pos_v))
+    swissmon_refpoints_abs = self.get_refpoints(swissmon, pya.DCplxTrans(1, -90, False, swissmon_pos_v))        
+
+    port_qubit_dr = swissmon_refpoints_abs["port_drive"]            
+    port_qubit_fl = swissmon_refpoints_abs["port_flux"]
+    port_qubit_ro = swissmon_refpoints_abs["port_cplr1"]
 
     # Driveline 
-    waveguide1 = self.layout.create_cell("Waveguide", "KQCircuit", {
-      "path": pya.DPath([launchers[5][0], pya.DPoint(0, 0)+swissmon_pos_v+port_qubit_dr],1)
-    })
+    driveline = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "term2" : self.b,
+      "path": pya.DPath([
+                  launchers[5][0], 
+                  launchers[5][0]+pya.DVector(0,-self.r),         
+                  pya.DPoint(0,0)+port_qubit_dr+pya.DVector(0,self.r), 
+                  pya.DPoint(0,0)+port_qubit_dr
+                ],1)
+    })    
+    self.cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
     
-    self.cell.insert(pya.DCellInstArray(waveguide1.cell_index(), pya.DCplxTrans(1, 0, False, pya.DVector(0, 0))))
+    # Fluxline
+    fluxline = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  launchers[2][0], 
+                  launchers[2][0]+pya.DVector(self.r,0),         
+                  pya.DPoint(0,0)+port_qubit_fl+pya.DVector(-self.r,0), 
+                  pya.DPoint(0,0)+port_qubit_fl
+                ],1)
+    })    
+    self.cell.insert(pya.DCellInstArray(fluxline.cell_index(), pya.DTrans()))
 
 
