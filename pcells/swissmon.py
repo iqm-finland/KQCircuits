@@ -23,6 +23,7 @@ class Swissmon(KQCirvuitPCell):
     self.param("arm_width", self.TypeDouble, "Arm width (um)", default = 24)
     self.param("gap_width", self.TypeDouble, "Gap width (um)", default = 24)
     self.param("corner_r", self.TypeDouble, "Corner radius (um)", default = 5)
+    self.param("fluxline", self.TypeBoolean, "Fluxline", default = True)
     self.param("cpl_width", self.TypeList, "Coupler width (um, ENW)", default = [24, 24, 24])
     self.param("cpl_length", self.TypeList, "Coupler lengths (um, ENW)", default = [160, 160, 160])
     self.param("cpl_gap", self.TypeList, "Coupler gap (um, ENW)", default = [102, 102, 102])
@@ -43,14 +44,75 @@ class Swissmon(KQCirvuitPCell):
     
   def transformation_from_shape_impl(self):
     return pya.Trans()        
+  
+  def produce_fluxline(self):
+    # shorthands
+    a = self.a # waveguide center width
+    b = self.b # wavegudie gap width 
+    self.fluxline_width = 10./3
+    fa = self.fluxline_width  # fluxline center width
+    fb = fa * (b/a) # fluxline gap width 
+    w = self.arm_width # length of the horisontal segment
+    l1 = 30 # streight down 
+    l2 = 50 # tapering to waveguide port
     
+    # refpoint edge of the cross gap below the arm
+    right_gap = pya.DPolygon([
+      pya.DPoint(-w/2-fa/2, -fa),
+      pya.DPoint(w/2+fa/2+fb, -fa),
+      pya.DPoint(w/2+fa/2+fb, -fa-l1),
+      pya.DPoint(a/2+b, -fa-l1-l2),
+      pya.DPoint(a/2, -fa-l1-l2),
+      pya.DPoint(w/2+fa/2, -fa-l1),
+      pya.DPoint(w/2+fa/2, -fa-fb),
+      pya.DPoint(-w/2-fa/2, -fa-fb)
+    ])
+    left_gap = pya.DPolygon([
+      pya.DPoint(-w/2-fa/2, -2*fa-fb),
+      pya.DPoint(w/2-fa/2, -2*fa-fb),
+      pya.DPoint(w/2-fa/2, -fa-l1),
+      pya.DPoint(-a/2, -fa-l1-l2),
+      pya.DPoint(-a/2-b, -fa-l1-l2),
+      pya.DPoint(w/2-fa/2-fb, -fa-l1),
+      pya.DPoint(w/2-fa/2-fb, -2*fa-2*fb),
+      pya.DPoint(-w/2-fa/2, -2*fa-2*fb)
+    ])
+    
+    # transfer to swiss cross cordinates
+    shift_up = -self.arm_length - self.gap_width
+    transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
+    
+    self.cell.shapes(self.layout.layer(self.lo)).insert(right_gap.transformed(transf))
+    self.cell.shapes(self.layout.layer(self.lo)).insert(left_gap.transformed(transf))
+    
+    # protection    
+    protection = pya.DBox(-w/2-self.gap_width-self.margin, -self.margin, w/2+self.gap_width+self.margin, -fa-l1-l2)
+    self.cell.shapes(self.layout.layer(self.lp)).insert(protection.transformed(transf))
+      
+    # add ref point
+    port_ref = pya.DPoint(0, -fa-l1-l2)
+    self.refpoints["flux_port"] = transf.trans(port_ref)
+    
+    
+  def produce_chargeline(self):
+    # shorthands
+    g = self.gap_width # fluxline gap width 
+    w = self.arm_width # length of the horisontal segment
+    l = self.arm_length # swissmon arm length from the center of the cross (refpoint)
+    a = self.a # cpw center conductor width
+    b = self.b # cpw gap width
+      
+    # add ref point
+    port_ref = pya.DPoint(-w/2-g-b-a/2, -3*g-l)
+    self.refpoints["drive_port"] = port_ref
+  
   def produce_coupler(self, cpl_nr):
     # shortscript
-    a=self.a
-    w=float(self.cpl_width[cpl_nr])
-    l=float(self.cpl_length[cpl_nr])
-    g=float(self.cpl_gap[cpl_nr])/2
+    a = self.a
     b = self.b 
+    w = float(self.cpl_width[cpl_nr])
+    l = float(self.cpl_length[cpl_nr])
+    g = float(self.cpl_gap[cpl_nr])/2
     
     # Location for connecting the waveguides to 
     port_shape = pya.DBox(-a/2, 0, a/2, b)    
@@ -107,8 +169,11 @@ class Swissmon(KQCirvuitPCell):
     self.refpoints["cplr_port{}".format(cpl_nr)] = (rotation*transf).trans(port_ref)
 
   def produce_cross_and_squid(self):
-    w=self.arm_width/2
-    l=self.arm_length
+    # shorthand
+    w = self.arm_width/2
+    l = self.arm_length
+    
+    # refpoint in the center of the swiss cross
     cross_points = [
       pya.DPoint(w, w),
       pya.DPoint(l, w),
@@ -124,7 +189,7 @@ class Swissmon(KQCirvuitPCell):
       pya.DPoint(w, l),
     ] 
     
-    s=self.gap_width
+    s = self.gap_width
     f = float(self.gap_width+self.arm_width/2)/self.arm_width/2
     cross = pya.DPolygon([
               p+pya.DVector(math.copysign(s, p.x),math.copysign(s, p.y)) for p in cross_points
@@ -155,6 +220,11 @@ class Swissmon(KQCirvuitPCell):
   def produce_impl(self):
     
     self.produce_cross_and_squid()
+        
+    self.produce_chargeline() # refpoint only ATM
+    
+    if self.fluxline:
+      self.produce_fluxline()
     
     for i in range(3):
       self.produce_coupler(i)
