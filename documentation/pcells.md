@@ -4,6 +4,7 @@ Launcher for connecting wirebonds. Deafault wirebond direction to west, waveguid
 **Parameters:**
 - **Taper length** - from waveguide port to the rectangular part of the launcher pad.
 - **Launcher width** - also used for the length of the launcher pad.
+- **Launcher width** - text printed on the annotation layer.
 
 **Origin:** Waveguide port  
 
