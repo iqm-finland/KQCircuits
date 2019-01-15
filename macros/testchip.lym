@@ -61,7 +61,7 @@ def standard_layers():
   global layout_view
   l = {}
   for name, layer in default_layers.items():
-    print(name,type(layer))
+    #print(name,type(layer))
     l[name] = layout.layer(layer)    
     
   layout_view.add_missing_layers()
@@ -71,5 +71,5 @@ standard_layers()
 layout_view.add_missing_layers()
 layout_view.zoom_fit()
 layout_view.max_hier()
-print(sys.version)</text>
+#print(sys.version)</text>
 </klayout-macro>

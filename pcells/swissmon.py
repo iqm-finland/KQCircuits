@@ -12,7 +12,6 @@ class Swissmon(KQCirvuitPCell):
 
   def __init__(self):
     super().__init__()    
-    print("Swissmon generated")
     self.param("le1", self.TypeLayer, "Layer electron beam 1", 
       default = default_layers["Electron beam lit. 1"])      
     self.param("le2", self.TypeLayer, "Layer electron beam 2", 
@@ -160,7 +159,6 @@ class Swissmon(KQCirvuitPCell):
     for i in range(3):
       self.produce_coupler(i)
       
-    print("Swissmon created")
     self.cell.refpoints = self.refpoints
     # adds annotation based on refpoints calculated above
     super().produce_impl()

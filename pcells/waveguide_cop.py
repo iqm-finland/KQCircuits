@@ -212,7 +212,7 @@ class WaveguideCop(KQCirvuitPCell):
     segment_end = points[-1]
     l = segment_start.distance(segment_end)
     angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
-    print("Reloaded 2")
+
     subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
       "a": self.a,
       "b": self.b,

@@ -45,13 +45,7 @@ class MeanderCenter(KQCirvuitPCell):
       points.append(pya.DPoint(l_rest/2 + (i+1)*2*self.r, ((-1)**(i%2))*l_single_meander))    
     points.append(pya.DPoint(l_direct-l_rest/2,0))
     points.append(pya.DPoint(l_direct,0))
-    
-    for point in points:
-      print(type(point), point)
-      #self.cell.shapes(self.layout.layer(9,0)).insert(pya.DText("meander",point.x,point.y))
-      
-    #self.cell.shapes(self.layout.layer(9,0)).insert(pya.DPath(points,1.))
-    
+        
     waveguide = self.layout.create_cell("Waveguide", "KQCircuit", {
       "path": pya.DPath(points,1.)
     })

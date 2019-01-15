@@ -6,7 +6,6 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
   def __init__(self):
     # Important: initialize the super class
     super().__init__()
-    print("Calling")
     # declare the parameters
     self.param("lo", self.TypeLayer, "Layer optical", 
       default = default_layers["Optical lit. 1"])
