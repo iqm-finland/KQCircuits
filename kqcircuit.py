@@ -7,7 +7,7 @@ from kqcircuit.pcells.meander import MeanderCenter
 from kqcircuit.pcells.swissmon import Swissmon
 from kqcircuit.pcells.launcher import Launcher
 from kqcircuit.pcells.chips.chip_base import ChipBase
-from kqcircuit.pcells.chips.test import TestChip
+from kqcircuit.pcells.chips.demo import DemoChip
 import kqcircuit.defaults 
 
 
@@ -21,7 +21,7 @@ reload(sys.modules[WaveguideCop.__module__])
 reload(sys.modules[WaveguideCopCurve.__module__])
 reload(sys.modules[ChipBase.__module__])
 reload(sys.modules[Launcher.__module__])
-reload(sys.modules[TestChip.__module__])
+reload(sys.modules[DemoChip.__module__])
 reload(sys.modules[MeanderCenter.__module__])
 
 
@@ -72,7 +72,8 @@ class KQChipLibrary(pya.Library):
     self.description = "Implementation of chips using KQCircuits."
 
     # Create the PCell declarations
-    self.layout().register_pcell("Test", TestChip())
+    self.layout().register_pcell("Demo", DemoChip())
+    self.layout().register_pcell("Base", ChipBase())
 
     self.register("KQChip")
 

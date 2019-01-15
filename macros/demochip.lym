@@ -37,20 +37,8 @@ else:
 # Delete all cells 
 layout_view.clear_layers()
 
-import sys
-import kqcircuit.kqcircuit
-import kqcircuit.pcells.meander
-import kqcircuit.pcells.launcher
-from importlib import reload
-reload(kqcircuit.pcells.meander)
-reload(kqcircuit.pcells.launcher)
-reload(kqcircuit.pcells.launcher)
-reload(kqcircuit)
-reload(kqcircuit)
-kqcircuit.kqcircuit.KQCircuitLibrary()
-
 # Top cell
-cell = layout.create_cell("Test", "KQChip", {}) # A new cell into the layout
+cell = layout.create_cell("Demo", "KQChip", {}) # A new cell into the layout
 cell_view.cell_name=cell.name     # Shows the new cell
 
 # Populate layers
