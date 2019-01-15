@@ -1,5 +1,6 @@
 KLayout macros for microwave circuits.
 
+![demolayout](documentation/images/demochip.png)
 # Installation of KQCircuit
 
 ## Recuirements
