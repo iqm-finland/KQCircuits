@@ -53,7 +53,7 @@ class Swissmon(KQCirvuitPCell):
     b = self.b 
     
     # Location for connecting the waveguides to 
-    port_shape = pya.DBox(-a, 0, a, b)    
+    port_shape = pya.DBox(-a/2, 0, a/2, b)    
     port_region = pya.Region([port_shape.to_itype(self.layout.dbu)])
 
     if (l>0):
@@ -77,7 +77,7 @@ class Swissmon(KQCirvuitPCell):
           
       # convert to range and recover CPW port
       shoe_region = pya.Region([shoe.to_itype(self.layout.dbu)])
-      shoe_region.round_corners(self.corner_r, self.corner_r, self.n) 
+      shoe_region.round_corners(self.corner_r/self.layout.dbu, self.corner_r/self.layout.dbu, self.n) 
       shoe_region2 = shoe_region - port_region
     
     # move to the north arm of swiss cross
