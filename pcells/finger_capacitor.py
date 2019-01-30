@@ -82,10 +82,10 @@ class FingerCapacitor(KQCirvuitPCell):
     
     
     region_taper_right_small = pya.Region([pya.DPolygon([    
-      pya.DPoint( (l+g)/2+self.corner_r, (W/2-a/2)*(t-self.corner_r)/t+a/2),
+      pya.DPoint( (l+g)/2+self.corner_r, (W/2-a/2)*(t-2*self.corner_r)/t+a/2),
       pya.DPoint( (l+g)/2+t, a/2),
       pya.DPoint( (l+g)/2+t,-a/2),
-      pya.DPoint( (l+g)/2+self.corner_r,-(W/2-a/2)*(t-self.corner_r)/t-a/2)  
+      pya.DPoint( (l+g)/2+self.corner_r,-(W/2-a/2)*(t-2*self.corner_r)/t-a/2)  
     ]).to_itype(self.layout.dbu)])
     region_taper_left_small = region_taper_right_small.transformed(pya.Trans().M90)    
     
@@ -94,7 +94,7 @@ class FingerCapacitor(KQCirvuitPCell):
     self.cell.shapes(self.layout.layer(self.lo)).insert(region)
     
     # protection
-    region_protection = region_ground.size(self.margin, 2)
+    region_protection = region_ground.size(0, self.margin/self.layout.dbu, 2)
     self.cell.shapes(self.layout.layer(self.lp)).insert(region_protection)
     
     # ports
