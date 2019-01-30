@@ -2,6 +2,16 @@ import pya
 from kqcircuit.defaults import default_layers
 from kqcircuit.defaults import default_circuit_params
 
+
+
+def get_refpoints(layer, cell, cell_transf = pya.DTrans()):
+  refpoints = {}
+  for shape in cell.shapes(layer).each():
+    if shape.type()==pya.Shape.TText:
+      refpoints[shape.text_string] = cell_transf.trans(pya.DPoint(shape.text_dpos))
+    
+  return refpoints
+  
 class KQCirvuitPCell(pya.PCellDeclarationHelper):
   def __init__(self):
     # Important: initialize the super class
@@ -40,9 +50,4 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
 
 
   def get_refpoints(self, cell, cell_transf = pya.DTrans()):
-    refpoints = {}
-    for shape in cell.shapes(self.layout.layer(default_layers["Annotations"])).each():
-      if shape.type()==pya.Shape.TText:
-        refpoints[shape.text_string] = cell_transf.trans(pya.DPoint(shape.text_dpos))
-      
-    return refpoints
+    get_refpoints(self.layout.layer(default_layers["Annotations"]), cell, cell_transf = pya.DTrans())
