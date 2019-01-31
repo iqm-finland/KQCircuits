@@ -18,6 +18,13 @@
 import numpy
 from kqcircuit.defaults import default_layers
 from kqcircuit.pcells.kqcircuit_pcell import get_refpoints
+import kqcircuit.sonnet.parser as sonnet
+import pprint
+
+
+from importlib import reload
+reload(sonnet)
+
 
 # Create the layout
 app = pya.Application.instance()
@@ -53,49 +60,67 @@ def standard_layers():
  
 standard_layers()
 
-simualtion_safety = 300
+
+def prep_polygons(cell, simualtion_safety = 300):
+  global layout  
+  
+  # Capacitor kappa
+  cap = layout.create_cell("FingerCap", "KQCircuit", {
+    "finger_number": fingers,
+    "finger_length": length
+  })    
+  #cap_inst = cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+  #cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap, cap_inst.dtrans)  
+
+  bbox = cap.dbbox().enlarge(0,simualtion_safety)
+  bbox_top = bbox.enlarged(simualtion_safety,0)
+  bbox_bottom = bbox.enlarged(simualtion_safety,0)
+  bbox_top.p1 =  pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2+cap.pcell_parameter("b") )
+  bbox_bottom.p2 = pya.DPoint(bbox_bottom.p2.x, -cap.pcell_parameter("a")/2-cap.pcell_parameter("b") )
+  
+  region_pos = pya.Region(bbox.to_itype(layout.dbu))
+  region_pos += pya.Region(bbox_top.to_itype(layout.dbu))+pya.Region(bbox_bottom.to_itype(layout.dbu))
+  region_neg = pya.Region(cap.shapes(layout.layer(default_layers["Optical lit. 1"])))
+  region = region_pos - region_neg 
+      
+  cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(region)
+
+
+  feedline_l = pya.DBox(
+    pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2 ),
+    pya.DPoint(    bbox.p1.x, -cap.pcell_parameter("a")/2 ),
+    )
+  feedline_l_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_l)
+  feedline_l_shape.set_property('sonnet_port_nr', 1)
+  feedline_l_shape.set_property('sonnet_port_edge', 4)
+  feedline_r = pya.DBox(
+    pya.DPoint(    bbox.p2.x, cap.pcell_parameter("a")/2 ),
+    pya.DPoint(bbox_top.p2.x, -cap.pcell_parameter("a")/2 ),
+    )
+  feedline_r_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_r)
+  feedline_r_shape.set_property('sonnet_port_nr', 2)
+  feedline_r_shape.set_property('sonnet_port_edge', 2)
+
+#sonnet_format = {}
+#sonnet_format["poly_head"] = "{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} {edge mesh}"
 
 
 for fingers in range(3, 15, 2):
   for length in range(0, 150, 20):
+    simualtion_safety = 300
     cell = layout.create_cell("sim finger {}x{}".format(fingers, length)) # A new cell into the layout
-    
-    # Capacitor kappa
-    cap = layout.create_cell("FingerCap", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": length
-    })    
-    #cap_inst = cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-    #cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap, cap_inst.dtrans)  
-
-    bbox = cap.dbbox().enlarge(0,simualtion_safety)
-    bbox_top = bbox.enlarged(simualtion_safety,0)
-    bbox_bottom = bbox.enlarged(simualtion_safety,0)
-    bbox_top.p1 =  pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2+cap.pcell_parameter("b") )
-    bbox_bottom.p2 = pya.DPoint(bbox_bottom.p2.x, -cap.pcell_parameter("a")/2-cap.pcell_parameter("b") )
-    
-    region_pos = pya.Region(bbox.to_itype(layout.dbu))
-    region_pos += pya.Region(bbox_top.to_itype(layout.dbu))+pya.Region(bbox_bottom.to_itype(layout.dbu))
-    region_neg = pya.Region(cap.shapes(layout.layer(default_layers["Optical lit. 1"])))
-    region = region_pos - region_neg 
-        
-    cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(region)
+    prep_polygons(cell, simualtion_safety)
+    sonnet_strings = {
+      "polygons": sonnet.polygons(cell.shapes(layout.layer(default_layers["Optical lit. 1"]))),
+      "box": sonnet.box(cell),
+      "ports": sonnet.ports(cell.shapes(layout.layer(default_layers["Optical lit. 1"]))),
+      "refpalnes": sonnet.refplanes(["LEFT","RIGHT"], simualtion_safety),
+    }
+    pprint.pprint(sonnet_strings)
+    break
+  break
 
 
-    feedline_l = pya.DBox(
-      pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2 ),
-      pya.DPoint(    bbox.p1.x, -cap.pcell_parameter("a")/2 ),
-      )
-    feedline_l_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_l)
-    feedline_l_shape.set_property('sonnet_port_nr', 1)
-    feedline_l_shape.set_property('sonnet_port_edge', 4)
-    feedline_r = pya.DBox(
-      pya.DPoint(    bbox.p2.x, cap.pcell_parameter("a")/2 ),
-      pya.DPoint(bbox_top.p2.x, -cap.pcell_parameter("a")/2 ),
-      )
-    feedline_r_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_r)
-    feedline_r_shape.set_property('sonnet_port_nr', 2)
-    feedline_r_shape.set_property('sonnet_port_edge', 2)
     
 
 layout_view.add_missing_layers()
