@@ -65,14 +65,19 @@ def prep_polygons(cell, simualtion_safety = 300):
   global layout  
   
   # Capacitor kappa
-  cap = layout.create_cell("FingerCap", "KQCircuit", {
+  cap = layout.create_cell("FingerCapS", "KQCircuit", {
     "finger_number": fingers,
-    "finger_length": length
+    "finger_length": length,
+    "finger_gap": 5,
+    "finger_width": 15,
+    "ground_padding": 10
+#    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
   })    
   #cap_inst = cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-  #cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap, cap_inst.dtrans)  
-
-  bbox = cap.dbbox().enlarge(0,simualtion_safety)
+  cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap)  
+  
+  bbox_temp = cap.dbbox_per_layer(layout.layer(default_layers["Optical lit. 1"]))
+  bbox = bbox_temp.enlarge(0,simualtion_safety + (bbox_temp.height() % 2)/2 ) # also esnure summetry for 1 um grid
   bbox_top = bbox.enlarged(simualtion_safety,0)
   bbox_bottom = bbox.enlarged(simualtion_safety,0)
   bbox_top.p1 =  pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2+cap.pcell_parameter("b") )
@@ -87,15 +92,15 @@ def prep_polygons(cell, simualtion_safety = 300):
 
 
   feedline_l = pya.DBox(
-    pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2 ),
-    pya.DPoint(    bbox.p1.x, -cap.pcell_parameter("a")/2 ),
+    pya.DPoint(bbox_top.p1.x,                  cap.pcell_parameter("a")/2 ),
+    pya.DPoint(cap_refpoints_abs['port_a'].x, -cap.pcell_parameter("a")/2 ),
     )
   feedline_l_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_l)
   feedline_l_shape.set_property('sonnet_port_nr', 1)
-  feedline_l_shape.set_property('sonnet_port_edge', 4)
+  feedline_l_shape.set_property('sonnet_port_edge', 0)
   feedline_r = pya.DBox(
-    pya.DPoint(    bbox.p2.x, cap.pcell_parameter("a")/2 ),
-    pya.DPoint(bbox_top.p2.x, -cap.pcell_parameter("a")/2 ),
+    pya.DPoint(cap_refpoints_abs['port_b'].x,  cap.pcell_parameter("a")/2 ),
+    pya.DPoint(bbox_top.p2.x,                 -cap.pcell_parameter("a")/2 ),
     )
   feedline_r_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_r)
   feedline_r_shape.set_property('sonnet_port_nr', 2)
@@ -104,24 +109,39 @@ def prep_polygons(cell, simualtion_safety = 300):
 #sonnet_format = {}
 #sonnet_format["poly_head"] = "{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} {edge mesh}"
 
+import os.path
 
-for fingers in range(3, 15, 2):
-  for length in range(0, 150, 20):
+batchstring = ""
+
+for fingers in [6]:
+  for length in range(0,201,10):
     simualtion_safety = 300
-    cell = layout.create_cell("sim finger {}x{}".format(fingers, length)) # A new cell into the layout
+    name = "sim finger {}x{}".format(fingers, length)
+    cell = layout.create_cell(name) # A new cell into the layout
     prep_polygons(cell, simualtion_safety)
     sonnet_strings = {
-      "polygons": sonnet.polygons(cell.shapes(layout.layer(default_layers["Optical lit. 1"]))),
-      "box": sonnet.box(cell),
+      "polygons": sonnet.polygons(cell.shapes(layout.layer(default_layers["Optical lit. 1"])), cell.dbbox().p1*(-1)),
+      "box": sonnet.box_from_cell(cell, 1),
       "ports": sonnet.ports(cell.shapes(layout.layer(default_layers["Optical lit. 1"]))),
       "refpalnes": sonnet.refplanes(["LEFT","RIGHT"], simualtion_safety),
+      "symmetry": sonnet.symmetry(False),
+      "control": sonnet.control("ABS")
     }
-    pprint.pprint(sonnet_strings)
-    break
-  break
-
-
+    #pprint.pprint(sonnet_strings)
     
+    # outputfiles into working directory
+    filename = name+".son"
+    sonnet.apply_template(
+      os.path.join(os.path.dirname(os.path.abspath(sonnet.__file__)), "template.son"), 
+      filename,
+      sonnet_strings      
+      )
+    batchstring += "\"./{}\"\n".format(filename)
+
+file = open("batch.txt","a") 
+file.write(batchstring) 
+file.close() 
+   
 
 layout_view.add_missing_layers()
 layout_view.zoom_fit()

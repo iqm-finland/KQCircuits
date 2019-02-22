@@ -1,5 +1,15 @@
 import pya
+from string import Template
 
+def apply_template(filename_template, filename_output, rules):
+  filein = open(filename_template)
+  src = Template( filein.read() )
+  filein.close()
+  results = src.substitute(rules)
+  fileout = open(filename_output, "w")
+  fileout.write(results)
+  fileout.close()  
+  
 def polygon_head(
       nvertices,# number of vertices of the polygon
       debugid, # unique number for sonnet internal debugging 
@@ -17,41 +27,58 @@ def polygon_head(
   
   return "{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} {edge_mesh}\n".format(**locals())
 
-def box(cell: pya.Cell, cell_size):
+def symmetry(sym: bool = False):
+  sonnet_str = ""
+  if (sym):
+    sonnet_str = "SYM"
+  return sonnet_str
+
+def box_from_cell(cell: pya.Cell, cell_size : float):
   bbox = cell.dbbox()  
-  
+  print("box of cell")
   return box(
-    xwidth = bbox.width,
-    ywidth = bbox.height,
-    xcells = int(bbox.width/cells_size),
+    xwidth = bbox.width(),
+    ywidth = bbox.height(),
+    xcells = int(bbox.width()/cell_size),
+    ycells = int(bbox.height()/cell_size),
   )
 
 def box(
-      nlev : int = 1, # number of sonnet levels
       xwidth : float = 8000.,
       ywidth : float = 8000.,
       xcells : int = 8000,
-      ycells : int = 8000
+      ycells : int = 8000,
+      materials_type : str = "SiOx+Si"
     ):
 
   xcells2 = 2*xcells
   ycells2 = 2*ycells
-  nsubs = 20, # placeholder for depricated parameter
-  eeff = 0, # placeholder for depricated parameter
+  nsubs = 20 # placeholder for depricated parameter
+  eeff = 0 # placeholder for depricated parameter
   
-  return "BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (intrinsic)\"".format(**locals())
-
+  materials = {
+    "Si": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (intrinsic)\"",
+    "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
+  }[materials_type]
+  
+  nlev = {
+    "Si": 1,
+    "SiOx+Si": 2
+  }[materials_type]
+  
+  return "BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n{materials}".format(**locals())
+  
 def refplane(
     position : str, # "LEFT" | "RIGHT" | "TOP" | "BOTTOM",
     length : int = 0
   ):
-  return "DRP1 {position} FIX {length}".format(**locals())
+  return "DRP1 {position} FIX {length}\n".format(**locals())
   
   
 def refplanes(postitions, length):  
   sonnet_str = ""
   for side in postitions:
-    sonnet_str = refplane(side, length)
+    sonnet_str += refplane(side, length)
   return sonnet_str 
 
   
@@ -63,7 +90,7 @@ def port(
     xcord = 0,
     ycord = 0
   ):
-  return "POR1 {port_type}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} 50 0 0 0".format(**locals()) # {xcord} {ycord} [reftype rpcallen]
+  return "POR1 {port_type}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} 50 0 0 0\n".format(**locals()) # {xcord} {ycord} [reftype rpcallen]
 
 def ports(shapes):
   sonnet_str = ""
@@ -75,22 +102,28 @@ def ports(shapes):
       polygons += 1
       ivertex = shape.property("sonnet_port_edge")
       portnum = shape.property("sonnet_port_nr")
-      if ivertex and portnum:
-        sonnet_str += port(ipolygon=polygons, portnum=portnum, ivertex=ivertex)
+      if ivertex!=None and portnum!=None:
+        sonnet_str += port(ipolygon=polygons-1, portnum=portnum, ivertex=ivertex)
   
   return sonnet_str
 
+def control(control_type):
+  return {
+  "Simple": "SIMPLE", # Linear frequency sweep
+  "ABS": "ABS" # Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates the rest
+  }[control_type]
 
-def polygons(shapes, dbu=1):
+
+def polygons(shapes, v):
   
   reg = pya.Region(shapes)
+  #bbox = reg.bbox()
   
-  
-  # v = pya.Vector(-bbox.p1.x, -bbox.p1.y) # TODO
+  #v = pya.Vector(-bbox.p1.x, -bbox.p1.y) # TODO
   
   #cell.shapes(0).insert(reg)
   
-  sonnet_str = 'NUM {}\n'.format(len([p for p in reg.each()]))
+  sonnet_str = 'NUM {}\n'.format(reg.size())
   for i, shape in enumerate(shapes.each()):
     if shape.is_polygon:
       poly = shape.dpolygon
@@ -98,8 +131,8 @@ def polygons(shapes, dbu=1):
         raise NotImplementedError    
       sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i)
       for j, point in enumerate(poly.each_point_hull()):
-        sonnet_str += "{} {}\n".format(point.x, point.y)
+        sonnet_str += "{} {}\n".format(point.x+v.x, point.y+v.y)
       point = next(poly.each_point_hull()) # first point again to close the polygon
-      sonnet_str += "{} {}\n".format(point.x, point.y)
+      sonnet_str += "{} {}\nEND\n".format(point.x+v.x, point.y+v.y)
     
   return sonnet_str

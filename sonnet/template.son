@@ -18,11 +18,12 @@ CAP FF
 RES OH
 END DIM
 FREQ
-SIMPLE 1.0 5.0 1.0
-SWEEP 1.0 5.0 1.0
+SIMPLE 1.0 20.0 1.0
+ABS 1.0 20.0 
+SWEEP 1.0 20.0 1.0
 END FREQ
 CONTROL
-SIMPLE
+$control
 OPTIONS  -dj 
 SPEED 0
 CACHE_ABS 1
@@ -30,16 +31,14 @@ TARG_ABS 300
 Q_ACC N
 END CONTROL
 GEO
-SYM
-{refpalnes}
+$symmetry
+$refpalnes
 TMET "Lossless" 0 SUP 0 0 0 0
 BMET "Lossless" 0 SUP 0 0 0 0
-{box}
-VALVAR thickness LNG 0.01 "Layer Thickness"
-VALVAR g LNG 10 "gap size"
+$box
 LORGN 0 0 U 
-{ports}
-{polygons}
+$ports
+$polygons
 END GEO
 OPT
 MAX 100
@@ -48,6 +47,11 @@ END
 END OPT
 VARSWP
 END VARSWP
+FILEOUT
+TS D Y $$BASENAME-y.s2p IC 15 Y RI R 50.00000
+TS D Y $$BASENAME-s.s2p IC 15 S RI R 50.00000
+TS D Y $$BASENAME-z.s2p IC 15 Z RI R 50.00000
+END FILEOUT
 QSG
 IMPORT NO
 EXTRA_METAL NO
