@@ -25,42 +25,37 @@ import pprint
 from importlib import reload
 reload(sonnet)
 
+import kqcircuit.macro_prepare as macroprep
 
-# Create the layout
-app = pya.Application.instance()
-mw = app.main_window()
-layout_view = mw.current_view()
+macroprep.prep_empty_layout()
 
-# Do we have a view?
-if layout_view == None:
-  # Create a new view
-  cell_view = mw.create_layout(1)
-  layout = cell_view.layout()
-  layout_view = mw.current_view()
-else:
-  # Use an active view
-  cell_view = pya.CellView.active()
-  layout = cell_view.layout()
-
-# Delete all cells 
-layout_view.clear_layers()
-
-# Populate layers
-def standard_layers():
-  global default_layers
-  global layout
-  global l
-  global layout_view
-  l = {}
-  for name, layer in default_layers.items():
-    #print(name,type(layer))
-    l[name] = layout.layer(layer)    
+def produce_simulation_cell(cell):
+  global layout  
+  
+  # Capacitor kappa
+  if (fingers == 0):
+    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+      "finger_number": fingers,
+      "finger_length": length,
+      "finger_gap": 5,
+      "finger_width": 0,
+      "ground_padding": 6,
+      "corner_r": 0
+    #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
+    })    
+  else:
+    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+      "finger_number": fingers,
+      "finger_length": length,
+      "finger_gap": 5,
+      "finger_width": 15,
+      "ground_padding": 10
+  #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
+    })  
     
-  layout_view.add_missing_layers()
- 
-standard_layers()
-
-
+  cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
+  
+    
 def prep_polygons(cell, simualtion_safety = 300):
   global layout  
   
@@ -125,17 +120,15 @@ import os.path
 
 batchstring = ""
 
-for fingers in [0,2]:
+for fingers in [4,8]:
   for length in range(0,201,10):
     simualtion_safety = 300
     name = "sim finger {}x{}".format(fingers, length)
+    
     cell = layout.create_cell(name) # A new cell into the layout
-    prep_polygons(cell, simualtion_safety)
+    produce_simulation_cell(cell)
+    
     sonnet_strings = {
-      "polygons": sonnet.polygons(cell.shapes(layout.layer(default_layers["Optical lit. 1"])), cell.dbbox().p1*(-1)),
-      "box": sonnet.box_from_cell(cell, 1),
-      "ports": sonnet.ports(cell.shapes(layout.layer(default_layers["Optical lit. 1"]))),
-      "refpalnes": sonnet.refplanes(["LEFT","RIGHT"], simualtion_safety),
       "symmetry": sonnet.symmetry(False),
       "control": sonnet.control("ABS")
     }
