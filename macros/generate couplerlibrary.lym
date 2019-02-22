@@ -65,14 +65,26 @@ def prep_polygons(cell, simualtion_safety = 300):
   global layout  
   
   # Capacitor kappa
-  cap = layout.create_cell("FingerCapS", "KQCircuit", {
-    "finger_number": fingers,
-    "finger_length": length,
-    "finger_gap": 5,
-    "finger_width": 15,
-    "ground_padding": 10
-#    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
-  })    
+  if (fingers == 0):
+    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+      "finger_number": fingers,
+      "finger_length": length,
+      "finger_gap": 5,
+      "finger_width": 0,
+      "ground_padding": 6,
+      "corner_r": 0
+    #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
+    })    
+  else:
+    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+      "finger_number": fingers,
+      "finger_length": length,
+      "finger_gap": 5,
+      "finger_width": 15,
+      "ground_padding": 10
+  #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
+    })    
+    
   #cap_inst = cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans(pya.DVector(0, 0))))
   cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap)  
   
@@ -113,7 +125,7 @@ import os.path
 
 batchstring = ""
 
-for fingers in [6]:
+for fingers in [0,2]:
   for length in range(0,201,10):
     simualtion_safety = 300
     name = "sim finger {}x{}".format(fingers, length)
@@ -138,7 +150,7 @@ for fingers in [6]:
       )
     batchstring += "\"./{}\"\n".format(filename)
 
-file = open("batch.txt","a") 
+file = open("batch.txt","w") 
 file.write(batchstring) 
 file.close() 
    

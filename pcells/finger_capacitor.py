@@ -144,7 +144,7 @@ class FingerCapacitorSquare(KQCirvuitPCell):
     l = self.finger_length
     g = self.finger_gap
     p = self.ground_padding
-    W = float(n)*(w+g)-g # total width
+    W = max(float(n)*(w+g)-g, self.a) # total width
     a = self.a
     b = self.b
     
