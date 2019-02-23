@@ -3,13 +3,14 @@ import pya
 # human readable dictionary
 # layer name as key, tuple of layer and tech as value
 default_layers_dict = {
-  "Optical lit. 1": (2,0),
-  "Grid": (4,0),
-  "Unetch 1": (5,0),
-  "Electron beam lit. 1": (7,0),
-  "Electron beam lit. 2": (8,0),
-  "Annotations": (9,0),   
-  "Grid avoidance": (11,0),
+  "Optical lit. 1": (2, 0),
+  "Grid": (4, 0),
+  "Unetch 1": (5, 0),
+  "Electron beam lit. 1": (7, 0),
+  "Electron beam lit. 2": (8, 0),
+  "Annotations": (9, 0),   
+  "Grid avoidance": (11, 0),
+  "Sonnet export": (12, 0),
 }
 
 

@@ -20,14 +20,20 @@ from kqcircuit.defaults import default_layers
 from kqcircuit.pcells.kqcircuit_pcell import get_refpoints
 import kqcircuit.sonnet.parser as sonnet
 import pprint
+import kqcircuit.sonnet.simgeom as simgeom 
+import kqcircuit.macro_prepare as macroprep
 
 
 from importlib import reload
 reload(sonnet)
+reload(simgeom)
+reload(kqcircuit.defaults)
+reload(macroprep)
 
-import kqcircuit.macro_prepare as macroprep
+pprint.pprint(default_layers)
 
-macroprep.prep_empty_layout()
+
+layout = macroprep.prep_empty_layout()
 
 def produce_simulation_cell(cell):
   global layout  
@@ -53,7 +59,15 @@ def produce_simulation_cell(cell):
   #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
     })  
     
-  cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
+  cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans()))
+  
+  cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap)  
+  
+  ports = []
+  ports.append(simgeom.SidePort(1, cap_refpoints_abs['port_a'], 'l'))
+  ports.append(simgeom.SidePort(2, cap_refpoints_abs['port_b'], 'r'))
+    
+  return ports
   
     
 def prep_polygons(cell, simualtion_safety = 300):
@@ -121,18 +135,22 @@ import os.path
 batchstring = ""
 
 for fingers in [4,8]:
-  for length in range(0,201,10):
-    simualtion_safety = 300
+  for length in range(0,201,10): # microns
+    simualtion_safety = 300 # microns
     name = "sim finger {}x{}".format(fingers, length)
     
     cell = layout.create_cell(name) # A new cell into the layout
-    produce_simulation_cell(cell)
+    ports = produce_simulation_cell(cell)
     
-    sonnet_strings = {
-      "symmetry": sonnet.symmetry(False),
-      "control": sonnet.control("ABS")
-    }
-    #pprint.pprint(sonnet_strings)
+    sonnet_strings = simgeom.add_sonnet_geometry(
+      cell, 
+      simualtion_safety = simualtion_safety, # microns
+      ports = ports,
+      grid_size = 1, # microns
+      symmetry = False # top-bottom symmetry for sonnet 
+    ) 
+    sonnet_strings["control"] = sonnet.control("ABS")
+    pprint.pprint(sonnet_strings)
     
     # outputfiles into working directory
     filename = name+".son"
