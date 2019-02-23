@@ -114,25 +114,16 @@ def control(control_type):
   }[control_type]
 
 
-def polygons(shapes, v):
-  
-  reg = pya.Region(shapes)
-  #bbox = reg.bbox()
-  
-  #v = pya.Vector(-bbox.p1.x, -bbox.p1.y) # TODO
-  
-  #cell.shapes(0).insert(reg)
-  
+def polygons(reg, v, dbu):
+
   sonnet_str = 'NUM {}\n'.format(reg.size())
-  for i, shape in enumerate(shapes.each()):
-    if shape.is_polygon:
-      poly = shape.dpolygon
-      if poly.holes():
-        raise NotImplementedError    
-      sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i)
-      for j, point in enumerate(poly.each_point_hull()):
-        sonnet_str += "{} {}\n".format(point.x+v.x, point.y+v.y)
-      point = next(poly.each_point_hull()) # first point again to close the polygon
-      sonnet_str += "{} {}\nEND\n".format(point.x+v.x, point.y+v.y)
+  for i, poly in enumerate(reg.each()):
+    if poly.holes():
+      raise NotImplementedError    
+    sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i)
+    for j, point in enumerate(poly.each_point_hull()):
+      sonnet_str += "{} {}\n".format(point.x*dbu+v.x, point.y*dbu+v.y)
+    point = next(poly.each_point_hull()) # first point again to close the polygon
+    sonnet_str += "{} {}\nEND\n".format(point.x*dbu+v.x, point.y*dbu+v.y)
     
   return sonnet_str
