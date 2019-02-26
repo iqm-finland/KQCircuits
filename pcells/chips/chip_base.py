@@ -6,6 +6,48 @@ import sys
 from importlib import reload
 reload(sys.modules[KQCirvuitPCell.__module__])
 
+
+def produce_label(cell, label, location, origin, dice_width, margin, layer_optical, layer_protection):
+    layout = cell.layout()
+    dbu = layout.dbu    
+    
+    # text cell
+    subcell = layout.create_cell("TEXT", "Basic", {
+      "layer": layer_optical, 
+      "text": label,
+      "mag": 500.0
+    })
+    
+    # relative placement with margin
+    margin = margin / dbu
+    dice_width = dice_width / dbu
+    trans = pya.DTrans(location + {
+        "bottomleft": pya.Vector(
+          subcell.bbox().p1.x-margin-dice_width, 
+          subcell.bbox().p1.y-margin-dice_width),      
+        "topleft": pya.Vector(
+          subcell.bbox().p1.x-margin-dice_width, 
+          subcell.bbox().p2.y+margin+dice_width),
+        "topright": pya.Vector(
+          subcell.bbox().p2.x+margin+dice_width, 
+          subcell.bbox().p2.y+margin+dice_width),
+        "bottomright": pya.Vector(
+          subcell.bbox().p2.x+margin+dice_width, 
+          subcell.bbox().p1.y-margin-dice_width),
+      }[origin]*dbu*(-1))
+    cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
+    
+    # protection layer with margin
+    protection = pya.DBox(pya.Point(
+          subcell.bbox().p1.x-margin, 
+          subcell.bbox().p1.y-margin)*dbu,
+          pya.Point(
+          subcell.bbox().p2.x+margin, 
+          subcell.bbox().p2.y+margin)*dbu
+        )
+    cell.shapes(layout.layer(layer_protection)).insert(
+      trans.trans(protection))
+      
 def border_points(x_min,x_max,y_min,y_max,w):
   points = [
     pya.DPoint(x_min, y_min),
@@ -35,7 +77,8 @@ class ChipBase(KQCirvuitPCell):
     self.param("name_mask", self.TypeString, "Name of the mask", default = "M99")
     self.param("name_chip", self.TypeString, "Name of the chip", default = "CTest")
     self.param("name_copy", self.TypeString, "Name of the copy", default = "AA")
-    self.text_margin = 100
+    self.param("text_margin", self.TypeDouble, "Margin for labels", default = 100, hidden = True)
+    self.param("dice_grid_margin", self.TypeDouble, "Margin between dicing edge and ground grid", default = 100, hidden = True)
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -62,43 +105,74 @@ class ChipBase(KQCirvuitPCell):
     print("Launcher:",direction,pos)
     transf = pya.DCplxTrans(1, direction, False, pos)    
     self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
-  
+        
   def produce_label(self, label, location, origin):  
-    # text cell
-    subcell = self.layout.create_cell("TEXT", "Basic", {
-      "layer": self.lo, 
-      "text": label,
-      "mag": 500.0
-    })
+    produce_label(self.cell, label, location, origin, self.dice_width, self.text_margin, self.lo, self.lp)
     
-    # relative placement with margin
-    margin = (self.dice_width + self.text_margin)/self.layout.dbu
-    trans = pya.DTrans(location + {
-        "bottomleft": pya.Vector(
-          subcell.bbox().p1.x-margin, 
-          subcell.bbox().p1.y-margin),      
-        "topleft": pya.Vector(
-          subcell.bbox().p1.x-margin, 
-          subcell.bbox().p2.y+margin),
-        "topright": pya.Vector(
-          subcell.bbox().p2.x+margin, 
-          subcell.bbox().p2.y+margin),
-        "bottomright": pya.Vector(
-          subcell.bbox().p2.x+margin, 
-          subcell.bbox().p1.y-margin),
-      }[origin]*self.layout.dbu*(-1))
-    self.cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
+  def produce_marker_sqr(self, trans):
     
-    # protection layer with margin
-    protection = pya.DBox(pya.Point(
-          subcell.bbox().p1.x-margin, 
-          subcell.bbox().p1.y-margin)*self.layout.dbu,
-          pya.Point(
-          subcell.bbox().p2.x+margin, 
-          subcell.bbox().p2.y+margin)*self.layout.dbu
-        )
-    self.cell.shapes(self.layout.layer(self.lp)).insert(
-      trans.trans(protection))
+    corner = pya.DPolygon([
+      pya.DPoint(100,100),
+      pya.DPoint( 10,100),
+      pya.DPoint( 10, 80),
+      pya.DPoint( 80, 80),
+      pya.DPoint( 80, 10),
+      pya.DPoint(100, 10),
+    ])   
+    
+    sqr = pya.DBox(
+      pya.DPoint( 10, 10),
+      pya.DPoint(  2,  2),
+    )
+    
+    lo = self.layout.layer(self.lo)
+    lp = self.layout.layer(self.lp)
+    
+    # center boxes
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1,  0, False, pya.DVector())*sqr))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1, 90, False, pya.DVector())*sqr))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1,180, False, pya.DVector())*sqr))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1,-90, False, pya.DVector())*sqr))
+      
+    # inner corners
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1,  0, False, pya.DVector())*corner))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1, 90, False, pya.DVector())*corner))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1,180, False, pya.DVector())*corner))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(1,-90, False, pya.DVector())*corner))
+            
+    # outer corners
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(2,  0, False, pya.DVector())*corner))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(2, 90, False, pya.DVector())*corner))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(2,180, False, pya.DVector())*corner))
+    self.cell.shapes(lo).insert(
+      trans*(pya.DCplxTrans(2,-90, False, pya.DVector())*corner))
+    
+    # protection for the box
+    protection = pya.DBox(
+                      pya.DPoint( 220, 220),
+                      pya.DPoint(-220,-220)
+                    )   
+    self.cell.shapes(lp).insert(trans*protection)     
+                      
+    # marker diagonal    
+    for i in range(5, 25):
+      self.cell.shapes(lo).insert(
+        trans*(pya.DCplxTrans(3,  0, False, pya.DVector(50*i-3*6, 50*i-3*6))*sqr))
+      self.cell.shapes(lp).insert(
+        trans*(pya.DCplxTrans(20,  0, False, pya.DVector(50*i-20*6, 50*i-20*6))*sqr))
+    
+    
     
   def produce_dicing_edge(self):
     x_min = min(self.box.p1.x, self.box.p2.x)
@@ -116,7 +190,7 @@ class ChipBase(KQCirvuitPCell):
     protection = pya.DPolygon(border_points(
                       x_min,x_max,
                       y_min,y_max,
-                      self.dice_width+self.margin))   
+                      self.dice_width+self.dice_grid_margin))   
     self.cell.shapes(self.layout.layer(self.lp)).insert(protection)                   
 
   def produce_impl(self): 
@@ -128,12 +202,23 @@ class ChipBase(KQCirvuitPCell):
     y_min = min(self.box.p1.y, self.box.p2.y)
     y_max = max(self.box.p1.y, self.box.p2.y)    
     
-    self.produce_label(self.name_mask, 
-                      pya.DPoint(x_min, y_max),"topleft")
-    self.produce_label(self.name_chip, 
-                      pya.DPoint(x_max, y_max),"topright")
-    self.produce_label(self.name_copy, 
-                      pya.DPoint(x_max, y_min),"bottomright")                      
-    self.produce_label("AALTO", 
-                      pya.DPoint(x_min, y_min),"bottomleft")
+    ## Square markers
+    self.produce_marker_sqr(pya.DTrans(x_min+2e3, y_min+2e3)*pya.DTrans.R180)
+    self.produce_marker_sqr(pya.DTrans(x_max-2e3, y_min+2e3)*pya.DTrans.R270)
+    self.produce_marker_sqr(pya.DTrans(x_min+2e3, y_max-2e3)*pya.DTrans.R90)
+    self.produce_marker_sqr(pya.DTrans(x_max-2e3, y_max-2e3)*pya.DTrans.R0)
+        
+    ## Text in the corners        
+    if self.name_mask:
+      self.produce_label(self.name_mask, 
+                      pya.DPoint(x_min, y_max), "topleft")
+    if self.name_chip:
+      self.produce_label(self.name_chip, 
+                      pya.DPoint(x_max, y_max), "topright")
+    if self.name_copy:
+      self.produce_label(self.name_copy, 
+                      pya.DPoint(x_max, y_min), "bottomright")
+    if True:
+      self.produce_label("AALTO", 
+                      pya.DPoint(x_min, y_min), "bottomleft")
     
