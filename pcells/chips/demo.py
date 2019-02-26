@@ -104,7 +104,7 @@ class DemoChip(ChipBase):
     self.cell.insert(pya.DCellInstArray(fluxline.cell_index(), pya.DTrans()))
         
     # Capacitor J
-    capj = self.layout.create_cell("FingerCap", "KQCircuit", {
+    capj = self.layout.create_cell("FingerCapS", "KQCircuit", {
       "finger_number": 2
     })    
     capj_inst = self.cell.insert(pya.DCellInstArray(capj.cell_index(), pya.DTrans(pya.DVector(5400, 7200))))
@@ -112,7 +112,7 @@ class DemoChip(ChipBase):
     print("capj_refpoints_abs",capj_refpoints_abs)
     
     # Capacitor kappa
-    capk = self.layout.create_cell("FingerCap", "KQCircuit", {
+    capk = self.layout.create_cell("FingerCapS", "KQCircuit", {
       "finger_number": 8
     })    
     capk_inst = self.cell.insert(pya.DCellInstArray(capk.cell_index(), pya.DTrans(pya.DVector(7800, 7200))))
