@@ -17,8 +17,8 @@ class SidePort(Port):
     self.side = {
       "l": "LEFT",
       "r": "RIGHT",
-      "t": "TOP", # TODO Check from Sonnet documentation, if the keyword is correct!
-      "b": "BOTTOM", # TODO Check from Sonnet documentation, if the keyword is correct!
+      "t": "TOP",
+      "b": "BOTTOM",
     }[side]
     self.termination = termination # width of the ground plane gap in the end for the transmission line
     self.dbox = None
@@ -75,6 +75,7 @@ def add_sonnet_geometry(
       cell.shapes(layer_son).insert(pya.DText("port {}".format(port.sonnet_nr),pya.DTrans(port.location())))
   region_pos -= region_neg
   simregion = simple_region(region_pos);
+  simpolygons = [ p for p in simregion.each()];
   cell.shapes(layer_son).insert(simregion) 
   
   # find port edges  
@@ -82,31 +83,30 @@ def add_sonnet_geometry(
   sstring_ports = ""
   refplane_dirs = []
   for port in ports:        
-    refplane_dirs += port.side
-    print("Looking for parts 2")
-    sstring_ports += poly_and_edge_indeces(simregion, dbu, port)
+    refplane_dirs.append(port.side)
+    sstring_ports += poly_and_edge_indeces(simpolygons, dbu, port)
   
   return {  
-      "polygons": parser.polygons(simregion, cell.dbbox().p1*(-1), dbu),
+      "polygons": parser.polygons(simpolygons, cell.dbbox().p1*(-1), dbu),
       "box": parser.box_from_cell(cell, 1),
       "ports": sstring_ports,
       "refpalnes": parser.refplanes(refplane_dirs, simualtion_safety),
       "symmetry": parser.symmetry(symmetry),
   }
 
-def poly_and_edge_indeces(region, dbu, port):
+def poly_and_edge_indeces(polygons, dbu, port):
   # port location
   port_loc = port.location()
     
-  print("Looking for parts")
+  print("Looking for ports")
   # port polygon and edge
-  for i, poly in enumerate(region.each()):
+  for i, poly in enumerate(polygons):
     for j, edge in enumerate(poly.each_edge()):
       if edge.to_dtype(dbu).contains(port_loc):
         print(i, j)
         return parser.port(
-          ipolygon = i, 
           portnum = port.sonnet_nr, 
+          ipolygon = i, 
           ivertex = j)
   raise ValueError("No edge found for Sonnet port {}".format(port.sonnet_nr))
   return ""

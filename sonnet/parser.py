@@ -58,7 +58,7 @@ def box(
   
   materials = {
     "Si": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (intrinsic)\"",
-    "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
+    "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
   }[materials_type]
   
   nlev = {
@@ -80,7 +80,6 @@ def refplanes(postitions, length):
   for side in postitions:
     sonnet_str += refplane(side, length)
   return sonnet_str 
-
   
 def port(
     portnum,
@@ -90,22 +89,23 @@ def port(
     xcord = 0,
     ycord = 0
   ):
+  print(locals())
   return "POR1 {port_type}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} 50 0 0 0\n".format(**locals()) # {xcord} {ycord} [reftype rpcallen]
 
-def ports(shapes):
-  sonnet_str = ""
-  polygons = 0
-  
-  # FIXME Maybe the shapes will not have the same indexes as polygons in the region!
-  for shape in shapes.each():
-    if shape:
-      polygons += 1
-      ivertex = shape.property("sonnet_port_edge")
-      portnum = shape.property("sonnet_port_nr")
-      if ivertex!=None and portnum!=None:
-        sonnet_str += port(ipolygon=polygons-1, portnum=portnum, ivertex=ivertex)
-  
-  return sonnet_str
+#def ports(shapes):
+#  sonnet_str = ""
+#  polygons = 0
+#  
+#  # FIXME Maybe the shapes will not have the same indexes as polygons in the region!
+#  for shape in shapes.each():
+#    if shape:
+#      polygons += 1
+#      ivertex = shape.property("sonnet_port_edge")
+#      portnum = shape.property("sonnet_port_nr")
+#      if ivertex!=None and portnum!=None:
+#        sonnet_str += port(ipolygon=polygons-1, portnum=portnum, ivertex=ivertex)
+#  
+#  return sonnet_str
 
 def control(control_type):
   return {
@@ -114,10 +114,10 @@ def control(control_type):
   }[control_type]
 
 
-def polygons(reg, v, dbu):
+def polygons(polygons, v, dbu):
 
-  sonnet_str = 'NUM {}\n'.format(reg.size())
-  for i, poly in enumerate(reg.each()):
+  sonnet_str = 'NUM {}\n'.format(len(polygons))
+  for i, poly in enumerate(polygons):
     if poly.holes():
       raise NotImplementedError    
     sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i)
