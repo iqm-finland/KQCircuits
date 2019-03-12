@@ -20,13 +20,14 @@ class Swissmon(KQCirvuitPCell):
     self.param("len_finger", self.TypeDouble, "Length of the fingers (um)", default = 50)
     self.param("fingers", self.TypeInt, "Number of fingers (at least 2)", default = 3)
     self.param("arm_length", self.TypeDouble, "Arm length (um)", default = 300./2)
-    self.param("arm_width", self.TypeDouble, "Arm width (um)", default = 24)
-    self.param("gap_width", self.TypeDouble, "Gap width (um)", default = 24)
+    self.param("arm_width", self.TypeList, "Arm width (um)", default = [24, 24, 24, 24])
+    self.param("gap_width", self.TypeDouble, "Gap width (um)", default = 48)
     self.param("corner_r", self.TypeDouble, "Corner radius (um)", default = 5)
     self.param("fluxline", self.TypeBoolean, "Fluxline", default = True)
     self.param("cpl_width", self.TypeList, "Coupler width (um, ENW)", default = [24, 24, 24])
     self.param("cpl_length", self.TypeList, "Coupler lengths (um, ENW)", default = [160, 160, 160])
     self.param("cpl_gap", self.TypeList, "Coupler gap (um, ENW)", default = [102, 102, 102])
+    self.param("squid_name", self.TypeString, "SQUID Type", default = ("QCD1"))
     self.name = "qb1"
 
   def display_text_impl(self):
@@ -52,7 +53,8 @@ class Swissmon(KQCirvuitPCell):
     self.fluxline_width = 10./3
     fa = self.fluxline_width  # fluxline center width
     fb = fa * (b/a) # fluxline gap width 
-    w = self.arm_width # length of the horisontal segment
+    [we, wn, ww, ws] = [float(width)/2 for width in self.arm_width] # length of the horisontal segment
+    w = wn   
     l1 = 30 # streight down 
     l2 = 50 # tapering to waveguide port
     
@@ -79,14 +81,14 @@ class Swissmon(KQCirvuitPCell):
     ])
     
     # transfer to swiss cross cordinates
-    shift_up = -self.arm_length - self.gap_width
+    shift_up = -self.arm_length - (self.gap_width-wn)/2
     transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
     
     self.cell.shapes(self.layout.layer(self.lo)).insert(right_gap.transformed(transf))
     self.cell.shapes(self.layout.layer(self.lo)).insert(left_gap.transformed(transf))
     
     # protection    
-    protection = pya.DBox(-w/2-self.gap_width-self.margin, -self.margin, w/2+self.gap_width+self.margin, -fa-l1-l2)
+    protection = pya.DBox(-self.gap_width-self.margin, -self.margin, self.gap_width+self.margin, -fa-l1-l2)
     self.cell.shapes(self.layout.layer(self.lp)).insert(protection.transformed(transf))
       
     # add ref point
@@ -96,20 +98,23 @@ class Swissmon(KQCirvuitPCell):
     
   def produce_chargeline(self):
     # shorthands
-    g = self.gap_width # fluxline gap width 
-    w = self.arm_width # length of the horisontal segment
+    g = self.gap_width # gap width 
+    [we, wn, ww, ws] = [float(width)/2 for width in self.arm_width] # length of the horisontal segment
+    w = wn # length of the horisontal segment
     l = self.arm_length # swissmon arm length from the center of the cross (refpoint)
     a = self.a # cpw center conductor width
     b = self.b # cpw gap width
       
     # add ref point
-    port_ref = pya.DPoint(-w/2-g-b-a/2, -3*g-l)
+    port_ref = pya.DPoint(-g-b-a/2, -l)
     self.refpoints["port_drive"] = port_ref
   
   def produce_coupler(self, cpl_nr):
     # shortscript
     a = self.a
-    b = self.b 
+    b = self.b     
+    [we, wn, ww, ws] = [float(width)/2 for width in self.arm_width] # length of the horisontal segment
+    aw = [we, wn, ww, ws][cpl_nr]
     w = float(self.cpl_width[cpl_nr])
     l = float(self.cpl_length[cpl_nr])
     g = float(self.cpl_gap[cpl_nr])/2
@@ -143,8 +148,8 @@ class Swissmon(KQCirvuitPCell):
       shoe_region2 = shoe_region - port_region
     
     # move to the north arm of swiss cross
-    ground_width = (2*g - self.arm_width - 2*self.gap_width - 2*b)/2
-    shift_up = self.arm_length + self.gap_width + ground_width + w + b
+    ground_width = (2*g - self.gap_width - 2*b)/2
+    shift_up = self.arm_length+(self.gap_width-2*aw)/2 + ground_width + w + b
     transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
     
     # rotate to the correcti direction
@@ -170,45 +175,60 @@ class Swissmon(KQCirvuitPCell):
 
   def produce_cross_and_squid(self):
     # shorthand
-    w = self.arm_width/2
+    [we, wn, ww, ws] = [float(width)/2 for width in self.arm_width]
     l = self.arm_length
     
     # refpoint in the center of the swiss cross
-    cross_points = [
-      pya.DPoint(w, w),
-      pya.DPoint(l, w),
-      pya.DPoint(l, -w),
-      pya.DPoint(w, -w),
-      pya.DPoint(w, -l),
-      pya.DPoint(-w, -l),
-      pya.DPoint(-w, -w),
-      pya.DPoint(-l, -w),
-      pya.DPoint(-l, w),
-      pya.DPoint(-w, w),
-      pya.DPoint(-w, l),
-      pya.DPoint(w, l),
+    cross_island_points = [
+      pya.DPoint(wn, ww),
+      pya.DPoint(l, ww),
+      pya.DPoint(l, -ww),
+      pya.DPoint(ws, -ww),
+      pya.DPoint(ws, -l),
+      pya.DPoint(-ws, -l),
+      pya.DPoint(-ws, -we),
+      pya.DPoint(-l, -we),
+      pya.DPoint(-l, we),
+      pya.DPoint(-wn, we),
+      pya.DPoint(-wn, l),
+      pya.DPoint(wn, l),
     ] 
     
-    s = self.gap_width
-    f = float(self.gap_width+self.arm_width/2)/self.arm_width/2
-    cross = pya.DPolygon([
-              p+pya.DVector(math.copysign(s, p.x),math.copysign(s, p.y)) for p in cross_points
-              ])    
-    cross.insert_hole(cross_points)
+    
+    # refpoint in the center of the swiss cross
+    s = self.gap_width/2
+    cross_gap_points = [
+      pya.DPoint(s, s),
+      pya.DPoint(l+(s-ww), s),
+      pya.DPoint(l+(s-ww), -s),
+      pya.DPoint(s, -s),
+      pya.DPoint(s, -l-(s-wn)),
+      pya.DPoint(-s, -l-(s-wn)),
+      pya.DPoint(-s, -s),
+      pya.DPoint(-l-(s-we), -s),
+      pya.DPoint(-l-(s-we), s),
+      pya.DPoint(-s, s),
+      pya.DPoint(-s, l+(s-ws)),
+      pya.DPoint(s, l+(s-ws)),
+    ] 
+    
+    cross = pya.DPolygon( cross_gap_points )    
+    cross.insert_hole( cross_island_points )
     cross_rounded = cross.round_corners(self.corner_r, self.corner_r, self.n)
     #cross_rounded = cross.round_corners(self.corner_r-self.gap_width/2, self.corner_r+self.gap_width/2, self.n)
     #self.cell.shapes(self.layout.layer(self.lo)).insert(cross_rounded)
     #self.cell.shapes(self.layout.layer(self.la)).insert(cross)
     
     cross_protection = pya.DPolygon([
-                        p+pya.DVector(math.copysign(s+self.margin, p.x),math.copysign(s+self.margin, p.y)) for p in cross_points
+                        p+pya.DVector(math.copysign(s+self.margin, p.x),math.copysign(s+self.margin, p.y)) for p in cross_gap_points
                         ])    
     self.cell.shapes(self.layout.layer(self.lp)).insert(cross_protection)
     
     
     # SQUID from template
-    squid_cell =  self.layout.create_cell("SQUID", "KQCircuit")
-    transf = pya.DCplxTrans(1,0,False,pya.DVector(0,-l-s-3))
+    # SQUID refpoint at the ground plane edge
+    squid_cell =  self.layout.create_cell(self.squid_name, "KQCircuit")
+    transf = pya.DCplxTrans(1,0,False,pya.DVector(0,-l-(s-wn)-3))
     
     region_unetch = pya.Region(squid_cell.shapes(self.layout.layer(default_layers["Unetch 1"])))
     region_unetch.transform(transf.to_itrans(self.layout.dbu))
