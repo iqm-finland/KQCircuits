@@ -33,31 +33,39 @@ reload(macroprep)
 pprint.pprint(default_layers)
 
 
-layout = macroprep.prep_empty_layout()
+(layout, layout_view) = macroprep.prep_empty_layout()
 
-def produce_simulation_cell(cell):
+def produce_simulation_cell(cell, coupler_type = "square"):
   global layout  
   
-  # Capacitor kappa
-  if (fingers == 0):
-    cap = layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": length,
-      "finger_gap": 5,
-      "finger_width": 0,
-      "ground_padding": 6,
-      "corner_r": 0
-    #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
-    })    
+  # Capacitor
+  if (coupler_type=="square"):    
+    if (fingers == 0):
+      cap = layout.create_cell("FingerCapS", "KQCircuit", {
+        "finger_number": fingers,
+        "finger_length": length,
+        "finger_gap": 5,
+        "finger_width": 0,
+        "ground_padding": 6,
+        "corner_r": 0
+      })    
+    else:
+      cap = layout.create_cell("FingerCapS", "KQCircuit", {
+        "finger_number": fingers,
+        "finger_length": length,
+        "finger_gap": 5,
+        "finger_width": 15,
+        "ground_padding": 10
+      })
   else:
-    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+    cap = layout.create_cell("FingerCapT", "KQCircuit", {
       "finger_number": fingers,
       "finger_length": length,
       "finger_gap": 5,
       "finger_width": 15,
-      "ground_padding": 10
-  #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
-    })  
+      "ground_padding": 10,
+      "taper_length": (fingers*20-5)/2. # 45 degree taper
+    })
     
   cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans()))
   
@@ -69,78 +77,21 @@ def produce_simulation_cell(cell):
     
   return ports
   
-    
-def prep_polygons(cell, simualtion_safety = 300):
-  global layout  
-  
-  # Capacitor kappa
-  if (fingers == 0):
-    cap = layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": length,
-      "finger_gap": 5,
-      "finger_width": 0,
-      "ground_padding": 6,
-      "corner_r": 0
-    #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
-    })    
-  else:
-    cap = layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": length,
-      "finger_gap": 5,
-      "finger_width": 15,
-      "ground_padding": 10
-  #    "taper_length": (fingers*20-10)*0.2 # 22.5 degree taper
-    })    
-    
-  #cap_inst = cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-  cap_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), cap)  
-  
-  bbox_temp = cap.dbbox_per_layer(layout.layer(default_layers["Optical lit. 1"]))
-  bbox = bbox_temp.enlarge(0,simualtion_safety + (bbox_temp.height() % 2)/2 ) # also esnure summetry for 1 um grid
-  bbox_top = bbox.enlarged(simualtion_safety,0)
-  bbox_bottom = bbox.enlarged(simualtion_safety,0)
-  bbox_top.p1 =  pya.DPoint(bbox_top.p1.x, cap.pcell_parameter("a")/2+cap.pcell_parameter("b") )
-  bbox_bottom.p2 = pya.DPoint(bbox_bottom.p2.x, -cap.pcell_parameter("a")/2-cap.pcell_parameter("b") )
-  
-  region_pos = pya.Region(bbox.to_itype(layout.dbu))
-  region_pos += pya.Region(bbox_top.to_itype(layout.dbu))+pya.Region(bbox_bottom.to_itype(layout.dbu))
-  region_neg = pya.Region(cap.shapes(layout.layer(default_layers["Optical lit. 1"])))
-  region = region_pos - region_neg 
-      
-  cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(region)
-
-
-  feedline_l = pya.DBox(
-    pya.DPoint(bbox_top.p1.x,                  cap.pcell_parameter("a")/2 ),
-    pya.DPoint(cap_refpoints_abs['port_a'].x, -cap.pcell_parameter("a")/2 ),
-    )
-  feedline_l_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_l)
-  feedline_l_shape.set_property('sonnet_port_nr', 1)
-  feedline_l_shape.set_property('sonnet_port_edge', 0)
-  feedline_r = pya.DBox(
-    pya.DPoint(cap_refpoints_abs['port_b'].x,  cap.pcell_parameter("a")/2 ),
-    pya.DPoint(bbox_top.p2.x,                 -cap.pcell_parameter("a")/2 ),
-    )
-  feedline_r_shape = cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(feedline_r)
-  feedline_r_shape.set_property('sonnet_port_nr', 2)
-  feedline_r_shape.set_property('sonnet_port_edge', 2)
-
-#sonnet_format = {}
-#sonnet_format["poly_head"] = "{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} {edge mesh}"
 
 import os.path
 
 batchstring = ""
 
-for fingers in [4,8]:
-  for length in range(0,201,10): # microns
+#for fingers in [4,8]:
+#  for length in range(0,201,10): # microns
+fingers = 6
+for tapertype in ["triangle","square"]:
+  for length in [200]: # microns
     simualtion_safety = 300 # microns
-    name = "sim finger {}x{}".format(fingers, length)
+    name = "sim finger {}x{} {}".format(fingers, length, tapertype)
     
     cell = layout.create_cell(name) # A new cell into the layout
-    ports = produce_simulation_cell(cell)
+    ports = produce_simulation_cell(cell, coupler_type=tapertype)
     
     sonnet_strings = simgeom.add_sonnet_geometry(
       cell, 
