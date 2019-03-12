@@ -12,7 +12,7 @@ class Port():
     return self.ref_location
     
 class SidePort(Port):
-  def __init__(self, sonnet_nr, location, side):
+  def __init__(self, sonnet_nr, location, side, termination = False):
     super().__init__(sonnet_nr, location)
     self.side = {
       "l": "LEFT",
@@ -20,17 +20,18 @@ class SidePort(Port):
       "t": "TOP", # TODO Check from Sonnet documentation, if the keyword is correct!
       "b": "BOTTOM", # TODO Check from Sonnet documentation, if the keyword is correct!
     }[side]
-    feedlinelength = 0
-    feedlinetemination = 0
+    self.termination = termination # width of the ground plane gap in the end for the transmission line
+    self.dbox = None
   
   def location(self):
-    simsafety = self.feedlinelength
-    return self.ref_location + {
-      "LEFT": pya.DVector(-simsafety, 0),
-      "RIGHT": pya.DVector( simsafety, 0),
-      "TOP": pya.DVector(0,  simsafety),
-      "BOTTOM": pya.DVector(0, -simsafety),
+    dbox = self.dbox
+    return {
+      "LEFT": pya.DVector(dbox.p1.x, self.ref_location.y),
+      "RIGHT": pya.DVector(dbox.p2.x, self.ref_location.y),
+      "TOP": pya.DVector(self.ref_location.x, dbox.p2.y),
+      "BOTTOM": pya.DVector(self.ref_location.x, dbox.p1.y),
     }[self.side]
+    
 
 
 def simple_region(region):
@@ -57,18 +58,21 @@ def add_sonnet_geometry(
                       ).to_itype(dbu))
 
   # add port feedlines
-  for port in ports:
-    port.feedlinelength = simualtion_safety
-    cell.shapes(layer_son).insert(pya.DText("port {}".format(port.sonnet_nr),pya.DTrans(port.location())))
-    
-    if isinstance(port, SidePort):
+  for port in ports:    
+    if isinstance(port, SidePort):      
+      port.dbox = region_pos.bbox().to_dtype(dbu)
+      
+      cell.shapes(layer_son).insert(pya.DText("port {}".format(port.sonnet_nr),pya.DTrans(port.location())))
       driveline = layout.create_cell("Waveguide", "KQCircuit", {
         "path": pya.DPath([
                     port.ref_location,
                     port.location()
-                  ],1)
+                  ],1),
+        "term1": port.termination
       })
       region_neg = region_neg + pya.Region(driveline.begin_shapes_rec(layer_opt))
+    else:
+      cell.shapes(layer_son).insert(pya.DText("port {}".format(port.sonnet_nr),pya.DTrans(port.location())))
   region_pos -= region_neg
   simregion = simple_region(region_pos);
   cell.shapes(layer_son).insert(simregion) 
