@@ -27,7 +27,7 @@ import kqcircuit.macro_prepare as macroprep
 from importlib import reload
 reload(sonnet)
 reload(simgeom)
-reload(kqcircuit.defaults)
+#reload(kqcircuit.defaults)
 reload(macroprep)
 
 pprint.pprint(default_layers)
@@ -41,13 +41,13 @@ def produce_simulation_cell(cell):
 
   # Swissmon      
   swissmon = layout.create_cell("Swissmon", "KQCircuit", {
-    "cpl_length": [160,0,0],
     "fluxline": False,
-    "arm_width": 30,
-    "gap_width": 20,
-    "cpl_width": [48,0,0],
-    "cpl_gap": [90, 102, 102]
-    
+    "arm_width": [50,30,50,30],
+    "gap_width": 70,
+    "cpl_length": [174,0,174],
+    "cpl_width": [48,42,48],
+    "cpl_gap": [90, 102, 90],
+    "squid_name": "SIM1"    
   })  
     
   cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DTrans()))
@@ -56,6 +56,8 @@ def produce_simulation_cell(cell):
   
   ports = []
   ports.append(simgeom.SidePort(1, swissmon_refpoints_abs['port_cplr0'], 'l'))
+  ports.append(simgeom.SidePort(2, swissmon_refpoints_abs['port_cplr2'], 'r'))
+  ports.append(simgeom.SidePort(3, swissmon_refpoints_abs['port_drive'], 'b', termination=10))
     
   return ports
   
