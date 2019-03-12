@@ -35,28 +35,27 @@ pprint.pprint(default_layers)
 
 (layout, layout_view) = macroprep.prep_empty_layout()
 
-def produce_simulation_cell(cell, coupler_type = "square"):
+def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square"):
   global layout  
   
   # Capacitor
-  if (coupler_type=="square"):    
-    if (fingers == 0):
-      cap = layout.create_cell("FingerCapS", "KQCircuit", {
-        "finger_number": fingers,
-        "finger_length": length,
-        "finger_gap": 5,
-        "finger_width": 0,
-        "ground_padding": 6,
-        "corner_r": 0
-      })    
-    else:
-      cap = layout.create_cell("FingerCapS", "KQCircuit", {
-        "finger_number": fingers,
-        "finger_length": length,
-        "finger_gap": 5,
-        "finger_width": 15,
-        "ground_padding": 10
-      })
+  if (coupler_type=="plate"):    
+    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+      "finger_number": fingers,
+      "finger_length": 0,
+      "finger_gap": gap,
+      "finger_width": 15,
+      "ground_padding": 10,
+#        "corner_r": 0
+    })    
+  elif (coupler_type=="square"):
+    cap = layout.create_cell("FingerCapS", "KQCircuit", {
+      "finger_number": fingers,
+      "finger_length": length,
+      "finger_gap": 5,
+      "finger_width": 15,
+      "ground_padding": 10
+    })
   else:
     cap = layout.create_cell("FingerCapT", "KQCircuit", {
       "finger_number": fingers,
@@ -84,14 +83,18 @@ batchstring = ""
 
 #for fingers in [4,8]:
 #  for length in range(0,201,10): # microns
-fingers = 6
-for tapertype in ["triangle","square"]:
-  for length in [200]: # microns
+
+#fingers = 6
+#for tapertype in ["triangle","square"]:
+#  for length in [200]: # microns
+tapertype = "plate"
+for fingers in [1,2,6]:
+  for gap in range(5,51,5): # microns
     simualtion_safety = 300 # microns
-    name = "sim finger {}x{} {}".format(fingers, length, tapertype)
+    name = "sim cap gap {}x{}".format(fingers,gap)
     
     cell = layout.create_cell(name) # A new cell into the layout
-    ports = produce_simulation_cell(cell, coupler_type=tapertype)
+    ports = produce_simulation_cell(cell, fingers, 0, gap, coupler_type=tapertype)
     
     sonnet_strings = simgeom.add_sonnet_geometry(
       cell, 
