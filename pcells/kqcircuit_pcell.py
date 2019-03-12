@@ -50,4 +50,4 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
 
 
   def get_refpoints(self, cell, cell_transf = pya.DTrans()):
-    get_refpoints(self.layout.layer(default_layers["Annotations"]), cell, cell_transf = pya.DTrans())
+    return get_refpoints(self.layout.layer(default_layers["Annotations"]), cell, cell_transf)
