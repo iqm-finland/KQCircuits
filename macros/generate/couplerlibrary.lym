@@ -88,7 +88,7 @@ batchstring = ""
 #for tapertype in ["triangle","square"]:
 #  for length in [200]: # microns
 tapertype = "plate"
-for fingers in [1,2,6]:
+for fingers in [3,4,5]:
   for gap in range(5,51,5): # microns
     simualtion_safety = 300 # microns
     name = "sim cap gap {}x{}".format(fingers,gap)
