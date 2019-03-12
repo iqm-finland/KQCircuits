@@ -42,7 +42,12 @@ def produce_simulation_cell(cell):
   # Swissmon      
   swissmon = layout.create_cell("Swissmon", "KQCircuit", {
     "cpl_length": [160,0,0],
-    "fluxline": False
+    "fluxline": False,
+    "arm_width": 30,
+    "gap_width": 20,
+    "cpl_width": [48,0,0],
+    "cpl_gap": [90, 102, 102]
+    
   })  
     
   cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DTrans()))
@@ -88,7 +93,7 @@ batchstring += "\"./{}\"\n".format(filename)
 file = open("batch.txt","w") 
 file.write(batchstring) 
 file.close() 
-   
+
 
 layout_view.add_missing_layers()
 layout_view.zoom_fit()
