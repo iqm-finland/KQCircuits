@@ -10,7 +10,7 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
- <group-name>Chips</group-name>
+ <group-name>Generate</group-name>
  <menu-path>edit_menu.my_group&gt;end("KQCircuit").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
