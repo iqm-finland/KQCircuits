@@ -1,6 +1,7 @@
 import pya
 import math
 from kqcircuit.pcells.kqcircuit_pcell import KQCirvuitPCell
+from kqcircuit.defaults import default_circuit_params
 
 def up_mod(a, per):
   # Finds remainder in the same direction as periodicity
@@ -136,6 +137,73 @@ class WaveguideCopCurve(KQCirvuitPCell):
     pts += arc(R,alphastop,alphastart,self.n)     
     shape = pya.DPolygon(pts)
     self.cell.shapes(self.layout.layer(self.lp)).insert(shape)        
+
+class WaveguideCopTCross(KQCirvuitPCell):
+  """
+  The PCell declaration of T-crossing of waveguides
+  """
+
+  def __init__(self):
+    super().__init__()
+    self.param("a2", self.TypeDouble, "Width of the side waveguide", default = default_circuit_params["a"])
+    self.param("b2", self.TypeDouble, "Gap of the side waveguide", default = default_circuit_params["b"])
+    self.param("l", self.TypeDouble, "Extra length", default = 0)
+    self.param("l2", self.TypeDouble, "Extra length of the side waveguide", default = 0)
+    
+  def display_text_impl(self):
+    # Provide a descriptive text for the cell
+    return "WaveguideT"
+
+  def coerce_parameters_impl(self):
+    None
+
+  def can_create_from_shape_impl(self):
+    return False
+  
+  def parameters_from_shape_impl(self):
+    None
+          
+  def produce_impl(self):
+    # Origin: Crossing of centers of the center conductors
+    # Direction: Ports from left, right and bottom
+    # Top gap
+    pts = [
+      pya.DPoint(-self.l-self.b2-self.a2/2, self.a/2+0),
+      pya.DPoint( self.l+self.b2+self.a2/2, self.a/2+0),
+      pya.DPoint( self.l+self.b2+self.a2/2, self.a/2+self.b),
+      pya.DPoint(-self.l-self.b2-self.a2/2, self.a/2+self.b)
+    ]
+    shape = pya.DPolygon(pts)    
+    self.cell.shapes(self.layout.layer(self.lo)).insert(shape)        
+    # Left gap   
+    pts = [
+      pya.DPoint(-self.l-self.b2-self.a2/2,-self.a/2+0),
+      pya.DPoint(               -self.a2/2,-self.a/2+0),
+      pya.DPoint(               -self.a2/2,-self.a/2-self.b-self.l2),
+      pya.DPoint(       -self.b2-self.a2/2,-self.a/2-self.b-self.l2),
+      pya.DPoint(       -self.b2-self.a2/2,-self.a/2-self.b),
+      pya.DPoint(-self.l-self.b2-self.a2/2,-self.a/2-self.b)
+    ]
+    shape = pya.DPolygon(pts)  
+    self.cell.shapes(self.layout.layer(self.lo)).insert(shape)         
+    # Right gap   
+    self.cell.shapes(self.layout.layer(self.lo)).insert(pya.DTrans.M90*shape)
+    # Protection layer
+    m = self.margin
+    pts = [
+      pya.DPoint(-self.l-self.b2-self.a2/2,  self.a/2+self.b+m),      
+      pya.DPoint( self.l+self.b2+self.a2/2,  self.a/2+self.b+m),
+      pya.DPoint( self.l+self.b2+self.a2/2, -self.a/2-self.b-self.l2),
+      pya.DPoint(-self.l-self.b2-self.a2/2, -self.a/2-self.b-self.l2),
+    ]
+    shape = pya.DPolygon(pts)  
+    self.cell.shapes(self.layout.layer(self.lp)).insert(shape)   
+        
+    # annotation text
+    self.refpoints["port_left"] = pya.DPoint(-self.l-self.b2-self.a2/2, 0)
+    self.refpoints["port_right"] = pya.DPoint( self.l+self.b2+self.a2/2, 0)
+    self.refpoints["port_bottom"] = pya.DPoint(0, -self.a/2-self.b-self.l2)
+    super().produce_impl() # adds refpoints
     
 class WaveguideCop(KQCirvuitPCell):
   """
