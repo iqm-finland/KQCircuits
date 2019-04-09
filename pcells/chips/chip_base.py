@@ -102,7 +102,6 @@ class ChipBase(KQCirvuitPCell):
                                     {"name": name})
     if isinstance(direction, str):
       direction = {"E": 0, "W": 180, "S": -90, "N": 90}[direction]
-    print("Launcher:",direction,pos)
     transf = pya.DCplxTrans(1, direction, False, pos)    
     self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
         
