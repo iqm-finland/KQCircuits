@@ -13,7 +13,7 @@ def apply_template(filename_template, filename_output, rules):
   dirname_sondata = os.path.join(os.path.dirname(filename_output),"sondata")
   if not os.path.exists(dirname_sondata):
     os.mkdir(dirname_sondata)
-  dirname_project = os.path.join(dirname_sondata,os.path.basename(filename_output))
+  dirname_project = os.path.join(dirname_sondata,os.path.splitext(os.path.basename(filename_output))[0])
   if not os.path.exists(dirname_project):
     os.mkdir(dirname_project)
   
