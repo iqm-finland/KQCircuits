@@ -81,7 +81,7 @@ def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square")
 import os.path
 
 batchstring = ""
-tapertype = "triangle"
+tapertype = "square"
 
 for fingers in [2,4,6,8]:
   for length in range(0,101,10): # microns
