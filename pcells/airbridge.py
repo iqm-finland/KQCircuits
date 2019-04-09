@@ -22,7 +22,7 @@ class AirBridge(KQCirvuitPCell):
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Launcher(%s)".format(self.name)
+    return "Airbridge(%s)".format(self.name)
       
   def coerce_parameters_impl(self):
     None
