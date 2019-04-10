@@ -116,7 +116,8 @@ class FingerCapacitorSquare(KQCirvuitPCell):
     super().__init__()
     self.param("finger_number", self.TypeInt, "Number of fingers", default = 5)
     self.param("finger_width", self.TypeDouble, "Width of a finger (um)", default = 5)
-    self.param("finger_gap", self.TypeDouble, "Gap between the fingers (um)", default = 3)
+    self.param("finger_gap_side", self.TypeDouble, "Gap between the fingers (um)", default = 3)
+    self.param("finger_gap_end", self.TypeDouble, "Gap between the finger and other pad (um)", default = 3)
     self.param("finger_length", self.TypeDouble, "Length of the fingers (um)", default = 20)
     self.param("ground_padding", self.TypeDouble, "Ground plane padding (um)", default = 20)
     self.param("corner_r", self.TypeDouble, "Corner radius (um)", default = 2)
@@ -142,29 +143,30 @@ class FingerCapacitorSquare(KQCirvuitPCell):
     n = self.finger_number
     w = self.finger_width
     l = self.finger_length
-    g = self.finger_gap
+    g = self.finger_gap_side
+    e = self.finger_gap_end
     p = self.ground_padding
     W = max(float(n)*(w+g)-g, self.a) # total width
     a = self.a
     b = self.b
     
     region_ground = pya.Region([pya.DPolygon([    
-      pya.DPoint( (l+g)/2+w+p, W/2+p),
-      pya.DPoint( (l+g)/2+w+p,-W/2-p),
-      pya.DPoint(-(l+g)/2-w-p,-W/2-p),   
-      pya.DPoint(-(l+g)/2-w-p, W/2+p),   
+      pya.DPoint( (l+e)/2+w+p, W/2+p),
+      pya.DPoint( (l+e)/2+w+p,-W/2-p),
+      pya.DPoint(-(l+e)/2-w-p,-W/2-p),   
+      pya.DPoint(-(l+e)/2-w-p, W/2+p),   
     ]).to_itype(self.layout.dbu)])
     region_ground.round_corners(self.corner_r/self.layout.dbu, self.corner_r/self.layout.dbu, self.n)
         
     region_taper_right = pya.Region([pya.DPolygon([    
-      pya.DPoint( (l+g)/2, W/2),
-      pya.DPoint( (l+g)/2+w, W/2),
-      pya.DPoint( (l+g)/2+w, a/2),
-      pya.DPoint( (l+g)/2+w+p+self.corner_r, a/2),
-      pya.DPoint( (l+g)/2+w+p+self.corner_r,-a/2),
-      pya.DPoint( (l+g)/2+w,-a/2),
-      pya.DPoint( (l+g)/2+w,-W/2),
-      pya.DPoint( (l+g)/2,-W/2)  
+      pya.DPoint( (l+e)/2, W/2),
+      pya.DPoint( (l+e)/2+w, W/2),
+      pya.DPoint( (l+e)/2+w, a/2),
+      pya.DPoint( (l+e)/2+w+p+self.corner_r, a/2),
+      pya.DPoint( (l+e)/2+w+p+self.corner_r,-a/2),
+      pya.DPoint( (l+e)/2+w,-a/2),
+      pya.DPoint( (l+e)/2+w,-W/2),
+      pya.DPoint( (l+e)/2,-W/2)  
     ]).to_itype(self.layout.dbu)])
     region_taper_left = region_taper_right.transformed(pya.Trans().M90)
     
@@ -176,7 +178,7 @@ class FingerCapacitorSquare(KQCirvuitPCell):
         pya.DPoint(-l/2, w)
       ])
     for i in range(0,n):
-      trans = pya.DTrans(pya.DVector(g/2,i*(g+w)-W/2)) if i%2 else  pya.DTrans(pya.DVector(-g/2,i*(g+w)-W/2))
+      trans = pya.DTrans(pya.DVector(e/2,i*(g+w)-W/2)) if i%2 else  pya.DTrans(pya.DVector(-e/2,i*(g+w)-W/2))
       polys_fingers.append(trans*poly_finger)
     
     region_fingers = pya.Region([
@@ -194,9 +196,9 @@ class FingerCapacitorSquare(KQCirvuitPCell):
     self.cell.shapes(self.layout.layer(self.lp)).insert(region_protection)
     
     # ports
-    port_ref = pya.DPoint(-(l+g)/2-w-p, 0)
+    port_ref = pya.DPoint(-(l+e)/2-w-p, 0)
     self.refpoints["port_a"] = port_ref
-    port_ref = pya.DPoint( (l+g)/2+w+p, 0)
+    port_ref = pya.DPoint( (l+e)/2+w+p, 0)
     self.refpoints["port_b"] = port_ref
     
     

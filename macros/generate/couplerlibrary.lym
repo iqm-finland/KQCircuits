@@ -44,8 +44,9 @@ def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square")
     cap = layout.create_cell("FingerCapS", "KQCircuit", {
       "finger_number": fingers,
       "finger_length": 0,
-      "finger_gap": gap,
-      "finger_width": 15,
+      "finger_gap_end": length,
+      "finger_gap_side": 0,
+      "finger_width": 10,
       "ground_padding": 10,
 #        "corner_r": 0
     })    
@@ -53,7 +54,8 @@ def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square")
     cap = layout.create_cell("FingerCapS", "KQCircuit", {
       "finger_number": fingers,
       "finger_length": length,
-      "finger_gap": 5,
+      "finger_gap_end": 5,
+      "finger_gap_side": 5,
       "finger_width": 15,
       "ground_padding": 10
     })
@@ -81,10 +83,10 @@ def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square")
 import os.path
 
 batchstring = ""
-tapertype = "square"
+tapertype = "plate"
 
-for fingers in [2,4,6,8]:
-  for length in range(0,101,10): # microns
+for fingers in [4]:
+  for length in range(10,101,10): # microns
 #fingers = 6
 #for tapertype in ["triangle","square"]:
 #  for length in range{0,200,20}: # microns
