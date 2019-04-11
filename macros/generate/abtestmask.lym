@@ -38,7 +38,7 @@ mask_map = [
 #  ["E","D","D","D","D","D","D","D","E"],
 #  ["E","D","D","D","D","D","D","D","E"],
 #  ["E","E","E","D","D","D","E","E","E"], 
-  ["AB1","AB2","D"], 
+  ["Q","AB1","AB2","D"], 
 ]
 
 mask_map_legend = {
@@ -58,6 +58,12 @@ mask_map_legend = {
   "AB2": layout.create_cell("ABCrossings", "KQChip", {
           "name_mask": mask_name,
           "name_chip": "AB2",
+          "name_copy": None,
+          "dice_width": dice_width,
+          "crossings": 1}),          
+  "Q": layout.create_cell("Chip QFactor", "KQChip", {
+          "name_mask": mask_name,
+          "name_chip": "QF",
           "name_copy": None,
           "dice_width": dice_width,
           "crossings": 1})
