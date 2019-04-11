@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import kqcircuit.macro_prepare as macroprep
+from kqcircuit.pcells.chips.chip_base import produce_label 
+from kqcircuit.defaults import default_layers
+
+from importlib import reload
+reload(macroprep)
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+
+mask_name = "AB01"
+dice_width = 200
+top_cell = layout.create_cell("Mask "+mask_name) # A new cell into the layout
+cell_view.cell_name = top_cell.name     # Shows the new cell
+
+mask_map = [
+#  ["E","E","E","D","D","D","E","E","E"],
+#  ["E","D","D","D","D","D","D","D","E"],
+#  ["E","D","D","D","D","D","D","D","E"],
+#  ["D","D","D","D","D","D","D","D","D"],
+#  ["D","D","D","D","D","D","D","D","D"],
+#  ["D","D","D","D","D","D","D","D","D"],
+#  ["E","D","D","D","D","D","D","D","E"],
+#  ["E","D","D","D","D","D","D","D","E"],
+#  ["E","E","E","D","D","D","E","E","E"], 
+  ["AB","D"], 
+]
+
+mask_map_legend = {
+  "D": layout.create_cell("Demo", "KQChip", {
+          "name_mask": mask_name,
+          "dice_width": dice_width,
+          "name_copy": None}),          
+  "AB": layout.create_cell("ABCrossings", "KQChip", {
+          "name_mask": mask_name,
+          "dice_width": dice_width,
+          "name_copy": None})
+}
+
+text_margin = mask_map_legend["D"].pcell_parameter("text_margin")
+print("text_margin ",text_margin )
+
+v = pya.DVector(0,0)
+
+def produce_label_wrap(i, j, loc):
+  global dice_width, text_margin, default_layers
+  produce_label(top_cell, pos_index_name(i, j), loc+pya.DVector(1e4, 0), "bottomright", 
+                dice_width, text_margin, default_layers["Optical lit. 1"], default_layers["Grid avoidance"])
+
+def pos_index_name(i, j):
+  return chr(ord("A")+i)+str(j)
+  
+for (i, row) in enumerate(mask_map):
+  for (j, slot) in enumerate(row):
+    if slot in mask_map_legend.keys():
+      top_cell.insert(pya.DCellInstArray(mask_map_legend[slot].cell_index(), pya.DTrans(v)))
+      produce_label_wrap(i, j, v)
+          
+    v += pya.DVector(1e4, 0)    # microns
+  v += pya.DVector(-9e4, -1e4)  # microns</text>
+</klayout-macro>
