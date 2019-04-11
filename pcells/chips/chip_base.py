@@ -7,6 +7,18 @@ from importlib import reload
 reload(sys.modules[KQCirvuitPCell.__module__])
 
 
+default_launchers_SMA8 = {
+      "WS": (pya.DPoint(1800,2800),"W"),      
+      "ES": (pya.DPoint(8200,2800),"E"),      
+      "WN": (pya.DPoint(1800,7200),"W"),      
+      "EN": (pya.DPoint(8200,7200),"E"),
+      "SW": (pya.DPoint(2800,1800),"S"),      
+      "NW": (pya.DPoint(2800,8200),"N"),      
+      "SE": (pya.DPoint(7200,1800),"S"),      
+      "NE": (pya.DPoint(7200,8200),"N")
+    }
+    
+    
 def produce_label(cell, label, location, origin, dice_width, margin, layer_optical, layer_protection):
     layout = cell.layout()
     dbu = layout.dbu    
@@ -104,7 +116,14 @@ class ChipBase(KQCirvuitPCell):
       direction = {"E": 0, "W": 180, "S": -90, "N": 90}[direction]
     transf = pya.DCplxTrans(1, direction, False, pos)    
     self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
-        
+  
+  def produce_launchers_SMA8(self):  
+    launchers = default_launchers_SMA8
+    for name, launcher in launchers.items():
+      self.produce_launcher(launcher[0], launcher[1], name)
+      
+    return launchers
+                
   def produce_label(self, label, location, origin):  
     produce_label(self.cell, label, location, origin, self.dice_width, self.text_margin, self.lo, self.lp)
     
@@ -218,6 +237,6 @@ class ChipBase(KQCirvuitPCell):
       self.produce_label(self.name_copy, 
                       pya.DPoint(x_max, y_min), "bottomright")
     if True:
-      self.produce_label("AALTO", 
+      self.produce_label("A!", 
                       pya.DPoint(x_min, y_min), "bottomleft")
     
