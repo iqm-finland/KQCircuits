@@ -23,6 +23,7 @@ import kqcircuit.sonnet.parser as sonnet
 import pprint
 import kqcircuit.sonnet.simgeom as simgeom 
 import kqcircuit.macro_prepare as macroprep
+from kqcircuit.coupler_lib import produce_library_capacitor
 
 
 from importlib import reload
@@ -36,38 +37,12 @@ pprint.pprint(default_layers)
 
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 
+
+
 def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square"):
   global layout  
-  
-  # Capacitor
-  if (coupler_type=="plate"):    
-    cap = layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": 0,
-      "finger_gap_end": length,
-      "finger_gap_side": 0,
-      "finger_width": 10,
-      "ground_padding": 10,
-#        "corner_r": 0
-    })    
-  elif (coupler_type=="square"):
-    cap = layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": length,
-      "finger_gap_end": 5,
-      "finger_gap_side": 5,
-      "finger_width": 15,
-      "ground_padding": 10
-    })
-  else:
-    cap = layout.create_cell("FingerCapT", "KQCircuit", {
-      "finger_number": fingers,
-      "finger_length": length,
-      "finger_gap": 5,
-      "finger_width": 15,
-      "ground_padding": 10,
-      "taper_length": (fingers*20-5)/2. # 45 degree taper
-    })
+    
+  cap = produce_library_capacitor(layout, fingers, length, coupler_type)
     
   cell.insert(pya.DCellInstArray(cap.cell_index(), pya.DTrans()))
   
@@ -85,7 +60,7 @@ import os.path
 batchstring = ""
 tapertype = "plate"
 
-for fingers in [4]:
+for fingers in [8]:
   for length in range(10,101,10): # microns
 #fingers = 6
 #for tapertype in ["triangle","square"]:
