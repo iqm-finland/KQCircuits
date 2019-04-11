@@ -16,10 +16,11 @@ class ABCrossings(ChipBase):
   
   def __init__(self):
     super().__init__()
+    self.param("crossings", self.TypeInt, "Number of double crossings", default = 10)
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return("TestChipV{}".format(version))
+    return("ABTest{}".format(version))
   
   def coerce_parameters_impl(self):
     None
@@ -145,7 +146,7 @@ class ABCrossings(ChipBase):
     nodes = [("tl",launchers["WN"][0])]
     ref_x = launchers["NW"][0].x
     last_y = launchers["WN"][0].y
-    crossings = 10 # must be even
+    crossings = self.crossings # must be even
     step = (launchers["WN"][0].y-launchers["WS"][0].y)/(crossings-0.5)/2
     wiggle = 250
     for i in range(crossings):

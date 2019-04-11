@@ -38,18 +38,29 @@ mask_map = [
 #  ["E","D","D","D","D","D","D","D","E"],
 #  ["E","D","D","D","D","D","D","D","E"],
 #  ["E","E","E","D","D","D","E","E","E"], 
-  ["AB","D"], 
+  ["AB1","AB2","D"], 
 ]
 
 mask_map_legend = {
   "D": layout.create_cell("Demo", "KQChip", {
           "name_mask": mask_name,
-          "dice_width": dice_width,
-          "name_copy": None}),          
-  "AB": layout.create_cell("ABCrossings", "KQChip", {
+          "name_chip": "DEMO",
+          "name_copy": None,
+          "dice_width": dice_width
+          }),          
+  "AB1": layout.create_cell("ABCrossings", "KQChip", {
           "name_mask": mask_name,
+          "name_chip": "AB1",
+          "name_copy": None,
           "dice_width": dice_width,
-          "name_copy": None})
+          "crossings": 10
+          }),          
+  "AB2": layout.create_cell("ABCrossings", "KQChip", {
+          "name_mask": mask_name,
+          "name_chip": "AB2",
+          "name_copy": None,
+          "dice_width": dice_width,
+          "crossings": 1})
 }
 
 text_margin = mask_map_legend["D"].pcell_parameter("text_margin")
