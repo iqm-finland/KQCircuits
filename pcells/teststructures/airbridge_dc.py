@@ -19,12 +19,13 @@ class AirBridgeDC(KQCirvuitPCell):
       default = default_layers["Optical lit. 2"])      
     self.param("lo3", self.TypeLayer, "AB top layer", 
       default = default_layers["Optical lit. 3"])
-    self.param("n", self.TypeInt, "Number of AB", default = 10)
-    self.param("w", self.TypeDouble, "Pad width (um)", default = 30)
-    self.param("h", self.TypeDouble, "Pad length (um)", default = 10)
-    self.param("l", self.TypeDouble, "Bridge length (from pad to pad) (um)", default = 40)
-    self.param("b", self.TypeDouble, "Bridge width (um)", default = 8)
-    self.param("e", self.TypeDouble, "Bottom pad extra (um)", default = 1)
+    
+    self.param("n", self.TypeInt, "Number of AB", default = 10)  
+    self.param("pad_width", self.TypeDouble, "Pad width (um)", default = 30)
+    self.param("pad_length", self.TypeDouble, "Pad length (um)", default = 10)
+    self.param("bridge_length", self.TypeDouble, "Bridge length (from pad to pad) (um)", default = 40)
+    self.param("bridge_width", self.TypeDouble, "Bridge width (um)", default = 8)
+    self.param("pad_extra", self.TypeDouble, "Bottom pad extra (um)", default = 1)   
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -45,11 +46,11 @@ class AirBridgeDC(KQCirvuitPCell):
     
   def produce_impl(self):     
     cell_ab = self.layout.create_cell("Airbridge", "KQCircuit", {
-                          "Pad width (um)": self.w,
-                          "Pad length (um)": self.h,
-                          "Bridge length (from pad to pad) (um)": self.l,
-                          "Bridge width (um)": self.b,
-                          "Bottom pad extra (um)": self.e
+                          "pad_width": self.pad_width,
+                          "pad_length": self.pad_length,
+                          "bridge_length": self.bridge_length,
+                          "bridge_width": self.bridge_width,
+                          "pad_extra": self.pad_extra
                           })
     
     m = 2 # margin for bottom Nb layer

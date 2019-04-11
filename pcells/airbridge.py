@@ -14,11 +14,11 @@ class AirBridge(KQCirvuitPCell):
       default = default_layers["Optical lit. 2"])      
     self.param("lo3", self.TypeLayer, "AB top layer", 
       default = default_layers["Optical lit. 3"])
-    self.param("w", self.TypeDouble, "Pad width (um)", default = 30)
-    self.param("h", self.TypeDouble, "Pad length (um)", default = 10)
-    self.param("l", self.TypeDouble, "Bridge length (from pad to pad) (um)", default = 40)
-    self.param("b", self.TypeDouble, "Bridge width (um)", default = 8)
-    self.param("e", self.TypeDouble, "Bottom pad extra (um)", default = 1)
+    self.param("pad_width", self.TypeDouble, "Pad width (um)", default = 30)
+    self.param("pad_length", self.TypeDouble, "Pad length (um)", default = 10)
+    self.param("bridge_length", self.TypeDouble, "Bridge length (from pad to pad) (um)", default = 40)
+    self.param("bridge_width", self.TypeDouble, "Bridge width (um)", default = 8)
+    self.param("pad_extra", self.TypeDouble, "Bottom pad extra (um)", default = 1)
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -41,11 +41,11 @@ class AirBridge(KQCirvuitPCell):
     # direction: from top to bottom
 
     # shorhand
-    w = self.w
-    h = self.h
-    l = self.l
-    b = self.b
-    e = self.e
+    w = self.pad_width
+    h = self.pad_length
+    l = self.bridge_length
+    b = self.bridge_width
+    e = self.pad_extra
 
     # bottom layer top pad
     pts = [
