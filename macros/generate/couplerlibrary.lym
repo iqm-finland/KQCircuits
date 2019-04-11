@@ -34,7 +34,7 @@ reload(macroprep)
 pprint.pprint(default_layers)
 
 
-(layout, layout_view) = macroprep.prep_empty_layout()
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 
 def produce_simulation_cell(cell, fingers, length, gap, coupler_type = "square"):
   global layout  
