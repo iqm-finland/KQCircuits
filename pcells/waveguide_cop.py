@@ -239,16 +239,20 @@ class WaveguideCop(KQCirvuitPCell):
     points = [point for point in self.path.each_point()]
     a = self.a
     
-    b = self.b
+    b = self.b  
+    
+    v = (points[i_point_2]-points[i_point_1])*(1/points[i_point_1].distance(points[i_point_2]))
+    u = pya.DTrans.R270.trans(v)
+    shift_start = pya.DTrans(pya.DVector(points[i_point_2]))
+    
     if term_len>0:
-      v = (points[i_point_2]-points[i_point_1])*(1/points[i_point_1].distance(points[i_point_2]))
-      u = pya.DTrans.R270.trans(v)
       poly = pya.DPolygon([u*(a/2+b),u*(a/2+b)+v*(term_len),u*(-a/2-b)+v*(term_len),u*(-a/2-b)])
-      shift_start = pya.DTrans(pya.DVector(points[i_point_2]))
       self.cell.shapes(self.layout.layer(self.lo)).insert(poly.transform(shift_start))
-      # protection
-      poly2 = pya.DPolygon([u*(a/2+b+self.margin),u*(a/2+b+self.margin)+v*(term_len+self.margin),u*(-a/2-b-self.margin)+v*(term_len+self.margin),u*(-a/2-b-self.margin)])
-      self.cell.shapes(self.layout.layer(self.lp)).insert(poly2.transform(shift_start))
+    
+    # protection
+    term_len+= self.margin
+    poly2 = pya.DPolygon([u*(a/2+b+self.margin),u*(a/2+b+self.margin)+v*(term_len),u*(-a/2-b-self.margin)+v*(term_len),u*(-a/2-b-self.margin)])
+    self.cell.shapes(self.layout.layer(self.lp)).insert(poly2.transform(shift_start))
   
   def produce_impl(self):      
     points = [point for point in self.path.each_point()]
