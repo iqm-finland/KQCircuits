@@ -23,71 +23,160 @@ from importlib import reload
 reload(macroprep)
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 
-mask_name = "AB01"
+mask_name = "M001"
 dice_width = 200
-top_cell = layout.create_cell("Mask "+mask_name) # A new cell into the layout
+top_cell = layout.create_cell("Mask {}".format(mask_name)) # A new cell into the layout
 cell_view.cell_name = top_cell.name     # Shows the new cell
+with_grid = True
+
+wafer_diam_inc = 6.
+wafer_rad_um = wafer_diam_inc/2.*25400.
+wafer_center = pya.DVector(wafer_rad_um-1200,-wafer_rad_um+1200)
+
+
+box_map = {"A":[
+  ["AB1","AB2","QSG"], 
+  ["QSA","QSC","QDG"], 
+  ["QDA","QDC","QDD"], 
+]}
 
 mask_map = [
-#  ["E","E","E","D","D","D","E","E","E"],
-#  ["E","D","D","D","D","D","D","D","E"],
-#  ["E","D","D","D","D","D","D","D","E"],
-#  ["D","D","D","D","D","D","D","D","D"],
-#  ["D","D","D","D","D","D","D","D","D"],
-#  ["D","D","D","D","D","D","D","D","D"],
-#  ["E","D","D","D","D","D","D","D","E"],
-#  ["E","D","D","D","D","D","D","D","E"],
-#  ["E","E","E","D","D","D","E","E","E"], 
-  ["Q","AB1","AB2","D"], 
+  ["A","A","A","A","A"], 
+  ["A","A","A","A","A"], 
+  ["A","A","A","A","A"], 
+  ["A","A","A","A","A"], 
+  ["A","A","A","A","A"], 
 ]
 
-mask_map_legend = {
-  "D": layout.create_cell("Demo", "KQChip", {
-          "name_mask": mask_name,
-          "name_chip": "DEMO",
-          "name_copy": None,
-          "dice_width": dice_width
-          }),          
-  "AB1": layout.create_cell("ABCrossings", "KQChip", {
-          "name_mask": mask_name,
-          "name_chip": "AB1",
-          "name_copy": None,
-          "dice_width": dice_width,
-          "crossings": 10
-          }),          
-  "AB2": layout.create_cell("ABCrossings", "KQChip", {
-          "name_mask": mask_name,
-          "name_chip": "AB2",
-          "name_copy": None,
-          "dice_width": dice_width,
-          "crossings": 1}),          
-  "Q": layout.create_cell("Chip QFactor", "KQChip", {
-          "name_mask": mask_name,
-          "name_chip": "QF",
-          "name_copy": None,
-          "dice_width": dice_width,
-          "crossings": 1})
+mask_parameters_for_chip = {
+  "name_mask": mask_name,
+  "name_copy": None,
+  "dice_width": dice_width,
+  "with_grid": with_grid 
 }
 
-text_margin = mask_map_legend["D"].pcell_parameter("text_margin")
-print("text_margin ",text_margin )
+parameters_qd = {
+  "res_lengths": [5165.9,5230.4,5298.5,5297.8,5339.1,5413.5,5337.8,5413.7,5491.3,5509.4,5588.3,5669.5,5736.1,5821.1,5908.6,5997.,6090.1,6186.2],
+  "type_coupler": ["square","square","square","square","square","square","square","square","square","plate","plate","plate","plate","plate","plate","plate","plate","plate"],
+  "l_fingers": [19.9,20.1,21.,57.,7.3,8.8,12.6,14.1,15.6,10.2,10.4,10.7,20.1,19.7,19.1,25.9,25.3,24.7],
+  "n_fingers": [4,4,4,2,4,4,2,2,2,4,4,4,4,4,4,4,4,4]
+}
 
-v = pya.DVector(0,0)
 
+parameters_qs = {
+  "res_lengths": [5165.9,5297.8,5337.8,5509.4,5736.1,5997.],
+  "type_coupler": ["square","square","square","plate","plate","plate"],
+  "l_fingers": [19.9,57.,12.6,10.2,20.1,25.9],
+  "n_fingers": [4,2,2,4,4,4]
+}
+
+print(parameters_qd)
+mask_map_legend = {
+  "AB1": layout.create_cell("ABCrossings", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "AB1",
+          "crossings": 1
+          }),          
+  "AB2": layout.create_cell("ABCrossings", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "AB2",
+          "crossings": 10}), 
+  "QSG": layout.create_cell("Chip QFactor", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "QSG",
+          **parameters_qs,
+          "n_ab": 6*[0],
+          "res_term": 6*["galvanic"]
+  }),
+  "QSA": layout.create_cell("Chip QFactor", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "QSA",
+          **parameters_qs,
+          "n_ab": 6*[0],
+          "res_term": 6*["airbridge"]
+  }),
+  "QSC": layout.create_cell("Chip QFactor", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "QSC",
+          **parameters_qs,
+          "n_ab": 6*[5],
+          "res_term": 6*["airbridge"]
+  }),                   
+  "QDG": layout.create_cell("Chip QFactor", "KQChip", {
+          **parameters_qd,
+          **mask_parameters_for_chip,
+          "name_chip": "QDG",
+          "n_ab": 18*[0],
+          "res_term": 18*["galvanic"]
+  }),
+  "QDA": layout.create_cell("Chip QFactor", "KQChip", {
+          **mask_parameters_for_chip,
+          **parameters_qd,
+          "name_chip": "QDA",
+          "n_ab": 18*[0],
+          "res_term": 18*["airbridge"]
+  }),
+  "QDC": layout.create_cell("Chip QFactor", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "QDC",
+          **parameters_qd,
+          "n_ab": 18*[5],
+          "res_term": 18*["airbridge"]
+  }),
+  "QDD": layout.create_cell("Chip QFactor", "KQChip", {
+          **mask_parameters_for_chip,
+          "name_chip": "QDD",
+          **parameters_qd,
+          "n_ab": 18*[15],
+          "res_term": 18*["airbridge"]
+  }),
+}
+
+text_margin = mask_map_legend["AB1"].pcell_parameter("text_margin")
+
+step_ver = pya.DVector(0,-1e4)
+step_hor = pya.DVector(1e4,0)
+
+
+label_cell = layout.create_cell("ChipLabels") # A new cell into the layout
 def produce_label_wrap(i, j, loc):
   global dice_width, text_margin, default_layers
-  produce_label(top_cell, pos_index_name(i, j), loc+pya.DVector(1e4, 0), "bottomright", 
+  produce_label(label_cell, pos_index_name(i, j), loc+pya.DVector(1e4, 0), "bottomright", 
                 dice_width, text_margin, default_layers["Optical lit. 1"], default_layers["Grid avoidance"])
+top_cell.insert(pya.DCellInstArray(label_cell.cell_index(),pya.DTrans()))
 
 def pos_index_name(i, j):
   return chr(ord("A")+i)+str(j)
-  
-for (i, row) in enumerate(mask_map):
-  for (j, slot) in enumerate(row):
-    if slot in mask_map_legend.keys():
-      top_cell.insert(pya.DCellInstArray(mask_map_legend[slot].cell_index(), pya.DTrans(v)))
-      produce_label_wrap(i, j, v)
-          
-    v += pya.DVector(1e4, 0)    # microns
-  v += pya.DVector(-9e4, -1e4)  # microns</text>
+
+for (k, brow) in enumerate(mask_map):
+  for (l, box) in enumerate(brow):
+    if box in box_map:
+      for (i, row) in enumerate(box_map[box]):
+        for (j, slot) in enumerate(row):
+          if slot in mask_map_legend.keys():
+            v = step_ver*(i+3*k+1)+step_hor*(j+3*l)
+            if ((v-step_ver*0.5+step_hor*0.5-wafer_center).length()-wafer_rad_um &lt; -1e4): # center of the pixer 1 cm from the mask edge
+              top_cell.insert(pya.DCellInstArray(mask_map_legend[slot].cell_index(), pya.DTrans(v))) 
+              produce_label_wrap(i+3*k, j+3*l, v)
+
+
+
+cell_mask_name = layout.create_cell("TEXT", "Basic", {
+  "layer": default_layers["Optical lit. 1"], 
+  "text": "QCD-"+mask_name,
+  "mag": 5000.0
+})
+cell_mask_name_h = cell_mask_name.dbbox().height()
+cell_mask_name_w = cell_mask_name.dbbox().width()
+top_cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), pya.DTrans(wafer_center.x-cell_mask_name_w/2,-0.5e4-cell_mask_name_h/2))) 
+
+cell_mask_outline = layout.create_cell("CIRCLE", "Basic", {
+  "l": default_layers["Optical lit. 1"], 
+  "r": 1.e9,
+  "n": 64
+})
+
+circle = pya.DTrans(wafer_center)*pya.DPath([pya.DPoint(math.cos(a/32*math.pi)*wafer_rad_um, math.sin(a/32*math.pi)*wafer_rad_um) for a in range(0,64+1)],100)
+
+top_cell.shapes(layout.layer(default_layers["Annotations 2"])).insert(circle)</text>
 </klayout-macro>
