@@ -1,6 +1,8 @@
 import pya
 import math
 from kqcircuit.pcells.kqcircuit_pcell import KQCirvuitPCell
+from kqcircuit.defaults import default_layers
+from kqcircuit.groundgrid import make_grid
 
 import sys
 from importlib import reload
@@ -85,16 +87,18 @@ class ChipBase(KQCirvuitPCell):
   def __init__(self):
     super().__init__()
     self.param("box", self.TypeShape, "Border", default = pya.DBox(pya.DPoint(0,0),pya.DPoint(10000,10000)))
+    self.param("with_grid", self.TypeBoolean, "Make ground plane grid", default = False)    
+    self.param("lg", self.TypeLayer, "Layer ground plane grid", default = default_layers["Grid"])
     self.param("dice_width", self.TypeDouble, "Dicing width (um)", default = 100)
     self.param("name_mask", self.TypeString, "Name of the mask", default = "M99")
     self.param("name_chip", self.TypeString, "Name of the chip", default = "CTest")
-    self.param("name_copy", self.TypeString, "Name of the copy", default = "AA")
+    self.param("name_copy", self.TypeString, "Name of the copy", default = None) # Prevents Cell reuse on a mask
     self.param("text_margin", self.TypeDouble, "Margin for labels", default = 100, hidden = True)
     self.param("dice_grid_margin", self.TypeDouble, "Margin between dicing edge and ground grid", default = 100, hidden = True)
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return("Chip(w=" + ('%.1f' % self.box.width()) + ",h=" + ('%.1f' % self.box.height()) + ")")
+    return("{}".format(self.name_chip))
   
   def coerce_parameters_impl(self):
     None
@@ -117,11 +121,10 @@ class ChipBase(KQCirvuitPCell):
     transf = pya.DCplxTrans(1, direction, False, pos)    
     self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
   
-  def produce_launchers_SMA8(self):  
+  def produce_launchers_SMA8(self, enabled=["WS","WN","ES","EN","SW","SE","NW","NE"]):  
     launchers = default_launchers_SMA8
-    for name, launcher in launchers.items():
-      self.produce_launcher(launcher[0], launcher[1], name)
-      
+    for name in enabled:    
+      self.produce_launcher(launchers[name][0], launchers[name][1], name)      
     return launchers
                 
   def produce_label(self, label, location, origin):  
@@ -184,7 +187,7 @@ class ChipBase(KQCirvuitPCell):
     self.cell.shapes(lp).insert(trans*protection)     
                       
     # marker diagonal    
-    for i in range(5, 25):
+    for i in range(5, 15):
       self.cell.shapes(lo).insert(
         trans*(pya.DCplxTrans(3,  0, False, pya.DVector(50*i-3*6, 50*i-3*6))*sqr))
       self.cell.shapes(lp).insert(
@@ -221,10 +224,10 @@ class ChipBase(KQCirvuitPCell):
     y_max = max(self.box.p1.y, self.box.p2.y)    
     
     ## Square markers
-    self.produce_marker_sqr(pya.DTrans(x_min+2e3, y_min+2e3)*pya.DTrans.R180)
-    self.produce_marker_sqr(pya.DTrans(x_max-2e3, y_min+2e3)*pya.DTrans.R270)
-    self.produce_marker_sqr(pya.DTrans(x_min+2e3, y_max-2e3)*pya.DTrans.R90)
-    self.produce_marker_sqr(pya.DTrans(x_max-2e3, y_max-2e3)*pya.DTrans.R0)
+    self.produce_marker_sqr(pya.DTrans(x_min+1.5e3, y_min+1.5e3)*pya.DTrans.R180)
+    self.produce_marker_sqr(pya.DTrans(x_max-1.5e3, y_min+1.5e3)*pya.DTrans.R270)
+    self.produce_marker_sqr(pya.DTrans(x_min+1.5e3, y_max-1.5e3)*pya.DTrans.R90)
+    self.produce_marker_sqr(pya.DTrans(x_max-1.5e3, y_max-1.5e3)*pya.DTrans.R0)
         
     ## Text in the corners        
     if self.name_mask:
@@ -239,4 +242,12 @@ class ChipBase(KQCirvuitPCell):
     if True:
       self.produce_label("A!", 
                       pya.DPoint(x_min, y_min), "bottomleft")
+                      
+    ## Ground grid
+    if (self.with_grid):
+      grid_area = self.cell.bbox()
+      protection = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.lp))).merged()    
+      grid_mag_factor = 1
+      region_ground_grid = make_grid(grid_area, protection, grid_step = 10*(1/self.layout.dbu)*grid_mag_factor, grid_size = 5*(1/self.layout.dbu)*grid_mag_factor )    
+      self.cell.shapes(self.layout.layer(self.lg)).insert(region_ground_grid)
     
