@@ -8,7 +8,6 @@ import sys
 from importlib import reload
 reload(sys.modules[KQCirvuitPCell.__module__])
 
-
 default_launchers_SMA8 = {
       "WS": (pya.DPoint(1800,2800),"W"),      
       "ES": (pya.DPoint(8200,2800),"E"),      
@@ -18,12 +17,18 @@ default_launchers_SMA8 = {
       "NW": (pya.DPoint(2800,8200),"N"),      
       "SE": (pya.DPoint(7200,1800),"S"),      
       "NE": (pya.DPoint(7200,8200),"N")
-    }
-    
+    }    
     
 def produce_label(cell, label, location, origin, dice_width, margin, layer_optical, layer_protection):
     layout = cell.layout()
     dbu = layout.dbu    
+    
+
+    if not label:
+      label = "A13" # longest label on 6 inch wafer
+      protection_only = True
+    else:
+      protection_only = False
     
     # text cell
     subcell = layout.create_cell("TEXT", "Basic", {
@@ -49,7 +54,8 @@ def produce_label(cell, label, location, origin, dice_width, margin, layer_optic
           subcell.bbox().p2.x+margin+dice_width, 
           subcell.bbox().p1.y-margin-dice_width),
       }[origin]*dbu*(-1))
-    cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
+    if not protection_only:
+      cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
     
     # protection layer with margin
     protection = pya.DBox(pya.Point(
@@ -236,7 +242,7 @@ class ChipBase(KQCirvuitPCell):
     if self.name_chip:
       self.produce_label(self.name_chip, 
                       pya.DPoint(x_max, y_max), "topright")
-    if self.name_copy:
+    if True:
       self.produce_label(self.name_copy, 
                       pya.DPoint(x_max, y_min), "bottomright")
     if True:
