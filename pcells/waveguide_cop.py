@@ -147,8 +147,8 @@ class WaveguideCopTCross(KQCirvuitPCell):
     super().__init__()
     self.param("a2", self.TypeDouble, "Width of the side waveguide", default = default_circuit_params["a"])
     self.param("b2", self.TypeDouble, "Gap of the side waveguide", default = default_circuit_params["b"])
-    self.param("l", self.TypeDouble, "Extra length", default = 0)
-    self.param("l2", self.TypeDouble, "Extra length of the side waveguide", default = 0)
+    self.param("length_extra", self.TypeDouble, "Extra length", default = 0)
+    self.param("length_extra_side", self.TypeDouble, "Extra length of the side waveguide", default = 0)
     
   def display_text_impl(self):
     # Provide a descriptive text for the cell
@@ -167,22 +167,30 @@ class WaveguideCopTCross(KQCirvuitPCell):
     # Origin: Crossing of centers of the center conductors
     # Direction: Ports from left, right and bottom
     # Top gap
+    
+    l = self.length_extra
+    l2 = self.length_extra_side
+    a2 = self.a2
+    b2 = self.a2
+    a = self.a
+    b = self.b
+    
     pts = [
-      pya.DPoint(-self.l-self.b2-self.a2/2, self.a/2+0),
-      pya.DPoint( self.l+self.b2+self.a2/2, self.a/2+0),
-      pya.DPoint( self.l+self.b2+self.a2/2, self.a/2+self.b),
-      pya.DPoint(-self.l-self.b2-self.a2/2, self.a/2+self.b)
+      pya.DPoint(-l-b2-a2/2, a/2+0),
+      pya.DPoint( l+b2+a2/2, a/2+0),
+      pya.DPoint( l+b2+a2/2, a/2+b),
+      pya.DPoint(-l-b2-a2/2, a/2+b)
     ]
     shape = pya.DPolygon(pts)    
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)        
     # Left gap   
     pts = [
-      pya.DPoint(-self.l-self.b2-self.a2/2,-self.a/2+0),
-      pya.DPoint(               -self.a2/2,-self.a/2+0),
-      pya.DPoint(               -self.a2/2,-self.a/2-self.b-self.l2),
-      pya.DPoint(       -self.b2-self.a2/2,-self.a/2-self.b-self.l2),
-      pya.DPoint(       -self.b2-self.a2/2,-self.a/2-self.b),
-      pya.DPoint(-self.l-self.b2-self.a2/2,-self.a/2-self.b)
+      pya.DPoint(-l-b2-a2/2,-a/2+0),
+      pya.DPoint(     -a2/2,-a/2+0),
+      pya.DPoint(     -a2/2,-a/2-b-l2),
+      pya.DPoint(  -b2-a2/2,-a/2-b-l2),
+      pya.DPoint(  -b2-a2/2,-a/2-b),
+      pya.DPoint(-l-b2-a2/2,-a/2-b)
     ]
     shape = pya.DPolygon(pts)  
     self.cell.shapes(self.layout.layer(self.lo)).insert(shape)         
@@ -191,18 +199,18 @@ class WaveguideCopTCross(KQCirvuitPCell):
     # Protection layer
     m = self.margin
     pts = [
-      pya.DPoint(-self.l-self.b2-self.a2/2,  self.a/2+self.b+m),      
-      pya.DPoint( self.l+self.b2+self.a2/2,  self.a/2+self.b+m),
-      pya.DPoint( self.l+self.b2+self.a2/2, -self.a/2-self.b-self.l2),
-      pya.DPoint(-self.l-self.b2-self.a2/2, -self.a/2-self.b-self.l2),
+      pya.DPoint(-l-b2-a2/2-m,  a/2+b+m),      
+      pya.DPoint( l+b2+a2/2+m,  a/2+b+m),
+      pya.DPoint( l+b2+a2/2+m, -a/2-b-l2-m),
+      pya.DPoint(-l-b2-a2/2-m, -a/2-b-l2-m),
     ]
     shape = pya.DPolygon(pts)  
     self.cell.shapes(self.layout.layer(self.lp)).insert(shape)   
         
     # annotation text
-    self.refpoints["port_left"] = pya.DPoint(-self.l-self.b2-self.a2/2, 0)
-    self.refpoints["port_right"] = pya.DPoint( self.l+self.b2+self.a2/2, 0)
-    self.refpoints["port_bottom"] = pya.DPoint(0, -self.a/2-self.b-self.l2)
+    self.refpoints["port_left"] = pya.DPoint(-l-b2-a2/2, 0)
+    self.refpoints["port_right"] = pya.DPoint( l+b2+a2/2, 0)
+    self.refpoints["port_bottom"] = pya.DPoint(0, -a/2-b-l2)
     super().produce_impl() # adds refpoints
     
 class WaveguideCop(KQCirvuitPCell):
