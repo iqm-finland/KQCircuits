@@ -70,7 +70,6 @@ parameters_qs = {
   "n_fingers": [4,2,2,4,4,4]
 }
 
-print(parameters_qd)
 mask_map_legend = {
   "AB1": layout.create_cell("ABCrossings", "KQChip", {
           **mask_parameters_for_chip,
@@ -136,7 +135,6 @@ text_margin = mask_map_legend["AB1"].pcell_parameter("text_margin")
 
 step_ver = pya.DVector(0,-1e4)
 step_hor = pya.DVector(1e4,0)
-
 
 label_cell = layout.create_cell("ChipLabels") # A new cell into the layout
 def produce_label_wrap(i, j, loc):
