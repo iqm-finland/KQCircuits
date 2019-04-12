@@ -45,7 +45,7 @@ class ABCrossings(ChipBase):
     # airbridge
     ab = self.layout.create_cell("Airbridge", "KQCircuit", {
                           "pad_width": 1.1*width,
-                          "pad_length": 1*width, # BUG?
+                          "pad_length": 1*width,
                           "bridge_length": length,
                           "bridge_width": width,
                           "pad_extra": 1
@@ -173,7 +173,7 @@ class ABCrossings(ChipBase):
       nodes.append(("tl",pya.DPoint(ref_x+wiggle, last_y)))   
       last_y -= step  
     nodes.append(("tl",launchers["ES"][0]))
-    self.produce_crossing_waveguide(nodes,self.b*4+self.a+10)
+    self.produce_crossing_waveguide(nodes, self.b*4+self.a+10)
     
     # Mechanical test array
     p_test_origin = pya.DPoint(3600, 8000)
