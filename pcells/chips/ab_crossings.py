@@ -18,23 +18,6 @@ class ABCrossings(ChipBase):
     super().__init__()
     self.param("crossings", self.TypeInt, "Number of double crossings", default = 10)
 
-  def display_text_impl(self):
-    # Provide a descriptive text for the cell
-    return("ABTest{}".format(version))
-  
-  def coerce_parameters_impl(self):
-    None
-
-  def can_create_from_shape_impl(self):
-    return self.shape.is_box()
-  
-  def parameters_from_shape_impl(self):
-    self.box.p1 = self.shape.p1
-    self.box.p2 = self.shape.p2
-    
-  def transformation_from_shape_impl(self):
-    return pya.Trans()    
-  
   def produce_mechanical_test(self, loc, distance, number, length, width):
     
     wg_len = number*(distance+width)
@@ -115,7 +98,6 @@ class ABCrossings(ChipBase):
     self.cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
   
   def produce_impl(self): 
-    super().produce_impl()
     
     # Launcher
     launchers = self.produce_launchers_SMA8()    
@@ -176,13 +158,16 @@ class ABCrossings(ChipBase):
     self.produce_crossing_waveguide(nodes, self.b*4+self.a+10)
     
     # Mechanical test array
-    p_test_origin = pya.DPoint(3600, 8000)
-    v_distance_step = pya.DVector(0,-1000)
+    p_test_origin = pya.DPoint(3600, 9000)
+    v_distance_step = pya.DVector(0,-2000)
     v_length_step = pya.DVector(0,-100)
     v_width_step = pya.DVector(400,0)
     
-    for i, length in enumerate(range(22,42,2)):
+    for i, length in enumerate(range(22,60,2)):
       for j, width in enumerate(range(5,20,2)):
         for k, distance in enumerate(range(2,22,5)):
           loc = p_test_origin + v_length_step*i + v_width_step*j + v_distance_step*k
           self.produce_mechanical_test(loc, distance, 10, length, width)
+          
+    # chip frame and possibly ground plane grid
+    super().produce_impl()
