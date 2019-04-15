@@ -3,6 +3,7 @@ import os
 from kqcircuit.pcells.waveguide_cop import WaveguideCopStreight
 from kqcircuit.pcells.waveguide_cop import WaveguideCopCurve
 from kqcircuit.pcells.waveguide_cop import WaveguideCop
+from kqcircuit.pcells.waveguide_cop import WaveguideCopTCross
 from kqcircuit.pcells.finger_capacitor import FingerCapacitorTapered
 from kqcircuit.pcells.finger_capacitor import FingerCapacitorSquare
 from kqcircuit.pcells.meander import MeanderCenter
@@ -10,6 +11,8 @@ from kqcircuit.pcells.swissmon import Swissmon
 from kqcircuit.pcells.launcher import Launcher
 from kqcircuit.pcells.chips.chip_base import ChipBase
 from kqcircuit.pcells.chips.demo import DemoChip
+from kqcircuit.pcells.airbridge import AirBridge
+from kqcircuit.pcells.teststructures.airbridge_dc import AirBridgeDC
 
 import kqcircuit.defaults 
 
@@ -20,8 +23,11 @@ from importlib import reload
 
 reload(kqcircuit.defaults)
 reload(sys.modules[Swissmon.__module__])
+reload(sys.modules[AirBridge.__module__])
+reload(sys.modules[AirBridgeDC.__module__])
 reload(sys.modules[WaveguideCop.__module__])
 reload(sys.modules[WaveguideCopCurve.__module__])
+reload(sys.modules[WaveguideCopTCross.__module__])
 reload(sys.modules[ChipBase.__module__])
 reload(sys.modules[Launcher.__module__])
 reload(sys.modules[DemoChip.__module__])
@@ -52,11 +58,13 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("Waveguide", WaveguideCop())
     self.layout().register_pcell("Waveguide streight", WaveguideCopStreight())
     self.layout().register_pcell("Waveguide curved", WaveguideCopCurve())
+    self.layout().register_pcell("Waveguide cross", WaveguideCopTCross())
     self.layout().register_pcell("Meander", MeanderCenter())
+    self.layout().register_pcell("Airbridge", AirBridge())
+    self.layout().register_pcell("Airbridge DC test", AirBridgeDC())
     self.layout().register_pcell("Swissmon", Swissmon())
     self.layout().register_pcell("FingerCapT", FingerCapacitorTapered())
     self.layout().register_pcell("FingerCapS", FingerCapacitorSquare())
-    self.layout().register_pcell("TJunction", WaveguideCopCurve())
     self.layout().register_pcell("Launcher", Launcher())
     self.layout().register_pcell("Chip base", ChipBase())
 

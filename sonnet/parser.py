@@ -1,5 +1,6 @@
 import pya
 from string import Template
+import os
 
 def apply_template(filename_template, filename_output, rules):
   filein = open(filename_template)
@@ -8,7 +9,15 @@ def apply_template(filename_template, filename_output, rules):
   results = src.substitute(rules)
   fileout = open(filename_output, "w")
   fileout.write(results)
-  fileout.close()  
+  fileout.close() 
+  dirname_sondata = os.path.join(os.path.dirname(filename_output),"sondata")
+  if not os.path.exists(dirname_sondata):
+    os.mkdir(dirname_sondata)
+  dirname_project = os.path.join(dirname_sondata,os.path.splitext(os.path.basename(filename_output))[0])
+  if not os.path.exists(dirname_project):
+    os.mkdir(dirname_project)
+  
+  
   
 def polygon_head(
       nvertices,# number of vertices of the polygon
@@ -48,7 +57,7 @@ def box(
       ywidth : float = 8000.,
       xcells : int = 8000,
       ycells : int = 8000,
-      materials_type : str = "SiOx+Si"
+      materials_type : str = "Si BT"
     ):
 
   xcells2 = 2*xcells
@@ -57,12 +66,14 @@ def box(
   eeff = 0 # placeholder for depricated parameter
   
   materials = {
-    "Si": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (intrinsic)\"",
+    "Si RT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (room temperature)\"",
+    "Si BT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.45 1 0 0 0 0 \"Silicon (cryogenic)\"",
     "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
   }[materials_type]
   
   nlev = {
     "Si": 1,
+    "Si BT": 1,
     "SiOx+Si": 2
   }[materials_type]
   
