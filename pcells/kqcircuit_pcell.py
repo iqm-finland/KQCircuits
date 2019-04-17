@@ -37,6 +37,10 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
     self.margin = 5 # this can have a different meaning for different cells
     
     self.refpoints = {"base":pya.DVector(0,0)}
+  
+  def create_sub_cell(self, pcell_name, parameters, library_name = "KQCircuit"):
+    return self.layout.create_cell(pcell_name, library_name, {**self.cell.pcell_parameters_by_name(), **parameters})
+
     
   def produce_impl(self):
     # call the super.produce_impl once all the refpoints have been added to self.refpoints
