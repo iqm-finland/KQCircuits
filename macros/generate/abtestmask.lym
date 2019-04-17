@@ -167,15 +167,28 @@ cell_mask_name = layout.create_cell("TEXT", "Basic", {
 })
 cell_mask_name_h = cell_mask_name.dbbox().height()
 cell_mask_name_w = cell_mask_name.dbbox().width()
-top_cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), pya.DTrans(wafer_center.x-cell_mask_name_w/2,-0.5e4-cell_mask_name_h/2))) 
+top_cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), pya.DTrans(wafer_center.x-cell_mask_name_w/2,-0.5e4-cell_mask_name_h/2)))
 
 cell_mask_outline = layout.create_cell("CIRCLE", "Basic", {
   "l": default_layers["Optical lit. 1"], 
   "r": 1.e9,
   "n": 64
 })
-
 circle = pya.DTrans(wafer_center)*pya.DPath([pya.DPoint(math.cos(a/32*math.pi)*wafer_rad_um, math.sin(a/32*math.pi)*wafer_rad_um) for a in range(0,64+1)],100)
+top_cell.shapes(layout.layer(default_layers["Annotations 2"])).insert(circle)
 
-top_cell.shapes(layout.layer(default_layers["Annotations 2"])).insert(circle)</text>
+cell_marker = layout.create_cell("Marker", "KQCircuit", {"window": True})
+x_min = 0
+y_min = -15e4
+x_max = 15e4
+y_max = 0
+marker_transes = [pya.DTrans(x_min+25e3, y_min+25e3)*pya.DTrans.R180,
+  pya.DTrans(x_max-25e3, y_min+25e3)*pya.DTrans.R270,
+  pya.DTrans(x_min+25e3, y_max-25e3)*pya.DTrans.R90,
+  pya.DTrans(x_max-25e3, y_max-25e3)*pya.DTrans.R0]
+for trans in marker_transes:
+  top_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans)) 
+
+
+</text>
 </klayout-macro>
