@@ -137,69 +137,8 @@ class ChipBase(KQCirvuitPCell):
     produce_label(self.cell, label, location, origin, self.dice_width, self.text_margin, self.lo, self.lp)
     
   def produce_marker_sqr(self, trans):
-    
-    corner = pya.DPolygon([
-      pya.DPoint(100,100),
-      pya.DPoint( 10,100),
-      pya.DPoint( 10, 80),
-      pya.DPoint( 80, 80),
-      pya.DPoint( 80, 10),
-      pya.DPoint(100, 10),
-    ])   
-    
-    sqr = pya.DBox(
-      pya.DPoint( 10, 10),
-      pya.DPoint(  2,  2),
-    )
-    
-    lo = self.layout.layer(self.lo)
-    lp = self.layout.layer(self.lp)
-    
-    # center boxes
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1,  0, False, pya.DVector())*sqr))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1, 90, False, pya.DVector())*sqr))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1,180, False, pya.DVector())*sqr))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1,-90, False, pya.DVector())*sqr))
-      
-    # inner corners
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1,  0, False, pya.DVector())*corner))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1, 90, False, pya.DVector())*corner))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1,180, False, pya.DVector())*corner))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(1,-90, False, pya.DVector())*corner))
-            
-    # outer corners
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(2,  0, False, pya.DVector())*corner))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(2, 90, False, pya.DVector())*corner))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(2,180, False, pya.DVector())*corner))
-    self.cell.shapes(lo).insert(
-      trans*(pya.DCplxTrans(2,-90, False, pya.DVector())*corner))
-    
-    # protection for the box
-    protection = pya.DBox(
-                      pya.DPoint( 220, 220),
-                      pya.DPoint(-220,-220)
-                    )   
-    self.cell.shapes(lp).insert(trans*protection)     
-                      
-    # marker diagonal    
-    for i in range(5, 15):
-      self.cell.shapes(lo).insert(
-        trans*(pya.DCplxTrans(3,  0, False, pya.DVector(50*i-3*6, 50*i-3*6))*sqr))
-      self.cell.shapes(lp).insert(
-        trans*(pya.DCplxTrans(20,  0, False, pya.DVector(50*i-20*6, 50*i-20*6))*sqr))
-    
-    
+    cell_marker = self.create_sub_cell("Marker",{"window":False})
+    self.cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans))    
     
   def produce_dicing_edge(self):
     x_min = min(self.box.p1.x, self.box.p2.x)
