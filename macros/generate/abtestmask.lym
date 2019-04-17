@@ -52,22 +52,23 @@ mask_parameters_for_chip = {
   "name_mask": mask_name,
   "name_copy": None,
   "dice_width": dice_width,
-  "with_grid": with_grid 
-}
+  "with_grid": with_grid,
+  "r": 100
+  }
 
 parameters_qd = {
-  "res_lengths": [5165.9,5230.4,5298.5,5297.8,5339.1,5413.5,5337.8,5413.7,5491.3,5509.4,5588.3,5669.5,5736.1,5821.1,5908.6,5997.,6090.1,6186.2],
-  "type_coupler": ["square","square","square","square","square","square","square","square","square","plate","plate","plate","plate","plate","plate","plate","plate","plate"],
-  "l_fingers": [19.9,20.1,21.,57.,7.3,8.8,12.6,14.1,15.6,10.2,10.4,10.7,20.1,19.7,19.1,25.9,25.3,24.7],
-  "n_fingers": [4,4,4,2,4,4,2,2,2,4,4,4,4,4,4,4,4,4]
+  "res_lengths": [4649.6,4743.3,4869.9,4962.9,5050.7,5138.7,5139.,5257.,5397.4,5516.8,5626.6,5736.2,5742.9,5888.7,6058.3,6202.5,6350.,6489.4],
+  "type_coupler": ["square","square","square","plate","plate","plate","square","square","square","plate","plate","plate","square","square","square","square","plate","plate"],
+  "l_fingers": [19.9,54.6,6.7,9.7,22.8,30.5,26.1,14.2,18.2,10.9,19.8,26.4,34.2,19.9,25.3,8.,15.8,22.2],
+  "n_fingers": [4,2,2,4,4,4,4,4,2,4,4,4,4,4,2,2,4,4]
 }
 
 
 parameters_qs = {
-  "res_lengths": [5165.9,5297.8,5337.8,5509.4,5736.1,5997.],
+  "res_lengths": [4649.6,4908.9,5208.5,5516.8,5848.9,6217.4],
   "type_coupler": ["square","square","square","plate","plate","plate"],
-  "l_fingers": [19.9,57.,12.6,10.2,20.1,25.9],
-  "n_fingers": [4,2,2,4,4,4]
+  "l_fingers": [19.9,7.3,15.2,10.9,18.5,23.6],
+  "n_fingers": [4,4,2,4,4,4]
 }
 
 mask_map_legend = {
@@ -99,7 +100,7 @@ mask_map_legend = {
           "name_chip": "QSC",
           **parameters_qs,
           "n_ab": 6*[5],
-          "res_term": 6*["airbridge"]
+          "res_term": 6*["galvanic"]
   }),                   
   "QDG": layout.create_cell("Chip QFactor", "KQChip", {
           **parameters_qd,
@@ -120,14 +121,14 @@ mask_map_legend = {
           "name_chip": "QDC",
           **parameters_qd,
           "n_ab": 18*[5],
-          "res_term": 18*["airbridge"]
+          "res_term": 18*["galvanic"]
   }),
   "QDD": layout.create_cell("Chip QFactor", "KQChip", {
           **mask_parameters_for_chip,
           "name_chip": "QDD",
           **parameters_qd,
           "n_ab": 18*[15],
-          "res_term": 18*["airbridge"]
+          "res_term": 18*["galvanic"]
   }),
 }
 
@@ -144,7 +145,7 @@ def produce_label_wrap(i, j, loc):
 top_cell.insert(pya.DCellInstArray(label_cell.cell_index(),pya.DTrans()))
 
 def pos_index_name(i, j):
-  return chr(ord("A")+i)+str(j)
+  return chr(ord("A")+i)+("{:02d}".format(j))
 
 for (k, brow) in enumerate(mask_map):
   for (l, box) in enumerate(brow):
