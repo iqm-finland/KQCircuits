@@ -147,6 +147,18 @@ top_cell.insert(pya.DCellInstArray(label_cell.cell_index(),pya.DTrans()))
 def pos_index_name(i, j):
   return chr(ord("A")+i)+("{:02d}".format(j))
 
+dbu = layout.dbu
+wafer_rad_dbu = wafer_rad_um / dbu
+clip = -14.5e4
+region_covered = pya.Region(
+  (pya.DPolygon([
+    pya.DPoint(
+      wafer_center.x+math.cos(a/32*math.pi)*wafer_rad_um, 
+      wafer_center.y+max(math.sin(a/32*math.pi)*wafer_rad_um,clip)
+    ) 
+    for a in range(0,64+1)
+  ])).to_itype(dbu))
+
 for (k, brow) in enumerate(mask_map):
   for (l, box) in enumerate(brow):
     if box in box_map:
@@ -155,19 +167,24 @@ for (k, brow) in enumerate(mask_map):
           if slot in mask_map_legend.keys():
             v = step_ver*(i+3*k+1)+step_hor*(j+3*l)
             if ((v-step_ver*0.5+step_hor*0.5-wafer_center).length()-wafer_rad_um &lt; -1e4): # center of the pixer 1 cm from the mask edge
-              top_cell.insert(pya.DCellInstArray(mask_map_legend[slot].cell_index(), pya.DTrans(v))) 
+              inst = top_cell.insert(pya.DCellInstArray(mask_map_legend[slot].cell_index(), pya.DTrans(v))) 
               produce_label_wrap(i+3*k, j+3*l, v)
+              region_covered-=pya.Region(inst.bbox())
 
 
 
-cell_mask_name = layout.create_cell("TEXT", "Basic", {
-  "layer": default_layers["Optical lit. 1"], 
-  "text": "QCD-"+mask_name,
-  "mag": 5000.0
-})
-cell_mask_name_h = cell_mask_name.dbbox().height()
-cell_mask_name_w = cell_mask_name.dbbox().width()
-top_cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), pya.DTrans(wafer_center.x-cell_mask_name_w/2,-0.5e4-cell_mask_name_h/2)))
+maskextra_cell = layout.create_cell("MaskExtra") # A new cell into the layout
+
+for layer, postfix in {"Optical lit. 1":"-1  .","Optical lit. 2":"- 2 .","Optical lit. 3":"-  3."}.items():
+  cell_mask_name = layout.create_cell("TEXT", "Basic", {
+    "layer": default_layers[layer], 
+    "text": "QCD-"+mask_name+postfix,
+    "mag": 5000.0
+  })
+  cell_mask_name_h = cell_mask_name.dbbox().height()
+  cell_mask_name_w = cell_mask_name.dbbox().width()
+  inst = maskextra_cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), pya.DTrans(wafer_center.x-cell_mask_name_w/2,-0.5e4-cell_mask_name_h/2)))
+  region_covered-=pya.Region(inst.bbox()).extents(1e3/dbu)
 
 cell_mask_outline = layout.create_cell("CIRCLE", "Basic", {
   "l": default_layers["Optical lit. 1"], 
@@ -175,7 +192,7 @@ cell_mask_outline = layout.create_cell("CIRCLE", "Basic", {
   "n": 64
 })
 circle = pya.DTrans(wafer_center)*pya.DPath([pya.DPoint(math.cos(a/32*math.pi)*wafer_rad_um, math.sin(a/32*math.pi)*wafer_rad_um) for a in range(0,64+1)],100)
-top_cell.shapes(layout.layer(default_layers["Annotations 2"])).insert(circle)
+maskextra_cell.shapes(layout.layer(default_layers["Annotations 2"])).insert(circle)
 
 cell_marker = layout.create_cell("Marker", "KQCircuit", {"window": True})
 x_min = 0
@@ -187,8 +204,15 @@ marker_transes = [pya.DTrans(x_min+25e3, y_min+25e3)*pya.DTrans.R180,
   pya.DTrans(x_min+25e3, y_max-25e3)*pya.DTrans.R90,
   pya.DTrans(x_max-25e3, y_max-25e3)*pya.DTrans.R0]
 for trans in marker_transes:
-  top_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans)) 
+  inst = maskextra_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans)) 
+  region_covered-=pya.Region(inst.bbox()).extents(1e3/dbu)
+  
+  
+maskextra_cell.shapes(layout.layer(default_layers["Optical lit. 1"])).insert(region_covered)
+maskextra_cell.shapes(layout.layer(default_layers["Optical lit. 2"])).insert(region_covered)
+maskextra_cell.shapes(layout.layer(default_layers["Optical lit. 3"])).insert(region_covered)
 
+top_cell.insert(pya.DCellInstArray(maskextra_cell.cell_index(), pya.DTrans())) 
 
 </text>
 </klayout-macro>
