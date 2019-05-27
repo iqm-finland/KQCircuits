@@ -6,9 +6,12 @@ from kqcircuit.defaults import default_circuit_params
 
 def get_refpoints(layer, cell, cell_transf = pya.DTrans()):
   refpoints = {}
-  for shape in cell.shapes(layer).each():
-    if shape.type()==pya.Shape.TText:
-      refpoints[shape.text_string] = cell_transf.trans(pya.DPoint(shape.text_dpos))
+  shapes_iter = cell.begin_shapes_rec(layer)
+  while not shapes_iter.at_end():
+    shape = shapes_iter.shape()
+    if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
+      refpoints[shape.text_string] = cell_transf*(shapes_iter.dtrans()*(pya.DPoint(shape.text_dpos)))
+    shapes_iter.next()
     
   return refpoints
   
