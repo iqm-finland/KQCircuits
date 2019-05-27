@@ -34,7 +34,7 @@ reload(macroprep)
 pprint.pprint(default_layers)
 
 
-(layout, layout_view) = macroprep.prep_empty_layout()
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 
 
 def produce_simulation_cell(cell):
@@ -43,8 +43,9 @@ def produce_simulation_cell(cell):
   # Swissmon      
   swissmon = layout.create_cell("Swissmon", "KQCircuit", {
     "fluxline": False,
-    "arm_width": [50,30,50,30],
+    "arm_width": [50,10,50,10],
     "gap_width": 70,
+    "corner_r": 2,
     "cpl_length": [174,0,174],
     "cpl_width": [48,42,48],
     "cpl_gap": [90, 102, 90],
@@ -54,13 +55,16 @@ def produce_simulation_cell(cell):
   cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DTrans()))
   
   swissmon_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), swissmon)  
+  print(swissmon_refpoints_abs)
   
   ports = []
   ports.append(simgeom.SidePort(1, swissmon_refpoints_abs['port_cplr0'], 'l'))
   ports.append(simgeom.SidePort(2, swissmon_refpoints_abs['port_cplr2'], 'r'))
-  ports.append(simgeom.SidePort(3, swissmon_refpoints_abs['port_drive'], 'b', termination=10))
-    
-  return ports
+  ports.append(simgeom.SidePort(3, swissmon_refpoints_abs['port_drive'], 'b', termination=10))  
+  ports.append(simgeom.Port(4, swissmon_refpoints_abs['port_squid_a'], group="A"))  
+  ports.append(simgeom.Port(4, swissmon_refpoints_abs['port_squid_b'], group="A"))
+  calgroup = "CUPGRP \"A\"\nID 28\nGNDREF F\nTWTYPE FEED\nEND"
+  return ports, calgroup
   
 import os.path
 
@@ -71,12 +75,13 @@ simualtion_safety = 300 # microns
 name = "sim qubit"
 
 cell = layout.create_cell(name) # A new cell into the layout
-ports = produce_simulation_cell(cell)
+ports, calgroup = produce_simulation_cell(cell)
 
 sonnet_strings = simgeom.add_sonnet_geometry(
   cell, 
   simualtion_safety = simualtion_safety, # microns
   ports = ports,
+  calgroup = calgroup,
   grid_size = 1, # microns
   symmetry = False # top-bottom symmetry for sonnet 
 ) 
