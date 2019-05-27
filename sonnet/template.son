@@ -38,6 +38,7 @@ BMET "Lossless" 0 SUP 0 0 0 0
 $box
 LORGN 0 0 U 
 $ports
+$calgroup
 $polygons
 END GEO
 OPT
