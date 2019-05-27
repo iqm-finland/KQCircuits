@@ -9,6 +9,7 @@ from kqcircuit.pcells.finger_capacitor import FingerCapacitorSquare
 from kqcircuit.pcells.meander import MeanderCenter
 from kqcircuit.pcells.swissmon import Swissmon
 from kqcircuit.pcells.launcher import Launcher
+from kqcircuit.pcells.marker import Marker
 from kqcircuit.pcells.chips.chip_base import ChipBase
 from kqcircuit.pcells.chips.demo import DemoChip
 from kqcircuit.pcells.chips.ab_crossings import ABCrossings
@@ -18,21 +19,22 @@ from kqcircuit.pcells.teststructures.airbridge_dc import AirBridgeDC
 
 import kqcircuit.defaults 
 
-
 import sys
 import inspect
 from importlib import reload
+
 
 reload(kqcircuit.defaults)
 reload(sys.modules[Swissmon.__module__])
 reload(sys.modules[AirBridge.__module__])
 reload(sys.modules[AirBridgeDC.__module__])
-reload(sys.modules[WaveguideCop.__module__])
 reload(sys.modules[WaveguideCopCurve.__module__])
+reload(sys.modules[WaveguideCop.__module__])
 reload(sys.modules[WaveguideCopTCross.__module__])
 reload(sys.modules[ChipBase.__module__])
 reload(sys.modules[Launcher.__module__])
 reload(sys.modules[DemoChip.__module__])
+reload(sys.modules[Marker.__module__])
 reload(sys.modules[ChipQFactor.__module__])
 reload(sys.modules[ABCrossings.__module__])
 reload(sys.modules[MeanderCenter.__module__])
@@ -67,6 +69,7 @@ class KQCircuitLibrary(pya.Library):
     self.layout().register_pcell("Airbridge", AirBridge())
     self.layout().register_pcell("Airbridge DC test", AirBridgeDC())
     self.layout().register_pcell("Swissmon", Swissmon())
+    self.layout().register_pcell("Marker", Marker())
     self.layout().register_pcell("FingerCapT", FingerCapacitorTapered())
     self.layout().register_pcell("FingerCapS", FingerCapacitorSquare())
     self.layout().register_pcell("Launcher", Launcher())

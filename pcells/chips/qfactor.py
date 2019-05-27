@@ -34,16 +34,20 @@ class ChipQFactor(ChipBase):
     res_term = self.res_term
         
     # Launchers
-    launchers = self.produce_launchers_SMA8(enabled=["WN","EN"])    
-    tl_start = launchers["WN"][0]
-    tl_end = launchers["EN"][0]
+    launchers = self.produce_launchers_SMA8(enabled=["WN","EN"])  
+    
+    points_fl = [launchers["WN"][0], 
+      launchers["WN"][0]+pya.DVector(self.r,0), 
+      launchers["WN"][0]+pya.DVector(self.r,1.1e3), 
+      launchers["WN"][0]+pya.DVector(self.r*2,1.1e3)
+      ]
+    tl_start =points_fl[-1]  
     
     resonators = len(self.res_lengths)
-    v_res_step = (tl_end-tl_start)*(1./resonators)
+    v_res_step = (launchers["EN"][0]-launchers["WN"][0]-pya.DVector((self.r*4),0))*(1./resonators)
     cell_cross = self.layout.create_cell("Waveguide cross", "KQCircuit", {
       "length_extra_side": 2*self.a})
       
-    pos_last_feedline = tl_start
     
     # Airbridge crossing resonators
     cell_ab_crossing = self.layout.create_cell("Airbridge", "KQCircuit", {
@@ -73,7 +77,7 @@ class ChipQFactor(ChipBase):
             
       # Resonator
       pos_res_start = cplr_pos+pya.DTrans.R90*cplr_refpoints_rel["port_a"]
-      pos_res_end = cplr_pos+pya.DVector(0,-res_lengths[i])
+      pos_res_end = pos_res_start+pya.DVector(0,-res_lengths[i])
       if res_term[i] == "airbridge":
         cell_res = self.layout.create_cell("Waveguide", "KQCircuit", {
         "path": pya.DPath([
@@ -95,15 +99,15 @@ class ChipQFactor(ChipBase):
       self.cell.insert(pya.DCellInstArray(cell_res.cell_index(), pya.DTrans()))
       
       # Feedline 
-      cell_tl = self.layout.create_cell("Waveguide", "KQCircuit", {
-      "path": pya.DPath([
-                  pos_last_feedline, 
+      cell_tl = self.create_sub_cell("Waveguide", {
+      "path": pya.DPath(points_fl+[
+                  
                   cross_refpoints_abs["port_left"]
                 ],1),
       "term2" : 0,
       })   
       self.cell.insert(pya.DCellInstArray(cell_tl.cell_index(), pya.DTrans()))      
-      pos_last_feedline = cross_refpoints_abs["port_right"]\
+      points_fl = [cross_refpoints_abs["port_right"]]
       
       # Airbridges
       if n_ab[i]:
@@ -113,10 +117,12 @@ class ChipQFactor(ChipBase):
           self.cell.insert(pya.DCellInstArray(cell_ab_crossing.cell_index(), pya.DTrans(1,False,pos_ab))) 
       
     # Last feedline
-    cell_tl = self.layout.create_cell("Waveguide", "KQCircuit", {
-    "path": pya.DPath([
-                pos_last_feedline, 
-                tl_end
+    cell_tl = self.create_sub_cell("Waveguide", {
+    "path": pya.DPath(points_fl+[
+                launchers["EN"][0]+pya.DVector(-self.r*2,1.1e3),
+                launchers["EN"][0]+pya.DVector(-self.r,1.1e3), 
+                launchers["EN"][0]+pya.DVector(-self.r,0), 
+                launchers["EN"][0]
               ],1),
     "term2" : 0,
     })   

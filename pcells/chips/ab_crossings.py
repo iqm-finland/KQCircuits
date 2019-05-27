@@ -73,7 +73,7 @@ class ABCrossings(ChipBase):
         alpha = math.atan2(v_dir.y,v_dir.x)
         # finish the waveguide
         tl_path.append(node[1]-v_dir*(cd/v_dir.length()))
-        wg = self.layout.create_cell("Waveguide", "KQCircuit", {
+        wg = self.create_sub_cell("Waveguide", {
           "path": pya.DPath(tl_path,1),
           "term1" : 0 if tl_is_first else self.b,         
           "term2" : self.b,         
@@ -91,7 +91,7 @@ class ABCrossings(ChipBase):
         tl_path = [node[1]+v_dir*(cd/v_dir.length())]
 
     # finish the last waveguide
-    wg = self.layout.create_cell("Waveguide", "KQCircuit", {
+    wg = self.create_sub_cell("Waveguide", {
       "path": pya.DPath(tl_path,1),
       "term1" : self.b
     })
