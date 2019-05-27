@@ -106,7 +106,8 @@ class Swissmon(KQCirvuitPCell):
     b = self.b # cpw gap width
       
     # add ref point
-    port_ref = pya.DPoint(-g-b-a/2, -l)
+    #port_ref = pya.DPoint(-g-b-a/2, -l)
+    port_ref = pya.DPoint(-l*1.2, -l*1.2)
     self.refpoints["port_drive"] = port_ref
   
   def produce_coupler(self, cpl_nr):
