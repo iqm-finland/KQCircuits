@@ -140,8 +140,8 @@ def polygons(polygons, v, dbu):
       raise NotImplementedError    
     sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i+1 ) # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
     for j, point in enumerate(poly.each_point_hull()):
-      sonnet_str += "{} {}\n".format(point.x*dbu+v.x, point.y*dbu+v.y)
+      sonnet_str += "{} {}\n".format(point.x*dbu+v.x, -(point.y*dbu+v.y)) # sonnet Y-coordinate goes in the other direction
     point = next(poly.each_point_hull()) # first point again to close the polygon
-    sonnet_str += "{} {}\nEND\n".format(point.x*dbu+v.x, point.y*dbu+v.y)
+    sonnet_str += "{} {}\nEND\n".format(point.x*dbu+v.x, -(point.y*dbu+v.y))
     
   return sonnet_str
