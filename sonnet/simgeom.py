@@ -26,7 +26,7 @@ class SidePort(Port):
       "l": "LEFT",
       "r": "RIGHT",
       "t": "TOP",
-      "b": "BOTTOM",
+      "b": "BOTTOM", # Y-coordinate in sonnet goes the other way around
     }[side]
     self.termination = termination # width of the ground plane gap in the end for the transmission line
     self.dbox = None
@@ -60,7 +60,7 @@ def add_sonnet_geometry(
   region_neg = pya.Region(cell.begin_shapes_rec(layer_opt))
 
   # safety ground 
-  region_pos = cell.dbbox_per_layer(layer_opt)
+  region_pos = cell.dbbox()#_per_layer(layer_opt)
   region_pos = pya.Region(region_pos.enlarge(
                       simualtion_safety, 
                       simualtion_safety + (region_pos.height() % 2)/2 # also esnure summetry for 1 um grid
@@ -97,7 +97,7 @@ def add_sonnet_geometry(
     sstring_ports += poly_and_edge_indeces(simpolygons, dbu, port)
   
   return {  
-      "polygons": parser.polygons(simpolygons, cell.dbbox().p1*(-1), dbu),
+      "polygons": parser.polygons(simpolygons, pya.DVector(-cell.dbbox().p1.x,-cell.dbbox().p2.y), dbu),
       "box": parser.box_from_cell(cell, 1),
       "ports": sstring_ports,
       "calgroup": calgroup,
