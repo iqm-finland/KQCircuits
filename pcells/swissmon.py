@@ -19,7 +19,7 @@ class Swissmon(KQCirvuitPCell):
     self.param("len_direct", self.TypeDouble, "Length between the ports (um)", default = 400)
     self.param("len_finger", self.TypeDouble, "Length of the fingers (um)", default = 50)
     self.param("fingers", self.TypeInt, "Number of fingers (at least 2)", default = 3)
-    self.param("arm_length", self.TypeDouble, "Arm length (um)", default = 300./2)
+    self.param("arm_length", self.TypeDouble, "Arm length (um, ENWS)", default = [300./2, 300./2, 300./2])
     self.param("arm_width", self.TypeList, "Arm width (um)", default = [24, 24, 24, 24])
     self.param("gap_width", self.TypeDouble, "Gap width (um)", default = 48)
     self.param("corner_r", self.TypeDouble, "Corner radius (um)", default = 5)
@@ -28,6 +28,7 @@ class Swissmon(KQCirvuitPCell):
     self.param("cpl_length", self.TypeList, "Coupler lengths (um, ENW)", default = [160, 160, 160])
     self.param("cpl_gap", self.TypeList, "Coupler gap (um, ENW)", default = [102, 102, 102])
     self.param("squid_name", self.TypeString, "SQUID Type", default = ("QCD1"))
+    self.param("cl_offset", self.TypeList, "Chargeline offset (um, um)", default = [200,200])
     self.name = "qb1"
 
   def display_text_impl(self):
@@ -81,7 +82,7 @@ class Swissmon(KQCirvuitPCell):
     ])
     
     # transfer to swiss cross cordinates
-    shift_up = -self.arm_length - (self.gap_width-wn)/2
+    shift_up = -self.arm_length[3] - (self.gap_width-wn)/2
     transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
     
     self.cell.shapes(self.layout.layer(self.lo)).insert(right_gap.transformed(transf))
@@ -101,13 +102,13 @@ class Swissmon(KQCirvuitPCell):
     g = self.gap_width # gap width 
     [we, wn, ww, ws] = [float(width)/2 for width in self.arm_width] # length of the horisontal segment
     w = wn # length of the horisontal segment
-    l = self.arm_length # swissmon arm length from the center of the cross (refpoint)
+    l = self.cl_offset # swissmon arm length from the center of the cross (refpoint)
     a = self.a # cpw center conductor width
     b = self.b # cpw gap width
       
     # add ref point
     #port_ref = pya.DPoint(-g-b-a/2, -l)
-    port_ref = pya.DPoint(-l*1.2, -l*1.2)
+    port_ref = pya.DPoint(-l[0], -l[1])
     self.refpoints["port_drive"] = port_ref
   
   def produce_coupler(self, cpl_nr):
@@ -150,7 +151,7 @@ class Swissmon(KQCirvuitPCell):
     
     # move to the north arm of swiss cross
     ground_width = (2*g - self.gap_width - 2*b)/2
-    shift_up = self.arm_length+(self.gap_width-2*aw)/2 + ground_width + w + b
+    shift_up = self.arm_length[cpl_nr]+(self.gap_width-2*aw)/2 + ground_width + w + b
     transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
     
     # rotate to the correcti direction
@@ -182,17 +183,17 @@ class Swissmon(KQCirvuitPCell):
     # refpoint in the center of the swiss cross
     cross_island_points = [
       pya.DPoint(wn, ww),
-      pya.DPoint(l, ww),
-      pya.DPoint(l, -ww),
+      pya.DPoint(l[2], ww),
+      pya.DPoint(l[2], -ww),
       pya.DPoint(ws, -ww),
-      pya.DPoint(ws, -l),
-      pya.DPoint(-ws, -l),
+      pya.DPoint(ws, -l[3]),
+      pya.DPoint(-ws, -l[3]),
       pya.DPoint(-ws, -we),
-      pya.DPoint(-l, -we),
-      pya.DPoint(-l, we),
+      pya.DPoint(-l[0], -we),
+      pya.DPoint(-l[0], we),
       pya.DPoint(-wn, we),
-      pya.DPoint(-wn, l),
-      pya.DPoint(wn, l),
+      pya.DPoint(-wn, l[1]),
+      pya.DPoint(wn, l[1]),
     ] 
     
     
@@ -200,17 +201,17 @@ class Swissmon(KQCirvuitPCell):
     s = self.gap_width/2
     cross_gap_points = [
       pya.DPoint(s, s),
-      pya.DPoint(l+(s-ww), s),
-      pya.DPoint(l+(s-ww), -s),
+      pya.DPoint(l[2]+(s-ww), s),
+      pya.DPoint(l[2]+(s-ww), -s),
       pya.DPoint(s, -s),
-      pya.DPoint(s, -l-(s-wn)),
-      pya.DPoint(-s, -l-(s-wn)),
+      pya.DPoint(s, -l[3]-(s-wn)),
+      pya.DPoint(-s, -l[3]-(s-wn)),
       pya.DPoint(-s, -s),
-      pya.DPoint(-l-(s-we), -s),
-      pya.DPoint(-l-(s-we), s),
+      pya.DPoint(-l[0]-(s-we), -s),
+      pya.DPoint(-l[0]-(s-we), s),
       pya.DPoint(-s, s),
-      pya.DPoint(-s, l+(s-ws)),
-      pya.DPoint(s, l+(s-ws)),
+      pya.DPoint(-s, l[1]+(s-ws)),
+      pya.DPoint(s, l[1]+(s-ws)),
     ] 
     
     cross = pya.DPolygon( cross_gap_points )    
@@ -229,7 +230,7 @@ class Swissmon(KQCirvuitPCell):
     # SQUID from template
     # SQUID refpoint at the ground plane edge
     squid_cell =  self.layout.create_cell(self.squid_name, "KQCircuit")
-    transf = pya.DCplxTrans(1,0,False,pya.DVector(0,-l-(s-wn)-3))
+    transf = pya.DCplxTrans(1,0,False,pya.DVector(0,-l[3]-(s-wn)-3))
     
     region_unetch = pya.Region(squid_cell.shapes(self.layout.layer(default_layers["Unetch 1"])))
     region_unetch.transform(transf.to_itrans(self.layout.dbu))
