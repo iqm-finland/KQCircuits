@@ -16,10 +16,7 @@ class Swissmon(KQCirvuitPCell):
       default = default_layers["Electron beam lit. 1"])      
     self.param("le2", self.TypeLayer, "Layer electron beam 2", 
       default = default_layers["Electron beam lit. 2"])
-    self.param("len_direct", self.TypeDouble, "Length between the ports (um)", default = 400)
-    self.param("len_finger", self.TypeDouble, "Length of the fingers (um)", default = 50)
-    self.param("fingers", self.TypeInt, "Number of fingers (at least 2)", default = 3)
-    self.param("arm_length", self.TypeDouble, "Arm length (um, ENWS)", default = [300./2, 300./2, 300./2])
+    self.param("arm_length", self.TypeDouble, "Arm length (um, ENWS)", default = [300./2]*4)
     self.param("arm_width", self.TypeList, "Arm width (um)", default = [24, 24, 24, 24])
     self.param("gap_width", self.TypeDouble, "Gap width (um)", default = 48)
     self.param("corner_r", self.TypeDouble, "Corner radius (um)", default = 5)
