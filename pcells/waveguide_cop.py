@@ -2,6 +2,7 @@ import pya
 import math
 from kqcircuit.pcells.kqcircuit_pcell import KQCirvuitPCell
 from kqcircuit.defaults import default_circuit_params
+from kqcircuit.pcells.kqcircuit_pcell import coerce_parameters
 
 def up_mod(a, per):
   # Finds remainder in the same direction as periodicity
@@ -94,13 +95,14 @@ class WaveguideCopCurve(KQCirvuitPCell):
   def __init__(self):
     super().__init__()
     self.param("alpha", self.TypeDouble, "Curve angle", default = math.pi)
+    self.param("length", self.TypeDouble, "Actual length", default = 0, readonly = True)
    
   def display_text_impl(self):
     # Provide a descriptive text for the cell
     return "WaveguideCopCurve(a=" + ('%.1f' % self.a) + ",b=" + ('%.1f' % self.b) + ")"
 
   def coerce_parameters_impl(self):
-    None
+    self.length = self.r*abs(self.alpha)
 
   def can_create_from_shape_impl(self):
     return False
@@ -223,13 +225,15 @@ class WaveguideCop(KQCirvuitPCell):
     self.param("path", self.TypeShape, "TLine", default = pya.DPath([pya.DPoint(0,0),pya.DPoint(100,0)],0))
     self.param("term1", self.TypeDouble, "Termination length start (um)", default = 0)
     self.param("term2", self.TypeDouble, "Termination length end (um)", default = 0)
+    self.param("length", self.TypeDouble, "Actual length", default = 0, readonly = True)
+    self._length = 0
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
     return "Waveguide(a=" + ('%.1f' % self.a) + ",b=" + ('%.1f' % self.b) + ")"
   
   def coerce_parameters_impl(self):
-    None
+    self.length = self._length
 
   def can_create_from_shape_impl(self):
     return self.shape.is_path()
@@ -264,6 +268,7 @@ class WaveguideCop(KQCirvuitPCell):
   
   def produce_impl(self):      
     points = [point for point in self.path.each_point()]
+    self._length = 0
     
     # Termination before the first segment
     self.produce_end_termination(1, 0, self.term1)
@@ -287,6 +292,7 @@ class WaveguideCop(KQCirvuitPCell):
       segment_end = points[i+1]
       cut = v1.vprod_sign(v2)*self.r / math.tan((math.pi-(alpha2-alpha1))/2)
       l = segment_start.distance(segment_end)-cut
+      self._length += l
       angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
       subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
         "a": self.a,
@@ -304,14 +310,17 @@ class WaveguideCop(KQCirvuitPCell):
         "alpha": alpha2-alpha1, # TODO: Finish the list,
         "n": self.n,
         "r": self.r
-      })
+      })      
       transf = pya.DCplxTrans(1, alpha1/math.pi*180.0-v1.vprod_sign(v2)*90, False, corner)
-      self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))
+      inst = self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))
+      coerce_parameters(inst) # updates the internal parameters
+      self._length += inst.pcell_parameter("length")
     
     # Last segement
     segment_start = segment_last
     segment_end = points[-1]
     l = segment_start.distance(segment_end)
+    self._length += l
     angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
     
     # Terminate the end
