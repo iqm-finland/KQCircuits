@@ -2,7 +2,12 @@ import pya
 from kqcircuit.defaults import default_layers
 from kqcircuit.defaults import default_circuit_params
 
-
+def coerce_parameters(inst):
+  layout = inst.cell.library().layout()
+  params = inst.pcell_parameters()
+  declaration = inst.pcell_declaration()
+  newparams = declaration.coerce_parameters(layout, params)
+  inst.change_pcell_parameters(newparams)
 
 def get_refpoints(layer, cell, cell_transf = pya.DTrans()):
   refpoints = {}
