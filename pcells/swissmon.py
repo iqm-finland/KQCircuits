@@ -227,7 +227,7 @@ class Swissmon(KQCirvuitPCell):
     # SQUID from template
     # SQUID refpoint at the ground plane edge
     squid_cell =  self.layout.create_cell(self.squid_name, "KQCircuit")
-    transf = pya.DCplxTrans(1,0,False,pya.DVector(0,-l[3]-(s-wn)-3))
+    transf = pya.DCplxTrans(1,0,False,pya.DVector(0,-l[3]-(s-wn)))
     
     region_unetch = pya.Region(squid_cell.shapes(self.layout.layer(default_layers["Unetch 1"])))
     region_unetch.transform(transf.to_itrans(self.layout.dbu))
