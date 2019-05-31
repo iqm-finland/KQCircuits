@@ -103,6 +103,7 @@ def add_sonnet_geometry(
       "calgroup": calgroup,
       "refpalnes": parser.refplanes(refplane_dirs, simualtion_safety),
       "symmetry": parser.symmetry(symmetry),
+      "nports": len(set([abs(port.sonnet_nr) for port in ports])),
   }
 
 def poly_and_edge_indeces(polygons, dbu, port):
