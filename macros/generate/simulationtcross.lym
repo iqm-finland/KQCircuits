@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>import pya
+import numpy
+from kqcircuit.defaults import default_layers
+from kqcircuit.pcells.kqcircuit_pcell import get_refpoints
+import kqcircuit.sonnet.parser as sonnet
+import pprint
+import kqcircuit.sonnet.simgeom as simgeom 
+import kqcircuit.macro_prepare as macroprep
+
+
+from importlib import reload
+reload(sonnet)
+reload(simgeom)
+#reload(kqcircuit.defaults)
+reload(macroprep)
+
+pprint.pprint(default_layers)
+
+
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+
+
+def produce_simulation_cell(cell):
+  global layout  
+
+  pointa = pya.DPoint(-100,0)
+  pointb = pya.DPoint(100,0)
+  pointc = pya.DPoint(0,-30)
+  # Swissmon      
+  driveline = layout.create_cell("Waveguide", "KQCircuit", {
+    "path": pya.DPath([
+                pointa,
+                pointb
+              ],1)
+  })    
+  cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
+    
+  ports = []
+  ports.append(simgeom.SidePort(1, pointa, 'l'))
+  ports.append(simgeom.SidePort(2, pointb, 'r'))
+  ports.append(simgeom.SidePort(3, pointc, 'b', termination=10))  
+  return ports, calgroup
+  
+import os.path
+
+batchstring = ""
+
+## Produce
+simualtion_safety = 300 # microns
+name = "sim tcross"
+
+cell = layout.create_cell(name) # A new cell into the layout
+ports, calgroup = produce_simulation_cell(cell)
+
+sonnet_strings = simgeom.add_sonnet_geometry(
+  cell, 
+  simualtion_safety = simualtion_safety, # microns
+  ports = ports,
+  calgroup = calgroup,
+  grid_size = 1, # microns
+  symmetry = False # top-bottom symmetry for sonnet 
+) 
+sonnet_strings["control"] = sonnet.control("ABS")
+
+# outputfiles into working directory
+filename = name+".son"
+sonnet.apply_template(
+  os.path.join(os.path.dirname(os.path.abspath(sonnet.__file__)), "template.son"), 
+  filename,
+  sonnet_strings      
+  )
+batchstring += "\"./{}\"\n".format(filename)
+
+
+## Batch
+file = open("batch.txt","w") 
+file.write(batchstring) 
+file.close() 
+
+
+layout_view.add_missing_layers()
+layout_view.zoom_fit()
+layout_view.max_hier()
+#print(sys.version)
+</text>
+</klayout-macro>
