@@ -3,6 +3,7 @@ import math
 from kqcircuit.pcells.chips.chip_base import ChipBase
 from kqcircuit.defaults import default_layers
 from kqcircuit.pcells.kqcircuit_pcell import coerce_parameters
+from kqcircuit.coupler_lib import produce_library_capacitor
 
 import sys
 from importlib import reload
@@ -17,86 +18,8 @@ class ChipShaping(ChipBase):
   
   def __init__(self):
     super().__init__()   
+    self.param("tunable", self.TypeBoolean, "Tunable", default = False)
     self.r = 100
-
-  def produce_mechanical_test(self, loc, distance, number, length, width):
-    
-    wg_len = number*(distance+width)
-    wg_start = loc+pya.DVector(-wg_len/2,0)
-    wg_end = loc+pya.DVector(+wg_len/2,0)
-    v_step = pya.DVector(distance+width,0)
-    
-    # airbridge
-    ab = self.layout.create_cell("Airbridge", "KQCircuit", {
-                          "pad_width": 1.1*width,
-                          "pad_length": 1*width,
-                          "bridge_length": length,
-                          "bridge_width": width,
-                          "pad_extra": 1
-                          }) 
-    for i in range(number):
-      ab_trans = pya.DCplxTrans(1, 0, False, wg_start+v_step*(i+0.5))
-      self.cell.insert(pya.DCellInstArray(ab.cell_index(), ab_trans))
-                          
-    # waveguide
-    wg = self.layout.create_cell("Waveguide", "KQCircuit", {
-          "path": pya.DPath([wg_start,wg_end],1)     
-        })    
-    self.cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
-  
-  def produce_crossing_waveguide(self, nodes, ab_length):
-    # we assume the first node is not an airbridge
-    tl_path = [nodes[0][1]]   
-    tl_is_first = True
-    
-    # airbridge
-    ab = self.layout.create_cell("Airbridge", "KQCircuit", {
-                          "pad_width": self.a-1,
-                          "pad_length": self.a*2, # BUG?
-                          "bridge_length": ab_length,
-                          "bridge_width": self.a-1,
-                          "pad_extra": 1
-                          }) 
-    # conductor distanance
-    cd = ab_length/2
-    # neighbour airbridge distanance
-    nad = self.b+self.a
-     
-    # we assume at least to nodes
-    for node in nodes[1:]:
-      if node[0] == "tl":
-        # just a kink in the waveguide
-        tl_path.append(node[1])
-      else:
-        # direction of the last waveguide segment
-        v_dir = node[1]-tl_path[-1]
-        v_ort = pya.DTrans.R90*v_dir
-        alpha = math.atan2(v_dir.y,v_dir.x)
-        # finish the waveguide
-        tl_path.append(node[1]-v_dir*(cd/v_dir.length()))
-        wg = self.create_sub_cell("Waveguide", {
-          "path": pya.DPath(tl_path,1),
-          "term1" : 0 if tl_is_first else self.b,         
-          "term2" : self.b,         
-        })    
-        tl_is_first = False
-        self.cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
-        # place the ab
-        ab_trans = pya.DCplxTrans(1, alpha/math.pi*180.+90., False, node[1])
-        self.cell.insert(pya.DCellInstArray(ab.cell_index(), ab_trans))
-        ab_trans = pya.DCplxTrans(1, alpha/math.pi*180.+90., False, node[1]+v_ort*(nad/v_ort.length()))     
-        self.cell.insert(pya.DCellInstArray(ab.cell_index(), ab_trans))    
-        ab_trans = pya.DCplxTrans(1, alpha/math.pi*180.+90., False, node[1]-v_ort*(nad/v_ort.length()))     
-        self.cell.insert(pya.DCellInstArray(ab.cell_index(), ab_trans))        
-        # start new waveguide
-        tl_path = [node[1]+v_dir*(cd/v_dir.length())]
-
-    # finish the last waveguide
-    wg = self.create_sub_cell("Waveguide", {
-      "path": pya.DPath(tl_path,1),
-      "term1" : self.b
-    })
-    self.cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
   
   def produce_impl(self):  
     
@@ -128,6 +51,7 @@ class ChipShaping(ChipBase):
       "path": pya.DPath([
                   launchers["WN"][0],
                   launchers["WN"][0]+pya.DVector(self.r,0),
+                  pya.DPoint((launchers["WN"][0]+pya.DVector(self.r,0)).x, port_qubit_dr.y),
                   port_qubit_dr-pya.DVector(self.r,0),
                   port_qubit_dr
                 ],1),
@@ -141,6 +65,7 @@ class ChipShaping(ChipBase):
       "path": pya.DPath([
                   launchers["WS"][0],
                   launchers["WS"][0]+pya.DVector(self.r,0),
+                  pya.DPoint((launchers["WS"][0]+pya.DVector(self.r,0)).x, port_qubit_fl.y),
                   port_qubit_fl-pya.DVector(self.r,0),
                   port_qubit_fl
                 ],1),
@@ -148,83 +73,106 @@ class ChipShaping(ChipBase):
     })    
     self.cell.insert(pya.DCellInstArray(fl.cell_index(), pya.DTrans()))    
     
-    # Readout resonator
-    waveguide_length = 0    
-    wg1_end = port_qubit_ro+pya.DVector(0,400)+pya.DVector(200,0)
-    waveguide1 = self.layout.create_cell("Waveguide", "KQCircuit", {
-      "path": pya.DPath([
-                  port_qubit_ro,
-                  port_qubit_ro+pya.DVector(0,self.r),
-                  port_qubit_ro+pya.DVector(0,400),
-                  wg1_end,
-                ],1),
-      "r": self.r
-    })    
-    inst = self.cell.insert(pya.DCellInstArray(waveguide1.cell_index(), pya.DTrans()))
-    coerce_parameters(inst) # updates the internal parameters
-    waveguide_length += inst.pcell_parameter("length")
     
-    meander1_end = wg1_end+pya.DVector(400, 0)
-    meander1 = self.layout.create_cell("Meander", "KQCircuit", {
-      "start": wg1_end,
-      "end": meander1_end,
-      "length": 600,
-      "meanders": 2,
-      "r": self.r
-    })    
-    self.cell.insert(pya.DCellInstArray(meander1.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-  
+    ####### Readout resonator with the purcell filter
+    
+    segment_length_target_rr = [611.586, 1834.76, 611.586] # from qubit to shorted end
+    segment_length_target_pr = [3158.32, 789.581] # from output to shorted end
+    caps_fingers = [4, 4, 4] # J, kappa, drive
+    caps_length = [37.5, 67.9, 36.2] # J, kappa, drive
+    caps_type = ["plate", "square", "plate"] # J, kappa, drive
+
+    # Waveguide t-cross used in multiple locations
     cross1 = self.layout.create_cell("Waveguide cross", "KQCircuit", {
       "length_extra_side": 2*self.a,
       "length_extra": 50,
       "r": self.r}) 
-    cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(2,False,0,0))
-    port_rel_cross1_wg1 = cross1_refpoints_rel["port_right"]            
-    port_rel_cross1_wg2 = cross1_refpoints_rel["port_left"]
-    port_rel_cross1_dr = cross1_refpoints_rel["port_bottom"]
+    cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0,False,0,0))
+    cross1_length = cross1_refpoints_rel["port_right"].distance(cross1_refpoints_rel["port_left"])
+        
+    # Readout resonator first segement
+    waveguide_length = 0    
+    wg1_end = port_qubit_ro+pya.DVector(0, segment_length_target_rr[0]-cross1_length)
+    waveguide1 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_qubit_ro,
+                  port_qubit_ro+pya.DVector(0, self.r),
+                  wg1_end      +pya.DVector(0,-self.r),
+                  wg1_end,
+                ],1),
+      "r": self.r
+    })    
+    self.cell.insert(pya.DCellInstArray(waveguide1.cell_index(), pya.DTrans()))
+    
+    #meander1_end = wg1_end+pya.DVector(450, 0)
+    #meander1 = self.layout.create_cell("Meander", "KQCircuit", {
+    #  "start": wg1_end,
+    #  "end": meander1_end,
+    #  "length": 600,
+    #  "meanders": 2,
+    #  "r": self.r
+    #})    
+    #meander1_inst = self.cell.insert(pya.DCellInstArray(meander1.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    #meander1_inst.change_pcell_parameter("length", segment_length_target_rr[0]-waveguide_length)
+    
+    waveguide_length = cross1_length+cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
     cross1_inst = self.cell.insert(pya.DCellInstArray(
       cross1.cell_index(), 
-      pya.DTrans(2,False,meander1_end-port_rel_cross1_wg1)
+      pya.DTrans(1,False,wg1_end-pya.DTrans(1,False,0,0)*cross1_refpoints_rel["port_left"])
       ))
     cross1_refpoints_abs = self.get_refpoints(cross1, cross1_inst.dtrans)
         
-    meander2_end = meander1_end+port_rel_cross1_wg2+pya.DVector(400, 0)
+    meander2_end = cross1_refpoints_abs["port_bottom"]+pya.DVector(630, 0)
     meander2 = self.layout.create_cell("Meander", "KQCircuit", {
-      "start": meander1_end-port_rel_cross1_wg1+port_rel_cross1_wg2,
+      "start": cross1_refpoints_abs["port_bottom"],
       "end": meander2_end,
-      "length": 600,
+      "length": segment_length_target_rr[1]-waveguide_length,
       "meanders": 2,
       "r": self.r
     })    
-    self.cell.insert(pya.DCellInstArray(meander2.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    meander2_inst = self.cell.insert(pya.DCellInstArray(meander2.cell_index(), pya.DTrans(pya.DVector(0, 0))))
     
-    cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0,False,0,0))
-    port_rel_cross2_wg2 = cross2_refpoints_rel["port_left"]         
-    port_rel_cross2_jcap = cross2_refpoints_rel["port_right"]
+    cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(2,False,0,0))
+    port_rel_cross2_wg2 = cross2_refpoints_rel["port_right"]         
+    port_rel_cross2_jcap = cross2_refpoints_rel["port_left"]
     port_rel_cross2_wg3 = cross2_refpoints_rel["port_bottom"]
-    cross2_inst = self.cell.insert(pya.DCellInstArray(cross1.cell_index(), pya.DTrans(0,False,meander2_end-port_rel_cross2_wg2)))
-    cross2_refpoints_rel = self.get_refpoints(cross1, cross2_inst.dtrans)
-     
+    cross2_inst = self.cell.insert(pya.DCellInstArray(cross1.cell_index(), pya.DTrans(2,False,meander2_end-port_rel_cross2_wg2)))
+    port_abs_cross2 = self.get_refpoints(cross1, cross2_inst.dtrans)    
+    
+    # Last bit of the readout resonator    
+    waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
+    waveguide5 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_abs_cross2["port_bottom"],
+                  port_abs_cross2["port_bottom"]+pya.DVector(0,(segment_length_target_rr[2]-waveguide_length))
+                ],1),
+      "r": self.r
+    })  
+    self.cell.insert(pya.DCellInstArray(waveguide5.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
     # Capacitor J
-    capj = self.layout.create_cell("FingerCapS", "KQCircuit", {
+    capj = produce_library_capacitor(self.layout, caps_fingers[0], caps_length[0], caps_type[0])
+    
+    self.layout.create_cell("FingerCapS", "KQCircuit", {
       "finger_number": 2
     })    
     port_rel_capj = self.get_refpoints(capj, pya.DTrans())  
-    capj_inst = self.cell.insert(pya.DCellInstArray(capj.cell_index(), pya.DTrans(cross2_refpoints_rel["port_right"]-port_rel_capj["port_a"])))
+    capj_inst = self.cell.insert(pya.DCellInstArray(capj.cell_index(), pya.DTrans(port_abs_cross2["port_left"]-port_rel_capj["port_a"])))
  
     cross3_inst = self.cell.insert(pya.DCellInstArray(cross1.cell_index(), 
-      pya.DTrans(0,False,cross2_refpoints_rel["port_right"]-port_rel_capj["port_a"]+port_rel_capj["port_b"]-port_rel_cross2_wg2)))
+      pya.DTrans(2,False,port_abs_cross2["port_left"]-port_rel_capj["port_a"]+port_rel_capj["port_b"]-port_rel_cross2_wg2)))
     port_abs_cross3 = self.get_refpoints(cross1, cross3_inst.dtrans)  
-        
-    meander3_end = port_abs_cross3["port_right"] + pya.DVector(1000, 0)
+    waveguide_length = cross1_length
+            
+    meander3_end = port_abs_cross3["port_left"] + pya.DVector(900, 0)
     meander3 = self.layout.create_cell("Meander", "KQCircuit", {
-      "start": port_abs_cross3["port_right"],
+      "start": port_abs_cross3["port_left"],
       "end": meander3_end,
-      "length": 3*600,
-      "meanders": 6,
+      "length": 1500,
+      "meanders": 3,
       "r": self.r
     })    
-    self.cell.insert(pya.DCellInstArray(meander3.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    meander3_inst = self.cell.insert(pya.DCellInstArray(meander3.cell_index(), pya.DTrans(pya.DVector(0, 0))))
     
     waveguide2 = self.layout.create_cell("Waveguide", "KQCircuit", {
       "path": pya.DPath([
@@ -234,48 +182,253 @@ class ChipShaping(ChipBase):
                   meander3_end+pya.DVector(self.r,400+self.r),
                 ],1),
       "r": self.r
+    })      
+    inst = self.cell.insert(pya.DCellInstArray(waveguide2.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    coerce_parameters(inst) # updates the internal parameters
+    waveguide_length += inst.pcell_parameter("length")
+    meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0]-waveguide_length)   
+  
+    # Last bit of the Purcell filter of RR   
+    waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
+    wg6_end = port_abs_cross3["port_bottom"]+pya.DVector(0,(segment_length_target_pr[1]-waveguide_length))
+    waveguide6 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_abs_cross3["port_bottom"],
+                  wg6_end
+                ],1),
+      "r": self.r,
+      "term2": (40 if self.tunable else 0)
     })  
-    self.cell.insert(pya.DCellInstArray(waveguide2.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-        
+    self.cell.insert(pya.DCellInstArray(waveguide6.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    # Purcell resonator SQUID
+    if (self.tunable):
+      # SQUID refpoint at the ground plane edge
+      squid_cell =  self.layout.create_cell("RES1", "KQCircuit")
+      transf = pya.DTrans(2, False, wg6_end+pya.DVector(0, 40))      
+      self.cell.insert(pya.DCellInstArray(squid_cell.cell_index(),transf)) 
+      
+      waveguide_restune = self.layout.create_cell("Waveguide", "KQCircuit", {
+        "path": pya.DPath([
+                    wg6_end+pya.DVector(-20, 40+15),
+                    wg6_end+pya.DVector(+20+self.r, 40+15),
+                    pya.DPoint((wg6_end+pya.DVector(+20+self.r, 40+15)).x, (launchers["NE"][0]).y-self.r),
+                    launchers["NE"][0]+pya.DVector(0,-self.r),
+                    launchers["NE"][0]+pya.DVector(0,0),
+                  ],1),
+        "r": self.r
+      })  
+      self.cell.insert(pya.DCellInstArray(waveguide_restune.cell_index(), pya.DTrans(pya.DVector(0, 0))))    
+      
+      
     # Capacitor Kappa
-    capk = self.layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": 4
-    })    
+    capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
     port_rel_capk = self.get_refpoints(capk, pya.DTrans(1,False,0,0))  
-    capk_inst = self.cell.insert(pya.DCellInstArray(capj.cell_index(), 
+    capk_inst = self.cell.insert(pya.DCellInstArray(capk.cell_index(), 
       pya.DTrans(1,False,meander3_end+pya.DVector(self.r,400+self.r)-port_rel_capk["port_a"])))
     port_abs_capk = self.get_refpoints(capk, capk_inst.dtrans)  
-        
+    
+    # Output port of the purcell resonator
     waveguide3 = self.layout.create_cell("Waveguide", "KQCircuit", {
       "path": pya.DPath([
                   port_abs_capk["port_b"],
                   port_abs_capk["port_b"]+pya.DVector(0,self.r),
-                  launchers["NE"][0]+pya.DVector(0,-self.r),
-                  launchers["NE"][0]+pya.DVector(0,0),
+                  pya.DPoint((port_abs_capk["port_b"]+pya.DVector(0,self.r)).x, launchers["EN"][0].y),
+                  launchers["EN"][0]+pya.DVector(-self.r,0),
+                  launchers["EN"][0],
                 ],1),
       "r": self.r
     })  
-    self.cell.insert(pya.DCellInstArray(waveguide3.cell_index(), pya.DTrans(pya.DVector(0, 0))))
-
-    # Capacitor Kappa
-    capi = self.layout.create_cell("FingerCapS", "KQCircuit", {
-      "finger_number": 0
-    })    
-    port_rel_capi = self.get_refpoints(capk, pya.DTrans(1,False,0,0))  
+    inst = self.cell.insert(pya.DCellInstArray(waveguide3.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    waveguide_length = 0
+    
+    # Capacitor for the driveline
+    capi = produce_library_capacitor(self.layout, caps_fingers[2], caps_length[2], caps_type[2])
+    port_rel_capi = self.get_refpoints(capi, pya.DTrans(1,False,0,0))  
     capi_inst = self.cell.insert(pya.DCellInstArray(capi.cell_index(), 
-      pya.DTrans(1,False,cross1_refpoints_abs["port_bottom"]-port_rel_capk["port_a"])))
+      pya.DTrans(1,False,cross1_refpoints_abs["port_right"]-port_rel_capi["port_a"])))
     port_abs_capi = self.get_refpoints(capi, capi_inst.dtrans)  
-        
+           
+    # Driveline of the readout resonator
     waveguide4 = self.layout.create_cell("Waveguide", "KQCircuit", {
       "path": pya.DPath([
                   port_abs_capi["port_b"],
                   port_abs_capi["port_b"]+pya.DVector(0,self.r),
+                  pya.DPoint(launchers["NW"][0].x, (port_abs_capi["port_b"]+pya.DVector(0,self.r)).y),
                   launchers["NW"][0]+pya.DVector(0,-self.r),
                   launchers["NW"][0]+pya.DVector(0,0),
                 ],1),
       "r": self.r
     })  
-    self.cell.insert(pya.DCellInstArray(waveguide4.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    self.cell.insert(pya.DCellInstArray(waveguide4.cell_index(), pya.DTrans(pya.DVector(0, 0))))     
+        
+        
+        
+    ####### Shaping resonator with the purcell filter
+    
+    segment_length_target_rr = [634.71, 1904.13, 634.71] # from qubit to shorted end
+    segment_length_target_pr = [3253.65, 813.413] # from output to shorted end
+    caps_fingers = [4, 4, 4] # J, kappa, drive
+    caps_length = [36.8, 71.5, 36.2] # J, kappa, drive
+    caps_type = ["plate", "square", "plate"] # J, kappa, drive
+
+    # Readout resonator first segement
+    waveguide_length = 0    
+    wg1_end = port_qubit_sh+pya.DVector(0, -(segment_length_target_rr[0]-cross1_length))
+    waveguide1 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_qubit_sh,
+                  port_qubit_sh+pya.DVector(0,-self.r),
+                  wg1_end      +pya.DVector(0,+self.r),
+                  wg1_end,
+                ],1),
+      "r": self.r
+    })    
+    self.cell.insert(pya.DCellInstArray(waveguide1.cell_index(), pya.DTrans()))
+    
+    waveguide_length = cross1_length+cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
+    cross1_inst = self.cell.insert(pya.DCellInstArray(
+      cross1.cell_index(), 
+      pya.DTrans(1,False,wg1_end-pya.DTrans(1,False,0,0)*cross1_refpoints_rel["port_right"])
+      ))
+    cross1_refpoints_abs = self.get_refpoints(cross1, cross1_inst.dtrans)
+        
+    meander2_end = cross1_refpoints_abs["port_bottom"]+pya.DVector(630, 0)
+    meander2 = self.layout.create_cell("Meander", "KQCircuit", {
+      "start": cross1_refpoints_abs["port_bottom"],
+      "end": meander2_end,
+      "length": segment_length_target_rr[1]-waveguide_length,
+      "meanders": 2,
+      "r": self.r
+    })    
+    meander2_inst = self.cell.insert(pya.DCellInstArray(meander2.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0,False,0,0))
+    port_rel_cross2_wg2 = cross2_refpoints_rel["port_left"]         
+    port_rel_cross2_jcap = cross2_refpoints_rel["port_right"]
+    port_rel_cross2_wg3 = cross2_refpoints_rel["port_bottom"]
+    cross2_inst = self.cell.insert(pya.DCellInstArray(cross1.cell_index(), pya.DTrans(0,False,meander2_end-port_rel_cross2_wg2)))
+    port_abs_cross2 = self.get_refpoints(cross1, cross2_inst.dtrans)    
+    
+    # Last bit of the readout resonator    
+    waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
+    waveguide5 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_abs_cross2["port_bottom"],
+                  port_abs_cross2["port_bottom"]+pya.DVector(0,-(segment_length_target_rr[2]-waveguide_length))
+                ],1),
+      "r": self.r
+    })  
+    self.cell.insert(pya.DCellInstArray(waveguide5.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    # Capacitor J
+    capj = produce_library_capacitor(self.layout, caps_fingers[0], caps_length[0], caps_type[0])
+    port_rel_capj = self.get_refpoints(capj, pya.DTrans())  
+    capj_inst = self.cell.insert(pya.DCellInstArray(capj.cell_index(), pya.DTrans(port_abs_cross2["port_right"]-port_rel_capj["port_a"])))
+ 
+    cross3_inst = self.cell.insert(pya.DCellInstArray(cross1.cell_index(), 
+      pya.DTrans(0,False,port_abs_cross2["port_right"]-port_rel_capj["port_a"]+port_rel_capj["port_b"]-port_rel_cross2_wg2)))
+    port_abs_cross3 = self.get_refpoints(cross1, cross3_inst.dtrans)  
+    waveguide_length = cross1_length
+            
+    meander3_end = port_abs_cross3["port_right"] + pya.DVector(900, 0)
+    meander3 = self.layout.create_cell("Meander", "KQCircuit", {
+      "start": port_abs_cross3["port_right"],
+      "end": meander3_end,
+      "length": 1500,
+      "meanders": 3,
+      "r": self.r
+    })    
+    meander3_inst = self.cell.insert(pya.DCellInstArray(meander3.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    waveguide2 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  meander3_end,
+                  meander3_end+pya.DVector(self.r,0),
+                  meander3_end+pya.DVector(self.r,-400),
+                  meander3_end+pya.DVector(self.r,-400-self.r),
+                ],1),
+      "r": self.r
+    })      
+    inst = self.cell.insert(pya.DCellInstArray(waveguide2.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    coerce_parameters(inst) # updates the internal parameters
+    waveguide_length += inst.pcell_parameter("length")
+    meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0]-waveguide_length)   
+  
+    # Last bit of the Purcell filter of shaping resonator   
+    waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
+    wg6_end = port_abs_cross3["port_bottom"]+pya.DVector(0,-(segment_length_target_pr[1]-waveguide_length))
+    waveguide6 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_abs_cross3["port_bottom"],
+                  wg6_end
+                ],1),
+      "r": self.r,
+      "term2": (40 if self.tunable else 0)
+    })  
+    self.cell.insert(pya.DCellInstArray(waveguide6.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    
+    # Purcell resonator SQUID
+    if (self.tunable):
+      # SQUID refpoint at the ground plane edge
+      squid_cell =  self.layout.create_cell("RES1", "KQCircuit")
+      transf = pya.DTrans(0, False, wg6_end+pya.DVector(0, -40))      
+      self.cell.insert(pya.DCellInstArray(squid_cell.cell_index(),transf)) 
+      
+      waveguide_restune = self.layout.create_cell("Waveguide", "KQCircuit", {
+        "path": pya.DPath([
+                    wg6_end+pya.DVector(-20, -40-15),
+                    wg6_end+pya.DVector(+20+self.r, -40-15),
+                    pya.DPoint((wg6_end+pya.DVector(+20+self.r, -40-15)).x, (launchers["SE"][0]).y+self.r),
+                    launchers["SE"][0]+pya.DVector(0,self.r),
+                    launchers["SE"][0]+pya.DVector(0,0),
+                  ],1),
+        "r": self.r
+      })  
+      self.cell.insert(pya.DCellInstArray(waveguide_restune.cell_index(), pya.DTrans(pya.DVector(0, 0))))    
+    
+    # Capacitor Kappa
+    capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
+    port_rel_capk = self.get_refpoints(capk, pya.DTrans(3,False,0,0))  
+    capk_inst = self.cell.insert(pya.DCellInstArray(capk.cell_index(), 
+      pya.DTrans(3,False,meander3_end+pya.DVector(self.r,-400-self.r)-port_rel_capk["port_a"])))
+    port_abs_capk = self.get_refpoints(capk, capk_inst.dtrans)  
+    
+    # Output port of the purcell resonator
+    waveguide3 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_abs_capk["port_b"],
+                  port_abs_capk["port_b"]+pya.DVector(0,-self.r),
+                  pya.DPoint((port_abs_capk["port_b"]+pya.DVector(0,-self.r)).x, (launchers["ES"][0]).y),
+                  launchers["ES"][0]+pya.DVector(-self.r,0),
+                  launchers["ES"][0]+pya.DVector(0,0),
+                ],1),
+      "r": self.r
+    })  
+    inst = self.cell.insert(pya.DCellInstArray(waveguide3.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+    waveguide_length = 0
+    
+    # Capacitor for the driveline
+    capi = produce_library_capacitor(self.layout, caps_fingers[2], caps_length[2], caps_type[2])
+    port_rel_capi = self.get_refpoints(capi, pya.DTrans(3,False,0,0))  
+    capi_inst = self.cell.insert(pya.DCellInstArray(capi.cell_index(), 
+      pya.DTrans(3,False,cross1_refpoints_abs["port_left"]-port_rel_capi["port_a"])))
+    port_abs_capi = self.get_refpoints(capi, capi_inst.dtrans)  
+           
+    # Driveline of the shaping resonator
+    waveguide4 = self.layout.create_cell("Waveguide", "KQCircuit", {
+      "path": pya.DPath([
+                  port_abs_capi["port_b"],
+                  port_abs_capi["port_b"]+pya.DVector(0,-self.r),
+                  pya.DPoint(launchers["SW"][0].x, (port_abs_capi["port_b"]+pya.DVector(0,-self.r)).y),
+                  launchers["SW"][0]+pya.DVector(0,self.r),
+                  launchers["SW"][0]+pya.DVector(0,0),
+                ],1),
+      "r": self.r
+    })  
+    self.cell.insert(pya.DCellInstArray(waveguide4.cell_index(), pya.DTrans(pya.DVector(0, 0))))     
         
     # chip frame and possibly ground plane grid
     super().produce_impl()

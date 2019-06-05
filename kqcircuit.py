@@ -99,7 +99,7 @@ class KQChipLibrary(pya.Library):
     self.layout().register_pcell("Base", ChipBase())
     self.layout().register_pcell("ABCrossings", ABCrossings())
     self.layout().register_pcell("Chip QFactor", ChipQFactor())
-    self.layout().register_pcell("Chip PhotonShaping", ChipShaping())
+    self.layout().register_pcell("PhotonShaping", ChipShaping())
 
     self.register("KQChip")
 
