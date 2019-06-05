@@ -38,16 +38,18 @@ class MeanderCenter(KQCirvuitPCell):
     l_direct = self.start.distance(self.end)    
     l_rest = l_direct - self.meanders*2*self.r
     l_single_meander = (l_direct - self.length + self.meanders*(math.pi-4)*self.r)/(2-2*self.meanders)
+    l_single_meander = (self.length - (l_rest-2*self.r) - (self.meanders*2+2)*(math.pi/2)*self.r-(self.meanders-1)*self.r*2)/(2*self.meanders)
     
     points.append(pya.DPoint(l_rest/2,0))
     for i in range(self.meanders):      
-      points.append(pya.DPoint(l_rest/2 + i*2*self.r, ((-1)**(i%2))*l_single_meander))
-      points.append(pya.DPoint(l_rest/2 + (i+1)*2*self.r, ((-1)**(i%2))*l_single_meander))    
+      points.append(pya.DPoint(l_rest/2 + i*2*self.r, ((-1)**(i%2))*(l_single_meander+2*self.r)))
+      points.append(pya.DPoint(l_rest/2 + (i+1)*2*self.r, ((-1)**(i%2))*(l_single_meander+2*self.r)))    
     points.append(pya.DPoint(l_direct-l_rest/2,0))
     points.append(pya.DPoint(l_direct,0))
-        
+    print(set(points))
     waveguide = self.layout.create_cell("Waveguide", "KQCircuit", {
-      "path": pya.DPath(points,1.)
+      "path": pya.DPath(points, 1.),
+      "r": self.r
     })
       
     angle = 180/math.pi*math.atan2(self.end.y-self.start.y, self.end.x-self.start.x)
