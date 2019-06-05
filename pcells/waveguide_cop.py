@@ -173,7 +173,7 @@ class WaveguideCopTCross(KQCirvuitPCell):
     l = self.length_extra
     l2 = self.length_extra_side
     a2 = self.a2
-    b2 = self.a2
+    b2 = self.b2
     a = self.a
     b = self.b
     
