@@ -75,7 +75,8 @@ mask_parameters_for_chip = {
   "name_copy": None,
   "dice_width": dice_width,
   "with_grid": with_grid,
-  "r": 100
+  "r": 100,
+  "lg": default_layers["Optical lit. 1"]
   }
   
 # For quality factor test as on M001  
