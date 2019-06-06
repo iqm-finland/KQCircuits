@@ -104,5 +104,4 @@ class KQChipLibrary(pya.Library):
     self.register("KQChip")
 
 # Instance the libraries 
-KQCircuitLibrary()
 KQChipLibrary()
