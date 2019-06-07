@@ -226,14 +226,15 @@ class WaveguideCop(KQCirvuitPCell):
     self.param("term1", self.TypeDouble, "Termination length start (um)", default = 0)
     self.param("term2", self.TypeDouble, "Termination length end (um)", default = 0)
     self.param("length", self.TypeDouble, "Actual length", default = 0, readonly = True)
-    self._length = 0
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
     return "Waveguide(a=" + ('%.1f' % self.a) + ",b=" + ('%.1f' % self.b) + ")"
   
   def coerce_parameters_impl(self):
-    self.length = self._length
+    # Even if it does nothing here, actually the parameters are synced between internal structures! 
+    self.produce_waveguide(has_cell = False) # this recalculates self.length
+    None  
 
   def can_create_from_shape_impl(self):
     return self.shape.is_path()
@@ -266,12 +267,14 @@ class WaveguideCop(KQCirvuitPCell):
     poly2 = pya.DPolygon([u*(a/2+b+self.margin),u*(a/2+b+self.margin)+v*(term_len),u*(-a/2-b-self.margin)+v*(term_len),u*(-a/2-b-self.margin)])
     self.cell.shapes(self.layout.layer(self.lp)).insert(poly2.transform(shift_start))
   
-  def produce_impl(self):      
+  def produce_waveguide(self, has_cell = True):
     points = [point for point in self.path.each_point()]
-    self._length = 0
+    length = 0
+    print("produce 0", length, length)    
     
     # Termination before the first segment
-    self.produce_end_termination(1, 0, self.term1)
+    if (has_cell):
+      self.produce_end_termination(1, 0, self.term1)
     
     # For each segment except the last
     segment_last = points[0]
@@ -292,7 +295,8 @@ class WaveguideCop(KQCirvuitPCell):
       segment_end = points[i+1]
       cut = v1.vprod_sign(v2)*self.r / math.tan((math.pi-(alpha2-alpha1))/2)
       l = segment_start.distance(segment_end)-cut
-      self._length += l
+      length += l      
+      print("produce ",i, self.length, length)   
       angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
       subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
         "a": self.a,
@@ -300,7 +304,8 @@ class WaveguideCop(KQCirvuitPCell):
         "l": l # TODO: Finish the list
       })
       transf = pya.DCplxTrans(1,angle,False,pya.DVector(segment_start))
-      self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf))
+      if has_cell:
+        self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf))
       segment_last = points[i+1]+v2*(1/v2.abs())*cut
       
       # Curve at the corner
@@ -312,25 +317,37 @@ class WaveguideCop(KQCirvuitPCell):
         "r": self.r
       })      
       transf = pya.DCplxTrans(1, alpha1/math.pi*180.0-v1.vprod_sign(v2)*90, False, corner)
-      inst = self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))
-      coerce_parameters(inst) # updates the internal parameters
-      self._length += inst.pcell_parameter("length")
+      #coerce_parameters(subcell) # updates the internal parameters
+      #length += inst.pcell_parameter("length")
+      length += self.r*abs(alpha2-alpha1)
+      print("produce ",i, self.length, length)   
+            
+      if has_cell:
+        inst = self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))
     
     # Last segement
     segment_start = segment_last
     segment_end = points[-1]
-    l = segment_start.distance(segment_end)
-    self._length += l
+    l = segment_start.distance(segment_end)  
+    length += l
+    print("produce -1", self.length, length) 
+    self.length = length
+    print("end of produce", self.length, length) 
     angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
     
     # Terminate the end
-    self.produce_end_termination(-2, -1, self.term2)
+    if has_cell:
+      self.produce_end_termination(-2, -1, self.term2)
 
     subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
       "a": self.a,
       "b": self.b,
       "l": l # TODO: Finish the list
     })
-    transf = pya.DCplxTrans(1,angle,False,pya.DVector(segment_start))    
-    self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
+    transf = pya.DCplxTrans(1,angle,False,pya.DVector(segment_start))   
+    if has_cell: 
+      self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf)) 
+    
+  def produce_impl(self):      
+    self.produce_waveguide()
      
