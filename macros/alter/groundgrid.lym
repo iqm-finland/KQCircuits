@@ -10,7 +10,7 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
- <group-name>KQCircuit</group-name>
+ <group-name>Alter</group-name>
  <menu-path>
 edit_menu.my_group&gt;end("KQCircuit").end</menu-path>
  <interpreter>python</interpreter>
