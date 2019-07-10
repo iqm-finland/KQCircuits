@@ -94,14 +94,15 @@ class WaveguideCopCurve(KQCirvuitPCell):
 
   def __init__(self):
     super().__init__()
-    self.param("alpha", self.TypeDouble, "Curve angle", default = math.pi)
-    self.param("length", self.TypeDouble, "Actual length", default = 0, readonly = True)
+    self.param("alpha", self.TypeDouble, "Curve angle (rad)", default = math.pi)
+    self.param("length", self.TypeDouble, "Actual length (um)", default = 0, readonly = True)
    
   def display_text_impl(self):
     # Provide a descriptive text for the cell
     return "WaveguideCopCurve(a=" + ('%.1f' % self.a) + ",b=" + ('%.1f' % self.b) + ")"
 
   def coerce_parameters_impl(self):
+    # Update length
     self.length = self.r*abs(self.alpha)
 
   def can_create_from_shape_impl(self):
@@ -138,7 +139,7 @@ class WaveguideCopCurve(KQCirvuitPCell):
     R = self.r+self.a/2+self.b+self.margin
     pts += arc(R,alphastop,alphastart,self.n)     
     shape = pya.DPolygon(pts)
-    self.cell.shapes(self.layout.layer(self.lp)).insert(shape)        
+    self.cell.shapes(self.layout.layer(self.lp)).insert(shape)     
 
 class WaveguideCopTCross(KQCirvuitPCell):
   """
@@ -225,11 +226,11 @@ class WaveguideCop(KQCirvuitPCell):
     self.param("path", self.TypeShape, "TLine", default = pya.DPath([pya.DPoint(0,0),pya.DPoint(100,0)],0))
     self.param("term1", self.TypeDouble, "Termination length start (um)", default = 0)
     self.param("term2", self.TypeDouble, "Termination length end (um)", default = 0)
-    self.param("length", self.TypeDouble, "Actual length", default = 0, readonly = True)
+    self.param("length", self.TypeDouble, "Actual length (um)", default = 0, readonly = True)
 
   def display_text_impl(self):
     # Provide a descriptive text for the cell
-    return "Waveguide(a=" + ('%.1f' % self.a) + ",b=" + ('%.1f' % self.b) + ")"
+    return "Waveguide l={}".format(self.length)
   
   def coerce_parameters_impl(self):
     # Even if it does nothing here, actually the parameters are synced between internal structures! 
@@ -270,7 +271,6 @@ class WaveguideCop(KQCirvuitPCell):
   def produce_waveguide(self, has_cell = True):
     points = [point for point in self.path.each_point()]
     length = 0
-    print("produce 0", length, length)    
     
     # Termination before the first segment
     if (has_cell):
@@ -278,6 +278,7 @@ class WaveguideCop(KQCirvuitPCell):
     
     # For each segment except the last
     segment_last = points[0]
+    self.l_temp = 0
     for i in range(0, len(points)-2):
       # Corner coordinates
       v1 = points[i+1]-points[i]
@@ -296,13 +297,13 @@ class WaveguideCop(KQCirvuitPCell):
       cut = v1.vprod_sign(v2)*self.r / math.tan((math.pi-(alpha2-alpha1))/2)
       l = segment_start.distance(segment_end)-cut
       length += l      
-      print("produce ",i, self.length, length)   
       angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
       subcell = self.layout.create_cell("Waveguide streight", "KQCircuit", {
         "a": self.a,
         "b": self.b,
         "l": l # TODO: Finish the list
       })
+      self.l_temp += subcell.pcell_parameters_by_name()["l"]
       transf = pya.DCplxTrans(1,angle,False,pya.DVector(segment_start))
       if has_cell:
         self.cell.insert(pya.DCellInstArray(subcell.cell_index(),transf))
@@ -320,7 +321,6 @@ class WaveguideCop(KQCirvuitPCell):
       #coerce_parameters(subcell) # updates the internal parameters
       #length += inst.pcell_parameter("length")
       length += self.r*abs(alpha2-alpha1)
-      print("produce ",i, self.length, length)   
             
       if has_cell:
         inst = self.cell.insert(pya.DCellInstArray(subcell.cell_index(), transf))
@@ -330,9 +330,7 @@ class WaveguideCop(KQCirvuitPCell):
     segment_end = points[-1]
     l = segment_start.distance(segment_end)  
     length += l
-    print("produce -1", self.length, length) 
     self.length = length
-    print("end of produce", self.length, length) 
     angle = 180/math.pi*math.atan2(segment_end.y-segment_start.y, segment_end.x-segment_start.x)
     
     # Terminate the end
