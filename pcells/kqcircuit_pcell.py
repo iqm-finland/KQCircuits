@@ -2,13 +2,21 @@ import pya
 from kqcircuit.defaults import default_layers
 from kqcircuit.defaults import default_circuit_params
 
-
+def coerce_parameters(inst):
+  layout = inst.cell.library().layout()
+  params = inst.pcell_parameters()
+  declaration = inst.pcell_declaration()
+  newparams = declaration.coerce_parameters(layout, params)
+  inst.change_pcell_parameters(newparams)
 
 def get_refpoints(layer, cell, cell_transf = pya.DTrans()):
   refpoints = {}
-  for shape in cell.shapes(layer).each():
-    if shape.type()==pya.Shape.TText:
-      refpoints[shape.text_string] = cell_transf.trans(pya.DPoint(shape.text_dpos))
+  shapes_iter = cell.begin_shapes_rec(layer)
+  while not shapes_iter.at_end():
+    shape = shapes_iter.shape()
+    if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
+      refpoints[shape.text_string] = cell_transf*(shapes_iter.dtrans()*(pya.DPoint(shape.text_dpos)))
+    shapes_iter.next()
     
   return refpoints
   
@@ -37,6 +45,10 @@ class KQCirvuitPCell(pya.PCellDeclarationHelper):
     self.margin = 5 # this can have a different meaning for different cells
     
     self.refpoints = {"base":pya.DVector(0,0)}
+  
+  def create_sub_cell(self, pcell_name, parameters, library_name = "KQCircuit"):
+    return self.layout.create_cell(pcell_name, library_name, {**self.cell.pcell_parameters_by_name(), **parameters})
+
     
   def produce_impl(self):
     # call the super.produce_impl once all the refpoints have been added to self.refpoints

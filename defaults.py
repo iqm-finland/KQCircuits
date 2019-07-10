@@ -11,6 +11,7 @@ default_layers_dict = {
   "Electron beam lit. 1": (7, 0),
   "Electron beam lit. 2": (8, 0),
   "Annotations": (9, 0),   
+  "Annotations 2": (10, 0),   
   "Grid avoidance": (11, 0),
   "Sonnet export": (12, 0),
 }

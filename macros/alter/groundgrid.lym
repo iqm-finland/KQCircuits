@@ -37,8 +37,10 @@ layout = cell_view.layout()
 grid_area = pya.Box(cell.bbox().p1, cell.bbox().p2)
 protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["Grid avoidance"]))).merged()
 
-grid_mag_factor = 10
-region_ground_grid = make_grid(grid_area, protection, grid_step = 10*(1/layout.dbu)*grid_mag_factor, grid_size = 5*(1/layout.dbu)*grid_mag_factor )
+grid_mag_factor = 1
+region_ground_grid = make_grid(grid_area, protection, 
+  grid_step = 10*(1/layout.dbu)*grid_mag_factor, 
+  grid_size = 5*(1/layout.dbu)*grid_mag_factor )
 
 cell.shapes(layout.layer(default_layers["Annotations"])).insert(protection)
 cell.shapes(layout.layer(default_layers["Grid"])).insert(region_ground_grid)</text>

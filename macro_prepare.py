@@ -34,4 +34,4 @@ def prep_empty_layout():
     
   layout_view.add_missing_layers()
   
-  return (layout, layout_view)
+  return (layout, layout_view, cell_view)

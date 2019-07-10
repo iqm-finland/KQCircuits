@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
- <description>Simulation qubit</description>
+ <description/>
  <version/>
  <category>pymacros</category>
  <prolog/>
@@ -9,10 +9,9 @@
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
  <shortcut/>
- <show-in-menu>true</show-in-menu>
- <group-name>Generate</group-name>
- <menu-path>
-edit_menu.my_group&gt;end("KQCircuit").end</menu-path>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>import pya
@@ -40,32 +39,22 @@ pprint.pprint(default_layers)
 def produce_simulation_cell(cell):
   global layout  
 
+  pointa = pya.DPoint(-100,0)
+  pointb = pya.DPoint(100,0)
+  pointc = pya.DPoint(0,-30)
   # Swissmon      
-  swissmon = layout.create_cell("Swissmon", "KQCircuit", {
-    "fluxline": False,
-    "arm_width": [30,23,30,23],
-    "arm_length": [190,96,160,96],
-    "gap_width": 89,
-    "corner_r": 2,
-    "cpl_length": [235,0,205],
-    "cpl_width": [60,42,60],
-    "cpl_gap": [110, 112, 110],
-    "squid_name": "SIM1",
-    "cl_offset": [150,150],
-  })  
+  driveline = layout.create_cell("Waveguide", "KQCircuit", {
+    "path": pya.DPath([
+                pointa,
+                pointb
+              ],1)
+  })    
+  cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
     
-  cell.insert(pya.DCellInstArray(swissmon.cell_index(), pya.DTrans()))
-  
-  swissmon_refpoints_abs = get_refpoints(layout.layer(default_layers["Annotations"]), swissmon)  
-  print(swissmon_refpoints_abs)
-  
   ports = []
-  ports.append(simgeom.SidePort(1, swissmon_refpoints_abs['port_cplr0'], 'l'))
-  ports.append(simgeom.SidePort(2, swissmon_refpoints_abs['port_cplr2'], 'r'))
-  ports.append(simgeom.SidePort(3, swissmon_refpoints_abs['port_drive'], 'b', termination=10))  
-  ports.append(simgeom.Port( 4, swissmon_refpoints_abs['port_squid_a'], group="A", resist=0, induct=8.7e-9))  
-  ports.append(simgeom.Port(-4, swissmon_refpoints_abs['port_squid_b'], group="A", resist=0, induct=8.7e-9))
-  calgroup = "CUPGRP \"A\"\nID 28\nGNDREF F\nTWTYPE FEED\nEND"
+  ports.append(simgeom.SidePort(1, pointa, 'l'))
+  ports.append(simgeom.SidePort(2, pointb, 'r'))
+  ports.append(simgeom.SidePort(3, pointc, 'b', termination=10))  
   return ports, calgroup
   
 import os.path
@@ -73,8 +62,8 @@ import os.path
 batchstring = ""
 
 ## Produce
-simualtion_safety = 3*300 # microns
-name = "sim qubit"
+simualtion_safety = 300 # microns
+name = "sim tcross"
 
 cell = layout.create_cell(name) # A new cell into the layout
 ports, calgroup = produce_simulation_cell(cell)

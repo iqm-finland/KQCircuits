@@ -98,10 +98,17 @@ def port(
     ivertex,
     port_type = "STD", # STD for standard | AGND autogrounded | CUP cocalibrated
     xcord = 0,
-    ycord = 0
+    ycord = 0,
+    group = "",
+    resist = 50,
+    react = 0,
+    induct = 0,
+    capac = 0    
   ):
+  if group:
+    group = '"'+group+'"'
   print(locals())
-  return "POR1 {port_type}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} 50 0 0 0\n".format(**locals()) # {xcord} {ycord} [reftype rpcallen]
+  return "POR1 {port_type} {group}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} {resist} {react} {induct} {capac}\n".format(**locals()) # {xcord} {ycord} [reftype rpcallen]
 
 #def ports(shapes):
 #  sonnet_str = ""
@@ -131,10 +138,10 @@ def polygons(polygons, v, dbu):
   for i, poly in enumerate(polygons):
     if poly.holes():
       raise NotImplementedError    
-    sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i)
+    sonnet_str += polygon_head(nvertices=poly.num_points_hull()+1, debugid=i+1 ) # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
     for j, point in enumerate(poly.each_point_hull()):
-      sonnet_str += "{} {}\n".format(point.x*dbu+v.x, point.y*dbu+v.y)
+      sonnet_str += "{} {}\n".format(point.x*dbu+v.x, -(point.y*dbu+v.y)) # sonnet Y-coordinate goes in the other direction
     point = next(poly.each_point_hull()) # first point again to close the polygon
-    sonnet_str += "{} {}\nEND\n".format(point.x*dbu+v.x, point.y*dbu+v.y)
+    sonnet_str += "{} {}\nEND\n".format(point.x*dbu+v.x, -(point.y*dbu+v.y))
     
   return sonnet_str
