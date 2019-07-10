@@ -33,6 +33,8 @@ Typical location for local checkout:
 	~/KLayout/python/kqcircuit 
 ```
 
+On Windows 10 `~` stands for `C:\Users\<username>\KLayout\python\kqcircuit` or something similar.
+
 # Installation of KLayout with python support
 ## Linux
 Python 3.* is usually available out of box, but the latest KLayout has to be built from source. In Aalto one should built it into userspace without using `sudo`.
