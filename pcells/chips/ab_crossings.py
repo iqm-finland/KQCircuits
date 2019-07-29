@@ -31,7 +31,7 @@ class ABCrossings(ChipBase):
                           "pad_length": 1*width,
                           "bridge_length": length,
                           "bridge_width": width,
-                          "pad_extra": 1
+                          "pad_extra": 0
                           }) 
     for i in range(number):
       ab_trans = pya.DCplxTrans(1, 0, False, wg_start+v_step*(i+0.5))
@@ -54,7 +54,7 @@ class ABCrossings(ChipBase):
                           "pad_length": self.a*2, # BUG?
                           "bridge_length": ab_length,
                           "bridge_width": self.a-1,
-                          "pad_extra": 1
+                          "pad_extra": 0
                           }) 
     # conductor distanance
     cd = ab_length/2
@@ -170,4 +170,5 @@ class ABCrossings(ChipBase):
           self.produce_mechanical_test(loc, distance, 10, length, width)
           
     # chip frame and possibly ground plane grid
+
     super().produce_impl()

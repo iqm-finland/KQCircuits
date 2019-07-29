@@ -52,6 +52,7 @@ class ChipQFactor(ChipBase):
     # Airbridge crossing resonators
     cell_ab_crossing = self.layout.create_cell("Airbridge", "KQCircuit", {
                       "bridge_length": self.b*2+self.a+4,
+                      "pad_extra": 0
                       }) 
     # Airbridge for termination of a resonator
     cell_ab_terminate = self.layout.create_cell("Airbridge", "KQCircuit", {
@@ -59,7 +60,7 @@ class ChipQFactor(ChipBase):
                       "pad_length": self.a*2, # BUG?
                       "bridge_length": self.b*1+4,
                       "bridge_width": self.a-2,
-                      "pad_extra": 1
+                      "pad_extra": 0
                       })   
     
     for i in range(resonators):
