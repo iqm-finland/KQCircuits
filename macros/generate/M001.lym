@@ -27,7 +27,7 @@ mask_name = "M001"
 dice_width = 200
 top_cell = layout.create_cell("Mask {}".format(mask_name)) # A new cell into the layout
 cell_view.cell_name = top_cell.name     # Shows the new cell
-with_grid = True
+with_grid = False
 
 wafer_diam_inc = 6.
 wafer_rad_um = wafer_diam_inc/2.*25400.
@@ -213,6 +213,7 @@ maskextra_cell.shapes(layout.layer(default_layers["Optical lit. 2"])).insert(reg
 maskextra_cell.shapes(layout.layer(default_layers["Optical lit. 3"])).insert(region_covered)
 
 top_cell.insert(pya.DCellInstArray(maskextra_cell.cell_index(), pya.DTrans())) 
+
 
 </text>
 </klayout-macro>
