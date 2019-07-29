@@ -6,7 +6,7 @@ KLayout macros for microwave circuits.
 ## Recuirements
 Tested with 
 * Python 3.5.2, 
-* KLayout 0.25.6
+* KLayout 0.25.6, .8
 
 Required packages
 * numpy
@@ -14,7 +14,7 @@ Required packages
 ## Linux
 Typical location for local macros, which you can edit:
 ```
-    ~/.klayout/pymacros
+    ~/.klayout/python
 ```
 
 Command to run KLayout:
