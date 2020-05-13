@@ -1,0 +1,70 @@
+/*
+green: #00e397
+light blue: #002c67
+dark blue: #00274d
+white: #d9d9d9
+red: #f8003a
+orange: #ff9900
+link-blue: #1178e2
+*/
+
+a {
+    color: #00e397 !important;
+}
+
+a:hover, a:active {
+    color: #ff9900 !important;
+}
+
+a:visited {
+    color: #ff9900 !important;
+}
+
+.wy-side-nav-search {
+    background-color: #00e397 !important;
+}
+
+.wy-side-nav-search a:visited {
+    color: #fcfcfc !important;
+}
+
+.wy-breadcrumbs a:visited {
+    color: #00e397 !important;
+}
+
+.wy-nav-side {
+    background-color: #00274d !important;
+}
+
+.wy-menu-vertical a {
+    color: #d9d9d9 !important;
+}
+
+.wy-menu-vertical a:hover {
+    color: #4e4a4a !important;
+}
+
+.wy-menu-vertical a:active {
+    background-color: #00e397 !important;
+    color: #fff !important;
+}
+
+.wy-menu-vertical a:hover {
+    background-color: #002c67 !important;
+}
+
+.wy-menu-vertical a:visited {
+    color: #d9d9d9 !important;
+}
+
+.wy-menu-vertical li.on>a, .wy-menu-vertical li.current>a {
+    color: #404040 !important;
+}
+
+.wy-menu-vertical li.current a {
+    color: gray !important;
+}
+
+.wy-menu-vertical li.current a:hover {
+    background-color: #d6d6d6 !important;
+}

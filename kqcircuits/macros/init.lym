@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>KQCircuit</description>
+ <version>0.1</version>
+ <category>pymacros</category>
+ <autorun>true</autorun>
+ <autorun-early>true</autorun-early>
+ <show-in-menu>false</show-in-menu>
+ <interpreter>python</interpreter>
+ <text>
+import sys
+import logging
+from pathlib import Path
+from autologging import TRACE
+
+# Add path to KQCircuits folder
+# Needed for enabling src imports in macros
+ROOT_PATH = Path(__file__).parent.parent.parent
+sys.path.append(str(ROOT_PATH))
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    stream=sys.stdout,
+    format="%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+ </text>
+</klayout-macro>

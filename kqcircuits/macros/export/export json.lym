@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.export_helper import generate_probepoints_json
+
+top_cell = KLayoutView.get_active_cell()
+
+### Action
+print(generate_probepoints_json(top_cell))</text>
+</klayout-macro>

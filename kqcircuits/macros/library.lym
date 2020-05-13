@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>KQCircuits</description>
+ <version>0.1</version>
+ <category>pymacros</category>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <interpreter>python</interpreter>
+ <text>
+# load libraries
+from kqcircuits.util.library_helper import load_all_libraries
+load_all_libraries()
+</text>
+</klayout-macro>

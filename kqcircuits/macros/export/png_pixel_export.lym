@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+import getpass
+from kqcircuits.util.export_file import *
+
+app = pya.Application.instance()
+mw = app.main_window()
+layout_view = mw.current_view(),
+cell_view = pya.CellView.active()
+layout = cell_view.layout()
+
+path = "C:\\Users\\"+getpass.getuser()+"\\Desktop\\"
+filename = "TEST"
+width = 1000
+height = 1000
+
+cell_view.active().cell = layout.cell(mask_map_legend["AB1"].cell_index().cell_index())
+
+exportPNG(layout_view, path, filename, width, height)</text>
+</klayout-macro>
