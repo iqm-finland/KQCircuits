@@ -8,9 +8,8 @@
 import abc
 from typing import List
 
-from autologging import logged, traced
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_layers, default_faces
+from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import Element, get_refpoints
 from kqcircuits.simulations.port import Port
 
@@ -125,7 +124,9 @@ class Simulation:
     def create_simulation_layers(self):
         ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
         lithography_region = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["base metal gap wo grid"]))).merged()
-        sim_region = ground_box_region - lithography_region
+        airpad_pad_region = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["airbridge pads"]))).merged()
+        # airpad_flyover_region_ = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["airbridge pads"]))).merged()
+        sim_region = ground_box_region - lithography_region + airpad_pad_region
 
         # Find the ground plane and subtract it from the simulation area
         # First, add all polygons touching any of the edges

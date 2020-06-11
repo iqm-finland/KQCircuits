@@ -1,10 +1,11 @@
-import os
 from string import Template
 
 from kqcircuits.pya_resolver import pya
 
 
 def apply_template(filename_template, filename_output, rules):
+    print(filename_template) #debug
+    print(filename_output) #debug
     filein = open(filename_template)
     src = Template(filein.read())
     filein.close()
@@ -12,12 +13,14 @@ def apply_template(filename_template, filename_output, rules):
     fileout = open(filename_output, "w")
     fileout.write(results)
     fileout.close()
+    """
     dirname_sondata = os.path.join(os.path.dirname(filename_output), "sondata")
     if not os.path.exists(dirname_sondata):
         os.mkdir(dirname_sondata)
     dirname_project = os.path.join(dirname_sondata, os.path.splitext(os.path.basename(filename_output))[0])
     if not os.path.exists(dirname_project):
         os.mkdir(dirname_project)
+    """
 
 
 def polygon_head(
@@ -45,14 +48,15 @@ def symmetry(sym: bool = False):
     return sonnet_str
 
 
-def box_from_cell(cell: pya.Cell, cell_size: float):
+def box_from_cell(cell: pya.Cell, cell_size: float, materials_type):
     bbox = cell.dbbox()
-    print("box of cell")
+    # print("box of cell")
     return box(
         xwidth=bbox.width(),
         ywidth=bbox.height(),
         xcells=int(bbox.width() / cell_size),
         ycells=int(bbox.height() / cell_size),
+        materials_type=materials_type
     )
 
 
@@ -90,9 +94,9 @@ def refplane(
     return "DRP1 {position} FIX {length}\n".format(**locals())
 
 
-def refplanes(postitions, length):
+def refplanes(positions, length):
     sonnet_str = ""
-    for side in postitions:
+    for side in positions:
         sonnet_str += refplane(side, length)
     return sonnet_str
 
@@ -120,7 +124,7 @@ def port(
 # def ports(shapes):
 #  sonnet_str = ""
 #  polygons = 0
-#  
+#
 #  # FIXME Maybe the shapes will not have the same indexes as polygons in the region!
 #  for shape in shapes.each():
 #    if shape:
@@ -129,7 +133,7 @@ def port(
 #      portnum = shape.property("sonnet_port_nr")
 #      if ivertex!=None and portnum!=None:
 #        sonnet_str += port(ipolygon=polygons-1, portnum=portnum, ivertex=ivertex)
-#  
+#
 #  return sonnet_str
 
 def control(control_type):
@@ -140,13 +144,13 @@ def control(control_type):
     }[control_type]
 
 
-def polygons(polygons, v, dbu):
+def polygons(polygons, v, dbu, ilevel):
     sonnet_str = 'NUM {}\n'.format(len(polygons))
     for i, poly in enumerate(polygons):
         if poly.holes():
             raise NotImplementedError
         sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
-                                   debugid=i + 1)  # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
+                                   debugid=i + 1, ilevel=next(ilevel))  # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
         for j, point in enumerate(poly.each_point_hull()):
             sonnet_str += "{} {}\n".format(point.x * dbu + v.x,
                                            -(point.y * dbu + v.y))  # sonnet Y-coordinate goes in the other direction

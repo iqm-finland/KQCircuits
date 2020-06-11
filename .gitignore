@@ -142,3 +142,10 @@ dmypy.json
 
 # Sphinx docs
 docs/_build/doctrees/
+
+# Temporary files
+/tmp
+
+# Sonnet files
+*.son
+/sondata

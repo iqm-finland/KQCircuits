@@ -29,13 +29,19 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
     """
 
     refpoints = {}
+    i=2
     shapes_iter = cell.begin_shapes_rec(layer)
     if rec_levels is not None:
         shapes_iter.max_depth = rec_levels
     while not shapes_iter.at_end():
         shape = shapes_iter.shape()
         if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
-            refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
+            # allows similarly named points
+            if (shape.text_string in refpoints):
+                refpoints[shape.text_string + str(i)] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
+                i += 1
+            else:
+                refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
         shapes_iter.next()
 
     return refpoints

@@ -19,12 +19,12 @@ RES OH
 END DIM
 FREQ
 SIMPLE 1.0 20.0 1.0
-ABS 1.0 20.0 
+ABS 1.0 20.0
 SWEEP 1.0 20.0 1.0
 END FREQ
 CONTROL
 $control
-OPTIONS  -dj 
+OPTIONS  -dj
 SPEED 0
 CACHE_ABS 1
 TARG_ABS 300
@@ -32,11 +32,11 @@ Q_ACC N
 END CONTROL
 GEO
 $symmetry
-$refpalnes
+$refplanes
 TMET "Lossless" 0 SUP 0 0 0 0
 BMET "Lossless" 0 SUP 0 0 0 0
 $box
-LORGN 0 0 U 
+LORGN 0 0 U
 $ports
 $calgroup
 $polygons
