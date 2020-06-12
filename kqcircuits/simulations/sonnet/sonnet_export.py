@@ -33,12 +33,12 @@ class SonnetExport:
         else:
             self.materials_type = "SiOx+Si" # i.e. has airbridges
 
-        """if 'cell' in kwargs:
-            self.cell = kwargs['cell']"""
+        if 'cell' in kwargs:
+            self.cell = kwargs['cell']
 
-        """for p in self.PARAMETERS:
+        for p in self.PARAMETERS:
             if p in kwargs:
-                setattr(self, p, kwargs[p])"""
+                setattr(self, p, kwargs[p])
 
     @property
     def son_filename(self):
