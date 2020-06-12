@@ -73,8 +73,6 @@ def add_sonnet_geometry(
 
     for port in ports:
 
-        # TODO hacks for now
-        port.group = ""
         port.location = port.signal_location
         port.termination = 10 # or False
 
@@ -102,14 +100,14 @@ def add_sonnet_geometry(
     cell.shapes(layer_son).insert(simregion)
 
     # polygons in layers to sonnet string
-    air_polygons = []
+    airbridge_polygons = []
     if (materials_type=="SiOx+Si"):
         simple_air = simple_region(pya.Region(layout.begin_shapes(cell, layer_air)))
-        air_polygons = [p for p in simple_air.each()]
+        airbridge_polygons = [p for p in simple_air.each()]
 
     level_iter = iter(len(simpolygons) * [(1 if materials_type=="SiOx+Si" else 0)] +
-            len(air_polygons) * [0])
-    polys = parser.polygons(simpolygons + air_polygons, pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y),
+            len(airbridge_polygons) * [0])
+    polys = parser.polygons(simpolygons + airbridge_polygons, pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y),
         dbu, ilevel=level_iter)
 
     # find port edges
@@ -119,7 +117,7 @@ def add_sonnet_geometry(
     for port in ports:
         if isinstance(port, SidePort):
             refplane_dirs.append(port.side)
-        sstring_ports += poly_and_edge_indeces(cell, simpolygons + air_polygons, dbu, port, ls)
+        sstring_ports += poly_and_edge_indeces(cell, simpolygons + airbridge_polygons, dbu, port, ls)
 
     return {
         "polygons": polys,

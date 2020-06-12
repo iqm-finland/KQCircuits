@@ -124,9 +124,7 @@ class Simulation:
     def create_simulation_layers(self):
         ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
         lithography_region = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["base metal gap wo grid"]))).merged()
-        airbridge_pad_region = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["airbridge pads"]))).merged()
-        # airpad_flyover_region_ = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["airbridge pads"]))).merged()
-        sim_region = ground_box_region - lithography_region + airpad_pad_region
+        sim_region = ground_box_region - lithography_region
 
         # Find the ground plane and subtract it from the simulation area
         # First, add all polygons touching any of the edges

@@ -4,8 +4,6 @@ from kqcircuits.pya_resolver import pya
 
 
 def apply_template(filename_template, filename_output, rules):
-    print(filename_template) #debug
-    print(filename_output) #debug
     filein = open(filename_template)
     src = Template(filein.read())
     filein.close()

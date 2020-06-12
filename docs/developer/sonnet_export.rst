@@ -1,6 +1,6 @@
 Exporting to Sonnet
 ===================
-The scope of this script is up to one chip. Generating .son files for wafers can be done but is increasingly slow due to the port-edge finding algorithm. Pre-processing wafers in Sonnet however requires a huge amount of RAM.
+Exporting to Sonnet is supported for up to one chip but generating .son files for larger geometry is increasingly slow due to the port-edge finding algorithm. In addition, processing in Sonnet becomes impractical due to huge amount of RAM needed. Simpler geometry is preferred.
 
 Instructions
 ------------
