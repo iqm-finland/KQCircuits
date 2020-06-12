@@ -9,6 +9,7 @@ import os.path
 
 
 class SonnetExport:
+    PARAMETERS = ['port_width', 'port_height', 'substrate_height', 'box_height', 'epsilon'] # examples for now
 
     path = None
     file_prefix = ''
