@@ -16,4 +16,3 @@ is hosted in GitHub Enterprise (GHE) at https://github.iqm.fi/iqm/KQCircuits .
     testing
     coding_style
     documentation
-    sonnet_export
