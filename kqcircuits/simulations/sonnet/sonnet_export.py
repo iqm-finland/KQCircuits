@@ -33,9 +33,6 @@ class SonnetExport:
         else:
             self.materials_type = "SiOx+Si" # i.e. has airbridges
 
-        if 'cell' in kwargs:
-            self.cell = kwargs['cell']
-
         for p in self.PARAMETERS:
             if p in kwargs:
                 setattr(self, p, kwargs[p])
