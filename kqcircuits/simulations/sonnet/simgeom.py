@@ -59,7 +59,7 @@ def add_sonnet_geometry(
     dbu = layout.dbu
     layer_opt = layout.layer(default_layers["b base metal gap wo grid"])
     layer_pad = layout.layer(default_layers["b airbridge pads"])
-    layer_air = layout.layer(default_layers["b airbridge flyover"])
+    layer_bridge = layout.layer(default_layers["b airbridge flyover"])
     layer_son = layout.layer(default_layers["simulation signal"])
     region_neg = pya.Region(cell.begin_shapes_rec(layer_opt))
 
@@ -101,14 +101,23 @@ def add_sonnet_geometry(
 
     # polygons in layers to sonnet string
     airbridge_polygons = []
-    if (materials_type=="SiOx+Si"):
-        simple_air = simple_region(pya.Region(layout.begin_shapes(cell, layer_air)))
-        airbridge_polygons = [p for p in simple_air.each()]
+    airpads_polygons = []
+    if (materials_type=="Si+Al"):
+        simple_airbridge = simple_region(pya.Region(layout.begin_shapes(cell, layer_bridge)))
+        airbridge_polygons = [p for p in simple_airbridge.each()]
 
-    level_iter = iter(len(simpolygons) * [(1 if materials_type=="SiOx+Si" else 0)] +
-            len(airbridge_polygons) * [0])
-    polys = parser.polygons(simpolygons + airbridge_polygons, pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y),
-        dbu, ilevel=level_iter)
+        simple_pads = simple_region(pya.Region(layout.begin_shapes(cell, layer_pad))
+            .overlapping(pya.Region(layout.begin_shapes(cell, layer_bridge))))
+        airpads_polygons = [p for p in simple_pads.each()]
+        for p in airpads_polygons:
+            setattr(p, 'isVia', True)
+
+
+    level_iter = iter(len(simpolygons) * [(2 if materials_type=="Si+Al" else 0)] +
+            len(airbridge_polygons) * [1] + len(airpads_polygons) * [2])
+
+    polys = parser.polygons(simpolygons + airbridge_polygons + airpads_polygons,
+        pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y), dbu, ilevel=level_iter)
 
     # find port edges
     # to preserve the port edge indices the geometry must not be changed after this
@@ -177,8 +186,8 @@ def poly_and_edge_indeces(cell, polygons, dbu, port, layer):
     raise ValueError("No edge found for Sonnet port {}{}".format(port.number, port.group))
     return ""
 
-    # the following would be faster but does not work for some reason
-    # maybe due to changing to itype and dtype constantly
+    """ The following would be faster but works only for
+    simple geometry with even integers for points"""
     """for i, poly in enumerate(polygons):
         for j, edge in enumerate(poly.each_edge()):
             #edge = edge.to_dtype(dbu)

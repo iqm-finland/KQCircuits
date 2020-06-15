@@ -32,7 +32,7 @@ class SonnetExport:
         if 'materials_type' in kwargs:
             self.materials_type = kwargs['materials_type']
         else:
-            self.materials_type = "SiOx+Si" # i.e. has airbridges
+            self.materials_type = "Si BT" # i.e. does not have airbridges
 
         for p in self.PARAMETERS:
             if p in kwargs:
@@ -45,19 +45,12 @@ class SonnetExport:
     def write(self):
         ports = []
         refpoints = self.simulation.get_refpoints(self.simulation.cell)
-        #cardinals = ["WN", "EN", "WS", "ES", "NW", "SW", "NE", "SE"]
-        #refpoints_cardinal = dict(filter(lambda e: any(c in e[0] for c in cardinals), refpoints.items()))
         refpoints = dict(filter(lambda e: "port" in e[0], refpoints.items()))
 
         i = 1 # Sonnet indexing starts from 1
         for portname, location in refpoints.items():
-            ports.append(InternalPort(i, location, location))
+            ports.append(InternalPort(i, location, location, group=""))
             i += 1
-
-        """to_sonnet_edge = {"W": "l", "E": "r", "N": "t", "S": "b"}
-        for portname, location in refpoints_cardinal.items():
-            ports.append(simgeom.SidePort(i, location, to_sonnet_edge.get(portname[0])))
-            i += 1"""
         print("Port reference points: " + str(i-1))
 
         self.simulation.create_simulation_layers() # update ls lg
@@ -70,7 +63,7 @@ class SonnetExport:
         simulation_safety = 3*300 # microns, hard coded for now
 
         shapes_in_air = self.simulation.layout.begin_shapes(self.simulation.cell, self.simulation.layout.layer(default_layers["b airbridge flyover"]))
-        materials_type = "SiOx+Si" if not shapes_in_air.shape().is_null() else "Si BT"
+        materials_type = "Si+Al" if not shapes_in_air.shape().is_null() else "Si BT"
 
 
         sonnet_strings = simgeom.add_sonnet_geometry(

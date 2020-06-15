@@ -74,12 +74,14 @@ def box(
         "Si RT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (room temperature)\"",
         "Si BT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.45 1 0 0 0 0 \"Silicon (cryogenic)\"",
         "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
+        "Si+Al": "3000 1 1 0 0 0 0 \"vacuum\"\n0.5 9.9 1 0.0001 0 0 0 \"Alumina (99.5%)\"\n0.45 1 1 0 0 0 0 \"vacuum\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
     }[materials_type]
 
     nlev = {
         "Si": 1,
         "Si BT": 1,
-        "SiOx+Si": 2
+        "SiOx+Si": 2,
+        "Si+Al": 3
     }[materials_type]
 
     return "BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n{materials}".format(**locals())
@@ -147,8 +149,13 @@ def polygons(polygons, v, dbu, ilevel):
     for i, poly in enumerate(polygons):
         if poly.holes():
             raise NotImplementedError
-        sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
+
+        if hasattr(poly, 'isVia'):
+            sonnet_str += via(poly, debugid=i, ilevel=next(ilevel))
+        else:
+            sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
                                    debugid=i + 1, ilevel=next(ilevel))  # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
+
         for j, point in enumerate(poly.each_point_hull()):
             sonnet_str += "{} {}\n".format(point.x * dbu + v.x,
                                            -(point.y * dbu + v.y))  # sonnet Y-coordinate goes in the other direction
@@ -156,3 +163,7 @@ def polygons(polygons, v, dbu, ilevel):
         sonnet_str += "{} {}\nEND\n".format(point.x * dbu + v.x, -(point.y * dbu + v.y))
 
     return sonnet_str
+
+def via(poly, debugid, ilevel):
+    via_head = polygon_head(nvertices=poly.num_points_hull() + 1, debugid=debugid, ilevel=ilevel, mtype=0)
+    return "VIA POLYGON\n" + via_head + "TOLEVEL 1 RING COVERS\n"
