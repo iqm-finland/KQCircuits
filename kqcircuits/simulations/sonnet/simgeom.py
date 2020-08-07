@@ -70,9 +70,7 @@ def add_sonnet_geometry(
         simulation_safety + (region_pos.height() % 2) / 2  # also ensure symmetry for 1 um grid
     ).to_itype(dbu))
 
-
     for port in ports:
-
         port.location = port.signal_location
         port.termination = 10 # or False
 
@@ -93,6 +91,7 @@ def add_sonnet_geometry(
             cell.shapes(layer_son).insert(
                 pya.DText("port {}{}".format(port.number, port.group), pya.DTrans(port.location)))
     region_pos -= region_neg
+
     def simple_region(region):
         return pya.Region([poly.to_simple_polygon() for poly in region.each()]) #.to_itype(dbu)
     simregion = simple_region(region_pos);
@@ -152,8 +151,8 @@ def find_edge_from_point(polygons, layer: int, point: pya.DPoint, dbu, tolerance
         raise ValueError("No edge found at point")
 
 
-#TODO check all layers and not only base
-def poly_and_edge_indeces(cell, polygons, dbu, port, layer):
+# TODO check all layers and not only base
+def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_force"):
     print("Looking for ports")
 
     signal_edge = find_edge_from_point(

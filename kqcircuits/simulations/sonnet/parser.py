@@ -164,6 +164,7 @@ def polygons(polygons, v, dbu, ilevel):
 
     return sonnet_str
 
+
 def via(poly, debugid, ilevel):
     via_head = polygon_head(nvertices=poly.num_points_hull() + 1, debugid=debugid, ilevel=ilevel, mtype=0)
     return "VIA POLYGON\n" + via_head + "TOLEVEL 1 RING COVERS\n"
