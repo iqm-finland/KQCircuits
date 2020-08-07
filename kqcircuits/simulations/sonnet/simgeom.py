@@ -164,43 +164,45 @@ def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_f
         )
     print(signal_edge)
 
-    for i, poly in enumerate(polygons):
-        for j, edge in enumerate(poly.each_edge()):
-            edge = edge.to_dtype(dbu)
+    if port_finder == "brute_force":
+        for i, poly in enumerate(polygons):
+            for j, edge in enumerate(poly.each_edge()):
+                edge = edge.to_dtype(dbu)
 
-            if (signal_edge.x1 == edge.x1 and signal_edge.y1 == edge.y1 and
-                signal_edge.x2 == edge.x2 and signal_edge.y2 == edge.y2): # edge.to_dtype(dbu).contains(port_loc)
-                print(i, j)
-                return parser.port(
-                    portnum=port.number,
-                    ipolygon=i + 1,
-                    ivertex=j,
-                    port_type=("CUP" if port.group else "STD"),
-                    group=port.group,
-                    resist=port.resistance,
-                    react=port.reactance,
-                    induct=port.inductance,
-                    capac=port.capacitance
-                )
-    raise ValueError("No edge found for Sonnet port {}{}".format(port.number, port.group))
-    return ""
-
-    """ The following would be faster but works only for
-    simple geometry with even integers for points"""
-    """for i, poly in enumerate(polygons):
-        for j, edge in enumerate(poly.each_edge()):
-            #edge = edge.to_dtype(dbu)
-
-            if edge.to_dtype(dbu).contains(port.signal_location):
-                print(i, j)
-                return parser.port(
-                    portnum=port.sonnet_nr,
-                    ipolygon=i + 1,
-                    ivertex=j,
-                    port_type=("CUP" if port.group else "STD"),
-                    group=port.group,
-                    resist=port.resist,
-                    react=port.react,
-                    induct=port.induct,
-                    capac=port.capac
-                )"""
+                if (signal_edge.x1 == edge.x1 and signal_edge.y1 == edge.y1 and
+                    signal_edge.x2 == edge.x2 and signal_edge.y2 == edge.y2): # edge.to_dtype(dbu).contains(port_loc)
+                    print(i, j)
+                    return parser.port(
+                        portnum=port.number,
+                        ipolygon=i + 1,
+                        ivertex=j,
+                        port_type=("CUP" if port.group else "STD"),
+                        group=port.group,
+                        resist=port.resistance,
+                        react=port.reactance,
+                        induct=port.inductance,
+                        capac=port.capacitance
+                    )
+        raise ValueError("No edge found for Sonnet port {}{}".format(port.number, port.group))
+        return
+    else:
+        """ The following would be faster but works only for
+        simple geometry with even integers for points
+        """
+        for i, poly in enumerate(polygons):
+            for j, edge in enumerate(poly.each_edge()):
+                if edge.to_dtype(dbu).contains(port_loc):
+                    print(i, j)
+                    return parser.port(
+                        portnum=port.sonnet_nr,
+                        ipolygon=i + 1,
+                        ivertex=j,
+                        port_type=("CUP" if port.group else "STD"),
+                        group=port.group,
+                        resist=port.resist,
+                        react=port.react,
+                        induct=port.induct,
+                        capac=port.capac
+                    )
+        raise ValueError("No edge found for Sonnet port {}{}".format(port.sonnet_nr, port.group))
+        return ""
