@@ -28,7 +28,7 @@ name = "Dev" # makes filename Dev.son
 top_cell = KLayoutView.get_active_cell()
 layout = KLayoutView.get_active_layout()
 
-sim = Simulation(layout, name=name, box=pya.DBox(pya.DPoint(3700, 3400), pya.DPoint(4750, 5350)))
+sim = Simulation(layout, name=name, box=pya.DBox(pya.DPoint(3700, 3400), pya.DPoint(4750, 5350))) # example of custom simulation area with box
 trans = pya.DTrans(0,0) # no displacement
 sim.insert_cell(top_cell, trans=trans, name="Top cell")
 
