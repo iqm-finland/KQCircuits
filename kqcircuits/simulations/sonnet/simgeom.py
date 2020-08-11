@@ -68,7 +68,7 @@ def add_sonnet_geometry(
     region_pos = pya.Region(region_pos.enlarge(
         simulation_safety,
         simulation_safety + (region_pos.height() % 2) / 2  # also ensure symmetry for 1 um grid
-    ).to_itype(dbu))
+    ).to_itype(dbu)) if simulation_safety != 0 else pya.Region(region_pos.to_itype(dbu))
 
     for port in ports:
         port.location = port.signal_location
@@ -160,7 +160,7 @@ def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_f
         cell.layout().layer(layer),
         port.signal_location,
         dbu,
-        tolerance=2.2 # hardcoded, feel free to change
+        tolerance=5.0 # hardcoded, feel free to change
         )
     print(signal_edge)
 

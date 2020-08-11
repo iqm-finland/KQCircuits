@@ -9,15 +9,20 @@ import os.path
 
 
 class SonnetExport:
-    PARAMETERS = ['port_width', 'port_height', 'substrate_height', 'box_height', 'epsilon'] # examples for now
+    PARAMETERS = ['detailed_resonance', 'lower_accuracy', 'control', 'current',
+                  'fill_type', 'simulation_safety']
 
     path = None
     file_prefix = ''
 
-    def __init__(self, simulation: Simulation, **kwargs):
+    def __init__(self, simulation: Simulation, auto_port_detection: bool, **kwargs):
         if simulation is None or not isinstance(simulation, Simulation):
             raise ValueError("Cannot export without simulation")
         self.simulation = simulation
+
+        if auto_port_detection is None or not isinstance(auto_port_detection, bool):
+            raise ValueError("Please set the auto_port_detection")
+        self.auto_port_detection = auto_port_detection
 
         if 'file_prefix' not in kwargs:
             self.file_prefix = self.simulation.name
@@ -45,12 +50,20 @@ class SonnetExport:
     def write(self):
         ports = []
         refpoints = self.simulation.get_refpoints(self.simulation.cell)
+        refpoints_sonnet = dict(filter(lambda e: "sonnet_port" in e[0], refpoints.items()))
         refpoints = dict(filter(lambda e: "port" in e[0], refpoints.items()))
-
         i = 1 # Sonnet indexing starts from 1
-        for portname, location in refpoints.items():
-            ports.append(InternalPort(i, location, location, group=""))
-            i += 1
+
+        if (self.auto_port_detection):
+            # This turns all ports to Sonnet ports
+            for portname, location in refpoints.items():
+                ports.append(InternalPort(i, location, location, group=""))
+                i += 1
+        else:
+            # This turns only the annotations named "sonnet_port" to Sonnet ports
+            for portname, location in refpoints_sonnet.items():
+                ports.append(InternalPort(i, location, location, group=""))
+                i += 1
         print("Port reference points: " + str(i-1))
 
         self.simulation.create_simulation_layers() # update ls lg
@@ -60,23 +73,34 @@ class SonnetExport:
 
         # sonnet calibration groups, currently do manually in sonnet
         calgroup = "CUPGRP \"A\"\nID 28\nGNDREF F\nTWTYPE FEED\nEND"
-        simulation_safety = 3*300 # microns, hard coded for now
 
         shapes_in_air = self.simulation.layout.begin_shapes(self.simulation.cell, self.simulation.layout.layer(default_layers["b airbridge flyover"]))
         materials_type = "Si+Al" if not shapes_in_air.shape().is_null() else "Si BT"
 
+        # defaults if not in parameters
+        self.detailed_resonance = getattr(self, 'detailed_resonance', False)
+        self.lower_accuracy = getattr(self, 'lower_accuracy', False)
+        self.current = getattr(self, 'current', False)
+        self.control = getattr(self, 'control', 'ABS')
+        self.fill_type = getattr(self, 'fill_type', 'Staircase')
+        self.simulation_safety = getattr(self, 'simulation_safety', 0) # microns
+
 
         sonnet_strings = simgeom.add_sonnet_geometry(
           cell = self.simulation.cell,
-          ls = self.simulation.ls, # TODO also ground layer
+          ls = self.simulation.ls,
           materials_type = materials_type,
-          simulation_safety = simulation_safety, # microns
+          simulation_safety = self.simulation_safety, # microns
           ports = ports,
           calgroup = calgroup,
           grid_size = 1, # microns
-          symmetry = False # top-bottom symmetry for sonnet -> would be 4-8x faster
-        )
-        sonnet_strings["control"] = sonnet.control("ABS")
+          symmetry = False, # top-bottom symmetry for sonnet -> could be 4-8x faster
+          detailed_resonance = self.detailed_resonance,
+          lower_accuracy = self.lower_accuracy,
+          current = self.current,
+          fill_type = self.fill_type
+          )
+        sonnet_strings["control"] = sonnet.control(self.control)
 
         filename = str(self.son_filename)
         sonnet.apply_template(
