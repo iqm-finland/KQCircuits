@@ -29,7 +29,7 @@ and create an instance of ``Simulation``. Optionally, you can set a transformati
 
 Then create an instance of ``SonnetExport``::
 
-    son = SonnetExport(sim, auto_port_detection=True, path=path)
+    son = SonnetExport(sim, path=path)
 
 and use the ``write`` command::
 
@@ -41,7 +41,7 @@ Settings
 --------
 Settings work as follows when creating an instance of SonnetExport:
 
-    son = SonnetExport(sim, auto_port_detection=False, detailed_resonance=True, path=path)
+    son = SonnetExport(sim, detailed_resonance=True, path=path)
 
 * ``detailed_resonance`` is False as default. More info `here. <https://www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf>`_
 
