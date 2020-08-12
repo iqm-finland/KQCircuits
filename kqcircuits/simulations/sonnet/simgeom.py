@@ -122,7 +122,7 @@ def add_sonnet_geometry(
             len(airbridge_polygons) * [1] + len(airpads_polygons) * [2])
 
     polys = parser.polygons(simpolygons + airbridge_polygons + airpads_polygons,
-        pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y), dbu,
+        pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y), dbu, # get the bottom left corner
         ilevel=level_iter, fill_type=("V" if (fill_type=="Conformal") else "N")
         )
 
