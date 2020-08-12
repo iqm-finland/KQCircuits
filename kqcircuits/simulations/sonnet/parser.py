@@ -1,5 +1,5 @@
 from string import Template
-
+import logging
 from kqcircuits.pya_resolver import pya
 
 
@@ -116,7 +116,7 @@ def port(
 ):
     if group:
         group = '"' + group + '"'
-    print(locals())
+    logging.info(locals())
     return "POR1 {port_type} {group}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} {resist} {react} {induct} {capac}\n".format(
         **locals())  # {xcord} {ycord} [reftype rpcallen]
 

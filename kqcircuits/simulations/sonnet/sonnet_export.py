@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from kqcircuits.defaults import default_layers
@@ -64,7 +65,7 @@ class SonnetExport:
             for portname, location in refpoints_sonnet.items():
                 ports.append(InternalPort(i, location, location, group=""))
                 i += 1
-        print("Port reference points: " + str(i-1))
+        logging.info("Port reference points: " + str(i-1))
 
         self.simulation.create_simulation_layers() # update ls lg
 

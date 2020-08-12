@@ -1,5 +1,7 @@
 from kqcircuits.pya_resolver import pya
 
+import re # regex
+import logging
 import kqcircuits.simulations.sonnet.parser as parser
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -54,6 +56,10 @@ def add_sonnet_geometry(
         grid_size=1,  # microns
         calgroup="",
         symmetry=False,  # top-bottom symmetry for sonnet
+        detailed_resonance=False,
+        lower_accuracy=False,
+        current=False,
+        fill_type="Staircase"
 ):
     layout = cell.layout()
     dbu = layout.dbu
@@ -94,7 +100,7 @@ def add_sonnet_geometry(
 
     def simple_region(region):
         return pya.Region([poly.to_simple_polygon() for poly in region.each()]) #.to_itype(dbu)
-    simregion = simple_region(region_pos);
+    simregion = simple_region(region_pos)
     simpolygons = [p for p in simregion.each()];
     cell.shapes(layer_son).insert(simregion)
 
@@ -116,15 +122,21 @@ def add_sonnet_geometry(
             len(airbridge_polygons) * [1] + len(airpads_polygons) * [2])
 
     polys = parser.polygons(simpolygons + airbridge_polygons + airpads_polygons,
-        pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y), dbu, ilevel=level_iter)
+        pya.DVector(-cell.dbbox().p1.x, -cell.dbbox().p2.y), dbu,
+        ilevel=level_iter, fill_type=("V" if (fill_type=="Conformal") else "N")
+        )
 
     # find port edges
     # to preserve the port edge indices the geometry must not be changed after this
     sstring_ports = ""
     refplane_dirs = []
+    port_ipolys = []
     for port in ports:
         if isinstance(port, SidePort):
             refplane_dirs.append(port.side)
+            ipoly = poly_and_edge_indeces(cell, simpolygons + airbridge_polygons, dbu, port, ls)
+            logging.info(re.findall(r'POLY (\d+)', ipoly))
+            port_ipolys.append(re.findall(r'POLY (\d+)', ipoly)) # scan ipolygon
         sstring_ports += poly_and_edge_indeces(cell, simpolygons + airbridge_polygons, dbu, port, ls)
 
     return {
@@ -132,10 +144,13 @@ def add_sonnet_geometry(
         "box": parser.box_from_cell(cell, 1, materials_type),
         "ports": sstring_ports,
         "calgroup": calgroup,
-        "refplanes": parser.refplanes(refplane_dirs, simulation_safety),
+        "refplanes": parser.refplanes(refplane_dirs, simulation_safety, port_ipolys),
         "symmetry": parser.symmetry(symmetry),
         "nports": len(set([abs(port.number) for port in ports])),
-    }
+        "resonance_abs": "DET_ABS_RES Y" if detailed_resonance else "DET_ABS_RES N",
+        "lower_accuracy": "1" if lower_accuracy else "0",
+        "current": "j" if current else ""
+        }
 
 
 def find_edge_from_point(polygons, layer: int, point: pya.DPoint, dbu, tolerance=0.01): #0.01
@@ -153,7 +168,7 @@ def find_edge_from_point(polygons, layer: int, point: pya.DPoint, dbu, tolerance
 
 # TODO check all layers and not only base
 def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_force"):
-    print("Looking for ports")
+    logging.info("Looking for ports")
 
     signal_edge = find_edge_from_point(
         polygons,
@@ -162,7 +177,7 @@ def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_f
         dbu,
         tolerance=5.0 # hardcoded, feel free to change
         )
-    print(signal_edge)
+    logging.info(signal_edge)
 
     if port_finder == "brute_force":
         for i, poly in enumerate(polygons):
@@ -171,7 +186,7 @@ def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_f
 
                 if (signal_edge.x1 == edge.x1 and signal_edge.y1 == edge.y1 and
                     signal_edge.x2 == edge.x2 and signal_edge.y2 == edge.y2): # edge.to_dtype(dbu).contains(port_loc)
-                    print(i, j)
+                    logging.info(i, j)
                     return parser.port(
                         portnum=port.number,
                         ipolygon=i + 1,
@@ -192,7 +207,7 @@ def poly_and_edge_indeces(cell, polygons, dbu, port, layer, port_finder="brute_f
         for i, poly in enumerate(polygons):
             for j, edge in enumerate(poly.each_edge()):
                 if edge.to_dtype(dbu).contains(port_loc):
-                    print(i, j)
+                    logging.info(i, j)
                     return parser.port(
                         portnum=port.sonnet_nr,
                         ipolygon=i + 1,
