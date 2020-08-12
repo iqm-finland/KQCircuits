@@ -2,7 +2,7 @@ Exporting to Sonnet
 ===================
 Exporting to Sonnet is supported for up to one chip but generating .son files for larger geometry is increasingly slow due to the port-edge finding algorithm. In addition, processing in Sonnet becomes impractical due to huge amount of RAM needed. Simpler geometry is preferred. Airbridges are supported with Sonnet vias and auto-detected.
 
-You can either detect all ports to be converted to Sonnet ports or convert only annotations containing the text *sonnet_port* for more control over the simulation environment. Set this with the `auto_port_detection` setting.
+**N.B.** You should put an annotation (`pya.DText`) that includes the text *simulation_port* to edge points you want a Sonnet port in.
 
 Instructions
 ------------
@@ -42,8 +42,6 @@ Settings
 Settings work as follows when creating an instance of SonnetExport:
 
     son = SonnetExport(sim, auto_port_detection=False, detailed_resonance=True, path=path)
-
-* **``auto_port_detection`` is required**. True converts all ports in the circuit to Sonnet ports. False converts only manually set annotations (`pya.DText`) containing *sonnet_port*. Use this to limit the Sonnet simulation to, for example, a feedline.
 
 * ``detailed_resonance`` is False as default. More info `here. <https://www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf>`_
 

@@ -32,7 +32,7 @@ sim = Simulation(layout, name=name, box=pya.DBox(pya.DPoint(3700, 3400), pya.DPo
 trans = pya.DTrans(0,0) # no displacement
 sim.insert_cell(top_cell, trans=trans, name="Top cell")
 
-son = SonnetExport(sim, auto_port_detection=True, detailed_resonance=True, lower_accuracy=True, control="ABS",
+son = SonnetExport(sim, detailed_resonance=True, lower_accuracy=True, control="ABS",
   fill_type="Staircase", simulation_safety=0, path=path)
 son.write()</text>
 </klayout-macro>
