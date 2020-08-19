@@ -35,7 +35,7 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
     while not shapes_iter.at_end():
         shape = shapes_iter.shape()
         if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
-            refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
+                refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
         shapes_iter.next()
 
     return refpoints

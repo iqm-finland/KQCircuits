@@ -23,12 +23,13 @@ class InternalPort(Port):
     """
     Data structure for ports inside the simulation area
     """
-    def __init__(self, number: int, signal_location: DPoint, ground_location: DPoint,
+    def __init__(self, number: int, signal_location: DPoint, ground_location: DPoint, group: str = "",
                  resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0):
         super().__init__(number, resistance, reactance, inductance, capacitance)
         self.signal_location = signal_location
         self.ground_location = ground_location
-
+        self.group = group
+        
 
 class EdgePort(Port):
     """

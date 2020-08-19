@@ -8,9 +8,8 @@
 import abc
 from typing import List
 
-from autologging import logged, traced
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_layers, default_faces
+from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import Element, get_refpoints
 from kqcircuits.simulations.port import Port
 

@@ -1,6 +1,5 @@
-import os
 from string import Template
-
+import logging
 from kqcircuits.pya_resolver import pya
 
 
@@ -12,12 +11,14 @@ def apply_template(filename_template, filename_output, rules):
     fileout = open(filename_output, "w")
     fileout.write(results)
     fileout.close()
+    """
     dirname_sondata = os.path.join(os.path.dirname(filename_output), "sondata")
     if not os.path.exists(dirname_sondata):
         os.mkdir(dirname_sondata)
     dirname_project = os.path.join(dirname_sondata, os.path.splitext(os.path.basename(filename_output))[0])
     if not os.path.exists(dirname_project):
         os.mkdir(dirname_project)
+    """
 
 
 def polygon_head(
@@ -45,14 +46,15 @@ def symmetry(sym: bool = False):
     return sonnet_str
 
 
-def box_from_cell(cell: pya.Cell, cell_size: float):
+def box_from_cell(cell: pya.Cell, cell_size: float, materials_type):
     bbox = cell.dbbox()
-    print("box of cell")
+    # print("box of cell")
     return box(
         xwidth=bbox.width(),
         ywidth=bbox.height(),
         xcells=int(bbox.width() / cell_size),
         ycells=int(bbox.height() / cell_size),
+        materials_type=materials_type
     )
 
 
@@ -72,12 +74,14 @@ def box(
         "Si RT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (room temperature)\"",
         "Si BT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.45 1 0 0 0 0 \"Silicon (cryogenic)\"",
         "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
+        "Si+Al": "3000 1 1 0 0 0 0 \"vacuum\"\n0.5 9.9 1 0.0001 0 0 0 \"Alumina (99.5%)\"\n0.45 1 1 0 0 0 0 \"vacuum\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
     }[materials_type]
 
     nlev = {
         "Si": 1,
         "Si BT": 1,
-        "SiOx+Si": 2
+        "SiOx+Si": 2,
+        "Si+Al": 3
     }[materials_type]
 
     return "BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n{materials}".format(**locals())
@@ -90,9 +94,9 @@ def refplane(
     return "DRP1 {position} FIX {length}\n".format(**locals())
 
 
-def refplanes(postitions, length):
+def refplanes(positions, length):
     sonnet_str = ""
-    for side in postitions:
+    for side in positions:
         sonnet_str += refplane(side, length)
     return sonnet_str
 
@@ -112,7 +116,7 @@ def port(
 ):
     if group:
         group = '"' + group + '"'
-    print(locals())
+    logging.info(locals())
     return "POR1 {port_type} {group}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} {resist} {react} {induct} {capac}\n".format(
         **locals())  # {xcord} {ycord} [reftype rpcallen]
 
@@ -120,7 +124,7 @@ def port(
 # def ports(shapes):
 #  sonnet_str = ""
 #  polygons = 0
-#  
+#
 #  # FIXME Maybe the shapes will not have the same indexes as polygons in the region!
 #  for shape in shapes.each():
 #    if shape:
@@ -129,7 +133,7 @@ def port(
 #      portnum = shape.property("sonnet_port_nr")
 #      if ivertex!=None and portnum!=None:
 #        sonnet_str += port(ipolygon=polygons-1, portnum=portnum, ivertex=ivertex)
-#  
+#
 #  return sonnet_str
 
 def control(control_type):
@@ -140,13 +144,18 @@ def control(control_type):
     }[control_type]
 
 
-def polygons(polygons, v, dbu):
+def polygons(polygons, v, dbu, ilevel):
     sonnet_str = 'NUM {}\n'.format(len(polygons))
     for i, poly in enumerate(polygons):
         if poly.holes():
             raise NotImplementedError
-        sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
-                                   debugid=i + 1)  # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
+
+        if hasattr(poly, 'isVia'):
+            sonnet_str += via(poly, debugid=i, ilevel=next(ilevel))
+        else:
+            sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
+                                   debugid=i + 1, ilevel=next(ilevel))  # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
+
         for j, point in enumerate(poly.each_point_hull()):
             sonnet_str += "{} {}\n".format(point.x * dbu + v.x,
                                            -(point.y * dbu + v.y))  # sonnet Y-coordinate goes in the other direction
@@ -154,3 +163,8 @@ def polygons(polygons, v, dbu):
         sonnet_str += "{} {}\nEND\n".format(point.x * dbu + v.x, -(point.y * dbu + v.y))
 
     return sonnet_str
+
+
+def via(poly, debugid, ilevel):
+    via_head = polygon_head(nvertices=poly.num_points_hull() + 1, debugid=debugid, ilevel=ilevel, mtype=0)
+    return "VIA POLYGON\n" + via_head + "TOLEVEL 1 RING COVERS\n"

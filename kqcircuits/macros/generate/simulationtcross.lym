@@ -16,12 +16,12 @@
  <dsl-interpreter-name/>
  <text>
 import numpy
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_layers, TMP_PATH
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.elements.coplanar_waveguide import WaveguideCoplanar
-import kqcircuits.simulation.sonnet.parser as sonnet
+from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+import kqcircuits.simulations.sonnet.parser as sonnet
 import pprint
-import kqcircuits.simulation.sonnet.simgeom as simgeom
+import kqcircuits.simulations.sonnet.simgeom as simgeom
 import kqcircuits.util.macro_prepare as macroprep
 
 
@@ -38,61 +38,62 @@ pprint.pprint(default_layers)
 
 
 def produce_simulation_cell(cell):
-  global layout  
+  global layout
 
   pointa = pya.DPoint(-100,0)
   pointb = pya.DPoint(100,0)
   pointc = pya.DPoint(0,-30)
-  # Swissmon      
+  # Swissmon
   driveline = WaveguideCoplanar.create_cell(layout, {
     "path": pya.DPath([
                 pointa,
                 pointb
               ],1)
-  })    
+  })
   cell.insert(pya.DCellInstArray(driveline.cell_index(), pya.DTrans()))
-    
+
   ports = []
   ports.append(simgeom.SidePort(1, pointa, 'l'))
   ports.append(simgeom.SidePort(2, pointb, 'r'))
-  ports.append(simgeom.SidePort(3, pointc, 'b', termination=10))  
-  return ports, calgroup
-  
+  ports.append(simgeom.SidePort(3, pointc, 'b', termination=10))
+  return ports
+
 import os.path
 
 batchstring = ""
 
 ## Produce
-simualtion_safety = 300 # microns
+simulation_safety = 300 # microns
 name = "sim tcross"
 
 cell = layout.create_cell(name) # A new cell into the layout
-ports, calgroup = produce_simulation_cell(cell)
+ports = produce_simulation_cell(cell)
 
 sonnet_strings = simgeom.add_sonnet_geometry(
-  cell, 
-  simualtion_safety = simualtion_safety, # microns
+  cell,
+  simulation_safety = simulation_safety, # microns
+  ls = ,
+  materials_type = "Si BT",
   ports = ports,
-  calgroup = calgroup,
   grid_size = 1, # microns
-  symmetry = False # top-bottom symmetry for sonnet 
-) 
+  symmetry = False # top-bottom symmetry for sonnet
+)
 sonnet_strings["control"] = sonnet.control("ABS")
 
-# outputfiles into working directory
-filename = name+".son"
+# output files into /tmp directory
+filename = TMP_PATH + name + ".son" # save path
 sonnet.apply_template(
-  os.path.join(os.path.dirname(os.path.abspath(sonnet.__file__)), "template.son"), 
+  os.path.join(os.path.dirname(os.path.abspath(sonnet.__file__)), "template.son"),
   filename,
-  sonnet_strings      
+  sonnet_strings
   )
 batchstring += "\"./{}\"\n".format(filename)
 
 
 ## Batch
-file = open("batch.txt","w") 
-file.write(batchstring) 
-file.close() 
+file = open("batch.txt","w")
+file.write(batchstring)
+file.close()
 
 
 layout_view.add_missing_layers()

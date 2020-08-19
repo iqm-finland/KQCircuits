@@ -16,6 +16,7 @@ Documentation
    start/index
    developer/index
    libraries/index
+   export/index
    api/index
 
 Indices and tables

@@ -19,7 +19,7 @@ edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
 import numpy
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.elements.swissmon import Swissmon
+from kqcircuits.elements.qubits.swissmon import Swissmon
 import kqcircuits.simulations.sonnet.parser as sonnet
 import pprint
 import kqcircuits.simulations.sonnet.simgeom as simgeom
@@ -64,8 +64,8 @@ def produce_simulation_cell(cell):
   ports.append(simgeom.SidePort(1, swissmon_refpoints_abs['port_cplr0'], 'l'))
   ports.append(simgeom.SidePort(2, swissmon_refpoints_abs['port_cplr2'], 'r'))
   ports.append(simgeom.SidePort(3, swissmon_refpoints_abs['port_drive'], 'b', termination=10))  
-  ports.append(simgeom.Port( 4, swissmon_refpoints_abs['port_squid_a'], group="A", resist=0, induct=8.7e-9))  
-  ports.append(simgeom.Port(-4, swissmon_refpoints_abs['port_squid_b'], group="A", resist=0, induct=8.7e-9))
+  ports.append(simgeom.Port( 4, swissmon_refpoints_abs['port_squid_a'], group="A", resistance=0, inductance=8.7e-9))  
+  ports.append(simgeom.Port(-4, swissmon_refpoints_abs['port_squid_b'], group="A", resistance=0, inductance=8.7e-9))
   calgroup = "CUPGRP \"A\"\nID 28\nGNDREF F\nTWTYPE FEED\nEND"
   return ports, calgroup
   
@@ -74,15 +74,16 @@ import os.path
 batchstring = ""
 
 ## Produce
-simualtion_safety = 3*300 # microns
+simulation_safety = 3*300 # microns
 name = "sim qubit"
 
 cell = layout.create_cell(name) # A new cell into the layout
 ports, calgroup = produce_simulation_cell(cell)
 
 sonnet_strings = simgeom.add_sonnet_geometry(
-  cell, 
-  simualtion_safety = simualtion_safety, # microns
+  cell,
+  ls=cell.layout().layer(default_layers["simulation signal"]),
+  simulation_safety = simulation_safety, # microns
   ports = ports,
   calgroup = calgroup,
   grid_size = 1, # microns

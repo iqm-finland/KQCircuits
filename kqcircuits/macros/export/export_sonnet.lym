@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Current view to Sonnet</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name>Export</group-name>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.sonnet.sonnet_export import SonnetExport
+
+"""Before using this script, have your project in view as the top cell."""
+
+from pathlib import Path
+path = str(Path.home()) + "\\KLayout\\python\\kqcircuit\\sonnet\\" # Your path here
+name = "Dev" # makes filename Dev.son
+
+top_cell = KLayoutView.get_active_cell()
+layout = KLayoutView.get_active_layout()
+
+sim = Simulation(layout, name=name, box=pya.DBox(pya.DPoint(3700, 3400), pya.DPoint(4750, 5350))) # example of custom simulation area with box
+trans = pya.DTrans(0,0) # no displacement
+sim.insert_cell(top_cell, trans=trans, name="Top cell")
+
+son = SonnetExport(sim, detailed_resonance=True, lower_accuracy=True, control="ABS",
+  fill_type="Staircase", simulation_safety=0, path=path)
+son.write()</text>
+</klayout-macro>
