@@ -1,8 +1,24 @@
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+import os
+import sys
+import inspect
+import shutil
+
+__location__ = os.path.join(os.getcwd(), os.path.dirname(
+    inspect.getfile(inspect.currentframe())))
+
 
 # -- Path setup --------------------------------------------------------------
 
@@ -10,14 +26,47 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-
-import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath('..'))
 sys.path.append(os.path.abspath("../docs/sphinxext"))
 
+# -- Run sphinx-apidoc ------------------------------------------------------
+# This hack is necessary since RTD does not issue `sphinx-apidoc` before running
+# `sphinx-build -b html . _build/html`. See Issue:
+# https://github.com/rtfd/readthedocs.org/issues/1139
+# DON'T FORGET: Check the box "Install your project inside a virtualenv using
+# setup.py install" in the RTD Advanced Settings.
+# Additionally it helps us to avoid running apidoc manually
+
+try:  # for Sphinx >= 1.7
+    from sphinx.ext import apidoc
+except ImportError:
+    from sphinx import apidoc
+
+output_dir = os.path.join(__location__, "api")
+module_dir = os.path.join(__location__, "../kqcircuits")
+try:
+    shutil.rmtree(output_dir)
+except FileNotFoundError:
+    pass
+
+try:
+    import sphinx
+    from pkg_resources import parse_version
+
+    template_dir = os.path.join(__location__, "templates", "apidoc")
+    cmd_line_template = "sphinx-apidoc -f -o {outputdir} {moduledir} -e --implicit-namespaces --templatedir={templatedir}"
+    cmd_line = cmd_line_template.format(outputdir=output_dir, moduledir=module_dir, templatedir=template_dir)
+
+    args = cmd_line.split(" ")
+    if parse_version(sphinx.__version__) >= parse_version('1.7'):
+        args = args[1:]
+
+    apidoc.main(args)
+except Exception as e:
+    print("Running `sphinx-apidoc` failed!\n{}".format(e))
+
+import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
@@ -66,7 +115,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/modules.rst']
 
 
 # -- Options for HTML output -------------------------------------------------

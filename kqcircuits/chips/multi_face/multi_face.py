@@ -7,71 +7,139 @@
 
 import sys
 from importlib import reload
-from autologging import traced
-
+from autologging import traced, logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.chip_frame import ChipFrame
-from kqcircuits.elements.flip_chip.flip_chip_connector_dc import FlipChipConnectorDc
+from kqcircuits.elements.flip_chip_connector.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+from kqcircuits.defaults import default_mask_parameters
 
 reload(sys.modules[Chip.__module__])
 
 
 @traced
+@logged
 class MultiFace(Chip):
     """Base class for multi-face chips.
 
     Produces labels in pixel corners, dicing edge, markers and optionally grid for all chip faces. Contains methods for
     producing launchers in face 0, connectors between faces 0 and 1, and default routing waveguides from the
     launchers to the connectors.
-
-    Attributes:
-
-        routing_waveguides: Boolean determining if default waveguides are created from the launchers to the connectors
-
     """
+    version = 1
+
     PARAMETERS_SCHEMA = {
-        "routing_waveguides": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Use default routing waveguides",
-            "default": True
+        "face1_box": {
+            "type": pya.PCellParameterDeclaration.TypeShape,
+            "description": "Border of Face 1",
+            "default": pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500))
         },
+        "with_gnd_bumps": {
+            "type": pya.PCellParameterDeclaration.TypeBoolean,
+            "description": "Make ground bumps",
+            "default": False
+        },
+        "a_capped": {
+            "type": pya.PCellParameterDeclaration.TypeDouble,
+            "description": "Capped center conductor width [μm]",
+            "docstring": "Width of center conductor in the capped region [μm]",
+            "default": 10
+        },
+        "b_capped": {
+            "type": pya.PCellParameterDeclaration.TypeDouble,
+            "description": "Width of gap in the capped region  [μm]",
+            "default": 10
+        },
+        "connector_type": {
+            "type": pya.PCellParameterDeclaration.TypeString,
+            "description": "Connector type for CPW waveguides",
+            "default": "Coax",
+            "choices": [["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]]
+        }
+
     }
 
-    def __init__(self):
-        super().__init__()
+    def produce_impl(self):
+        super().produce_impl()
 
-    def produce_frames(self):
-
-        # produce frame and grid for face 0
+    def produce_structures(self):
+        # produce frame for face 0
         bottom_frame_parameters = {
             **self.pcell_params_by_name(whitelist=ChipFrame.PARAMETERS_SCHEMA),
+            "face_ids": self.face_ids[0],
             "use_face_prefix": True
         }
-        self.produce_frame_and_grid(bottom_frame_parameters, self.box, self.face(0))
+        self.produce_frame(bottom_frame_parameters)
 
-        # produce frame and grid for face 1
-        t_box = pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500))
+        # produce frame for face 1
         t_frame_parameters = {
-            "box": t_box,
-            "dice_width": 140,
-            "text_margin": 17.5,
-            "dice_grid_margin": 70,
+            "box": self.face1_box,
             "marker_dist": 1000,
-            "marker_diagonals": 4,
+            "marker_diagonals": 2,
             "face_ids": self.face_ids[1],
             "use_face_prefix": True,
-        }
+            "name_chip": self.name_chip,
+            "name_mask": self.name_mask,
+            "dice_width": default_mask_parameters[self.face_ids[1]]["dice_width"],
+            "text_margin": default_mask_parameters[self.face_ids[1]]["text_margin"]
+            }
         t_frame_trans = pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans.M90
-        self.produce_frame_and_grid(t_frame_parameters, t_box, self.face(1), t_frame_trans)
+        self.produce_frame(t_frame_parameters, t_frame_trans)
 
-        # default connectors
         self.produce_default_connectors_and_launchers()
+        if self.with_gnd_bumps:
+            self._produce_ground_bumps()
 
-    def produce_impl(self):
-        # chip frames created in Chip.produce_impl() using the produce_frames() method of this class
-        super().produce_impl()
+    def _produce_ground_bumps(self):
+        """Produces ground bumps between bottom and top face.
+
+        The bumps avoid ground grid avoidance on both faces.
+        """
+
+        bump = self.add_element(FlipChipConnectorDc)
+
+        # boundary box
+        bbox = bump.dbbox()
+
+        # magic parameters
+        delta_x = 100
+        delta_y = 100
+        edge_from_bump = 750
+
+        p1 = pya.DPoint(self.face1_box.p1.x + edge_from_bump, self.face1_box.p1.y + edge_from_bump)
+        p2 = pya.DPoint(self.face1_box.p2.x - edge_from_bump, self.face1_box.p2.y - edge_from_bump)
+
+        # array size for bump creation
+        n = (p2 - p1).x / delta_x
+        m = (p2 - p1).y / delta_y
+
+        avoidance_layer_bottom = pya.Region(
+            self.cell.begin_shapes_rec(self.get_layer("ground grid avoidance"))).merged()
+        avoidance_layer_top = pya.Region(
+            self.cell.begin_shapes_rec(self.get_layer("ground grid avoidance", 1))).merged()
+        avoidance_layer = avoidance_layer_bottom + avoidance_layer_top
+        count = 0
+        for i in range(int(n)):
+            for j in range(int(m)):
+                pos_bump = p1 + pya.DPoint(i * delta_x, j * delta_y)
+                loc_box = pya.Region(bbox.to_itype(self.layout.dbu)).move(
+                    pya.DVector(pos_bump).to_itype(self.layout.dbu))
+                if loc_box.interacting(avoidance_layer.merged()).is_empty():
+                    self.insert_cell(bump, pya.DTrans(pos_bump))
+                    count += 1
+        print("%s: Number of ground bumps %i" %(self.display_name ,count))
+        self.number_of_gnd_bumps = count
+
+    def produce_ground_grid(self):
+        """Produces ground grid on t and b faces."""
+        for face_id, box in enumerate([self.box, self.face1_box]):
+            self.produce_ground_on_face_grid(box, face_id)
+
+    def merge_layout_layers(self):
+        """Merges layers on t and b faces."""
+        for i in range(int(2)):
+            self.merge_layout_layers_on_face(self.face(i))
 
     def produce_default_connectors_and_launchers(self, launchers_type=""):
         """Produces default connectors, launchers and routing waveguides.
@@ -109,7 +177,7 @@ class MultiFace(Chip):
             for j in range(6):
                 connector_id = i + j * 4
                 if launchers_type == "ARD24" or (launchers_type == "SMA8" and connector_id in sma8_ids):
-                    cell = FlipChipConnectorDc.create_cell(self.layout, {})  # TODO: replace by correct connectors
+                    cell = self.add_element(FlipChipConnectorDc)
                     pos = top_left + pya.DPoint(i * x_step, -j * y_step)
                     connectors[connector_id] = pos
                     self.insert_cell(cell, pya.DTrans(pos), connector_id)
@@ -119,8 +187,8 @@ class MultiFace(Chip):
 
         l = {key: value[0] for key, value in launchers.items()}
         c = connectors
-        dist1 = (l["NW"].y - c[1].y)/2
-        dist2 = (l["EN"].x - c[7].x)/2
+        dist1 = (l["NW"].y - c[1].y) / 2
+        dist2 = (l["EN"].x - c[7].x) / 2
         paths = [
             [l["NW"], l["NW"] + pya.DPoint(0, -dist1), c[1] + pya.DPoint(0, dist1), c[1]],
             [l["NE"], l["NE"] + pya.DPoint(0, -dist1), c[2] + pya.DPoint(0, dist1), c[2]],
@@ -132,8 +200,7 @@ class MultiFace(Chip):
             [l["SE"], l["SE"] + pya.DPoint(0, dist1), c[22] + pya.DPoint(0, -dist1), c[22]],
         ]
         for path in paths:
-            cell = WaveguideCoplanar.create_cell(self.layout, {"path": pya.DPath(path, 0)})
-            self.insert_cell(cell)
+            self.insert_cell(WaveguideCoplanar, path=pya.DPath(path, 0))
 
     def _produce_default_routing_ard24(self, launchers, connectors):
 
@@ -183,5 +250,4 @@ class MultiFace(Chip):
 
         ]
         for path in paths:
-            cell = WaveguideCoplanar.create_cell(self.layout, {"path": pya.DPath(path, 0)})
-            self.insert_cell(cell)
+            self.insert_cell(WaveguideCoplanar, path=pya.DPath(path, 0))

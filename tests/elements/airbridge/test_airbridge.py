@@ -1,5 +1,12 @@
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 import pytest
-import klayout.db as pya
+from kqcircuits.pya_resolver import pya
 from autologging import TRACE
 
 from kqcircuits.elements.airbridge import Airbridge
@@ -8,12 +15,11 @@ from kqcircuits.elements.airbridge import Airbridge
 @pytest.fixture
 def instance():
     instance = Airbridge()
-    instance.name = "test"
     return instance
 
 
 def test_display_text_impl(instance):
-    assert instance.display_text_impl() == "Airbridge(test)"
+    assert instance.display_text_impl() == "Airbridge"
 
 
 def test_coerce_parameters_impl(instance):
@@ -37,6 +43,6 @@ def test_transformation_from_shape_impl(instance):
 
 def test_produce_impl():
     layout = pya.Layout()
-    pcell = Airbridge.create_cell(layout, {"r": 123})
+    pcell = Airbridge.create(layout, r=123)
     parameters = pcell.pcell_parameters_by_name()
     assert parameters["r"] is 123

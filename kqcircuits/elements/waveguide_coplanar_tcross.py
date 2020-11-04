@@ -12,9 +12,7 @@ from kqcircuits.defaults import default_circuit_params
 
 
 class WaveguideCoplanarTCross(Element):
-    """
-  The PCell declaration of T-crossing of waveguides
-  """
+    """The PCell declaration of T-crossing of waveguides."""
 
     PARAMETERS_SCHEMA = {
         "a2": {
@@ -39,22 +37,6 @@ class WaveguideCoplanarTCross(Element):
         }
     }
 
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return "WaveguideT"
-
-    def coerce_parameters_impl(self):
-        None
-
-    def can_create_from_shape_impl(self):
-        return False
-
-    def parameters_from_shape_impl(self):
-        None
-
     def produce_impl(self):
         # Origin: Crossing of centers of the center conductors
         # Direction: Ports from left, right and bottom
@@ -67,40 +49,55 @@ class WaveguideCoplanarTCross(Element):
         a = self.a
         b = self.b
 
+        port_l_location_x = -l - b2 - a2 / 2
+        port_r_location_x = l + b2 + a2 / 2
         pts = [
-            pya.DPoint(-l - b2 - a2 / 2, a / 2 + 0),
-            pya.DPoint(l + b2 + a2 / 2, a / 2 + 0),
-            pya.DPoint(l + b2 + a2 / 2, a / 2 + b),
-            pya.DPoint(-l - b2 - a2 / 2, a / 2 + b)
+            pya.DPoint(port_l_location_x, a / 2 + 0),
+            pya.DPoint(port_r_location_x, a / 2 + 0),
+            pya.DPoint(port_r_location_x, a / 2 + b),
+            pya.DPoint(port_l_location_x, a / 2 + b)
         ]
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(shape)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
         # Left gap
+        port_bottom_location_y = -a / 2 - b - l2
         pts = [
-            pya.DPoint(-l - b2 - a2 / 2, -a / 2 + 0),
+            pya.DPoint(port_l_location_x, -a / 2 + 0),
             pya.DPoint(-a2 / 2, -a / 2 + 0),
-            pya.DPoint(-a2 / 2, -a / 2 - b - l2),
-            pya.DPoint(-b2 - a2 / 2, -a / 2 - b - l2),
+            pya.DPoint(-a2 / 2, port_bottom_location_y),
+            pya.DPoint(-b2 - a2 / 2, port_bottom_location_y),
             pya.DPoint(-b2 - a2 / 2, -a / 2 - b),
-            pya.DPoint(-l - b2 - a2 / 2, -a / 2 - b)
+            pya.DPoint(port_l_location_x, -a / 2 - b)
         ]
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(shape)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
         # Right gap
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(pya.DTrans.M90 * shape)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(pya.DTrans.M90 * shape)
         # Protection layer
         m = self.margin
         pts = [
-            pya.DPoint(-l - b2 - a2 / 2 - m, a / 2 + b + m),
-            pya.DPoint(l + b2 + a2 / 2 + m, a / 2 + b + m),
-            pya.DPoint(l + b2 + a2 / 2 + m, -a / 2 - b - l2 - m),
-            pya.DPoint(-l - b2 - a2 / 2 - m, -a / 2 - b - l2 - m),
+            pya.DPoint(port_l_location_x - m, a / 2 + b + m),
+            pya.DPoint(port_r_location_x + m, a / 2 + b + m),
+            pya.DPoint(port_r_location_x + m, port_bottom_location_y - m),
+            pya.DPoint(port_l_location_x - m, port_bottom_location_y - m),
         ]
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.layout.layer(self.face()["ground grid avoidance"])).insert(shape)
+        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(shape)
 
-        # annotation text
-        self.refpoints["port_left"] = pya.DPoint(-l - b2 - a2 / 2, 0)
-        self.refpoints["port_right"] = pya.DPoint(l + b2 + a2 / 2, 0)
-        self.refpoints["port_bottom"] = pya.DPoint(0, -a / 2 - b - l2)
+        # refpoints text
+        self.add_port("left", pya.DPoint(port_l_location_x, 0), pya.DVector(-1, 0))
+        self.add_port("right", pya.DPoint(port_r_location_x, 0), pya.DVector(1, 0))
+        self.add_port("bottom", pya.DPoint(0, port_bottom_location_y), pya.DVector(0, -1))
+
+        # annotation path
+        self.cell.shapes(self.get_layer("annotations")).insert(
+            pya.DPath([self.refpoints["port_left"], self.refpoints["base"]], self.a)
+        )
+        self.cell.shapes(self.get_layer("annotations")).insert(
+            pya.DPath([self.refpoints["port_right"], self.refpoints["base"]], self.a)
+        )
+        self.cell.shapes(self.get_layer("annotations")).insert(
+            pya.DPath([self.refpoints["port_bottom"], self.refpoints["base"]], self.a)
+        )
+
         super().produce_impl()  # adds refpoints

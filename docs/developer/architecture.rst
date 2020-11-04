@@ -22,23 +22,27 @@ things should be taken into account when writing new elements:
 
 #.  PCells in Python code have corresponding objects living in the C++-side of
     KLayout. This means that you should not instantiate any elements like a
-    normal class, but instead use the ``create_cell`` method of the element,
-    which is a wrapper for KLayout's ``layout.create_cell()``. This wrapper is
-    used to validate the parameters using the ``Validator`` in
-    ``parameter_helper.py`` . The C++-object is created properly only if you use
-    ``create_cell`` (or if a new PCell is added to a layout in KLayout GUI).
+    normal class, but instead use the ``add_element`` or ``create`` method of the
+    element, which are wrappers for KLayout's ``layout.create_cell``.  These
+    wrappers are used to validate the parameters using the ``Validator`` in
+    ``parameter_helper.py``. The C++-object is created properly only if you use
+    these wrappers (or if a new PCell is added to a layout in KLayout GUI).
 
-#.  When a new PCell instance is created using ``create_cell`` or in KLayout
-    GUI, or when the parameters are changed in KLayout GUI, the ``produce_impl``
-    method of the PCell is called. This method is where you "build" the
-    PCell. When ``produce_impl`` is called, the  instance variables of the
-    PCell are set to new values based on the given parameters. The PCell
-    instance is then created or updated based on these new parameter values.
+#.  In code ``add_element`` is the preferred method of adding a new (sub)cell. The
+    ``create`` method is a ``@classmethod`` that is useful when adding a top
+    level PCell or when not calling from an oher PCell.
+
+#.  When a new PCell instance is created, or when the parameters are changed in
+    KLayout GUI, the ``produce_impl`` method of the PCell is called. This
+    method is where you "build" the PCell. When ``produce_impl`` is called, the
+    instance variables of the PCell are set to new values based on the given
+    parameters. The PCell instance is then created or updated based on these
+    new parameter values.
 
 #.  The PCell parameters for KQCircuits elements are given as a dictionary
     named ``PARAMETER_SCHEMA``, which should exist in the class of every
-    element. The values of these parameters can be set from the KLayout GUI,
-    or in the ``create_cell`` method in code. For each parameter in
+    element. The values of these parameters can be set from the KLayout GUI, or
+    in the ``create`` or ``add_element`` methods in code. For each parameter in
     ``PARAMETER_SCHEMA``, there will automatically be created an instance
     variable with the same name. The ``PARAMETER_SCHEMA`` of a class is
     automatically merged with its parent's ``PARAMETER_SCHEMA`` (see

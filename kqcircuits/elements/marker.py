@@ -11,14 +11,12 @@ from kqcircuits.elements.element import Element
 
 
 class Marker(Element):
-    """
-  The PCell declaration for an arbitrary waveguide
-  """
+    """The PCell declaration for a Marker."""
 
     PARAMETERS_SCHEMA = {
         "window": {
             "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "AB Layer windows",
+            "description": "Window in airbridge flyover and UBM layer",
             "default": False
         },
         "diagonal_squares": {
@@ -27,25 +25,6 @@ class Marker(Element):
             "default": 10
         }
     }
-
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return "Marker"
-
-    def coerce_parameters_impl(self):
-        None
-
-    def can_create_from_shape_impl(self):
-        return False
-
-    def parameters_from_shape_impl(self):
-        None
-
-    def transformation_from_shape_impl(self):
-        return pya.Trans()
 
     def produce_impl(self):
         corner = pya.DPolygon([
@@ -73,46 +52,54 @@ class Marker(Element):
             pya.DPoint(10, 800)
         ])
 
-        lo = self.layout.layer(self.face()["base metal gap wo grid"])
-        lo2 = self.layout.layer(self.face()["airbridge pads"])
-        lp = self.layout.layer(self.face()["ground grid avoidance"])
+        layer_gap = self.get_layer("base metal gap wo grid")
+        layer_pads = self.get_layer("airbridge pads")
+        layer_flyover = self.get_layer("airbridge flyover")
+        layer_ubm = self.get_layer("underbump metallization")
+        layer_gap_for_ebl = self.get_layer("base metal gap for EBL")
+        layer_protection = self.get_layer("ground grid avoidance")
+
+        def insert_to_main_layers(shape):
+            self.cell.shapes(layer_gap).insert(shape)
+            self.cell.shapes(layer_gap_for_ebl).insert(shape)
+            if not self.window:
+                self.cell.shapes(layer_flyover).insert(shape)
+                self.cell.shapes(layer_ubm).insert(shape)
+
+        # protection for the box
+        protection_box = pya.DBox(
+            pya.DPoint(220, 220),
+            pya.DPoint(-220, -220)
+        )
+        self.cell.shapes(layer_protection).insert(protection_box)
+
+        # inner corners
+        for alpha in [0, 1, 2, 3]:
+            inner_corner_shape = pya.DTrans(alpha, False, pya.DVector()) * corner
+            insert_to_main_layers(inner_corner_shape)
+
+        # outer corners
+        for alpha in [0, 1, 2, 3]:
+            outer_corner_shape = pya.DCplxTrans(2, alpha * 90., False, pya.DVector()) * corner
+            insert_to_main_layers(outer_corner_shape)
 
         # center box
         sqr_uni = pya.DBox(
             pya.DPoint(10, 10),
             pya.DPoint(-10, -10),
         )
+        insert_to_main_layers(sqr_uni)
 
-        self.cell.shapes(lo).insert(sqr_uni)
-        self.cell.shapes(lo2).insert(sqr_uni)
-
-        # inner corners
-        for alpha in [0, 1, 2, 3]:
-            self.cell.shapes(lo).insert(
-                (pya.DTrans(alpha, False, pya.DVector()) * corner))
-
-        # outer corners
-        for alpha in [0, 1, 2, 3]:
-            self.cell.shapes(lo).insert(
-                (pya.DCplxTrans(2, alpha * 90., False, pya.DVector()) * corner))
-
-        # protection for the box
-        protection = pya.DBox(
-            pya.DPoint(220, 220),
-            pya.DPoint(-220, -220)
-        )
-        self.cell.shapes(lp).insert(protection)
-
-        # windows for other opt lit masks
+        # window for airbridge flyover layer
         if self.window:
-            for l in [self.face()["airbridge pads"], self.face()["airbridge flyover"]]:
-                for alpha in [0, 1, 2, 3]:
-                    self.cell.shapes(self.layout.layer(l)).insert(
-                        (pya.DTrans(alpha, False, pya.DVector()) * window))
+            for alpha in [0, 1, 2, 3]:
+                self.cell.shapes(layer_flyover).insert((pya.DTrans(alpha, False, pya.DVector()) * window))
 
         # marker diagonal
-        for i in range(5, 5 + self.diagonal_squares):
-            self.cell.shapes(lo).insert(
-                (pya.DCplxTrans(3, 0, False, pya.DVector(50 * i - 3 * 6, 50 * i - 3 * 6)) * sqr))
-            self.cell.shapes(lp).insert(
+        square_array = range(5, 5 + self.diagonal_squares)
+        for i in square_array:
+            diag_square_shape = pya.DCplxTrans(3, 0, False, pya.DVector(50 * i - 3 * 6, 50 * i - 3 * 6))*sqr
+            insert_to_main_layers(diag_square_shape)
+            self.cell.shapes(layer_pads).insert(diag_square_shape)
+            self.cell.shapes(layer_protection).insert(
                 (pya.DCplxTrans(20, 0, False, pya.DVector(50 * i - 20 * 6, 50 * i - 20 * 6)) * sqr))

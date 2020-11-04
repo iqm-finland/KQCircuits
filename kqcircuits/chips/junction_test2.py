@@ -24,7 +24,7 @@ class JunctionTest2(Chip):
     PARAMETERS_SCHEMA = {
         "pad_width": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Pad Width (um)",
+            "description": "Pad Width [μm]",
             "default": 500
         },
         "junctions_horizontal": {
@@ -39,35 +39,32 @@ class JunctionTest2(Chip):
         },
         "pad_spacing": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Spacing between different pad pairs (um)",
+            "description": "Spacing between different pad pairs [μm]",
             "default": 100
         },
     }
-
-    def __init__(self):
-        super().__init__()
 
     def produce_impl(self):
         left = self.box.left
         right = self.box.right
         top = self.box.top
 
-        junction_test_side = JunctionTestPads.create_cell(self.layout, {
-            "pad_width": self.pad_width,
-            "area_height": 6000,
-            "area_width": 1700,
-            "junctions_horizontal": self.junctions_horizontal,
-            "squid_name": self.squid_name,
-            "pad_spacing": self.pad_spacing,
-        })
-        junction_test_center = JunctionTestPads.create_cell(self.layout, {
-            "pad_width": self.pad_width,
-            "area_height": 9400,
-            "area_width": 6000,
-            "junctions_horizontal": self.junctions_horizontal,
-            "squid_name": self.squid_name,
-            "pad_spacing": self.pad_spacing,
-        })
+        junction_test_side = self.add_element(JunctionTestPads,
+            pad_width=self.pad_width,
+            area_height=6000,
+            area_width=1700,
+            junctions_horizontal=self.junctions_horizontal,
+            squid_name=self.squid_name,
+            pad_spacing=self.pad_spacing,
+        )
+        junction_test_center = self.add_element(JunctionTestPads,
+            pad_width=self.pad_width,
+            area_height=9400,
+            area_width=6000,
+            junctions_horizontal=self.junctions_horizontal,
+            squid_name=self.squid_name,
+            pad_spacing=self.pad_spacing,
+        )
 
         self.insert_cell(junction_test_side, pya.DTrans(0, False, left + 300, top - 2000 - 6000), "testarray_1")
         self.insert_cell(junction_test_side, pya.DTrans(0, False, right - 300 - 1700, top - 2000 - 6000), "testarray_2")

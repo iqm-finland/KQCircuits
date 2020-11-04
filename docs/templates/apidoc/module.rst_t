@@ -1,0 +1,11 @@
+{%- if show_headings %}
+{{- basename | e | heading }}
+
+{% endif -%}
+.. automodule:: {{ qualname }}
+   :exclude-members: PARAMETERS_SCHEMA
+{%- for option in automodule_options %}
+   :{{ option }}:
+{%- endfor %}
+
+.. kqc_elem_params:: {{ basename }}

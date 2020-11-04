@@ -14,10 +14,11 @@ Documentation
    :maxdepth: 2
 
    start/index
-   developer/index
+   gui_features/index
    libraries/index
    export/index
-   api/index
+   developer/index
+   api/kqcircuits
 
 Indices and tables
 ==================
@@ -26,5 +27,5 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. |LOGO|  image:: ./images/logo.png
-   :alt: IQM Logo
+.. |LOGO|  image:: images/logo.png
+   :alt: KQC logo

@@ -18,6 +18,7 @@ from kqcircuits.elements.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.defaults import default_layers
 
 reload(sys.modules[Chip.__module__])
 
@@ -82,9 +83,6 @@ class SingleXmons(Chip):
         },
     }
 
-    def __init__(self):
-        super().__init__()
-
     def produce_impl(self):
         """Produces a SingleXmons PCell."""
 
@@ -116,11 +114,12 @@ class SingleXmons(Chip):
         """
         if turn_radius is None:
             turn_radius = self.r
-        waveguide = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath(path, 1),
-            "r": turn_radius,
-            "term2": term2,
-        })
+        waveguide = self.add_element(WaveguideCoplanar,
+            path=pya.DPath(path, 1),
+            r=turn_radius,
+            term2=term2,
+            n=self.n,
+        )
         self.insert_cell(waveguide)
         return waveguide
 
@@ -139,7 +138,7 @@ class SingleXmons(Chip):
 
         """
         qubit_trans = pya.DTrans(rotation, False, center_x, center_y)
-        qubit_inst, refpoints_abs = self.insert_cell(qubit_cell, qubit_trans, name)
+        qubit_inst, refpoints_abs = self.insert_cell(qubit_cell, qubit_trans, name, rec_levels=None)
         return refpoints_abs
 
     def _produce_qubits(self):
@@ -155,18 +154,19 @@ class SingleXmons(Chip):
             3,4,5 are the lower qubits (from left to right).
 
         """
-        qubit = Swissmon.create_cell(self.layout, {
-            "fluxline": False,
-            "arm_length": [146] * 4,
-            "arm_width": [24] * 4,
-            "gap_width": 72,
-            "corner_r": 2,
-            "cpl_length": [0, 140, 0],
-            "cpl_width": [60, 24, 60],
-            "cpl_gap": [110, 102, 110],
-            "cl_offset": [200, 200],
-            "squid_name": self.squid_name
-        })
+        qubit = self.add_element(Swissmon,
+            fluxline_variant="none",
+            arm_length=[146] * 4,
+            arm_width=[24] * 4,
+            gap_width=72,
+            corner_r=2,
+            cpl_length=[0, 140, 0],
+            cpl_width=[60, 24, 60],
+            cpl_gap=[110, 102, 110],
+            cl_offset=[200, 200],
+            squid_name=self.squid_name,
+            n=self.n,
+        )
         qubit_spacing_x = 1100  # shortest x-distance between qubit centers on different sides of the feedline
         qubit_spacing_y = 2600  # shortest y-distance between qubit centers on different sides of the feedline
         qubits_center_x = 5e3 + 400  # the x-coordinate around which qubits are centered
@@ -214,19 +214,19 @@ class SingleXmons(Chip):
             pya.DPoint(meander_start_x, feedline_coupling_y),
             meander_start
         ], turn_radius=turn_radius)
-        len_coupler = WaveguideCoplanar.get_length(coupler_waveguide, self.layout.layer(self.la))
+        len_coupler = WaveguideCoplanar.get_length(coupler_waveguide, self.get_layer("annotations"))
         # meandering part of the resonator
         meander_length = total_length - len_coupler
         w = 350
         num_meanders = _get_num_meanders(meander_length, turn_radius, w)
-        meander = Meander.create_cell(self.layout, {
-            "start": meander_start,
-            "end": meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
-            "length": meander_length,
-            "meanders": num_meanders,
-            "r": turn_radius
-        })
-        self.insert_cell(meander)
+        self.insert_cell(Meander,
+            start=meander_start,
+            end=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
+            length=meander_length,
+            meanders=num_meanders,
+            r=turn_radius,
+            n=self.n
+        )
 
     def _produce_readout_resonators(self):
         """Produces readout resonators for all the qubits in a SingleXmons chip."""
@@ -282,20 +282,21 @@ class SingleXmons(Chip):
             pos_start + pya.DPoint(x1, y1),
             meander_start,
         ], turn_radius=turn_radius)
-        len_nonmeander = WaveguideCoplanar.get_length(nonmeander_waveguide, self.layout.layer(self.la))
+        len_nonmeander = WaveguideCoplanar.get_length(nonmeander_waveguide,
+                                                      self.get_layer("annotations"))
 
         # meandering part of the resonator
         meander_length = total_length - len_nonmeander
         w = 250
         num_meanders = _get_num_meanders(meander_length, turn_radius, w)
-        meander = Meander.create_cell(self.layout, {
-            "start": meander_start,
-            "end": meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
-            "length": meander_length,
-            "meanders": num_meanders,
-            "r": turn_radius
-        })
-        self.insert_cell(meander)
+        self.insert_cell(Meander,
+            start=meander_start,
+            end=meander_start + pya.DPoint(0, 2 * factor * turn_radius * (num_meanders + 1)),
+            length=meander_length,
+            meanders=num_meanders,
+            r=turn_radius,
+            n=self.n,
+        )
 
     def _produce_feedline(self, x_distance):
         """Produces a feedline for a SingleXmons chip.
@@ -341,7 +342,7 @@ class SingleXmons(Chip):
 
         # feedline couplings with test resonators
 
-        cell_cross = WaveguideCoplanarTCross.create_cell(self.layout, {"length_extra_side": 2 * self.a})
+        cell_cross = self.add_element(WaveguideCoplanarTCross, length_extra_side=2 * self.a)
         inst_crosses = []
 
         for i in range(4):
@@ -353,7 +354,7 @@ class SingleXmons(Chip):
 
             # Coupler
             cplr = produce_library_capacitor(self.layout, int(self.n_fingers[i]), float(self.l_fingers[i]),
-                                             self.type_coupler[i])
+                                             self.type_coupler[i], n=self.n)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             if i % 2 == 0:
                 cplr_pos = cross_refpoints_abs["port_bottom"] - pya.DTrans.R90 * cplr_refpoints_rel["port_b"]

@@ -1,0 +1,63 @@
+image: python:3.7
+
+cache:
+  key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
+  paths:
+    - .pip-cache
+
+before_script:
+  - mkdir -p .pip-cache
+  - pip --cache-dir=.pip-cache install -e ".[docs,tests]" --use-feature=2020-resolver --upgrade --upgrade-strategy=eager
+
+test:
+  stage: test
+  script:
+    - tox
+  artifacts:
+    reports:
+      junit: test_report.xml
+  only:
+    - master
+    - merge_requests
+    - tags
+  tags:
+    - docker
+
+verify_documentation:
+  stage: test
+  script:
+    - pip install -e ".[docs]"
+    - cd docs
+    - make html
+  only:
+    - merge_requests
+  tags:
+    - docker
+
+check_confidential_strings:
+  stage: test
+  script:
+    - bash check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "public-master"
+  tags:
+    - docker
+
+
+pages:
+  stage: deploy
+  script:
+    - pip install -e ".[docs]"
+    - cd docs
+    - make html
+    - mv _build/html ../public
+  artifacts:
+    paths:
+    - public
+  only:
+    - master
+  tags:
+    - docker

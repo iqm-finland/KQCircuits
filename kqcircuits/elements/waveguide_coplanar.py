@@ -13,6 +13,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 
+from kqcircuits.util.geometry_helper import get_cell_path_length
 
 class WaveguideCoplanar(Element):
     """The PCell declaration for an arbitrary coplanar waveguide.
@@ -31,18 +32,21 @@ class WaveguideCoplanar(Element):
         },
         "term1": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Termination length start (um)",
+            "description": "Termination length start [μm]",
             "default": 0
         },
         "term2": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Termination length end (um)",
+            "description": "Termination length end [μm]",
             "default": 0
         },
+        "corner_safety_overlap": {
+            "type": pya.PCellParameterDeclaration.TypeDouble,
+            "description": "Extend straight sections near corners [μm]",
+            "docstring": "Extend straight sections near corners by this amount [μm] to ensure all sections overlap",
+            "default": 0.001
+        },
     }
-
-    def __init__(self):
-        super().__init__()
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -54,38 +58,21 @@ class WaveguideCoplanar(Element):
     def transformation_from_shape_impl(self):
         return pya.Trans()
 
-    def produce_end_termination(self, i_point_1, i_point_2, term_len):
-        # Termination is after point2. Point1 determines the direction.
-        # Negative term_len does not make any sense.
-        points = [point for point in self.path.each_point()]
-        a = self.a
-
-        b = self.b
-
-        v = (points[i_point_2] - points[i_point_1]) * (1 / points[i_point_1].distance(points[i_point_2]))
-        u = pya.DTrans.R270.trans(v)
-        shift_start = pya.DTrans(pya.DVector(points[i_point_2]))
-
-        if term_len > 0:
-            poly = pya.DPolygon([u * (a / 2 + b), u * (a / 2 + b) + v * (term_len), u * (-a / 2 - b) + v * (term_len),
-                                 u * (-a / 2 - b)])
-            self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(poly.transform(shift_start))
-
-        # protection
-        term_len += self.margin
-        poly2 = pya.DPolygon([u * (a / 2 + b + self.margin), u * (a / 2 + b + self.margin) + v * (term_len),
-                              u * (-a / 2 - b - self.margin) + v * (term_len), u * (-a / 2 - b - self.margin)])
-        self.cell.shapes(self.layout.layer(self.face()["ground grid avoidance"])).insert(poly2.transform(shift_start))
-
     def produce_waveguide(self):
         points = [point for point in self.path.each_point()]
 
         # Termination before the first segment
-        self.produce_end_termination(1, 0, self.term1)
+        WaveguideCoplanar.produce_end_termination(self, points[1], points[0], self.term1)
+        self.add_port("a", points[0], points[0]-points[1])
 
         # For each segment except the last
-        segment_last = points[0]
-        self.l_temp = 0
+        if self.term1 > 0 and len(points) > 1:
+            # Extend segment_last negatively
+            v2 = points[1] - points[0]
+            segment_last = (points[0] - self.corner_safety_overlap*v2/v2.length()).to_p()
+        else:
+            segment_last = points[0]
+
         for i in range(0, len(points) - 2):
             # Corner coordinates
             v1 = points[i + 1] - points[i]
@@ -96,35 +83,25 @@ class WaveguideCoplanar(Element):
             alphacorner = (((math.pi - (alpha2 - alpha1)) / 2) + alpha2)
             distcorner = v1.vprod_sign(v2) * self.r / math.sin((math.pi - (alpha2 - alpha1)) / 2)
             corner = crossing + pya.DVector(math.cos(alphacorner) * distcorner, math.sin(alphacorner) * distcorner)
-            # self.cell.shapes(self.layout.layer(self.la)).insert(pya.DText("%f, %f, %f" % (alpha2-alpha1,distcorner,v1.vprod_sign(v2)),corner.x,corner.y))
 
             # Straight segment before the corner
             segment_start = segment_last
             segment_end = points[i + 1]
             cut = v1.vprod_sign(v2) * self.r / math.tan((math.pi - (alpha2 - alpha1)) / 2)
-            l = segment_start.distance(segment_end) - cut
+            l = segment_start.distance(segment_end) - cut + self.corner_safety_overlap
             angle = 180 / math.pi * math.atan2(segment_end.y - segment_start.y, segment_end.x - segment_start.x)
-            subcell = WaveguideCoplanarStraight.create_cell(self.layout, {
-                "a": self.a,
-                "b": self.b,
-                "l": l,  # TODO: Finish the list
-                # "margin" : self.margin
-            })
+            subcell = self.add_element(WaveguideCoplanarStraight, Element.PARAMETERS_SCHEMA, l=l)
 
-            self.l_temp += subcell.pcell_parameters_by_name()["l"]
             transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
             self.insert_cell(subcell, transf)
-            segment_last = points[i + 1] + v2 * (1 / v2.abs()) * cut
+            segment_last = (points[i + 1] + v2 * (1 / v2.abs()) * cut - self.corner_safety_overlap*v2/v2.length()).to_p()
 
             # Curve at the corner
-            subcell = WaveguideCoplanarCurved.create_cell(self.layout, {
-                "a": self.a,
-                "b": self.b,
-                "alpha": alpha2 - alpha1,  # TODO: Finish the list,
-                "n": self.n,
-                "r": self.r
-            })
-            transf = pya.DCplxTrans(1, alpha1 / math.pi * 180.0 - v1.vprod_sign(v2) * 90, False, corner)
+            alpha = alpha2 - alpha1
+            min_angle = 1e-5  # close to the smallest angle that can create a valid curved waveguide
+            if abs(alpha) >= min_angle:
+                subcell = self.add_element(WaveguideCoplanarCurved, Element.PARAMETERS_SCHEMA, alpha=alpha, n=self.n)
+                transf = pya.DCplxTrans(1, alpha1 / math.pi * 180.0 - v1.vprod_sign(v2) * 90, False, corner)
 
             self.insert_cell(subcell, transf)
 
@@ -132,40 +109,57 @@ class WaveguideCoplanar(Element):
         segment_start = segment_last
         segment_end = points[-1]
         l = segment_start.distance(segment_end)
+        if self.term2 > 0:
+            l += self.corner_safety_overlap
         angle = 180 / math.pi * math.atan2(segment_end.y - segment_start.y, segment_end.x - segment_start.x)
 
         # Terminate the end
-        self.produce_end_termination(-2, -1, self.term2)
+        WaveguideCoplanar.produce_end_termination(self, points[-2], points[-1], self.term2)
+        self.add_port("b", points[-1], points[-1]-points[-2])
 
-        subcell = WaveguideCoplanarStraight.create_cell(self.layout, {
-            "a": self.a,
-            "b": self.b,
-            "l": l  # TODO: Finish the list
-        })
+        subcell = self.add_element(WaveguideCoplanarStraight, Element.PARAMETERS_SCHEMA, l=l)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
         self.insert_cell(subcell, transf)
 
     def produce_impl(self):
         self.produce_waveguide()
 
+    get_length = get_cell_path_length
+
     @staticmethod
-    def get_length(cell, annotation_layer):
-        """
-        Returns the length of a waveguide.
+    def produce_end_termination(elem, point_1, point_2, term_len, face_index=0):
+        """Produces termination for a waveguide.
+
+        The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.
+        One edge of the polygon is centered at point_2, and the polygon extends to length "term_len" in the
+        direction of (point_2 - point_1).
 
         Args:
-            cell: A Cell of the waveguide.
-            annotation_layer: An unsigned int representing the annotation_layer.
-
+            elem: Element from which the waveguide parameters for the termination are taken
+            point_1: DPoint before point_2, used only to determine the direction
+            point_2: DPoint after which termination is produced
+            term_len (double): termination length, assumed positive
+            face_index (int): face index of the face in elem where the termination is created
         """
-        shapes_iter = cell.begin_shapes_rec(annotation_layer)
-        length = 0
-        while not shapes_iter.at_end():
-            shape = shapes_iter.shape()
-            if shape.is_path():
-                length += shape.path_dlength()
-            shapes_iter.next()
-        return length
+        a = elem.a
+        b = elem.b
+
+        v = (point_2 - point_1)*(1/point_1.distance(point_2))
+        u = pya.DTrans.R270.trans(v)
+        shift_start = pya.DTrans(pya.DVector(point_2))
+
+        if term_len > 0:
+            poly = pya.DPolygon([u*(a/2 + b), u*(a/2 + b) + v*term_len, u*(-a/2 - b) + v*term_len,
+                                 u*(-a/2 - b)])
+            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base metal gap wo grid"])).insert(
+                poly.transform(shift_start))
+
+        # protection
+        term_len += elem.margin
+        poly2 = pya.DPolygon([u*(a/2 + b + elem.margin), u*(a/2 + b + elem.margin) + v*term_len,
+                              u*(-a/2 - b - elem.margin) + v*term_len, u*(-a/2 - b - elem.margin)])
+        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground grid avoidance"])).insert(
+            poly2.transform(shift_start))
 
     @staticmethod
     def is_continuous(waveguide_cell, annotation_layer, tolerance):

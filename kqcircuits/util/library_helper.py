@@ -1,11 +1,17 @@
-import os
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 import re
 import types
 import inspect
 import importlib
-from pathlib import Path
 from autologging import logged, traced
 
+from kqcircuits.defaults import SRC_PATH
 from kqcircuits.pya_resolver import pya
 
 """
@@ -13,74 +19,105 @@ from kqcircuits.pya_resolver import pya
 
     Typical usage example:
 
-    from kqcircuits.elements import Element, Airbridge
-    from kqcircuits.util.library_helper import load_library
-    load_library(Element.LIBRARY_NAME)
-    cell = Airbridge.create_cell(layout, {})
+    from kqcircuits.elements import Airbridge
+    from kqcircuits.util.library_helper import load_libraries
+    load_libraries(path=Airbridge.LIBRARY_PATH)
+    cell = Airbridge.create(layout, **kwargs)
 """
 
-LIBRARY_NAMES = {
-    "Element": "Element Library",
-    "Chip": "Chip Library",
-    "TestStructure": "Test Structure Library"
-}
+_kqc_libraries = {}  # dictionary {library name: (library, library path relative to kqcircuits)}
 
-
-@traced
-def load_all_libraries(flush=False):
-    """Load all KQCircuits libraries.
-    """
-    libraries = []
-    for value in LIBRARY_NAMES.values():
-        libraries.append(load_library(value, flush))
-    return libraries
-
+# modules NOT to be included in the library, (python file names without extension)
+_excluded_module_names = (
+    "__init__", "library_helper",
+    "element",
+    "qubit",
+    "test_structure",
+    "flip_chip_connector",
+)
 
 @traced
-def load_library(name=None, flush=False):
-    """Load KQCircuits library.
+@logged
+def load_libraries(flush=False, path=""):
+    """Load all KQCircuits libraries from the given path.
 
-    If library is not already registered,
-    then create and register KQCircuits library.
+    Args:
+        flush: If True, old libraries will be deleted and new ones created. Otherwise old libraries will be used.
+            (if old libraries exist)
+        path: path (relative to SRC_PATH) from which the pcell classes and cells are loaded to libraries
 
     Returns:
-        A KLayout library populated with all KQCircuits pcells with LIBRARY_NAME=name.
+         A list of libraries that have been loaded.
     """
-    library = pya.Library.library_by_name(name)
-    if library is None:
-        return _create_library(name)
+
+    if flush:
+        delete_all_libraries()
+        _kqc_libraries.clear()
+        load_libraries._log.debug("Deleted all libraries.")
     else:
-        if flush:
-            delete_library(name)
-            return _create_library(name, reload=True)
-        else:
-            return library
+        # if a library with the given path already exist, use it
+        for lib, lib_path in _kqc_libraries.values():
+            if lib_path == path:
+                return [value[0] for value in _kqc_libraries.values()]
+
+    pcell_classes = _get_all_pcell_classes(flush, path)
+
+    for cls in pcell_classes:
+
+        library_name = cls.LIBRARY_NAME
+        library_path = cls.LIBRARY_PATH
+
+        library = pya.Library.library_by_name(library_name)  # returns only registered libraries
+        if (library is None) or flush:
+            if library_name in _kqc_libraries.keys():
+                load_libraries._log.debug("Using created library \"{}\".".format(library_name))
+                library, _ = _kqc_libraries[library_name]
+            else:
+                # create a library, but do not register it yet
+                load_libraries._log.debug("Creating new library \"{}\".".format(library_name))
+                library = pya.Library()
+                library.description = cls.LIBRARY_DESCRIPTION
+                _kqc_libraries[library_name] = (library, library_path)
+            _register_pcell(cls, library, library_name)
+
+    for library_name, (library, _) in _kqc_libraries.items():
+        _load_manual_designs(library_name)
+        if library_name not in library.library_names():
+            library.register(library_name)  # library must be registered only after all cells have been added to it
+
+    return [value[0] for value in _kqc_libraries.values()]
 
 
 @traced
 def delete_all_libraries():
-    """Delete all KQCircuits libraries from KLayout memory.
-    """
-    for value in LIBRARY_NAMES.values():
-        delete_library(value)
+    """Delete all KQCircuits libraries from KLayout memory."""
+    for name in list(_kqc_libraries.keys()):
+        delete_library(name)
 
 
-@logged
 @traced
+@logged
 def delete_library(name=None):
-    """Delete KQCircuits library.
+    """Delete a KQCircuits library.
+
+    Calls library.delete() and removes the library from _kqc_libraries dict.
+
+    Args:
+        name: name of the library
     """
     library = pya.Library.library_by_name(name)
     if library is not None:
         library.delete()
+        if name in _kqc_libraries:
+            _kqc_libraries.pop(name)
         if library._destroyed():
             delete_library._log.info("Successfully deleted library '{}'.".format(name))
         else:
             raise SystemError("Failed to delete library '[]'.".format(name))
 
 
-@logged
 @traced
+@logged
 def to_module_name(class_name=None):
     """Converts class name to module name.
 
@@ -92,11 +129,11 @@ def to_module_name(class_name=None):
 
     Returns:
         A lowercase and spaced by word string.
-        For example:
 
-        > module_name = _to_module_name("XMonsDirectCoupling")
-        > print(module_name)
-        "chip_q_factor"
+        For example::
+            > module_name = _to_module_name("QualityFactor")
+            > print(module_name)
+            "quality_factor"
     """
     try:
         _is_valid_class_name(class_name)
@@ -107,8 +144,8 @@ def to_module_name(class_name=None):
     return _join_module_words(words)
 
 
-@logged
 @traced
+@logged
 def to_library_name(class_name=None):
     """Converts class name to library name.
 
@@ -121,11 +158,11 @@ def to_library_name(class_name=None):
 
     Returns:
         A titled and spaced by word string which may be used as library name.
-        For example:
 
-        > library_name = to_library_name("XMonsDirectCoupling")
-        > print(library_name)
-        "XMons Direct Coupling"
+        For example::
+            > library_name = to_library_name("QualityFactor")
+            > print(library_name)
+            "Quality Factor"
     """
     try:
         _is_valid_class_name(class_name)
@@ -141,68 +178,76 @@ def to_library_name(class_name=None):
 # ********************************************************************************
 
 
-@logged
 @traced
-def _create_library(name=None, reload=False):
-    """Create KQCircuits library.
+@logged
+def _register_pcell(pcell_class, library, library_name):
+    """Registers the PCell to the libary.
 
-    Create KLayout library containing KQCircuits examples.
+    Args:
+        pcell_class: class of the PCell
+        library: Library where the PCell is registered to
+        library_name: name of the library
+    """
+    try:
+        pcell_name = to_library_name(pcell_class.__name__)
+        library.layout().register_pcell(pcell_name, pcell_class())
+        _register_pcell._log.debug("Registered pcell [{}] to library {}.".format(pcell_name, library_name))
+    except Exception as e:
+        _register_pcell._log.warning(
+            "Failed to register pcell in class {} to library {}.".format(pcell_class, library_name),
+            exc_info=True
+        )
+
+
+@traced
+def _load_manual_designs(library_name):
+    """Loads .oas files to the library
+
+    Args:
+        library_name: name of the library
+    """
+    library, rel_path = _kqc_libraries[library_name]
+    shape_paths = SRC_PATH.rglob("{}/*.oas".format(rel_path))
+    for path in shape_paths:
+        library.layout().read(str(path.absolute()))
+
+
+@traced
+@logged
+def _get_all_pcell_classes(reload=False, path=""):
+    """Returns all PCell classes in the given path.
+
+    Args:
+        reload: Boolean determining if the modules in kqcircuits should be reloaded.
+        path: path (relative to SRC_PATH) from which the classes are searched
 
     Returns:
-        A KLayout library populated with all available KQCircuits examples.
+        List of the PCell classes
     """
-    if name is None:
-        msg = "Missing library name."
-        error = ValueError(msg)
-        _create_library._log.error(msg)
-        raise error
-    library = pya.Library()
-    kqcircuits_path = Path(os.path.dirname(os.path.abspath(__file__))).parent
-    module_paths = kqcircuits_path.rglob("*.py")
+    pcell_classes = []
+    module_paths = SRC_PATH.joinpath(path).rglob("*.py")
+
     for path in module_paths:
         module_name = path.stem
-        if module_name == "__init__":
+        if module_name in _excluded_module_names:
             continue
-        try:
-            # Get the module path starting from the "kqcircuits" directory below project root directory,
-            # assuming that there is exactly one directory named "kqcircuits" below the project root.
-            import_path_parts = path.parts[::-1][path.parts[::-1].index("kqcircuits")::-1]
-            import_path = ".".join(import_path_parts)[:-3]  # the -3 is for removing ".py" from the path
+        # Get the module path starting from the "kqcircuits" directory below project root directory,
+        # assuming that there is exactly one directory named "kqcircuits" below the project root.
+        import_path_parts = path.parts[::-1][path.parts[::-1].index("kqcircuits")::-1]
+        import_path = ".".join(import_path_parts)[:-3]  # the -3 is for removing ".py" from the path
 
-            module = importlib.import_module(import_path)
-            if reload:
-                importlib.reload(module)
-                _create_library._log.debug("Reloaded module '{}'.".format(module_name))
-            class_list = _get_classes(module)
-            for cls in class_list:
-                _create_library._log.info("Comparing name {} to cls.LIBRARY_NAME {}.".format(name, cls.LIBRARY_NAME))
-                if name == cls.LIBRARY_NAME:
-                    if not library.description:
-                        library.description = cls.LIBRARY_DESCRIPTION
-                    library_name = to_library_name(cls.__name__)
-                    library.layout().register_pcell(library_name, cls())
-                    _create_library._log.debug("Registered pcell [{}] to library {}.".format(library_name, name))
-        except Exception as e:
-            _create_library._log.warning(
-                "Failed to register pcell in module {} to library {}.".format(module_name, name),
-                exc_info=True
-            )
-            pass
-    if name == LIBRARY_NAMES["Element"]:
-        shape_paths = kqcircuits_path.rglob("*.oas")
-        for path in shape_paths:
-            library.layout().read(str(path.absolute()))
-    if len(library.layout().pcell_names()) > 0:
-        library.register(name)
-        _create_library._log.info("Created library {}.".format(name))
-        return library
-    else:
-        return None
+        module = importlib.import_module(import_path)
+        if reload:
+            importlib.reload(module)
+            _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
+        pcell_classes += _get_pcell_classes(module)
+
+    return pcell_classes
 
 
 @traced
-def _get_classes(module=None):
-    """Returns all classes found for specified path and circuit type.
+def _get_pcell_classes(module=None):
+    """Returns all PCell classes found in the module.
 
     Args:
         module: Module.
@@ -230,7 +275,7 @@ def _get_pcell_class(name=None, module=None):
         module: Module.
 
     Returns:
-        Array of module paths.
+        The class if it is subclass of PCellDeclarationHelper, otherwise None.
     """
     if name is None or not isinstance(name, str):
         return None
@@ -243,11 +288,9 @@ def _get_pcell_class(name=None, module=None):
         return None
 
 
-@logged
 @traced
 def _is_valid_class_name(value=None):
-    """Check if string value is valid PEP-8 compliant Python class name.
-    """
+    """Check if string value is valid PEP-8 compliant Python class name."""
     if value is None or not isinstance(value, str) or len(value) == 0:
         raise ValueError("Cannot convert nil or non-string class name '{}' to library name.".format(value))
     if re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_]*", value) is None:
@@ -284,6 +327,7 @@ def _join_module_words(words=None):
             name += "_" + current
     return name
 
+
 @traced
 def _join_library_words(words=None):
     """Join words to build library name.
@@ -312,8 +356,8 @@ def _join_library_words(words=None):
     return name
 
 
-@logged
 @traced
+@logged
 def _clean_words(words=None):
     """Clean word list by removing None values, empty strings, and non-string values.
 

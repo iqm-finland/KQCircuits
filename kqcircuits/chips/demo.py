@@ -11,129 +11,237 @@ from importlib import reload
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.chips.chip import Chip
+from kqcircuits.defaults import default_layers
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.qubits.swissmon import Swissmon
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
-from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+from kqcircuits.elements.waveguide_coplanar_bridged import WaveguideCoplanarBridged, Node, NodeType
+from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
+from kqcircuits.util.geometry_helper import point_shift_along_vector
 
 reload(sys.modules[Chip.__module__])
 
-version = 1
-
 
 class Demo(Chip):
-    """Demonstration chip with a qubit, few waveguides and finger capacitors.
-    """
+    """Demonstration chip with a four qubits, four readout resonators, two probe lines, charge- and fluxlines."""
 
     PARAMETERS_SCHEMA = {
-        "freqQ1": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Frequency QB1 (GHz)",
-            "default": 100
+        "name_chip": {
+            "type": pya.PCellParameterDeclaration.TypeString,
+            "description": "Name of the chip",
+            "default": "Demo"
         },
-        "freqRR1": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Frequency RR1 (GHz)",
-            "default": 100
-        }
+        "readout_res_lengths": {
+            "type": pya.PCellParameterDeclaration.TypeList,
+            "description": "Readout resonator lengths [μm]",
+            "default": [5000, 5100, 5200, 5300]
+        },
+        "include_couplers": {
+            "type": pya.PCellParameterDeclaration.TypeBoolean,
+            "description": "Include couplers between qubits",
+            "default": True
+        },
     }
 
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return ("TestChip".format())
-
     def produce_impl(self):
+
+        launcher_assignments = {
+            # N
+            2: "FL-QB1",
+            3: "RO-A1",
+            4: "RO-A2",
+            5: "FL-QB2",
+            # E
+            7: "DL-QB2",
+            12: "DL-QB4",
+            # S
+            14: "FL-QB4",
+            15: "RO-B1",
+            16: "RO-B2",
+            17: "FL-QB3",
+            # W
+            19: "DL-QB3",
+            24: "DL-QB1",
+        }
+        self.produce_launchers_ARD24(launcher_assignments)
+
+        self.produce_qubits()
+        if self.include_couplers:
+            self.produce_couplers()
+        self.produce_control_lines()
+        self.produce_readout_structures()
+        self.produce_probelines()
+        self.produce_junction_tests()
+
         super().produce_impl()
 
-        launchers = self.produce_launchers_ARD24()
+    def produce_qubits(self):
+        dist_x = 3220  # x-distance from chip edge
+        dist_y = 3000  # y-distance from chip edge
+        self.produce_qubit(pya.DTrans(0, True, dist_x, 1e4 - dist_y), "QB1")
+        self.produce_qubit(pya.DTrans(2, False, 1e4 - dist_x, 1e4 - dist_y), "QB2")
+        self.produce_qubit(pya.DTrans(0, False, dist_x, dist_y), "QB3")
+        self.produce_qubit(pya.DTrans(2, True, 1e4 - dist_x, dist_y), "QB4")
 
-        # Meander demo
-        meander = Meander.create_cell(self.layout, {
-            "start": launchers["11"][0],
-            "end": launchers["18"][0],
-            "length": 8000 * 2,
-            "meanders": 10
-        })
-        self.insert_cell(meander)
+    def produce_qubit(self, trans, inst_name):
+        self.insert_cell(Swissmon, trans, inst_name,
+            cpl_length=[120, 120, 120],
+            port_width=[4, 10, 4],
+        )
 
-        # Swissmon
-        swissmon = Swissmon.create_cell(self.layout, {
-            "cpl_length": [0, 160, 0]
-        })
+    def produce_couplers(self):
+        self.produce_coupler(1, 2, 2)
+        self.produce_coupler(2, 4, 0)
+        self.produce_coupler(4, 3, 2)
+        self.produce_coupler(3, 1, 0)
 
-        swissmon_refpoints_rel = self.get_refpoints(swissmon)
+    def produce_coupler(self, qubit_a_nr, qubit_b_nr, port_nr):
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, self.refpoints["QB{}_port_cplr{}".format(qubit_a_nr, port_nr)]),
+            Node(NodeType.WAVEGUIDE,
+                 point_shift_along_vector(self.refpoints["QB{}_port_cplr{}".format(qubit_a_nr, port_nr)],
+                                          self.refpoints["QB{}_base".format(qubit_a_nr)], -400)
+                 ),
+            Node(NodeType.AB_CROSSING_BEFORE,
+                 point_shift_along_vector(self.refpoints["QB{}_port_cplr{}".format(qubit_b_nr, port_nr)],
+                                          self.refpoints["QB{}_base".format(qubit_b_nr)], -400),
+                 n_bridges=3
+                 ),
+            Node(NodeType.WAVEGUIDE, self.refpoints["QB{}_port_cplr{}".format(qubit_b_nr, port_nr)]),
+        ], a=4, b=9)
 
-        swissmon_pos_v = pya.DVector(2500 - swissmon_refpoints_rel["port_drive"].y, 7500)
-        swissmon_instance, swissmon_refpoints_abs = self.insert_cell(
-            swissmon, pya.DCplxTrans(1, -90, False, swissmon_pos_v))
+    def produce_control_lines(self):
+        for qubit_nr in [1, 2, 3, 4]:
+            self.produce_driveline(qubit_nr)
+            self.produce_fluxline(qubit_nr)
 
-        port_qubit_dr = swissmon_refpoints_abs["port_drive"]
-        port_qubit_fl = swissmon_refpoints_abs["port_flux"]
-        port_qubit_ro = swissmon_refpoints_abs["port_cplr1"]
+    def produce_driveline(self, qubit_nr):
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, self.refpoints["DL-QB{}_base".format(qubit_nr)]),
+            Node(NodeType.WAVEGUIDE, self.refpoints["DL-QB{}_port_corner".format(qubit_nr)]),
+            Node(NodeType.AB_CROSSING_BEFORE, self.refpoints["QB{}_port_drive".format(qubit_nr)], n_bridges=3),
+        ])
 
-        # Driveline
-        driveline = WaveguideCoplanar.create_cell(self.layout, {
-            "term2": self.b,
-            "path": pya.DPath([
-                launchers["0"][0],
-                launchers["0"][0] + pya.DVector(0, -self.r),
-                port_qubit_dr + pya.DVector(0, self.r),
-                port_qubit_dr
-            ], 1)
-        })
-        self.insert_cell(driveline)
+    def produce_fluxline(self, qubit_nr):
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, self.refpoints["FL-QB{}_base".format(qubit_nr)]),
+            Node(NodeType.AB_CROSSING_BEFORE, self.refpoints["QB{}_port_flux".format(qubit_nr)], n_bridges=4),
+        ])
 
-        # Fluxline
-        fluxline = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
-                launchers["23"][0],
-                launchers["23"][0] + pya.DVector(self.r, 0),
-                port_qubit_fl + pya.DVector(-self.r, 0),
-                port_qubit_fl
-            ], 1)
-        })
-        self.insert_cell(fluxline)
+    def produce_readout_structures(self):
+        self.produce_readout_structure(1, False, 4)
+        self.produce_readout_structure(2, True, 8)
+        self.produce_readout_structure(3, False, 5)
+        self.produce_readout_structure(4, True, 7)
 
-        # Capacitor J
-        capj = FingerCapacitorSquare.create_cell(self.layout, {
-            "finger_number": 2
-        })
-        capj_inst, capj_refpoints_abs = self.insert_cell(capj, pya.DTrans(pya.DVector(5400, 7500)))
+    def produce_readout_structure(self, qubit_nr, mirrored, cap_finger_nr):
 
-        # Capacitor kappa
-        capk = FingerCapacitorSquare.create_cell(self.layout, {
-            "finger_number": 8
-        })
-        capk_inst, capk_refpoints_abs = self.insert_cell(capk, pya.DTrans(pya.DVector(7800, 7500)))
+        # non-meandering part of the resonator
 
-        # Readout resonator
-        readout = Meander.create_cell(self.layout, {
-            "start": port_qubit_ro,
-            "end": capj_refpoints_abs["port_a"],
-            "length": 6000,
-            "meanders": 6
-        })
-        self.insert_cell(readout)
+        point_1 = self.refpoints["QB{}_port_cplr1".format(qubit_nr)]
+        point_2 = point_shift_along_vector(self.refpoints["QB{}_port_cplr1".format(qubit_nr)],
+                                           self.refpoints["QB{}_base".format(qubit_nr)], -600)
+        point_3 = point_2 + pya.DPoint(-300 if mirrored else 300, 0)
 
-        # Purcell filter
-        purcell = Meander.create_cell(self.layout, {
-            "start": capj_refpoints_abs["port_b"],
-            "end": capk_refpoints_abs["port_a"],
-            "length": 5500,
-            "meanders": 6
-        })
-        self.insert_cell(purcell)
+        waveguide_inst, _ = self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, point_1),
+            Node(NodeType.WAVEGUIDE, point_2),
+            Node(NodeType.WAVEGUIDE, point_3),
+        ])
+        length_nonmeander = WaveguideCoplanarBridged.get_length(waveguide_inst.cell,
+                                                                self.layout.layer(default_layers["annotations"]))
 
-        # Output line
-        output_line = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
-                capk_refpoints_abs["port_b"],
-                capk_refpoints_abs["port_b"] + pya.DVector(self.r, 0),
-                launchers["6"][0] + pya.DVector(-self.r, 0),
-                launchers["6"][0] + pya.DVector(0, 0)
-            ], 1)
-        })
-        self.insert_cell(output_line)
+        # meandering part of the resonator
+
+        meander_start = point_3
+        meander_end = point_3 + pya.DPoint(-1100 if mirrored else 1100, 0)
+
+        self.insert_cell(Meander,
+            start=meander_start,
+            end=meander_end,
+            length=float(self.readout_res_lengths[qubit_nr - 1]) - length_nonmeander,
+            meanders=4
+        )
+
+        # capacitor and tcross waveguide connecting resonator to probeline
+
+        if mirrored:
+            cap_rot = 2
+            tcross_rot = 1
+        else:
+            cap_rot = 0
+            tcross_rot = 3
+
+        _, cap_ref_abs = self.insert_cell(FingerCapacitorSquare, pya.DTrans(cap_rot), align_to=meander_end,
+                                          align="port_a", finger_number=cap_finger_nr)
+
+        _, tcross_ref_abs_ = self.insert_cell(WaveguideCoplanarTCross, pya.DTrans(tcross_rot, False, 0, 0),
+                                              inst_name="RO{}".format(qubit_nr), label_trans=pya.DCplxTrans(0.2),
+                                              align_to=cap_ref_abs["port_b"], align="port_bottom", length_extra_side=30)
+
+    def produce_probelines(self):
+        self.produce_probeline("RO-A", 1, 2, False, 6)
+        self.produce_probeline("RO-B", 4, 3, True, 3)
+
+    def produce_probeline(self, probeline_name, qubit_a_nr, qubit_b_nr, mirrored, cap_finger_nr):
+
+        if mirrored:
+            cap_rot = 1
+            cap_pos_shift = pya.DPoint(0, -2000)
+        else:
+            cap_rot = 3
+            cap_pos_shift = pya.DPoint(0, 2000)
+
+        cap_trans = pya.DTrans(cap_rot, False, self.refpoints["RO{}_port_left".format(qubit_a_nr)] + cap_pos_shift)
+        _, cap_ref_abs = self.insert_cell(FingerCapacitorTaper, cap_trans, finger_number=cap_finger_nr, taper_length=20)
+
+        # segment 1
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, self.refpoints["{}1_base".format(probeline_name)]),
+            Node(NodeType.WAVEGUIDE, self.refpoints["{}1_port_corner".format(probeline_name)]),
+            Node(NodeType.WAVEGUIDE, pya.DPoint(self.refpoints["RO{}_port_left".format(qubit_a_nr)].x,
+                                                self.refpoints["{}1_port_corner".format(probeline_name)].y)),
+            Node(NodeType.WAVEGUIDE, cap_ref_abs["port_a"]),
+        ])
+
+        # segment 2
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, cap_ref_abs["port_b"]),
+            Node(NodeType.AB_SERIES_SET if self.include_couplers else NodeType.WAVEGUIDE,
+                 pya.DPoint(self.refpoints["RO{}_port_left".format(qubit_a_nr)].x,
+                            self.refpoints["QB{}_base".format(qubit_a_nr)].y)
+                 ),
+            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_left".format(qubit_a_nr)]),
+        ])
+
+        # segment 3
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_right".format(qubit_a_nr)]),
+            Node(NodeType.WAVEGUIDE,
+                 point_shift_along_vector(self.refpoints["RO{}_port_right".format(qubit_a_nr)],
+                                          self.refpoints["RO{}_port_right_corner".format(qubit_a_nr)], 600)),
+            Node(NodeType.AB_CROSSING_BEFORE,
+                 point_shift_along_vector(self.refpoints["RO{}_port_left".format(qubit_b_nr)],
+                                          self.refpoints["RO{}_port_left_corner".format(qubit_b_nr)], 600)),
+            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_left".format(qubit_b_nr)]),
+        ])
+
+        self.insert_cell(WaveguideCoplanarBridged, nodes=[
+            Node(NodeType.WAVEGUIDE, self.refpoints["{}2_base".format(probeline_name)]),
+            Node(NodeType.WAVEGUIDE, self.refpoints["{}2_port_corner".format(probeline_name)]),
+            Node(NodeType.WAVEGUIDE, pya.DPoint(self.refpoints["RO{}_port_right".format(qubit_b_nr)].x,
+                                                self.refpoints["{}2_port_corner".format(probeline_name)].y)),
+            Node(NodeType.AB_SERIES_SET if self.include_couplers else NodeType.WAVEGUIDE,
+                 pya.DPoint(self.refpoints["RO{}_port_right".format(qubit_b_nr)].x,
+                            self.refpoints["QB{}_base".format(qubit_b_nr)].y)
+                 ),
+            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_right".format(qubit_b_nr)]),
+        ])
+
+    def produce_junction_tests(self):
+        junction_test_cell = self.add_element(JunctionTestPads, margin=50, area_height=2500)
+        label_trans = pya.DCplxTrans(0.5)
+        self.insert_cell(junction_test_cell, pya.DTrans(0, False, 900, 3750), "testarray_w", label_trans=label_trans)
+        self.insert_cell(junction_test_cell, pya.DTrans(0, False, 7800, 3750), "testarray_e", label_trans=label_trans)

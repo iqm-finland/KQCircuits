@@ -1,9 +1,22 @@
 .. _testing:
 
 Testing
--------
+=======
 
-KQCircuits uses the pytest framework for testing. All tests are placed in a separate
+KQCircuits uses `tox` for running tests. It runs tools for different types of
+tests, such as `pytest` for unit tests or `pylint` for linting. The
+configuration of `tox` is done in `tox.ini`. You can execute all tests by
+executing `tox`, or you can use separate commands like `pytest` to run
+certain types of tests. The CI/CD pipeline uses `tox` to run the tests.
+
+
+Unit tests
+----------
+
+KQCircuits uses the pytest framework for unit tests. Run the unit tests by
+executing `pytest` or `pytest -n <NUM>` for some speed-up on  multi core CPUs.
+
+All tests are placed in a separate
 ``tests`` folder in the project root. This folder should reflect the same hierarchy as
 for the kqcircuits source folder. For example, if you are writing tests for
 ``kqcircuits/util/library_helper.py``, then you would create and use the same path to

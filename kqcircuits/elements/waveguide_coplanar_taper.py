@@ -10,67 +10,50 @@ import math
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.elements.element import Element
-from kqcircuits.defaults import default_circuit_params
+from kqcircuits.defaults import default_circuit_params, default_layers
+from math import ceil
 
 
 class WaveguideCoplanarTaper(Element):
-    """
-    The PCell declaration of a taper segment of a coplanar waveguide
-    """
+    """The PCell declaration of a taper segment of a coplanar waveguide."""
 
     PARAMETERS_SCHEMA = {
         "taper_length": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Taper length (um)",
+            "description": "Taper length [μm]",
             "default": 10 * math.pi
         },
         "a1": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of left waveguide center conductor (um)",
+            "description": "Width of left waveguide center conductor [μm]",
             "default": default_circuit_params["a"]
         },
         "b1": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of left waveguide gap (um)",
+            "description": "Width of left waveguide gap [μm]",
             "default": default_circuit_params["b"]
         },
         "m1": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin of left waveguide protection layer (um)",
+            "description": "Margin of left waveguide protection layer [μm]",
             "default": 5
         },
         "a2": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of right waveguide center conductor (um)",
+            "description": "Width of right waveguide center conductor [μm]",
             "default": default_circuit_params["a"] * 2
         },
         "b2": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of right waveguide gap (um)",
+            "description": "Width of right waveguide gap [μm]",
             "default": default_circuit_params["b"] * 2
         },
         "m2": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin of right waveguide protection layer (um)",
+            "description": "Margin of right waveguide protection layer [μm]",
             "default": 5 * 2
         },
     }
-
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return "WaveguideCopTaper"
-
-    def coerce_parameters_impl(self):
-        None
-
-    def can_create_from_shape_impl(self):
-        return False
-
-    def parameters_from_shape_impl(self):
-        None
 
     def produce_impl(self):
         #
@@ -82,7 +65,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, self.a1 / 2 + self.b1)
         ]
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(shape)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
         # gap 2
         pts = [
             pya.DPoint(0, -self.a1 / 2 + 0),
@@ -91,7 +74,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, -self.a1 / 2 - self.b1)
         ]
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(shape)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
         # Protection layer
         pts = [
             pya.DPoint(0, -self.a1 / 2 - self.b1 - self.m1),
@@ -100,16 +83,17 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, self.a1 / 2 + self.b1 + self.m1)
         ]
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.layout.layer(self.face()["ground grid avoidance"])).insert(shape)
+        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(shape)
         # Annotation
         pts = [
             pya.DPoint(0, 0),
             pya.DPoint(self.taper_length, 0),
         ]
-        shape = pya.DPath(pts, self.a1 + 2 * self.b1)
-        self.cell.shapes(self.layout.layer(self.la)).insert(shape)
+        shape = pya.DPath(pts, ceil(self.a1 + 2 * self.b1))
+        self.cell.shapes(self.get_layer("annotations")).insert(shape)
         # refpoints for connecting to waveguides
-        self.refpoints["port_a"] = pya.DPoint(0, 0)
-        self.refpoints["port_b"] = pya.DPoint(self.taper_length, 0)
+        self.add_port("a", pya.DPoint(0, 0))
+        self.add_port("b", pya.DPoint(self.taper_length, 0))
         # adds annotation based on refpoints calculated above
         super().produce_impl()
+

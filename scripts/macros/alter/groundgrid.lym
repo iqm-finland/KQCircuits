@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Fill with ground plane grid</description>
+ <version>0.1</version>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>Alter</group-name>
+ <menu-path>
+edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+"""
+Creates a ground plane grid covering the top cell bounding box, except the parts in grid avoidance layer. Requires at 
+least one cell to exist in the current layout. Only creates the grid for "b"-face.
+"""
+
+from kqcircuits.defaults import default_layers
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.groundgrid import make_grid
+
+cell = KLayoutView.get_active_cell()
+
+if not cell:
+  raise ValueError('Create a cell first')
+
+layout = cell.layout()
+grid_area = cell.bbox()
+protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b ground grid avoidance"]))).merged()
+
+grid_mag_factor = 1
+region_ground_grid = make_grid(grid_area, protection, 
+  grid_step = 10*(1/layout.dbu)*grid_mag_factor, 
+  grid_size = 5*(1/layout.dbu)*grid_mag_factor )
+
+cell.shapes(layout.layer(default_layers["b ground grid"])).insert(region_ground_grid)</text>
+</klayout-macro>

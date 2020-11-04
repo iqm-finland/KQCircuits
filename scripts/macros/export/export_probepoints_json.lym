@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Probepoints in top cell to json</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+"""Prints the probepoints of a chip as JSON. Assumes that a single chip exists in the top cell."""
+
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.export_helper import generate_probepoints_json
+
+top_cell = KLayoutView.get_active_cell()
+
+### Action
+print(generate_probepoints_json(top_cell))</text>
+</klayout-macro>

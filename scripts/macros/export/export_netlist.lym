@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Selected cell into netlist json</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+### Usage
+# Select cells and object in the GUI by clicking, dragging into a box and possible holding down shift for multiselect.
+# Then run this macro and check the console in the macro development window for the output of this macro.
+# Note, that you cannot select individual cells in a PCell - you need to turn the top PCell to a static cell before.
+#
+# Note, that useful terminology is defined in https://www.klayout.de/doc-qt5/manual/lvs_overview.html
+
+
+from kqcircuits.pya_resolver import pya
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import TMP_PATH
+from kqcircuits.util.netlist_extraction import export_netlist
+
+view = KLayoutView(current=True)
+layout = KLayoutView.get_active_layout()
+top_cell = layout.top_cells()[0]
+layout_view = KLayoutView.get_active_cell_view().view()
+
+shapes_iter = layout.begin_shapes(top_cell, layout.layer(default_layers["b ports"]))
+
+ltn = pya.LayoutToNetlist(shapes_iter)
+
+connector_region = ltn.make_layer( layout.layer(default_layers["b ports"]), "connector")
+ltn.connect(connector_region)
+ltn.extract_netlist()
+netlist = ltn.netlist()
+cm = ltn.const_cell_mapping_into(layout, top_cell)
+
+reverse_cell_map = dict(zip(cm.table().values(), cm.table().keys()))
+
+print("Netlist for selection")
+for obj in layout_view.object_selection:
+    if obj.is_cell_inst():
+        # workaround for getting the cell due to KLayout bug, see
+        # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
+        # TODO: replace by `cell = obj.inst().cell` once KLayout bug is fixed
+        cell = obj.layout().cell(obj.inst().cell_index)          
+        cell_name = cell.display_title()
+        print(f"Analyzing {cell_name}")
+        netlist_file = TMP_PATH / f"netlist_{cell_name}.json"    
+        circuit = netlist.circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
+        export_netlist(circuit, netlist_file, ltn.internal_layout(), layout, cm)
+        print(f"Exported {netlist_file}")</text>
+</klayout-macro>

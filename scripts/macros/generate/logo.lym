@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>KQCircuits logo</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+from kqcircuits.pya_resolver import pya
+
+import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.elements.waveguide_coplanar_bridged import NodeType, Node, WaveguideCoplanarBridged
+
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+top_cell = layout.create_cell("logo")
+cell_view.cell_name=top_cell.name     # Shows the new cell
+
+h = 300 # height
+k = 250 # kernel
+s = 0.6 # scaling
+nodes = [[ # K 1
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(-50,0)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(-50,h))
+    ], [ # K 1
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(110,0)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(30-50,h*.55)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(110,h))
+    ],  [ # Q
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k-50,h/8)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k-100,h/4)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k-100,h*3/4)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k,h)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k+100,h*3/4)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k+100,h/4)),
+        Node(NodeType.AB_CROSSING_BEFORE, s*pya.DPoint(k,0)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k-50,h/8)),
+    ], [ # C
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k*2+80,h/4)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k*2,0)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k*2-100,h/4)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k*2-100,h*3/4)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k*2,h)),
+        Node(NodeType.WAVEGUIDE, s*pya.DPoint(k*2+80,h*3/4)),
+    ]
+]
+
+for line in nodes:
+    wg = WaveguideCoplanarBridged.create(layout, nodes=line, r=s*70, a=s*15, b=s*10)
+    top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+
+
+from kqcircuits.defaults import SRC_PATH
+from pathlib import Path
+import os
+
+gds_path = os.path.join(SRC_PATH, Path("logo.gds"))
+layout.write(gds_path)
+
+print("GDS written to {}".format(gds_path))
+
+"""
+
+# use gdsspy in anouther py env to generate svg
+
+import gdspy
+gdspy_library = gdspy.GdsLibrary(infile=str("logo.gds"))
+gdspy_library.cells["logo"].write_svg("logo.svg")
+
+# replace css style in svg to make use of IQM colours
+
+&lt;style type="text/css"&gt;
+.l11d1 {stroke: none; fill: #09b8c6;}
+.l14d0 {stroke: none; fill: none;}
+.l85d0 {stroke: none; fill: none; fill-opacity: 0.5;}
+.l29d3 {stroke: none; fill: #00e397;fill-opacity: 0.5;}
+.l28d3 {stroke: none; fill: #00e397;fill-opacity: 0.5;}
+.l85t0 {stroke: none; fill: none;}
+&lt;/style&gt;
+
+"""</text>
+</klayout-macro>
