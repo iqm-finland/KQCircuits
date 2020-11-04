@@ -9,15 +9,19 @@ import abc
 from typing import List
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_layers
-from kqcircuits.elements.element import Element, get_refpoints
+from kqcircuits.elements.element import Element
 from kqcircuits.simulations.port import Port
+from kqcircuits.util.geometry_helper import region_with_merged_polygons, simple_region_with_merged_points
 
 
 class Simulation:
     """Base class for simulation geometries.
 
-    Empty, has a box dimension
+    Generally, this class is intended to be subclassed by a specific simulation implementation; the
+    implementation defines the simulation geometry ad ports in `build`.
+
+    A convenience class method `Simulation.from_cell` is provided to create a Simulation from an
+    existing cell. In this case no ports will be added.
     """
 
     # Metadata associated with simulation
@@ -26,10 +30,11 @@ class Simulation:
     # Parameter type hints
     box: pya.DBox
     name: str
-    ls: pya.LayerInfo
-    lg: pya.LayerInfo
+    use_ports: bool
+    minimum_point_spacing: float
 
     PARAMETERS_SCHEMA = {
+        **Element.PARAMETERS_SCHEMA,
         "box": {
             "type": pya.PCellParameterDeclaration.TypeShape,
             "description": "Border",
@@ -40,24 +45,47 @@ class Simulation:
             "description": "Name of the simulation",
             "default": "Simulation"
         },
-        "ls": {
-            "type": pya.PCellParameterDeclaration.TypeLayer,
-            "description": "Layer simulation signal",
-            "default": default_layers["simulation signal"]
+        "use_ports": {
+            "type": pya.PCellParameterDeclaration.TypeBoolean,
+            "description": "Turn off to disable all ports (for debugging)",
+            "default": True
         },
-        "lg": {
-            "type": pya.PCellParameterDeclaration.TypeLayer,
-            "description": "Layer simulation ground",
-            "default": default_layers["simulation ground"]
+        "minimum_point_spacing": {
+            "type": pya.PCellParameterDeclaration.TypeDouble,
+            "description": "Tolerance (um) for merging adjacent points in polygon",
+            "default": 0.01
         },
+        "polygon_tolerance": {
+            "type": pya.PCellParameterDeclaration.TypeDouble,
+            "description": "Tolerance (um) for merging adjacent polygons in a layer",
+            "default": 0.000
+        }
     }
 
     def __init__(self, layout, **kwargs):
+        """Initialize a Simulation.
+
+        The initializer parses parameters, creates a top cell, and then calls `self.build` to create
+        the simulation geometry, followed by `self.create_simulation_layers` to process the geometry
+        so it is ready for exporting.
+
+        Args:
+            layout: the layout on which to create the simulation
+
+        Keyword arguments:
+            `**kwargs`:
+                any parameter defined in the `PARAMETERS_SCHEMA` can be passed as a keyword
+                argument, see `PCell parameters` section in the bottom
+
+                In addition, `cell` can be passed as keyword argument. If `cell` is supplied, it will be
+                used as the top cell for the simulation. Otherwise, a new cell will be created. See
+                `Simulation.from_cell` for creating simulations from existing cells.
+        """
         super().__init__()
         if layout is None or not isinstance(layout, pya.Layout):
-            error = ValueError("Cannot create simulation with invalid or nil layout.")
-            # TODO: Set up logging
-            self.__log.exception(exc_info=error)
+            error_text = "Cannot create simulation with invalid or nil layout."
+            error = ValueError(error_text)
+            self.__log.exception(error_text, exc_info=error)
             raise error
         else:
             self.layout = layout
@@ -73,74 +101,116 @@ class Simulation:
                 setattr(self, parameter, item['default'])
 
         self.ports = []
-        self.cell = layout.create_cell(self.name)
+        if 'cell' in kwargs:
+            self.cell = kwargs['cell']
+        else:
+            self.cell = layout.create_cell(self.name)
+
         self.build()
         self.create_simulation_layers()
 
+    @classmethod
+    def from_cell(cls, cell, margin=300, grid_size=1, **kwargs):
+        """Create a Simulation from an existing cell.
+
+        Arguments:
+            cell: existing top cell for the Simulation
+            margin: distance [μm] to expand the simulation box (ground plane) around the bounding
+                box of the cell If the `box` keyword argument is given, margin is ignored.
+            grid_size: size of the simulation box will be rounded to this resolution
+                If the `box` keyword argument is given, grid_size is ignored.
+            `**kwargs`: any simulation parameters passed
+
+        Returns:
+            Simulation instance
+        """
+        extra_kwargs = {}
+
+        if 'box' not in kwargs:
+            box = cell.dbbox().enlarge(margin, margin)
+            if grid_size > 0:
+                box.left = round(box.left/grid_size)*grid_size
+                box.right = round(box.right / grid_size) * grid_size
+                box.bottom = round(box.bottom / grid_size) * grid_size
+                box.top = round(box.top / grid_size) * grid_size
+            extra_kwargs['box'] = box
+
+        return cls(cell.layout(), cell=cell, **kwargs, **extra_kwargs)
+
     @abc.abstractmethod
     def build(self):
-        """
-        Build simulation geometry.
+        """Build simulation geometry.
+
+        This method is to be overridden, and the overriding method should create the geometry to be
+        simulated and add any ports to `self.ports`.
         """
         return
 
-    @classmethod
-    def get_schema(cls):
-        if not hasattr(cls, "schema"):
-            # Bit of a hack for now, "sideload" base schema from Elements
-            schema = Element.get_schema()
-
-            for c in cls.__mro__:
-                if hasattr(c, "PARAMETERS_SCHEMA") and c.PARAMETERS_SCHEMA is not None:
-                    schema = {**c.PARAMETERS_SCHEMA, **schema}
-            return schema
-        else:
-            return cls.schema
-
+    # Inherit specific methods from Element
+    get_schema = classmethod(Element.get_schema.__func__)
     face = Element.face
-
-    def get_refpoints(self, cell, cell_transf=pya.DTrans()):
-        return get_refpoints(self.layout.layer(default_layers["annotations"]), cell, cell_transf)
-
-    def simple_region(self, region):
-        return pya.Region([poly.to_simple_polygon() for poly in region.each()])
-
-    def insert_cell(self, cell, trans, name=None):
-        """ Inserts a subcell into the present cell.
-        Arguments:
-            cell: placed cell
-            trans: used transformation for placement
-            name: possible instance name inserted into subcell properties under `id`. Default is None
-
-        Return:
-            tuple of placed cell instance and reference points with the same transformation
-            """
-        cell_inst = self.cell.insert(pya.DCellInstArray(cell.cell_index(), trans))
-        if name is not None:
-            cell_inst.set_property("id", name)
-        refpoints_abs = self.get_refpoints(cell, cell_inst.dtrans)
-        return cell_inst, refpoints_abs
+    insert_cell = Element.insert_cell
+    get_refpoints = Element.get_refpoints
+    add_element = Element.add_element
+    pcell_params_by_name = Element.pcell_params_by_name
 
     def create_simulation_layers(self):
-        ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
-        lithography_region = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face()["base metal gap wo grid"]))).merged()
-        sim_region = ground_box_region - lithography_region
+        """Create the layers used for simulation export.
 
-        # Find the ground plane and subtract it from the simulation area
-        # First, add all polygons touching any of the edges
-        ground_region = pya.Region()
-        for edge in ground_box_region.edges():
-            ground_region += sim_region.interacting(edge)
-        # Now, remove all edge polygons which are also a port
-        for port in self.ports:
-            location_itype = port.signal_location.to_itype(self.layout.dbu)
-            ground_region -= ground_region.interacting(pya.Edge(location_itype , location_itype))
-        sim_region -= ground_region
+        Based on any geometry defined on the relevant lithography layers.
 
-        self.cell.shapes(self.layout.layer(self.ls)).insert(self.simple_region(sim_region))
-        self.cell.shapes(self.layout.layer(self.lg)).insert(self.simple_region(ground_region))
+        This method is called from `__init__` after `build`, and should not be called directly.
+
+        Geometry is added to the following layers:
+            - For each face ``b`` and ``t``, the inverse of ``base metal gap wo grid`` is divided into
+
+                - ``simulation ground``, containing any metalization not galvanically connected to a port
+                - ``simulation signal``, containing the remaining metalization.
+            - ``simulation airbridge pads``, containing the geometry of ``airbridge pads``
+            - ``simulation airbridge flyover``, containing the geometry of ``airbridge flyover``
+
+        In the simulation layers, all geometry has been merged and converted to simple polygons
+        (that is, polygons without holes).
+        """
+        def merged_region_from_layer(face_id, layer_name):
+            """ Returns a `Region` containing all geometry from a specified layer merged together """
+            return region_with_merged_polygons(pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face(face_id)[layer_name]))), tolerance=self.polygon_tolerance / self.layout.dbu)
+
+        def insert_simple_region(region, face_id, layer_name):
+            """Converts a `Region` to simple polygons and inserts the result in a target layer."""
+            self.cell.shapes(self.layout.layer(self.face(face_id)[layer_name])).insert(
+                simple_region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
+
+        for face_id in [0, 1]:
+            ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
+            lithography_region = merged_region_from_layer(face_id, "base metal gap wo grid")
+
+            if lithography_region.is_empty():
+                sim_region = pya.Region()
+                ground_region = ground_box_region
+            else:
+                sim_region = ground_box_region - lithography_region
+
+                # Find the ground plane and subtract it from the simulation area
+                # First, add all polygons touching any of the edges
+                ground_region = pya.Region()
+                for edge in ground_box_region.edges():
+                    ground_region += sim_region.interacting(edge)
+                # Now, remove all edge polygons which are also a port
+                if self.use_ports:
+                    for port in self.ports:
+                        location_itype = port.signal_location.to_itype(self.layout.dbu)
+                        ground_region -= ground_region.interacting(pya.Edge(location_itype, location_itype))
+                sim_region -= ground_region
+
+            insert_simple_region(sim_region, face_id, "simulation signal")
+            insert_simple_region(ground_region, face_id, "simulation ground")
+
+        # Export airbridge regions as merged simple polygons
+        insert_simple_region(merged_region_from_layer(0, "airbridge flyover"), 0, "simulation airbridge flyover")
+        insert_simple_region(merged_region_from_layer(0, "airbridge pads"), 0, "simulation airbridge pads")
 
     def get_parameters(self):
-        """ Return dictionary with all parameters in PARAMETER_SCHEMA and their values """
+        """Return dictionary with all parameters in PARAMETERS_SCHEMA and their values."""
 
         return {param: getattr(self, param) for param in self.__class__.get_schema()}

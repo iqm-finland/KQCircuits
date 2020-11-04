@@ -1,40 +1,34 @@
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 from kqcircuits.pya_resolver import pya
 
-from kqcircuits.defaults import default_layers
+from kqcircuits.klayout_view import KLayoutView
 
 
 # This script has multiple sideeffects
 
-def prep_empty_layout(new_lo=False):
-    # Create the layoutgit lo
-    global app, mw, layout_view
-    app = pya.Application.instance()
-    mw = app.main_window()
-    layout_view = mw.current_view()
+def prep_empty_layout():
+    """Creates an empty layout with default layers.
 
-    # Do we have a view?
-    global cell_view, layout
-    if new_lo == True or layout_view == None:
-        # Create a new view
-        cell_view = mw.create_layout(1)
-        layout = cell_view.layout()
-        layout_view = mw.current_view()
-    else:
-        # Use an active view
-        cell_view = pya.CellView.active()
-        layout = cell_view.layout()
+    Returns:
+        A tuple ``(layout, layout_view, cell_view)``
 
-    # Delete all cells
-    layout_view.clear_layers()
+        * ``layout``:  the created layout
+        * ``layout_view``: layout view for the layout
+        * ``cell_view``: cell view for the layout
+    """
 
-    # Populate layers
-    l = {}
-    for name, layer in default_layers.items():
-        l[name] = layout.layer(layer)
+    view = KLayoutView(current=False, initialize=True)
+    layout = KLayoutView.get_active_layout()
+    layout_view = view.layout_view
+    cell_view = view.get_active_cell_view()
 
-    layout_view.add_missing_layers()
-
-    return (layout, layout_view, cell_view)
+    return layout, layout_view, cell_view
 
 
 def get_layout_top_cell():

@@ -7,15 +7,16 @@
 
 from kqcircuits.pya_resolver import pya
 from autologging import logged, traced
+from inspect import isclass
 
 from kqcircuits.defaults import default_layers, default_circuit_params, default_faces
-from kqcircuits.util.library_helper import LIBRARY_NAMES, load_library, to_library_name
+from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.util.parameter_helper import normalize_rules, Validator
 
 
 @traced
 def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
-    """ Extract reference points from cell from layer as dictionary.
+    """Extract reference points from cell from layer as dictionary.
 
     Args:
         layer: layer specification for source of refpoints
@@ -35,39 +36,37 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
     while not shapes_iter.at_end():
         shape = shapes_iter.shape()
         if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
-                refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
+            refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
         shapes_iter.next()
 
     return refpoints
 
 
-@logged
 @traced
+@logged
 class Element(pya.PCellDeclarationHelper):
     """Base PCell declaration for elements.
 
     The PARAMETERS_SCHEMA class attribute defines the PCell parameters for an element. Notice, that to get the
     combined PARAMETERS_SCHEMA of the element and all its ancestors, you should use the "get_schema()" method instead
     of accessing PARAMETERS_SCHEMA directly.
+
+    Elements have ports.
     """
 
-    LIBRARY_NAME = LIBRARY_NAMES["Element"]
+    LIBRARY_NAME = "Element Library"
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for elements."
+    LIBRARY_PATH = "elements"
 
     PARAMETERS_SCHEMA = {
-        "la": {
-            "type": pya.PCellParameterDeclaration.TypeLayer,
-            "description": "Layer annotation",
-            "default": default_layers["annotations"]
-        },
         "a": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of center conductor (um)",
+            "description": "Width of center conductor [μm]",
             "default": default_circuit_params["a"]
         },
         "b": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of gap (um)",
+            "description": "Width of gap [μm]",
             "default": default_circuit_params["b"]
         },
         "n": {
@@ -77,10 +76,12 @@ class Element(pya.PCellDeclarationHelper):
         },
         "r": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Turn radius (um)",
+            "description": "Turn radius [μm]",
             "default": default_circuit_params["r"]
         },
         "refpoints": {
+            # such that child_element.produce function already would have the refpoints initialized
+            # initializing it in the constructor of PCellDeclarationHelper child has no effect
             "type": pya.PCellParameterDeclaration.TypeNone,
             "description": "Reference points",
             "default": {"base": pya.DVector(0, 0)},
@@ -88,58 +89,124 @@ class Element(pya.PCellDeclarationHelper):
         },
         "margin": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin of the protection layer (um)",
+            "description": "Margin of the protection layer [μm]",
             "default": 5
         },
         "face_ids": {
             "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Chip face IDs, list of b | t | c ",
+            "description": "Chip face IDs, list of b | t | c",
             "default": ["b", "t", "c"],
+        },
+        "display_name": {
+            "type": pya.PCellParameterDeclaration.TypeString,
+            "description": "Name displayed in GUI (empty for default)",
+            "default": "",
         },
     }
 
     def __init__(self):
+        ""
         super().__init__()
         self.__set_parameters()
 
     @staticmethod
     def create_cell_from_shape(layout, name):
-        load_library(Element.LIBRARY_NAME)
+        load_libraries(path=Element.LIBRARY_PATH)
         return layout.create_cell(name, Element.LIBRARY_NAME)
 
     @classmethod
-    def create_cell(cls, layout, parameters):
+    def create(cls, layout, **parameters):
         """Create cell for this element in layout.
 
         Args:
             layout: pya.Layout object where this cell is created
-            parameters: PCell parameters for the element
-
+            **parameters: PCell parameters for the element as keyword arguments
         """
         cell_library_name = to_library_name(cls.__name__)
         schema = cls.get_schema()
         validator = Validator(schema)
         if validator.validate(parameters):
-            load_library(cls.LIBRARY_NAME)
+            load_libraries(path=cls.LIBRARY_PATH)
             return layout.create_cell(cell_library_name, cls.LIBRARY_NAME, parameters)
 
-    def insert_cell(self, cell, trans=None, name=None):
-        """ Inserts a subcell into the present cell.
+    @classmethod
+    def create_with_refpoints(cls, layout, refpoint_transform, **parameters):
+        """Convenience function to create cell and return refpooints too.
+
+        Args:
+            layout: pya.Layout object where this cell is created
+            refpoint_transform: transform for converting refpoints into target coordinate system
+            **parameters: PCell parameters for the element, as keyword argument
+        """
+        cell = cls.create(layout, **parameters)
+        refp = get_refpoints(layout.layer(default_layers["annotations"]), cell, refpoint_transform)
+        return cell, refp
+
+    def add_element(self, cls, whitelist=None, **parameters):
+        """Create a new cell for the given element in this layout.
+
+        Args:
+            cls: Element subclass to be created
+            whitelist: parameter dictionary where keys are used as a whitelist for passing
+                       parameters of `self` to the `cls` cell used for parameter inheritance.
+            **parameters: PCell parameters for the element as keyword arguments
+
+        Returns:
+           the created cell
+        """
+        if whitelist is not None:
+            parameters = {**self.pcell_params_by_name(whitelist), **parameters}
+
+        return cls.create(self.layout, **parameters)
+
+    def insert_cell(self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None, rec_levels=0, **parameters):
+        """Inserts a subcell into the present cell.
+
+        It will use the given `cell` object or if `cell` is an Element class' name then directly
+        take the provided keyword arguments to first create the cell object.
+
+        If `inst_name` given, the refpoints of the cell are added to the `self.refpoints` with `inst_name` as a prefix,
+        and also adds a label `inst_name` to "`"labels layer" at the `base` refpoint and `label_trans` transformation.
+
         Arguments:
-            cell: placed cell
+            cell: cell object or Element class name
             trans: used transformation for placement. None by default, which places the subcell into the coordinate
-                origin of the parent cell
-            name: possible instance name inserted into subcell properties under `id`. Default is None
+                origin of the parent cell. If `align` and `align_to` arguments are used, `trans` is applied to the
+                `cell` before alignment transform which allows for example rotation of the `cell` before placement.
+            inst_name: possible instance name inserted into subcell properties under `id`. Default is None
+            label_trans: relative transformation for the instance name label
+            align_to: location in parent cell coordinates for alignment of cell. Can be either string indicating
+                the parent refpoint name, `DPoint` or `DVector`. Default is None
+            align: name of the `cell` refpoint aligned to argument `align_to`. Default is None
+            rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.
+            **parameters: PCell parameters for the element, as keyword argument
 
         Return:
             tuple of placed cell instance and reference points with the same transformation
             """
+        if isclass(cell):
+            cell = cell.create(self.layout, **parameters)
+
         if trans is None:
             trans = pya.DTrans()
+        if (align_to and align) is not None:
+            align = self.get_refpoints(cell, trans)[align]
+            if type(align_to) == str:
+                align_to = self.refpoints[align_to]
+            trans = pya.DTrans(align_to - align) * trans
+
         cell_inst = self.cell.insert(pya.DCellInstArray(cell.cell_index(), trans))
-        if name is not None:
-            cell_inst.set_property("id", name)
-        refpoints_abs = self.get_refpoints(cell, cell_inst.dcplx_trans)  # should use .dtrans, if possible
+
+        refpoints_abs = self.get_refpoints(cell, cell_inst.dcplx_trans, rec_levels)  # should use .dtrans, if possible
+        if inst_name is not None:
+            cell_inst.set_property("id", inst_name)
+            # copies probing refpoints to chip level with unique names using subcell id property
+            for ref_name, pos in refpoints_abs.items():
+                new_name = "{}_{}".format(inst_name, ref_name)
+                self.refpoints[new_name] = pos
+            if label_trans is not None:
+                label_trans_str = pya.DCplxTrans(label_trans).to_s()  # must be saved as string to avoid errors
+                cell_inst.set_property("label_trans", label_trans_str)
         return cell_inst, refpoints_abs
 
     def face(self, face_index=0):
@@ -154,7 +221,7 @@ class Element(pya.PCellDeclarationHelper):
         return default_faces[self.face_ids[face_index]]
 
     def pcell_params_by_name(self, whitelist=None):
-        """ Give PCell parameters as a dictionary
+        """Give PCell parameters as a dictionary.
 
         Arguments:
             whitelist: list of dictionary for filtering the returned parameters. If dictionary, keys used for
@@ -164,14 +231,30 @@ class Element(pya.PCellDeclarationHelper):
             Dictionary with all parameter names in the PCell declaration `PARAMETER_SCHEMA` as keys and
             corresponding current values.
             """
-        d = {}
+
+        keys = self.__class__.get_schema().keys()
         if type(whitelist) is dict:
-            whitelist = whitelist.keys()
-        for name in self.__class__.get_schema().keys():
-            if whitelist is not None and name not in whitelist:
-                continue
-            d[name] = self.__getattribute__(name)
-        return d
+            keys = list(set(whitelist.keys()) & set(keys))
+        return {k:self.__getattribute__(k) for k in keys}
+
+    def add_port(self, name, pos, direction=None):
+        """ Add a port location to the list of reference points as well as ports layer for netlist extraction
+
+        Args
+            name: name for the port. Will be "decorated" for annotation layer, left as is for port layer. If evaluates
+            to False, it will be replaced with `port`
+            pos: pya.DVector or pya.DPoint marking the position of the port in the Element base
+            direction: direction of the signal going _to_ the port to determine the location of the "corner" reference
+            point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
+            added.
+        """
+        text = pya.DText(name, pos.x, pos.y)
+        self.cell.shapes(self.get_layer("ports")).insert(text)
+
+        port_name = "port_"+name if name else "port"
+        self.refpoints[port_name] = pos
+        if direction:
+            self.refpoints[port_name+"_corner"] = pos+direction/direction.length()*self.r
 
     @classmethod
     def get_schema(cls):
@@ -186,18 +269,35 @@ class Element(pya.PCellDeclarationHelper):
             return cls.schema
 
     def produce_impl(self):
-        # call the super.produce_impl once all the refpoints have been added to self.refpoints
-        # add all ref points to user properties and draw to annotations
+        """This method builds the PCell.
+
+        Adds all refpoints to user properties and draws their names to the annotation layer.
+        """
         for name, refpoint in self.refpoints.items():
-            self.cell.set_property(name, refpoint)
-            # self.cell.shapes(self.layout.layer(self.la)).insert(pya.DPath([pya.DPoint(0,0),pya.DPoint(0,0)+refpoint],1))
             text = pya.DText(name, refpoint.x, refpoint.y)
-            self.cell.shapes(self.layout.layer(self.la)).insert(text)
-        self.cell.refpoints = self.refpoints
+            self.cell.shapes(self.get_layer("annotations")).insert(text)
+
+    def display_text_impl(self):
+        if self.display_name:
+            return self.display_name
+        return type(self).__name__
 
     def get_refpoints(self, cell, cell_transf=pya.DTrans(), rec_levels=None):
-        """ See `get_refpoints`. """
+        """See `get_refpoints`."""
         return get_refpoints(self.layout.layer(default_layers["annotations"]), cell, cell_transf, rec_levels)
+
+    def get_layer(self, layer_name, face_id=0):
+        """Returns the specified Layer object.
+
+        Args:
+            layer_name: layer name text
+            face_id: index of the face id, default=0
+
+        """
+        if (face_id == 0 and layer_name not in self.face(0)):
+            return self.layout.layer(default_layers[layer_name])
+        else:
+            return self.layout.layer(self.face(face_id)[layer_name])
 
     def __set_parameters(self):
         schema = self.__class__.get_schema()

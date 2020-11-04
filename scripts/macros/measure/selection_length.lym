@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Length of waveguides in selected cells</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+### Usage
+# Select cells and object in the GUI by clicking, dragging into a box and possible holding down shift for multiselect.
+# Then run this macro and check the console in the macro development window for the output of this macro.
+# Note, that you cannot select individual cells in a PCell - you need to turn the top PCell to a static cell before.
+
+import pya
+
+from kqcircuits.defaults import default_layers
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.geometry_helper import get_object_path_length
+
+cell_view = KLayoutView.get_active_cell_view()
+layout_view = cell_view.view()
+layout = cell_view.layout()
+
+total_len = 0
+
+for obj in layout_view.object_selection:
+    length = get_object_path_length(obj, layout.layer(default_layers["annotations"]))
+    total_len += length
+
+    if obj.is_cell_inst():
+       print(obj.inst().cell.name, length)
+    else: # is a shape
+       shape = obj.shape
+       if shape.is_path():
+           print("path", length)
+
+print("Total length:", total_len)</text>
+</klayout-macro>

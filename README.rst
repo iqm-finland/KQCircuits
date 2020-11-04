@@ -1,5 +1,5 @@
 KQCircuits
-===============
+==========
 
 KQCircuits is a Python library developed by IQM for automating the design of
 superconducting quantum circuits. It uses the `KLayout
@@ -15,38 +15,17 @@ can quickly be created either in the KLayout GUI or in code.
 Getting started
 ---------------
 
-There are two different ways to use KQCircuits:
+KQCircuits is a KLayout extension. KLayout can be used either using a graphical
+user interface or as a standalone python module. KQCircuits supports both modes
+of operation. For the first time users, the graphical user interface mode is
+recommended.  To get started with graphical user interface workflow, see the
+`getting started documentation
+<https://pages.github.iqm.fi/iqm/KQCircuits/docs/_build/html/start/index.html>`__
+for instructions on installation and usage of KQC with the KLayout Editor.
 
-#. Use with KLayout Editor.
-#. Use with standalone KLayout Python module.
-
-For any of these use cases, you should git clone the repository from
-https://github.iqm.fi/iqm/KQCircuits to a local directory of your choice.
-
-KQCircuits with KLayout Editor
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-KQCircuits objects, such as elements and chips, can be viewed and manipulated
-in the KLayout Editor GUI. More complicated tasks in KLayout Editor can be
-done by writing KLayout macros, which use the KQCircuits library. The code runs
-within KLayout's built-in Python interpreter, so debugging must be done in
-KLayout's macro IDE.
-
-For instructions on installation and basic usage, see the `documentation
-<https://pages.github.iqm.fi/iqm/KQCircuits/_build/html/start/klayout_editor.html>`__.
-
-KQCircuits with standalone KLayout Python module
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-KQCircuits can be used without KLayout Editor by using the standalone KLayout
-Python module. This lets you develop and use KQCircuits completely within any
-Python development environment of your choice, without running KLayout GUI.
-For example, any debugger can then be used and automated tests can be performed.
-The KQCircuits elements can also be visualized using any suitable viewer or
-library during development.
-
-For instructions on installation and basic usage, see the `documentation
-<https://pages.github.iqm.fi/iqm/KQCircuits/_build/html/start/klayout_standalone.html>`__.
+To use KQC without KLayout graphical user interface, use it with the standalone
+KLayout python module. For instructions on that, see the `documentation
+<https://pages.github.iqm.fi/iqm/KQCircuits/docs/_build/html/developer/klayout_standalone.html>`__.
 
 Documentation
 -------------
@@ -60,4 +39,5 @@ Copyright (c) 2019-2020 IQM Finland Oy.
 
 All rights reserved. Confidential and proprietary.
 
-Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy's prior written permission.
+Distribution or reproduction of any information contained herein is prohibited
+without IQM Finland Oy's prior written permission.

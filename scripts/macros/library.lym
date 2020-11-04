@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Load KQCircuits cell libraries (autoran on startup)</description>
+ <version>0.1</version>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>true</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+# load libraries
+from kqcircuits.util.library_helper import load_libraries
+load_libraries()
+</text>
+</klayout-macro>

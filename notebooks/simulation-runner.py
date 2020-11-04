@@ -1,3 +1,10 @@
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 import sys
 import shutil
 import logging
@@ -6,18 +13,16 @@ from pathlib import Path
 from importlib import import_module
 import subprocess
 
-from kqcircuits.klayout_view import MissingUILibraryException, KLayoutView
+from kqcircuits.klayout_view import MissingUILibraryException
 from kqcircuits.pya_resolver import pya
 import kqcircuits.util.library_helper as library_helper
 
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.simulations.hfss.hfss_export import HfssExport, HfssBatch
+from kqcircuits.simulations.export.hfss.hfss_export import HfssExport, HfssBatch
 
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
-# class_name = "XMonsDirectCouplingSim"
-class_name = "TurtlemonCouplingsSim"
-# class_name = "XMonsDirectCouplingFullChipSim"
+class_name = "SingleXmonsFullChipSim"
 
 # Override default parameters as needed
 parameters = {
@@ -68,7 +73,7 @@ except MissingUILibraryException:
 
 hfss_exports = []
 for length in [1, 2, 5, 10, 20, 50, 100, 200]:
-    simulation = cls(layout, **{**parameters, 'waveguide_length': length, 'use_internal_ports': True, 'name': 'turtlemon_cpw_length_{}um'.format(length)})
+    simulation = cls(layout, **{**parameters, 'waveguide_length': length, 'use_internal_ports': True, 'name': 'cpw_length_{}um'.format(length)})
     hfss_export = HfssExport(simulation, path=dir_path)
     hfss_export.write()
     hfss_exports.append(hfss_export)

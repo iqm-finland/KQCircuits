@@ -18,6 +18,7 @@ from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.defaults import default_layers
 
 
 reload(sys.modules[Chip.__module__])
@@ -37,8 +38,10 @@ class Shaping(Chip):
     }
 
     def __init__(self):
+        """Parameter `r = 100` is set at init time."""
         super().__init__()
         self.r = 100
+
 
     def produce_impl(self):
 
@@ -46,50 +49,46 @@ class Shaping(Chip):
         launchers = self.produce_launchers_SMA8()
 
         # Finnmon
-        finnmon = Swissmon.create_cell(self.layout, {
-            "fluxline": True,
-            "arm_width": [30, 23, 30, 23],
-            "arm_length": [190, 96, 160, 96],
-            "gap_width": 89,
-            "corner_r": 2,
-            "cpl_length": [235, 0, 205],
-            "cpl_width": [60, 42, 60],
-            "cpl_gap": [110, 112, 110],
-            "cl_offset": [150, 150]
-        })
-        finnmon_inst, finnmon_refpoints_abs = self.insert_cell(finnmon, pya.DTrans(3, False, 4000, 5000))
-        
+        finnmon_inst, finnmon_refpoints_abs = self.insert_cell(Swissmon, pya.DTrans(3, False, 4000, 5000),
+            arm_width=[30, 23, 30, 23],
+            arm_length=[190, 96, 160, 96],
+            gap_width=89,
+            corner_r=2,
+            cpl_length=[235, 0, 205],
+            cpl_width=[60, 42, 60],
+            cpl_gap=[110, 112, 110],
+            cl_offset=[150, 150]
+        )
+
         port_qubit_dr = finnmon_refpoints_abs["port_drive"]
         port_qubit_fl = finnmon_refpoints_abs["port_flux"]
         port_qubit_ro = finnmon_refpoints_abs["port_cplr0"]
         port_qubit_sh = finnmon_refpoints_abs["port_cplr2"]
 
         # Chargeline
-        tl = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 launchers["WN"][0],
                 launchers["WN"][0] + pya.DVector(self.r, 0),
                 pya.DPoint((launchers["WN"][0] + pya.DVector(self.r, 0)).x, port_qubit_dr.y),
                 port_qubit_dr - pya.DVector(self.r, 0),
                 port_qubit_dr
             ], 1),
-            "r": self.r,
-            "term2": self.b,
-        })
-        self.insert_cell(tl)
+            r=self.r,
+            term2=self.b,
+        )
 
         # Fluxline
-        fl = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 launchers["WS"][0],
                 launchers["WS"][0] + pya.DVector(self.r, 0),
                 pya.DPoint((launchers["WS"][0] + pya.DVector(self.r, 0)).x, port_qubit_fl.y),
                 port_qubit_fl - pya.DVector(self.r, 0),
                 port_qubit_fl
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(fl)
+            r=self.r
+        )
 
         ####### Readout resonator with the purcell filter
 
@@ -100,26 +99,25 @@ class Shaping(Chip):
         caps_type = ["plate", "square", "plate"]  # J, kappa, drive
 
         # Waveguide t-cross used in multiple locations
-        cross1 = WaveguideCoplanarTCross.create_cell(self.layout, {
-            "length_extra_side": 2 * self.a,
-            "length_extra": 50,
-            "r": self.r})
+        cross1 = self.add_element(WaveguideCoplanarTCross,
+            length_extra_side=2 * self.a,
+            length_extra=50,
+            r=self.r)
         cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
         cross1_length = cross1_refpoints_rel["port_right"].distance(cross1_refpoints_rel["port_left"])
 
         # Readout resonator first segement
         waveguide_length = 0
         wg1_end = port_qubit_ro + pya.DVector(0, segment_length_target_rr[0] - cross1_length)
-        waveguide1 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_qubit_ro,
                 port_qubit_ro + pya.DVector(0, self.r),
                 wg1_end + pya.DVector(0, -self.r),
                 wg1_end,
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide1)
+            r=self.r
+        )
 
         waveguide_length = cross1_length + cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
         cross1_inst, cross1_refpoints_abs = self.insert_cell(
@@ -128,14 +126,13 @@ class Shaping(Chip):
         )
 
         meander2_end = cross1_refpoints_abs["port_bottom"] + pya.DVector(630, 0)
-        meander2 = Meander.create_cell(self.layout, {
-            "start": cross1_refpoints_abs["port_bottom"],
-            "end": meander2_end,
-            "length": segment_length_target_rr[1] - waveguide_length,
-            "meanders": 2,
-            "r": self.r
-        })
-        self.insert_cell(meander2)
+        self.insert_cell(Meander,
+            start=cross1_refpoints_abs["port_bottom"],
+            end=meander2_end,
+            length=segment_length_target_rr[1] - waveguide_length,
+            meanders=2,
+            r=self.r
+        )
 
         cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(2, False, 0, 0))
         port_rel_cross2_wg2 = cross2_refpoints_rel["port_right"]
@@ -146,21 +143,16 @@ class Shaping(Chip):
 
         # Last bit of the readout resonator
         waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
-        waveguide5 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_cross2["port_bottom"],
                 port_abs_cross2["port_bottom"] + pya.DVector(0, (segment_length_target_rr[2] - waveguide_length))
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide5)
+            r=self.r
+        )
 
         # Capacitor J
         capj = produce_library_capacitor(self.layout, caps_fingers[0], caps_length[0], caps_type[0])
-
-        FingerCapacitorSquare.create_cell(self.layout, {
-            "finger_number": 2
-        })
         port_rel_capj = self.get_refpoints(capj, pya.DTrans())
         self.insert_cell(capj, pya.DTrans(port_abs_cross2["port_left"] - port_rel_capj["port_a"]))
 
@@ -170,60 +162,57 @@ class Shaping(Chip):
         waveguide_length = cross1_length
 
         meander3_end = port_abs_cross3["port_left"] + pya.DVector(900, 0)
-        meander3 = Meander.create_cell(self.layout, {
-            "start": port_abs_cross3["port_left"],
-            "end": meander3_end,
-            "length": 1500,
-            "meanders": 3,
-            "r": self.r
-        })
-        meander3_inst, meander3_inst_ref = self.insert_cell(meander3)
+        meander3_inst, meander3_inst_ref = self.insert_cell(Meander,
+            start=port_abs_cross3["port_left"],
+            end=meander3_end,
+            length=1500,
+            meanders=3,
+            r=self.r
+        )
 
-        waveguide2 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        waveguide2 = self.add_element(WaveguideCoplanar,
+            path=pya.DPath([
                 meander3_end,
                 meander3_end + pya.DVector(self.r, 0),
                 meander3_end + pya.DVector(self.r, 400),
                 meander3_end + pya.DVector(self.r, 400 + self.r),
             ], 1),
-            "r": self.r
-        })
+            r=self.r
+        )
         self.insert_cell(waveguide2)
 
-        waveguide_length += WaveguideCoplanar.get_length(waveguide2, self.layout.layer(self.la))
+        waveguide_length += WaveguideCoplanar.get_length(waveguide2, self.get_layer("annotations"))
         meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0] - waveguide_length)
 
         # Last bit of the Purcell filter of RR
         waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
         wg6_end = port_abs_cross3["port_bottom"] + pya.DVector(0, (segment_length_target_pr[1] - waveguide_length))
-        waveguide6 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_cross3["port_bottom"],
                 wg6_end
             ], 1),
-            "r": self.r,
-            "term2": (40 if self.tunable else 0)
-        })
-        self.insert_cell(waveguide6)
+            r=self.r,
+            term2=(40 if self.tunable else 0)
+        )
 
         # Purcell resonator SQUID
         if (self.tunable):
             # SQUID refpoint at the ground plane edge
-            squid_cell = Element.create_cell_from_shape(self.layout, "QCD1")
+            squid_cell = Element.create_cell_from_shape(self.layout, "SIM1")
             transf = pya.DTrans(2, False, wg6_end + pya.DVector(0, 40))
             self.insert_cell(squid_cell, transf)
 
-            waveguide_restune = WaveguideCoplanar.create_cell(self.layout, {
-                "path": pya.DPath([
+            self.insert_cell(WaveguideCoplanar,
+                path=pya.DPath([
                     wg6_end + pya.DVector(-20, 40 + 15),
                     wg6_end + pya.DVector(+20 + self.r, 40 + 15),
                     pya.DPoint((wg6_end + pya.DVector(+20 + self.r, 40 + 15)).x, (launchers["NE"][0]).y - self.r),
                     launchers["NE"][0] + pya.DVector(0, -self.r),
                     launchers["NE"][0] + pya.DVector(0, 0),
                 ], 1),
-                "r": self.r
-            })
-            self.insert_cell(waveguide_restune)
+                r=self.r
+            )
 
         # Capacitor Kappa
         capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
@@ -233,17 +222,16 @@ class Shaping(Chip):
                                            port_rel_capk["port_a"]))
 
         # Output port of the purcell resonator
-        waveguide3 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_capk["port_b"],
                 port_abs_capk["port_b"] + pya.DVector(0, self.r),
                 pya.DPoint((port_abs_capk["port_b"] + pya.DVector(0, self.r)).x, launchers["EN"][0].y),
                 launchers["EN"][0] + pya.DVector(-self.r, 0),
                 launchers["EN"][0],
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide3)
+            r=self.r
+        )
         waveguide_length = 0
 
         # Capacitor for the driveline
@@ -255,17 +243,16 @@ class Shaping(Chip):
                                                    "port_a"]))
 
         # Driveline of the readout resonator
-        waveguide4 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_capi["port_b"],
                 port_abs_capi["port_b"] + pya.DVector(0, self.r),
                 pya.DPoint(launchers["NW"][0].x, (port_abs_capi["port_b"] + pya.DVector(0, self.r)).y),
                 launchers["NW"][0] + pya.DVector(0, -self.r),
                 launchers["NW"][0] + pya.DVector(0, 0),
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide4)
+            r=self.r
+        )
 
         ####### Shaping resonator with the purcell filter
 
@@ -278,16 +265,15 @@ class Shaping(Chip):
         # Readout resonator first segement
         waveguide_length = 0
         wg1_end = port_qubit_sh + pya.DVector(0, -(segment_length_target_rr[0] - cross1_length))
-        waveguide1 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_qubit_sh,
                 port_qubit_sh + pya.DVector(0, -self.r),
                 wg1_end + pya.DVector(0, +self.r),
                 wg1_end,
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide1)
+            r=self.r
+        )
 
         waveguide_length = cross1_length + cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
         cross1_inst, cross1_refpoints_abs = self.insert_cell(
@@ -296,14 +282,13 @@ class Shaping(Chip):
         )
 
         meander2_end = cross1_refpoints_abs["port_bottom"] + pya.DVector(630, 0)
-        meander2 = Meander.create_cell(self.layout, {
-            "start": cross1_refpoints_abs["port_bottom"],
-            "end": meander2_end,
-            "length": segment_length_target_rr[1] - waveguide_length,
-            "meanders": 2,
-            "r": self.r
-        })
-        self.insert_cell(meander2)
+        self.insert_cell(Meander,
+            start=cross1_refpoints_abs["port_bottom"],
+            end=meander2_end,
+            length=segment_length_target_rr[1] - waveguide_length,
+            meanders=2,
+            r=self.r
+        )
 
         cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
         port_rel_cross2_wg2 = cross2_refpoints_rel["port_left"]
@@ -314,14 +299,13 @@ class Shaping(Chip):
 
         # Last bit of the readout resonator
         waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
-        waveguide5 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_cross2["port_bottom"],
                 port_abs_cross2["port_bottom"] + pya.DVector(0, -(segment_length_target_rr[2] - waveguide_length))
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide5)
+            r=self.r
+        )
 
         # Capacitor J
         capj = produce_library_capacitor(self.layout, caps_fingers[0], caps_length[0], caps_type[0])
@@ -335,60 +319,56 @@ class Shaping(Chip):
         waveguide_length = cross1_length
 
         meander3_end = port_abs_cross3["port_right"] + pya.DVector(900, 0)
-        meander3 = Meander.create_cell(self.layout, {
-            "start": port_abs_cross3["port_right"],
-            "end": meander3_end,
-            "length": 1500,
-            "meanders": 3,
-            "r": self.r
-        })
-        meander3_inst, meander3_inst_ref = self.insert_cell(meander3)
+        meander3_inst, meander3_inst_ref = self.insert_cell(Meander,
+            start=port_abs_cross3["port_right"],
+            end=meander3_end,
+            length=1500,
+            meanders=3,
+            r=self.r
+        )
 
-        waveguide2 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 meander3_end,
                 meander3_end + pya.DVector(self.r, 0),
                 meander3_end + pya.DVector(self.r, -400),
                 meander3_end + pya.DVector(self.r, -400 - self.r),
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide2)
+            r=self.r
+        )
 
-        waveguide_length += WaveguideCoplanar.get_length(waveguide2, self.layout.layer(self.la))
+        waveguide_length += WaveguideCoplanar.get_length(waveguide2, self.get_layer("annotations"))
         meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0] - waveguide_length)
 
         # Last bit of the Purcell filter of shaping resonator
         waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
         wg6_end = port_abs_cross3["port_bottom"] + pya.DVector(0, -(segment_length_target_pr[1] - waveguide_length))
-        waveguide6 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_cross3["port_bottom"],
                 wg6_end
             ], 1),
-            "r": self.r,
-            "term2": (40 if self.tunable else 0)
-        })
-        self.insert_cell(waveguide6)
+            r=self.r,
+            term2=(40 if self.tunable else 0)
+        )
 
         # Purcell resonator SQUID
         if (self.tunable):
             # SQUID refpoint at the ground plane edge
-            squid_cell = Element.create_cell_from_shape(self.layout, "QCD1")
+            squid_cell = Element.create_cell_from_shape(self.layout, "SIM1")
             transf = pya.DTrans(0, False, wg6_end + pya.DVector(0, -40))
             self.insert_cell(squid_cell, transf)
 
-            waveguide_restune = WaveguideCoplanar.create_cell(self.layout, {
-                "path": pya.DPath([
+            self.insert_cell(WaveguideCoplanar,
+                path=pya.DPath([
                     wg6_end + pya.DVector(-20, -40 - 15),
                     wg6_end + pya.DVector(+20 + self.r, -40 - 15),
                     pya.DPoint((wg6_end + pya.DVector(+20 + self.r, -40 - 15)).x, (launchers["SE"][0]).y + self.r),
                     launchers["SE"][0] + pya.DVector(0, self.r),
                     launchers["SE"][0] + pya.DVector(0, 0),
                 ], 1),
-                "r": self.r
-            })
-            self.insert_cell(waveguide_restune)
+                r=self.r
+            )
 
         # Capacitor Kappa
         capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
@@ -398,17 +378,16 @@ class Shaping(Chip):
                                                                      port_rel_capk["port_a"]))
 
         # Output port of the purcell resonator
-        waveguide3 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_capk["port_b"],
                 port_abs_capk["port_b"] + pya.DVector(0, -self.r),
                 pya.DPoint((port_abs_capk["port_b"] + pya.DVector(0, -self.r)).x, (launchers["ES"][0]).y),
                 launchers["ES"][0] + pya.DVector(-self.r, 0),
                 launchers["ES"][0] + pya.DVector(0, 0),
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide3)
+            r=self.r
+        )
         waveguide_length = 0
 
         # Capacitor for the driveline
@@ -418,17 +397,16 @@ class Shaping(Chip):
             capi, pya.DTrans(3, False, cross1_refpoints_abs["port_left"] - port_rel_capi["port_a"]))
 
         # Driveline of the shaping resonator
-        waveguide4 = WaveguideCoplanar.create_cell(self.layout, {
-            "path": pya.DPath([
+        self.insert_cell(WaveguideCoplanar,
+            path=pya.DPath([
                 port_abs_capi["port_b"],
                 port_abs_capi["port_b"] + pya.DVector(0, -self.r),
                 pya.DPoint(launchers["SW"][0].x, (port_abs_capi["port_b"] + pya.DVector(0, -self.r)).y),
                 launchers["SW"][0] + pya.DVector(0, self.r),
                 launchers["SW"][0] + pya.DVector(0, 0),
             ], 1),
-            "r": self.r
-        })
-        self.insert_cell(waveguide4)
+            r=self.r
+        )
 
         # chip frame and possibly ground plane grid
         super().produce_impl()

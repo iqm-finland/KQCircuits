@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>All chips in the library</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>Generate</group-name>
+ <menu-path>edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+import pya
+
+import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.chips.chip import Chip
+
+libname = Chip.LIBRARY_NAME
+library = pya.Library.library_by_name(libname)
+
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+top_cell = layout.create_cell("Top Cell") 
+cell_view.cell_name=top_cell.name     # Shows the new cell
+
+chip_step_x = pya.DVector(12e3, 0)
+chip_step_y = pya.DVector(0, -12e3)
+
+for i, pcell_name in enumerate(library.layout().pcell_names()):
+    print("generating ", pcell_name)
+    cell = layout.create_cell(pcell_name, libname, {"name_chip": pcell_name})
+    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans((i%5) *chip_step_x+int(i/5) *chip_step_y)))</text>
+</klayout-macro>

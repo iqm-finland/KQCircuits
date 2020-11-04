@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Number of instances with a specific cell name in top cell</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>from kqcircuits.klayout_view import KLayoutView
+
+"""Counts the number of instances with a given cell name in top cell.
+
+All instances of the cell below top cell are counted.
+
+Usage:
+1. change the cell_name if needed
+2. choose the top cell
+3. run the macro
+"""
+
+cell_name = "Airbridge" 
+
+top_cell = KLayoutView.get_active_cell()
+
+def count_instances_in_cell(cell_idx):
+    # workaround for getting the cell due to KLayout bug, see
+    # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
+    # TODO: replace by `cell = obj.inst().cell` once KLayout bug is fixed
+    cell = top_cell.layout().cell(cell_idx)
+    n = 0
+    if cell.name == cell_name:
+        n += 1
+    for inst in cell.each_inst():
+        n += count_instances_in_cell(inst.cell.cell_index())
+    return n
+
+n_elements = count_instances_in_cell(top_cell.cell_index())  
+
+print("Number of instances with cell name \"{}\": {}".format(cell_name, n_elements))
+</text>
+</klayout-macro>

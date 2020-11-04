@@ -24,49 +24,33 @@ class FingerCapacitorTaper(Element):
         },
         "finger_width": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of a finger (um)",
+            "description": "Width of a finger [μm]",
             "default": 5
         },
         "finger_gap": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Gap between the fingers (um)",
+            "description": "Gap between the fingers [μm]",
             "default": 3
         },
         "finger_length": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Length of the fingers (um)",
+            "description": "Length of the fingers [μm]",
             "default": 20
         },
         "taper_length": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Length of the taper (um)",
+            "description": "Length of the taper [μm]",
             "default": 60
         },
         "corner_r": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Corner radius (um)",
+            "description": "Corner radius [μm]",
             "default": 2
         }
     }
 
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return "fingercap(l={},n={})".format(self.finger_number, self.finger_length)
-
-    def coerce_parameters_impl(self):
-        None
-
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
-
-    def parameters_from_shape_impl(self):
-        None
-
-    def transformation_from_shape_impl(self):
-        return pya.Trans()
 
     def produce_impl(self):
         # shorthand
@@ -127,20 +111,17 @@ class FingerCapacitorTaper(Element):
 
         region = (region_ground - region_etch) - region_taper_right_small - region_taper_left_small
 
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(region)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(region)
 
         # protection
         region_protection = region_ground.size(0, self.margin / self.layout.dbu, 2)
-        self.cell.shapes(self.layout.layer(self.face()["ground grid avoidance"])).insert(region_protection)
+        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(region_protection)
 
         # ports
-        port_ref = pya.DPoint(-(l + g) / 2 - t, 0)
-        self.refpoints["port_a"] = port_ref
-        port_ref = pya.DPoint((l + g) / 2 + t, 0)
-        self.refpoints["port_b"] = port_ref
-        # todo
-        port_ref = pya.DPoint(-(l + g) / 2 - t, 0 + w)
-        self.refpoints["port_r"] = port_ref
+        port_a = pya.DPoint(-(l + g) / 2 - t, 0)
+        self.add_port("a", port_a, pya.DVector(-1, 0))
+        port_b = pya.DPoint((l + g) / 2 + t, 0)
+        self.add_port("b", port_b, pya.DVector(1, 0))
 
         # adds annotation based on refpoints calculated above
         super().produce_impl()

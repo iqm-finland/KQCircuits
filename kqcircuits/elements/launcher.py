@@ -8,51 +8,28 @@
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.elements.element import Element
+from kqcircuits.defaults import default_layers
 
 
 class Launcher(Element):
-    """The PCell declaration for an arbitrary waveguide
+    """The PCell declaration for a launcher for connecting wirebonds.
 
-    Launcher for connecting wirebonds. Default wirebond direction to west, waveguide to east. Uses default ratio a
+    Default wirebond direction to west, waveguide to east. Uses default ratio a
     and b for scaling the gap.
     """
 
     PARAMETERS_SCHEMA = {
         "s": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Pad width (um)",
+            "description": "Pad width [μm]",
             "default": 300
         },
         "l": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Tapering length (um)",
+            "description": "Tapering length [μm]",
             "default": 300
-        },
-        "name": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name shown on annotation layer",
-            "default": ""
         }
     }
-
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return "Launcher(%s)".format(self.name)
-
-    def coerce_parameters_impl(self):
-        None
-
-    def can_create_from_shape_impl(self):
-        return False
-
-    def parameters_from_shape_impl(self):
-        None
-
-    def transformation_from_shape_impl(self):
-        return pya.Trans()
 
     def produce_impl(self):
         # optical layer
@@ -81,7 +58,7 @@ class Launcher(Element):
         pts2 = [p + s for p, s in zip(pts, shifts)]
         pts.reverse()
         shape = pya.DPolygon(pts + pts2)
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(shape)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
 
         # protection layer
         shifts = [
@@ -94,9 +71,9 @@ class Launcher(Element):
         ]
         pts2 = [p + s for p, s in zip(pts2, shifts)]
         shape = pya.DPolygon(pts2)
-        self.cell.shapes(self.layout.layer(self.face()["ground grid avoidance"])).insert(shape)
+        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(shape)
 
-        # annotation text
-        if self.name:
-            label = pya.DText(self.name, 1.5 * self.l, 0)
-            self.cell.shapes(self.layout.layer(self.la)).insert(label)
+        # add reference point
+        self.add_port("", pya.DPoint(0, 0), pya.DVector(-1, 0))
+
+        super().produce_impl()

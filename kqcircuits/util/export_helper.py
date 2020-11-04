@@ -1,67 +1,25 @@
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 import json
 from autologging import logged, traced
 
-from kqcircuits.pya_resolver import pya
-
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.defaults import default_layers, default_output_ext, default_output_format, gzip
+from kqcircuits.defaults import default_layers
 
 
-@logged
 @traced
-def export_cell(path, cell=None, cell_name="", cell_version=1, layers_to_export=""):
-    if cell is None:
-        error = ValueError("Cannot export nil cell.")
-        export_cell._log.exception(exc_info=error)
-        raise error
-    layout = cell.layout()
-    if (layers_to_export == ""):
-        exported_layer_names = [
-            "b base metal gap",
-            "b base metal gap wo grid",
-            "b airbridge pads",
-            "b airbridge flyover",
-        ]
-        layers_to_export = {name: layout.layer(default_layers[name]) for name in exported_layer_names}
-
-    elif (layers_to_export == 'no_sing_layer'):
-        layers_to_export = {}
-
-    if (cell_name == ""):
-        cell_name = cell.name
-
-    filename = "{}_v{}".format(cell_name, str(cell_version))
-
-    svopt = pya.SaveLayoutOptions()
-    svopt.clear_cells()
-    svopt.select_all_layers()
-    svopt.add_cell(cell.cell_index())
-    svopt.format = default_output_format
-    file_ext = default_output_ext
-    all_layers_file_name = path / "{}{}".format(filename, file_ext)
-
-    layout.write(str(all_layers_file_name), gzip, svopt)
-
-    layer_info = pya.LayerInfo()
-    if bool(layers_to_export):
-        items = layers_to_export.items()
-        for layer_name, layer in items:
-            svopt.deselect_all_layers()
-            svopt.clear_cells()
-            svopt.add_layer(layer, layer_info)
-            svopt.add_cell(cell.cell_index())
-            svopt.write_context_info = False
-            spec_layer_file_name = path / "{} {}{}".format(filename, layer_name, file_ext)
-            layout.write(str(spec_layer_file_name), gzip, svopt)
-
-
 @logged
-@traced
 def generate_probepoints_json(cell):
     # make autoprober json string for cell with reference points with magical names
     if cell is None:
-        error = ValueError("Cannot export probe points corresponding to nil cell.")
-        generate_probepoints_json._log.exception(exc_info=error)
+        error_text = "Cannot export probe points corresponding to nil cell."
+        error = ValueError(error_text)
+        generate_probepoints_json._log.exception(error_text, exc_info=error)
         raise error
 
     layout = cell.layout()
@@ -71,12 +29,12 @@ def generate_probepoints_json(cell):
     # Assumes existence of standard markers
     probe_types = {
         "testarray": {
-            "testarrays NW": refpoints["marker_nw"],
-            "testarrays SE": refpoints["marker_se"]
+            "testarrays NW": refpoints["b_marker_nw"],
+            "testarrays SE": refpoints["b_marker_se"]
         },
         "qb": {
-            "qubits NW": refpoints["marker_nw"],
-            "qubits SE": refpoints["marker_se"]
+            "qubits NW": refpoints["b_marker_nw"],
+            "qubits SE": refpoints["b_marker_se"]
         }
     }
 

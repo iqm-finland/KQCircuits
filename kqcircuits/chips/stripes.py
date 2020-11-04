@@ -39,9 +39,6 @@ class Stripes(Chip):
         }
     }
 
-    def __init__(self):
-        super().__init__()
-
     def produce_impl(self):
 
         # defining the dimensions for creating the polygonal area of test
@@ -145,6 +142,6 @@ class Stripes(Chip):
             reg2.insert(b_array[i])
 
         result = reg1 - reg2
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(result)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(result)
 
         super().produce_impl()

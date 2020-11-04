@@ -7,6 +7,7 @@ is hosted in GitHub Enterprise (GHE) at https://github.iqm.fi/iqm/KQCircuits .
 .. toctree::
     :glob:
 
+    setup
     architecture
     branches
     commits

@@ -25,54 +25,38 @@ class FingerCapacitorSquare(Element):
         },
         "finger_width": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of a finger (um)",
+            "description": "Width of a finger [μm]",
             "default": 5
         },
         "finger_gap_side": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Gap between the fingers (um)",
+            "description": "Gap between the fingers [μm]",
             "default": 3
         },
         "finger_gap_end": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Gap between the finger and other pad (um)",
+            "description": "Gap between the finger and other pad [μm]",
             "default": 3
         },
         "finger_length": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Length of the fingers (um)",
+            "description": "Length of the fingers [μm]",
             "default": 20
         },
         "ground_padding": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Ground plane padding (um)",
+            "description": "Ground plane padding [μm]",
             "default": 20
         },
         "corner_r": {
             "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Corner radius (um)",
+            "description": "Corner radius [μm]",
             "default": 2
         }
     }
 
-    def __init__(self):
-        super().__init__()
-
-    def display_text_impl(self):
-        # Provide a descriptive text for the cell
-        return "fingercap(l={},n={})".format(self.finger_number, self.finger_length)
-
-    def coerce_parameters_impl(self):
-        None
-
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
-
-    def parameters_from_shape_impl(self):
-        None
-
-    def transformation_from_shape_impl(self):
-        return pya.Trans()
 
     def produce_impl(self):
         # shorthand
@@ -86,13 +70,7 @@ class FingerCapacitorSquare(Element):
         a = self.a
         b = self.b
 
-        region_ground = pya.Region([pya.DPolygon([
-            pya.DPoint((l + e) / 2 + w + p, W / 2 + p),
-            pya.DPoint((l + e) / 2 + w + p, -W / 2 - p),
-            pya.DPoint(-(l + e) / 2 - w - p, -W / 2 - p),
-            pya.DPoint(-(l + e) / 2 - w - p, W / 2 + p),
-        ]).to_itype(self.layout.dbu)])
-        region_ground.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
+        region_ground = self.get_ground_region()
 
         region_taper_right = pya.Region([pya.DPolygon([
             pya.DPoint((l + e) / 2, W / 2),
@@ -126,18 +104,34 @@ class FingerCapacitorSquare(Element):
 
         region = region_ground - region_etch
 
-        self.cell.shapes(self.layout.layer(self.face()["base metal gap wo grid"])).insert(region)
+        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(region)
 
         # protection
         region_protection = pya.Region(region_ground.bbox()).size(self.margin / self.layout.dbu,
                                                                   self.margin / self.layout.dbu, 2)
-        self.cell.shapes(self.layout.layer(self.face()["ground grid avoidance"])).insert(region_protection)
+        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(region_protection)
 
         # ports
-        port_ref = pya.DPoint(-(l + e) / 2 - w - p, 0)
-        self.refpoints["port_a"] = port_ref
-        port_ref = pya.DPoint((l + e) / 2 + w + p, 0)
-        self.refpoints["port_b"] = port_ref
+        port_a = pya.DPoint(-(l + e) / 2 - w - p, 0)
+        self.add_port("a", port_a, pya.DVector(-1, 0))
+        port_b = pya.DPoint((l + e) / 2 + w + p, 0)
+        self.add_port("b", port_b, pya.DVector(1, 0))
 
         # adds annotation based on refpoints calculated above
         super().produce_impl()
+
+    def get_ground_region(self):
+        """Returns the ground region for the finger capacitor."""
+        W = max(float(self.finger_number)*(self.finger_width + self.finger_gap_side) - self.finger_gap_side, self.a)
+        region_ground = pya.Region([pya.DPolygon([
+            pya.DPoint((self.finger_length + self.finger_gap_end)/2 + self.finger_width + self.ground_padding,
+                       W/2 + self.ground_padding),
+            pya.DPoint((self.finger_length + self.finger_gap_end)/2 + self.finger_width + self.ground_padding,
+                       -W/2 - self.ground_padding),
+            pya.DPoint(-(self.finger_length + self.finger_gap_end)/2 - self.finger_width - self.ground_padding,
+                       -W/2 - self.ground_padding),
+            pya.DPoint(-(self.finger_length + self.finger_gap_end)/2 - self.finger_width - self.ground_padding,
+                       W/2 + self.ground_padding),
+        ]).to_itype(self.layout.dbu)])
+        region_ground.round_corners(self.corner_r/self.layout.dbu, self.corner_r/self.layout.dbu, self.n)
+        return region_ground

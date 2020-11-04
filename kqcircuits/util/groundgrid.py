@@ -1,10 +1,17 @@
+# Copyright (c) 2019-2020 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
 import numpy
 
 from kqcircuits.pya_resolver import pya
 
 
 def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5):
-    """ Generates the ground grid.
+    """Generates the ground grid.
   
   Returns a `Region` covering `boundbox` with `Box`es not overlaping with
   the avoid `Region`.
@@ -14,8 +21,8 @@ def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5):
   """
 
     grid_region = pya.Region()
-    for y in numpy.arange(boundbox.p1.x, boundbox.p2.x, grid_step):
-        for x in numpy.arange(boundbox.p1.y, boundbox.p2.y, grid_step):
+    for y in numpy.arange(boundbox.p1.y, boundbox.p2.y, grid_step):
+        for x in numpy.arange(boundbox.p1.x, boundbox.p2.x, grid_step):
             hole = pya.Box(x, y, x + grid_size, y + grid_size)
             grid_region.insert(hole)
     grid_masked_region = (grid_region - avoid_region).with_area(grid_size ** 2, None, False)
