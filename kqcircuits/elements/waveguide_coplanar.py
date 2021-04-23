@@ -57,15 +57,7 @@ class WaveguideCoplanar(Element):
 
         for i in range(0, len(points) - 2):
             # Corner coordinates
-            v1 = points[i + 1] - points[i]
-            v2 = points[i + 2] - points[i + 1]
-            crossing = points[i + 1]
-            alpha1 = math.atan2(v1.y, v1.x)
-            alpha2 = math.atan2(v2.y, v2.x)
-            alphacorner = (((math.pi - (alpha2 - alpha1)) / 2) + alpha2)
-            distcorner = v1.vprod_sign(v2) * self.r / math.sin((math.pi - (alpha2 - alpha1)) / 2)
-            corner = crossing + pya.DVector(math.cos(alphacorner) * distcorner, math.sin(alphacorner) * distcorner)
-
+            v1, v2, alpha1, alpha2, corner_pos = self.get_corner_data(points[i], points[i+1], points[i+2], self.r)
             # Straight segment before the corner
             segment_start = segment_last
             segment_end = points[i + 1]
@@ -83,7 +75,7 @@ class WaveguideCoplanar(Element):
             min_angle = 1e-5  # close to the smallest angle that can create a valid curved waveguide
             if abs(alpha) >= min_angle:
                 cell_curved = self.add_element(WaveguideCoplanarCurved, Element, alpha=alpha, n=self.n)
-                transf = pya.DCplxTrans(1, alpha1 / math.pi * 180.0 - v1.vprod_sign(v2) * 90, False, corner)
+                transf = pya.DCplxTrans(1, alpha1 / math.pi * 180.0 - v1.vprod_sign(v2) * 90, False, corner_pos)
                 self.insert_cell(cell_curved, transf)
 
         # Last segment
@@ -104,6 +96,35 @@ class WaveguideCoplanar(Element):
 
     def produce_impl(self):
         self.produce_waveguide()
+
+    @staticmethod
+    def get_corner_data(point1, point2, point3, r):
+        """Returns data needed to create a curved waveguide at path corner.
+
+        Args:
+            point1: point before corner
+            point2: corner point
+            point3: point after corner
+            r: curve radius
+
+        Returns:
+            A tuple (``v1``, ``v2``, ``alpha1``, ``alpha2``, ``corner_pos``), where
+
+            * ``v1``: the vector (`point2` - `point1`)
+            * ``v2``: the vector (`point3` - `point2`)
+            * ``alpha1``: angle between `v1` and positive x-axis
+            * ``alpha2``: angle between `v2` and positive x-axis
+            * ``corner_pos``: position where the curved waveguide should be placed
+
+        """
+        v1 = point2 - point1
+        v2 = point3 - point2
+        alpha1 = math.atan2(v1.y, v1.x)
+        alpha2 = math.atan2(v2.y, v2.x)
+        alphacorner = (((math.pi - (alpha2 - alpha1))/2) + alpha2)
+        distcorner = v1.vprod_sign(v2)*r/math.sin((math.pi - (alpha2 - alpha1))/2)
+        corner_pos = point2 + pya.DVector(math.cos(alphacorner)*distcorner, math.sin(alphacorner)*distcorner)
+        return v1, v2, alpha1, alpha2, corner_pos
 
     @staticmethod
     def produce_end_termination(elem, point_1, point_2, term_len, face_index=0):

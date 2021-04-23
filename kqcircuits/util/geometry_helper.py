@@ -1,7 +1,8 @@
 """Helper module for general geometric functions"""
-from kqcircuits.pya_resolver import pya
-import numpy as np
+
 from math import cos, sin, radians
+
+from kqcircuits.pya_resolver import pya
 
 
 def vector_length_and_direction(vector):
@@ -154,3 +155,21 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     new_region.merge()
     new_region.size(expansion - 0.5 * tolerance)  # shrink polygons back to original shape (+ optional expansion)
     return new_region
+
+
+def is_clockwise(polygon_points):
+    """Returns True if the polygon points are in clockwise order, False if they are counter-clockwise.
+
+    Args:
+        polygon_points: list of polygon points, must be either in clockwise or counterclockwise order
+    """
+    # see https://en.wikipedia.org/wiki/Curve_orientation#Orientation_of_a_simple_polygon
+    bottom_left_point_idx = 0
+    for idx, point in enumerate(polygon_points[1:]):
+        if point.x < polygon_points[bottom_left_point_idx].x and point.y < polygon_points[bottom_left_point_idx].y:
+            bottom_left_point_idx = idx
+    a = polygon_points[bottom_left_point_idx - 1]
+    b = polygon_points[bottom_left_point_idx]
+    c = polygon_points[(bottom_left_point_idx + 1) % len(polygon_points)]
+    det = (b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y)
+    return True if det < 0 else False
