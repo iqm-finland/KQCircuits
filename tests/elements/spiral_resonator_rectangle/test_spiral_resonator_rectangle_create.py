@@ -8,7 +8,7 @@
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 
-from kqcircuits.elements.spiral_resonator import SpiralResonator
+from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.defaults import default_layers
 
@@ -45,7 +45,7 @@ def test_length_with_crossing_airbridges():
 def test_length_with_different_spacing():
     layout = pya.Layout()
     length = 4310
-    spiral_resonator_cell = SpiralResonator.create(layout,
+    spiral_resonator_cell = SpiralResonatorRectangle.create(layout,
         length=length,
         above_space=0,
         below_space=425,
@@ -61,7 +61,7 @@ def test_length_with_different_spacing():
 
 def test_continuity_medium_resonator():
     layout = pya.Layout()
-    cell = SpiralResonator.create(layout,
+    cell = SpiralResonatorRectangle.create(layout,
         length=5000,
         above_space=200,
         below_space=600,
@@ -74,7 +74,7 @@ def test_continuity_medium_resonator():
 
 def test_continuity_long_resonator():
     layout = pya.Layout()
-    cell = SpiralResonator.create(layout,
+    cell = SpiralResonatorRectangle.create(layout,
         length=10000,
         above_space=200,
         below_space=600,
@@ -86,7 +86,7 @@ def test_continuity_long_resonator():
 
 def test_continuity_short_segment_resonator():
     layout = pya.Layout()
-    cell = SpiralResonator.create(layout,
+    cell = SpiralResonatorRectangle.create(layout,
         length=2500,
         above_space=150,
         below_space=150,
@@ -100,7 +100,7 @@ def test_continuity_short_segment_resonator():
 def _get_length_error(length, above_space, below_space, right_space, bridges_top=False):
     """Returns the relative error of the spiral resonator length with the given parameters."""
     layout = pya.Layout()
-    spiral_resonator_cell = SpiralResonator.create(layout,
+    spiral_resonator_cell = SpiralResonatorRectangle.create(layout,
         length=length,
         above_space=above_space,
         below_space=below_space,

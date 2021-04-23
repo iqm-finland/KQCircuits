@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='kqcircuits',
-    version="2.1.0",
+    version="2.2.0",
     description="KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.",
     author="IQM Finland Oy",
     author_email="developers@meetiqm.com",

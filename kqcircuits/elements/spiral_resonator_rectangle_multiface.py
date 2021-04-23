@@ -9,7 +9,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
-from kqcircuits.elements.spiral_resonator import SpiralResonator
+from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
@@ -18,10 +18,10 @@ from kqcircuits.util.geometry_helper import vector_length_and_direction
 numerical_inaccuracy = 1e-7
 
 
-class SpiralResonatorMultiface(SpiralResonator):
+class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
     """The PCell declaration for a two-face rectangular spiral resonator.
 
-    Otherwise similar to SpiralResonator, but the resonator waveguide will change to face 1
+    Otherwise similar to SpiralResonatorRectangle, but the resonator waveguide will change to face 1
     (through a flip-chip connector) after specified distance. WARNING: If the connector is located immediately next to
     corners, the connector is located in the next straight segment it can fit, so the distance is not exact. In this
     case, the other parameters should be adjusted to avoid having the connector right next to a corner.

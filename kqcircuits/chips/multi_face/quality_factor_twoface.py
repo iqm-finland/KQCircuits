@@ -11,13 +11,13 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.multi_face.multi_face import MultiFace
-from kqcircuits.elements.spiral_resonator_multiface import SpiralResonatorMultiface
+from kqcircuits.elements.spiral_resonator_rectangle_multiface import SpiralResonatorRectangleMultiface
 
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.util.coupler_lib import produce_library_capacitor
-from kqcircuits.elements.spiral_resonator import SpiralResonator
+from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 
 version = 1
@@ -132,7 +132,7 @@ class QualityFactorTwoface(MultiFace):
 
             # Spiral resonator
             if self.resonator_type == "twoface":
-                cell_res_even_width = self.add_element(SpiralResonatorMultiface,
+                cell_res_even_width = self.add_element(SpiralResonatorRectangleMultiface,
                                                        right_space=self.spiral_box_height - self.cap_res_distance,
                                                        above_space=0,
                                                        below_space=self.spiral_box_width,
@@ -145,7 +145,7 @@ class QualityFactorTwoface(MultiFace):
                                                        r=self.r
                                                        )
             else:
-                cell_res_even_width = self.add_element(SpiralResonator,
+                cell_res_even_width = self.add_element(SpiralResonatorRectangle,
                                                        name='resonator{}'.format(i),
                                                        right_space=self.spiral_box_height - self.cap_res_distance,
                                                        above_space=0,

@@ -21,7 +21,7 @@ from kqcircuits.elements.airbridges.airbridge import Airbridge
 numerical_inaccuracy = 1e-7
 
 
-class SpiralResonator(Element):
+class SpiralResonatorRectangle(Element):
     """The PCell declaration for a rectangular spiral resonator.
 
     The input of the resonator (refpoint `base`) is at left edge of the resonator. The space above, below,
