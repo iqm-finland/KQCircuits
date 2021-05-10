@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,12 +8,12 @@
 import math
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 
-from kqcircuits.util.geometry_helper import get_cell_path_length
 
 class WaveguideCoplanar(Element):
     """The PCell declaration for an arbitrary coplanar waveguide.
@@ -24,29 +24,11 @@ class WaveguideCoplanar(Element):
     future release.
     """
 
-    PARAMETERS_SCHEMA = {
-        "path": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "TLine",
-            "default": pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0)
-        },
-        "term1": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Termination length start [μm]",
-            "default": 0
-        },
-        "term2": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Termination length end [μm]",
-            "default": 0
-        },
-        "corner_safety_overlap": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Extend straight sections near corners [μm]",
-            "docstring": "Extend straight sections near corners by this amount [μm] to ensure all sections overlap",
-            "default": 0.001
-        },
-    }
+    path = Param(pdt.TypeShape, "TLine", pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0))
+    term1 = Param(pdt.TypeDouble, "Termination length start", 0, unit="μm")
+    term2 = Param(pdt.TypeDouble, "Termination length end", 0, unit="μm")
+    corner_safety_overlap = Param(pdt.TypeDouble, "Extend straight sections near corners", 0.001, unit="μm",
+        docstring="Extend straight sections near corners by this amount [μm] to ensure all sections overlap")
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -90,20 +72,19 @@ class WaveguideCoplanar(Element):
             cut = v1.vprod_sign(v2) * self.r / math.tan((math.pi - (alpha2 - alpha1)) / 2)
             l = segment_start.distance(segment_end) - cut + self.corner_safety_overlap
             angle = 180 / math.pi * math.atan2(segment_end.y - segment_start.y, segment_end.x - segment_start.x)
-            subcell = self.add_element(WaveguideCoplanarStraight, Element.PARAMETERS_SCHEMA, l=l)
+            cell_straight = self.add_element(WaveguideCoplanarStraight, Element, l=l)
 
             transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
-            self.insert_cell(subcell, transf)
+            self.insert_cell(cell_straight, transf)
             segment_last = (points[i + 1] + v2 * (1 / v2.abs()) * cut - self.corner_safety_overlap*v2/v2.length()).to_p()
 
             # Curve at the corner
             alpha = alpha2 - alpha1
             min_angle = 1e-5  # close to the smallest angle that can create a valid curved waveguide
             if abs(alpha) >= min_angle:
-                subcell = self.add_element(WaveguideCoplanarCurved, Element.PARAMETERS_SCHEMA, alpha=alpha, n=self.n)
+                cell_curved = self.add_element(WaveguideCoplanarCurved, Element, alpha=alpha, n=self.n)
                 transf = pya.DCplxTrans(1, alpha1 / math.pi * 180.0 - v1.vprod_sign(v2) * 90, False, corner)
-
-            self.insert_cell(subcell, transf)
+                self.insert_cell(cell_curved, transf)
 
         # Last segment
         segment_start = segment_last
@@ -117,14 +98,12 @@ class WaveguideCoplanar(Element):
         WaveguideCoplanar.produce_end_termination(self, points[-2], points[-1], self.term2)
         self.add_port("b", points[-1], points[-1]-points[-2])
 
-        subcell = self.add_element(WaveguideCoplanarStraight, Element.PARAMETERS_SCHEMA, l=l)
+        subcell = self.add_element(WaveguideCoplanarStraight, Element, l=l)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
         self.insert_cell(subcell, transf)
 
     def produce_impl(self):
         self.produce_waveguide()
-
-    get_length = get_cell_path_length
 
     @staticmethod
     def produce_end_termination(elem, point_1, point_2, term_len, face_index=0):
@@ -151,14 +130,14 @@ class WaveguideCoplanar(Element):
         if term_len > 0:
             poly = pya.DPolygon([u*(a/2 + b), u*(a/2 + b) + v*term_len, u*(-a/2 - b) + v*term_len,
                                  u*(-a/2 - b)])
-            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base metal gap wo grid"])).insert(
+            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base_metal_gap_wo_grid"])).insert(
                 poly.transform(shift_start))
 
         # protection
         term_len += elem.margin
         poly2 = pya.DPolygon([u*(a/2 + b + elem.margin), u*(a/2 + b + elem.margin) + v*term_len,
                               u*(-a/2 - b - elem.margin) + v*term_len, u*(-a/2 - b - elem.margin)])
-        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground grid avoidance"])).insert(
+        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground_grid_avoidance"])).insert(
             poly2.transform(shift_start))
 
     @staticmethod

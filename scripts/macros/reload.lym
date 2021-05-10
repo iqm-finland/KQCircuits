@@ -14,7 +14,7 @@
  <menu-path>edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #

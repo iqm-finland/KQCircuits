@@ -14,7 +14,7 @@
  <menu-path>edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -25,6 +25,6 @@ import kqcircuits.util.macro_prepare as macroprep
 
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 
-cell = layout.create_cell("Top Cell") 
+cell = layout.create_cell("Top Cell")
 cell_view.cell_name=cell.name     # Shows the new cell</text>
 </klayout-macro>

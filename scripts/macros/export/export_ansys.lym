@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Current view to Ansys</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name>Export</group-name>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.export.ansys.ansys_export import export_ansys_json
+from kqcircuits.defaults import TMP_PATH
+
+"""Before using this script, have your project in view as the top cell."""
+
+path = TMP_PATH  # Your path here
+name = "Dev"  # makes filename Dev.json and Dev.gds
+
+top_cell = KLayoutView.get_active_cell()
+
+simulation = Simulation.from_cell(top_cell, margin=100, name=name)
+
+json = export_ansys_json(simulation, path, ansys_tool='hfss')  # Alternatively choose ansys_tool='q3d' for Q3D export
+print("Exported simulation to {}".format(path))</text>
+</klayout-macro>

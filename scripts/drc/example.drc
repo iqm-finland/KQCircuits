@@ -1,0 +1,17 @@
+# Copyright (c) 2019-2021 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy's prior
+# written permission.
+source($input)
+report("DRC report", $output)
+# To run this script in KLayout macro IDE, copy it to the KLayout drc folder, comment out the two lines above, and
+# uncomment the line below.
+#report("DRC report")
+
+# layers
+ab_pads = input(28, 3)
+
+#drc checks
+ab_pads.space(20.0).output("ab_pads", "ab_pads spacing violations")

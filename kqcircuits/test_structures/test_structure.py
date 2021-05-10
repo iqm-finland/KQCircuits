@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,13 +6,11 @@
 # written permission.
 
 import sys
-from importlib import reload
 from autologging import logged, traced
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 
-reload(sys.modules[Element.__module__])
 
 
 @traced
@@ -23,8 +21,6 @@ class TestStructure(Element):
     LIBRARY_NAME = "Test Structure Library"
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for test structures."
     LIBRARY_PATH = "test_structures"
-
-    PARAMETERS_SCHEMA = {}
 
     def produce_pad(self, x, y, pads_region, pad_width, pad_height):
         """Inserts a square pad shape to pads_region.
@@ -118,7 +114,7 @@ class TestStructure(Element):
         reg_test_area = pya.Region(test_area.to_itype(self.layout.dbu))
         # etched region
         reg_etch = reg_test_area - metal_region
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(reg_etch)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(reg_etch)
         # grid avoidance region
         reg_protect = reg_etch.extents(int(self.margin/self.layout.dbu))
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(reg_protect)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(reg_protect)

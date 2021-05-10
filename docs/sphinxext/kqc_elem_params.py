@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -9,15 +9,18 @@ from importlib import import_module
 from docutils.parsers.rst import Directive
 from docutils import nodes
 import inspect
+import os
+from shutil import copyfile
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 """
-    Sphinx extension for formatting the PARAMETERS_SCHEMA of KQC elements.
+    Sphinx extension for formatting the parameters of KQC elements.
 
     Typical usage example (in .rst file):
 
-    .. kqc_elem_params:: kqcircuits.elements.airbridge
+    .. kqc_elem_params:: kqcircuits.elements.airbridges.airbridge
 """
 
 pcell_parameter_types = {
@@ -36,7 +39,7 @@ class KqcElemParamsDirective(Directive):
     """Class for kqc_elem_params Sphinx directive.
 
     This can be used to automatically create descriptions of a KQCircuits element's pcell parameters
-    (defined in the PARAMETERS_SCHEMA) for Sphinx documentation.
+    (defined as Param objects) for Sphinx documentation.
 
     To make this usable in Sphinx documentation, add "kqc_elem_params" to conf.py and add this directory to
     sys.path in conf.py.
@@ -48,16 +51,19 @@ class KqcElemParamsDirective(Directive):
         module_path = self.arguments[0]
         module = import_module(module_path)
 
+        targetpng = f'pcell_images/{module.__name__}.png'
+        if not os.path.isfile(targetpng):
+            copyfile("images/empty.png", targetpng)
+
         found_parameters_schema = False
         for name, obj in inspect.getmembers(module):
             if inspect.isclass(obj):
                 cls = obj
                 if cls.__module__ == module.__name__:
-                    for name2, obj2 in inspect.getmembers(cls):
-                        if name2 == "PARAMETERS_SCHEMA":
-                            parameters_schema = obj2
+                    if hasattr(cls, "get_schema"):
+                        parameters_schema = cls.get_schema(noparents=True)
+                        if parameters_schema:
                             found_parameters_schema = True
-                            break
                     if found_parameters_schema:
                         break
 
@@ -66,21 +72,26 @@ class KqcElemParamsDirective(Directive):
             parameters_list = nodes.bullet_list("")
 
             for key in parameters_schema:
+                param = parameters_schema[key]
+
                 parameter_paragraph = nodes.paragraph()
                 parameter_paragraph += nodes.strong("", key)
-                parameter_paragraph += nodes.emphasis("", " (" + pcell_parameter_types[parameters_schema[key]["type"]]
-                                                      + ")")
-                if "docstring" in parameters_schema[key]:
-                    parameter_paragraph += nodes.inline("", " - " + parameters_schema[key]["docstring"])
+                parameter_paragraph += nodes.emphasis("", " (" + pcell_parameter_types[param.data_type] + ")")
+                if "docstring" in param.kwargs.keys():
+                    parameter_paragraph += nodes.inline("", " - " + param.kwargs["docstring"])
                 else:
-                    parameter_paragraph += nodes.inline("", " - " + parameters_schema[key]["description"])
-                if "default" in parameters_schema[key]:
-                    parameter_paragraph += nodes.emphasis("", ", default=")
-                    parameter_paragraph += nodes.literal("", str(parameters_schema[key]["default"]))
-                if "choices" in parameters_schema[key]:
+                    parameter_paragraph += nodes.inline("", " - " + param.description)
+                parameter_paragraph += nodes.emphasis("", ", default=")
+                parameter_paragraph += nodes.literal("", str(param.default))
+
+                if "unit" in param.kwargs.keys():
+                    parameter_paragraph += nodes.emphasis("", ", unit=")
+                    parameter_paragraph += nodes.literal("", param.kwargs["unit"])
+                if "choices" in param.kwargs.keys():
                     parameter_paragraph += nodes.emphasis("", ", choices=")
-                    choices_list = [choice[1] for choice in parameters_schema[key]["choices"]]
+                    choices_list = [choice[1] for choice in param.kwargs["choices"]]
                     parameter_paragraph += nodes.literal("", str(choices_list))
+
                 parameters_list += nodes.list_item("", parameter_paragraph)
 
             return [nodes.strong("", "PCell parameters:"), nodes.line("", ""), parameters_list]

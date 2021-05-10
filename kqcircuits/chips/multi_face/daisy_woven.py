@@ -1,12 +1,11 @@
 import sys
-from importlib import reload
 from autologging import logged, traced
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.elements.element import Element
 
-reload(sys.modules[Element.__module__])
 
 @traced
 class DaisyWoven(MultiFace):
@@ -16,12 +15,7 @@ class DaisyWoven(MultiFace):
     No input parameters on this class.
     """
 
-    PARAMETERS_SCHEMA ={
-        "name_chip": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the chip",
-            "default": "DC"}
-        }
+    name_chip = Param(pdt.TypeString, "Name of the chip", "DC")
 
     def produce_impl(self):
         self._produce_daisy_face("Daisy_woven")
@@ -54,19 +48,19 @@ class DaisyWoven(MultiFace):
             chip_region = pya.Region([box.to_itype(self.layout.dbu)])  # this is already the shape of the box
 
             protection = pya.Region(
-                self.cell.begin_shapes_rec(self.get_layer("ground grid avoidance", face_id))).merged()
-            self.cell.shapes(self.get_layer("ground grid avoidance", face_id)).insert(chip_region)
+                self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
+            self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id)).insert(chip_region)
 
             # extract the bottom Nb layer
-            pattern = pya.Region(daisy_cell.shapes(self.get_layer("base metal gap wo grid", face_id))).moved(
+            pattern = pya.Region(daisy_cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id))).moved(
                 origin_offset_x, origin_offset_y)
             difference = chip_region - pattern - protection
 
             # copy design cell layers manually to DaisyWoven cell
-            self.cell.shapes(self.get_layer("base metal gap wo grid", face_id)).insert(difference)
-            self.cell.shapes(self.get_layer("underbump metallization", face_id)).insert(
-                pya.Region(daisy_cell.shapes(self.get_layer("underbump metallization", face_id))).moved(
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id)).insert(difference)
+            self.cell.shapes(self.get_layer("underbump_metallization", face_id)).insert(
+                pya.Region(daisy_cell.shapes(self.get_layer("underbump_metallization", face_id))).moved(
                     origin_offset_x, origin_offset_y))
-            self.cell.shapes(self.get_layer("indium bump", face_id)).insert(
-                pya.Region(daisy_cell.shapes(self.get_layer("indium bump", face_id))).moved(
+            self.cell.shapes(self.get_layer("indium_bump", face_id)).insert(
+                pya.Region(daisy_cell.shapes(self.get_layer("indium_bump", face_id))).moved(
                     origin_offset_x, origin_offset_y))

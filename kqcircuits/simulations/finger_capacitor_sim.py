@@ -1,19 +1,17 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
-from kqcircuits.simulations.qubit_couplings_sim import QubitCouplingsSim
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.port import InternalPort, EdgePort
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
-from kqcircuits.defaults import default_layers
+from kqcircuits.util.parameters import add_parameters_from
 
 
-class FingerCapacitorSim(QubitCouplingsSim):
-    PARAMETERS_SCHEMA = {**FingerCapacitorSquare.PARAMETERS_SCHEMA, **QubitCouplingsSim.PARAMETERS_SCHEMA}
+@add_parameters_from(FingerCapacitorSquare)
+class FingerCapacitorSim(Simulation):
 
     def build(self):
         capacitor_cell = self.add_element(FingerCapacitorSquare, **{**self.get_parameters()})

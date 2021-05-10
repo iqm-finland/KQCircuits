@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -11,8 +11,6 @@ from kqcircuits.pya_resolver import pya
 
 class Empty(Chip):
     """Chip with almost all ground metal removed, used for EBL tests."""
-
-    PARAMETERS_SCHEMA = {}
 
     def produce_impl(self):
 
@@ -34,7 +32,7 @@ class Empty(Chip):
             pya.DPoint(d2, d2),
         ])
 
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(empty_area)
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(empty_area)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(empty_area)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(empty_area)
 
         super().produce_impl()

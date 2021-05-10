@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,21 +6,20 @@
 # written permission.
 
 import sys
-from importlib import reload
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.elements.spiral_resonator_multiface import SpiralResonatorMultiface
 
-from kqcircuits.elements.waveguide_coplanar_bridged import WaveguideCoplanarBridged, Node, NodeType
+from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.util.coupler_lib import produce_library_capacitor
-from kqcircuits.elements.spiral_resonator_auto import SpiralResonatorAuto
+from kqcircuits.elements.spiral_resonator import SpiralResonator
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 
-reload(sys.modules[MultiFace.__module__])
 version = 1
 
 
@@ -30,67 +29,24 @@ class QualityFactorTwoface(MultiFace):
      Preliminary class for flip-chip resonators.
      """
 
-    PARAMETERS_SCHEMA = {
-        "res_lengths": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Resonator lengths [μm]",
-            "docstring": "Physical length of resonators [μm]",
-            "default": [5434, 5429, 5374, 5412, 5493, 5589]
-        },
-        "n_fingers": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Number of fingers of the coupler",
-            "docstring": "Fingers in planar capacitors",
-            "default": [4, 4, 2, 4, 4, 4]
-        },
-        "l_fingers": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Length of fingers [μm]",
-            "docstring": "Length of the capacitor fingers [μm]",
-            "default": [23.1, 9.9, 14.1, 10, 21, 28, 3]
-        },
-        "type_coupler": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Coupler type",
-            "default": ["square", "square", "square", "plate", "plate", "plate"]
-        },
-        "res_a": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Resonator waveguide center conductor width [μm]",
-            "docstring": "Width of the center conductor in the resonator [μm]",
-            "default": 10
-        },
-        "res_b": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Resonator waveguide gap width [μm]",
-            "docstring": "Width of the gap in the resonator [μm]",
-            "default": 10
-        },
-        "resonator_type": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Routing type",
-            "default": "capped",
-            "choices": [["Capped (1)", "capped"],
-                        ["Two-face resonator (2)", "twoface"],
-                        ["Resonator on top (3)", "top"]]
-        },
-        "connector_distances": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Resonator input to face to face connector [μm]",
-            "docstring": "Distances of face to face connectors from resonator inputs",
-            "default": [500, 1300, 2100, 2900, 3700, 4500]
-        },
-        "spiral_box_height": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Spiral resonator box height",
-            "default": 2000
-        },
-        "spiral_box_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Spiral resonator box width",
-            "default": 500
-        }
-    }
+    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589], unit="[μm]",
+        docstring="Physical length of resonators [μm]")
+    n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4],
+        docstring="Fingers in planar capacitors")
+    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28, 3], unit="[μm]",
+        docstring="Length of the capacitor fingers [μm]")
+    type_coupler = Param(pdt.TypeList, "Coupler type", ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
+    res_a = Param(pdt.TypeDouble, "Resonator waveguide center conductor width", 10, unit="[μm]",
+        docstring="Width of the center conductor in the resonator [μm]")
+    res_b = Param(pdt.TypeDouble, "Resonator waveguide gap width", 10, unit="[μm]",
+        docstring="Width of the gap in the resonator [μm]")
+    resonator_type = Param(pdt.TypeString, "Routing type", "capped",
+        choices=[["Capped (1)", "capped"], ["Two-face resonator (2)", "twoface"], ["Resonator on top (3)", "top"]])
+    connector_distances = Param(pdt.TypeList, "Resonator input to face to face connector",
+        [500, 1300, 2100, 2900, 3700, 4500], unit="[μm]",
+        docstring="Distances of face to face connectors from resonator inputs")
+    spiral_box_height = Param(pdt.TypeDouble, "Spiral resonator box height", 2000)
+    spiral_box_width = Param(pdt.TypeDouble, "Spiral resonator box width", 500)
 
     def produce_impl(self):
         self._produce_resonators()
@@ -126,24 +82,24 @@ class QualityFactorTwoface(MultiFace):
         marker_safety = 1.5e3  # depends on the marker size
 
         if self.resonator_type == "top":
-            connector_node = Node(NodeType.FC_BUMP, pya.DPoint(2000 + tl_connector_indent, 5000))
+            connector_node = Node((2000 + tl_connector_indent, 5000), face_id="t")
         else:
-            connector_node = Node(NodeType.WAVEGUIDE, pya.DPoint(2000 + tl_connector_indent, 5000))
+            connector_node = Node((2000 + tl_connector_indent, 5000))
 
         final_point = pya.DPoint(2000 + tl_connector_indent + 100, 5000)
-        nodes = [Node(NodeType.WAVEGUIDE, self.refpoints["WN_port"], a=self.a, b=self.b),
-                 Node(NodeType.WAVEGUIDE, taper_pos_left, a=self.a_capped, b=self.b_capped),
-                 Node(NodeType.WAVEGUIDE, pya.DPoint(2000, self.refpoints["WN_port"].y)),
-                 Node(NodeType.WAVEGUIDE, pya.DPoint(2000, 5000)),
+        nodes = [Node(self.refpoints["WN_port"]),
+                 Node(taper_pos_left, a=self.a_capped, b=self.b_capped),
+                 Node((2000, self.refpoints["WN_port"].y)),
+                 Node((2000, 5000)),
                  connector_node,
-                 Node(NodeType.WAVEGUIDE, final_point)
+                 Node(final_point)
                  ]
 
-        self.insert_cell(WaveguideCoplanarBridged,
+        self.insert_cell(WaveguideComposite,
                          nodes=nodes,
                          margin=self.margin,
-                         a=self.a_capped,
-                         b=self.b_capped
+                         a=self.a,
+                         b=self.b
                          )
 
         points_fl = [final_point]
@@ -192,9 +148,7 @@ class QualityFactorTwoface(MultiFace):
                                                 cap_indentation)
 
             self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
-                "path": pya.DPath(
-                    [cplr_refpoints_rel["port_b"],
-                     endpoint], 1),
+                "path": pya.DPath([cplr_refpoints_rel["port_b"], endpoint], 1),
                 "term2": 0,
                 "a": self.a_capped,
                 "b": self.b_capped,
@@ -218,7 +172,7 @@ class QualityFactorTwoface(MultiFace):
                                                     )
 
             else:
-                cell_res_even_width = self.add_element(SpiralResonatorAuto,
+                cell_res_even_width = self.add_element(SpiralResonator,
                                                     right_space=self.spiral_box_height - cap_indentation,
                                                     above_space=0,
                                                     below_space=self.spiral_box_width,
@@ -232,9 +186,7 @@ class QualityFactorTwoface(MultiFace):
             self.insert_cell(cell_res_even_width, pya.DTrans(pos_res_start) * rotation)
             # Feedline
             self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
-                "path": pya.DPath(points_fl + [
-                    cross_refpoints_abs["port_left"]
-                ], 1),
+                "path": pya.DPath(points_fl + [cross_refpoints_abs["port_left"]], 1),
                 "term2": 0,
                 "a": self.a_capped,
                 "b": self.b_capped,
@@ -244,18 +196,18 @@ class QualityFactorTwoface(MultiFace):
             points_fl = [cross_refpoints_abs["port_right"]]
 
         if self.resonator_type == "top":
-            connector_node = Node(NodeType.FC_BUMP, pya.DPoint(8000 - tl_connector_indent + 103 , 5000))
+            connector_node = Node((8000 - tl_connector_indent + 103, 5000), face_id="b")
         else:
-            connector_node = Node(NodeType.WAVEGUIDE, pya.DPoint(8000 - tl_connector_indent + 50, 5000))
+            connector_node = Node((8000 - tl_connector_indent + 50, 5000))
 
         # Last feedline
-        nodes = [Node(NodeType.WAVEGUIDE, points_fl[-1], a=self.a_capped, b=self.b_capped),
+        nodes = [Node(points_fl[-1]),
                  connector_node,
-                 Node(NodeType.WAVEGUIDE, pya.DPoint(8000, 5000)),
-                 Node(NodeType.WAVEGUIDE, pya.DPoint(8000, self.refpoints["EN_port"].y)),
-                 Node(NodeType.WAVEGUIDE, taper_pos_right, a=self.a, b=self.b),
-                 Node(NodeType.WAVEGUIDE, self.refpoints["EN_port"])
+                 Node((8000, 5000)),
+                 Node((8000, self.refpoints["EN_port"].y)),
+                 Node(taper_pos_right, a=self.a, b=self.b),
+                 Node(self.refpoints["EN_port"])
                  ]
 
-        self.insert_cell(WaveguideCoplanarBridged, nodes=nodes, margin=self.margin, a=self.a, b=self.b,
+        self.insert_cell(WaveguideComposite, nodes=nodes, margin=self.margin, a=self.a_capped, b=self.b_capped,
                          face_ids=face_config)

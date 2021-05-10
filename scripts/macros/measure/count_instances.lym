@@ -26,7 +26,7 @@ Usage:
 3. run the macro
 """
 
-cell_name = "Airbridge" 
+cell_name = Airbridge.default_type
 
 top_cell = KLayoutView.get_active_cell()
 
@@ -42,7 +42,7 @@ def count_instances_in_cell(cell_idx):
         n += count_instances_in_cell(inst.cell.cell_index())
     return n
 
-n_elements = count_instances_in_cell(top_cell.cell_index())  
+n_elements = count_instances_in_cell(top_cell.cell_index())
 
 print("Number of instances with cell name \"{}\": {}".format(cell_name, n_elements))
 </text>

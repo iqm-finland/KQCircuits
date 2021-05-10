@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,7 +7,7 @@
 
 from typing import List
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_output_format, output_formats_dict, gzip
+from kqcircuits.defaults import default_output_format
 
 
 def export_layers(filename, layout, cells=None, layers=None, output_format=default_output_format):

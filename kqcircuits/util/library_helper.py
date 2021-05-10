@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -9,9 +9,10 @@ import re
 import types
 import inspect
 import importlib
+import sys
 from autologging import logged, traced
 
-from kqcircuits.defaults import SRC_PATH
+from kqcircuits.defaults import SRC_PATHS
 from kqcircuits.pya_resolver import pya
 
 """
@@ -19,7 +20,7 @@ from kqcircuits.pya_resolver import pya
 
     Typical usage example:
 
-    from kqcircuits.elements import Airbridge
+    from kqcircuits.elements.airbridges import Airbridge
     from kqcircuits.util.library_helper import load_libraries
     load_libraries(path=Airbridge.LIBRARY_PATH)
     cell = Airbridge.create(layout, **kwargs)
@@ -32,9 +33,15 @@ _excluded_module_names = (
     "__init__", "library_helper",
     "element",
     "qubit",
+    "airbridge",
     "test_structure",
     "flip_chip_connector",
+    "squid",
+    "fluxline",
+    "marker",
+    "junction_test_pads",
 )
+
 
 @traced
 @logged
@@ -47,7 +54,7 @@ def load_libraries(flush=False, path=""):
         path: path (relative to SRC_PATH) from which the pcell classes and cells are loaded to libraries
 
     Returns:
-         A list of libraries that have been loaded.
+         A dictionary of libraries that have been loaded, keys are library names and values are libraries.
     """
 
     if flush:
@@ -58,7 +65,7 @@ def load_libraries(flush=False, path=""):
         # if a library with the given path already exist, use it
         for lib, lib_path in _kqc_libraries.values():
             if lib_path == path:
-                return [value[0] for value in _kqc_libraries.values()]
+                return {key: value[0] for key, value in _kqc_libraries.items()}
 
     pcell_classes = _get_all_pcell_classes(flush, path)
 
@@ -85,7 +92,7 @@ def load_libraries(flush=False, path=""):
         if library_name not in library.library_names():
             library.register(library_name)  # library must be registered only after all cells have been added to it
 
-    return [value[0] for value in _kqc_libraries.values()]
+    return {key: value[0] for key, value in _kqc_libraries.items()}
 
 
 @traced
@@ -100,13 +107,23 @@ def delete_all_libraries():
 def delete_library(name=None):
     """Delete a KQCircuits library.
 
-    Calls library.delete() and removes the library from _kqc_libraries dict.
+    Calls library.delete() and removes the library from _kqc_libraries dict. Also deletes any libraries which have this
+    library as a dependency.
 
     Args:
         name: name of the library
     """
     library = pya.Library.library_by_name(name)
     if library is not None:
+        # find any libraries which depend on this library, and delete them
+        for other_name in pya.Library.library_names():
+            if other_name != name:
+                other_library = pya.Library.library_by_name(other_name)
+                if other_library:
+                    dependencies = _get_library_dependencies(other_library)
+                    if name in dependencies:
+                        delete_library(other_name)
+        # delete this library
         library.delete()
         if name in _kqc_libraries:
             _kqc_libraries.pop(name)
@@ -207,9 +224,10 @@ def _load_manual_designs(library_name):
         library_name: name of the library
     """
     library, rel_path = _kqc_libraries[library_name]
-    shape_paths = SRC_PATH.rglob("{}/*.oas".format(rel_path))
-    for path in shape_paths:
-        library.layout().read(str(path.absolute()))
+
+    for src in SRC_PATHS:
+        for path in src.rglob("{}/**/*.oas".format(rel_path)):
+            library.layout().read(str(path.absolute()))
 
 
 @traced
@@ -225,22 +243,24 @@ def _get_all_pcell_classes(reload=False, path=""):
         List of the PCell classes
     """
     pcell_classes = []
-    module_paths = SRC_PATH.joinpath(path).rglob("*.py")
 
-    for path in module_paths:
-        module_name = path.stem
-        if module_name in _excluded_module_names:
-            continue
-        # Get the module path starting from the "kqcircuits" directory below project root directory,
-        # assuming that there is exactly one directory named "kqcircuits" below the project root.
-        import_path_parts = path.parts[::-1][path.parts[::-1].index("kqcircuits")::-1]
-        import_path = ".".join(import_path_parts)[:-3]  # the -3 is for removing ".py" from the path
+    for src in SRC_PATHS:
+        module_paths = src.joinpath(path).rglob("*.py")
+        pkg = src.parts[-1]
 
-        module = importlib.import_module(import_path)
-        if reload:
-            importlib.reload(module)
-            _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
-        pcell_classes += _get_pcell_classes(module)
+        for mp in module_paths:
+            module_name = mp.stem
+            if module_name in _excluded_module_names:
+                continue
+            # Get the module path starting from the "pkg" directory below project root directory.
+            import_path_parts = mp.parts[::-1][mp.parts[::-1].index(pkg)::-1]
+            import_path = ".".join(import_path_parts)[:-3]  # the -3 is for removing ".py" from the path
+
+            module = importlib.import_module(import_path)
+            if reload:
+                importlib.reload(module)
+                _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
+            pcell_classes += _get_pcell_classes(module)
 
     return pcell_classes
 
@@ -286,6 +306,27 @@ def _get_pcell_class(name=None, module=None):
         return value
     else:
         return None
+
+
+@traced
+@logged
+def _get_library_dependencies(library):
+    """Returns a set of library names, which are dependencies of the library.
+
+    This checks every PCell class in the library for other PCell classes which are imported by it. Then the LIBRARY_NAME
+    of each of those PCell classes is added to the set of dependencies that is returned.
+
+    Args:
+        library: pya.Library object whose dependencies are returned
+    """
+    library_dependencies = set()
+    for pcell_name in library.layout().pcell_names():
+        pcell_class = library.layout().pcell_declaration(pcell_name).__class__
+        for name, obj in inspect.getmembers(sys.modules[pcell_class.__module__]):
+            if hasattr(obj, "LIBRARY_NAME"):
+                if obj.LIBRARY_NAME != pcell_class.LIBRARY_NAME:
+                    library_dependencies.add(obj.LIBRARY_NAME)
+    return library_dependencies
 
 
 @traced

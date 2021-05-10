@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -17,7 +17,7 @@ relative_length_tolerance = 1e-4
 
 def test_get_length_simple_path():
     layout = pya.Layout()
-    path_layer = layout.layer(default_layers["annotations"])
+    path_layer = layout.layer(default_layers["waveguide_length"])
     cell = layout.create_cell("test")
     shape = pya.DPath([
         pya.DPoint(0, 0),
@@ -31,7 +31,7 @@ def test_get_length_simple_path():
 
 def test_get_length_simple_waveguide():
     layout = pya.Layout()
-    path_layer = layout.layer(default_layers["annotations"])
+    path_layer = layout.layer(default_layers["waveguide_length"])
     r = 50
     cell = WaveguideCoplanar.create(layout, path=pya.DPath([
         pya.DPoint(0, 0),

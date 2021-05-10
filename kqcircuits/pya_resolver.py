@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -21,13 +21,12 @@ try:
 except ImportError:
     import klayout.db as pya
 
-
-def is_standalone_session():        
+def is_standalone_session():
     try:
         app = pya.Application
     except AttributeError:
         standalone = True
     else:
         standalone = False
-    
+
     return standalone

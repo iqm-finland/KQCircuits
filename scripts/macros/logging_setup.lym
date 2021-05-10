@@ -14,7 +14,7 @@
  <menu-path/>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -29,13 +29,13 @@ from kqcircuits.util.log_router import route_log_to_stdout
 
 lowest_visible_level = "INFO"  # use this to change the logging level
 
-# calling logging.basicConfig with "level" argument seems to be required (but not enough) to make logs show in KLayout console 
+# calling logging.basicConfig with "level" argument seems to be required (but not enough) to make logs show in KLayout console
 logging.basicConfig(
-  level=logging.DEBUG,  # this level is NOT actually used, instead lowest_visible_level is used 
+  level=logging.DEBUG,  # this level is NOT actually used, instead lowest_visible_level is used
 )
 
 route_log_to_stdout(lowest_visible_level=lowest_visible_level)
-    
+
 print("Enabled logging output in macro IDE console. Lowest visible level: {}".format(lowest_visible_level))
 </text>
 </klayout-macro>

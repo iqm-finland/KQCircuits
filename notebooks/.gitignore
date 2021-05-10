@@ -4,4 +4,3 @@
 # But not these files...
 !.gitignore
 !viewer.ipynb
-!simulation-runner.py

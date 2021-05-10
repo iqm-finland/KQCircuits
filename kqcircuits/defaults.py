@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,6 +8,21 @@
 """Configuration file for KQCircuits.
 
 Defines values for things such as default layers, paths, and layers used for different exports.
+
+Layers have a name, ID and data type. For example ``"annotations": (220, 1)``.
+
+KQCircuit layers are grouped by faces and functionality. The main geometry containing layer groups
+are: bottom 10-39, top 40-69 and ceiling 70-89. Simulation 90-99, layers are in either top or bottom
+faces. Layer ID's 100-219 are reserved. Auxiliary layers 220-229 are not face dependent, they
+contain annotations, refpoints and other text fields.
+
+In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
+layer views are hidden by default. See https://www.klayout.de/doc-qt5/manual/layer_source.html
+
+``default_layers`` is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.
+While ``default_faces`` is a dictionary mapping 'b', 't' and 'c' to an other dictionary, a subset of
+``default_layers`` in the given face. With a minor twist: in these "face-dictionaries" the keys do not
+start with the face id, for example "b_base_metal_gap" becomes "base_metal_gap".
 """
 
 import os
@@ -17,250 +32,95 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.layer_cluster import LayerCluster
 
 # project paths
-SRC_PATH = Path(os.path.dirname(os.path.abspath(__file__)))
-ROOT_PATH = SRC_PATH.parent
+ROOT_PATH = Path(os.path.dirname(os.path.realpath(__file__))).parent
+SRC_PATHS = [ROOT_PATH.joinpath("kqcircuits")]
 TMP_PATH = ROOT_PATH.joinpath("tmp")
 TMP_PATH.mkdir(exist_ok=True)
+ANSYS_SCRIPTS_PATH = ROOT_PATH.joinpath("scripts").joinpath("simulations").joinpath("ansys")
 
 # printed to corners of all chips and top of all masks
 # could be for example "IQM" or "A!"
 default_brand = "IQM"
 
-# human readable dictionary
-# layer name as key, tuple of layer and tech as value
-default_layers_dict = {
-   ###############################
-    # Bottom-chip related layers [Layer 10-39]
-    ###############################
-
-    # Metal etching layers
-    "b base metal gap": (10, 1),  # merged etching layer with grid (layers 11 & 13) that defines microscopic structures such as waveguides, lauchers
-    "b base metal gap wo grid": (11, 1),  # etching layer without grid
-    "b base metal addition": (12, 0),  # Features subtracted from layer 11, only used during design
-    "b ground grid": (13, 0),  # A subset of structures combined into layer 10 (e.g. ground plane perforations)
-    "b ground grid avoidance": (14, 0),  # Occupy the area where there should be no grids, only used during the design.
-    "b base metal gap for EBL": (15, 0),  # Features of layer 11 that are needed for EBL
-
-    # SQUID layer
-    "b SIS junction": (17, 2),  # Josephson junction
-    "b SIS shadow": (18, 2),  # Ghost layer required for Josephson junction
-
-    # Airbridges
-    "b airbridge pads": (28, 3),  #
-    "b airbridge flyover": (29, 3),  #
-
-    # 3D integration layers
-    "b underbump metallization": (32, 4),  # flip-chip bonding
-    "b indium bump": (33, 4),  # flip-chip bonding
-    "b through silicon via": (34, 4),  # TSV
-
-    # netlist
-    "b ports": (39, 0),  # Considered conductive in the netlist extraction
-
-    ###############################
-    # Top-chip related layers [Layer 40-90]
-    ###############################
+# These layers are present in all faces. Layer id will have +30 for 'b' and +60 for 'c'
+_common_layers = {
     # Metal etching (Nb or TiN) layers for front face (facing towards bottom chip)
-    "t base metal gap": (40, 1),
-    # merged etching layer with grid (layers 41 & 43) that defines microscopic structures such as waveguides, launchers
-    "t base metal gap wo grid": (41, 1),  # etching layer without grid
-    "t base metal addition": (42, 0),  # Features subtracted from layer 41, only used during design
-    "t ground grid": (43, 0),  # A subset of structures combined into layer 40 (e.g. ground plane perforations)
-    "t ground grid avoidance": (44, 0),  # Occupy the area where there should be no grids, only used during the design.
-    "t base metal gap for EBL": (45, 0),  # Features of layer 41 that are needed for EBL
+    "base_metal_gap": (10, 1),
+
+    # merged etching layer with grid  (layers 11 & 13) that defines microscopic structures such as waveguides, launchers
+    "base_metal_gap_wo_grid": (11, 1),  # etching layer without grid
+    "base_metal_addition": (12, 0),  # Features subtracted from layer 11 , only used during the design.
+    "ground_grid": (13, 0),  # A subset of structures combined into layer 10 (e.g. ground plane perforations)
+
+    # Occupy the area where there should be no grids, only used during the design.
+    "ground_grid_avoidance": (14, 0),
+}
+
+# common layers in b and t
+_common_b_t_layers = {
+    **_common_layers,
+
+    "base_metal_gap_for_EBL": (15, 0),  # Features of layer 41 that are needed for EBL
 
     # SQUID layer
-    "t SIS junction": (47, 2),  # Josephson junction
-    "t SIS shadow": (48, 2),  # Ghost layer required for Josephson junction
+    "SIS_junction": (17, 2),  # Josephson junction
+    "SIS_shadow": (18, 2),  # Ghost layer required for Josephson junction
 
     # Airbridge layers -- potentially obsolete
-    "t airbridge pads": (58, 3),  #
-    "t airbridge flyover": (59, 3),  #
+    "airbridge_pads": (28, 3),  #
+    "airbridge_flyover": (29, 3),  #
 
     # 3D integration layers
-    "t underbump metallization": (62, 4),  # flip-chip bonding
-    "t indium bump": (63, 4),  # flip-chip bonding
-    "t through silicon via": (64, 4),  # TSV
-
-    # netlist
-    "t ports": (69, 0),  # Considered conductive in the netlist extraction
-
-    # Metal etching (Nb or TiN) layers for back face (facing towards the sample holder lid)
-    "c metal gap": (70, 1),
-    # merged etching layer with grid  (layers 71 & 73) that defines microscopic structures such as waveguides, launchers
-    "c base metal gap wo grid": (71, 1),  # etching layer without grid
-    "c base metal addition": (72, 0),  # Features subtracted from layer 71 , only used during the design.
-    "c ground grid": (73, 0),  # A subset of structures combined into layer 70 (e.g. ground plane perforations)
-    "c ground grid avoidance": (74, 0),
-    # Occupy the area where there should be no grids, only used during the design.
-
-    ###############################
-    # Aux layers [Layer 85-99]
-    ###############################
-    "annotations": (85, 0),
-    "annotations 2": (86, 0),
-    "instance names": (87, 0),
-
-    "mask graphical rep": (89, 0),
-    "b simulation signal": (90, 0),
-    "b simulation ground": (91, 0),
-    "t simulation signal": (92, 0),
-    "t simulation ground": (93, 0),
-    "b simulation airbridge flyover": (94, 0),
-    "b simulation airbridge pads": (95, 0),
-
-}
-
-# pya layer information
-default_layers = {}
-for name, index in default_layers_dict.items():
-    default_layers[name] = pya.LayerInfo(index[0], index[1], name)
-
-default_circuit_params = {
-    "a": 10,  # Width of center conductor [μm]
-    "b": 6,  # Width of gap [μm]
-    "r": 100,  # Turn radius [μm]
-    "n": 64,  # Number of points on turns
-}
-
-gzip = False
-
-output_formats_dict = {
-    "OASIS": ".oas",
-    "GDS2": ".gds",
-}
-
-# default output format and extension
-default_output_format = "OASIS"
-default_output_ext = output_formats_dict[default_output_format]
-
-# default bitmap dimensions
-default_png_dimensions = (1000, 1000)
-
-# Layer names (without face prefix) for layers exported as individual .oas files during mask layout export.
-default_mask_export_layers = [
-    "base metal gap",
-    "base metal gap wo grid",
-    "airbridge pads",
-    "airbridge flyover"
-]
-
-# Layer names (without face prefix) on which the covered region on wafer boundary, mask aligners,
-# and mask IDs are exported. The indices appear in postfix in mask label
-default_layers_to_mask = {
-    "base metal gap wo grid": "1",
-    "airbridge pads": "2",
-    "airbridge flyover": "3"
-}
-
-# Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not
-# apply to individual pixels).
-mask_bitmap_export_layers = [
-    # "base metal gap wo grid",
-    "mask graphical rep",
-]
-
-# Layers to hide when exporting a bitmap with "all" layers.
-all_layers_bitmap_hide_layers = [
-    default_layers["annotations"],
-    default_layers["annotations 2"],
-    default_layers["instance names"],
-    default_layers["mask graphical rep"],
-    default_layers["b base metal gap"],
-    default_layers["b ground grid"],
-    default_layers["b ground grid avoidance"],
-    default_layers["t base metal gap"],
-    default_layers["t ground grid"],
-    default_layers["t ground grid avoidance"],
-    default_layers["c metal gap"],
-    default_layers["c ground grid"],
-    default_layers["c ground grid avoidance"],
-]
-
-# Layer clusters used for exporting only certain layers together in the same file, when exporting individual chips
-# during mask layout export.
-# Dictionary with items "cluster name: LayerCluster".
-chip_export_layer_clusters = {
-    # b-face
-    "SIS b": LayerCluster(["b SIS junction", "b SIS shadow"], ["b base metal gap for EBL"], "b"),
-    "airbridges b": LayerCluster(["b airbridge pads", "b airbridge flyover"], ["b base metal gap wo grid"], "b"),
-    # t-face
-    "SIS t": LayerCluster(["t SIS junction", "t SIS shadow"], ["t base metal gap for EBL"], "t"),
-    "airbridges t": LayerCluster(["t airbridge pads", "t airbridge flyover"], ["t base metal gap wo grid"], "t"),
-}
-
-default_face_b = {
-    "id": "b",
-    # Metal etching layers
-    "base metal gap": default_layers["b base metal gap"],
-    "base metal gap wo grid": default_layers["b base metal gap wo grid"],
-    "base metal addition": default_layers["b base metal addition"],
-    "ground grid": default_layers["b ground grid"],
-    "ground grid avoidance": default_layers["b ground grid avoidance"],
-    "base metal gap for EBL": default_layers["b base metal gap for EBL"],
-
-    # SQUID layer
-    "SIS junction": default_layers["b SIS junction"],
-    "SIS shadow": default_layers["b SIS shadow"],
-
-    # Airbridges
-    "airbridge pads": default_layers["b airbridge pads"],
-    "airbridge flyover": default_layers["b airbridge flyover"],
-
-    # 3D integration layers
-    "underbump metallization": default_layers["b underbump metallization"],
-    "indium bump": default_layers["b indium bump"],
-    "through silicon via": default_layers["b through silicon via"],
-
-    # Simulation faces
-    "simulation signal": default_layers["b simulation signal"],
-    "simulation ground": default_layers["b simulation ground"],
-    "simulation airbridge flyover": default_layers["b simulation airbridge flyover"],
-    "simulation airbridge pads": default_layers["b simulation airbridge pads"],
+    "underbump_metallization": (32, 4),  # flip-chip bonding
+    "indium_bump": (33, 4),  # flip-chip bonding
+    "through_silicon_via": (34, 4),  # TSV
 
     # Netlist
-    "ports": default_layers["b ports"],
+    "ports": (39, 0),  # Considered conductive in the netlist extraction
 }
 
-default_face_t = {
-    "id": "t",
-    # Metal etching layers
-    "base metal gap": default_layers["t base metal gap"],
-    "base metal gap wo grid": default_layers["t base metal gap wo grid"],
-    "base metal addition": default_layers["t base metal addition"],
-    "ground grid": default_layers["t ground grid"],
-    "ground grid avoidance": default_layers["t ground grid avoidance"],
-    "base metal gap for EBL": default_layers["t base metal gap for EBL"],
+_face_layers = {}   # layer descriptions per every chip face
 
-    # SQUID layer
-    "SIS junction": default_layers["t SIS junction"],
-    "SIS shadow": default_layers["t SIS shadow"],
+# Bottom face layers
+_face_layers['b'] = {
+    **_common_b_t_layers,
 
-    # Airbridges
-    "airbridge pads": default_layers["t airbridge pads"],
-    "airbridge flyover": default_layers["t airbridge flyover"],
+    # Simulation faces [Layer 90-99]
+    "simulation_signal": (90, 0),
+    "simulation_ground": (91, 0),
+    "simulation_airbridge_flyover": (94, 0),
+    "simulation_airbridge_pads": (95, 0),
+}
 
-    # 3D integration layers
-    "underbump metallization": default_layers["t underbump metallization"],
-    "indium bump": default_layers["t indium bump"],
-    "through silicon via": default_layers["t through silicon via"],
+
+def _shift_layers(layers, shift):
+    """Add a constant 'shift' to all layer indexes and return the dictionary."""
+
+    return {n: (v[0] + shift, v[1]) for n, v in layers.items()}
+
+
+# Top face layers
+_face_layers['t'] = {
+    **_shift_layers(_common_b_t_layers, 30),    # same common layers shifted 30 levels down
 
     # Simulation faces
-    "simulation signal": default_layers["t simulation signal"],
-    "simulation ground": default_layers["t simulation ground"],
-
-    # Netlist
-    "ports": default_layers["t ports"],
+    "simulation_signal": (92, 0),
+    "simulation_ground": (93, 0),
 }
 
-default_face_c = {
-    "id": "c",
-    # Metal etching layers
-    "base metal gap": default_layers["c metal gap"],
-    "base metal gap wo grid": default_layers["c base metal gap wo grid"],
-    "base metal addition": default_layers["c base metal addition"],
-    "ground grid": default_layers["c ground grid"],
-    "ground grid avoidance": default_layers["c ground grid avoidance"],
+# Ceiling face layers
+_face_layers['c'] = {
+    **_shift_layers(_common_layers, 60),     # same common layers shifted 60 levels down
+}
+
+# Other auxiliary layers [Layer 220-229]
+_aux_layers_dict = {
+    "annotations": (220, 0),
+    "annotations_2": (221, 0),
+    "instance_names": (222, 0),
+    "mask_graphical_rep": (223, 0),
+    "waveguide_length": (224, 0),
+    "refpoints": (225, 0),
 }
 
 # default_faces[face_id] contains the face dictionary for the face determined by face_id.
@@ -269,11 +129,74 @@ default_face_c = {
 #   - key "id" with value face_id (string)
 #   - for all the available layers in that face: key "Layer_name", value pya.LayerInfo object for that layer
 #
-default_faces = {
-    "b": default_face_b,
-    "t": default_face_t,
-    "c": default_face_c,
+default_faces = {}
+for f in ('b', 't', 'c'):
+    default_faces[f] = {n: pya.LayerInfo(i[0], i[1], f'{f}_{n}') for n, i in _face_layers[f].items()}
+
+# pya layer information
+default_layers = {n: pya.LayerInfo(i[0], i[1], n) for n, i in _aux_layers_dict.items()}
+for face, layers in default_faces.items():
+    default_layers.update({f'{face}_{name}': li for name, li in layers.items()})
+
+for f in ('b', 't', 'c'):
+    default_faces[f]['id'] = f
+
+# default output format and extension
+default_output_format = "OASIS"
+
+# default bitmap dimensions
+default_png_dimensions = (1000, 1000)
+
+# Layer names (without face prefix) for layers exported as individual .oas files during mask layout export.
+default_mask_export_layers = [
+    "base_metal_gap",
+    "base_metal_gap_wo_grid",
+    "airbridge_pads",
+    "airbridge_flyover",
+]
+
+# Layer names (without face prefix) on which the covered region on wafer boundary, mask aligners,
+# and mask IDs are exported. The indices appear in postfix in mask label
+default_layers_to_mask = {
+    "base_metal_gap_wo_grid": "1",
+    "airbridge_pads": "2",
+    "airbridge_flyover": "3"
 }
+
+# Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not
+# apply to individual pixels).
+mask_bitmap_export_layers = [
+    # "base_metal_gap_wo_grid",
+    "mask_graphical_rep",
+]
+
+# Layers to hide when exporting a bitmap with "all" layers.
+all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict.keys()] + [
+    default_layers["b_ports"],
+    default_layers["b_base_metal_gap"],
+    default_layers["b_ground_grid"],
+    default_layers["b_ground_grid_avoidance"],
+    default_layers["t_ports"],
+    default_layers["t_base_metal_gap"],
+    default_layers["t_ground_grid"],
+    default_layers["t_ground_grid_avoidance"],
+    default_layers["c_base_metal_gap"],
+    default_layers["c_ground_grid"],
+    default_layers["c_ground_grid_avoidance"],
+]
+
+# Layer clusters used for exporting only certain layers together in the same file, when exporting individual chips
+# during mask layout export.
+# Dictionary with items "cluster name: LayerCluster".
+chip_export_layer_clusters = {
+    # b-face
+    "SIS b": LayerCluster(["b_SIS_junction", "b_SIS_shadow"], ["b_base_metal_gap_for_EBL"], "b"),
+    "airbridges b": LayerCluster(["b_airbridge_pads", "b_airbridge_flyover"], ["b_base_metal_gap_wo_grid"], "b"),
+    # t-face
+    "SIS t": LayerCluster(["t_SIS_junction", "t_SIS_shadow"], ["t_base_metal_gap_for_EBL"], "t"),
+    "airbridges t": LayerCluster(["t_airbridge_pads", "t_airbridge_flyover"], ["t_base_metal_gap_wo_grid"], "t"),
+}
+
 
 # default mask parameters for each face
 # dict of face_id: parameters
@@ -315,3 +238,11 @@ default_mask_parameters = {
         "mask_name_offset": 0.38e4,
     }
 }
+
+default_squid_type = "QCD1"
+default_airbridge_type = "Airbridge Rectangular"
+default_fluxline_type = "Fluxline Standard"
+default_marker_type = "Marker Standard"
+default_junction_test_pads_type = "Junction Test Pads Simple"
+
+default_drc_runset = "example.drc"

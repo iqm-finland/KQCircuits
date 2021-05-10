@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,6 +6,7 @@
 # written permission.
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import get_cell_path_length
 
 from kqcircuits.elements.spiral_resonator import SpiralResonator
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -22,17 +23,22 @@ def test_length_short_resonator():
 
 
 def test_length_medium_resonator():
-    relative_error = _get_length_error(5000, 500, 400, 1000)
+    relative_error = _get_length_error(4000, 500, 400, 1000)
     assert relative_error < relative_length_tolerance
 
 
 def test_length_long_resonator():
-    relative_error = _get_length_error(10000, 500, 400, 1000)
+    relative_error = _get_length_error(8000, 500, 400, 1000)
+    assert relative_error < relative_length_tolerance
+
+
+def test_length_short_segment_resonator():
+    relative_error = _get_length_error(2500, 150, 150, 1000)
     assert relative_error < relative_length_tolerance
 
 
 def test_length_with_crossing_airbridges():
-    relative_error = _get_length_error(7200, 500, 400, 800, bridges_top=True)
+    relative_error = _get_length_error(7000, 500, 400, 1000, bridges_top=True)
     assert relative_error < relative_length_tolerance
 
 
@@ -44,11 +50,11 @@ def test_length_with_different_spacing():
         above_space=0,
         below_space=425,
         right_space=500,
-        use_manual_spacing=True,
-        manual_x_spacing=38,
-        manual_y_spacing=40,
+        x_spacing=38,
+        y_spacing=40,
+        auto_spacing=False
     )
-    true_length = WaveguideCoplanar.get_length(spiral_resonator_cell, layout.layer(default_layers["annotations"]))
+    true_length = get_cell_path_length(spiral_resonator_cell, layout.layer(default_layers["waveguide_length"]))
     relative_error = abs(true_length - length) / length
     assert relative_error < relative_length_tolerance
 
@@ -60,8 +66,9 @@ def test_continuity_medium_resonator():
         above_space=200,
         below_space=600,
         right_space=1100,
+        auto_spacing=False
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["annotations"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]),
                                            continuity_tolerance)
 
 
@@ -71,9 +78,22 @@ def test_continuity_long_resonator():
         length=10000,
         above_space=200,
         below_space=600,
-        right_space=1100,
+        right_space=1100
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["annotations"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]),
+                                           continuity_tolerance)
+
+
+def test_continuity_short_segment_resonator():
+    layout = pya.Layout()
+    cell = SpiralResonator.create(layout,
+        length=2500,
+        above_space=150,
+        below_space=150,
+        right_space=1000,
+        auto_spacing=False
+    )
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]),
                                            continuity_tolerance)
 
 
@@ -86,7 +106,9 @@ def _get_length_error(length, above_space, below_space, right_space, bridges_top
         below_space=below_space,
         right_space=right_space,
         bridges_top=bridges_top,
+        auto_spacing=False
     )
-    true_length = WaveguideCoplanar.get_length(spiral_resonator_cell, layout.layer(default_layers["annotations"]))
+    true_length = get_cell_path_length(spiral_resonator_cell, layout.layer(default_layers["waveguide_length"]))
     relative_error = abs(true_length - length) / length
     return relative_error
+

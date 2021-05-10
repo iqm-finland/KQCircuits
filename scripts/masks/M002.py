@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -62,8 +62,8 @@ m002.add_mask_layout([
 parameters_qd = {
     "res_lengths": [4649.6, 4743.3, 4869.9, 4962.9, 5050.7, 5138.7, 5139., 5257., 5397.4, 5516.8, 5626.6, 5736.2,
                     5742.9, 5888.7, 6058.3, 6202.5, 6350., 6489.4],
-    "type_coupler": ["square", "square", "square", "plate", "plate", "plate", "square", "square", "square", "plate",
-                     "plate", "plate", "square", "square", "square", "square", "plate", "plate"],
+    "type_coupler": ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap", "interdigital", "interdigital", "interdigital", "gap",
+                     "gap", "gap", "interdigital", "interdigital", "interdigital", "interdigital", "gap", "gap"],
     "l_fingers": [19.9, 54.6, 6.7, 9.7, 22.8, 30.5, 26.1, 14.2, 18.2, 10.9, 19.8, 26.4, 34.2, 19.9, 25.3, 8., 15.8,
                   22.2],
     "n_fingers": [4, 2, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 4, 4],

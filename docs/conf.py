@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -71,7 +71,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'KQCircuits'
-copyright = '2019-2020, IQM'
+copyright = '2019-2021, IQM'
 author = 'IQM'
 
 # The full version, including alpha/beta/rc tags
@@ -95,7 +95,6 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'kqc_elem_params',
-    'literalinclude_member',
 ]
 
 todo_include_todos = True
@@ -108,6 +107,19 @@ autodoc_member_order = 'bysource'
 autodoc_default_options = {'members': True,
                            'undoc-members': True,
                            'show-inheritance': True}
+
+def add_param_details(app, what, name, obj, options, lines):
+    global _parameters
+    if what == "class" and hasattr(obj, "get_schema"):
+        _parameters = obj.get_schema(noparents=True).keys()
+
+def skip_params(app, what, name, obj, skip, options):
+    if what == "class" and str(type(obj)) != "<class 'function'>" and not skip and name in _parameters:
+        return True
+
+def setup(app):
+    app.connect("autodoc-process-docstring", add_param_details)
+    app.connect("autodoc-skip-member", skip_params)
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

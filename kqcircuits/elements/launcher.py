@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,6 +6,7 @@
 # written permission.
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.elements.element import Element
 from kqcircuits.defaults import default_layers
@@ -18,18 +19,8 @@ class Launcher(Element):
     and b for scaling the gap.
     """
 
-    PARAMETERS_SCHEMA = {
-        "s": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Pad width [μm]",
-            "default": 300
-        },
-        "l": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Tapering length [μm]",
-            "default": 300
-        }
-    }
+    s = Param(pdt.TypeDouble, "Pad width", 300, unit="μm")
+    l = Param(pdt.TypeDouble, "Tapering length", 300, unit="μm")
 
     def produce_impl(self):
         # optical layer
@@ -58,7 +49,7 @@ class Launcher(Element):
         pts2 = [p + s for p, s in zip(pts, shifts)]
         pts.reverse()
         shape = pya.DPolygon(pts + pts2)
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
 
         # protection layer
         shifts = [
@@ -71,7 +62,7 @@ class Launcher(Element):
         ]
         pts2 = [p + s for p, s in zip(pts2, shifts)]
         shape = pya.DPolygon(pts2)
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(shape)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
 
         # add reference point
         self.add_port("", pya.DPoint(0, 0), pya.DVector(-1, 0))

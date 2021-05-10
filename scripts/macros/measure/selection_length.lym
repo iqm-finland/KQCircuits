@@ -15,17 +15,28 @@
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
 
-### Usage
-# Select cells and object in the GUI by clicking, dragging into a box and possible holding down shift for multiselect.
-# Then run this macro and check the console in the macro development window for the output of this macro.
-# Note, that you cannot select individual cells in a PCell - you need to turn the top PCell to a static cell before.
+"""
+Usage
+=====
+
+Select cells and object in the GUI by clicking, dragging into a box and possible holding down shift for multiselect.
+Then run this macro and check the console in the macro development window for the output of this macro.
+
+Note that
+ * depending on your editor settings, you might not be able to select individual cells in a PCell: You need to turn the
+ top PCell to a static cell before or tick "Pcell content is selectable" in `file/setup/application/selection`
+ * depending on your editor settings, you might be able to select only the top level cells in your current
+ top cell. For example, to select items in a chip, the chip would need to be the top level cell or you need to untick
+ `Shallow select` in `edit/editor options/hierarchical features`.
+ * the bottom bar of the main window displays the type and name of the selected item.
+"""
 
 import pya
 
@@ -40,7 +51,7 @@ layout = cell_view.layout()
 total_len = 0
 
 for obj in layout_view.object_selection:
-    length = get_object_path_length(obj, layout.layer(default_layers["annotations"]))
+    length = get_object_path_length(obj, layout.layer(default_layers["waveguide_length"]))
     total_len += length
 
     if obj.is_cell_inst():

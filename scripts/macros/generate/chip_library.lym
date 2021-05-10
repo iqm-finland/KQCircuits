@@ -14,7 +14,7 @@
  <menu-path>edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -30,7 +30,7 @@ libname = Chip.LIBRARY_NAME
 library = pya.Library.library_by_name(libname)
 
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
-top_cell = layout.create_cell("Top Cell") 
+top_cell = layout.create_cell("Top Cell")
 cell_view.cell_name=top_cell.name     # Shows the new cell
 
 chip_step_x = pya.DVector(12e3, 0)

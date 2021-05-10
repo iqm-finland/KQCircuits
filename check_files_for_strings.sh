@@ -14,10 +14,12 @@ excluded_paths=( \
 "*.pip-cache*" \
 "*.git*" \
 "*.png" \
+"*tmp" \
+"*pycache*" \
 )
 for path in "${excluded_paths[@]}"; do
   # arguments for "find" to exclude paths
-  path_arguments+=(-path "$path" -prune -o -type f)
+  path_arguments+=(-path "$path" -prune -o)
 done
 
 echo "Checking files for strings given in $file..."
@@ -30,7 +32,7 @@ if find . | grep -if "$file"; then
 fi
 
 echo "Files containing given strings:"
-if find . "${path_arguments[@]}" -exec grep -ilf "$file" {} +;
+if find . "${path_arguments[@]}" -type f -exec grep -ilf "$file" {} +;
 then
   found_string=true
 fi

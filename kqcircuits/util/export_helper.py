@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,10 +6,15 @@
 # written permission.
 
 import json
+import subprocess
+from pathlib import Path
+
+import pya
 from autologging import logged, traced
 
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_layers, TMP_PATH
+from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 
 
 @traced
@@ -24,7 +29,7 @@ def generate_probepoints_json(cell):
 
     layout = cell.layout()
 
-    refpoints = get_refpoints(layout.layer(default_layers["annotations"]), cell)
+    refpoints = get_refpoints(layout.layer(default_layers["refpoints"]), cell)
 
     # Assumes existence of standard markers
     probe_types = {
@@ -73,7 +78,7 @@ def generate_probepoints_json(cell):
     for group in groups.values():
         group["pads"] = sorted(group["pads"], key=lambda k: (k['x'], k['y']))
 
-    # define JSON format  
+    # define JSON format
     comp_dict = {
         "groups": [{"id": name, **group} for name, group in groups.items()]
     }
@@ -81,3 +86,45 @@ def generate_probepoints_json(cell):
     comp_json = json.dumps(comp_dict, indent=2, sort_keys=True)
 
     return comp_json
+
+
+def create_or_empty_tmp_directory(dir_name):
+    """Creates directory into TMP_PATH or removes its content if it exists.
+    Returns directory path.
+    """
+    def remove_content(path):
+        """ Removes content of the directory path without removing directory itself."""
+        for child in path.iterdir():
+            if child.is_dir():
+                remove_content(child)
+                child.rmdir()
+            else:
+                child.unlink()
+
+    dir_path = TMP_PATH.joinpath(dir_name)
+    if dir_path.exists() and dir_path.is_dir():
+        remove_content(dir_path)
+    else:
+        dir_path.mkdir()
+    return dir_path
+
+
+def get_active_or_new_layout():
+    """Tries to return active layout in GUI or returns new layout when running standalone."""
+    try:
+        klayoutview = KLayoutView(current=True)
+        klayoutview.add_default_layers()
+        return klayoutview.get_active_layout()
+    except MissingUILibraryException:
+        return pya.Layout()
+
+
+def write_commit_reference_file(path: Path):
+    """
+    Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number of KQCircuits.
+    """
+    with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
+        file.write("KQCircuits revision number: " +
+                   subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii'))
+
+

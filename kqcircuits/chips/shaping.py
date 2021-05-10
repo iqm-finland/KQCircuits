@@ -1,27 +1,22 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
 
-import sys
-from importlib import reload
 
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.elements.element import Element
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.meander import Meander
+from kqcircuits.squids.squid import Squid
 from kqcircuits.elements.qubits.swissmon import Swissmon
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.util.coupler_lib import produce_library_capacitor
-from kqcircuits.defaults import default_layers
 
-
-reload(sys.modules[Chip.__module__])
 
 version = 1
 
@@ -29,19 +24,10 @@ version = 1
 class Shaping(Chip):
     """The PCell declaration for a Shaping chip."""
 
-    PARAMETERS_SCHEMA = {
-        "tunable": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Tunable",
-            "default": False
-        }
-    }
+    tunable = Param(pdt.TypeBoolean, "Tunable", False)
 
     def __init__(self):
-        """Parameter `r = 100` is set at init time."""
         super().__init__()
-        self.r = 100
-
 
     def produce_impl(self):
 
@@ -96,7 +82,7 @@ class Shaping(Chip):
         segment_length_target_pr = [3158.32, 789.581]  # from output to shorted end
         caps_fingers = [4, 4, 4]  # J, kappa, drive
         caps_length = [37.5, 67.9, 36.2]  # J, kappa, drive
-        caps_type = ["plate", "square", "plate"]  # J, kappa, drive
+        caps_type = ["gap", "interdigital", "gap"]  # J, kappa, drive
 
         # Waveguide t-cross used in multiple locations
         cross1 = self.add_element(WaveguideCoplanarTCross,
@@ -181,7 +167,7 @@ class Shaping(Chip):
         )
         self.insert_cell(waveguide2)
 
-        waveguide_length += WaveguideCoplanar.get_length(waveguide2, self.get_layer("annotations"))
+        waveguide_length += waveguide2.length()
         meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0] - waveguide_length)
 
         # Last bit of the Purcell filter of RR
@@ -199,9 +185,8 @@ class Shaping(Chip):
         # Purcell resonator SQUID
         if (self.tunable):
             # SQUID refpoint at the ground plane edge
-            squid_cell = Element.create_cell_from_shape(self.layout, "SIM1")
             transf = pya.DTrans(2, False, wg6_end + pya.DVector(0, 40))
-            self.insert_cell(squid_cell, transf)
+            self.insert_cell(Squid, transf)
 
             self.insert_cell(WaveguideCoplanar,
                 path=pya.DPath([
@@ -260,7 +245,7 @@ class Shaping(Chip):
         segment_length_target_pr = [3253.65, 813.413]  # from output to shorted end
         caps_fingers = [4, 4, 4]  # J, kappa, drive
         caps_length = [36.8, 71.5, 36.2]  # J, kappa, drive
-        caps_type = ["plate", "square", "plate"]  # J, kappa, drive
+        caps_type = ["gap", "interdigital", "gap"]  # J, kappa, drive
 
         # Readout resonator first segement
         waveguide_length = 0
@@ -337,7 +322,7 @@ class Shaping(Chip):
             r=self.r
         )
 
-        waveguide_length += WaveguideCoplanar.get_length(waveguide2, self.get_layer("annotations"))
+        waveguide_length += waveguide2.length()
         meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0] - waveguide_length)
 
         # Last bit of the Purcell filter of shaping resonator
@@ -355,9 +340,8 @@ class Shaping(Chip):
         # Purcell resonator SQUID
         if (self.tunable):
             # SQUID refpoint at the ground plane edge
-            squid_cell = Element.create_cell_from_shape(self.layout, "SIM1")
             transf = pya.DTrans(0, False, wg6_end + pya.DVector(0, -40))
-            self.insert_cell(squid_cell, transf)
+            self.insert_cell(Squid, transf)
 
             self.insert_cell(WaveguideCoplanar,
                 path=pya.DPath([

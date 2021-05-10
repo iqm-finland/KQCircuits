@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,7 +7,8 @@
 
 from kqcircuits.pya_resolver import pya
 
-from kqcircuits.elements.airbridge import Airbridge
+from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.airbridges.airbridge_rectangular import AirbridgeRectangular
 from kqcircuits.defaults import default_layers
 
 
@@ -24,3 +25,17 @@ def test_for_errors(capfd):
     out, err = capfd.readouterr()
     assert err == "", err
 
+def test_default_type():
+    layout = pya.Layout()
+    cell = Airbridge.create(layout)
+    assert cell.name == Airbridge.default_type
+
+def test_rect_type():
+    layout = pya.Layout()
+    cell = Airbridge.create(layout, airbridge_type="Airbridge Rectangular")
+    assert type(cell.pcell_declaration()) == AirbridgeRectangular
+
+def test_wrong_type_override():
+    layout = pya.Layout()
+    cell = Airbridge.create(layout, airbridge_type="Airbridge NoSuchThing")
+    assert cell.name == Airbridge.default_type

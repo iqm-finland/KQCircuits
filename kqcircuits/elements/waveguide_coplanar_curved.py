@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,6 +8,7 @@
 import math
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.elements.element import Element
 from kqcircuits.defaults import default_layers
@@ -52,19 +53,8 @@ class WaveguideCoplanarCurved(Element):
     Coordinate origin is left at the center of the arc.
     """
 
-    PARAMETERS_SCHEMA = {
-        "alpha": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Curve angle (rad)",
-            "default": math.pi
-        },
-        "length": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Actual length [μm]",
-            "default": 0,
-            "readonly": True
-        }
-    }
+    alpha = Param(pdt.TypeDouble, "Curve angle (rad)", math.pi)
+    length = Param(pdt.TypeDouble, "Actual length", 0, unit="μm", readonly=True)
 
     def coerce_parameters_impl(self):
         # Update length
@@ -78,19 +68,19 @@ class WaveguideCoplanarCurved(Element):
         # Left gap
         pts = left_inner_arc + left_outer_arc
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
         # Right gap
         pts = right_inner_arc + right_outer_arc
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
         # Protection layer
         pts = left_protection_arc + right_protection_arc
         shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(shape)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
         # Annotation
         pts = annotation_arc
         shape = pya.DPath(pts, self.a + 2 * self.b)
-        self.cell.shapes(self.get_layer("annotations")).insert(shape)
+        self.cell.shapes(self.get_layer("waveguide_length")).insert(shape)
 
     @staticmethod
     def create_curve_arcs(elem, angle):
@@ -147,7 +137,7 @@ class WaveguideCoplanarCurved(Element):
                 right_inner_arc[-1],
             ]
             shape = pya.DPolygon(pts)
-            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base metal gap wo grid"])).insert(trans*shape)
+            elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base_metal_gap_wo_grid"])).insert(trans*shape)
 
         # grid avoidance for termination
         protection_pts = [
@@ -157,4 +147,4 @@ class WaveguideCoplanarCurved(Element):
             right_protection_arc[0],
         ]
         protection_shape = pya.DPolygon(protection_pts)
-        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground grid avoidance"])).insert(trans*protection_shape)
+        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground_grid_avoidance"])).insert(trans*protection_shape)

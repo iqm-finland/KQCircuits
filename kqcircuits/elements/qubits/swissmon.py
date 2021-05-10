@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,10 +8,9 @@
 import math
 from autologging import traced
 
-from kqcircuits.pya_resolver import pya
-
-from kqcircuits.elements.element import Element
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.qubits.qubit import Qubit
+from kqcircuits.pya_resolver import pya
 
 
 @traced
@@ -23,55 +22,21 @@ class Swissmon(Qubit):
     couplers, fluxline position and chargeline position.
     """
 
-    PARAMETERS_SCHEMA = {
-        "arm_length": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Arm length (um, WNES))",
-            "default": [300. / 2] * 4
-        },
-        "arm_width": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Arm width (um, WNES)",
-            "default": [24, 24, 24, 24]
-        },
-        "gap_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Arm gap full width [μm]",
-            "default": 48
-        },
-        "cpl_width": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Coupler width (um, WNE)",
-            "default": [24, 24, 24]
-        },
-        "cpl_length": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Coupler lengths (um, WNE)",
-            "default": [160, 160, 160]
-        },
-        "cpl_gap": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Coupler gap (um, WNE)",
-            "default": [102, 102, 102]
-        },
-        "port_width": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Port width (um, WNE)",
-            "default": [10, 10, 10]
-        },
-        "cl_offset": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Chargeline offset (um, um)",
-            "default": [200, 200]
-        }
-    }
+    arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300. / 2] * 4)
+    arm_width = Param(pdt.TypeList, "Arm width (um, WNES)", [24, 24, 24, 24])
+    gap_width = Param(pdt.TypeDouble, "Arm gap full width", 48, unit="μm")
+    cpl_width = Param(pdt.TypeList, "Coupler width (um, WNE)", [24, 24, 24])
+    cpl_length = Param(pdt.TypeList, "Coupler lengths (um, WNE)", [160, 160, 160])
+    cpl_gap = Param(pdt.TypeList, "Coupler gap (um, WNE)", [102, 102, 102])
+    port_width = Param(pdt.TypeList, "Port width (um, WNE)", [10, 10, 10])
+    cl_offset = Param(pdt.TypeList, "Chargeline offset (um, um)", [200, 200])
 
     def produce_impl(self):
         self._produce_cross_and_squid()
 
         self._produce_chargeline()  # refpoint only ATM
 
-        self._produce_fluxline(self.fluxline_variant)
+        self.produce_fluxline()
 
         for i in range(3):
             self._produce_coupler(i)
@@ -143,16 +108,16 @@ class Swissmon(Qubit):
 
         # draw
         if l > 0:
-            self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(
                 shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu)))
-        self.cell.shapes(self.get_layer("annotations")).insert(
+        self.cell.shapes(self.get_layer("waveguide_length")).insert(
             port_region.transformed((rotation * transf).to_itrans(self.layout.dbu)))
 
         # protection
         if l > 0:
             protection = pya.DBox(-g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin,
                                   b + self.margin)
-            self.cell.shapes(self.get_layer("ground grid avoidance")).insert(protection.transformed((rotation * transf)))
+            self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection.transformed((rotation * transf)))
 
         # add ref point
         port_ref = pya.DPoint(0, b)
@@ -166,15 +131,12 @@ class Swissmon(Qubit):
 
         s = self.gap_width / 2
 
-        # SQUID
-        squid_cell = Element.create_cell_from_shape(self.layout, self.squid_name)
-        squid_pos_rel = self.get_refpoints(squid_cell)
-        # SQUID port_common at the end of the south arm
-        squid_length = squid_pos_rel["port_common"].distance(pya.DPoint(0, 0))
-
+        # # SQUID
         # SQUID origin at the ground plane edge
         squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, -l[3] - (s - ws)))
-        squid_unetch_region = self.produce_squid(squid_cell, squid_transf)
+        squid_unetch_region, squid_ref_rel = self.produce_squid(squid_transf)
+        # SQUID port_common at the end of the south arm
+        squid_length = squid_ref_rel["port_common"].distance(pya.DPoint(0, 0))
 
         # Swissmon etch region
 
@@ -214,14 +176,14 @@ class Swissmon(Qubit):
         cross.insert_hole(cross_island_points)
         cross_rounded = cross.round_corners(self.corner_r, self.corner_r, self.n)
         region_etch = pya.Region([cross_rounded.to_itype(self.layout.dbu)]) - squid_unetch_region
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(region_etch)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region_etch)
 
         # Protection
         cross_protection = pya.DPolygon([
             p + pya.DVector(math.copysign(s + self.margin, p.x), math.copysign(s + self.margin, p.y)) for p in
             cross_gap_points
         ])
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(cross_protection)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(cross_protection)
 
         # Probepoint
         probepoint = pya.DPoint(0, 0)

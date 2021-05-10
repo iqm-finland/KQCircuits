@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -149,9 +149,8 @@ def control(control_type):
 
 def polygons(polygons, v, dbu, ilevel, fill_type):
     sonnet_str = 'NUM {}\n'.format(len(polygons))
-    for i, poly in enumerate(polygons):
-        if poly.holes():
-            raise NotImplementedError
+    for i, hole_poly in enumerate(polygons):
+        poly = hole_poly.resolved_holes()
 
         if hasattr(poly, 'isVia'):
             sonnet_str += via(poly, debugid=i, ilevel=next(ilevel))

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Composite waveguide example</description>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+
+# Copyright (c) 2019-2021 IQM Finland Oy.
+#
+# All rights reserved. Confidential and proprietary.
+#
+# Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
+# written permission.
+
+import pya
+
+import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.defaults import default_layers
+from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
+from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.airbridge_connection import AirbridgeConnection
+from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
+
+
+
+(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+top_cell = layout.create_cell("Top Cell")
+cell_view.cell_name=top_cell.name     # Shows the new cell
+
+
+nodes = [
+    Node(pya.DPoint(0, 0)),                                             # Nodes have a position, and optionally
+    Node(pya.DPoint(100, 0), WaveguideCoplanarTaper, a=6, b=3),         #   an Element type with parameters.
+    Node((200, 0), ab_across=True),                                     # Node position is a DPoint or an (x, y) tuple.
+    Node((300, 0), Airbridge),                                          # Airbridge parameters come from WaveguideComposite defaults.
+#   Node((400, 0)),                                                     # Waveguides are automatically placed between collinear Elements.
+    Node((500, 0), Airbridge, airbridge_type="Airbridge Rectangular"),  # Parameters can be overridden on a per node basis.
+    Node((700, -200)),                                                  # Waveguides bend after Elements, if needed.
+    Node((500, -200), AirbridgeConnection, a=2, b=2),                   # Airbridges can automatically "taper" if needed.
+    Node((400, -200), a=12, b=6),                                       # Empty node does a taper if a and/or b is set.
+    Node((300, -200), face_id="t"),                                     # Similary, face_id parameter inserts an "FC-bump".
+    Node((200, -200)),                                                  # Elements take orientation from previous node, see next one.
+    Node((100, -300), FingerCapacitorSquare, finger_number=4),          # Other elements (with port_a/b) are also supported.
+    Node((0, -400), a=6, b=2),                                          # Elements have to be colinear if placed back-to-back!
+    Node((-100, -600)),                                                 # Be mindful of geometry, WaveguideCoplanar needs space...
+    Node((100, -500), FingerCapacitorTaper),                            # Arbitrary future elements also supported.
+    Node((300, -400), n_bridges=1),                                     # Note that all these are in top face.
+    Node((400, -400), face_id="b", connector_type="Single"),            # Elements are positioned at the Nodes coordinates.
+    Node((600, -400), n_bridges=2),                                     # n_bridges places that many airbridges across
+    Node((800, -400), Airbridge, a=20, b=12),                           # first and last element "kisses" Node, i.e. aligned to the edge.
+]
+
+wg = WaveguideComposite.create(layout, nodes=nodes, term1=6, taper_length=31.416)
+top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+
+</text>
+</klayout-macro>

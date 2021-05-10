@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -12,7 +12,9 @@ from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.defaults import default_layers, default_faces
 
 # maximum allowed distance between connected waveguide segments for them to be considered continuous
-tolerance = 0.003
+continuity_tolerance = 0.003
+
+relative_length_tolerance = 0.05
 
 
 def test_continuity_90degree_turn():
@@ -26,13 +28,15 @@ def test_continuity_90degree_turn():
     waveguide_cell = WaveguideCoplanar.create(layout,
         path=guideline
     )
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["annotations"]), tolerance)
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["waveguide_length"]),
+                                           continuity_tolerance)
 
 
 def test_continuity_many_turns():
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 20, 40, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["annotations"]), tolerance)
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["waveguide_length"]),
+                                           continuity_tolerance)
 
 
 def test_continuity_many_turns_with_zero_length_segments():
@@ -41,7 +45,8 @@ def test_continuity_many_turns_with_zero_length_segments():
     """
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 30, 30, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["annotations"]), tolerance)
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["waveguide_length"]),
+                                           continuity_tolerance)
 
 
 def _create_waveguide_many_turns(layout, n, scale1, scale2):
@@ -81,7 +86,7 @@ def assert_perfect_waveguide_continuity(cell, layout, expected_shapes):
     #   expected_shapes: number of non-overlapping shapes expected. Should be 2 for an open-ended waveguide,
     #       and 1 for a waveguide with one or more termination.
     test_region = pya.Region(cell.begin_shapes_rec(
-            layout.layer(default_faces['b']["base metal gap wo grid"])
+            layout.layer(default_faces['b']["base_metal_gap_wo_grid"])
         )).merged()
     number_of_shapes = len([x for x in test_region.each()])
     assert(number_of_shapes == expected_shapes)
@@ -126,3 +131,68 @@ def test_perfect_continuity_straight_segment_with_terminations():
         )
 
         assert_perfect_waveguide_continuity(waveguide_cell, layout, expected_shapes=1)
+
+
+def test_number_of_child_instances_with_missing_curves_1():
+    layout = pya.Layout()
+
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(100, 100),
+        pya.DPoint(200, 200)  # same direction as last point, so no curve at previous point
+    ]
+
+    waveguide_cell = WaveguideCoplanar.create(layout,path=pya.DPath(points, 1))
+
+    assert waveguide_cell.child_instances() == 2
+
+
+def test_number_of_child_instances_with_missing_curves_2():
+    layout = pya.Layout()
+
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(100, 200),
+        pya.DPoint(200, 400),  # same direction as last point, so no curve at previous point
+        pya.DPoint(200, 900),
+        pya.DPoint(500, 700),
+        pya.DPoint(800, 500)  # same direction as last point, so no curve at previous point
+    ]
+
+    waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
+
+    assert waveguide_cell.child_instances() == 7
+
+
+def test_length_with_missing_curves_1():
+
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(100, 0),
+        pya.DPoint(200, 0)  # same direction as last point, so no curve at previous point
+    ]
+
+    _assert_correct_length(points, target_length=200)
+
+
+def test_length_with_missing_curves_2():
+
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(0, 200),
+        pya.DPoint(0, 400),  # same direction as last point, so no curve at previous point
+        pya.DPoint(200, 400),
+        pya.DPoint(500, 400),
+        pya.DPoint(800, 400)  # same direction as last point, so no curve at previous point
+    ]
+
+    _assert_correct_length(points, target_length=1200)
+
+
+def _assert_correct_length(points, target_length):
+    """Asserts that the length of a waveguide created from `points` has length close enough to `target_length`."""
+    layout = pya.Layout()
+    waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
+    true_length = waveguide_cell.length()
+    relative_error = abs(true_length - target_length) / target_length
+    assert relative_error < relative_length_tolerance

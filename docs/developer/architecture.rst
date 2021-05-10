@@ -9,10 +9,10 @@ Elements
 .. image:: ../images/class_diagram_1.png
     :alt: class diagram
 
-Every KQCircuits object that can be placed in a KLayout layout is either an
-``Element``, a ``Chip``, or a ``TestStructure``. Both ``Chip`` and
-``TestStructure`` inherit from ``Element``. Elements in KQCircuits are PCells
-(see `KLayout documentation <https://www.klayout
+Every KQCircuits object that can be placed in a KLayout layout is derived from
+``Element``. There exist also more specific base classes such as ``Chip``,
+or ``TestStructure``, which inherit from ``Element``. Elements in KQCircuits
+are PCells (see `KLayout documentation <https://www.klayout
 .de/doc-qt5/about/about_pcells.html>`__ for more information on PCells), or
 more specifically, they inherit from `PCellDeclarationHelper <https://www
 .klayout.de/doc-qt4/code/class_PCellDeclarationHelper.html>`__. Due to how
@@ -30,7 +30,7 @@ things should be taken into account when writing new elements:
 
 #.  In code ``add_element`` is the preferred method of adding a new (sub)cell. The
     ``create`` method is a ``@classmethod`` that is useful when adding a top
-    level PCell or when not calling from an oher PCell.
+    level PCell or when not calling from another PCell.
 
 #.  When a new PCell instance is created, or when the parameters are changed in
     KLayout GUI, the ``produce_impl`` method of the PCell is called. This
@@ -39,22 +39,27 @@ things should be taken into account when writing new elements:
     parameters. The PCell instance is then created or updated based on these
     new parameter values.
 
-#.  The PCell parameters for KQCircuits elements are given as a dictionary
-    named ``PARAMETER_SCHEMA``, which should exist in the class of every
-    element. The values of these parameters can be set from the KLayout GUI, or
-    in the ``create`` or ``add_element`` methods in code. For each parameter in
-    ``PARAMETER_SCHEMA``, there will automatically be created an instance
-    variable with the same name. The ``PARAMETER_SCHEMA`` of a class is
-    automatically merged with its parent's ``PARAMETER_SCHEMA`` (see
-    ``element.py``), so the class will contain the parameters of all its
-    ancestors in the inheritance hierarchy .
+#.  The PCell parameters for KQCircuits elements are plain class attributes
+    defined with the help of ``Param`` descriptor class. These can be used like
+    normal instance variables.
+    The values of these parameters can be set from the KLayout GUI, or in the
+    ``create`` or ``add_element`` methods in code.  The parameters of a class
+    are automatically merged with its parent's parameters (see ``element.py``),
+    so an instance will contain the parameters of all its ancestors in the
+    inheritance hierarchy.
+
+#.  The ``add_parameters_from`` decorator function adds some other class'
+    parameters to the decorated class. They are like normal parameters to all
+    intents and purposes and can be overridden by the class parameters. Note
+    that these parameters will be inherited by descendants of the decorated
+    class.
 
 Libraries
 ^^^^^^^^^
 
-The PCells in KQCircuits are divided into the libraries ``elements``, ``chips``
-and ``test_structures``. Each library contains a base class for all other
-classes in the library, for example all classes in ``chips`` library
+The PCells in KQCircuits are divided into libraries such as ``elements``,
+``chips`` and ``test_structures``. Each library contains a base class for all
+other classes in the library, for example all classes in ``chips`` library
 inherit from ``Chip``. The base class contains ``LIBRARY_NAME`` and
 ``LIBRARY_DESCRIPTION``, so that these are available for all elements.
 

@@ -15,7 +15,7 @@
 edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -29,71 +29,71 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.chips.demo import Demo
 from kqcircuits.util.groundgrid import make_grid
 import kqcircuits.util.macro_prepare as macroprep
-  
+
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 
 # Top cell
 cell = Demo.create(layout) # A new cell into the layout
 cell_view.cell_name=cell.name     # Shows the new cell
 
-protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b ground grid avoidance"]))).merged()
+protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()
 cell.shapes(layout.layer(default_layers["annotations"])).insert(protection)
 
 def empty_regions(protection, box, deph=0, n = 3, debuglayer=-99):
   polygons=[]
   if deph&lt;0:
     return polygons
-    
-  
-  grid_region = pya.Region(box)  
+
+
+  grid_region = pya.Region(box)
   overlaping_regions = grid_region.overlapping(protection)
   if (overlaping_regions.is_empty()):
     cell.shapes(debuglayer).insert(grid_region)
     return polygons
-  else:      
+  else:
     for x in numpy.linspace(box.p1.x, box.p2.x, n, endpoint=False):
-      for y in numpy.linspace(box.p1.y, box.p2.y, n, endpoint=False):  
+      for y in numpy.linspace(box.p1.y, box.p2.y, n, endpoint=False):
         subbox = pya.Box(pya.Point(x,y), pya.Point(x+box.width()/n,y+box.height()/n))
         empty_regions(protection, subbox,deph-1, n, debuglayer)
-    
-#fill_grid(pya.DBox(cell.bbox().p1*layout.dbu,cell.bbox().p2*layout.dbu),layout.layer(default_layers["b ground grid"]))
+
+#fill_grid(pya.DBox(cell.bbox().p1*layout.dbu,cell.bbox().p2*layout.dbu),layout.layer(default_layers["b_ground_grid"]))
 
 if False:
   start = time.time()
-  
+
   empty_regions(protection, pya.Box(cell.bbox().p1,cell.bbox().p2),
     deph=2,
     n=2,
-    debuglayer=layout.layer(default_layers["b SIS junction"])
+    debuglayer=layout.layer(default_layers["b_SIS_junction"])
     )
-  
+
   end = time.time()
   print("Elapsed time: {} s".format(end - start))
 
 if False:
   start = time.time()
-  
+
   empty_regions(protection, pya.Box(cell.bbox().p1,cell.bbox().p2),
     deph=1,
     n=8,
-    debuglayer=layout.layer(default_layers["b SIS shadow"]))
+    debuglayer=layout.layer(default_layers["b_SIS_shadow"]))
   end = time.time()
   print("Elapsed time: {} s".format(end - start))
-      
+
 grid_mag_factor = 1
 
 if True:
   start = time.time()
   grid_area = pya.Box(cell.bbox().p1, cell.bbox().p2)
-  protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b ground grid avoidance"]))).merged()
+  protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()
 
   region_ground_grid = make_grid(grid_area, protection, grid_step = 10*(1/layout.dbu)*grid_mag_factor, grid_size = 5*(1/layout.dbu)*grid_mag_factor )
 
   cell.shapes(layout.layer(default_layers["annotations"])).insert(protection)
-  cell.shapes(layout.layer(default_layers["b ground grid"])).insert(region_ground_grid)
-  
+  cell.shapes(layout.layer(default_layers["b_ground_grid"])).insert(region_ground_grid)
+
   end = time.time()
   print("Elapsed time: {} s".format(end - start))
 
-#protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b ground grid avoidance"]))).merged()</text>
+#protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()</text>
 </klayout-macro>

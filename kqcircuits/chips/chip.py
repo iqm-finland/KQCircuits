@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,22 +7,19 @@
 
 import sys
 import numpy
-from importlib import reload
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_layers, default_squid_type
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.merge import merge_layers
 from kqcircuits.util.groundgrid import make_grid
-
-
-reload(sys.modules[Element.__module__])
 
 
 @traced
@@ -41,43 +38,13 @@ class Chip(Element):
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for chips."
     LIBRARY_PATH = "chips"
 
-    PARAMETERS_SCHEMA = {
-        "box": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "Border",
-            "default": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
-        },
-        "with_grid": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Make ground plane grid",
-            "default": False
-        },
-        "dice_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Dicing width [μm]",
-            "default": 200
-        },
-        "name_mask": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the mask",
-            "default": "M99"
-        },
-        "name_chip": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the chip",
-            "default": "CTest"
-        },
-        "name_copy": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the copy"
-        },
-        "dice_grid_margin": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin between dicing edge and ground grid",
-            "default": 100,
-            "hidden": True
-        },
-    }
+    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
+    with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
+    dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="[μm]")
+    name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
+    name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
+    name_copy = Param(pdt.TypeString, "Name of the copy", None)
+    dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100, hidden=True)
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -175,46 +142,48 @@ class Chip(Element):
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
-        launchers = self._produce_24_launchers("RF", 240, [i for i in range(1, 25)], launcher_assignments, 1200)
+        launchers = self.produce_n_launchers(24, "RF", 240, 680, launcher_assignments, 1200)
         return launchers
 
-    def produce_launchers_DC(self, enabled=[i for i in range(1, 25)], launcher_assignments=None):
+    def produce_launchers_RF80(self, launcher_assignments=None):
+        launchers = self.produce_n_launchers(80, "RF", 160, 520, launcher_assignments, 635)
+        return launchers
+
+    def produce_launchers_DC(self, launcher_assignments=None):
         """Produces launchers for DC sample holder default locations.
 
         Args:
-            enabled: List of enabled standard launchers from integers between 1 and 24
             launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
 
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
-        launchers = self._produce_24_launchers("DC", 500, enabled, launcher_assignments, 850)
+        launchers = self.produce_n_launchers(24, "DC", 500, 680, launcher_assignments, 850)
         return launchers
 
-    def produce_junction_tests(self, squid_name="QCD1"):
+    def produce_junction_tests(self, squid_type=default_squid_type):
         """Produces junction test pads in the chip.
 
         Args:
-            squid_name: A string defining the type of SQUIDs used in the test pads.
-                        QCD1 | QCD2 | QCD3 | SIM1
+            squid_type: A string defining the type of SQUIDs used in the test pads.
 
         """
         junction_tests_w = self.add_element(JunctionTestPads,
-            margin=50,
-            area_height=1300,
-            area_width=2500,
-            junctions_horizontal=True,
-            squid_name=squid_name,
-            display_name="JunctionTestsHorizontal",
-        )
+                                            margin=50,
+                                            area_height=1300,
+                                            area_width=2500,
+                                            junctions_horizontal=True,
+                                            squid_type=squid_type,
+                                            display_name="JunctionTestsHorizontal",
+                                            )
         junction_tests_h = self.add_element(JunctionTestPads,
-            margin=50,
-            area_height=2500,
-            area_width=1300,
-            junctions_horizontal=True,
-            squid_name=squid_name,
-            display_name="JunctionTestsVertical",
-        )
+                                            margin=50,
+                                            area_height=2500,
+                                            area_width=1300,
+                                            junctions_horizontal=True,
+                                            squid_type=squid_type,
+                                            display_name="JunctionTestsVertical",
+                                            )
         self.insert_cell(junction_tests_h, pya.DTrans(0, False, .35e3, (10e3 - 2.5e3) / 2), "testarray_w")
         self.insert_cell(junction_tests_w, pya.DTrans(0, False, (10e3 - 2.5e3) / 2, .35e3), "testarray_s")
         self.insert_cell(junction_tests_h, pya.DTrans(0, False, 9.65e3 - 1.3e3, (10e3 - 2.5e3) / 2), "testarray_e")
@@ -228,26 +197,26 @@ class Chip(Element):
         min_width = 1
         max_width = 15
         step = 3
-        first_stripes_width = 2*num_stripes*min_width
+        first_stripes_width = 2 * num_stripes * min_width
 
         combined_cell = self.layout.create_cell("Stripes")
-        for i, width in enumerate(numpy.arange(max_width + 0.1*step, min_width, -step)):
+        for i, width in enumerate(numpy.arange(max_width + 0.1 * step, min_width, -step)):
             stripes_cell = self.add_element(StripesTest, num_stripes=num_stripes, stripe_width=width,
-                                                                 stripe_length=length)
+                                            stripe_length=length)
             # horizontal
             combined_cell.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, 0, False, -880, 2*i*length +
-                                                                   first_stripes_width-200)))
+                                                    pya.DCplxTrans(1, 0, False, -880, 2 * i * length +
+                                                                   first_stripes_width - 200)))
             # vertical
             combined_cell.insert(pya.DCellInstArray(stripes_cell.cell_index(),
                                                     pya.DCplxTrans(1, 90, False,
-                                                                   2*i*length + length + first_stripes_width-200,
+                                                                   2 * i * length + length + first_stripes_width - 200,
                                                                    -880)))
             # diagonal
-            diag_offset = 2*num_stripes*width/numpy.sqrt(8)
+            diag_offset = 2 * num_stripes * width / numpy.sqrt(8)
             combined_cell.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, -45, False, 250 + i*length - diag_offset,
-                                                                   250 + i*length + diag_offset)))
+                                                    pya.DCplxTrans(1, -45, False, 250 + i * length - diag_offset,
+                                                                   250 + i * length + diag_offset)))
 
         self.insert_cell(combined_cell, pya.DCplxTrans(1, 0, False, 1500, 1500))
         self.insert_cell(combined_cell, pya.DCplxTrans(1, 90, False, 8500, 1500))
@@ -270,12 +239,12 @@ class Chip(Element):
 
         """
         grid_area = box * (1 / self.layout.dbu)
-        protection = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground grid avoidance", face_id))).merged()
+        protection = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
         grid_mag_factor = 1
         region_ground_grid = make_grid(grid_area, protection,
                                        grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
                                        grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor)
-        self.cell.shapes(self.get_layer("ground grid", face_id)).insert(region_ground_grid)
+        self.cell.shapes(self.get_layer("ground_grid", face_id)).insert(region_ground_grid)
 
     def produce_frame(self, frame_parameters, trans=pya.DTrans()):
         """"Produces a chip frame and markers for the given face.
@@ -288,19 +257,19 @@ class Chip(Element):
 
     def merge_layout_layers_on_face(self, face):
         """
-          Shapes in "base metal gap" layer must be created by combining the "base metal gap wo grid" and
-          "ground grid" layers even if no grid is generated
+          Shapes in "base_metal_gap" layer must be created by combining the "base_metal_gap_wo_grid" and
+          "ground_grid" layers even if no grid is generated
 
           This method is called in produce_impl(). Override this method to produce a different set of chip frames.
           """
 
-        merge_layers(self.layout, [self.cell], face["base metal gap wo grid"], face["ground grid"],
-                     face["base metal gap"])
+        merge_layers(self.layout, [self.cell], face["base_metal_gap_wo_grid"], face["ground_grid"],
+                     face["base_metal_gap"])
 
     def merge_layout_layers(self):
         """
-          Shapes in "base metal gap" layer must be created by combining the "base metal gap wo grid" and
-          "ground grid" layers even if no grid is generated
+          Shapes in "base_metal_gap" layer must be created by combining the "base_metal_gap_wo_grid" and
+          "ground_grid" layers even if no grid is generated
 
           """
         self.merge_layout_layers_on_face(self.face(0))
@@ -311,7 +280,7 @@ class Chip(Element):
         This method is called in produce_impl(). Override this method to produce a different set of chip frames.
         """
         b_frame_parameters = {
-            **self.pcell_params_by_name(whitelist=ChipFrame.PARAMETERS_SCHEMA),
+            **self.pcell_params_by_name(whitelist=ChipFrame),
             "use_face_prefix": False
         }
         self.produce_frame(b_frame_parameters)
@@ -330,7 +299,7 @@ class Chip(Element):
             inst_id = inst.property("id")
             if inst_id:
                 cell = self.layout.create_cell("TEXT", "Basic", {
-                    "layer": default_layers["instance names"],
+                    "layer": default_layers["instance_names"],
                     "text": inst_id,
                     "mag": 400.0
                 })
@@ -361,35 +330,42 @@ class Chip(Element):
                 launcher_map[key] = value
         return launcher_map
 
-    def _produce_24_launchers(self, launcher_type, launcher_width, enabled, launcher_assignments, pad_pitch):
-        """Produces 24 launchers at default locations.
+    def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_indent, launcher_assignments, pad_pitch):
+        """Produces n launchers at default locations.
 
         Args:
+            n: number of launcher pads
             launcher_type: type of the launchers, "RF" or "DC"
             launcher_width: width of the launchers
-            enabled: List of enabled standard launchers from integers between 1 and 24
+            launcher_indent: distance between the chip edge and pad port
             launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
             pad_pitch: distance between pad centers
 
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
-        launcher_map = self._create_launcher_map({i: str(i) for i in range(1, 25)}, launcher_assignments)
+
+        nr_pads_per_side = int(n/4.)
+        launcher_map = self._create_launcher_map({i: str(i) for i in range(1, n + 1)}, launcher_assignments)
 
         launchers = {}  # dictionary of point, heading, distance from chip edge
         launchers_specs = []
+        loc = lambda i: pya.DPoint(launcher_indent,
+                                   (self.box.p2.x - self.box.p1.x) / 2
+                                   + pad_pitch * (i + 0.5 - int(nr_pads_per_side / 2)))
+
         for direction, rot, trans in (
-                ("N", pya.DTrans.R270, pya.DTrans(3, 0, 0, 10e3)), ("E", pya.DTrans.R180, pya.DTrans(2, 0, 10e3, 10e3)),
-                ("S", pya.DTrans.R90, pya.DTrans(1, 0, 10e3, 0)), ("W", pya.DTrans.R0, pya.DTrans(0, 0, 0, 0))):
-            for i in range(6):
-                loc = pya.DPoint(680, pad_pitch*i + (10000 - pad_pitch*5)/2)
-                launchers_specs.append((trans*loc, direction, launcher_width))
+                ("N", pya.DTrans.R270, pya.DTrans(3, 0, self.box.p1.x, self.box.p2.y)),
+                ("E", pya.DTrans.R180, pya.DTrans(2, 0, self.box.p2.x, self.box.p2.y)),
+                ("S", pya.DTrans.R90, pya.DTrans(1, 0, self.box.p2.x, self.box.p1.y)),
+                ("W", pya.DTrans.R0, pya.DTrans(0, 0, self.box.p1.x, self.box.p1.y))):
+            for i in range(nr_pads_per_side):
+                launchers_specs.append((trans * loc(i), direction, launcher_width))
 
         for i, spec in enumerate(launchers_specs):
             port_id = i + 1
-            if port_id in enabled:
-                name = launcher_map[port_id]
-                launchers[name] = spec
-                self.produce_launcher(spec[0], spec[1], name, port_id, launcher_width, launcher_type=launcher_type)
+            name = launcher_map[port_id]
+            launchers[name] = spec
+            self.produce_launcher(spec[0], spec[1], name, port_id, launcher_width, launcher_type=launcher_type)
 
         return launchers

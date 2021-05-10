@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -35,12 +35,15 @@ class MaskSet:
         name: Name of the mask set
         version: Version of the mask set
         with_grid: Boolean determining if ground grid is generated
+        export_drc: Boolean determining if DRC report is exported
         chips_map_legend: Dictionary where keys are chip names, values are chip cells
+        mask_layouts: list of MaskLayout objects in this mask set
+        mask_export_layers: list of names of the layers which are exported for each MaskLayout
         used_chips: similar to chips_map_legend, but only includes chips which are actually used in mask layouts
 
     """
 
-    def __init__(self, layout, name="MaskSet", version=1, with_grid=False):
+    def __init__(self, layout, name="MaskSet", version=1, with_grid=False, export_drc=False, mask_export_layers=[]):
         super().__init__()
         if layout is None or not isinstance(layout, pya.Layout):
             error_text = "Cannot create mask with invalid or nil layout."
@@ -53,10 +56,12 @@ class MaskSet:
         self.name = name
         self.version = version
         self.with_grid = with_grid
+        self.export_drc = export_drc
         self.chips_map_legend = {}
         self.mask_layouts = []
-        self.mask_export_layers = []
+        self.mask_export_layers = mask_export_layers
         self.used_chips = {}
+        self._mask_layouts_per_face = {}  # dict of {face_id: number of mask layouts}
 
     def add_mask_layout(self, chips_map, face_id="b", **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -65,9 +70,23 @@ class MaskSet:
             chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)
             face_id: face_id of the mask layout
             kwargs: keyword arguments passed to the mask layout
+        Returns:
+            the created mask layout
         """
+
+        # add extra_id to distinguish mask layouts in the same face
+        if face_id in self._mask_layouts_per_face:
+            self._mask_layouts_per_face[face_id] += 1
+            kwargs["extra_id"] = str(self._mask_layouts_per_face[face_id])
+        else:
+            self._mask_layouts_per_face[face_id] = 1
+
+        if ("mask_export_layers" not in kwargs) and self.mask_export_layers:
+            kwargs["mask_export_layers"] = self.mask_export_layers
+
         mask_layout = MaskLayout(self.layout, self.name, self.version, self.with_grid, chips_map, face_id, **kwargs)
         self.mask_layouts.append(mask_layout)
+        return mask_layout
 
     def add_chip(self, chip_class, variant_name, **kwargs):
         """Adds a chip with the given name and parameters to self.chips_map_legend.
@@ -92,18 +111,16 @@ class MaskSet:
         """
         self.__log.info("Resolving %s", variant_name)
 
-        mask_parameters_for_chip = {
+        chip_parameters = {
+            "name_chip": variant_name,
+            "display_name": variant_name,
             "name_mask": self.name,
             "name_copy": None,
             "with_grid": self.with_grid,
+            **kwargs
         }
 
-        return {variant_name: chip_class.create(self.layout, **{
-            "name_chip": variant_name,
-            "display_name": variant_name,
-            **mask_parameters_for_chip,
-            **kwargs,
-        })}
+        return {variant_name: chip_class.create(self.layout, **chip_parameters)}
 
     def build(self, remove_guiding_shapes=True):
         """Builds the mask set.
@@ -143,7 +160,7 @@ class MaskSet:
             view: KLayout view object
 
         """
-        mask_export.export(self, path, view)
+        mask_export.export(self, path, view, self.export_drc)
 
     @staticmethod
     def chips_map_from_box_map(box_map, mask_map):

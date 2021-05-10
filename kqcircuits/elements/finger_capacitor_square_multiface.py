@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,6 +7,7 @@
 
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 
 class FingerCapacitorSquareMultiface(FingerCapacitorSquare):
@@ -17,13 +18,7 @@ class FingerCapacitorSquareMultiface(FingerCapacitorSquare):
     on face 1.
     """
 
-    PARAMETERS_SCHEMA = {
-        "margin_other_face": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin for the opening on the other face [μm]",
-            "default": 20
-        },
-    }
+    margin_other_face = Param(pdt.TypeDouble, "Margin for the opening on the other face", 20, unit="μm")
 
     def produce_impl(self):
 
@@ -32,7 +27,7 @@ class FingerCapacitorSquareMultiface(FingerCapacitorSquare):
                                                            self.margin_other_face/self.layout.dbu, 2)
         region_protection = pya.Region(region_gap.bbox()).size(self.margin/self.layout.dbu,
                                                                self.margin/self.layout.dbu, 2)
-        self.cell.shapes(self.get_layer("base metal gap wo grid", 1)).insert(region_gap)
-        self.cell.shapes(self.get_layer("ground grid avoidance", 1)).insert(region_protection)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", 1)).insert(region_gap)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(region_protection)
 
         super().produce_impl()

@@ -6,65 +6,56 @@ white: #d9d9d9
 red: #f8003a
 orange: #ff9900
 link-blue: #1178e2
+light grey: #f7f7f7
+gradient blue: #759deb
+gradient green: #5fdd97
+black: #000000
 */
 
+body {
+ font-family: "Microsoft Sans Serif", sans-serif;
+}
+
 a {
-    color: #00e397 !important;
-}
-
-a:hover, a:active {
-    color: #ff9900 !important;
-}
-
-a:visited {
-    color: #ff9900 !important;
+    color: grey;
 }
 
 .wy-side-nav-search {
-    background-color: #00e397 !important;
+    background-color: #ffffff !important;
 }
 
-.wy-side-nav-search a:visited {
-    color: #fcfcfc !important;
+.wy-side-nav-search a {
+    color: #000000 !important;
 }
 
-.wy-breadcrumbs a:visited {
-    color: #00e397 !important;
+.wy-breadcrumbs a:visited{
+    color: grey !important;
 }
 
 .wy-nav-side {
-    background-color: #00274d !important;
+    background-color: #000000 !important;
 }
 
 .wy-menu-vertical a {
-    color: #d9d9d9 !important;
+    color: #ffffff !important;
 }
 
 .wy-menu-vertical a:hover {
-    color: #4e4a4a !important;
-}
-
-.wy-menu-vertical a:active {
-    background-color: #00e397 !important;
-    color: #fff !important;
-}
-
-.wy-menu-vertical a:hover {
-    background-color: #002c67 !important;
+    color: #ffffff !important;
 }
 
 .wy-menu-vertical a:visited {
-    color: #d9d9d9 !important;
+    color: #ffffff !important;
 }
 
 .wy-menu-vertical li.on>a, .wy-menu-vertical li.current>a {
-    color: #404040 !important;
+    color: #f7f7f7 !important;
 }
 
 .wy-menu-vertical li.current a {
-    color: gray !important;
+    color: #000000 !important;
 }
 
 .wy-menu-vertical li.current a:hover {
-    background-color: #d6d6d6 !important;
+    background-color: #ffffff !important;
 }

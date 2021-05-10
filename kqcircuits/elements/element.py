@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,12 +6,13 @@
 # written permission.
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.geometry_helper import get_cell_path_length
 from autologging import logged, traced
 from inspect import isclass
 
-from kqcircuits.defaults import default_layers, default_circuit_params, default_faces
+from kqcircuits.defaults import default_layers, default_faces
 from kqcircuits.util.library_helper import load_libraries, to_library_name
-from kqcircuits.util.parameter_helper import normalize_rules, Validator
 
 
 @traced
@@ -45,12 +46,9 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
 @traced
 @logged
 class Element(pya.PCellDeclarationHelper):
-    """Base PCell declaration for elements.
+    """Element PCell declaration.
 
-    The PARAMETERS_SCHEMA class attribute defines the PCell parameters for an element. Notice, that to get the
-    combined PARAMETERS_SCHEMA of the element and all its ancestors, you should use the "get_schema()" method instead
-    of accessing PARAMETERS_SCHEMA directly.
-
+    PCell parameters for an element are defined as class attributes of Param type.
     Elements have ports.
     """
 
@@ -58,56 +56,26 @@ class Element(pya.PCellDeclarationHelper):
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for elements."
     LIBRARY_PATH = "elements"
 
-    PARAMETERS_SCHEMA = {
-        "a": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of center conductor [μm]",
-            "default": default_circuit_params["a"]
-        },
-        "b": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of gap [μm]",
-            "default": default_circuit_params["b"]
-        },
-        "n": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of points on turns",
-            "default": default_circuit_params["n"]
-        },
-        "r": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Turn radius [μm]",
-            "default": default_circuit_params["r"]
-        },
-        "refpoints": {
-            # such that child_element.produce function already would have the refpoints initialized
-            # initializing it in the constructor of PCellDeclarationHelper child has no effect
-            "type": pya.PCellParameterDeclaration.TypeNone,
-            "description": "Reference points",
-            "default": {"base": pya.DVector(0, 0)},
-            "hidden": True
-        },
-        "margin": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin of the protection layer [μm]",
-            "default": 5
-        },
-        "face_ids": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Chip face IDs, list of b | t | c",
-            "default": ["b", "t", "c"],
-        },
-        "display_name": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name displayed in GUI (empty for default)",
-            "default": "",
-        },
-    }
+    a = Param(pdt.TypeDouble, "Width of center conductor", 10, unit="μm")
+    b = Param(pdt.TypeDouble, "Width of gap", 6, unit="μm")
+    n = Param(pdt.TypeInt, "Number of points on turns", 64)
+    r = Param(pdt.TypeDouble, "Turn radius", 100, unit="μm")
+    margin = Param(pdt.TypeDouble, "Margin of the protection layer", 5, unit="μm")
+    face_ids = Param(pdt.TypeList, "Chip face IDs, list of b | t | c", ["b", "t", "c"])
+    display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
+    # Initializing it in the constructor of PCellDeclarationHelper child has no effect so it has to
+    # be a PCell parameter here.
+    refpoints = Param(pdt.TypeNone, "Reference points", {"base": pya.DVector(0, 0)}, hidden=True)
 
     def __init__(self):
         ""
         super().__init__()
-        self.__set_parameters()
+
+        # create KLayout's PCellParameterDeclaration objects
+        self._param_value_map = {}
+        for name, p in type(self).get_schema().items():
+            self._param_value_map[name] = len(self._param_decls)
+            self._add_parameter(name, p.data_type, p.description, default=p.default, **p.kwargs)
 
     @staticmethod
     def create_cell_from_shape(layout, name):
@@ -122,16 +90,15 @@ class Element(pya.PCellDeclarationHelper):
             layout: pya.Layout object where this cell is created
             **parameters: PCell parameters for the element as keyword arguments
         """
-        cell_library_name = to_library_name(cls.__name__)
-        schema = cls.get_schema()
-        validator = Validator(schema)
-        if validator.validate(parameters):
-            load_libraries(path=cls.LIBRARY_PATH)
-            return layout.create_cell(cell_library_name, cls.LIBRARY_NAME, parameters)
+        cell = Element._create_cell(cls, layout, **parameters)
+        if not cell.bbox_per_layer(layout.layer(default_layers['waveguide_length'])).empty():
+            l = get_cell_path_length(cell, layout.layer(default_layers['waveguide_length']))
+            setattr(cell, "length", lambda: l)
+        return cell
 
     @classmethod
-    def create_with_refpoints(cls, layout, refpoint_transform, **parameters):
-        """Convenience function to create cell and return refpooints too.
+    def create_with_refpoints(cls, layout, refpoint_transform=pya.DTrans(), **parameters):
+        """Convenience function to create cell and return refpoints too.
 
         Args:
             layout: pya.Layout object where this cell is created
@@ -139,7 +106,7 @@ class Element(pya.PCellDeclarationHelper):
             **parameters: PCell parameters for the element, as keyword argument
         """
         cell = cls.create(layout, **parameters)
-        refp = get_refpoints(layout.layer(default_layers["annotations"]), cell, refpoint_transform)
+        refp = get_refpoints(layout.layer(default_layers["refpoints"]), cell, refpoint_transform)
         return cell, refp
 
     def add_element(self, cls, whitelist=None, **parameters):
@@ -147,8 +114,8 @@ class Element(pya.PCellDeclarationHelper):
 
         Args:
             cls: Element subclass to be created
-            whitelist: parameter dictionary where keys are used as a whitelist for passing
-                       parameters of `self` to the `cls` cell used for parameter inheritance.
+            whitelist: A classname. Its parameter names are used as a whitelist for passing
+                       parameters of `self` to the `cls` cell.
             **parameters: PCell parameters for the element as keyword arguments
 
         Returns:
@@ -159,7 +126,8 @@ class Element(pya.PCellDeclarationHelper):
 
         return cls.create(self.layout, **parameters)
 
-    def insert_cell(self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None, rec_levels=0, **parameters):
+    def insert_cell(self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None, rec_levels=0,
+                    **parameters):
         """Inserts a subcell into the present cell.
 
         It will use the given `cell` object or if `cell` is an Element class' name then directly
@@ -183,7 +151,7 @@ class Element(pya.PCellDeclarationHelper):
 
         Return:
             tuple of placed cell instance and reference points with the same transformation
-            """
+        """
         if isclass(cell):
             cell = cell.create(self.layout, **parameters)
 
@@ -193,7 +161,7 @@ class Element(pya.PCellDeclarationHelper):
             align = self.get_refpoints(cell, trans)[align]
             if type(align_to) == str:
                 align_to = self.refpoints[align_to]
-            trans = pya.DTrans(align_to - align) * trans
+            trans = pya.DCplxTrans(align_to - align) * trans
 
         cell_inst = self.cell.insert(pya.DCellInstArray(cell.cell_index(), trans))
 
@@ -224,23 +192,20 @@ class Element(pya.PCellDeclarationHelper):
         """Give PCell parameters as a dictionary.
 
         Arguments:
-            whitelist: list of dictionary for filtering the returned parameters. If dictionary, keys used for
-            filtering.
+            whitelist: A classname. Its parameter names are used for filtering.
 
         Returns:
-            Dictionary with all parameter names in the PCell declaration `PARAMETER_SCHEMA` as keys and
-            corresponding current values.
-            """
-
-        keys = self.__class__.get_schema().keys()
-        if type(whitelist) is dict:
-            keys = list(set(whitelist.keys()) & set(keys))
-        return {k:self.__getattribute__(k) for k in keys}
+            A dictionary of all PCell parameter names and corresponding current values.
+        """
+        keys = type(self).get_schema().keys()
+        if whitelist is not None:
+            keys = list(set(whitelist.get_schema().keys()) & set(keys))
+        return {k: self.__getattribute__(k) for k in keys}
 
     def add_port(self, name, pos, direction=None):
         """ Add a port location to the list of reference points as well as ports layer for netlist extraction
 
-        Args
+        Args:
             name: name for the port. Will be "decorated" for annotation layer, left as is for port layer. If evaluates
             to False, it will be replaced with `port`
             pos: pya.DVector or pya.DPoint marking the position of the port in the Element base
@@ -257,16 +222,18 @@ class Element(pya.PCellDeclarationHelper):
             self.refpoints[port_name+"_corner"] = pos+direction/direction.length()*self.r
 
     @classmethod
-    def get_schema(cls):
-        """Returns the combined PARAMETERS_SCHEMA of the class "cls" and all its ancestor classes."""
-        if not hasattr(cls, "schema"):
-            schema = {}
-            for c in cls.__mro__:
-                if hasattr(c, "PARAMETERS_SCHEMA") and c.PARAMETERS_SCHEMA is not None:
-                    schema = {**c.PARAMETERS_SCHEMA, **schema}
-            return schema
-        else:
-            return cls.schema
+    def get_schema(cls, noparents=False):
+        """Returns the combined parameters of the class "cls" and all its ancestor classes.
+
+        Args:
+            noparents: If True then only return the parameters of "cls", not including ancestors.
+        """
+        schema = {}
+        for pc in cls.__mro__:
+            schema = {**Param.get_all(pc), **schema}
+            if noparents:   # not interested in parent classes
+                break
+        return schema
 
     def produce_impl(self):
         """This method builds the PCell.
@@ -275,7 +242,7 @@ class Element(pya.PCellDeclarationHelper):
         """
         for name, refpoint in self.refpoints.items():
             text = pya.DText(name, refpoint.x, refpoint.y)
-            self.cell.shapes(self.get_layer("annotations")).insert(text)
+            self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
     def display_text_impl(self):
         if self.display_name:
@@ -284,7 +251,7 @@ class Element(pya.PCellDeclarationHelper):
 
     def get_refpoints(self, cell, cell_transf=pya.DTrans(), rec_levels=None):
         """See `get_refpoints`."""
-        return get_refpoints(self.layout.layer(default_layers["annotations"]), cell, cell_transf, rec_levels)
+        return get_refpoints(self.layout.layer(default_layers["refpoints"]), cell, cell_transf, rec_levels)
 
     def get_layer(self, layer_name, face_id=0):
         """Returns the specified Layer object.
@@ -294,22 +261,55 @@ class Element(pya.PCellDeclarationHelper):
             face_id: index of the face id, default=0
 
         """
-        if (face_id == 0 and layer_name not in self.face(0)):
+        if (face_id == 0) and (layer_name not in self.face(0)):
             return self.layout.layer(default_layers[layer_name])
         else:
             return self.layout.layer(self.face(face_id)[layer_name])
 
-    def __set_parameters(self):
-        schema = self.__class__.get_schema()
-        for name, rules in schema.items():
-            rules = normalize_rules(name, rules)
-            self.param(
-                rules["name"],
-                rules["type"],
-                rules["description"],
-                hidden=rules["hidden"],
-                readonly=rules["readonly"],
-                unit=rules["unit"],
-                default=rules["default"],
-                choices=rules["choices"]
-            )
+    @staticmethod
+    def _create_cell(cls, layout, **parameters):
+        """Create cell for cls in layout.
+
+        This is separated from the class method `create` to enable invocation from classes where `create` is shadowed.
+
+        Args:
+            cls: element class for which the cell is created
+            layout: pya.Layout object where this cell is created
+            **parameters: PCell parameters for the element as keyword arguments
+        """
+        cell_library_name = to_library_name(cls.__name__)
+        load_libraries(path=cls.LIBRARY_PATH)
+        return layout.create_cell(cell_library_name, cls.LIBRARY_NAME, parameters)
+
+    def _add_parameter(self, name, value_type, description,
+                       default=None, unit=None, hidden=False, readonly=False, choices=None, docstring=None):
+        """Creates a `pya.PCellParameterDeclaration` object and appends it to `self._param_decls`
+
+        The arguments to this function define the PCellParameterDeclaration attributes with the same names,
+        except:
+
+            * `value_type` defines the `type` attribute
+            * `docstring` is a more verbose parameter description, used in documentation generation.
+
+        For TypeLayer parameters this also defines a `name_layer` read accessor for the layer index and modifies
+        `self._layer_param_index` accordingly.
+        """
+
+        # special handling of layer parameters
+        if value_type == pya.PCellParameterDeclaration.TypeLayer:
+            setattr(type(self), name + "_layer",
+                    pya._PCellDeclarationHelperLayerDescriptor(len(self._layer_param_index)))
+            self._layer_param_index.append(len(self._param_decls))
+
+        # create the PCellParameterDeclaration and add to self._param_decls
+        param_decl = pya.PCellParameterDeclaration(name, value_type, description, default, unit)
+        param_decl.hidden = hidden
+        param_decl.readonly = readonly
+        if choices is not None:
+            if not isinstance(choices, list) and not isinstance(choices, tuple):
+                raise ValueError("choices must be a list or tuple.")
+            for choice in choices:
+                if len(choice) != 2:
+                    raise ValueError("Each item in choices list/tuple must be a two-element array [description, value]")
+                param_decl.add_choice(choice[0], choice[1])
+        self._param_decls.append(param_decl)

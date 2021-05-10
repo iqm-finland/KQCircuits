@@ -129,3 +129,8 @@ Stripes
 ---------------------
 
 .. kqc_elem_params:: kqcircuits.chips.stripes
+
+XmonsDirectCoupling
+---------------------
+
+.. kqc_elem_params:: kqcircuits.chips.xmons_direct_coupling

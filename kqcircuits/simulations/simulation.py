@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,12 +8,18 @@
 import abc
 from typing import List
 
+from kqcircuits.defaults import default_layers
+from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.element import Element
-from kqcircuits.simulations.port import Port
-from kqcircuits.util.geometry_helper import region_with_merged_polygons, simple_region_with_merged_points
+from kqcircuits.simulations.port import Port, InternalPort, EdgePort
+from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points
 
 
+@add_parameters_from(Element)
 class Simulation:
     """Base class for simulation geometries.
 
@@ -27,40 +33,32 @@ class Simulation:
     # Metadata associated with simulation
     ports: List[Port]
 
-    # Parameter type hints
-    box: pya.DBox
-    name: str
-    use_ports: bool
-    minimum_point_spacing: float
+    # Parameters
+    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
+    name = Param(pdt.TypeString, "Name of the simulation", "Simulation")
 
-    PARAMETERS_SCHEMA = {
-        **Element.PARAMETERS_SCHEMA,
-        "box": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "Border",
-            "default": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
-        },
-        "name": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the simulation",
-            "default": "Simulation"
-        },
-        "use_ports": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Turn off to disable all ports (for debugging)",
-            "default": True
-        },
-        "minimum_point_spacing": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Tolerance (um) for merging adjacent points in polygon",
-            "default": 0.01
-        },
-        "polygon_tolerance": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Tolerance (um) for merging adjacent polygons in a layer",
-            "default": 0.000
-        }
-    }
+    use_ports = Param(pdt.TypeBoolean, "Turn off to disable all ports (for debugging)", True)
+    use_internal_ports = Param(pdt.TypeBoolean, "Use internal (lumped) ports. The alternative is wave ports.", True)
+    port_width = Param(pdt.TypeDouble, "Width (um) of wave ports", 400.0)
+
+    box_height = Param(pdt.TypeDouble, "Height (um) of vacuum above chip in case of single chip.", 1000.0)
+    substrate_height = Param(pdt.TypeDouble, "Height (um) of the bottom substrate.", 550.0)
+    permittivity = Param(pdt.TypeDouble, "Permittivity of the substrates.", 11.45)
+
+    wafer_stack_type = Param(pdt.TypeDouble,
+                             "Defines whether to use single chip ('planar') or flip chip ('multiface').", 'planar')
+    chip_distance = Param(pdt.TypeDouble, "Height (um) of vacuum between two chips in case of flip chip.", 8.0)
+    substrate_height_top = Param(pdt.TypeDouble,
+                                 "Height (um) of the substrate of the top chip in case of flip chip.", 375.0)
+
+    airbridge_height = Param(pdt.TypeDouble, "Height (um) of airbridges.", 3.4)
+
+    waveguide_length = Param(pdt.TypeDouble,
+                             "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
+    over_etching = Param(pdt.TypeDouble, "Expansion of metal gaps (negative to shrink the gaps).", 0, unit="μm")
+
+    minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent points in polygon", 0.01)
+    polygon_tolerance = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent polygons in a layer", 0.002)
 
     def __init__(self, layout, **kwargs):
         """Initialize a Simulation.
@@ -74,8 +72,7 @@ class Simulation:
 
         Keyword arguments:
             `**kwargs`:
-                any parameter defined in the `PARAMETERS_SCHEMA` can be passed as a keyword
-                argument, see `PCell parameters` section in the bottom
+                Any parameter can be passed as a keyword argument.
 
                 In addition, `cell` can be passed as keyword argument. If `cell` is supplied, it will be
                 used as the top cell for the simulation. Otherwise, a new cell will be created. See
@@ -90,7 +87,7 @@ class Simulation:
         else:
             self.layout = layout
 
-        schema = self.__class__.get_schema()
+        schema = type(self).get_schema()
 
         # Apply kwargs or default value
         # TODO: Validation? Could reuse the validation for Element
@@ -98,7 +95,7 @@ class Simulation:
             if parameter in kwargs:
                 setattr(self, parameter, kwargs[parameter])
             else:
-                setattr(self, parameter, item['default'])
+                setattr(self, parameter, item.default)
 
         self.ports = []
         if 'cell' in kwargs:
@@ -129,7 +126,7 @@ class Simulation:
         if 'box' not in kwargs:
             box = cell.dbbox().enlarge(margin, margin)
             if grid_size > 0:
-                box.left = round(box.left/grid_size)*grid_size
+                box.left = round(box.left / grid_size) * grid_size
                 box.right = round(box.right / grid_size) * grid_size
                 box.bottom = round(box.bottom / grid_size) * grid_size
                 box.top = round(box.top / grid_size) * grid_size
@@ -152,7 +149,7 @@ class Simulation:
     insert_cell = Element.insert_cell
     get_refpoints = Element.get_refpoints
     add_element = Element.add_element
-    pcell_params_by_name = Element.pcell_params_by_name
+    get_layer = Element.get_layer
 
     def create_simulation_layers(self):
         """Create the layers used for simulation export.
@@ -162,28 +159,30 @@ class Simulation:
         This method is called from `__init__` after `build`, and should not be called directly.
 
         Geometry is added to the following layers:
-            - For each face ``b`` and ``t``, the inverse of ``base metal gap wo grid`` is divided into
+            - For each face ``b`` and ``t``, the inverse of ``base_metal_gap_wo_grid`` is divided into
 
-                - ``simulation ground``, containing any metalization not galvanically connected to a port
-                - ``simulation signal``, containing the remaining metalization.
-            - ``simulation airbridge pads``, containing the geometry of ``airbridge pads``
-            - ``simulation airbridge flyover``, containing the geometry of ``airbridge flyover``
+                - ``simulation_ground``, containing any metalization not galvanically connected to a port
+                - ``simulation_signal``, containing the remaining metalization.
+            - ``simulation_airbridge_pads``, containing the geometry of ``airbridge_pads``
+            - ``simulation_airbridge_flyover``, containing the geometry of ``airbridge_flyover``
 
         In the simulation layers, all geometry has been merged and converted to simple polygons
         (that is, polygons without holes).
         """
-        def merged_region_from_layer(face_id, layer_name):
+        def merged_region_from_layer(face_id, layer_name, expansion=0.0):
             """ Returns a `Region` containing all geometry from a specified layer merged together """
-            return region_with_merged_polygons(pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face(face_id)[layer_name]))), tolerance=self.polygon_tolerance / self.layout.dbu)
+            return region_with_merged_polygons(
+                pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face(face_id)[layer_name]))),
+                tolerance=self.polygon_tolerance / self.layout.dbu, expansion=expansion / self.layout.dbu)
 
-        def insert_simple_region(region, face_id, layer_name):
-            """Converts a `Region` to simple polygons and inserts the result in a target layer."""
+        def insert_region(region, face_id, layer_name):
+            """Merges points in the `region` and inserts the result in a target layer."""
             self.cell.shapes(self.layout.layer(self.face(face_id)[layer_name])).insert(
-                simple_region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
+               region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
 
         for face_id in [0, 1]:
             ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
-            lithography_region = merged_region_from_layer(face_id, "base metal gap wo grid")
+            lithography_region = merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching)
 
             if lithography_region.is_empty():
                 sim_region = pya.Region()
@@ -199,18 +198,158 @@ class Simulation:
                 # Now, remove all edge polygons which are also a port
                 if self.use_ports:
                     for port in self.ports:
-                        location_itype = port.signal_location.to_itype(self.layout.dbu)
-                        ground_region -= ground_region.interacting(pya.Edge(location_itype, location_itype))
+                        if port.face == face_id:
+                            location_itype = port.signal_location.to_itype(self.layout.dbu)
+                            ground_region -= ground_region.interacting(pya.Edge(location_itype, location_itype))
+                ground_region.merge()
                 sim_region -= ground_region
 
-            insert_simple_region(sim_region, face_id, "simulation signal")
-            insert_simple_region(ground_region, face_id, "simulation ground")
+            insert_region(sim_region, face_id, "simulation_signal")
+            insert_region(ground_region, face_id, "simulation_ground")
 
         # Export airbridge regions as merged simple polygons
-        insert_simple_region(merged_region_from_layer(0, "airbridge flyover"), 0, "simulation airbridge flyover")
-        insert_simple_region(merged_region_from_layer(0, "airbridge pads"), 0, "simulation airbridge pads")
+        insert_region(merged_region_from_layer(0, "airbridge_flyover"), 0, "simulation_airbridge_flyover")
+        insert_region(merged_region_from_layer(0, "airbridge_pads"), 0, "simulation_airbridge_pads")
+
+    def produce_waveguide_to_port(self, location, towards, port_nr, side,
+                                  use_internal_ports=None, waveguide_length=None,
+                                  term1=0, turn_radius=None,
+                                  a=None, b=None, over_etching=None,
+                                  airbridge=False, airbridge_a=None, airbridge_b=None,
+                                  face=0):
+        """Create a waveguide connection from some `location` to a port, and add the corresponding port to
+        `simulation.ports`.
+
+        Arguments:
+            location (pya.DPoint): Point where the waveguide connects to the simulation
+            towards (pya.DPoint): Point that sets the direction of the waveguide.
+                The waveguide will start from `location` and go towards `towards`
+            port_nr (int): Port index for the simulation engine starting from 1
+            side (str): Indicate on which edge the port should be located. Ignored for internal ports.
+                Must be one of `left`, `right`, `top` or `bottom`
+            use_internal_ports (bool, optional): if True, ports will be inside the simulation. If False, ports will be
+                brought out to an edge of the box, determined by `side`.
+                Defaults to the value of the `use_internal_ports` parameter
+            waveguide_length (float, optional): length of the waveguide [μm], used only for internal ports
+                Defaults to the value of the `waveguide_length` parameter
+            term1 (float, optional): Termination gap [μm] at `location`. Default 0
+            turn_radius (float, optional): Turn radius of the waveguide. Not relevant for internal ports.
+                Defaults to the value of the `r` parameter
+            a (float, optional): Center conductor width. Defaults to the value of the `a` parameter
+            b (float, optional): Conductor gap width. Defaults to the value of the `b` parameter
+            over_etching (float, optional): Expansion of gaps. Defaults to the value of the `over_etching` parameter
+            airbridge (bool, optional): if True, an airbridge will be inserted at `location`. Default False.
+            airbridge_a (float, optional): Center conductor width for the airbridge part of the waveguide.
+                Defaults to the value of the `a` parameter
+            airbridge_b (float, optional): Gap conductor width for the airbridge part of the waveguide.
+                Defaults to the value of the `b` parameter
+            face: face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.
+        """
+
+        waveguide_safety_overlap = 0.005  # Extend waveguide by this amount to avoid gaps due to nm-scale rounding errors
+        waveguide_gap_extension = 1  # Extend gaps beyond waveguides into ground plane to define the ground port edge
+
+        if turn_radius is None:
+            turn_radius = self.r
+        if a is None:
+            a = self.a
+        if b is None:
+            b = self.b
+        if over_etching is None:
+            over_etching = self.over_etching
+        if airbridge_a is None:
+            airbridge_a = self.a
+        if airbridge_b is None:
+            airbridge_b = self.b
+        if use_internal_ports is None:
+            use_internal_ports = self.use_internal_ports
+        if waveguide_length is None:
+            waveguide_length = self.waveguide_length
+
+        # Create a new path in the direction of path but with length waveguide_length
+        direction = towards - location
+        direction = direction / direction.length()
+
+        # First node may be an airbridge
+        if airbridge:
+            first_node = Node(location, Airbridge, _a=airbridge_a, _b=airbridge_b)
+        else:
+            first_node = Node(location)
+
+        if use_internal_ports:
+            signal_point = location + (waveguide_length + over_etching) * direction
+            ground_point = location + (waveguide_length + a - 3 * over_etching) * direction
+
+            nodes = [
+                first_node,
+                Node(signal_point + waveguide_safety_overlap * direction),
+            ]
+            port = InternalPort(port_nr, *self.etched_line(signal_point, ground_point), face=face)
+
+            extension_nodes = [
+                Node(ground_point),
+                Node(ground_point + waveguide_gap_extension * direction)
+            ]
+        else:
+            corner_point = location + (waveguide_length + turn_radius) * direction
+            port_edge_point = {
+                "left": pya.DPoint(self.box.left, corner_point.y),
+                "right": pya.DPoint(self.box.right, corner_point.y),
+                "top": pya.DPoint(corner_point.x, self.box.top),
+                "bottom": pya.DPoint(corner_point.x, self.box.bottom)
+            }[side]
+
+            nodes = [
+                first_node,
+                Node(corner_point),
+                Node(port_edge_point),
+            ]
+            port = EdgePort(port_nr, port_edge_point, face=face)
+
+        tl = self.add_element(WaveguideComposite,
+                              nodes=nodes,
+                              r=turn_radius,
+                              term1=term1,
+                              term2=0,
+                              a=a,
+                              b=b,
+                              face_ids=[self.face_ids[face]]
+                              )
+
+        self.cell.insert(pya.DCellInstArray(tl.cell_index(), pya.DTrans()))
+        feedline_length = tl.length()
+
+        if use_internal_ports:
+            port_end_piece = self.add_element(WaveguideComposite,
+                                              nodes=extension_nodes,
+                                              a=a,
+                                              b=b,
+                                              term1=a-4*over_etching,
+                                              term2=0,
+                                              face_ids=[self.face_ids[face]]
+                                              )
+            self.cell.insert(pya.DCellInstArray(port_end_piece.cell_index(), pya.DTrans()))
+        else:
+            port.deembed_len = feedline_length
+
+        self.ports.append(port)
 
     def get_parameters(self):
-        """Return dictionary with all parameters in PARAMETERS_SCHEMA and their values."""
+        """Return dictionary with all parameters and their values."""
 
-        return {param: getattr(self, param) for param in self.__class__.get_schema()}
+        return {param: getattr(self, param) for param in type(self).get_schema()}
+
+    def etched_line(self, p1: pya.DPoint, p2: pya.DPoint):
+        """
+            Return the end points of line segment after extending it at both ends by amount of over_etching.
+            This function must be used when initializing InternalPort.
+
+            Arguments:
+                p1 (pya.DPoint): first end of line segment
+                p2 (pya.DPoint): second end of line segment
+
+            Returns:
+                 [p1 - d, p2 + d]: list of extended end points.
+        """
+        d = (self.over_etching / p1.distance(p2)) * (p2 - p1)
+        return [p1 - d, p2 + d]

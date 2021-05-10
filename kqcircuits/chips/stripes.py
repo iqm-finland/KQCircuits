@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,13 +7,12 @@
 
 import sys
 import numpy
-from importlib import reload
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 
-reload(sys.modules[Chip.__module__])
 
 version = 1
 
@@ -21,23 +20,9 @@ version = 1
 class Stripes(Chip):
     """The PCell declaration for a Stripes chip."""
 
-    PARAMETERS_SCHEMA = {
-        "edge_len": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Length of square's one edge",
-            "default": 80
-        },
-        "inter_space": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Space in between the Squares",
-            "default": 20
-        },
-        "axis": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "The axis of the stripes",
-            "default": "Vertical"
-        }
-    }
+    edge_len = Param(pdt.TypeInt, "Length of square's one edge", 80)
+    inter_space = Param(pdt.TypeInt, "Space in between the Squares", 20)
+    axis = Param(pdt.TypeString, "The axis of the stripes", "Vertical")
 
     def produce_impl(self):
 
@@ -142,6 +127,6 @@ class Stripes(Chip):
             reg2.insert(b_array[i])
 
         result = reg1 - reg2
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(result)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(result)
 
         super().produce_impl()

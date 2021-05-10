@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,24 +7,15 @@
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.test_structures.airbridge_dc import AirbridgeDC
 
 
 class AirbridgeDcTest(Chip):
     """Chip full of airbridge 4-point dc tests."""
 
-    PARAMETERS_SCHEMA = {
-        "n_step": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Increment step for number of airbridges",
-            "default": 1
-        },
-        "test_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of a single test [μm]",
-            "default": 2000
-        },
-    }
+    n_step = Param(pdt.TypeInt, "Increment step for number of airbridges", 1)
+    test_width = Param(pdt.TypeDouble, "Width of a single test", 2000, unit="[μm]")
 
     def produce_impl(self):
 
@@ -54,7 +45,7 @@ class AirbridgeDcTest(Chip):
             while x < box.right:
 
                 cell = self.add_element(AirbridgeDC, n_ab=n_ab, width=self.test_width)
-                test_height = cell.dbbox_per_layer(self.get_layer("base metal gap wo grid")).height()
+                test_height = cell.dbbox_per_layer(self.get_layer("base_metal_gap_wo_grid")).height()
                 num_vertical = int(box.height()//test_height)  # assuming test_height same for all tests
                 y_offset = (box.height() - test_height*num_vertical)/2  # to make them vertically centered
 

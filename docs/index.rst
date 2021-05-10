@@ -2,8 +2,8 @@
 |LOGO|
 ======
 
-.. image:: https://img.shields.io/badge/source-github-ff69b4.svg
-   :target: https://github.iqm.fi/iqm/KQCircuits
+.. image:: https://img.shields.io/badge/source-gitlab-ff69b4.svg
+   :target: https://gitlab.iqm.fi/iqm/qe/KQCircuits
 
 KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.
 
@@ -14,9 +14,8 @@ Documentation
    :maxdepth: 2
 
    start/index
-   gui_features/index
+   user_guide/index
    libraries/index
-   export/index
    developer/index
    api/kqcircuits
 

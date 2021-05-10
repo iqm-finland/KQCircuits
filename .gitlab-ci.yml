@@ -1,4 +1,4 @@
-image: python:3.7
+image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:kqc-test-01
 
 cache:
   key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
@@ -7,7 +7,7 @@ cache:
 
 before_script:
   - mkdir -p .pip-cache
-  - pip --cache-dir=.pip-cache install -e ".[docs,tests]" --use-feature=2020-resolver --upgrade --upgrade-strategy=eager
+  - pip --cache-dir=.pip-cache install -e ".[docs,tests]" --upgrade --upgrade-strategy=eager
 
 test:
   stage: test
@@ -26,9 +26,9 @@ test:
 verify_documentation:
   stage: test
   script:
-    - pip install -e ".[docs]"
+    - Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
     - cd docs
-    - make html
+    - make html SPHINXOPTS="-W --keep-going"
   only:
     - merge_requests
   tags:
@@ -42,7 +42,7 @@ check_confidential_strings:
     refs:
       - merge_requests
     variables:
-      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "public-master"
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
   tags:
     - docker
 
@@ -50,9 +50,9 @@ check_confidential_strings:
 pages:
   stage: deploy
   script:
-    - pip install -e ".[docs]"
+    - Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
     - cd docs
-    - make html
+    - make html SPHINXOPTS="-W --keep-going"
     - mv _build/html ../public
   artifacts:
     paths:

@@ -15,7 +15,7 @@
 edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -30,6 +30,9 @@ import numpy
 
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+
+# Usually the layout, layout_view and cell_view are generated using kqcircuits.util.macro_prepare.prep_empty_layout,
+# but here we show how to create them explicitly.
 
 app = pya.Application.instance()
 mw = app.main_window()
@@ -49,10 +52,11 @@ else:
 cell = layout.create_cell("Top") # A new cell into the layout
 cell_view.cell_name=cell.name     # Shows the new cell
 
-# Add default layers
-l1 = layout.layer(pya.LayerInfo(1,0,"b base metal gap wo grid"))
-l2 = layout.layer(pya.LayerInfo(2,0,"b ground grid avoidance"))
-l3 = layout.layer(pya.LayerInfo(3,0,"b SIS junction"))
+# Add default layers. Usually we use the default layer list generated
+# by KQCircuits, but here we show how to create layers manually.
+l1 = layout.layer(pya.LayerInfo(1,0,"b_base_metal_gap_wo_grid"))
+l2 = layout.layer(pya.LayerInfo(2,0,"b_ground_grid_avoidance"))
+l3 = layout.layer(pya.LayerInfo(3,0,"b_SIS_junction"))
 l4 = layout.layer(pya.LayerInfo(4,0,"New guidelines"))
 
 # Draw test structures on all layers

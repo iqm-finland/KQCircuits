@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,8 +8,9 @@
 from autologging import traced
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.marker import Marker
+from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.defaults import default_brand
 
 
@@ -91,66 +92,21 @@ class ChipFrame(Element):
     The chip frame consists of a dicing edge, and labels and markers in the corners.
     """
 
-    PARAMETERS_SCHEMA = {
-        "box": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "Border",
-            "docstring": "Bounding box of the chip frame",
-            "default": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
-        },
-        "with_grid": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Make ground plane grid",
-            "default": False
-        },
-        "dice_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Dicing width [μm]",
-            "default": 200
-        },
-        "dice_grid_margin": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin between dicing edge and ground grid",
-            "docstring": "Margin of the ground grid avoidance layer for dicing edge",
-            "default": 100,
-        },
-        "name_mask": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the mask",
-            "default": "M99"
-        },
-        "name_chip": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the chip",
-            "default": "CTest"
-        },
-        "name_copy": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the copy"
-        },
-        "text_margin": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Margin for labels",
-            "docstring": "Margin of the ground grid avoidance layer around the text",
-            "default": 100,
-        },
-        "marker_dist": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Marker distance from edges",
-            "docstring": "Distance of markers from closest edges of the chip face",
-            "default": 1500,
-        },
-        "marker_diagonals": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of diagonal squares for the markers",
-            "default": 10
-        },
-        "use_face_prefix": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Use face prefix for chip name label",
-            "default": False
-        },
-    }
+    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)),
+        docstring="Bounding box of the chip frame")
+    with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
+    dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="μm")
+    dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100,
+        docstring="Margin of the ground grid avoidance layer for dicing edge")
+    name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
+    name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
+    name_copy = Param(pdt.TypeString, "Name of the copy", None)
+    text_margin = Param(pdt.TypeDouble, "Margin for labels", 100,
+        docstring="Margin of the ground grid avoidance layer around the text")
+    marker_dist = Param(pdt.TypeDouble, "Marker distance from edges", 1500,
+        docstring="Distance of markers from closest edges of the chip face")
+    marker_diagonals = Param(pdt.TypeInt, "Number of diagonal squares for the markers", 10)
+    use_face_prefix = Param(pdt.TypeBoolean, "Use face prefix for chip name label", False)
 
     def produce_impl(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""
@@ -186,8 +142,8 @@ class ChipFrame(Element):
             label PCells added to the layout into the parent PCell
         """
         produce_label(self.cell, label, location, origin, self.dice_width, self.text_margin,
-                      [self.face()["base metal gap wo grid"], self.face()["base metal gap for EBL"]],
-                      self.face()["ground grid avoidance"])
+                      [self.face()["base_metal_gap_wo_grid"], self.face()["base_metal_gap_for_EBL"]],
+                      self.face()["ground_grid_avoidance"])
 
     def _produce_markers(self):
         x_min, x_max, y_min, y_max = self._box_points()
@@ -212,11 +168,11 @@ class ChipFrame(Element):
 
     def _produce_dicing_edge(self):
         shape = pya.DPolygon(self._border_points(self.dice_width))
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(shape)
-        self.cell.shapes(self.get_layer("base metal gap for EBL")).insert(shape)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
+        self.cell.shapes(self.get_layer("base_metal_gap_for_EBL")).insert(shape)
 
         protection = pya.DPolygon(self._border_points(self.dice_width + self.dice_grid_margin))
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(protection)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection)
 
     def _box_points(self):
         """Returns x_min, x_max, y_min, y_max for the given box."""

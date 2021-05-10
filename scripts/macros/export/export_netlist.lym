@@ -15,7 +15,7 @@
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -41,11 +41,11 @@ layout = KLayoutView.get_active_layout()
 top_cell = layout.top_cells()[0]
 layout_view = KLayoutView.get_active_cell_view().view()
 
-shapes_iter = layout.begin_shapes(top_cell, layout.layer(default_layers["b ports"]))
+shapes_iter = layout.begin_shapes(top_cell, layout.layer(default_layers["b_ports"]))
 
 ltn = pya.LayoutToNetlist(shapes_iter)
 
-connector_region = ltn.make_layer( layout.layer(default_layers["b ports"]), "connector")
+connector_region = ltn.make_layer( layout.layer(default_layers["b_ports"]), "connector")
 ltn.connect(connector_region)
 ltn.extract_netlist()
 netlist = ltn.netlist()
@@ -59,10 +59,10 @@ for obj in layout_view.object_selection:
         # workaround for getting the cell due to KLayout bug, see
         # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
         # TODO: replace by `cell = obj.inst().cell` once KLayout bug is fixed
-        cell = obj.layout().cell(obj.inst().cell_index)          
+        cell = obj.layout().cell(obj.inst().cell_index)
         cell_name = cell.display_title()
         print(f"Analyzing {cell_name}")
-        netlist_file = TMP_PATH / f"netlist_{cell_name}.json"    
+        netlist_file = TMP_PATH / f"netlist_{cell_name}.json"
         circuit = netlist.circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
         export_netlist(circuit, netlist_file, ltn.internal_layout(), layout, cm)
         print(f"Exported {netlist_file}")</text>

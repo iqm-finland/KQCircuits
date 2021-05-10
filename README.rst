@@ -1,12 +1,17 @@
 KQCircuits
 ==========
 
-KQCircuits is a Python library developed by IQM for automating the design of
-superconducting quantum circuits. It uses the `KLayout
-<https://klayout.de>`__ layout design program API. KQCircuits contains elements
-and chips which can be combined in different ways to create mask designs for the
-quantum circuits. The elements are parameterized so that different variants
-can quickly be created either in the KLayout GUI or in code.
+KQCircuits is a Python library developed by Aalto and IQM for automating the design of
+superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design program
+API.
+
+KQCircuits generates multi-layer 2-dimensional-geometry representing common structures in quantum
+processing units (QPU). It includes definitions of parametrized geometrical objects or “elements”,
+framework to easily define your own elements, framework to get geometry from the elements by setting
+values to parameters and a framework to assemble a full QPU design by combining many of the elements
+in different geometrical relations. Among other templates, are also structures to combine QPU
+designs to create optical mask layout and EBL patterns for fabrication of quantum circuits and
+export a set of files for a mask as needed for QPU fabrication.
 
 .. image:: /docs/images/readme/single_xmons_chip_3.png
     :alt: example layout
@@ -15,29 +20,31 @@ can quickly be created either in the KLayout GUI or in code.
 Getting started
 ---------------
 
-KQCircuits is a KLayout extension. KLayout can be used either using a graphical
-user interface or as a standalone python module. KQCircuits supports both modes
-of operation. For the first time users, the graphical user interface mode is
-recommended.  To get started with graphical user interface workflow, see the
-`getting started documentation
-<https://pages.github.iqm.fi/iqm/KQCircuits/docs/_build/html/start/index.html>`__
-for instructions on installation and usage of KQC with the KLayout Editor.
+KQCircuits is a KLayout extension. KLayout can be used either using a graphical user interface or as
+a standalone python module. KQCircuits supports both modes of operation. For the first time users,
+the graphical user interface mode is recommended.
 
-To use KQC without KLayout graphical user interface, use it with the standalone
-KLayout python module. For instructions on that, see the `documentation
-<https://pages.github.iqm.fi/iqm/KQCircuits/docs/_build/html/developer/klayout_standalone.html>`__.
+Install and run KLayout once. Run `python3 setup_within_klayout.py` then klayout will contain
+KQCircuits. For further details see the `getting started documentation
+<https://iqm.gitlab-pages.iqm.fi/qe/KQCircuits/start/index.html>`__.
+
+For stand alone mode run `python -m pip install -e .[docs,tests]`. Then scripts may be run and
+documentation can be built. For further details see the `documentation
+<https://iqm.gitlab-pages.iqm.fi/qe/KQCircuits/developer/setup.html>`__.
 
 Documentation
 -------------
 
-Documentation for KQCircuits can be found `here <https://pages.github.iqm.fi/iqm/KQCircuits>`__.
+Documentation for KQCircuits can be found `here <https://iqm.gitlab-pages.iqm.fi/qe/KQCircuits/>`__.
+
+It may also be generated from the sources with `make html` in the docs directory.
 
 Copyright
 ---------
 
-Copyright (c) 2019-2020 IQM Finland Oy.
+Copyright (c) 2019-2021 IQM Finland Oy.
 
 All rights reserved. Confidential and proprietary.
 
-Distribution or reproduction of any information contained herein is prohibited
-without IQM Finland Oy's prior written permission.
+Distribution or reproduction of any information contained herein is prohibited without IQM Finland
+Oy's prior written permission.

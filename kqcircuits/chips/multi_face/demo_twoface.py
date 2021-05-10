@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,42 +6,26 @@
 # written permission.
 
 import sys
-from importlib import reload
 
 from kqcircuits.chips.multi_face.multi_face import MultiFace
-from kqcircuits.defaults import default_circuit_params, default_layers
+from kqcircuits.defaults import default_layers
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.qubits.swissmon import Swissmon
-from kqcircuits.elements.waveguide_coplanar_bridged import WaveguideCoplanarBridged, Node, NodeType
+from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.geometry_helper import point_shift_along_vector
-
-reload(sys.modules[MultiFace.__module__])
 
 
 class DemoTwoface(MultiFace):
     """Demonstration chip for 3D-integration (multi-face) features."""
 
-    PARAMETERS_SCHEMA = {
-        "name_chip": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Name of the chip",
-            "default": "DT"
-        },
-        "readout_res_lengths": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Readout resonator lengths [μm]",
-            "default": [5000, 5100, 5200, 5300]
-        },
-        "include_couplers": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Include couplers between qubits",
-            "default": True
-        },
-    }
+    name_chip = Param(pdt.TypeString, "Name of the chip", "DT")
+    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
+    include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 
     def produce_impl(self):
 
@@ -93,9 +77,9 @@ class DemoTwoface(MultiFace):
         self.produce_coupler(4, 3)
 
     def produce_coupler(self, qubit_a_nr, qubit_b_nr):
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, self.refpoints["QB{}_port_cplr2".format(qubit_a_nr)]),
-            Node(NodeType.WAVEGUIDE, self.refpoints["QB{}_port_cplr2".format(qubit_b_nr)]),
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(self.refpoints["QB{}_port_cplr2".format(qubit_a_nr)]),
+            Node(self.refpoints["QB{}_port_cplr2".format(qubit_b_nr)]),
         ], a=4, b=9)
 
     def produce_control_lines(self):
@@ -106,21 +90,21 @@ class DemoTwoface(MultiFace):
     def produce_driveline(self, qubit_nr):
         port_drive = self.refpoints["QB{}_port_drive".format(qubit_nr)]
         port_corner = self.refpoints["DL-QB{}_port_corner".format(qubit_nr)]
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, self.refpoints["DL-QB{}_base".format(qubit_nr)]),
-            Node(NodeType.WAVEGUIDE, port_corner),
-            Node(NodeType.WAVEGUIDE, port_drive),
-        ])
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(self.refpoints["DL-QB{}_base".format(qubit_nr)]),
+            Node(port_corner),
+            Node(port_drive),
+        ], term2=self.b)
 
     def produce_fluxline(self, qubit_nr):
         port_corner = self.refpoints["FL-QB{}_port_corner".format(qubit_nr)]
         port_flux = self.refpoints["QB{}_port_flux".format(qubit_nr)]
         shift = 1500 if qubit_nr in [3, 4] else -1500
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, self.refpoints["FL-QB{}_base".format(qubit_nr)]),
-            Node(NodeType.WAVEGUIDE, port_corner + pya.DPoint(0, shift)),
-            Node(NodeType.WAVEGUIDE, pya.DPoint(port_flux.x, port_corner.y + shift)),
-            Node(NodeType.WAVEGUIDE, self.refpoints["QB{}_port_flux".format(qubit_nr)])
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(self.refpoints["FL-QB{}_base".format(qubit_nr)]),
+            Node(port_corner + pya.DPoint(0, shift)),
+            Node((port_flux.x, port_corner.y + shift)),
+            Node(self.refpoints["QB{}_port_flux".format(qubit_nr)])
         ])
 
     def produce_readout_structures(self):
@@ -139,14 +123,13 @@ class DemoTwoface(MultiFace):
         point_3 = point_2 + pya.DPoint(-400 if mirrored else 400, 0)
         point_4 = point_3 + pya.DPoint(-100 if mirrored else 100, 0)
 
-        waveguide_inst, _ = self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, point_1),
-            Node(NodeType.WAVEGUIDE, point_2),
-            Node(NodeType.FC_BUMP, point_3),
-            Node(NodeType.WAVEGUIDE, point_4),
+        waveguide_inst, _ = self.insert_cell(WaveguideComposite, nodes=[
+            Node(point_1),
+            Node(point_2),
+            Node(point_3, face_id="t"),
+            Node(point_4),
         ])
-        length_nonmeander = WaveguideCoplanarBridged.get_length(waveguide_inst.cell,
-                                                                self.layout.layer(default_layers["annotations"]))
+        length_nonmeander = waveguide_inst.cell.length()
 
         # meandering part of the resonator
 
@@ -201,36 +184,36 @@ class DemoTwoface(MultiFace):
         _, cap_ref_abs = self.insert_cell(cap_cell, cap_trans)
 
         # segment 1
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, self.refpoints["{}1_base".format(probeline_name)]),
-            Node(NodeType.WAVEGUIDE, self.refpoints["{}1_port_corner".format(probeline_name)] + pya.DPoint(0, -1000)),
-            Node(NodeType.WAVEGUIDE, pya.DPoint(self.refpoints["RO{}_port_left".format(qubit_a_nr)].x,
-                                                self.refpoints["{}1_port_corner".format(probeline_name)].y - 1000)),
-            Node(NodeType.FC_BUMP, cap_ref_abs["port_a"] + pya.DPoint(0, 700)),
-            Node(NodeType.WAVEGUIDE, cap_ref_abs["port_a"]),
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(self.refpoints["{}1_base".format(probeline_name)]),
+            Node(self.refpoints["{}1_port_corner".format(probeline_name)] + pya.DPoint(0, -1000)),
+            Node((self.refpoints["RO{}_port_left".format(qubit_a_nr)].x,
+                  self.refpoints["{}1_port_corner".format(probeline_name)].y - 1000)),
+            Node(cap_ref_abs["port_a"] + pya.DPoint(0, 700), face_id="t"),
+            Node(cap_ref_abs["port_a"]),
         ])
 
         port_1_side = "left" if mirrored else "right"
         port_2_side = "right" if mirrored else "left"
 
         # segment 2
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, cap_ref_abs["port_b"]),
-            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_{}".format(qubit_a_nr, port_1_side)]),
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(cap_ref_abs["port_b"]),
+            Node(self.refpoints["RO{}_port_{}".format(qubit_a_nr, port_1_side)]),
         ], face_ids=[self.face_ids[1]])
 
         # segment 3
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_{}".format(qubit_a_nr, port_2_side)]),
-            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_{}".format(qubit_b_nr, port_1_side)]),
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(self.refpoints["RO{}_port_{}".format(qubit_a_nr, port_2_side)]),
+            Node(self.refpoints["RO{}_port_{}".format(qubit_b_nr, port_1_side)]),
         ], face_ids=[self.face_ids[1]])
 
         # segment 4
-        self.insert_cell(WaveguideCoplanarBridged, nodes=[
-            Node(NodeType.WAVEGUIDE, self.refpoints["{}2_base".format(probeline_name)]),
-            Node(NodeType.WAVEGUIDE, self.refpoints["{}2_port_corner".format(probeline_name)] + pya.DPoint(0, 1000)),
-            Node(NodeType.WAVEGUIDE, pya.DPoint(self.refpoints["RO{}_port_right".format(qubit_b_nr)].x,
-                                                self.refpoints["{}2_port_corner".format(probeline_name)].y + 1000)),
-            Node(NodeType.FC_BUMP, self.refpoints["RO{}_port_right".format(qubit_b_nr)] + pya.DPoint(0, -1400)),
-            Node(NodeType.WAVEGUIDE, self.refpoints["RO{}_port_{}".format(qubit_b_nr, port_2_side)]),
+        self.insert_cell(WaveguideComposite, nodes=[
+            Node(self.refpoints["{}2_base".format(probeline_name)]),
+            Node(self.refpoints["{}2_port_corner".format(probeline_name)] + pya.DPoint(0, 1000)),
+            Node((self.refpoints["RO{}_port_right".format(qubit_b_nr)].x,
+                  self.refpoints["{}2_port_corner".format(probeline_name)].y + 1000)),
+            Node(self.refpoints["RO{}_port_right".format(qubit_b_nr)] + pya.DPoint(0, -1400), face_id="t"),
+            Node(self.refpoints["RO{}_port_{}".format(qubit_b_nr, port_2_side)]),
         ])

@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -26,12 +26,15 @@ from kqcircuits.klayout_view import KLayoutView
 view = KLayoutView(current=True, initialize=True)
 layout = KLayoutView.get_active_layout()
 
-mdemo = MaskSet(layout, name="Demo", version=1, with_grid=False)
+mdemo = MaskSet(layout, name="Demo", version=1, with_grid=False,
+                mask_export_layers=["base_metal_gap", "base_metal_gap_wo_grid", "underbump_metallization",
+                                    "indium_bump"]
+                )
 
 layers_to_mask = {
-    "base metal gap": "1",
-    "underbump metallization": "2",
-    "indium bump": "3"
+    "base_metal_gap": "1",
+    "underbump_metallization": "2",
+    "indium_bump": "3"
 }
 
 # b-face mask
@@ -90,13 +93,6 @@ mdemo.add_chip(QualityFactor, "QF1", n_ab=[1, 2, 3, 4, 5, 6])
 mdemo.add_chip(Shaping, "SH1")
 mdemo.add_chip(SingleXmons, "SX1")
 mdemo.add_chip(Stripes, "ST1")
-
-mdemo.mask_export_layers = [
-    "base metal gap",
-    "base metal gap wo grid",
-    "underbump metallization",
-    "indium bump"
-]
 
 mdemo.build()
 mdemo.export(TMP_PATH, view)

@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,6 +8,8 @@ from kqcircuits.chips.single_xmons import SingleXmons
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.port import EdgePort, InternalPort
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.defaults import default_junction_test_pads_type
 
 
 class SingleXmonsFullChipSim(Simulation):
@@ -15,18 +17,8 @@ class SingleXmonsFullChipSim(Simulation):
     launchers: bool
     use_test_resonators: bool
 
-    PARAMETERS_SCHEMA = {
-        "launchers": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "True to include launchers in simulation",
-            "default": False,
-        },
-        "use_test_resonators": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "True to include XS1-type test resonators. False produces XS2",
-            "default": False,
-        }
-    }
+    launchers = Param(pdt.TypeBoolean, "True to include launchers in simulation", False)
+    use_test_resonators = Param(pdt.TypeBoolean, "True to include XS1-type test resonators. False produces XS2", False)
 
     def build(self):
         mask_parameters_for_chip = {
@@ -44,14 +36,14 @@ class SingleXmonsFullChipSim(Simulation):
             "n_fingers": 4 * [4],
             "l_fingers": [23.65, 24.204, 24.7634, 25.325],
             "type_coupler": 4 * ["plate"],
-            "squid_name": "SIM1",
+            "squid_type": "SIM1",
             "n": self.n,
         })
 
         # Remove unneeded elements
         chip.layout().cell('Chip Frame').delete()
-        chip.layout().cell('Junction Test Pads').delete()
-        chip.layout().cell('Junction Test Pads$1').delete()
+        chip.layout().cell(default_junction_test_pads_type).delete()
+        chip.layout().cell(f'{default_junction_test_pads_type}$1').delete()
 
         # Insert chip and get refpoints
         cell_inst, refpoints = self.insert_cell(chip, rec_levels=None)
@@ -78,6 +70,5 @@ class SingleXmonsFullChipSim(Simulation):
 
         # Add squid internal ports
         for j in range(6):
-            self.ports.append(InternalPort(j+9,
-                                           refpoints['qb_{}_port_squid_a'.format(j)],
-                                           refpoints['qb_{}_port_squid_b'.format(j)]))
+            self.ports.append(InternalPort(j+9, *self.etched_line(refpoints['qb_{}_port_squid_a'.format(j)],
+                                                                  refpoints['qb_{}_port_squid_b'.format(j)])))

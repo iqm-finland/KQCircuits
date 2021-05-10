@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -9,16 +9,16 @@ from setuptools import setup, find_packages
 
 setup(
     name='kqcircuits',
-    version="1.1",
+    version="2.0.0",
     description="KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.",
     author="IQM Finland Oy",
     author_email="developers@meetiqm.com",
     url="meetiqm.com",
     packages=find_packages(),
-    python_requires=">=3.6.9",
+    python_requires=">=3.6.9,<3.10",  # klayout package not yet released for 3.10
     install_requires=[
-        "klayout~=0.26",
-        "numpy~=1.18",
+        "klayout>=0.26,<0.27",
+        "numpy>=1.18",
         "Autologging~=1.3",
         "scipy>=1.2",
     ],

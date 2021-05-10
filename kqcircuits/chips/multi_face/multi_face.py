@@ -1,21 +1,18 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
 
-import sys
-from importlib import reload
 from autologging import traced, logged
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.chip_frame import ChipFrame
-from kqcircuits.elements.flip_chip_connector.flip_chip_connector_dc import FlipChipConnectorDc
+from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.defaults import default_mask_parameters
-
-reload(sys.modules[Chip.__module__])
 
 
 @traced
@@ -29,36 +26,13 @@ class MultiFace(Chip):
     """
     version = 1
 
-    PARAMETERS_SCHEMA = {
-        "face1_box": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "Border of Face 1",
-            "default": pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500))
-        },
-        "with_gnd_bumps": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Make ground bumps",
-            "default": False
-        },
-        "a_capped": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Capped center conductor width [μm]",
-            "docstring": "Width of center conductor in the capped region [μm]",
-            "default": 10
-        },
-        "b_capped": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of gap in the capped region  [μm]",
-            "default": 10
-        },
-        "connector_type": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "Connector type for CPW waveguides",
-            "default": "Coax",
-            "choices": [["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]]
-        }
-
-    }
+    face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
+    with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
+    a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="[μm]",
+                     docstring="Width of center conductor in the capped region [μm]")
+    b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="[μm]")
+    connector_type = Param(pdt.TypeString, "Connector type for CPW waveguides", "Coax",
+                           choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
 
     def produce_impl(self):
         super().produce_impl()
@@ -66,7 +40,7 @@ class MultiFace(Chip):
     def produce_structures(self):
         # produce frame for face 0
         bottom_frame_parameters = {
-            **self.pcell_params_by_name(whitelist=ChipFrame.PARAMETERS_SCHEMA),
+            **self.pcell_params_by_name(whitelist=ChipFrame),
             "face_ids": self.face_ids[0],
             "use_face_prefix": True
         }
@@ -83,7 +57,7 @@ class MultiFace(Chip):
             "name_mask": self.name_mask,
             "dice_width": default_mask_parameters[self.face_ids[1]]["dice_width"],
             "text_margin": default_mask_parameters[self.face_ids[1]]["text_margin"]
-            }
+        }
         t_frame_trans = pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans.M90
         self.produce_frame(t_frame_parameters, t_frame_trans)
 
@@ -94,18 +68,19 @@ class MultiFace(Chip):
     def _produce_ground_bumps(self):
         """Produces ground bumps between bottom and top face.
 
-        The bumps avoid ground grid avoidance on both faces.
+        The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
+        placed) bumps.
         """
 
+        # Boundary box of a single bump
         bump = self.add_element(FlipChipConnectorDc)
+        bbox_region = pya.Region(bump.dbbox().to_itype(self.layout.dbu))
 
-        # boundary box
-        bbox = bump.dbbox()
-
-        # magic parameters
-        delta_x = 100
-        delta_y = 100
-        edge_from_bump = 750
+        # Bump grid parameters
+        delta_x = 100  # Horizontal bump grid spacing
+        delta_y = 100  # Vertical bump grid spacing
+        existing_bump_avoidance_margin = 120  # Minimum distance allowed to existing bumps
+        edge_from_bump = 750  # Spacing between bump and chip edge
 
         p1 = pya.DPoint(self.face1_box.p1.x + edge_from_bump, self.face1_box.p1.y + edge_from_bump)
         p2 = pya.DPoint(self.face1_box.p2.x - edge_from_bump, self.face1_box.p2.y - edge_from_bump)
@@ -115,20 +90,23 @@ class MultiFace(Chip):
         m = (p2 - p1).y / delta_y
 
         avoidance_layer_bottom = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("ground grid avoidance"))).merged()
+            self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance"))).merged()
         avoidance_layer_top = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("ground grid avoidance", 1))).merged()
-        avoidance_layer = avoidance_layer_bottom + avoidance_layer_top
+            self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 1))).merged()
+        existing_bumps = pya.Region(
+            self.cell.begin_shapes_rec(self.get_layer("indium_bump"))).merged()
+        avoidance_existing_bumps = existing_bumps.sized((existing_bump_avoidance_margin/2) / self.layout.dbu)
+        avoidance_layer = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps).merged()
+
         count = 0
         for i in range(int(n)):
             for j in range(int(m)):
                 pos_bump = p1 + pya.DPoint(i * delta_x, j * delta_y)
-                loc_box = pya.Region(bbox.to_itype(self.layout.dbu)).move(
-                    pya.DVector(pos_bump).to_itype(self.layout.dbu))
-                if loc_box.interacting(avoidance_layer.merged()).is_empty():
+                loc_box = bbox_region.moved(pya.DVector(pos_bump).to_itype(self.layout.dbu))
+                if loc_box.interacting(avoidance_layer).is_empty():
                     self.insert_cell(bump, pya.DTrans(pos_bump))
                     count += 1
-        print("%s: Number of ground bumps %i" %(self.display_name ,count))
+        print("%s: Number of ground bumps %i" % (self.display_name, count))
         self.number_of_gnd_bumps = count
 
     def produce_ground_grid(self):
@@ -161,6 +139,8 @@ class MultiFace(Chip):
             launchers = self.produce_launchers_ARD24()
             if self.routing_waveguides:
                 self._produce_default_routing_ard24(launchers, connector_positions)
+        elif launchers_type == "RF80":
+            launchers = self.produce_launchers_RF80()
 
     def _produce_connectors(self, launchers_type):
         # the connector ids increase from left to right and from top to bottom

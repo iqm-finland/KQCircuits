@@ -9,6 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
+set IMAGEDIR=pcell_images
 
 if "%1" == "" goto help
 
@@ -23,6 +24,12 @@ if errorlevel 9009 (
 	echo.If you don't have Sphinx installed, grab it from
 	echo.http://sphinx-doc.org/
 	exit /b 1
+)
+
+if "%1" == "clean" (
+    if exist %IMAGEDIR% rmdir /s /q %IMAGEDIR%
+) else (
+    python make_pcell_images.py
 )
 
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS% %O%

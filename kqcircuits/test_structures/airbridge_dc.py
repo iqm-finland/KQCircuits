@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,41 +6,25 @@
 # written permission.
 
 import sys
-from importlib import reload
 
-from kqcircuits.elements.airbridge import Airbridge
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.test_structures.test_structure import TestStructure
-
-reload(sys.modules[TestStructure.__module__])
 
 
 class AirbridgeDC(TestStructure):
     """The PCell declaration for an airbridge test structure for four-point DC measurements."""
 
-    PARAMETERS_SCHEMA = {
-        "n_ab": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of airbridges",
-            "default": 30
-        },
-        "pad_height": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Pad height [μm]",
-            "default": 500
-        },
-        "width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Total width [μm]",
-            "default": 2000
-        },
-    }
+    n_ab = Param(pdt.TypeInt, "Number of airbridges", 30)
+    pad_height = Param(pdt.TypeDouble, "Pad height", 500, unit="μm")
+    width = Param(pdt.TypeDouble, "Total width", 2000, unit="μm")
 
     def produce_impl(self):
 
         # create airbridges and islands through which they are connected
 
-        cell_ab = self.add_element(Airbridge)
+        cell_ab = self.add_element(Airbridge, airbridge_type="Airbridge Rectangular")
 
         ab_params = cell_ab.pcell_parameters_by_name()
         ab_pad_width = ab_params["pad_length"]

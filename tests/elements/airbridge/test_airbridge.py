@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -9,7 +9,7 @@ import pytest
 from kqcircuits.pya_resolver import pya
 from autologging import TRACE
 
-from kqcircuits.elements.airbridge import Airbridge
+from kqcircuits.elements.airbridges.airbridge import Airbridge
 
 
 @pytest.fixture
@@ -43,6 +43,6 @@ def test_transformation_from_shape_impl(instance):
 
 def test_produce_impl():
     layout = pya.Layout()
-    pcell = Airbridge.create(layout, r=123)
+    pcell = Airbridge.create(layout, r=123, airbridge_type="Airbridge Rectangular")
     parameters = pcell.pcell_parameters_by_name()
-    assert parameters["r"] is 123
+    assert parameters["r"] == 123

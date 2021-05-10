@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -7,16 +7,16 @@
 
 import sys
 import math
-from importlib import reload
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.airbridge import Airbridge
-from kqcircuits.elements.waveguide_coplanar_bridged import WaveguideCoplanarBridged, Node, NodeType
+from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.airbridge_connection import AirbridgeConnection
+from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
-reload(sys.modules[Chip.__module__])
 
 version = 1
 
@@ -30,30 +30,12 @@ class AirbridgeCrossings(Chip):
     airbridges with different lengths and widths.
     """
 
-    PARAMETERS_SCHEMA = {
-        "crossings": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of double crossings",
-            "docstring": "Number of pairs of airbridge crossings",
-            "default": 10
-        },
-        "b_number": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of bridges",
-            "docstring": "Number of airbridges in one element of the mechanical test array",
-            "default": 5
-        },
-        "bridge_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Crossing airbridge width [μm]",
-            "default": 20
-        },
-        "bridge_length": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Crossing airbridge length [μm]",
-            "default": 48
-        },
-    }
+    crossings = Param(pdt.TypeInt, "Number of double crossings", 10,
+        docstring="Number of pairs of airbridge crossings")
+    b_number = Param(pdt.TypeInt, "Number of bridges", 5,
+        docstring="Number of airbridges in one element of the mechanical test array")
+    bridge_width = Param(pdt.TypeDouble, "Crossing airbridge width", 20, unit="[μm]")
+    bridge_length = Param(pdt.TypeDouble, "Crossing airbridge length", 48, unit="[μm]")
 
     def produce_impl(self):
 
@@ -81,42 +63,41 @@ class AirbridgeCrossings(Chip):
         )
 
         # Crossing transmission line
-        nodes = [Node(node_type=NodeType.WAVEGUIDE, position=launchers["WN"][0])]
+        nodes = [Node(launchers["WN"][0])]
         ref_x = launchers["NW"][0].x
         last_y = launchers["WN"][0].y
         crossings = self.crossings  # must be even
         step = (launchers["WN"][0].y - launchers["WS"][0].y) / (crossings - 0.5) / 2
         wiggle = 250
         for i in range(crossings):
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x - wiggle, last_y)))
-            nodes.append(Node(NodeType.AB_SERIES_SET, pya.DPoint(ref_x, last_y)))
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x + wiggle, last_y)))
+            nodes.append(Node((ref_x - wiggle, last_y)))
+            nodes.append(Node((ref_x, last_y), AirbridgeConnection))
+            nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x + wiggle, last_y)))
-            nodes.append(Node(NodeType.AB_SERIES_SET, pya.DPoint(ref_x, last_y)))
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x - wiggle, last_y)))
+            nodes.append(Node((ref_x + wiggle, last_y)))
+            nodes.append(Node((ref_x, last_y), AirbridgeConnection))
+            nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
-        nodes.append(Node(NodeType.WAVEGUIDE, launchers["WS"][0]))
-        waveguide_cell = self.add_element(WaveguideCoplanarBridged, nodes=nodes,
+        nodes.append(Node(launchers["WS"][0]))
+        waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes,
                                        bridge_width_series=self.bridge_width,
                                        bridge_length_series=self.bridge_length
                                        )
         self.insert_cell(waveguide_cell)
 
-
         # TL without crossings
-        nodes = [Node(NodeType.WAVEGUIDE, launchers["EN"][0])]
+        nodes = [Node(launchers["EN"][0])]
         ref_x = launchers["NE"][0].x + 2 * wiggle + 50
         last_y = launchers["EN"][0].y
         for i in range(crossings):
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x + wiggle, last_y)))
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x - wiggle, last_y)))
+            nodes.append(Node((ref_x + wiggle, last_y)))
+            nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x - wiggle, last_y)))
-            nodes.append(Node(NodeType.WAVEGUIDE, pya.DPoint(ref_x + wiggle, last_y)))
+            nodes.append(Node((ref_x - wiggle, last_y)))
+            nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step
-        nodes.append(Node(NodeType.WAVEGUIDE, launchers["ES"][0]))
-        waveguide_cell = self.add_element(WaveguideCoplanarBridged, nodes=nodes,
+        nodes.append(Node(launchers["ES"][0]))
+        waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes,
                                        bridge_width_series=self.bridge_width,
                                        bridge_length_series=self.bridge_length
                                        )

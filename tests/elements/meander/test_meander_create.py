@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,6 +6,7 @@
 # written permission.
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import get_cell_path_length
 
 from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -55,7 +56,7 @@ def test_continuity_short_meander():
         meanders=4,
         r=50
     )
-    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["annotations"]),
+    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["waveguide_length"]),
                                            continuity_tolerance)
 
 
@@ -68,7 +69,7 @@ def test_continuity_long_meander():
         meanders=15,
         r=50
     )
-    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["annotations"]),
+    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["waveguide_length"]),
                                            continuity_tolerance)
 
 
@@ -82,6 +83,6 @@ def _get_meander_length_error(meander_length, num_meanders, end, r):
         meanders=num_meanders,
         r=r
     )
-    true_length = WaveguideCoplanar.get_length(meander_cell, layout.layer(default_layers["annotations"]))
+    true_length = get_cell_path_length(meander_cell, layout.layer(default_layers["waveguide_length"]))
     relative_error = abs(true_length - meander_length) / meander_length
     return relative_error

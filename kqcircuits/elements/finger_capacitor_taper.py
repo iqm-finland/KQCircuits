@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,6 +6,7 @@
 # written permission.
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.elements.element import Element
 
@@ -16,38 +17,12 @@ class FingerCapacitorTaper(Element):
     Two ports with reference points. Ground plane gap is automatically adjusted to maintain the a/b ratio.
     """
 
-    PARAMETERS_SCHEMA = {
-        "finger_number": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of fingers",
-            "default": 5
-        },
-        "finger_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Width of a finger [μm]",
-            "default": 5
-        },
-        "finger_gap": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Gap between the fingers [μm]",
-            "default": 3
-        },
-        "finger_length": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Length of the fingers [μm]",
-            "default": 20
-        },
-        "taper_length": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Length of the taper [μm]",
-            "default": 60
-        },
-        "corner_r": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Corner radius [μm]",
-            "default": 2
-        }
-    }
+    finger_number = Param(pdt.TypeInt, "Number of fingers", 5)
+    finger_width = Param(pdt.TypeDouble, "Width of a finger", 5, unit="μm")
+    finger_gap = Param(pdt.TypeDouble, "Gap between the fingers", 3, unit="μm")
+    finger_length = Param(pdt.TypeDouble, "Length of the fingers", 20, unit="μm")
+    taper_length = Param(pdt.TypeDouble, "Length of the taper", 60, unit="μm")
+    corner_r = Param(pdt.TypeDouble, "Corner radius", 2, unit="μm")
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -111,11 +86,11 @@ class FingerCapacitorTaper(Element):
 
         region = (region_ground - region_etch) - region_taper_right_small - region_taper_left_small
 
-        self.cell.shapes(self.get_layer("base metal gap wo grid")).insert(region)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region)
 
         # protection
         region_protection = region_ground.size(0, self.margin / self.layout.dbu, 2)
-        self.cell.shapes(self.get_layer("ground grid avoidance")).insert(region_protection)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(region_protection)
 
         # ports
         port_a = pya.DPoint(-(l + g) / 2 - t, 0)

@@ -14,7 +14,7 @@
  <menu-path/>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
- <text># Copyright (c) 2019-2020 IQM Finland Oy.
+ <text># Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -23,20 +23,18 @@
 
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.simulations.export.sonnet.sonnet_export import SonnetExport
+from kqcircuits.simulations.export.sonnet.sonnet_export import export_sonnet_son
 from kqcircuits.defaults import TMP_PATH
 
 """Before using this script, have your project in view as the top cell."""
 
-from pathlib import Path
-path = TMP_PATH # Your path here
-name = "Dev" # makes filename Dev.son
+path = TMP_PATH  # Your path here
+name = "Dev"  # makes filename Dev.son
 
 top_cell = KLayoutView.get_active_cell()
 
-sim = Simulation.from_cell(top_cell, margin=100, name=name)
+simulation = Simulation.from_cell(top_cell, margin=100, name=name)
 
-son = SonnetExport(sim, detailed_resonance=True, lower_accuracy=True, control="ABS",
-  fill_type="Staircase", path=path)
-son.write()</text>
+son = export_sonnet_son(simulation, path)
+print("Exported simulation to {}".format(path))</text>
 </klayout-macro>

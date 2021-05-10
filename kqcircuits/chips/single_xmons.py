@@ -1,31 +1,31 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
 
-import sys
-from importlib import reload
-from autologging import logged, traced
+from autologging import traced
 from math import pi
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.squids import squid_type_choices
 from kqcircuits.util.coupler_lib import produce_library_capacitor
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_squid_type
 
-reload(sys.modules[Chip.__module__])
 
 def _get_num_meanders(meander_length, turn_radius, meander_min_width):
     """Get the required number of meanders to create a meander element with the given parameters."""
 
     return int((meander_length - turn_radius * (pi - 2)) / (meander_min_width + turn_radius * (pi - 2)))
+
 
 @traced
 class SingleXmons(Chip):
@@ -45,48 +45,20 @@ class SingleXmons(Chip):
             left to right).
 
     """
-    PARAMETERS_SCHEMA = {
-        "readout_res_lengths": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Readout resonator lengths (six resonators)",
-            "default": [5000, 5100, 5200, 5300, 5400, 5500]
-        },
-        "use_test_resonators": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Use test resonators",
-            "default": True
-        },
-        "test_res_lengths": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Test resonator lengths (four resonators)",
-            "default": [5200, 5400, 5600, 5800]
-        },
-        "n_fingers": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Number of fingers for test resonator couplers",
-            "default": [4, 4, 2, 4]
-        },
-        "l_fingers": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Length of fingers for test resonator couplers",
-            "default": [23.1, 9.9, 14.1, 10, 21]
-        },
-        "type_coupler": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Coupler type for test resonator couplers",
-            "default": ["square", "square", "square", "plate"]
-        },
-        "squid_name": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "SQUID Type",
-            "default": "QCD1"
-        },
-    }
+    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths (six resonators)",
+                                [5000, 5100, 5200, 5300, 5400, 5500])
+    use_test_resonators = Param(pdt.TypeBoolean, "Use test resonators", True)
+    test_res_lengths = Param(pdt.TypeList, "Test resonator lengths (four resonators)", [5200, 5400, 5600, 5800])
+    n_fingers = Param(pdt.TypeList, "Number of fingers for test resonator couplers", [4, 4, 2, 4])
+    l_fingers = Param(pdt.TypeList, "Length of fingers for test resonator couplers", [23.1, 9.9, 14.1, 10, 21])
+    type_coupler = Param(pdt.TypeList, "Coupler type for test resonator couplers",
+                         ["interdigital", "interdigital", "interdigital", "gap"])
+    squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
 
     def produce_impl(self):
         """Produces a SingleXmons PCell."""
 
-        self.produce_junction_tests(self.squid_name)
+        self.produce_junction_tests(self.squid_type)
         self.launchers = self.produce_launchers_SMA8(enabled=["WN", "EN", "NE", "NW", "SW", "WS", "SE", "ES"])
         self.qubits_refpoints = self._produce_qubits()
 
@@ -155,7 +127,7 @@ class SingleXmons(Chip):
 
         """
         qubit = self.add_element(Swissmon,
-            fluxline_variant="none",
+            fluxline_type="none",
             arm_length=[146] * 4,
             arm_width=[24] * 4,
             gap_width=72,
@@ -164,7 +136,7 @@ class SingleXmons(Chip):
             cpl_width=[60, 24, 60],
             cpl_gap=[110, 102, 110],
             cl_offset=[200, 200],
-            squid_name=self.squid_name,
+            squid_type=self.squid_type,
             n=self.n,
         )
         qubit_spacing_x = 1100  # shortest x-distance between qubit centers on different sides of the feedline
@@ -205,8 +177,8 @@ class SingleXmons(Chip):
         distance_to_feedline = 27
         feedline_coupling_y = 5e3 + factor * distance_to_feedline
         meander_start_x = pos_start.x - (coupling_length + 2 * turn_radius)
-        meander_start = pya.DPoint(meander_start_x, 5e3 + factor * distance_to_feedline
-                                   + factor * 2 * turn_radius)
+        meander_start = pya.DPoint(meander_start_x, 5e3 + factor * distance_to_feedline +
+                                   factor * 2 * turn_radius)
         # non-meandering part of the resonator
         coupler_waveguide = self._produce_waveguide([
             pos_start,
@@ -214,7 +186,7 @@ class SingleXmons(Chip):
             pya.DPoint(meander_start_x, feedline_coupling_y),
             meander_start
         ], turn_radius=turn_radius)
-        len_coupler = WaveguideCoplanar.get_length(coupler_waveguide, self.get_layer("annotations"))
+        len_coupler = coupler_waveguide.length()
         # meandering part of the resonator
         meander_length = total_length - len_coupler
         w = 350
@@ -282,8 +254,7 @@ class SingleXmons(Chip):
             pos_start + pya.DPoint(x1, y1),
             meander_start,
         ], turn_radius=turn_radius)
-        len_nonmeander = WaveguideCoplanar.get_length(nonmeander_waveguide,
-                                                      self.get_layer("annotations"))
+        len_nonmeander = nonmeander_waveguide.length()
 
         # meandering part of the resonator
         meander_length = total_length - len_nonmeander

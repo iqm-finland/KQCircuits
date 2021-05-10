@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,19 +6,18 @@
 # written permission.
 
 import sys
-from importlib import reload
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
-from kqcircuits.elements.airbridge import Airbridge
+from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.util.coupler_lib import produce_library_capacitor
 
-reload(sys.modules[Chip.__module__])
 
 """
 v1.1
@@ -34,58 +33,18 @@ version = 1.1
 class QualityFactor(Chip):
     """The PCell declaration for a QualityFactor chip."""
 
-    PARAMETERS_SCHEMA = {
-        "res_lengths": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Resonator lengths",
-            "default": [5434, 5429, 5374, 5412, 5493, 5589]
-        },
-        "n_fingers": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Number of fingers of the coupler",
-            "default": [4, 4, 2, 4, 4, 4]
-        },
-        "l_fingers": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Length of fingers",
-            "default": [23.1, 9.9, 14.1, 10, 21, 28, 3]
-        },
-        "type_coupler": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Coupler type",
-            "default": ["square", "square", "square", "plate", "plate", "plate"]
-        },
-        "n_ab": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Number of resonator airbridges",
-            "default": [5, 0, 5, 5, 5, 5]
-        },
-        "res_term": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Resonator termination type",
-            "default": ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"]
-        },
-        "res_beg": {
-            "type": pya.PCellParameterDeclaration.TypeList,
-            "description": "Resonator beginning type",
-            "default": ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"]
-        },
-        "res_a": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Resonator waveguide center conductor width [μm]",
-            "default": 10
-        },
-        "res_b": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Resonator waveguide gap width [μm]",
-            "default": 6
-        },
-        "tl_airbridges": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Airbridges on transmission line",
-            "default": True
-        }
-    }
+    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589])
+    n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4])
+    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28, 3])
+    type_coupler = Param(pdt.TypeList, "Coupler type", ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
+    n_ab = Param(pdt.TypeList, "Number of resonator airbridges", [5, 0, 5, 5, 5, 5])
+    res_term = Param(pdt.TypeList, "Resonator termination type",
+        ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
+    res_beg = Param(pdt.TypeList, "Resonator beginning type",
+        ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
+    res_a = Param(pdt.TypeDouble, "Resonator waveguide center conductor width", 10, unit="[μm]")
+    res_b = Param(pdt.TypeDouble, "Resonator waveguide gap width", 6, unit="[μm]")
+    tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
 
     def produce_impl(self):
         # Interpretation of parameter lists
@@ -109,8 +68,8 @@ class QualityFactor(Chip):
         tl_start = points_fl[-1]
 
         resonators = len(self.res_lengths)
-        v_res_step = (launchers["EN"][0] - launchers["WN"][0] - pya.DVector((self.r * 4 + marker_safety * 2), 0)) * (
-                    1. / resonators)
+        v_res_step = (launchers["EN"][0] - launchers["WN"][0] - pya.DVector((self.r * 4 + marker_safety * 2), 0)) * \
+                     (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross,
             length_extra_side=2 * self.a)
 
@@ -145,8 +104,8 @@ class QualityFactor(Chip):
 
             # todo
             if res_beg[i] == "airbridge":
-                pos_res_start = cplr_pos + pya.DTrans.R90 * cplr_refpoints_rel["port_a"] + pya.DVector(0,
-                                                                                                       self.a - 65)  # todo
+                pos_res_start = cplr_pos + pya.DTrans.R90 * cplr_refpoints_rel["port_a"] + \
+                    pya.DVector(0, self.a - 65)  # todo
                 pos_res_end = pos_res_start + pya.DVector(0, -res_lengths[i]) + pya.DVector(0, self.a + 45)  # todo
 
                 pos_beg_ab = pos_res_start + pya.DVector(0, -self.b / 2 + 16)  # todo

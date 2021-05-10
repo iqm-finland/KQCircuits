@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -10,7 +10,6 @@ from kqcircuits.pya_resolver import pya
 
 
 class EmptySimulation(Simulation):
-    PARAMETERS_SCHEMA = {}
 
     def build(self):
         pass

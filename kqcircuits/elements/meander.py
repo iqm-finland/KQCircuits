@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,6 +8,7 @@
 import math
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -20,31 +21,13 @@ class Meander(Element):
     """
 
     # TODO Remove coordinates from PCell parameters.
-    PARAMETERS_SCHEMA = {
-        "start": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "Start",
-            "default": pya.DPoint(0, 0)
-        },
-        "end": {
-            "type": pya.PCellParameterDeclaration.TypeShape,
-            "description": "End",
-            "default": pya.DPoint(200, 0)
-        },
-        "length": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Length [μm]",
-            "default": 400
-        },
-        "meanders": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of meanders (at least 2)",
-            "default": 3
-        }
-    }
+    start = Param(pdt.TypeShape, "Start", pya.DPoint(-600, 0))
+    end = Param(pdt.TypeShape, "End", pya.DPoint(600, 0))
+    length = Param(pdt.TypeDouble, "Length", 3000, unit="μm")
+    meanders = Param(pdt.TypeInt, "Number of meanders (at least 1)", 4)
 
     def coerce_parameters_impl(self):
-        self.meanders = max(self.meanders, 2)
+        self.meanders = max(self.meanders, 1)
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -58,7 +41,6 @@ class Meander(Element):
         points = [pya.DPoint(0, 0)]
         l_direct = self.start.distance(self.end)
         l_rest = l_direct - self.meanders * 2 * self.r
-        l_single_meander = (l_direct - self.length + self.meanders * (math.pi - 4) * self.r) / (2 - 2 * self.meanders)
         l_single_meander = (self.length - (l_rest - 2 * self.r) - (self.meanders * 2 + 2) * (math.pi / 2) * self.r - (
                     self.meanders - 1) * self.r * 2) / (2 * self.meanders)
 
@@ -74,7 +56,9 @@ class Meander(Element):
             path=pya.DPath(points, 1.),
             r=self.r,
             face_ids=self.face_ids,
-            n=self.n
+            n=self.n,
+            a=self.a,
+            b=self.b
         )
 
         angle = 180 / math.pi * math.atan2(self.end.y - self.start.y, self.end.x - self.start.x)

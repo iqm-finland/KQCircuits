@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -10,7 +10,7 @@ from autologging import logged, traced
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bitmap_export_layers, all_layers_bitmap_hide_layers, \
-    default_faces, SRC_PATH
+    default_faces, SRC_PATHS
 
 
 @traced
@@ -87,7 +87,7 @@ class KLayoutView():
         for layer in default_layers.values():
             layout.layer(layer)
         self.layout_view.add_missing_layers()
-        self.layout_view.load_layer_props(str(SRC_PATH.joinpath("default_layer_props.lyp")))
+        self.layout_view.load_layer_props(str(SRC_PATHS[-1].joinpath("default_layer_props.lyp")), True)
 
     def export_layers_bitmaps(self, path, cell, filename="", layers_set=mask_bitmap_export_layers,
                               face_id=None):
@@ -102,12 +102,23 @@ class KLayoutView():
             filename = cell.name
         self._export_bitmap(path, cell, filename=filename, layers_set='all', face_id=face_id)
 
+    def export_pcell_png(self, path, cell, filename, max_size=default_png_dimensions[0]):
+        """Exports pcell to .png file no bigger than max_size at either dimension."""
+
+        zoom = cell.dbbox()
+        x, y = zoom.width(), zoom.height()
+        if max_size * x / y < max_size - 200 :   # 200x100 is enough for the sizebar
+            size = (max_size * x / y + 200, max_size)
+        else:
+            size = (max_size, max_size * y / x + 100)
+        self._export_bitmap(path, cell, filename=filename, layers_set='all', z_box=zoom, pngsize=size)
+
     # ********************************************************************************
     # PRIVATE METHODS
     # ********************************************************************************
 
     def _export_bitmap(self, path, cell=None, filename="", layers_set=mask_bitmap_export_layers,
-                       z_box=pya.DBox(0, 0, 0, 0), face_id=None):
+                       z_box=pya.DBox(0, 0, 0, 0), face_id=None, pngsize=default_png_dimensions):
         if cell is None:
             self.__log.warning("Cannot export bitmap of unspecified cell. Defaulting to active cell in view.")
             cell = pya.CellView.active().cell
@@ -145,7 +156,7 @@ class KLayoutView():
                         layer.visible = False
                         break
 
-            self.layout_view.save_image(str(cell_png_name), default_png_dimensions[0], default_png_dimensions[1])
+            self.layout_view.save_image(str(cell_png_name), pngsize[0], pngsize[1])
         # take screenshots of only specific layers
         else:
             # get the current visibility condition of the layers
@@ -170,7 +181,7 @@ class KLayoutView():
                         layer.visible = True
                         break
 
-            self.layout_view.save_image(str(cell_png_name), default_png_dimensions[0], default_png_dimensions[1])
+            self.layout_view.save_image(str(cell_png_name), pngsize[0], pngsize[1])
 
             # return the layer visibility to before screenshot state
             for i, layer in enumerate(self.layout_view.each_layer()):

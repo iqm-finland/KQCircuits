@@ -13,4 +13,8 @@ folder, which are generated automatically by sphinx-apidoc when you run
 ``docs/templates/apidoc``.
 
 There are some custom Sphinx extensions used in the documentation generation,
-these are in the ``docs/sphinxext`` folder.
+these are in the ``docs/sphinxext`` folder. Also the
+``docs/make_pcell_images.py`` script is used by ``make html`` to create a .png
+image of every PCell into the pcell_images directory, these get included in the
+API documentation. Image generation may produce harmless error messages in
+Windows.

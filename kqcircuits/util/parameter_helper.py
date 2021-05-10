@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -8,10 +8,11 @@
 from autologging import logged, traced
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 """
     Helper module for pcell parameter schemas.
-    
+
     Typical usage example:
 
     from kqcircuits.util.parameter_helper import Validator

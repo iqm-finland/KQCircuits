@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -12,12 +12,12 @@ from kqcircuits.pya_resolver import pya
 
 def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5):
     """Generates the ground grid.
-  
+
   Returns a `Region` covering `boundbox` with `Box`es not overlaping with
   the avoid `Region`.
-  
-  All arguments are in databse unit, not in micrometers!  
-  
+
+  All arguments are in databse unit, not in micrometers!
+
   """
 
     grid_region = pya.Region()

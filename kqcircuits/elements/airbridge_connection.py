@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,39 +6,29 @@
 # written permission.
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.airbridge import Airbridge
+from kqcircuits.elements.airbridges import airbridge_type_choices
+from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.airbridges.airbridge_rectangular import AirbridgeRectangular
 from kqcircuits.defaults import default_layers
 
-
+@add_parameters_from(Airbridge)
+@add_parameters_from(AirbridgeRectangular, "bridge_width")
+@add_parameters_from(WaveguideCoplanarTaper)
 class AirbridgeConnection(Element):
     """The PCell declaration of an Airbridge with tapered waveguides in both ends."""
 
-    PARAMETERS_SCHEMA = {
-        **Airbridge.PARAMETERS_SCHEMA,
-        **WaveguideCoplanarTaper.PARAMETERS_SCHEMA,
-        "with_side_airbridges": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "With airbridges on the sides",
-            "default": True
-        },
-        "with_right_waveguide": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "With waveguide on right side",
-            "default": True
-        },
-        "waveguide_separation": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Distance between waveguide center conductors",
-            "default": 60,
-        },
-    }
+    with_side_airbridges = Param(pdt.TypeBoolean, "With airbridges on the sides", True)
+    with_right_waveguide = Param(pdt.TypeBoolean, "With waveguide on right side", True)
+    waveguide_separation = Param(pdt.TypeDouble, "Distance between waveguide center conductors", 60)
+    airbridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
 
     def produce_impl(self):
-        taper_l = self.add_element(WaveguideCoplanarTaper, WaveguideCoplanarTaper.PARAMETERS_SCHEMA,
+        taper_l = self.add_element(WaveguideCoplanarTaper, WaveguideCoplanarTaper,
             a2=self.bridge_width,
             b2=self.bridge_width/self.a * self.b
         )
@@ -50,6 +40,7 @@ class AirbridgeConnection(Element):
         a = self.bridge_width
         b = a/self.a * self.b
         terminator_l = self.add_element(WaveguideCoplanar,
+            face_ids=self.face_ids,
             path=pya.DPath([
                 taper_end_v.to_p(),
                 pya.DPoint(-self.waveguide_separation/2, 0)
@@ -61,7 +52,7 @@ class AirbridgeConnection(Element):
         )
         self.insert_cell(terminator_l, pya.DTrans(0, 0))
 
-        ab = self.add_element(Airbridge, Airbridge.PARAMETERS_SCHEMA)
+        ab = self.add_element(Airbridge, Airbridge, airbridge_type=self.airbridge_type)
         self.insert_cell(ab, pya.DTrans.R90)
         if self.with_side_airbridges:
             gap_between_bridges = 20
@@ -69,7 +60,7 @@ class AirbridgeConnection(Element):
             self.insert_cell(ab, pya.DTrans(1, False, 0, -self.bridge_width - gap_between_bridges))
 
         if self.with_right_waveguide:
-            taper_r = self.add_element(WaveguideCoplanarTaper, WaveguideCoplanarTaper.PARAMETERS_SCHEMA,
+            taper_r = self.add_element(WaveguideCoplanarTaper, WaveguideCoplanarTaper,
                 a1=self.bridge_width,
                 b1=self.bridge_width/self.a * self.b
             )
@@ -79,6 +70,7 @@ class AirbridgeConnection(Element):
                 self.insert_cell(taper_r, pya.DTrans(taper_end_v-taper_r_ref["port_a"].to_v()))
 
             terminator_r = self.add_element(WaveguideCoplanar,
+                face_ids=self.face_ids,
                 path=pya.DPath([
                     pya.DPoint(self.waveguide_separation/2, 0),
                     taper_end_v.to_p(),
@@ -96,7 +88,7 @@ class AirbridgeConnection(Element):
 
         path_airbridge = pya.DPath([pya.DPoint(-self.waveguide_separation/2, 0),
                                     pya.DPoint(self.waveguide_separation/2, 0)], self.bridge_width)
-        self.cell.shapes(self.get_layer("annotations")).insert(path_airbridge)
+        self.cell.shapes(self.get_layer("waveguide_length")).insert(path_airbridge)
 
         # adds annotation based on refpoints calculated above
         super().produce_impl()

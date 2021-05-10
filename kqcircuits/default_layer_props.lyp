@@ -153,6 +153,23 @@
    <source>'b SIS shadow' 18/2@1</source>
   </group-members>
   <group-members>
+   <frame-color>#80ff8d</frame-color>
+   <fill-color>#80ff8d</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I9</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>true</visible>
+   <transparent>false</transparent>
+   <width/>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'b SIS region' 19/2@1</source>
+  </group-members>
+  <group-members>
    <frame-color>#ffae00</frame-color>
    <fill-color>#ffae00</fill-color>
    <frame-brightness>0</frame-brightness>
@@ -236,23 +253,6 @@
    <animation>0</animation>
    <name/>
    <source>'b through silicon via' 34/4@1</source>
-  </group-members>
-  <group-members>
-   <frame-color>#9580ff</frame-color>
-   <fill-color>#9580ff</fill-color>
-   <frame-brightness>0</frame-brightness>
-   <fill-brightness>0</fill-brightness>
-   <dither-pattern>I9</dither-pattern>
-   <line-style/>
-   <valid>true</valid>
-   <visible>true</visible>
-   <transparent>false</transparent>
-   <width>1</width>
-   <marked>false</marked>
-   <xfill>false</xfill>
-   <animation>0</animation>
-   <name/>
-   <source>'b ports' 39/0@1</source>
   </group-members>
  </properties>
  <properties>
@@ -408,6 +408,23 @@
    <source>'t SIS shadow' 48/2@1</source>
   </group-members>
   <group-members>
+   <frame-color>#800057</frame-color>
+   <fill-color>#800057</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I5</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>true</visible>
+   <transparent>false</transparent>
+   <width/>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'t SIS region' 49/2@1</source>
+  </group-members>
+  <group-members>
    <frame-color>#ffc280</frame-color>
    <fill-color>#ffc280</fill-color>
    <frame-brightness>0</frame-brightness>
@@ -492,23 +509,6 @@
    <name/>
    <source>'t through silicon via' 64/4@1</source>
   </group-members>
-  <group-members>
-   <frame-color>#ffaaba</frame-color>
-   <fill-color>#ffaaba</fill-color>
-   <frame-brightness>0</frame-brightness>
-   <fill-brightness>0</fill-brightness>
-   <dither-pattern>I5</dither-pattern>
-   <line-style/>
-   <valid>true</valid>
-   <visible>true</visible>
-   <transparent>false</transparent>
-   <width>1</width>
-   <marked>false</marked>
-   <xfill>false</xfill>
-   <animation>0</animation>
-   <name/>
-   <source>'t ports' 69/0@1</source>
-  </group-members>
  </properties>
  <properties>
   <frame-color/>
@@ -541,7 +541,7 @@
    <xfill>false</xfill>
    <animation>0</animation>
    <name/>
-   <source>'c metal gap' 70/1@1</source>
+   <source>'c base metal gap' 70/1@1</source>
   </group-members>
   <group-members>
    <frame-color>#ff00ff</frame-color>
@@ -629,42 +629,8 @@
   <name>texts</name>
   <source>*/*@*</source>
   <group-members>
-   <frame-color>#800057</frame-color>
-   <fill-color>#800057</fill-color>
-   <frame-brightness>0</frame-brightness>
-   <fill-brightness>0</fill-brightness>
-   <dither-pattern>I5</dither-pattern>
-   <line-style/>
-   <valid>true</valid>
-   <visible>true</visible>
-   <transparent>false</transparent>
-   <width>1</width>
-   <marked>false</marked>
-   <xfill>false</xfill>
-   <animation>0</animation>
-   <name>top refpoints</name>
-   <source>annotations 85/0@1 #0..1</source>
-  </group-members>
-  <group-members>
-   <frame-color>#800057</frame-color>
-   <fill-color>#800057</fill-color>
-   <frame-brightness>0</frame-brightness>
-   <fill-brightness>0</fill-brightness>
-   <dither-pattern>I5</dither-pattern>
-   <line-style/>
-   <valid>true</valid>
-   <visible>true</visible>
-   <transparent>false</transparent>
-   <width>1</width>
-   <marked>false</marked>
-   <xfill>false</xfill>
-   <animation>0</animation>
-   <name/>
-   <source>annotations 85/0@1</source>
-  </group-members>
-  <group-members>
-   <frame-color>#800080</frame-color>
-   <fill-color>#800080</fill-color>
+   <frame-color>#9580ff</frame-color>
+   <fill-color>#9580ff</fill-color>
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I9</dither-pattern>
@@ -677,7 +643,75 @@
    <xfill>false</xfill>
    <animation>0</animation>
    <name/>
-   <source>'annotations 2' 86/0@1</source>
+   <source>'b ports' 39/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#ffaaba</frame-color>
+   <fill-color>#ffaaba</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I5</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>true</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'t ports' 69/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#800057</frame-color>
+   <fill-color>#800057</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I5</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name>top refpoints</name>
+   <source>refpoints 225/0@1 #0..1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#800057</frame-color>
+   <fill-color>#800057</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I5</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>annotations 220/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#800080</frame-color>
+   <fill-color>#800080</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I9</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'annotations 2' 221/0@1</source>
   </group-members>
   <group-members>
    <frame-color>#500080</frame-color>
@@ -694,7 +728,7 @@
    <xfill>false</xfill>
    <animation>0</animation>
    <name/>
-   <source>'instance names' 87/0@1</source>
+   <source>'instance names' 222/0@1</source>
   </group-members>
   <group-members>
    <frame-color>#004080</frame-color>
@@ -704,14 +738,48 @@
    <dither-pattern>I9</dither-pattern>
    <line-style/>
    <valid>true</valid>
-   <visible>true</visible>
+   <visible>false</visible>
    <transparent>false</transparent>
    <width>1</width>
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
    <name/>
-   <source>'mask graphical rep' 89/0@1</source>
+   <source>'mask graphical rep' 223/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#800057</frame-color>
+   <fill-color>#800057</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I5</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'waveguide length' 224/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#800057</frame-color>
+   <fill-color>#800057</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I5</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>refpoints 225/0@1</source>
   </group-members>
  </properties>
  <properties>

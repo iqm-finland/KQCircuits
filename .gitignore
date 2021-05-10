@@ -73,9 +73,6 @@ instance/
 # Scrapy stuff:
 .scrapy
 
-# Sphinx docs
-# docs/_build/
-
 # PyBuilder
 target/
 
@@ -143,6 +140,7 @@ dmypy.json
 # Sphinx docs
 docs/_build
 docs/api
+docs/pcell_images
 
 # Temporary files
 /tmp

@@ -1,19 +1,19 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
 
-import sys
-from importlib import reload
 
-from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
+from kqcircuits.defaults import default_squid_type
+from kqcircuits.pya_resolver import pya
+from kqcircuits.squids import squid_type_choices
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 
-reload(sys.modules[Chip.__module__])
 
 version = 1
 
@@ -21,28 +21,10 @@ version = 1
 class JunctionTest2(Chip):
     """The PCell declaration for a JunctionTest2 chip."""
 
-    PARAMETERS_SCHEMA = {
-        "pad_width": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Pad Width [μm]",
-            "default": 500
-        },
-        "junctions_horizontal": {
-            "type": pya.PCellParameterDeclaration.TypeBoolean,
-            "description": "Horizontal (True) or vertical (False) junctions",
-            "default": True
-        },
-        "squid_name": {
-            "type": pya.PCellParameterDeclaration.TypeString,
-            "description": "SQUID Type",
-            "default": "QCD1"
-        },
-        "pad_spacing": {
-            "type": pya.PCellParameterDeclaration.TypeDouble,
-            "description": "Spacing between different pad pairs [μm]",
-            "default": 100
-        },
-    }
+    pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="[μm]")
+    junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
+    squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
+    pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="[μm]")
 
     def produce_impl(self):
         left = self.box.left
@@ -54,7 +36,8 @@ class JunctionTest2(Chip):
             area_height=6000,
             area_width=1700,
             junctions_horizontal=self.junctions_horizontal,
-            squid_name=self.squid_name,
+            junction_type="both",
+            squid_type=self.squid_type,
             pad_spacing=self.pad_spacing,
         )
         junction_test_center = self.add_element(JunctionTestPads,
@@ -62,7 +45,8 @@ class JunctionTest2(Chip):
             area_height=9400,
             area_width=6000,
             junctions_horizontal=self.junctions_horizontal,
-            squid_name=self.squid_name,
+            junction_type="both",
+            squid_type=self.squid_type,
             pad_spacing=self.pad_spacing,
         )
 

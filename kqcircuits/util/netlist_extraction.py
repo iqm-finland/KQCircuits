@@ -1,4 +1,4 @@
-# Copyright (c) 2019-2020 IQM Finland Oy.
+# Copyright (c) 2019-2021 IQM Finland Oy.
 #
 # All rights reserved. Confidential and proprietary.
 #
@@ -6,9 +6,42 @@
 # written permission.
 
 import json
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.defaults import default_layers
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
+
+import logging
+log = logging.getLogger(__name__)
+
+
+def export_cell_netlist(cell, filename):
+    """ Exports netlist into `filename` in JSON
+
+    Args:
+        cell: pya Cell object
+        filename: absolute path as convertible to string
+    """
+    # get LayoutToNetlist object
+    layout = cell.layout()
+    shapes_iter = layout.begin_shapes(cell, layout.layer(default_layers["b_ports"]))
+    ltn = pya.LayoutToNetlist(shapes_iter)
+    # select conducting layers
+    connector_region = ltn.make_layer(layout.layer(default_layers["b_ports"]), "connector")
+    ltn.connect(connector_region)
+    # extract netlist for the cell
+    ltn.extract_netlist()
+    netlist = ltn.netlist()
+    # extract cell to circuit map for finding the netlist of interest
+    cm = ltn.const_cell_mapping_into(layout, cell)
+    reverse_cell_map = dict(zip(cm.table().values(), cm.table().keys()))
+    # export the circuit of interest
+    circuit = netlist.circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
+    if circuit:
+        log.info(f"Exporting netlist to {filename}")
+        export_netlist(circuit, filename, ltn.internal_layout(), layout, cm)
+    else:
+        log.info(f"No circuit found for {cell.display_title()}")
 
 
 def export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping):
@@ -91,5 +124,5 @@ def extract_circuits(cell_mapping, internal_cell, layout):
                 **pcell_parameters
             }
         circuit_for_export["waveguide_length"] = \
-            get_cell_path_length(original_cell, layout.layer(default_layers["annotations"]))
+            get_cell_path_length(original_cell, layout.layer(default_layers["waveguide_length"]))
     return circuit_for_export
