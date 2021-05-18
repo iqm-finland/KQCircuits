@@ -10,6 +10,7 @@ from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.airbridges import airbridge_type_choices
 
 
 class WaveguideCoplanarTCross(Element):
@@ -21,8 +22,7 @@ class WaveguideCoplanarTCross(Element):
     length_extra_side = Param(pdt.TypeDouble, "Extra length of the side waveguide", 0)
     use_airbridges = Param(pdt.TypeBoolean, "Use airbridges at a distance from the centre", False)
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
-    bridge_type = Param(pdt.TypeString, "Airbridge type", "normal",
-                        choices=[["normal", "normal"]])
+    bridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
 
     def produce_impl(self):
         # Origin: Crossing of centers of the center conductors
@@ -42,7 +42,7 @@ class WaveguideCoplanarTCross(Element):
         self.ab_params = {
             "pad_length": pad_length,
             "pad_extra": pad_extra,
-            "bridge_type": self.bridge_type
+            "airbridge_type": self.bridge_type
         }
 
         port_l_location_x = -l - b2 - a2 / 2
