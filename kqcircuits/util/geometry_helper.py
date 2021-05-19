@@ -1,6 +1,6 @@
 """Helper module for general geometric functions"""
 
-from math import cos, sin, radians
+from math import cos, sin, radians, atan2, degrees
 
 from kqcircuits.pya_resolver import pya
 
@@ -22,8 +22,27 @@ def point_shift_along_vector(start, other, distance=None):
 
 
 def get_direction(angle):
-    """Returns the direction vector corresponding to `angle`."""
+    """
+    Returns the direction vector corresponding to `angle`.
+
+    Args:
+        angle: angle in degrees
+
+    Returns: Unit vector in direction angle
+    """
     return pya.DVector(cos(radians(angle)), sin(radians(angle)))
+
+
+def get_angle(vector):
+    """
+    Returns the angle in degrees for a given DVector (or DPoint)
+
+    Args:
+        vector: input vector
+
+    Returns: angle in degrees
+    """
+    return degrees(atan2(vector.y, vector.x))
 
 
 def get_cell_path_length(cell, annotation_layer):

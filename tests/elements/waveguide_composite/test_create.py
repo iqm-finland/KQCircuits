@@ -4,7 +4,7 @@
 #
 # Distribution or reproduction of any information contained herein is prohibited without IQM Finland Oy’s prior
 # written permission.
-
+from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -25,11 +25,19 @@ nodes1 = [
     Node(pya.DPoint(1000, 100)),
     Node(pya.DPoint(1050, 100), ab_across=True),
     Node(pya.DPoint(1100, 100), WaveguideCoplanarTaper, a=10, b=5),
-    Node(pya.DPoint(1200, 100)),
-    Node(pya.DPoint(1300, 0), n_bridges=3),
-    Node(pya.DPoint(1600, 0), FlipChipConnectorRf, face_id="b", connector_type="Single"),
-    Node(pya.DPoint(1800, 0), AirbridgeConnection, with_side_airbridges=True),
-    Node(pya.DPoint(2000, 0)),
+    Node(pya.DPoint(1300, 100)),
+    Node(pya.DPoint(1400, 0), n_bridges=3),
+    Node(pya.DPoint(1700, 0), FlipChipConnectorRf, face_id="b", connector_type="Single"),
+    Node(pya.DPoint(1900, 0), AirbridgeConnection, with_side_airbridges=True),
+    Node(pya.DPoint(2100, 0)),
+    Node(pya.DPoint(2150,0), WaveguideCoplanarTCross, align=("port_left", "port_right")),
+    Node(pya.DPoint(2350, 50)),
+    Node(pya.DPoint(2400, 50), WaveguideCoplanarTCross, align=("port_right", "port_left"), inst_name="second_tee"),
+    Node(pya.DPoint(2500, 50)),
+    Node(pya.DPoint(2600, 50), WaveguideCoplanarTCross, align=("port_bottom", "port_right")),
+    Node(pya.DPoint(2700, -200)),
+    Node(pya.DPoint(2700, -300), FlipChipConnectorRf, face_id="t", output_rotation=90),
+    Node(pya.DPoint(2500, -200)),
 ]
 
 # *exactly* like above but use simplified notation
@@ -42,11 +50,19 @@ nodes2 = [
     Node((1000, 100)),
     Node((1050, 100), ab_across=True),
     Node((1100, 100), a=10, b=5),
-    Node((1200, 100)),
-    Node((1300, 0), n_bridges=3),
-    Node((1600, 0), face_id="b", connector_type="Single"),
-    Node((1800, 0), AirbridgeConnection),
-    Node((2000, 0)),
+    Node((1300, 100)),
+    Node((1400, 0), n_bridges=3),
+    Node((1700, 0), face_id="b", connector_type="Single"),
+    Node((1900, 0), AirbridgeConnection),
+    Node((2100, 0)),
+    Node(pya.DPoint(2150, 0), WaveguideCoplanarTCross, align=("port_left", "port_right")),
+    Node(pya.DPoint(2350, 50)),
+    Node(pya.DPoint(2400, 50), WaveguideCoplanarTCross, align=("port_right", "port_left"), inst_name="second_tee"),
+    Node(pya.DPoint(2500, 50)),
+    Node(pya.DPoint(2600, 50), WaveguideCoplanarTCross, align=("port_bottom", "port_right")),
+    Node(pya.DPoint(2700, -200)),
+    Node(pya.DPoint(2700, -300), face_id="t", output_rotation=90),
+    Node(pya.DPoint(2500, -200)),
 ]
 
 def test_crash_and_node_formats(capfd):

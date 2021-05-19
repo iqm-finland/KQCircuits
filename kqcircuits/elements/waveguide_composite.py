@@ -6,15 +6,16 @@
 # written permission.
 
 import ast
-from math import degrees, atan2
 from importlib import import_module
+from typing import Tuple
+
 from scipy.optimize import root_scalar
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import to_module_name
 from kqcircuits.util.geometry_helper import vector_length_and_direction, point_shift_along_vector, \
-                                            get_cell_path_length
+    get_cell_path_length, get_angle
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -33,7 +34,10 @@ class Node:
 
     Args:
         position: The location of the Node. Represented as a DPoint object.
-        element: The Element type that get's inserted in the waveguide. None by default.
+        element: The Element type that gets inserted in the waveguide. None by default.
+        inst_name: If an instance name is supplied, the element refpoints will be exposed with that name. Default None.
+        align: Tuple with two refpoint names that correspond the input and output point of element, respectively
+               Default value (None) uses ``('port_a', 'port_b')``
         **params: Other optional parameters for the inserted element
 
     Returns:
@@ -42,27 +46,87 @@ class Node:
 
     position: pya.DPoint
     element: Element
+    inst_name: str
+    align: Tuple
 
-    def __init__(self, position, element=None, **params):
+    def __init__(self, position, element=None, inst_name=None, align=tuple(), **params):
         if type(position) == tuple:
             self.position = pya.DPoint(position[0], position[1])
         else:
             self.position = position
         self.element = element
+        self.align = align
+        self.inst_name = inst_name
         self.params = params
 
     def __str__(self):
-        """Textual representation of a Node, needed for storage in KLayout parameters."""
+        """
+        String representation of a Node, used for serialization and needed for storage in KLayout parameters.
+
+        The corresponding deserialization is implemented in `Node.deserialize`.
+        """
 
         txt = f"{self.position.x}, {self.position.y}"
-        if self.element:
+        if self.element is not None:
             txt += f", '{self.element.__name__}'"
-        if self.params:
-            for pn, pv in self.params.items():
+
+        magic_params = {}
+        if self.align:
+            magic_params['align'] = self.align
+        if self.inst_name:
+            magic_params['inst_name'] = self.inst_name
+
+        all_params = {**self.params, **magic_params}
+        if all_params:
+            for pn, pv in all_params.items():
                 if type(pv) is pya.DPoint:  # encode DPoint as tuple
-                    self.params[pn] = (pv.x, pv.y)
-            txt += f", {self.params}"
+                    all_params[pn] = (pv.x, pv.y)
+            txt += f", {all_params}"
         return "(" + txt + ")"
+
+    @classmethod
+    def deserialize(cls, node):
+        """
+        Create a Node object from a serialized form, such that ``from_serialized(ast.literal_eval(str(node_object)))``
+        returns an equivalent copy of ``node_obj``.
+
+        Args:
+            node: serialized node, consisting of a tuple ``(x, y, element_name, params)``, where ``x`` and ``y`` are the
+                node coordinates. The string ``element_name`` and dict ``params`` are optional.
+
+        Returns: a Node
+
+        """
+        x, y = node[0:2]
+        element = None
+        params = {}
+        if len(node) > 2:
+            if type(node[2]) is dict:
+                params = node[2]
+            else:
+                element = node[2]
+        if len(node) > 3:
+            params = node[3]
+
+        if element is not None:
+            if element in globals():
+                element = globals()[element]
+            else:
+                name = to_module_name(element)
+                path = "kqcircuits.elements."
+                if name.startswith("airbridge") and element != "AirbridgeConnection":
+                    path += "airbridges."
+                module = import_module(path + name)
+                element = getattr(module, element)
+            # TODO improve library_helper to get Element by name?
+
+        # re-create DPoint from tuple
+        magic_params = ('align', 'inst_name')
+        for pn, pv in params.items():
+            if type(pv) is tuple and pn not in magic_params:
+                params[pn] = pya.DPoint(pv[0], pv[1])
+
+        return cls(pya.DPoint(x, y), element, **params)
 
 
 @add_parameters_from(AirbridgeConnection)
@@ -114,11 +178,13 @@ class WaveguideComposite(Element):
         inserted after if the next Node is not collinear.
         """
         self._nodes = self._nodes_from_string()
-        if not self._nodes:
+        self._child_refpoints = {}
+        if len(self._nodes) < 2:
             return
 
         self._wg_start_idx = 0      # next waveguide starts here
         self._wg_start_pos = self._nodes[0].position
+        _, self._wg_start_dir = vector_length_and_direction(self._nodes[1].position - self._wg_start_pos)
 
         for i, node in enumerate(self._nodes):
             if node.element is None:
@@ -145,6 +211,9 @@ class WaveguideComposite(Element):
         if node.element is None:
             self._add_waveguide(i)
 
+        self.refpoints.update(self._child_refpoints)
+        super().produce_impl()
+
     def _nodes_from_string(self):
         """Converts the human readable text representation of Nodes to an actual Node object list.
 
@@ -160,39 +229,7 @@ class WaveguideComposite(Element):
             self.nodes = ", ".join(self.nodes)
         node_list = ast.literal_eval(self.nodes + ",")
 
-        nodes = []
-        for node in node_list:
-            x, y = node[0:2]
-            element = None
-            params = {}
-            if len(node) > 2:
-                element = node[2]
-                if type(element) is dict:
-                    params = element
-                    element = None
-            if len(node) > 3:
-                params = node[3]
-
-            if element:
-                if element in globals():
-                    element = globals()[element]
-                else:
-                    name = to_module_name(element)
-                    path = "kqcircuits.elements."
-                    if name.startswith("airbridge") and element != "AirbridgeConnection":
-                        path += "airbridges."
-                    module = import_module(path + name)
-                    element = getattr(module, element)
-                # TODO improve library_helper to get Element by name?
-
-            if params:  # re-create DPoint from tuple
-                for pn, pv in params.items():
-                    if type(pv) is tuple:
-                        params[pn] = pya.DPoint(pv[0], pv[1])
-
-            nodes.append(Node(pya.DPoint(x, y), element, **params))
-
-        return nodes
+        return [Node.deserialize(node) for node in node_list]
 
     def _add_taper(self, ind):
         """Create a WaveguideCoplanarTaper and change default a/b."""
@@ -223,7 +260,7 @@ class WaveguideComposite(Element):
         # TODO support vias?
 
         fc_cell = self.add_element(FlipChipConnectorRf, **params)
-        self._insert_cell_and_waveguide(ind, fc_cell, f'{old_id}_port', f'{new_id}_port')
+        self._insert_cell_and_waveguide(ind, fc_cell, before=f'{old_id}_port', after=f'{new_id}_port')
 
         self.face_ids[0] = new_id
         self.face_ids[1] = old_id
@@ -266,56 +303,79 @@ class WaveguideComposite(Element):
         params = {**self.pcell_params_by_name(Element), 'taper_length': self.taper_length, **node.params}
 
         cell = self.add_element(node.element, **params)
-        self._insert_cell_and_waveguide(ind, cell)
+        self._insert_cell_and_waveguide(ind, cell, node.inst_name, *node.align)
 
-    def _insert_cell_and_waveguide(self, ind, cell, before="port_a", after="port_b"):
+    def _insert_cell_and_waveguide(self, ind, cell, inst_name=None, before="port_a", after="port_b"):
         """Place a cell and create the preceding waveguide.
 
         Normally the element is oriented from the previous node towards this one. Except the first
         one, that goes from here towards the next.
+
+        If the element has corner points corresponding to ``before`` and ``after`` (e.g. ``port_a_corner``), these are
+        used to determine the entry and exit directions of the ports. If these points do not exist, the waveguides will
+        extend the line through ``before`` and ``after``.
         """
+        before_corner = before + '_corner'
+        after_corner = after + '_corner'
+
+        rel_ref = self.get_refpoints(cell, rec_levels=0)
+        element_dir = rel_ref[after] - rel_ref[before]
 
         node = self._nodes[ind]
         if ind == 0:
-            v_dir = self._nodes[ind+1].position - node.position
+            waveguide_dir = self._nodes[ind+1].position - node.position
+            if after_corner in rel_ref:
+                element_dir = rel_ref[after_corner] - rel_ref[after]
         else:
-            v_dir = node.position - self._nodes[ind-1].position
+            waveguide_dir = node.position - self._nodes[ind-1].position
+            if before_corner in rel_ref:
+                element_dir = rel_ref[before] - rel_ref[before_corner]
 
-        trans = pya.DCplxTrans(1, degrees(atan2(v_dir.y, v_dir.x)), False, node.position)
+        trans = pya.DCplxTrans(1, get_angle(waveguide_dir) - get_angle(element_dir), False, node.position)
 
         if ind == 0 or ind == len(self._nodes) - 1:
-            rel_ref = self.get_refpoints(cell, rec_levels=0)
             trans *= pya.DTrans(-rel_ref[before if ind == 0 else after])
 
         _, ref = self.insert_cell(cell, trans)
+        if inst_name is not None:
+            for name, value in ref.items():
+                self._child_refpoints[f'{inst_name}_{name}'] = value
+
         self._add_waveguide(ind, ref[before])
         self._wg_start_pos = ref[after]
+        if after_corner in ref:
+            _, self._wg_start_dir = vector_length_and_direction(ref[after_corner] - ref[after])
+        # else:
+        #     _, self._wg_start_dir = vector_length_and_direction(ref[after] - ref[before])
         self._wg_start_idx = ind
 
-    def _add_waveguide(self, end, end_pos=None):
+    def _add_waveguide(self, end_index, end_pos=None):
         """Finish the WaveguideCoplanar ending here.
 
         Args:
-            end: index of the last Node of the waveguide
+            end_index: index of the last Node of the waveguide
             end_pos: alternative endpoint of the waveguide
         """
 
-        start = self._wg_start_idx
-        if end == start:
+        start_index = self._wg_start_idx
+        if end_index <= start_index:
             return
         points = [self._wg_start_pos]
 
-        if not self._collinear_or_end(start):   # add a bend after an inserted element, if needed
-            v = points[0] - self._nodes[start-1].position
-            points.append(points[0] + v / v.length() * self.r)
+        start_direction = self._wg_start_dir
+        _, direction_to_next = vector_length_and_direction(self._nodes[start_index + 1].position - self._wg_start_pos)
 
-        sn = self._nodes[start]
+        if (start_direction - direction_to_next).length() > 0.001:
+            # Direction of next node doesn't align, insert an extra bend as close to the start as possible
+            points.append(points[0] + self.r*start_direction)
+
+        sn = self._nodes[start_index]
         if not sn.element and "ab_across" in sn.params and sn.params["ab_across"]:
-            self._ab_across(self._nodes[start+1].position, sn.position, 0)
+            self._ab_across(self._nodes[start_index+1].position, sn.position, 0)
 
-        for i in range(start + 1, end + 1):
+        for i in range(start_index + 1, end_index + 1):
             node = self._nodes[i]
-            points.append(end_pos if end_pos and i == end else node.position)
+            points.append(end_pos if end_pos and i == end_index else node.position)
             if "ab_across" in node.params and node.params["ab_across"]:
                 self._ab_across(points[-2], points[-1], 0)
             if "n_bridges" in node.params and node.params["n_bridges"] > 0:
@@ -324,13 +384,16 @@ class WaveguideComposite(Element):
         params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": pya.DPath(points, 1)}
 
         # no termination if in the middle or if the ends are actual elements
-        if start != 0 or self._nodes[start].element:
+        if start_index != 0 or self._nodes[start_index].element:
             params['term1'] = 0
-        if end != len(self._nodes) - 1 or self._nodes[end].element:
+        if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
             params['term2'] = 0
 
         wg = self.add_element(WaveguideCoplanar, **params)
         self.insert_cell(wg)
+
+        self._wg_start_pos = points[-1]
+        _, self._wg_start_dir = vector_length_and_direction(points[-1] - points[-2])
 
     def _ab_across(self, start, end, num):
         """Creates ``num`` airbridge crossings equally distributed between ``start`` and ``end``.
@@ -339,7 +402,7 @@ class WaveguideComposite(Element):
 
         ab_cell = self.add_element(Airbridge, Airbridge, airbridge_type=self.airbridge_type)
         v_dir = end - start
-        alpha = degrees(atan2(v_dir.y, v_dir.x))
+        alpha = get_angle(v_dir)
 
         if num > 0:
             for i in range(1, num + 1):
@@ -348,21 +411,6 @@ class WaveguideComposite(Element):
         else:
             ab_trans = pya.DCplxTrans(1, alpha, False, end)
             self.insert_cell(ab_cell, ab_trans)
-
-    def _collinear_or_end(self, ind):
-        """Is node at ``ind`` in a straight segment or at one end?"""
-
-        if ind == 0 or ind == len(self._nodes) - 1:
-            return True
-
-        p1 = self._nodes[ind - 1].position
-        p2 = self._nodes[ind].position
-        p3 = self._nodes[ind + 1].position
-
-        _, d1 = vector_length_and_direction(p2 - p1)
-        _, d2 = vector_length_and_direction(p3 - p2)
-
-        return (d1 - d2).abs() < 0.001 # TODO close enough?
 
     def _terminator(self, ind):
         """Terminate a the waveguide ending with an Element."""
