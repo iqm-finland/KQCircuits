@@ -219,11 +219,11 @@ class Element(pya.PCellDeclarationHelper):
 
         Args:
             name: name for the port. Will be "decorated" for annotation layer, left as is for port layer. If evaluates
-            to False, it will be replaced with `port`
+                to False, it will be replaced with `port`
             pos: pya.DVector or pya.DPoint marking the position of the port in the Element base
             direction: direction of the signal going _to_ the port to determine the location of the "corner" reference
-            point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
-            added.
+                point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
+                added.
         """
         text = pya.DText(name, pos.x, pos.y)
         self.cell.shapes(self.get_layer("ports")).insert(text)

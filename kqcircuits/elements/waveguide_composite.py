@@ -40,7 +40,7 @@ class Node:
     """Specifies a single node of a composite waveguide.
 
     Node is as a ``position`` and optionally other parameters. The ``element`` argument sets an Element
-    type that get's inserted in the waveguide. Typically this is an Airbridge, but any element with
+    type that gets inserted in the waveguide. Typically this is an Airbridge, but any element with
     port_a and port_b is supported.
 
     Args:
@@ -165,7 +165,7 @@ class WaveguideComposite(Element):
     FlipChipConnector, respectively and change the defaults too.
 
     Using _a/_b sets a/b for the AirbridgeConnection but does not change the waveguide's defaults.
-    Used for directly setting the first airbrige in a waveguide or for circumventing scaling issues
+    Used for directly setting the first airbridge in a waveguide or for circumventing scaling issues
     of AirbridgeConnection. See "test_wgc_airbridge.lym" for examples.
 
     The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``
@@ -306,7 +306,7 @@ class WaveguideComposite(Element):
 
         a, b = params['a'], params['b']
 
-        params['a'], params['b'] = params.pop('_a', a), params.pop('_b', b) # obverride a/b if it looks funny
+        params['a'], params['b'] = params.pop('_a', a), params.pop('_b', b) # override a/b if it looks funny
 
         if ind == 0:
             if not {'a1', 'b1', 'a', 'b'} & set(node.params):
@@ -442,7 +442,7 @@ class WaveguideComposite(Element):
             self.insert_cell(ab_cell, ab_trans)
 
     def _terminator(self, ind):
-        """Terminate a the waveguide ending with an Element."""
+        """Terminate the waveguide ending with an Element."""
 
         if ind == 0 and self.term1 > 0:
             p1 = self._nodes[ind + 1].position
