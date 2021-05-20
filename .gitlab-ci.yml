@@ -1,4 +1,4 @@
-image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:kqc-test-01
+image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:kqc-test-02
 
 cache:
   key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
@@ -6,8 +6,9 @@ cache:
     - .pip-cache
 
 before_script:
-  - mkdir -p .pip-cache
-  - pip --cache-dir=.pip-cache install -e ".[docs,tests]" --upgrade --upgrade-strategy=eager
+  - mkdir -p $HOME/.klayout/python .pip-cache
+  - pip --cache-dir=.pip-cache install -e ".[docs,tests]"
+  - python setup_within_klayout.py
 
 test:
   stage: test

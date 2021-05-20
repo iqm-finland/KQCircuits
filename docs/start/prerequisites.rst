@@ -15,7 +15,7 @@ because the KLayout python folder is only created then.
 
 Successfully tested versions:
 
-- Linux (Ubuntu 18.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 and 0.27
+- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.26.12
 - MacOS: KLayout 0.26.3
 - Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7, 0.26.8
 
