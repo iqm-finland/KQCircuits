@@ -1,4 +1,4 @@
-# This code is part of KQCirquits
+# This code is part of KQCircuits
 # Copyright (C) 2021 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -20,7 +20,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='kqcircuits',
-    version="2.2.6",
+    version="2.2.7",
     description="KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.",
     author="IQM Finland Oy",
     author_email="developers@meetiqm.com",

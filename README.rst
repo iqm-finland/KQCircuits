@@ -42,7 +42,7 @@ It may also be generated from the sources with `make html` in the docs directory
 Copyright
 ---------
 
-This code is part of KQCirquits
+This code is part of KQCircuits
 Copyright (C) 2021 IQM Finland Oy
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
