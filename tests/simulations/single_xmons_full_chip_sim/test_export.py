@@ -15,12 +15,15 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+import pytest
 from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChipSim
 
 
+@pytest.mark.slow
 def test_ansys_export_produces_output_files(layout, perform_test_ansys_export_produces_output_files):
     perform_test_ansys_export_produces_output_files(SingleXmonsFullChipSim(layout))
 
 
+@pytest.mark.slow
 def test_sonnet_export_produces_output_files(layout, perform_test_sonnet_export_produces_output_files):
     perform_test_sonnet_export_produces_output_files(SingleXmonsFullChipSim(layout))
