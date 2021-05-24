@@ -50,23 +50,23 @@ class FlipChipConnectorRf(FlipChipConnector):
     def produce_impl(self):
         # Flip-chip bump
         bump = self.add_element(FlipChipConnectorDc,
-            ubm_box=self.ubm_box, bump_diameter=self.bump_diameter, margin=self.margin)
+                                ubm_diameter=self.ubm_diameter, bump_diameter=self.bump_diameter, margin=self.margin)
         self.insert_cell(bump)
         bump_ref = self.get_refpoints(bump)
         self.__log.debug("bump_ref: %s", bump_ref)
 
         # Taper geometry
         taper = self.add_element(Launcher,
-                                s=self.ubm_box, l=self.ubm_box, face_ids=[self.face_ids[0]],
-                                a=self.a, b=self.b)
+                                 s=self.ubm_diameter, l=self.ubm_diameter, face_ids=[self.face_ids[0]],
+                                 a=self.a, b=self.b)
         taper_t = self.add_element(Launcher,
-                                s=self.ubm_box, l=self.ubm_box, face_ids=[self.face_ids[1]],
-                                a=self.a, b=self.b)
+                                   s=self.ubm_diameter, l=self.ubm_diameter, face_ids=[self.face_ids[1]],
+                                   a=self.a, b=self.b)
         self.insert_cell(taper, pya.DCplxTrans(
-            1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_box, 0)), self.face_ids[0])
+            1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_diameter, 0)), self.face_ids[0])
         self.insert_cell(taper_t, pya.DCplxTrans(
             1, self.output_rotation, False, pya.DVector(0, 0)) * pya.DCplxTrans(
-            1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_box, 0)), self.face_ids[1])
+            1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_diameter, 0)), self.face_ids[1])
 
         if self.connector_type == "GSG":
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(0, self.inter_bump_distance)))
