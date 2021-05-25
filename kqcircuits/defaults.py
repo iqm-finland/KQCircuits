@@ -257,3 +257,11 @@ default_marker_type = "Marker Standard"
 default_junction_test_pads_type = "Junction Test Pads Simple"
 
 default_drc_runset = "example.drc"
+
+
+# default elements to breakdown before netlist export
+# list of strings
+default_netlist_breakdown = [
+    "Waveguide Composite",
+    "Meander",
+]
