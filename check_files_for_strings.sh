@@ -16,6 +16,7 @@ excluded_paths=( \
 "*.png" \
 "*tmp" \
 "*pycache*" \
+"*docs/_build/html/_static*" \
 )
 for path in "${excluded_paths[@]}"; do
   # arguments for "find" to exclude paths

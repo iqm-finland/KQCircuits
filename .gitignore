@@ -138,7 +138,7 @@ dmypy.json
 .idea/
 
 # Sphinx docs
-docs/_build
+docs/_build/doctrees
 docs/api
 docs/pcell_images
 
