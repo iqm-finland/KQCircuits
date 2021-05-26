@@ -1,7 +1,7 @@
 KQCircuits
 ==========
 
-KQCircuits is a Python library developed by Aalto and IQM for automating the design of
+KQCircuits is a Python library developed by IQM for automating the design of
 superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design program
 API.
 
@@ -26,16 +26,16 @@ the graphical user interface mode is recommended.
 
 Install and run KLayout once. Run `python3 setup_within_klayout.py` then klayout will contain
 KQCircuits. For further details see the `getting started documentation
-<https://iqm.gitlab-pages.iqm.fi/qe/KQCircuits/start/index.html>`__.
+<https://iqm-finland.github.io/KQCircuits/start/index.html>`__.
 
 For stand alone mode run `python -m pip install -e .[docs,tests]`. Then scripts may be run and
 documentation can be built. For further details see the `documentation
-<https://iqm.gitlab-pages.iqm.fi/qe/KQCircuits/developer/setup.html>`__.
+<https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
 
 Documentation
 -------------
 
-Documentation for KQCircuits can be found `here <https://iqm.gitlab-pages.iqm.fi/qe/KQCircuits/>`__.
+Documentation for KQCircuits can be found `here <https://iqm-finland.github.io/KQCircuits/>`__.
 
 It may also be generated from the sources with `make html` in the docs directory.
 
@@ -43,6 +43,7 @@ Copyright
 ---------
 
 This code is part of KQCircuits
+
 Copyright (C) 2021 IQM Finland Oy
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
