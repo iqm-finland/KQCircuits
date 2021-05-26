@@ -175,11 +175,29 @@ class WaveguideComposite(Element):
     This way a waveguide taper is automatically inserted before and after the airbridge so the user
     does not have to manually add these. Other Node types do not have this feature.
 
+    A WaveguideComposite cell has a method ``segment_lengths`` that returns a list of lengths of each individual
+    regular waveguide segment. Segments are bounded by any element that is not a standard waveguide, such as Airbridge,
+    flip chip, taper or any custom element.
+
     For examples see the test_waveguide_composite.lym script.
     """
 
     nodes = Param(pdt.TypeString, "List of Nodes for the waveguide", "(0, 0, 'Airbridge'), (200, 0)")
     taper_length = Param(pdt.TypeDouble, "Taper length", 100, unit="μm")
+
+    @classmethod
+    def create(cls, layout, **parameters):
+        cell = super().create(layout, **parameters)
+
+        # Measure segment lengths, counting only "regular waveguides"
+        layout = cell.layout()
+        child_cells = [layout.cell(cell_index) for cell_index in cell.each_child_cell()]
+        annotation_layer = layout.layer(default_layers['waveguide_length'])
+        segment_lengths = [get_cell_path_length(child_cell, annotation_layer) for child_cell in child_cells
+                           if child_cell.name == "Waveguide Coplanar"]
+        setattr(cell, "segment_lengths", lambda: segment_lengths)
+
+        return cell
 
     def produce_impl(self):
         """Produce the composite waveguide.
