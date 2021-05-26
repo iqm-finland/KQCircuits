@@ -1,7 +1,7 @@
 Libraries
 =========
 
-These are the PCells based on code that can be found in https://gitlab.iqm.fi/iqm/qe/KQCircuits.
+These are the PCells based on code that can be found in https://github.com/iqm-finland/KQCircuits.
 
 .. warning::
     This section is not actively maintained but it contain valuable manually generated images and

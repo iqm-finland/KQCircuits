@@ -41,4 +41,4 @@ Git
 ---
 
 KQC can be used without using Git, but it is required for sharing your code
-in https://gitlab.iqm.fi/iqm/qe/KQCircuits .
+in https://github.com/iqm-finland/KQCircuits .

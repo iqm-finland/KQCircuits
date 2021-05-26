@@ -25,7 +25,7 @@ Installation
 -------------
 
 If you have not yet done so, ``git clone`` the KQCircuits source code from
-https://gitlab.iqm.fi/iqm/qe/KQCircuits to a location of your choice.
+https://github.com/iqm-finland/KQCircuits to a location of your choice.
 
 This section explains how to install KQC in "development mode", so that a
 link to your local KQC repo is added to the python environment. When using
