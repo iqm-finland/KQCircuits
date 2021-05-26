@@ -16,9 +16,9 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import math
-import numpy as np
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.geometry_helper import circle_polygon, arc_points
 from kqcircuits.elements.element import Element
 
 
@@ -49,7 +49,7 @@ class CircularCapacitor(Element):
 
         capacitor_region = []
         # generate the inner island
-        inner_island = self._get_circle(self.r_inner)
+        inner_island = circle_polygon(self.r_inner, self.n)
         capacitor_region.append(inner_island)
 
         # generate the outer island
@@ -88,20 +88,10 @@ class CircularCapacitor(Element):
         # adds annotation based on refpoints calculated above
         super().produce_impl()
 
-    def _get_circle(self, r):
-        circle_pts = [pya.DPoint(math.cos(a / (self.n/2) * math.pi) * r,
-                                 math.sin(a / (self.n/2) * math.pi) * r) for a in range(0, self.n + 1)]
-        circle = pya.DPolygon(circle_pts)
-        return circle
-
     def _get_outer_island(self, r_outer, outer_island_width, swept_angle):
-        angle_rad = swept_angle / 180 * math.pi
-        step_angles = np.linspace(-angle_rad / 2, angle_rad / 2, math.ceil(self.n*angle_rad/(2*math.pi)))
-        points_outside = [pya.DPoint(r_outer * math.cos(a), r_outer * math.sin(a)) for a in step_angles]
-        points_inside = [
-            pya.DPoint((r_outer - outer_island_width) * math.cos(a), (r_outer - outer_island_width) * math.sin(a)) for a
-            in reversed(step_angles)]
-
+        angle_rad = math.radians(swept_angle)
+        points_outside = arc_points(r_outer, -angle_rad / 2, angle_rad / 2, self.n)
+        points_inside = arc_points(r_outer - outer_island_width, angle_rad / 2, -angle_rad / 2, self.n)
         points = points_outside + points_inside
         outer_island = pya.DPolygon(points)
 
@@ -110,7 +100,7 @@ class CircularCapacitor(Element):
     def _add_ground_region(self, x_end):
         # generate the ground region
         ground_region = []
-        island_ground = self._get_circle(self.r_outer + self.ground_gap)
+        island_ground = circle_polygon(self.r_outer + self.ground_gap, self.n)
         ground_region.append(island_ground)
         ground_region = pya.Region([poly.to_itype(self.layout.dbu) for poly in ground_region])
         self._add_waveguides(ground_region, x_end, self.a / 2 + self.b, self.a2 / 2 + self.b2)

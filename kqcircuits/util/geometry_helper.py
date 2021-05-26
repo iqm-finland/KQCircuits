@@ -18,7 +18,7 @@
 
 """Helper module for general geometric functions"""
 
-from math import cos, sin, radians, atan2, degrees
+from math import cos, sin, radians, atan2, degrees, pi, ceil
 
 from kqcircuits.pya_resolver import pya
 
@@ -210,3 +210,35 @@ def is_clockwise(polygon_points):
     c = polygon_points[(bottom_left_point_idx + 1) % len(polygon_points)]
     det = (b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y)
     return True if det < 0 else False
+
+
+def circle_polygon(r, n):
+    """
+    Returns a polygon for a full circle around the origin.
+
+    Args:
+        r: radius
+        n: number of points
+
+    Returns: list of ``DPoint``s, length ``n``.
+    """
+    return pya.DPolygon([pya.DPoint(cos(a / n * 2 * pi) * r, sin(a / n * 2 * pi) * r) for a in range(0, n)])
+
+
+def arc_points(r, start=0, stop=2 * pi, n=64):
+    """
+    Returns point describing an arc around the origin with specified start and stop angles. The start and stop angle
+    are included.
+
+    If start < stop, the points are counter-clockwise; if start > stop, the points are clockwise.
+
+    Args:
+        r: Arc radius
+        start: Start angle in radians, default 0
+        stop: Stop angle in radians, default 2*pi
+        n: Number of steps corresponding to a full circle.
+
+    """
+    n_steps = ceil(n * abs(stop - start) / (2 * pi))
+    step = (stop - start) / (n_steps - 1)
+    return [pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]

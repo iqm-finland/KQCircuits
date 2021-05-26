@@ -14,11 +14,11 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-from math import cos, sin, pi, radians, ceil
+from math import cos, sin, pi, radians
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-
+from kqcircuits.util.geometry_helper import arc_points
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridges import airbridge_type_choices
@@ -103,9 +103,7 @@ class WaveguideCoplanarSplitter(Element):
         r = width/2  # Radius of round cap
 
         # Corner section
-        n2 = ceil(self.n/2)  # Number of points in half circle
-        corner_angles = [angle_rad + pi/2 + pi*x/(n2-1) for x in (range(0, n2))]
-        points = [pya.DPoint(r*cos(a), r*sin(a)) for a in corner_angles]
+        points = arc_points(r, angle_rad + pi / 2, angle_rad + 3 * pi / 2, self.n)
 
         # Straight section
         points.append(pya.DPoint(length*cos(angle_rad) + r*cos(angle_rad - pi/2),
