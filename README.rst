@@ -39,6 +39,14 @@ Documentation for KQCircuits can be found `here <https://iqm-finland.github.io/K
 
 It may also be generated from the sources with `make html` in the docs directory.
 
+Contributing
+------------
+
+Contributions to KQC are welcome from the community. Contributors are expected
+to accept IQM Individual Contributor License Agreement by filling
+`a form at IQM website <https://meetiqm.com/developers/clas>`__. See also
+section *Contributing* in documentation.
+
 Copyright
 ---------
 
