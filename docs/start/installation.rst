@@ -2,7 +2,7 @@ Installation
 ============
 
 If you have not yet done so, ``git clone`` the KQCircuits source code from
-https://gitlab.iqm.fi/iqm/qe/KQCircuits to a location of your choice.
+https://github.com/iqm-finland/KQCircuits to a location of your choice.
 
 Basic automatic installation
 ----------------------------

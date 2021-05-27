@@ -15,13 +15,12 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
-import math
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from autologging import logged, traced
 
+from kqcircuits.util.geometry_helper import circle_polygon
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
+
 
 @traced
 @logged
@@ -32,60 +31,23 @@ class FlipChipConnector(Element):
     Origin is at the geometric center.
     """
 
-    ubm_box = Param(pdt.TypeDouble, "Under-bump metallization width", 40, unit="μm",
-        docstring="Length of the side of the under-bump metallization box [μm]")
-    bump_diameter = Param(pdt.TypeDouble, "Bump diameter", 25, unit="μm",
-        docstring="Indium bump diameter [μm]")
+    ubm_diameter = Param(pdt.TypeDouble, "Under-bump metalization diameter", 40, unit="μm")
+    bump_diameter = Param(pdt.TypeDouble, "Bump diameter", 25, unit="μm")
 
     def produce_impl(self):
         super().produce_impl()
 
     def create_bump_connector(self):
-        # origin: geometric center
-        # direction: from top to bottom
+        ubm_shape = circle_polygon(self.ubm_diameter / 2, self.n)
+        self.cell.shapes(self.get_layer("underbump_metallization", 0)).insert(ubm_shape)
+        self.cell.shapes(self.get_layer("underbump_metallization", 1)).insert(ubm_shape)
 
-        # shorthand
-        w = self.ubm_box
-        r = self.bump_diameter/2
+        avoidance_shape = circle_polygon(self.ubm_diameter / 2 + self.margin, self.n)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", 0)).insert(avoidance_shape)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(avoidance_shape)
 
-        # under-bump metallization
-        # TODO: replace UBM square with circle
-        pts = [
-            pya.DPoint(-w/2, -w/2),
-            pya.DPoint(-w/2, w/2),
-            pya.DPoint(w/2, w/2),
-            pya.DPoint(w/2, -w/2),
-        ]
-        shape = pya.DPolygon(pts)
+        bump_shape = circle_polygon(self.bump_diameter / 2, self.n)
+        self.cell.shapes(self.get_layer("indium_bump", 0)).insert(bump_shape)  # bottom In bump
+        self.cell.shapes(self.get_layer("indium_bump", 1)).insert(bump_shape)  # top In bump
 
-        # bottom under-bump metallization
-        self.cell.shapes(self.get_layer("underbump_metallization")).insert(shape)
-        # top under-bump metallization
-        self.cell.shapes(self.get_layer("underbump_metallization", 1)).insert(shape)
-
-        # Protection layer
-        m = self.margin
-        pts = [
-            pya.DPoint(-w/2 - m, -w/2 - m),
-            pya.DPoint(-w/2 - m, w/2 + m),
-            pya.DPoint(w/2 + m, w/2 + m),
-            pya.DPoint(w/2 + m, -w/2 - m),
-        ]
-        shape = pya.DPolygon(pts)
-
-        # ground avoidance layer bottom
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(pya.DTrans.M0*shape)
-
-        # ground avoidance layer top
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(shape)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(pya.DTrans.M0*shape)
-
-        # bump geometry
-        circle_pts = [pya.DPoint(math.cos(a/32 * math.pi) * r,
-                      math.sin(a/32 * math.pi) * r) for a in range(0, 64 + 1)]
-        shape = pya.DPolygon(circle_pts)
-        self.cell.shapes(self.get_layer("indium_bump")).insert(shape)  # bottom In bump
-        self.cell.shapes(self.get_layer("indium_bump", 1)).insert(shape)  # top In bump
         super().produce_impl()
-

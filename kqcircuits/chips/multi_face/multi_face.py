@@ -76,49 +76,73 @@ class MultiFace(Chip):
         if self.with_gnd_bumps:
             self._produce_ground_bumps()
 
+    def get_ground_bump_locations(self, box):
+        """
+        Define the locations for ground bumps. This method returns the full bump grid, but the chip will only
+        place bumps on locations that do not interfere with the ground grid avoidance or manually placed bumps.
+
+        This method can be overridden by subclasses to use define a different ground bump grid.
+
+        Args:
+            box: DBox specifying the region that should be filled with ground bumps
+
+        Returns: list of DPoint coordinates where a ground bump can be placed
+        """
+        # Bump grid parameters
+        delta_x = 100  # Horizontal bump grid spacing
+        delta_y = 100  # Vertical bump grid spacing
+
+        # array size for bump creation
+        n = (box.p2 - box.p1).x / delta_x
+        m = (box.p2 - box.p1).y / delta_y
+
+        locations = []
+        for i in range(int(n)):
+            for j in range(int(m)):
+                locations.append(box.p1 + pya.DPoint(i * delta_x, j * delta_y))
+        return locations
+
     def _produce_ground_bumps(self):
         """Produces ground bumps between bottom and top face.
 
         The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
         placed) bumps.
         """
-
-        # Boundary box of a single bump
-        bump = self.add_element(FlipChipConnectorDc)
-        bbox_region = pya.Region(bump.dbbox().to_itype(self.layout.dbu))
+        self.__log.info('Starting ground bump generation')
+        bump = self.add_element(FlipChipConnectorDc, n=self.n)
 
         # Bump grid parameters
-        delta_x = 100  # Horizontal bump grid spacing
-        delta_y = 100  # Vertical bump grid spacing
         existing_bump_avoidance_margin = 120  # Minimum distance allowed to existing bumps
         edge_from_bump = 750  # Spacing between bump and chip edge
 
-        p1 = pya.DPoint(self.face1_box.p1.x + edge_from_bump, self.face1_box.p1.y + edge_from_bump)
-        p2 = pya.DPoint(self.face1_box.p2.x - edge_from_bump, self.face1_box.p2.y - edge_from_bump)
-
-        # array size for bump creation
-        n = (p2 - p1).x / delta_x
-        m = (p2 - p1).y / delta_y
+        bump_box = self.face1_box.enlarged(pya.DVector(-edge_from_bump, -edge_from_bump))
 
         avoidance_layer_bottom = pya.Region(
-            self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance"))).merged()
+            self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 0))).merged()
         avoidance_layer_top = pya.Region(
             self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 1))).merged()
         existing_bumps = pya.Region(
             self.cell.begin_shapes_rec(self.get_layer("indium_bump"))).merged()
-        avoidance_existing_bumps = existing_bumps.sized((existing_bump_avoidance_margin/2) / self.layout.dbu)
-        avoidance_layer = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps).merged()
+        avoidance_existing_bumps = existing_bumps.sized((existing_bump_avoidance_margin / 2) / self.layout.dbu)
+        avoidance_region = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps).merged()
 
-        count = 0
-        for i in range(int(n)):
-            for j in range(int(m)):
-                pos_bump = p1 + pya.DPoint(i * delta_x, j * delta_y)
-                loc_box = bbox_region.moved(pya.DVector(pos_bump).to_itype(self.layout.dbu))
-                if loc_box.interacting(avoidance_layer).is_empty():
-                    self.insert_cell(bump, pya.DTrans(pos_bump))
-                    count += 1
-        print("%s: Number of ground bumps %i" % (self.display_name, count))
-        self.number_of_gnd_bumps = count
+        locations = self.get_ground_bump_locations(bump_box)
+
+        # Determine the shape of the bump from its underbump metallization layer. Assumes that when merged the bump
+        # contains only one polygon.
+        bump_size_polygon = next(pya.Region(bump.begin_shapes_rec(self.get_layer("underbump_metallization")))
+                                 .merged().each())
+
+        # Use pya.Region logic to efficiently filter bumps which are inside the allowed region
+        test_object_region = pya.Region([bump_size_polygon.moved(pya.Vector(pos.to_itype(self.layout.dbu)))
+                                         for pos in locations])
+        passed_object_region = test_object_region.outside(avoidance_region)
+        bump_locations = [p.bbox().center().to_dtype(self.layout.dbu) for p in passed_object_region]
+
+        for location in bump_locations:
+            self.insert_cell(bump, pya.DTrans(location))
+
+        self.__log.info(f'Inserted {len(bump_locations)} ground bumps')
 
     def produce_ground_grid(self):
         """Produces ground grid on t and b faces."""
