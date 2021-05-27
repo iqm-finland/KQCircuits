@@ -1,0 +1,28 @@
+kqcircuits.util
+===============
+
+
+.. toctree::
+
+   kqcircuits.util.coupler_lib
+   kqcircuits.util.deep_delete
+   kqcircuits.util.export_helper
+   kqcircuits.util.geometry_helper
+   kqcircuits.util.geometry_json_encoder
+   kqcircuits.util.groundgrid
+   kqcircuits.util.library_helper
+   kqcircuits.util.log_router
+   kqcircuits.util.macro_prepare
+   kqcircuits.util.merge
+   kqcircuits.util.netlist_extraction
+   kqcircuits.util.parameter_helper
+   kqcircuits.util.parameters
+   kqcircuits.util.symmetric_polygons
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.util
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,10 @@
+kqcircuits.chips.xmons\_direct\_coupling
+========================================
+
+.. automodule:: kqcircuits.chips.xmons_direct_coupling
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.xmons_direct_coupling
+.. image:: ../pcell_images/kqcircuits.chips.xmons_direct_coupling.png

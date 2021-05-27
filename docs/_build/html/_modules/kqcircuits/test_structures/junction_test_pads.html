@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.test_structures.junction_test_pads &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.test_structures.junction_test_pads</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.test_structures.junction_test_pads</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software </span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+ 
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_squid_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.qubits.qubit</span> <span class="kn">import</span> <span class="n">Qubit</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.test_structures.test_structure</span> <span class="kn">import</span> <span class="n">TestStructure</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_junction_test_pads_type</span>
+
+
+<div class="viewcode-block" id="JunctionTestPads"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.junction_test_pads.html#kqcircuits.test_structures.junction_test_pads.JunctionTestPads">[docs]</a><span class="k">class</span> <span class="nc">JunctionTestPads</span><span class="p">(</span><span class="n">TestStructure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for junction test structures.&quot;&quot;&quot;</span>
+
+    <span class="n">pad_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad width&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">area_height</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Area height&quot;</span><span class="p">,</span> <span class="mi">1900</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">area_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Area width&quot;</span><span class="p">,</span> <span class="mi">1300</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">squid_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;SQUID Type&quot;</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">squid_type_choices</span><span class="p">)</span>
+    <span class="n">junctions_horizontal</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Horizontal (True) or vertical (False) junctions&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">pad_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Spacing between different pad pairs&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">only_pads</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Only produce pads, no junctions&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">pad_configuration</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Pad configuration&quot;</span><span class="p">,</span> <span class="s2">&quot;2-port&quot;</span><span class="p">,</span>
+                              <span class="n">choices</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;2-port&quot;</span><span class="p">,</span> <span class="s2">&quot;2-port&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;4-port&quot;</span><span class="p">,</span> <span class="s2">&quot;4-port&quot;</span><span class="p">]])</span>
+    <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width for code generated squids&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Junction width (only used for code generated squids)&quot;</span><span class="p">)</span>
+
+    <span class="n">produce_squid</span> <span class="o">=</span> <span class="n">Qubit</span><span class="o">.</span><span class="n">produce_squid</span>
+
+<div class="viewcode-block" id="JunctionTestPads.create"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.junction_test_pads.html#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.create">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">junction_test_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a JunctionTestPads cell in layout.</span>
+
+<span class="sd">        If junction_test_type is unknown the default is returned.</span>
+
+<span class="sd">        Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout: pya.Layout object where this cell is created</span>
+<span class="sd">            junction_test_type (str): name of the JunctionTestPads subclass</span>
+<span class="sd">            **parameters: PCell parameters for the element as keyword arguments</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the created JunctionTestPads cell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">junction_test_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">junction_test_type</span> <span class="o">=</span> <span class="n">to_library_name</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="n">library_layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)[</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">])</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">junction_test_type</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>   <span class="c1">#code generated</span>
+            <span class="n">pcell_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">junction_test_type</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">junction_test_type</span><span class="p">):</span>    <span class="c1"># manually designed</span>
+            <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">junction_test_type</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>   <span class="c1"># fallback is the default</span>
+            <span class="k">return</span> <span class="n">JunctionTestPads</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">junction_test_type</span><span class="o">=</span><span class="n">default_junction_test_pads_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_configuration</span> <span class="o">==</span> <span class="s2">&quot;2-port&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_two_port_junction_tests</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_configuration</span> <span class="o">==</span> <span class="s2">&quot;4-port&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_four_port_junction_tests</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_produce_two_port_junction_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">pads_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="n">pad_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span>
+        <span class="n">arm_width</span> <span class="o">=</span> <span class="mi">8</span>
+
+        <span class="n">junction_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">junctions_horizontal</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="o">*</span><span class="mf">1.5</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_width</span> <span class="o">-</span> <span class="n">pad_step</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">pad_step</span><span class="p">,</span>
+                                  <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">pad_step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">produce_pad</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">produce_pad</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_produce_junctions</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">arm_width</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_</span><span class="si">{}</span><span class="s2">_l&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">junction_idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_</span><span class="si">{}</span><span class="s2">_r&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">junction_idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                    <span class="n">junction_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="o">*</span><span class="mf">1.5</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span> <span class="o">-</span> <span class="n">pad_step</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">pad_step</span><span class="p">,</span>
+                                  <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">pad_step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">produce_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">produce_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_produce_junctions</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">arm_width</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_</span><span class="si">{}</span><span class="s2">_l&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">junction_idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;probe_</span><span class="si">{}</span><span class="s2">_r&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">junction_idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">pad_step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">junction_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_etched_region</span><span class="p">(</span><span class="n">pads_region</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_width</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_junctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">arm_width</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">only_pads</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_squid_and_arms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">arm_width</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_four_port_junction_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">pads_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="n">junction_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="o">*</span><span class="mf">1.5</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_width</span> <span class="o">-</span> <span class="n">step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                              <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="o">*</span><span class="mf">1.5</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span> <span class="o">-</span> <span class="n">step</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span>
+                                  <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">double</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">only_pads</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">produce_four_point_pads</span><span class="p">(</span><span class="n">pads_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                                                 <span class="s2">&quot;probe_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">junction_idx</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">produce_four_point_pads</span><span class="p">(</span><span class="n">pads_region</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="p">,</span>
+                                                 <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+                                                 <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">junctions_horizontal</span> <span class="k">else</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                                                 <span class="s2">&quot;probe_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">junction_idx</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_produce_junctions</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+                <span class="n">junction_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_etched_region</span><span class="p">(</span><span class="n">pads_region</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">area_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">area_width</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">area_height</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_squid_and_arms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">arm_width</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces a squid and arms for connecting it to pads.</span>
+
+<span class="sd">        The squid is inserted as a subcell. The arm shapes are inserted to pads_region, and their shape depends on</span>
+<span class="sd">        arm_width and self.junctions_horizontal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">           x: x-coordinate of squid origin</span>
+<span class="sd">           y: y-coordinate of squid origin</span>
+<span class="sd">           pads_region: Region to which the arm shapes are inserted</span>
+<span class="sd">           arm_width: width of the arms</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">extra_arm_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_arm_length</span>
+        <span class="n">junction_spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">junction_spacing</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">junctions_horizontal</span><span class="p">:</span>
+            <span class="c1"># squid</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">)</span>
+            <span class="n">region_unetch</span><span class="p">,</span> <span class="n">squid_ref_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_squid</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+            <span class="n">pos_rel_squid_top</span> <span class="o">=</span> <span class="n">squid_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_common&quot;</span><span class="p">]</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region_unetch</span><span class="p">)</span>
+            <span class="c1"># arm below</span>
+            <span class="n">arm1</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">11</span> <span class="o">+</span> <span class="n">extra_arm_length</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">arm_width</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arm1</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="c1"># arm above</span>
+            <span class="n">arm2</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span>
+                <span class="n">trans</span><span class="o">*</span><span class="n">pos_rel_squid_top</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">trans</span><span class="o">*</span><span class="n">pos_rel_squid_top</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">arm_width</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arm2</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># squid</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">region_unetch</span><span class="p">,</span> <span class="n">squid_ref_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_squid</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+            <span class="n">pos_rel_squid_top</span> <span class="o">=</span> <span class="n">squid_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_common&quot;</span><span class="p">]</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region_unetch</span><span class="p">)</span>
+            <span class="c1"># arm below</span>
+            <span class="n">arm1</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mi">11</span> <span class="o">+</span> <span class="n">extra_arm_length</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">11</span> <span class="o">-</span> <span class="n">extra_arm_length</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">arm_width</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arm1</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">arm2</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">arm_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">arm_width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">junction_spacing</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arm2</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="c1"># arm above</span>
+            <span class="n">arm3</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span>
+                <span class="n">trans</span><span class="o">*</span><span class="n">pos_rel_squid_top</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">arm_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">trans</span><span class="o">*</span><span class="n">pos_rel_squid_top</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">arm_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_spacing</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">pads_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arm3</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+kqcircuits.simulations.single\_xmons\_full\_chip\_sim
+=====================================================
+
+.. automodule:: kqcircuits.simulations.single_xmons_full_chip_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.single_xmons_full_chip_sim
+.. image:: ../pcell_images/kqcircuits.simulations.single_xmons_full_chip_sim.png

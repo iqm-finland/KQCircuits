@@ -1,0 +1,10 @@
+kqcircuits.elements.fluxlines.fluxline
+======================================
+
+.. automodule:: kqcircuits.elements.fluxlines.fluxline
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.fluxlines.fluxline
+.. image:: ../pcell_images/kqcircuits.elements.fluxlines.fluxline.png

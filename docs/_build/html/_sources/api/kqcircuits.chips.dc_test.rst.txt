@@ -1,0 +1,10 @@
+kqcircuits.chips.dc\_test
+=========================
+
+.. automodule:: kqcircuits.chips.dc_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.dc_test
+.. image:: ../pcell_images/kqcircuits.chips.dc_test.png

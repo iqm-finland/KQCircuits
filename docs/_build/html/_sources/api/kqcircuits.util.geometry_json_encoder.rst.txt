@@ -1,0 +1,10 @@
+kqcircuits.util.geometry\_json\_encoder
+=======================================
+
+.. automodule:: kqcircuits.util.geometry_json_encoder
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.geometry_json_encoder
+.. image:: ../pcell_images/kqcircuits.util.geometry_json_encoder.png

@@ -1,0 +1,10 @@
+kqcircuits.simulations.simulation
+=================================
+
+.. automodule:: kqcircuits.simulations.simulation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.simulation
+.. image:: ../pcell_images/kqcircuits.simulations.simulation.png

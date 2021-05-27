@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.util.library_helper &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.util.log_router" href="kqcircuits.util.log_router.html" />
+    <link rel="prev" title="kqcircuits.util.groundgrid" href="kqcircuits.util.groundgrid.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.util.library_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.html#module-kqcircuits.util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.util.html">kqcircuits.util</a> &raquo;</li>
+        
+      <li>kqcircuits.util.library_helper</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.util.library_helper.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.util.library_helper">
+<span id="kqcircuits-util-library-helper"></span><h1>kqcircuits.util.library_helper<a class="headerlink" href="#module-kqcircuits.util.library_helper" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="kqcircuits.util.library_helper.load_libraries">
+<code class="sig-prename descclassname">kqcircuits.util.library_helper.</code><code class="sig-name descname">load_libraries</code><span class="sig-paren">(</span><em class="sig-param">flush=False</em>, <em class="sig-param">path=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#load_libraries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.library_helper.load_libraries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load all KQCircuits libraries from the given path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>flush</strong> – If True, old libraries will be deleted and new ones created. Otherwise old libraries will be used.
+(if old libraries exist)</p></li>
+<li><p><strong>path</strong> – path (relative to SRC_PATH) from which the pcell classes and cells are loaded to libraries</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of libraries that have been loaded, keys are library names and values are libraries.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.library_helper.delete_all_libraries">
+<code class="sig-prename descclassname">kqcircuits.util.library_helper.</code><code class="sig-name descname">delete_all_libraries</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#delete_all_libraries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.library_helper.delete_all_libraries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete all KQCircuits libraries from KLayout memory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.library_helper.delete_library">
+<code class="sig-prename descclassname">kqcircuits.util.library_helper.</code><code class="sig-name descname">delete_library</code><span class="sig-paren">(</span><em class="sig-param">name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#delete_library"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.library_helper.delete_library" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a KQCircuits library.</p>
+<p>Calls library.delete() and removes the library from _kqc_libraries dict. Also deletes any libraries which have this
+library as a dependency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – name of the library</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.library_helper.to_module_name">
+<code class="sig-prename descclassname">kqcircuits.util.library_helper.</code><code class="sig-name descname">to_module_name</code><span class="sig-paren">(</span><em class="sig-param">class_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#to_module_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.library_helper.to_module_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts class name to module name.</p>
+<p>Converts PascalCase class name to module name
+with each word lowercase and separated by space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>class_name</strong> – Class name.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A lowercase and spaced by word string.</p>
+<dl class="simple">
+<dt>For example::</dt><dd><p>&gt; module_name = _to_module_name(“QualityFactor”)
+&gt; print(module_name)
+“quality_factor”</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.library_helper.to_library_name">
+<code class="sig-prename descclassname">kqcircuits.util.library_helper.</code><code class="sig-name descname">to_library_name</code><span class="sig-paren">(</span><em class="sig-param">class_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#to_library_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.library_helper.to_library_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts class name to library name.</p>
+<p>Converts PascalCase class name to library name
+with each word titled and separated by space.
+Single letter words are attached to the following word.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>class_name</strong> – Class name.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A titled and spaced by word string which may be used as library name.</p>
+<dl class="simple">
+<dt>For example::</dt><dd><p>&gt; library_name = to_library_name(“QualityFactor”)
+&gt; print(library_name)
+“Quality Factor”</p>
+</dd>
+</dl>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<img alt="../_images/kqcircuits.util.library_helper.png" src="../_images/kqcircuits.util.library_helper.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.util.log_router.html" class="btn btn-neutral float-right" title="kqcircuits.util.log_router" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.util.groundgrid.html" class="btn btn-neutral float-left" title="kqcircuits.util.groundgrid" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

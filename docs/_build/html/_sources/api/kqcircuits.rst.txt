@@ -1,0 +1,27 @@
+API documentation
+=================
+.. toctree::
+
+   kqcircuits.chips
+   kqcircuits.elements
+   kqcircuits.masks
+   kqcircuits.simulations
+   kqcircuits.squids
+   kqcircuits.test_structures
+   kqcircuits.util
+
+
+.. toctree::
+
+   kqcircuits.defaults
+   kqcircuits.klayout_view
+   kqcircuits.layer_cluster
+   kqcircuits.pya_resolver
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits
+   :members:
+   :undoc-members:
+   :show-inheritance:

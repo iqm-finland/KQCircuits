@@ -1,0 +1,10 @@
+kqcircuits.elements.finger\_capacitor\_taper
+============================================
+
+.. automodule:: kqcircuits.elements.finger_capacitor_taper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.finger_capacitor_taper
+.. image:: ../pcell_images/kqcircuits.elements.finger_capacitor_taper.png

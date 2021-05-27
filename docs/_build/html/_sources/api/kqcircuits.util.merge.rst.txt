@@ -1,0 +1,10 @@
+kqcircuits.util.merge
+=====================
+
+.. automodule:: kqcircuits.util.merge
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.merge
+.. image:: ../pcell_images/kqcircuits.util.merge.png

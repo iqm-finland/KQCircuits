@@ -1,0 +1,10 @@
+kqcircuits.elements.spiral\_resonator\_polygon
+==============================================
+
+.. automodule:: kqcircuits.elements.spiral_resonator_polygon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.spiral_resonator_polygon
+.. image:: ../pcell_images/kqcircuits.elements.spiral_resonator_polygon.png

@@ -1,0 +1,283 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector" href="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html" />
+    <link rel="prev" title="kqcircuits.elements.f2f_connectors" href="kqcircuits.elements.f2f_connectors.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.elements.f2f_connectors.flip_chip_connectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.tsvs.html">kqcircuits.elements.f2f_connectors.tsvs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html#module-kqcircuits.elements.f2f_connectors">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.qubits.html">kqcircuits.elements.qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square_multiface.html">kqcircuits.elements.finger_capacitor_square_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle.html">kqcircuits.elements.spiral_resonator_rectangle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html">kqcircuits.elements.spiral_resonator_rectangle_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar.html">kqcircuits.elements.waveguide_coplanar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_curved.html">kqcircuits.elements.waveguide_coplanar_curved</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.elements.html">kqcircuits.elements</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.f2f_connectors.flip_chip_connectors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="kqcircuits-elements-f2f-connectors-flip-chip-connectors">
+<h1>kqcircuits.elements.f2f_connectors.flip_chip_connectors<a class="headerlink" href="#kqcircuits-elements-f2f-connectors-flip-chip-connectors" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc.html">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.html">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf</a></li>
+</ul>
+</div>
+<div class="section" id="module-kqcircuits.elements.f2f_connectors.flip_chip_connectors">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.elements.f2f_connectors.flip_chip_connectors" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html" class="btn btn-neutral float-right" title="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.elements.f2f_connectors.html" class="btn btn-neutral float-left" title="kqcircuits.elements.f2f_connectors" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+kqcircuits.elements.chip\_frame
+===============================
+
+.. automodule:: kqcircuits.elements.chip_frame
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.chip_frame
+.. image:: ../pcell_images/kqcircuits.elements.chip_frame.png

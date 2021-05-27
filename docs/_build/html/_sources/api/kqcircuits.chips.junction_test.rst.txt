@@ -1,0 +1,10 @@
+kqcircuits.chips.junction\_test
+===============================
+
+.. automodule:: kqcircuits.chips.junction_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.junction_test
+.. image:: ../pcell_images/kqcircuits.chips.junction_test.png

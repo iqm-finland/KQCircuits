@@ -1,0 +1,10 @@
+kqcircuits.simulations.flip\_chip\_connector\_sim
+=================================================
+
+.. automodule:: kqcircuits.simulations.flip_chip_connector_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.flip_chip_connector_sim
+.. image:: ../pcell_images/kqcircuits.simulations.flip_chip_connector_sim.png

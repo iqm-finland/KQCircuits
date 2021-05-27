@@ -1,0 +1,10 @@
+kqcircuits.chips.sample\_holder\_test
+=====================================
+
+.. automodule:: kqcircuits.chips.sample_holder_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.sample_holder_test
+.. image:: ../pcell_images/kqcircuits.chips.sample_holder_test.png

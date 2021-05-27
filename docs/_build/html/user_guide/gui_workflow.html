@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Point-and-click workflow tutorial &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Macro development" href="macro_workflow.html" />
+    <link rel="prev" title="GUI Features" href="gui_features.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui_features.html">GUI Features</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Point-and-click workflow tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="macro_workflow.html">Macro development</a></li>
+<li class="toctree-l2"><a class="reference internal" href="export/index.html">Exports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="xsection.html">Creating cross section images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">User Guide</a> &raquo;</li>
+        
+      <li>Point-and-click workflow tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/user_guide/gui_workflow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="point-and-click-workflow-tutorial">
+<h1>Point-and-click workflow tutorial<a class="headerlink" href="#point-and-click-workflow-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This is a step by step tutorial to demonstrate basic workflow with
+KQCircuits in KLayout Editor. It is assumed that KLayout and KQCircuits are
+already installed.</p>
+<p>Do not assume all of the GUI makes sense. At the moment KLayout is
+version 0.26! It is already quite powerful, but most features make sense
+only after you know the API.</p>
+<ol class="arabic">
+<li><p><strong>Generate Demo chip</strong></p>
+<ol class="arabic simple">
+<li><p>Run KLayout Editor. On Windows you should have separate shortcuts
+for KLayout Viewer and KLayout Editor. On Linux you may have to go
+to <em>File -&gt; Setup -&gt; Application -&gt; Editing Mode</em> and set <em>Use
+editing mode by default</em> to true, and restart KLayout.</p></li>
+<li><p>In the <em>Libraries</em> panel on the left, choose <em>Chip Library</em> and drag
+and drop the <em>Demo</em> chip from there to the layout.</p></li>
+<li><p>Click <em>Ok</em> in the <em>PCell parameters</em> window that opens.</p></li>
+</ol>
+</li>
+<li><p><strong>For drag and drop changes, convert the top cell to static.</strong></p>
+<ol class="arabic simple">
+<li><p>Locate <em>Cells</em> panel on the left.</p></li>
+<li><p>Left click on the cell named <code class="docutils literal notranslate"><span class="pre">ChipLibrary.Demo</span></code> to select it.</p></li>
+<li><p>In the top menu, navigate to <em>Edit-&gt;Cell-&gt;Convert to Static Cell</em>.
+This converts a <em>library cell</em> into a locally defined cell and
+enables you to edit it.</p></li>
+<li><p>In the <em>Cells</em> panel, right click on the cell named <code class="docutils literal notranslate"><span class="pre">Demo$1</span></code>.</p></li>
+<li><p>From the drop down menu, select <em>Show as new top</em>.</p></li>
+</ol>
+</li>
+<li><p><strong>Change the shape of a waveguide.</strong></p>
+<ol class="arabic simple">
+<li><p>In the <em>Layout</em> panel locate a charge line of the qubit. It
+connects the top left launcher and the qubit.</p></li>
+<li><p>Click once on the charge line to select it.</p></li>
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">Shift+F2</span></code> to zoom in.</p></li>
+<li><p>From the <em>Tools</em> panel above the <em>Layout</em> panel select a tool
+<em>Partial</em>.</p></li>
+<li><p>Double click on the center of the charge line. A new node should
+appear there.</p></li>
+<li><p>Drag the new node with the mouse. The waveguide should change
+shape.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>You may still see also the old waveguide shape, because of how chips are
+currently implemented in KQC. To hide it, hide the “b base metal gap”
+layer in the <em>Layers</em> panel to the right.</p></li>
+<li><p>Some other waveguides in the demo chip are “composite waveguides”,
+which contain both “simple waveguides” and other types of elements,
+such as airbridges. Their shape cannot be modified in the same way.
+They can be converted to static cells and then the shapes of the simple
+waveguide cells inside them can be modified.</p></li>
+</ul>
+</div>
+</li>
+<li><p><strong>Change a location of a qubit.</strong></p>
+<ol class="arabic simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">F2</span></code> to see the whole top cell.</p></li>
+<li><p>Locate the qubit in the top left part of the chip.</p></li>
+<li><p>From the <em>Tools</em> panel select <em>Move</em>.</p></li>
+<li><p>Click on the qubit.</p></li>
+<li><p>Click on a new location for a qubit.</p></li>
+</ol>
+</li>
+<li><p><strong>Disable a coupling port for the qubit.</strong></p>
+<ol class="arabic simple">
+<li><p>From the <em>Tools</em> panel select <em>Select</em>.</p></li>
+<li><p>Click once on the qubit.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Shift+F2</span></code></p></li>
+<li><p>Double-click on the qubit.</p></li>
+<li><p>In the new <em>Object Properties</em> window locate a tab <em>PCell
+parameters</em>.</p></li>
+<li><p>Scroll down in the list of parameters to locate <em>Coupler lengths</em>.</p></li>
+<li><p>Change the value in the text box to <code class="docutils literal notranslate"><span class="pre">100,160,0</span></code>.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Ok</span></code>.</p></li>
+</ol>
+</li>
+<li><p><strong>Create a new qubit.</strong></p>
+<ol class="arabic simple">
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">F2</span></code> to see the whole top cell.</p></li>
+<li><p>From the <em>Tools</em> panel select <em>Instance</em>.</p></li>
+<li><p>In the new <em>Object Editor Options</em> window locate <em>Library</em>.</p></li>
+<li><p>Using the drop-down menu select <em>Element Library</em>.</p></li>
+<li><p>Click on a button <code class="docutils literal notranslate"><span class="pre">...</span></code> a little bit to the left from the
+<em>Library</em>.</p></li>
+<li><p>From the new <em>Select Cell</em> window select <em>Swissmon</em> and press
+<em>Ok</em>.</p></li>
+<li><p>In the <em>Object Edit or Options</em> window press <em>Ok</em>.</p></li>
+<li><p>Click at the location of the new qubits.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Esc</span></code> to finish placing qubits.</p></li>
+</ol>
+</li>
+<li><p><strong>Add the ground grid.</strong></p>
+<ol class="arabic simple">
+<li><p>In the top menu, navigate to <em>Edit-&gt;KQCircuits Library-&gt;Fill with ground
+plane grid</em>. It may take some time to generate.</p></li>
+</ol>
+</li>
+</ol>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="macro_workflow.html" class="btn btn-neutral float-right" title="Macro development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gui_features.html" class="btn btn-neutral float-left" title="GUI Features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

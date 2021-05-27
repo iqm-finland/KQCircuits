@@ -1,0 +1,10 @@
+kqcircuits.simulations.finger\_capacitor\_sim
+=============================================
+
+.. automodule:: kqcircuits.simulations.finger_capacitor_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.finger_capacitor_sim
+.. image:: ../pcell_images/kqcircuits.simulations.finger_capacitor_sim.png

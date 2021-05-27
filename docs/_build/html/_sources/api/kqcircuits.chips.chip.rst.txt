@@ -1,0 +1,10 @@
+kqcircuits.chips.chip
+=====================
+
+.. automodule:: kqcircuits.chips.chip
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.chip
+.. image:: ../pcell_images/kqcircuits.chips.chip.png

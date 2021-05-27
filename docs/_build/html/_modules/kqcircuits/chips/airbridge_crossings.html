@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.chips.airbridge_crossings &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.chips.airbridge_crossings</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.chips.airbridge_crossings</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridge_connection</span> <span class="kn">import</span> <span class="n">AirbridgeConnection</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
+
+
+<span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="AirbridgeCrossings"><a class="viewcode-back" href="../../../api/kqcircuits.chips.airbridge_crossings.html#kqcircuits.chips.airbridge_crossings.AirbridgeCrossings">[docs]</a><span class="k">class</span> <span class="nc">AirbridgeCrossings</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for an AirbridgeCrossings chip.</span>
+
+<span class="sd">    On the left side of the chip there is a straight vertical waveguide and a meandering waveguide crossing it multiple</span>
+<span class="sd">    times. There are airbridges at the crossings. On the right side there is likewise a straight and a meandering</span>
+<span class="sd">    waveguide, but they do not cross at any point. In the center of the chip there is an array of mechanical tests of</span>
+<span class="sd">    airbridges with different lengths and widths.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">crossings</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of double crossings&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Number of pairs of airbridge crossings&quot;</span><span class="p">)</span>
+    <span class="n">b_number</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of bridges&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Number of airbridges in one element of the mechanical test array&quot;</span><span class="p">)</span>
+    <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Crossing airbridge width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Crossing airbridge length&quot;</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AirbridgeCrossings.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.airbridge_crossings.html#kqcircuits.chips.airbridge_crossings.AirbridgeCrossings.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_SMA8</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_transmission_lines</span><span class="p">(</span><span class="n">launchers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_mechanical_test_array</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_produce_transmission_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launchers</span><span class="p">):</span>
+
+        <span class="c1"># Left transmission line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Right transmission line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Crossing transmission line</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">ref_x</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">last_y</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">crossings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crossings</span>  <span class="c1"># must be even</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">crossings</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">wiggle</span> <span class="o">=</span> <span class="mi">250</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span><span class="p">,</span> <span class="n">last_y</span><span class="p">),</span> <span class="n">AirbridgeConnection</span><span class="p">))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span><span class="p">,</span> <span class="n">last_y</span><span class="p">),</span> <span class="n">AirbridgeConnection</span><span class="p">))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">waveguide_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
+                                       <span class="n">bridge_width_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span><span class="p">,</span>
+                                       <span class="n">bridge_length_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_length</span>
+                                       <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide_cell</span><span class="p">)</span>
+
+        <span class="c1"># TL without crossings</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">ref_x</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">wiggle</span> <span class="o">+</span> <span class="mi">50</span>
+        <span class="n">last_y</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
+            <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
+        <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;ES&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="n">waveguide_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
+                                       <span class="n">bridge_width_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span><span class="p">,</span>
+                                       <span class="n">bridge_length_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_length</span>
+                                       <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide_cell</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_mechanical_test_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">p_test_origin</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">3600</span><span class="p">,</span> <span class="mi">9650</span><span class="p">)</span>
+        <span class="n">v_distance_step</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">2350</span><span class="p">)</span>
+        <span class="n">v_length_step</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">121</span><span class="p">)</span>
+        <span class="n">v_width_step</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">length</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">width</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">distance</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">5</span><span class="p">)):</span>
+                    <span class="n">loc</span> <span class="o">=</span> <span class="n">p_test_origin</span> <span class="o">+</span> <span class="n">v_length_step</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">v_width_step</span> <span class="o">*</span> <span class="n">j</span> <span class="o">+</span> <span class="n">v_distance_step</span> <span class="o">*</span> <span class="n">k</span>
+                    <span class="n">create_airbridges</span> <span class="o">=</span> <span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="n">k</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># airbridges only at every second row</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_produce_mechanical_test</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_number</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">create_airbridges</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_mechanical_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">create_airbridges</span><span class="p">):</span>
+
+        <span class="n">wg_len</span> <span class="o">=</span> <span class="p">((</span><span class="n">number</span> <span class="o">*</span> <span class="p">(</span><span class="n">distance</span> <span class="o">+</span> <span class="n">width</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span>
+        <span class="n">wg_start</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">wg_len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">wg_end</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">+</span><span class="n">wg_len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">v_step</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">((</span><span class="n">distance</span> <span class="o">+</span> <span class="n">width</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span>
+            <span class="c1"># pad_width=1.1 * width,</span>
+            <span class="c1"># pad_length=1 * width,</span>
+            <span class="c1"># bridge_length=length,</span>
+            <span class="c1"># bridge_width=width,</span>
+            <span class="c1"># pad_extra=2</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+            <span class="c1"># ab_trans = pya.DCplxTrans(1, 0, False, wg_start + v_step * (i + 0.5))</span>
+            <span class="c1"># self.insert_cell(ab, ab_trans)</span>
+            <span class="k">if</span> <span class="mi">1000</span> <span class="o">&lt;</span> <span class="n">loc</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="mi">9000</span> <span class="ow">and</span> <span class="n">create_airbridges</span><span class="p">:</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">50</span><span class="o">*</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="p">(</span><span class="n">number</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
+
+        <span class="c1"># waveguide</span>
+        <span class="n">wg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">wg_start</span><span class="p">,</span> <span class="n">wg_end</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

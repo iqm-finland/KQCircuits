@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.util.netlist_extraction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.util.netlist_extraction</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_cell_path_length</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="export_cell_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_cell_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_cell_netlist</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Exports netlist into `filename` in JSON</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cell: pya Cell object</span>
+<span class="sd">        filename: absolute path as convertible to string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get LayoutToNetlist object</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+    <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]))</span>
+    <span class="n">ltn</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutToNetlist</span><span class="p">(</span><span class="n">shapes_iter</span><span class="p">)</span>
+    <span class="c1"># select conducting layers</span>
+    <span class="n">connector_region</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span> <span class="s2">&quot;connector&quot;</span><span class="p">)</span>
+    <span class="n">ltn</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connector_region</span><span class="p">)</span>
+    <span class="c1"># extract netlist for the cell</span>
+    <span class="n">ltn</span><span class="o">.</span><span class="n">extract_netlist</span><span class="p">()</span>
+    <span class="n">netlist</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">netlist</span><span class="p">()</span>
+    <span class="c1"># extract cell to circuit map for finding the netlist of interest</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">const_cell_mapping_into</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+    <span class="n">reverse_cell_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">table</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">cm</span><span class="o">.</span><span class="n">table</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="c1"># export the circuit of interest</span>
+    <span class="n">circuit</span> <span class="o">=</span> <span class="n">netlist</span><span class="o">.</span><span class="n">circuit_by_cell_index</span><span class="p">(</span><span class="n">reverse_cell_map</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()])</span>
+    <span class="k">if</span> <span class="n">circuit</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting netlist to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ltn</span><span class="o">.</span><span class="n">internal_layout</span><span class="p">(),</span> <span class="n">layout</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No circuit found for </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">display_title</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="export_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">internal_layout</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">,</span> <span class="n">cell_mapping</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Exports `circuit` into `filename` in JSON</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        circuit: pya Circuit object</span>
+<span class="sd">        filename: absolute path as convertible to string</span>
+<span class="sd">        internal_layout: pya layout object where the netlist cells are registered</span>
+<span class="sd">        original_layout: pya Layout object where the original cells and pcells are registered</span>
+<span class="sd">        cell_mapping: CellMapping object as given by pya LayoutToNetlist object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nets_for_export</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">net</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">each_net</span><span class="p">():</span>
+        <span class="n">nets_for_export</span><span class="p">[</span><span class="n">net</span><span class="o">.</span><span class="n">expanded_name</span><span class="p">()]</span> <span class="o">=</span> \
+            <span class="n">extract_nets</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
+
+    <span class="n">subcircuits_for_export</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">used_internal_cells</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">each_subcircuit</span><span class="p">():</span>
+        <span class="n">subcircuit_for_export</span><span class="p">,</span> <span class="n">used_internal_cell</span> <span class="o">=</span> <span class="n">extract_subcircuit</span><span class="p">(</span><span class="n">internal_layout</span><span class="p">,</span> <span class="n">subcircuit</span><span class="p">)</span>
+        <span class="n">used_internal_cells</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">used_internal_cell</span><span class="p">)</span>
+        <span class="n">subcircuits_for_export</span><span class="p">[</span><span class="n">subcircuit</span><span class="o">.</span><span class="n">id</span><span class="p">()]</span> <span class="o">=</span> <span class="n">subcircuit_for_export</span>
+
+    <span class="n">circuits_for_export</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">internal_cell</span> <span class="ow">in</span> <span class="n">used_internal_cells</span><span class="p">:</span>
+        <span class="n">circuits_for_export</span><span class="p">[</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">&quot;nets&quot;</span><span class="p">:</span> <span class="n">nets_for_export</span><span class="p">,</span> <span class="s2">&quot;subcircuits&quot;</span><span class="p">:</span> <span class="n">subcircuits_for_export</span><span class="p">,</span> <span class="s2">&quot;circuits&quot;</span><span class="p">:</span> <span class="n">circuits_for_export</span><span class="p">},</span> <span class="n">fp</span><span class="p">,</span>
+                  <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="extract_subcircuit"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_subcircuit">[docs]</a><span class="k">def</span> <span class="nf">extract_subcircuit</span><span class="p">(</span><span class="n">internal_layout</span><span class="p">,</span> <span class="n">subcircuit</span><span class="p">):</span>
+    <span class="n">circuit</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">circuit_ref</span><span class="p">()</span>
+    <span class="n">internal_cell_index</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">cell_index</span>
+    <span class="n">internal_cell</span> <span class="o">=</span> <span class="n">internal_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">internal_cell_index</span><span class="p">)</span>
+    <span class="n">used_internal_cell</span> <span class="o">=</span> <span class="n">internal_cell</span>
+    <span class="n">subcircuit_for_export</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;cell_name&quot;</span><span class="p">:</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;subcircuit_name&quot;</span><span class="p">:</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">expanded_name</span><span class="p">(),</span>
+        <span class="s2">&quot;subcircuit_location&quot;</span><span class="p">:</span> <span class="n">circuit</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">subcircuit_for_export</span><span class="p">,</span> <span class="n">used_internal_cell</span></div>
+
+
+<div class="viewcode-block" id="extract_nets"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_nets">[docs]</a><span class="k">def</span> <span class="nf">extract_nets</span><span class="p">(</span><span class="n">net</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Extract dictionary for net for JSON export &quot;&quot;&quot;</span>
+    <span class="n">net_for_export</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">pin_ref</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">each_subcircuit_pin</span><span class="p">():</span>
+        <span class="n">net_for_export</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;subcircuit_id&quot;</span><span class="p">:</span> <span class="n">pin_ref</span><span class="o">.</span><span class="n">subcircuit</span><span class="p">()</span><span class="o">.</span><span class="n">id</span><span class="p">(),</span>
+            <span class="s2">&quot;subcircuit_name&quot;</span><span class="p">:</span> <span class="n">pin_ref</span><span class="o">.</span><span class="n">subcircuit</span><span class="p">()</span><span class="o">.</span><span class="n">expanded_name</span><span class="p">(),</span>
+            <span class="s2">&quot;pin&quot;</span><span class="p">:</span> <span class="n">pin_ref</span><span class="o">.</span><span class="n">pin</span><span class="p">()</span><span class="o">.</span><span class="n">expanded_name</span><span class="p">()</span>
+        <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">net_for_export</span></div>
+
+
+<div class="viewcode-block" id="extract_circuits"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_circuits">[docs]</a><span class="k">def</span> <span class="nf">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Extract dictionary for circuit for JSON export &quot;&quot;&quot;</span>
+
+    <span class="n">circuit_has_cell</span> <span class="o">=</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">has_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
+    <span class="n">circuit_for_export</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;circuit_has_cell&quot;</span><span class="p">:</span> <span class="n">circuit_has_cell</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">circuit_has_cell</span><span class="p">:</span>
+        <span class="n">original_cell_index</span> <span class="o">=</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">cell_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
+        <span class="n">original_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">original_cell_index</span><span class="p">)</span>
+        <span class="n">is_pcell</span> <span class="o">=</span> <span class="n">original_cell</span><span class="o">.</span><span class="n">is_pcell_variant</span><span class="p">()</span>
+        <span class="n">circuit_for_export</span><span class="p">[</span><span class="s2">&quot;is_pcell&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">is_pcell</span>
+        <span class="n">pcell_parameters</span> <span class="o">=</span> <span class="n">original_cell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
+
+        <span class="c1"># remove regardless if exists since it does not actually include more than base anyway</span>
+        <span class="n">pcell_parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;refpoints&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_pcell</span><span class="p">:</span>
+            <span class="n">circuit_for_export</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="o">**</span><span class="n">circuit_for_export</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">pcell_parameters</span>
+            <span class="p">}</span>
+        <span class="n">circuit_for_export</span><span class="p">[</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">original_cell</span><span class="p">,</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">circuit_for_export</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

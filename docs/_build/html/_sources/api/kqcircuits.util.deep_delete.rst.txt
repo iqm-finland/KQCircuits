@@ -1,0 +1,10 @@
+kqcircuits.util.deep\_delete
+============================
+
+.. automodule:: kqcircuits.util.deep_delete
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.deep_delete
+.. image:: ../pcell_images/kqcircuits.util.deep_delete.png

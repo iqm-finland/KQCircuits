@@ -1,0 +1,10 @@
+kqcircuits.test\_structures.stripes\_test
+=========================================
+
+.. automodule:: kqcircuits.test_structures.stripes_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.test_structures.stripes_test
+.. image:: ../pcell_images/kqcircuits.test_structures.stripes_test.png

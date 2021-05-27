@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.elements.waveguide_coplanar_splitter &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.waveguide_coplanar_splitter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.elements.waveguide_coplanar_splitter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">radians</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">arc_points</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges</span> <span class="kn">import</span> <span class="n">airbridge_type_choices</span>
+
+
+<div class="viewcode-block" id="WaveguideCoplanarSplitter"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter">[docs]</a><span class="k">class</span> <span class="nc">WaveguideCoplanarSplitter</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the</span>
+<span class="sd">    parameter lists. Ports are labelled by letters starting from ``a``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lengths</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Waveguide length per port, measured from origin&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Angle of each port (degrees)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">240</span><span class="p">])</span>
+    <span class="n">use_airbridges</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use airbridges at a distance from the centre&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">bridge_distance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridges distance from centre&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">bridge_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Airbridge type&quot;</span><span class="p">,</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">airbridge_type_choices</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WaveguideCoplanarSplitter.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html#kqcircuits.elements.waveguide_coplanar_splitter.WaveguideCoplanarSplitter.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">gap_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">trace_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">avoidance_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">port_names</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">length_str</span><span class="p">,</span> <span class="n">angle_str</span><span class="p">,</span> <span class="n">port_name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lengths</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">,</span> <span class="n">port_names</span><span class="p">):</span>
+            <span class="n">angle_deg</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">angle_str</span><span class="p">)</span>
+            <span class="n">angle_rad</span> <span class="o">=</span> <span class="n">radians</span><span class="p">(</span><span class="n">angle_deg</span><span class="p">)</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">length_str</span><span class="p">)</span>
+
+            <span class="c1"># Generate port shapes</span>
+            <span class="n">gap_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
+                <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+
+            <span class="n">trace_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
+                <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+
+            <span class="n">avoidance_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_port_shape</span><span class="p">(</span>
+                <span class="n">angle_rad</span><span class="o">=</span><span class="n">angle_rad</span><span class="p">,</span>
+                <span class="n">length</span><span class="o">=</span><span class="n">length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+
+            <span class="c1"># Port refpoints</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span>
+                <span class="n">port_name</span><span class="p">,</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="n">length</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">))</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Waveguide length annotation</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;port_</span><span class="si">{</span><span class="n">port_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Airbridges</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_airbridges</span><span class="p">:</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle_deg</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">bridge_distance</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">),</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">bridge_distance</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">))</span>
+                <span class="n">ab_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="n">pad_length</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">pad_extra</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_type</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
+
+        <span class="c1"># Merge and insert shapes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">gap_shapes</span><span class="p">)</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">trace_shapes</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">avoidance_shapes</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span>  <span class="c1"># adds refpoints</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_port_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle_rad</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="c1"># Generate a shape consisting of a rectangle (length, width) starting at (0, 0), with a round cap at the origin</span>
+        <span class="c1"># side.</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">width</span><span class="o">/</span><span class="mi">2</span>  <span class="c1"># Radius of round cap</span>
+
+        <span class="c1"># Corner section</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">arc_points</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">angle_rad</span> <span class="o">+</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">angle_rad</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="c1"># Straight section</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span> <span class="o">-</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+                                 <span class="n">length</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span> <span class="o">-</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
+
+        <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">length</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span><span class="o">*</span><span class="n">cos</span><span class="p">(</span><span class="n">angle_rad</span> <span class="o">+</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span>
+                                 <span class="n">length</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span><span class="p">)</span> <span class="o">+</span> <span class="n">r</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="n">angle_rad</span> <span class="o">+</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">points</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

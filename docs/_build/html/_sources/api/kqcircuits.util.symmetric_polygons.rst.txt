@@ -1,0 +1,10 @@
+kqcircuits.util.symmetric\_polygons
+===================================
+
+.. automodule:: kqcircuits.util.symmetric_polygons
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.symmetric_polygons
+.. image:: ../pcell_images/kqcircuits.util.symmetric_polygons.png

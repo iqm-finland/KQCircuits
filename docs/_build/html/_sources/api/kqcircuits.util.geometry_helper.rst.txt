@@ -1,0 +1,10 @@
+kqcircuits.util.geometry\_helper
+================================
+
+.. automodule:: kqcircuits.util.geometry_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.geometry_helper
+.. image:: ../pcell_images/kqcircuits.util.geometry_helper.png

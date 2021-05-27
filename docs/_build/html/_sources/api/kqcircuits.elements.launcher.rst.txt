@@ -1,0 +1,10 @@
+kqcircuits.elements.launcher
+============================
+
+.. automodule:: kqcircuits.elements.launcher
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.launcher
+.. image:: ../pcell_images/kqcircuits.elements.launcher.png

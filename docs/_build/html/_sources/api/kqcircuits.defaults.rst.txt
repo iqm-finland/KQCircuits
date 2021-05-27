@@ -1,0 +1,10 @@
+kqcircuits.defaults
+===================
+
+.. automodule:: kqcircuits.defaults
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.defaults
+.. image:: ../pcell_images/kqcircuits.defaults.png

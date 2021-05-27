@@ -1,0 +1,10 @@
+kqcircuits.elements.finger\_capacitor\_square
+=============================================
+
+.. automodule:: kqcircuits.elements.finger_capacitor_square
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.finger_capacitor_square
+.. image:: ../pcell_images/kqcircuits.elements.finger_capacitor_square.png

@@ -1,0 +1,324 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.test_structures.test_structure &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.test_structures.tsv_test_pattern" href="kqcircuits.test_structures.tsv_test_pattern.html" />
+    <link rel="prev" title="kqcircuits.test_structures.stripes_test" href="kqcircuits.test_structures.stripes_test.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.test_structures.test_structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.test_structures.html">kqcircuits.test_structures</a> &raquo;</li>
+        
+      <li>kqcircuits.test_structures.test_structure</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.test_structures.test_structure.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.test_structures.test_structure">
+<span id="kqcircuits-test-structures-test-structure"></span><h1>kqcircuits.test_structures.test_structure<a class="headerlink" href="#module-kqcircuits.test_structures.test_structure" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.test_structures.test_structure.</code><code class="sig-name descname">TestStructure</code><a class="reference internal" href="../_modules/kqcircuits/test_structures/test_structure.html#TestStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
+<p>Base PCell declaration for test structures.</p>
+<dl class="attribute">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure.LIBRARY_NAME">
+<code class="sig-name descname">LIBRARY_NAME</code><em class="property"> = 'Test Structure Library'</em><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure.LIBRARY_DESCRIPTION">
+<code class="sig-name descname">LIBRARY_DESCRIPTION</code><em class="property"> = 'Superconducting quantum circuit library for test structures.'</em><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure.LIBRARY_PATH">
+<code class="sig-name descname">LIBRARY_PATH</code><em class="property"> = 'test_structures'</em><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure.produce_pad">
+<code class="sig-name descname">produce_pad</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">pads_region</em>, <em class="sig-param">pad_width</em>, <em class="sig-param">pad_height</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/test_structure.html#TestStructure.produce_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure.produce_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a square pad shape to pads_region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – x-coordinate of the pad center</p></li>
+<li><p><strong>y</strong> – y-coordinate of the pad center</p></li>
+<li><p><strong>pads_region</strong> – Region to which the pad shape is inserted</p></li>
+<li><p><strong>pad_width</strong> – width (and height) of the pad</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">
+<code class="sig-name descname">produce_four_point_pads</code><span class="sig-paren">(</span><em class="sig-param">pads_region</em>, <em class="sig-param">pad_width</em>, <em class="sig-param">pad_height</em>, <em class="sig-param">pad_spacing_x</em>, <em class="sig-param">pad_spacing_y</em>, <em class="sig-param">connect_pads</em>, <em class="sig-param">trans=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">refpoint_prefix='probe'</em>, <em class="sig-param">refpoint_distance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/test_structure.html#TestStructure.produce_four_point_pads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts four pads to pads_region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pads_region</strong> – Region to which the pad shapes are inserted</p></li>
+<li><p><strong>pad_width</strong> – width (and height) of the pads</p></li>
+<li><p><strong>pad_spacing_x</strong> – x-distance between the pads</p></li>
+<li><p><strong>pad_spacing_y</strong> – y-distance between the pads</p></li>
+<li><p><strong>connect_pads</strong> – Boolean determining if the two pads on each side are connected</p></li>
+<li><p><strong>trans</strong> – transformation applied to the pads</p></li>
+<li><p><strong>refpoint_prefix</strong> – prefix used for the refpoint names</p></li>
+<li><p><strong>refpoint_distance</strong> – Horizontal distance of refpoints from closest outer edges.
+If None, the refpoints will be at the center of the pads.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.test_structures.test_structure.TestStructure.produce_etched_region">
+<code class="sig-name descname">produce_etched_region</code><span class="sig-paren">(</span><em class="sig-param">metal_region</em>, <em class="sig-param">pos</em>, <em class="sig-param">width</em>, <em class="sig-param">height</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/test_structure.html#TestStructure.produce_etched_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.test_structures.test_structure.TestStructure.produce_etched_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces structures in metal gap layer.</p>
+<p>Subtracts metal_region from a region defined by width and height, and inserts resulting
+region to metal gap layer. Also adds grid avoidance for the area.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metal_region</strong> – region subtracted from the region in metal gap layer</p></li>
+<li><p><strong>pos</strong> – center of the produced region (pya.DPoint)</p></li>
+<li><p><strong>width</strong> – width of the produced region</p></li>
+<li><p><strong>height</strong> – height of the produced region</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<img alt="../_images/kqcircuits.test_structures.test_structure.png" src="../_images/kqcircuits.test_structures.test_structure.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.test_structures.tsv_test_pattern.html" class="btn btn-neutral float-right" title="kqcircuits.test_structures.tsv_test_pattern" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.test_structures.stripes_test.html" class="btn btn-neutral float-left" title="kqcircuits.test_structures.stripes_test" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

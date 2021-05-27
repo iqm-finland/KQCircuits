@@ -1,0 +1,10 @@
+kqcircuits.chips.airbridge\_crossings
+=====================================
+
+.. automodule:: kqcircuits.chips.airbridge_crossings
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.airbridge_crossings
+.. image:: ../pcell_images/kqcircuits.chips.airbridge_crossings.png

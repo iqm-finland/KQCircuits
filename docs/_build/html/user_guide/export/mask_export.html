@@ -1,0 +1,403 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Mask export &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Export for external simulation tools" href="simulation_export.html" />
+    <link rel="prev" title="Exports" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">User Guide</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../gui_features.html">GUI Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gui_workflow.html">Point-and-click workflow tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../macro_workflow.html">Macro development</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Exports</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Mask export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#tutorial">Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="simulation_export.html">Export for external simulation tools</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../xsection.html">Creating cross section images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../terminology.html">Terminology</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">User Guide</a> &raquo;</li>
+        
+          <li><a href="index.html">Exports</a> &raquo;</li>
+        
+      <li>Mask export</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/user_guide/export/mask_export.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mask-export">
+<h1>Mask export<a class="headerlink" href="#mask-export" title="Permalink to this headline">¶</a></h1>
+<p>Masks are defined by simple scripts, which define the layout of chips in the
+mask and the parameters of those chips. These scripts will export
+<code class="docutils literal notranslate"><span class="pre">.oas</span></code>/<code class="docutils literal notranslate"><span class="pre">.gds</span></code> files required for photomask production and possibly EBL,
+as well as auxiliary files such as netlists, images and automatic mask
+documentation. The mask scripts can be run either from the macro editor or
+from the command line using <code class="docutils literal notranslate"><span class="pre">klayout</span> <span class="pre">-z</span> <span class="pre">-r</span> <span class="pre">./scripts/masks/maskname.py</span></code>.</p>
+<div class="section" id="tutorial">
+<h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="basic-mask-script-and-export">
+<h3>Basic mask script and export<a class="headerlink" href="#basic-mask-script-and-export" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Launch KLayout Editor and open the Macro IDE (F5).</p></li>
+<li><p>Add the following script to the <code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts/masks</span></code> folder in
+the <code class="docutils literal notranslate"><span class="pre">Python</span></code> tab of the Macro IDE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Imports required for any mask</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">TMP_PATH</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_set</span> <span class="kn">import</span> <span class="n">MaskSet</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
+<span class="c1"># Import chips required for this mask</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.demo</span> <span class="kn">import</span> <span class="n">Demo</span>
+
+<span class="c1"># Get current view and layout</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="o">.</span><span class="n">get_active_layout</span><span class="p">()</span>
+
+<span class="c1"># Initialize mask object.</span>
+<span class="c1"># &quot;name&quot; and &quot;version&quot; will be displayed in labels inside the mask</span>
+<span class="c1"># and in the names of the exported files.</span>
+<span class="c1"># &quot;with_grid&quot; determines if the ground plane grid is created.</span>
+<span class="n">test_mask</span> <span class="o">=</span> <span class="n">MaskSet</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Add mask layouts.</span>
+<span class="c1"># A mask layout determines which chip is at each position. The chips are</span>
+<span class="c1"># identified by strings which are defined by the `add_chip()` calls</span>
+<span class="c1"># below. &quot;---&quot; denotes places without a chip.</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">add_mask_layout</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="c1"># Chip definitions</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">Demo</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">)</span>
+
+<span class="c1"># Build the mask.</span>
+<span class="c1"># This generates the layout in KLayout based on previous calls to</span>
+<span class="c1"># ``add_mask_layout()`` and ``add_chip()`.</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="c1"># Export the mask files to TMP_PATH</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Any mask script should follow roughly the same structure. The
+beginning and end of the script (getting the view, and exporting the
+mask) are generally the same for any mask.</p>
+</li>
+<li><p>(Optional) Open <code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts/macros/logging_setup</span></code> and run it.
+This makes mask generation logs visible in the Macro console.</p></li>
+<li><p>With the mask script open, click “Run script from current tab”
+(Shift+F5). This generates the mask and exports the files to the
+folder defined by <code class="docutils literal notranslate"><span class="pre">kqcircuits.default.TMP_PATH</span></code>.</p></li>
+</ol>
+</div></blockquote>
+<p>If you generate the mask again (for example in the following sections), it is
+recommended that you first close the layout where the previous mask was
+generated.</p>
+</div>
+<div class="section" id="ground-grid">
+<h3>Ground grid<a class="headerlink" href="#ground-grid" title="Permalink to this headline">¶</a></h3>
+<p>The generated masks can include a ground plane grid, which automatically
+avoids other elements. To generate it, use <code class="docutils literal notranslate"><span class="pre">with_grid=True</span></code> in the mask object
+initialization:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span> <span class="o">=</span> <span class="n">MaskSet</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because the grid generation is slow, it is recommended to keep
+<code class="docutils literal notranslate"><span class="pre">with_grid=False</span></code> when testing masks, and only use <code class="docutils literal notranslate"><span class="pre">with_grid=True</span></code> for
+masks that are really produced.</p>
+</div>
+<div class="section" id="adding-and-modifying-chips">
+<h3>Adding and modifying chips<a class="headerlink" href="#adding-and-modifying-chips" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Add the following lines to the imports section of the script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.chips.multi_face.demo_twoface</span> <span class="kn">import</span> <span class="n">DemoTwoface</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.quality_factor</span> <span class="kn">import</span> <span class="n">QualityFactor</span>
+</pre></div>
+</div>
+</li>
+<li><p>Add the new chips:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">DemoTwoface</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">)</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">QualityFactor</span><span class="p">,</span> <span class="s2">&quot;QF1&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Add a new variant of the demo chip with different parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">Demo</span><span class="p">,</span> <span class="s2">&quot;DE2&quot;</span><span class="p">,</span> <span class="n">include_couplers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readout_res_lengths</span><span class="o">=</span><span class="p">[</span><span class="mi">5400</span><span class="p">,</span> <span class="mi">5500</span><span class="p">,</span> <span class="mi">5600</span><span class="p">,</span> <span class="mi">5700</span><span class="p">])</span>
+</pre></div>
+</div>
+</li>
+<li><p>Replace some of the “DE1” entries in the mask layout by “DT1”, “QF1” and
+“DE2”. This will determine where those chips are placed in the mask.</p></li>
+<li><p>Generate the mask. You should see the new chip variants at the positions
+defined in the previous step.</p></li>
+</ol>
+</div>
+<div class="section" id="multi-face-masks">
+<h3>Multi-face masks<a class="headerlink" href="#multi-face-masks" title="Permalink to this headline">¶</a></h3>
+<p>The mask generated in the previous step contained “DemoTwoface” chips, which
+are supposed to have elements in two different chip faces for a flip-chip
+process. However, the generated mask only contained the parts in “bottom”
+face. To generate mask for also “top”-face chips, we need to add an
+additional <code class="docutils literal notranslate"><span class="pre">mask_layout</span></code></p>
+<ol class="arabic">
+<li><p>Add the following below the old <code class="docutils literal notranslate"><span class="pre">add_mask_layout()</span></code> call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_mask_layout</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+<span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice the “t” argument after the actual mask layout. This means that only
+elements which are in chip face “t” will be included in this mask layout.
+By default, the mask layout will use elements in chip face “b”, which is
+the case for the first mask layout in this script.</p>
+</li>
+<li><p>Generate the mask. In KLayout cell hierarchy, you should see both “Test b”
+and “Test t” cells. You can right click them and select “Show as new
+top” to verify that “Test b” contains the parts of DemoTwoface in “b”-face
+and “Test t” contains the parts of DemoTwoface in “t”-face (with proper
+mirroring and rotation).</p></li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simulation_export.html" class="btn btn-neutral float-right" title="Export for external simulation tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Exports" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+kqcircuits.squids
+=================
+
+
+.. toctree::
+
+   kqcircuits.squids.sim
+   kqcircuits.squids.squid
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.squids
+   :members:
+   :undoc-members:
+   :show-inheritance:

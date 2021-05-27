@@ -1,0 +1,10 @@
+kqcircuits.test\_structures.tsv\_test\_pattern
+==============================================
+
+.. automodule:: kqcircuits.test_structures.tsv_test_pattern
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.test_structures.tsv_test_pattern
+.. image:: ../pcell_images/kqcircuits.test_structures.tsv_test_pattern.png

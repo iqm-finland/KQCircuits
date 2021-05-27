@@ -1,0 +1,10 @@
+kqcircuits.klayout\_view
+========================
+
+.. automodule:: kqcircuits.klayout_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.klayout_view
+.. image:: ../pcell_images/kqcircuits.klayout_view.png

@@ -1,0 +1,10 @@
+kqcircuits.simulations.empty\_simulation
+========================================
+
+.. automodule:: kqcircuits.simulations.empty_simulation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.empty_simulation
+.. image:: ../pcell_images/kqcircuits.simulations.empty_simulation.png

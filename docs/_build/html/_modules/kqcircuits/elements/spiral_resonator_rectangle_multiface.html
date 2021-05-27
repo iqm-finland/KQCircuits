@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.elements.spiral_resonator_rectangle_multiface &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.spiral_resonator_rectangle_multiface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.elements.spiral_resonator_rectangle_multiface</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf</span> <span class="kn">import</span> <span class="n">FlipChipConnectorRf</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.spiral_resonator_rectangle</span> <span class="kn">import</span> <span class="n">SpiralResonatorRectangle</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_curved</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarCurved</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_straight</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarStraight</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">vector_length_and_direction</span>
+
+<span class="n">numerical_inaccuracy</span> <span class="o">=</span> <span class="mf">1e-7</span>
+
+
+<div class="viewcode-block" id="SpiralResonatorRectangleMultiface"><a class="viewcode-back" href="../../../api/kqcircuits.elements.spiral_resonator_rectangle_multiface.html#kqcircuits.elements.spiral_resonator_rectangle_multiface.SpiralResonatorRectangleMultiface">[docs]</a><span class="k">class</span> <span class="nc">SpiralResonatorRectangleMultiface</span><span class="p">(</span><span class="n">SpiralResonatorRectangle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for a two-face rectangular spiral resonator.</span>
+
+<span class="sd">    Otherwise similar to SpiralResonatorRectangle, but the resonator waveguide will change to face 1</span>
+<span class="sd">    (through a flip-chip connector) after specified distance. WARNING: If the connector is located immediately next to</span>
+<span class="sd">    corners, the connector is located in the next straight segment it can fit, so the distance is not exact. In this</span>
+<span class="sd">    case, the other parameters should be adjusted to avoid having the connector right next to a corner.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">connector_dist</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Distance of face to face connector from input&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpiralResonatorRectangleMultiface.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.spiral_resonator_rectangle_multiface.html#kqcircuits.elements.spiral_resonator_rectangle_multiface.SpiralResonatorRectangleMultiface.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># used in add_segment() to control in which face the waveguide is created</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span>  <span class="c1"># the add_segment() method overridden in this class is called in super().produce_impl()</span></div>
+
+<div class="viewcode-block" id="SpiralResonatorRectangleMultiface.add_segment"><a class="viewcode-back" href="../../../api/kqcircuits.elements.spiral_resonator_rectangle_multiface.html#kqcircuits.elements.spiral_resonator_rectangle_multiface.SpiralResonatorRectangleMultiface.add_segment">[docs]</a>    <span class="k">def</span> <span class="nf">add_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">,</span> <span class="n">current_len</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="n">res_trans</span><span class="p">,</span> <span class="n">space</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inserts waveguides for a segment between point1 and point2.</span>
+
+<span class="sd">        Same as base class add_segment(), but the segment can be created either in face 0 or face 1</span>
+<span class="sd">        (or partly in both), depending on the current_len compared to self.connector_dist.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point1: start point of the segment</span>
+<span class="sd">            point2: end point of the segment</span>
+<span class="sd">            current_len: current length of the resonator waveguide</span>
+<span class="sd">            rotation: rotation in units of 90-degrees, 0 for left-to-right segment, 1 for bottom-to-up segment,</span>
+<span class="sd">                2 for right-to-left segment, 3 for up-to-bottom segment</span>
+<span class="sd">            res_trans: transformation applied to the entire resonator</span>
+<span class="sd">            space: space left for the next turn</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ``(current_len, final_segment, can_create_resonator)``</span>
+
+<span class="sd">            Where ``current_len`` is length of the resonator waveguide after adding this segment.</span>
+<span class="sd">            ``final_segment`` is True if this is the last segment of the resonator, False otherwise.</span>
+<span class="sd">            ``can_create_resonator`` is True if it was possible to create the resonator with the</span>
+<span class="sd">            given parameters, False otherwise.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">space</span> <span class="o">+</span> <span class="n">numerical_inaccuracy</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">current_len</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
+
+        <span class="n">segment_len</span><span class="p">,</span> <span class="n">segment_dir</span><span class="p">,</span> <span class="n">corner_offset</span><span class="p">,</span> <span class="n">straight_len</span><span class="p">,</span> <span class="n">curve_angle</span><span class="p">,</span> <span class="n">final_segment</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_segment_data</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">,</span> <span class="n">current_len</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">space</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">final_segment</span> <span class="ow">and</span> <span class="n">space</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="n">straight_len</span> <span class="o">+</span> <span class="n">numerical_inaccuracy</span> <span class="o">&lt;</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">curve_angle</span> <span class="o">-</span> <span class="n">numerical_inaccuracy</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">current_len</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
+
+        <span class="c1"># add connector cell and get connector length</span>
+        <span class="n">connector_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="n">Element</span><span class="p">)</span>
+        <span class="n">cell_refs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">connector_cell</span><span class="p">)</span>
+        <span class="n">connector_len</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">cell_refs</span><span class="p">[</span><span class="s2">&quot;b_port&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cell_refs</span><span class="p">[</span><span class="s2">&quot;t_port&quot;</span><span class="p">])</span>
+
+        <span class="c1"># straight waveguide part</span>
+        <span class="k">if</span> <span class="n">straight_len</span> <span class="o">&gt;</span> <span class="n">numerical_inaccuracy</span><span class="p">:</span>
+            <span class="c1"># change face and create connector if at correct distance</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">connector_dist</span> <span class="o">+</span> <span class="n">connector_len</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">current_len</span> <span class="o">+</span> <span class="n">straight_len</span> <span class="o">+</span> <span class="n">numerical_inaccuracy</span> <span class="ow">and</span> \
+                    <span class="n">connector_len</span> <span class="o">&lt;</span> <span class="n">straight_len</span> <span class="o">+</span> <span class="n">numerical_inaccuracy</span><span class="p">:</span>
+                <span class="n">dist1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">connector_len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">connector_dist</span> <span class="o">-</span> <span class="n">current_len</span><span class="p">)</span>
+                <span class="n">connector_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">point1</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">dist1</span><span class="p">)</span> <span class="o">*</span> <span class="n">segment_dir</span><span class="p">)</span>
+                <span class="n">connector_inst</span><span class="p">,</span> <span class="n">connector_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">connector_cell</span><span class="p">,</span> <span class="n">res_trans</span> <span class="o">*</span> <span class="n">connector_trans</span><span class="p">)</span>
+                <span class="n">face_0_len</span> <span class="o">=</span> <span class="n">dist1</span> <span class="o">-</span> <span class="n">connector_len</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">face_1_len</span> <span class="o">=</span> <span class="n">straight_len</span> <span class="o">-</span> <span class="n">dist1</span> <span class="o">-</span> <span class="n">connector_len</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="k">if</span> <span class="n">face_0_len</span> <span class="o">&gt;</span> <span class="n">numerical_inaccuracy</span><span class="p">:</span>
+                    <span class="n">subcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarStraight</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">face_0_len</span><span class="p">,</span>
+                                               <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span><span class="p">]])</span>
+                    <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">point1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">segment_dir</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">subcell</span><span class="p">,</span> <span class="n">res_trans</span><span class="o">*</span><span class="n">trans</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">face_1_len</span> <span class="o">&gt;</span> <span class="n">numerical_inaccuracy</span><span class="p">:</span>
+                    <span class="n">subcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarStraight</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">face_1_len</span><span class="p">,</span>
+                                               <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span><span class="p">]])</span>
+                    <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">res_trans</span><span class="o">.</span><span class="n">inverted</span><span class="p">()</span><span class="o">*</span><span class="n">connector_ref</span><span class="p">[</span><span class="s2">&quot;t_port&quot;</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">subcell</span><span class="p">,</span> <span class="n">res_trans</span><span class="o">*</span><span class="n">trans</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">subcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarStraight</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">straight_len</span><span class="p">,</span>
+                                           <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span><span class="p">]])</span>
+                <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">rotation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">point1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">segment_dir</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">subcell</span><span class="p">,</span> <span class="n">res_trans</span><span class="o">*</span><span class="n">trans</span><span class="p">)</span>
+
+        <span class="c1"># curved waveguide part</span>
+        <span class="k">if</span> <span class="n">curve_angle</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">numerical_inaccuracy</span><span class="p">:</span>
+            <span class="n">subcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarCurved</span><span class="p">,</span> <span class="n">Element</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">curve_angle</span><span class="p">,</span>
+                                       <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span><span class="p">]])</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">res_trans</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">rotation</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                         <span class="n">point1</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">straight_len</span><span class="p">)</span> <span class="o">*</span> <span class="n">segment_dir</span> <span class="o">+</span> <span class="n">corner_offset</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">subcell</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">final_segment</span><span class="p">:</span>
+                <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">produce_curve_termination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_angle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span>
+                                                                  <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">final_segment</span><span class="p">:</span>
+            <span class="c1"># in this case the straight segment was really the last segment, so need to terminate that</span>
+            <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">produce_end_termination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res_trans</span> <span class="o">*</span> <span class="n">point1</span><span class="p">,</span>
+                                                      <span class="n">res_trans</span> <span class="o">*</span> <span class="p">(</span><span class="n">point1</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">straight_len</span><span class="p">)</span><span class="o">*</span><span class="n">segment_dir</span><span class="p">),</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">term2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">final_segment</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">current_len</span> <span class="o">+</span> <span class="n">straight_len</span> <span class="o">-</span> <span class="n">curve_angle</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active_face_idx</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># required because produce_spiral_resonator() may be called again</span>
+
+        <span class="k">return</span> <span class="n">current_len</span> <span class="o">+</span> <span class="n">straight_len</span> <span class="o">-</span> <span class="n">curve_angle</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">final_segment</span><span class="p">,</span> <span class="kc">True</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

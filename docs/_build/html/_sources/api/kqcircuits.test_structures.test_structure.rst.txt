@@ -1,0 +1,10 @@
+kqcircuits.test\_structures.test\_structure
+===========================================
+
+.. automodule:: kqcircuits.test_structures.test_structure
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.test_structures.test_structure
+.. image:: ../pcell_images/kqcircuits.test_structures.test_structure.png

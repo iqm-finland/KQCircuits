@@ -1,0 +1,10 @@
+kqcircuits.simulations.xmons\_direct\_coupling\_full\_chip\_sim
+===============================================================
+
+.. automodule:: kqcircuits.simulations.xmons_direct_coupling_full_chip_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.xmons_direct_coupling_full_chip_sim
+.. image:: ../pcell_images/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.png

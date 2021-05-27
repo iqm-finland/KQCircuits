@@ -1,0 +1,10 @@
+kqcircuits.elements.airbridges.airbridge\_rectangular
+=====================================================
+
+.. automodule:: kqcircuits.elements.airbridges.airbridge_rectangular
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.airbridges.airbridge_rectangular
+.. image:: ../pcell_images/kqcircuits.elements.airbridges.airbridge_rectangular.png

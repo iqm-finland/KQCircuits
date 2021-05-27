@@ -1,0 +1,10 @@
+kqcircuits.masks.mask\_set
+==========================
+
+.. automodule:: kqcircuits.masks.mask_set
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.masks.mask_set
+.. image:: ../pcell_images/kqcircuits.masks.mask_set.png

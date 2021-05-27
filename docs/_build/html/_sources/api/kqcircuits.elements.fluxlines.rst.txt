@@ -1,0 +1,17 @@
+kqcircuits.elements.fluxlines
+=============================
+
+
+.. toctree::
+
+   kqcircuits.elements.fluxlines.fluxline
+   kqcircuits.elements.fluxlines.fluxline_standard
+   kqcircuits.elements.fluxlines.fluxline_straight
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.elements.fluxlines
+   :members:
+   :undoc-members:
+   :show-inheritance:

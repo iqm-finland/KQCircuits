@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.elements.waveguide_coplanar" href="kqcircuits.elements.waveguide_coplanar.html" />
+    <link rel="prev" title="kqcircuits.elements.spiral_resonator_rectangle_multiface" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.qubits.html">kqcircuits.elements.qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square_multiface.html">kqcircuits.elements.finger_capacitor_square_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle.html">kqcircuits.elements.spiral_resonator_rectangle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html">kqcircuits.elements.spiral_resonator_rectangle_multiface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.waveguide_composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar.html">kqcircuits.elements.waveguide_coplanar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_curved.html">kqcircuits.elements.waveguide_coplanar_curved</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.elements.html">kqcircuits.elements</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.waveguide_composite</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.elements.waveguide_composite.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.elements.waveguide_composite">
+<span id="kqcircuits-elements-waveguide-composite"></span><h1>kqcircuits.elements.waveguide_composite<a class="headerlink" href="#module-kqcircuits.elements.waveguide_composite" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="kqcircuits.elements.waveguide_composite.Node">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.waveguide_composite.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param">position</em>, <em class="sig-param">element=None</em>, <em class="sig-param">inst_name=None</em>, <em class="sig-param">align=()</em>, <em class="sig-param">**params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Specifies a single node of a composite waveguide.</p>
+<p>Node is as a <code class="docutils literal notranslate"><span class="pre">position</span></code> and optionally other parameters. The <code class="docutils literal notranslate"><span class="pre">element</span></code> argument sets an Element
+type that get’s inserted in the waveguide. Typically this is an Airbridge, but any element with
+port_a and port_b is supported.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – The location of the Node. Represented as a DPoint object.</p></li>
+<li><p><strong>element</strong> – The Element type that gets inserted in the waveguide. None by default.</p></li>
+<li><p><strong>inst_name</strong> – If an instance name is supplied, the element refpoints will be exposed with that name. Default None.</p></li>
+<li><p><strong>align</strong> – Tuple with two refpoint names that correspond the input and output point of element, respectively
+Default value (None) uses <code class="docutils literal notranslate"><span class="pre">('port_a',</span> <span class="pre">'port_b')</span></code></p></li>
+<li><p><strong>**params</strong> – Other optional parameters for the inserted element</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Node.</p>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="kqcircuits.elements.waveguide_composite.Node.position">
+<code class="sig-name descname">position</code><em class="property">: pya.DPoint</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.position" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.elements.waveguide_composite.Node.element">
+<code class="sig-name descname">element</code><em class="property">: Element</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.element" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.elements.waveguide_composite.Node.align">
+<code class="sig-name descname">align</code><em class="property">: Tuple</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.align" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.elements.waveguide_composite.Node.inst_name">
+<code class="sig-name descname">inst_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.inst_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.waveguide_composite.Node.deserialize">
+<em class="property">classmethod </em><code class="sig-name descname">deserialize</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node.deserialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.deserialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Node object from a serialized form, such that <code class="docutils literal notranslate"><span class="pre">from_serialized(ast.literal_eval(str(node_object)))</span></code>
+returns an equivalent copy of <code class="docutils literal notranslate"><span class="pre">node_obj</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> – serialized node, consisting of a tuple <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">element_name,</span> <span class="pre">params)</span></code>, where <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> are the
+node coordinates. The string <code class="docutils literal notranslate"><span class="pre">element_name</span></code> and dict <code class="docutils literal notranslate"><span class="pre">params</span></code> are optional.</p>
+</dd>
+</dl>
+<p>Returns: a Node</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.waveguide_composite.</code><code class="sig-name descname">WaveguideComposite</code><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
+<p>A composite waveguide made of waveguides and other elements.</p>
+<p>From the user’s perspective this is a WaveguideCoplanar that is extended with Airbridge,
+WaveguideCoplanarTaper and FlipChipConnector, so that a signal can be routed over other
+waveguides and several chip faces. As a bonus feature other arbitrary elements like coplanar
+capacitors are also supported.</p>
+<p>A list of Nodes defines the shape of the waveguide. An empty node, i.e. <code class="docutils literal notranslate"><span class="pre">Node.element</span></code> is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, will set the next “waypoint” of the waveguide. If an Element is given it will be
+placed on the node, except for the first or last node where it will be adjacent to the edge.</p>
+<p>Inserted elements are oriented collinear with the previous node. If the following node is not
+collinear with the previous element then for convenience an automatic bend is inserted in the
+waveguide. Note that back-to-back elements (i.e. without some empty Nodes in between) should
+only be placed collinear with each other.</p>
+<p>Node parameters will be passed to the element. For convenience, empty nodes may also have
+parameters: <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> or <code class="docutils literal notranslate"><span class="pre">face_id</span></code>. They insert a WaveguideCoplanarTaper or a
+FlipChipConnector, respectively and change the defaults too.</p>
+<p>Using _a/_b sets a/b for the AirbridgeConnection but does not change the waveguide’s defaults.
+Used for directly setting the first airbrige in a waveguide or for circumventing scaling issues
+of AirbridgeConnection. See “test_wgc_airbridge.lym” for examples.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ab_across=True</span></code> parameter places a single airbridge across the node. The <code class="docutils literal notranslate"><span class="pre">n_bridges=N</span></code>
+parameter puts N airbridges evenly distributed across the preceding edge.</p>
+<p>A notable implementation detail is that every Airbridge (sub)class is done as AirbridgeConnection.
+This way a waveguide taper is automatically inserted before and after the airbridge so the user
+does not have to manually add these. Other Node types do not have this feature.</p>
+<p>A WaveguideComposite cell has a method <code class="docutils literal notranslate"><span class="pre">segment_lengths</span></code> that returns a list of lengths of each individual
+regular waveguide segment. Segments are bounded by any element that is not a standard waveguide, such as Airbridge,
+flip chip, taper or any custom element.</p>
+<p>For examples see the test_waveguide_composite.lym script.</p>
+<dl class="method">
+<dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite.create">
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create cell for this element in layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_impl">
+<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce the composite waveguide.</p>
+<p>In practice this becomes an alternating chain of WaveguideCoplanar and some other Element
+subclass. Elements are oriented collinear to the preceding Node and an automatic bend is
+inserted after if the next Node is not collinear.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.elements.waveguide_composite.produce_fixed_length_bend">
+<code class="sig-prename descclassname">kqcircuits.elements.waveguide_composite.</code><code class="sig-name descname">produce_fixed_length_bend</code><span class="sig-paren">(</span><em class="sig-param">element</em>, <em class="sig-param">target_len</em>, <em class="sig-param">point_a</em>, <em class="sig-param">point_a_corner</em>, <em class="sig-param">point_b</em>, <em class="sig-param">point_b_corner</em>, <em class="sig-param">bridges</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#produce_fixed_length_bend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.produce_fixed_length_bend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a waveguide bend with the given length to the chip.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element</strong> – The element to which the waveguide is inserted</p></li>
+<li><p><strong>target_len</strong> – Target length of the waveguide</p></li>
+<li><p><strong>point_a</strong> – Endpoint 1 of the waveguide</p></li>
+<li><p><strong>point_a_corner</strong> – Point towards which the waveguide goes from endpoint 1</p></li>
+<li><p><strong>point_b</strong> – Endpoint 2 of the waveguide</p></li>
+<li><p><strong>point_b_corner</strong> – Point towards which the waveguide goes from endpoint 2</p></li>
+<li><p><strong>bridges</strong> – String determining where airbridges are created, “no” | “middle” | “middle and ends”</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Instance of the created waveguide</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong><strong>, </strong><strong>if a bend with the given target length and points cannot be created.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>nodes</strong><em> (String)</em><span> - List of Nodes for the waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">'Airbridge'),</span> <span class="pre">(200,</span> <span class="pre">0)</span></code></p></li>
+<li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+<li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>output_rotation</strong><em> (Double)</em><span> - Rotation of output port w.r.t. input port</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
+<li><p><strong>with_side_airbridges</strong><em> (Boolean)</em><span> - With airbridges on the sides</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>with_right_waveguide</strong><em> (Boolean)</em><span> - With waveguide on right side</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>waveguide_separation</strong><em> (Double)</em><span> - Distance between waveguide center conductors</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">60</span></code></p></li>
+<li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular']</span></code></p></li>
+<li><p><strong>a1</strong><em> (Double)</em><span> - Width of left waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b1</strong><em> (Double)</em><span> - Width of left waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>m1</strong><em> (Double)</em><span> - Margin of left waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a2</strong><em> (Double)</em><span> - Width of right waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Width of right waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">12</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>m2</strong><em> (Double)</em><span> - Margin of right waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridge_width</strong><em> (Double)</em><span> - Bridge width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pad_length</strong><em> (Double)</em><span> - Pad length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">14</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pad_extra</strong><em> (Double)</em><span> - Bottom pad extra</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridge_length</strong><em> (Double)</em><span> - Bridge length (from pad to pad)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<img alt="../_images/kqcircuits.elements.waveguide_composite.png" src="../_images/kqcircuits.elements.waveguide_composite.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.elements.waveguide_coplanar.html" class="btn btn-neutral float-right" title="kqcircuits.elements.waveguide_coplanar" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html" class="btn btn-neutral float-left" title="kqcircuits.elements.spiral_resonator_rectangle_multiface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+kqcircuits.util.log\_router
+===========================
+
+.. automodule:: kqcircuits.util.log_router
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.log_router
+.. image:: ../pcell_images/kqcircuits.util.log_router.png

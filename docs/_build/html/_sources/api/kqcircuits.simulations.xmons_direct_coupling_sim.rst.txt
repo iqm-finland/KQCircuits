@@ -1,0 +1,10 @@
+kqcircuits.simulations.xmons\_direct\_coupling\_sim
+===================================================
+
+.. automodule:: kqcircuits.simulations.xmons_direct_coupling_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.xmons_direct_coupling_sim
+.. image:: ../pcell_images/kqcircuits.simulations.xmons_direct_coupling_sim.png

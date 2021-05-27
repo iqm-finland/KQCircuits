@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.klayout_view &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.layer_cluster" href="kqcircuits.layer_cluster.html" />
+    <link rel="prev" title="kqcircuits.defaults" href="kqcircuits.defaults.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+      <li>kqcircuits.klayout_view</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.klayout_view.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.klayout_view">
+<span id="kqcircuits-klayout-view"></span><h1>kqcircuits.klayout_view<a class="headerlink" href="#module-kqcircuits.klayout_view" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="kqcircuits.klayout_view.resolve_default_layer_info">
+<code class="sig-prename descclassname">kqcircuits.klayout_view.</code><code class="sig-name descname">resolve_default_layer_info</code><span class="sig-paren">(</span><em class="sig-param">layer_name</em>, <em class="sig-param">face_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#resolve_default_layer_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.resolve_default_layer_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns LayerInfo based on default_layers.</p>
+<p>Assumes that layer_name is valid, and that face_id is valid or None.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer_name</strong> – layer name (without face prefix for face-specific layers)</p></li>
+<li><p><strong>face_id</strong> – id of the face from which this layer should be</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="kqcircuits.klayout_view.KLayoutView">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.klayout_view.</code><code class="sig-name descname">KLayoutView</code><span class="sig-paren">(</span><em class="sig-param">view=None</em>, <em class="sig-param">current=False</em>, <em class="sig-param">initialize=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>KLayout layout view wrapper with helper methods.</p>
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.get_active_cell_view">
+<em class="property">static </em><code class="sig-name descname">get_active_cell_view</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_cell_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_cell_view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.get_active_layout">
+<em class="property">static </em><code class="sig-name descname">get_active_layout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_layout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_layout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.get_active_cell">
+<em class="property">static </em><code class="sig-name descname">get_active_cell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_cell" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.focus">
+<code class="sig-name descname">focus</code><span class="sig-paren">(</span><em class="sig-param">cell</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.focus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear view.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.clear_layers">
+<code class="sig-name descname">clear_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.clear_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.clear_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear view.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.add_default_layers">
+<code class="sig-name descname">add_default_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.add_default_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.add_default_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate view with KQCircuits default layers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps">
+<code class="sig-name descname">export_layers_bitmaps</code><span class="sig-paren">(</span><em class="sig-param">path, cell, filename='', layers_set=['mask_graphical_rep'], face_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_layers_bitmaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">
+<code class="sig-name descname">export_all_layers_bitmap</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">cell</em>, <em class="sig-param">filename=''</em>, <em class="sig-param">face_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_all_layers_bitmap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.klayout_view.KLayoutView.export_pcell_png">
+<code class="sig-name descname">export_pcell_png</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">cell</em>, <em class="sig-param">filename</em>, <em class="sig-param">max_size=1000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_pcell_png"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_pcell_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports pcell to .png file no bigger than max_size at either dimension.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="kqcircuits.klayout_view.ViewException">
+<em class="property">exception </em><code class="sig-prename descclassname">kqcircuits.klayout_view.</code><code class="sig-name descname">ViewException</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#ViewException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.ViewException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="kqcircuits.klayout_view.MissingUILibraryException">
+<em class="property">exception </em><code class="sig-prename descclassname">kqcircuits.klayout_view.</code><code class="sig-name descname">MissingUILibraryException</code><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#MissingUILibraryException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.MissingUILibraryException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="kqcircuits.klayout_view.InvalidViewException">
+<em class="property">exception </em><code class="sig-prename descclassname">kqcircuits.klayout_view.</code><code class="sig-name descname">InvalidViewException</code><span class="sig-paren">(</span><em class="sig-param">view</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#InvalidViewException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.klayout_view.InvalidViewException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
+</dd></dl>
+
+<img alt="../_images/kqcircuits.klayout_view.png" src="../_images/kqcircuits.klayout_view.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.layer_cluster.html" class="btn btn-neutral float-right" title="kqcircuits.layer_cluster" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.defaults.html" class="btn btn-neutral float-left" title="kqcircuits.defaults" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

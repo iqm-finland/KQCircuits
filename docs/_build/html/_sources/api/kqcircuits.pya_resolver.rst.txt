@@ -1,0 +1,10 @@
+kqcircuits.pya\_resolver
+========================
+
+.. automodule:: kqcircuits.pya_resolver
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.pya_resolver
+.. image:: ../pcell_images/kqcircuits.pya_resolver.png

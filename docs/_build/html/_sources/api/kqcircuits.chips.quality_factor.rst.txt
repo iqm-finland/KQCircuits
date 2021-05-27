@@ -1,0 +1,10 @@
+kqcircuits.chips.quality\_factor
+================================
+
+.. automodule:: kqcircuits.chips.quality_factor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.quality_factor
+.. image:: ../pcell_images/kqcircuits.chips.quality_factor.png

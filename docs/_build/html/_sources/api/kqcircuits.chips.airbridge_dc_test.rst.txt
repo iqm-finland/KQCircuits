@@ -1,0 +1,10 @@
+kqcircuits.chips.airbridge\_dc\_test
+====================================
+
+.. automodule:: kqcircuits.chips.airbridge_dc_test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.airbridge_dc_test
+.. image:: ../pcell_images/kqcircuits.chips.airbridge_dc_test.png

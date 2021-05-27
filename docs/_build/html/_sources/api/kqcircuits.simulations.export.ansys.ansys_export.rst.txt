@@ -1,0 +1,10 @@
+kqcircuits.simulations.export.ansys.ansys\_export
+=================================================
+
+.. automodule:: kqcircuits.simulations.export.ansys.ansys_export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.ansys.ansys_export
+.. image:: ../pcell_images/kqcircuits.simulations.export.ansys.ansys_export.png

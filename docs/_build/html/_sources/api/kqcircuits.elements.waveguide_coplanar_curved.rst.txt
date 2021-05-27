@@ -1,0 +1,10 @@
+kqcircuits.elements.waveguide\_coplanar\_curved
+===============================================
+
+.. automodule:: kqcircuits.elements.waveguide_coplanar_curved
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.waveguide_coplanar_curved
+.. image:: ../pcell_images/kqcircuits.elements.waveguide_coplanar_curved.png

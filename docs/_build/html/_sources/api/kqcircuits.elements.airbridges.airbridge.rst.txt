@@ -1,0 +1,10 @@
+kqcircuits.elements.airbridges.airbridge
+========================================
+
+.. automodule:: kqcircuits.elements.airbridges.airbridge
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.airbridges.airbridge
+.. image:: ../pcell_images/kqcircuits.elements.airbridges.airbridge.png

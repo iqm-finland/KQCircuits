@@ -1,0 +1,10 @@
+kqcircuits.elements.waveguide\_composite
+========================================
+
+.. automodule:: kqcircuits.elements.waveguide_composite
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.waveguide_composite
+.. image:: ../pcell_images/kqcircuits.elements.waveguide_composite.png

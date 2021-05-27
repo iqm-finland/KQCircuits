@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.util.symmetric_polygons &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.defaults" href="kqcircuits.defaults.html" />
+    <link rel="prev" title="kqcircuits.util.parameters" href="kqcircuits.util.parameters.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.util.symmetric_polygons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.html#module-kqcircuits.util">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.util.html">kqcircuits.util</a> &raquo;</li>
+        
+      <li>kqcircuits.util.symmetric_polygons</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.util.symmetric_polygons.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.util.symmetric_polygons">
+<span id="kqcircuits-util-symmetric-polygons"></span><h1>kqcircuits.util.symmetric_polygons<a class="headerlink" href="#module-kqcircuits.util.symmetric_polygons" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="kqcircuits.util.symmetric_polygons.polygon_with_hsym">
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">polygon_with_hsym</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/symmetric_polygons.html#polygon_with_hsym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.symmetric_polygons.polygon_with_hsym" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polygon with horizontal symmetry.</p>
+<dl class="attribute">
+<dt id="kqcircuits.util.symmetric_polygons.points">
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">points</code><a class="headerlink" href="#kqcircuits.util.symmetric_polygons.points" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will
+be doubled.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DPolygon</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.symmetric_polygons.polygon_with_vsym">
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">polygon_with_vsym</code><span class="sig-paren">(</span><em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/symmetric_polygons.html#polygon_with_vsym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.symmetric_polygons.polygon_with_vsym" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polygon with vertical symmetry.</p>
+<dl class="attribute">
+<dt>
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">points</code></dt>
+<dd><p>List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will
+be doubled.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DPolygon</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.symmetric_polygons.polygon_with_sym">
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">polygon_with_sym</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">mirror_trans</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/symmetric_polygons.html#polygon_with_sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.symmetric_polygons.polygon_with_sym" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polygon with symmetry with respect to an axis.</p>
+<dl class="attribute">
+<dt>
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">points</code></dt>
+<dd><p>List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will
+be doubled.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.util.symmetric_polygons.mirror_trans">
+<code class="sig-prename descclassname">kqcircuits.util.symmetric_polygons.</code><code class="sig-name descname">mirror_trans</code><a class="headerlink" href="#kqcircuits.util.symmetric_polygons.mirror_trans" title="Permalink to this definition">¶</a></dt>
+<dd><p>pya.DTrans that mirrors the points with respect to an axis</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DPolygon</p>
+</dd>
+</dl>
+</dd></dl>
+
+<img alt="../_images/kqcircuits.util.symmetric_polygons.png" src="../_images/kqcircuits.util.symmetric_polygons.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.defaults.html" class="btn btn-neutral float-right" title="kqcircuits.defaults" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.util.parameters.html" class="btn btn-neutral float-left" title="kqcircuits.util.parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

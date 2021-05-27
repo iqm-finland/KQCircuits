@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.simulations.single_xmons_full_chip_sim</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.simulations.single_xmons_full_chip_sim</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software </span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+ 
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.single_xmons</span> <span class="kn">import</span> <span class="n">SingleXmons</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">EdgePort</span><span class="p">,</span> <span class="n">InternalPort</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_junction_test_pads_type</span>
+
+
+<div class="viewcode-block" id="SingleXmonsFullChipSim"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">[docs]</a><span class="k">class</span> <span class="nc">SingleXmonsFullChipSim</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">launchers</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">use_test_resonators</span><span class="p">:</span> <span class="nb">bool</span>
+
+    <span class="n">launchers</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;True to include launchers in simulation&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">use_test_resonators</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;True to include XS1-type test resonators. False produces XS2&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SingleXmonsFullChipSim.build"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mask_parameters_for_chip</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;name_copy&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;with_grid&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">chip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">SingleXmons</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span>
+            <span class="o">**</span><span class="n">mask_parameters_for_chip</span><span class="p">,</span>
+            <span class="s2">&quot;name_chip&quot;</span><span class="p">:</span> <span class="s1">&#39;XS1&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_test_resonators</span> <span class="k">else</span> <span class="s1">&#39;XS2&#39;</span><span class="p">,</span>
+            <span class="s2">&quot;readout_res_lengths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">4490.35</span><span class="p">,</span> <span class="mf">4578.13</span><span class="p">,</span> <span class="mf">4668.99</span><span class="p">,</span> <span class="mf">4763.09</span><span class="p">,</span> <span class="mf">4860.61</span><span class="p">,</span> <span class="mf">4961.75</span><span class="p">],</span>
+            <span class="s2">&quot;use_test_resonators&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_test_resonators</span><span class="p">,</span>
+            <span class="s2">&quot;test_res_lengths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">4884.33</span><span class="p">,</span> <span class="mf">4804.94</span><span class="p">,</span> <span class="mf">4728.06</span><span class="p">,</span> <span class="mf">4653.58</span><span class="p">],</span>
+            <span class="s2">&quot;n_fingers&quot;</span><span class="p">:</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+            <span class="s2">&quot;l_fingers&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">23.65</span><span class="p">,</span> <span class="mf">24.204</span><span class="p">,</span> <span class="mf">24.7634</span><span class="p">,</span> <span class="mf">25.325</span><span class="p">],</span>
+            <span class="s2">&quot;type_coupler&quot;</span><span class="p">:</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">[</span><span class="s2">&quot;plate&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;squid_type&quot;</span><span class="p">:</span> <span class="s2">&quot;SIM1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
+        <span class="p">})</span>
+
+        <span class="c1"># Remove unneeded elements</span>
+        <span class="n">chip</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="s1">&#39;Chip Frame&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">chip</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">default_junction_test_pads_type</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">chip</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">default_junction_test_pads_type</span><span class="si">}</span><span class="s1">$1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+        <span class="c1"># Insert chip and get refpoints</span>
+        <span class="n">cell_inst</span><span class="p">,</span> <span class="n">refpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">launchers</span><span class="p">:</span>
+            <span class="c1"># Remove launchers</span>
+            <span class="n">chip</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="s1">&#39;Launcher&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+            <span class="n">maximum_box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">9200</span><span class="p">,</span> <span class="mi">9200</span><span class="p">))</span>
+            <span class="n">port_shift</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">maximum_box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">9800</span><span class="p">,</span> <span class="mi">9800</span><span class="p">))</span>
+            <span class="n">port_shift</span> <span class="o">=</span> <span class="mi">600</span>
+
+        <span class="c1"># Limit the size of the box to fit the ports</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">&amp;=</span> <span class="n">maximum_box</span>
+
+        <span class="c1"># Define edge ports, shifted inward by port_shift w.r.t. launcher refpoints</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">launcher</span><span class="p">,</span> <span class="n">shift</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+                <span class="p">[</span><span class="s1">&#39;NW&#39;</span><span class="p">,</span> <span class="s1">&#39;WN&#39;</span><span class="p">,</span> <span class="s1">&#39;WS&#39;</span><span class="p">,</span> <span class="s1">&#39;SW&#39;</span><span class="p">,</span> <span class="s1">&#39;SE&#39;</span><span class="p">,</span> <span class="s1">&#39;ES&#39;</span><span class="p">,</span> <span class="s1">&#39;EN&#39;</span><span class="p">,</span> <span class="s1">&#39;NE&#39;</span><span class="p">],</span>
+                <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">port_shift</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">port_shift</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">port_shift</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">port_shift</span><span class="p">],</span>
+                 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="n">port_shift</span><span class="p">],</span> <span class="p">[</span><span class="n">port_shift</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">port_shift</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">port_shift</span><span class="p">]])):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EdgePort</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_port&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">launcher</span><span class="p">)]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">*</span><span class="n">shift</span><span class="p">)))</span>
+
+        <span class="c1"># Add squid internal ports</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InternalPort</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">9</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">etched_line</span><span class="p">(</span><span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;qb_</span><span class="si">{}</span><span class="s1">_port_squid_a&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)],</span>
+                                                                  <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;qb_</span><span class="si">{}</span><span class="s1">_port_squid_b&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">)])))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+kqcircuits.chips.shaping
+========================
+
+.. automodule:: kqcircuits.chips.shaping
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.shaping
+.. image:: ../pcell_images/kqcircuits.chips.shaping.png

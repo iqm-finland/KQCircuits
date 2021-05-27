@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.chips.shaping &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.chips.shaping</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.chips.shaping</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_tcross</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTCross</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.coupler_lib</span> <span class="kn">import</span> <span class="n">produce_library_capacitor</span>
+
+
+<span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="Shaping"><a class="viewcode-back" href="../../../api/kqcircuits.chips.shaping.html#kqcircuits.chips.shaping.Shaping">[docs]</a><span class="k">class</span> <span class="nc">Shaping</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for a Shaping chip.&quot;&quot;&quot;</span>
+
+    <span class="n">tunable</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Tunable&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Shaping.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.shaping.html#kqcircuits.chips.shaping.Shaping.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Launcher</span>
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_SMA8</span><span class="p">()</span>
+
+        <span class="c1"># Finnmon</span>
+        <span class="n">finnmon_inst</span><span class="p">,</span> <span class="n">finnmon_refpoints_abs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">),</span>
+            <span class="n">arm_width</span><span class="o">=</span><span class="p">[</span><span class="mi">30</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
+            <span class="n">arm_length</span><span class="o">=</span><span class="p">[</span><span class="mi">190</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">96</span><span class="p">],</span>
+            <span class="n">gap_width</span><span class="o">=</span><span class="mi">89</span><span class="p">,</span>
+            <span class="n">corner_r</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">cpl_length</span><span class="o">=</span><span class="p">[</span><span class="mi">235</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">205</span><span class="p">],</span>
+            <span class="n">cpl_width</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+            <span class="n">cpl_gap</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="mi">110</span><span class="p">],</span>
+            <span class="n">cl_offset</span><span class="o">=</span><span class="p">[</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">port_qubit_dr</span> <span class="o">=</span> <span class="n">finnmon_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_drive&quot;</span><span class="p">]</span>
+        <span class="n">port_qubit_fl</span> <span class="o">=</span> <span class="n">finnmon_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_flux&quot;</span><span class="p">]</span>
+        <span class="n">port_qubit_ro</span> <span class="o">=</span> <span class="n">finnmon_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_cplr0&quot;</span><span class="p">]</span>
+        <span class="n">port_qubit_sh</span> <span class="o">=</span> <span class="n">finnmon_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_cplr2&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Chargeline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port_qubit_dr</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">port_qubit_dr</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">port_qubit_dr</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span>
+            <span class="n">term2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Fluxline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port_qubit_fl</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">port_qubit_fl</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">port_qubit_fl</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="c1">####### Readout resonator with the purcell filter</span>
+
+        <span class="n">segment_length_target_rr</span> <span class="o">=</span> <span class="p">[</span><span class="mf">611.586</span><span class="p">,</span> <span class="mf">1834.76</span><span class="p">,</span> <span class="mf">611.586</span><span class="p">]</span>  <span class="c1"># from qubit to shorted end</span>
+        <span class="n">segment_length_target_pr</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3158.32</span><span class="p">,</span> <span class="mf">789.581</span><span class="p">]</span>  <span class="c1"># from output to shorted end</span>
+        <span class="n">caps_fingers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
+        <span class="n">caps_length</span> <span class="o">=</span> <span class="p">[</span><span class="mf">37.5</span><span class="p">,</span> <span class="mf">67.9</span><span class="p">,</span> <span class="mf">36.2</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
+        <span class="n">caps_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">,</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="s2">&quot;gap&quot;</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
+
+        <span class="c1"># Waveguide t-cross used in multiple locations</span>
+        <span class="n">cross1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarTCross</span><span class="p">,</span>
+            <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="n">length_extra</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">cross1_refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cross1</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">cross1_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Readout resonator first segement</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">wg1_end</span> <span class="o">=</span> <span class="n">port_qubit_ro</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross1_length</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_qubit_ro</span><span class="p">,</span>
+                <span class="n">port_qubit_ro</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">wg1_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">wg1_end</span><span class="p">,</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_length</span> <span class="o">+</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
+        <span class="n">cross1_inst</span><span class="p">,</span> <span class="n">cross1_refpoints_abs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">cross1</span><span class="p">,</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">wg1_end</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="n">meander2_end</span> <span class="o">=</span> <span class="n">cross1_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">630</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">cross1_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">meander2_end</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">,</span>
+            <span class="n">meanders</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="n">cross2_refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cross1</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">port_rel_cross2_wg2</span> <span class="o">=</span> <span class="n">cross2_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span>
+        <span class="n">port_rel_cross2_jcap</span> <span class="o">=</span> <span class="n">cross2_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span>
+        <span class="n">port_rel_cross2_wg3</span> <span class="o">=</span> <span class="n">cross2_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span>
+        <span class="n">cross2_inst</span><span class="p">,</span> <span class="n">port_abs_cross2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">cross1</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">meander2_end</span> <span class="o">-</span> <span class="n">port_rel_cross2_wg2</span><span class="p">))</span>
+
+        <span class="c1"># Last bit of the readout resonator</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span>
+                <span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">))</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Capacitor J</span>
+        <span class="n">capj</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">caps_fingers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">caps_length</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">caps_type</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">port_rel_capj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">capj</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">capj</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_capj</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]))</span>
+
+        <span class="n">cross3_inst</span><span class="p">,</span> <span class="n">port_abs_cross3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">cross1</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span> <span class="o">-</span>
+                               <span class="n">port_rel_capj</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">port_rel_capj</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_cross2_wg2</span><span class="p">))</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_length</span>
+
+        <span class="n">meander3_end</span> <span class="o">=</span> <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">meander3_inst</span><span class="p">,</span> <span class="n">meander3_inst_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">],</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">meander3_end</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+            <span class="n">meanders</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="n">waveguide2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">meander3_end</span><span class="p">,</span>
+                <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+                <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">400</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide2</span><span class="p">)</span>
+
+        <span class="n">waveguide_length</span> <span class="o">+=</span> <span class="n">waveguide2</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">meander3_inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">)</span>
+
+        <span class="c1"># Last bit of the Purcell filter of RR</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
+        <span class="n">wg6_end</span> <span class="o">=</span> <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span>
+                <span class="n">wg6_end</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span>
+            <span class="n">term2</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tunable</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Purcell resonator SQUID</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tunable</span><span class="p">):</span>
+            <span class="c1"># SQUID refpoint at the ground plane edge</span>
+            <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="n">transf</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                    <span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">40</span> <span class="o">+</span> <span class="mi">15</span><span class="p">),</span>
+                    <span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">+</span><span class="mi">20</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">40</span> <span class="o">+</span> <span class="mi">15</span><span class="p">),</span>
+                    <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">+</span><span class="mi">20</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">40</span> <span class="o">+</span> <span class="mi">15</span><span class="p">))</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                    <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                    <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Capacitor Kappa</span>
+        <span class="n">capk</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">caps_fingers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">caps_length</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">caps_type</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">port_rel_capk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">capk</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">capk_inst</span><span class="p">,</span> <span class="n">port_abs_capk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">capk</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                           <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">400</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span>
+                                           <span class="n">port_rel_capk</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]))</span>
+
+        <span class="c1"># Output port of the purcell resonator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_capk</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span>
+                <span class="n">port_abs_capk</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">port_abs_capk</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Capacitor for the driveline</span>
+        <span class="n">capi</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">caps_fingers</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">caps_length</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">caps_type</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">port_rel_capi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">capi</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">capi_inst</span><span class="p">,</span> <span class="n">port_abs_capi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">capi</span><span class="p">,</span>
+                                     <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                               <span class="n">cross1_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_capi</span><span class="p">[</span>
+                                                   <span class="s2">&quot;port_a&quot;</span><span class="p">]))</span>
+
+        <span class="c1"># Driveline of the readout resonator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_capi</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span>
+                <span class="n">port_abs_capi</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">port_abs_capi</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="c1">####### Shaping resonator with the purcell filter</span>
+
+        <span class="n">segment_length_target_rr</span> <span class="o">=</span> <span class="p">[</span><span class="mf">634.71</span><span class="p">,</span> <span class="mf">1904.13</span><span class="p">,</span> <span class="mf">634.71</span><span class="p">]</span>  <span class="c1"># from qubit to shorted end</span>
+        <span class="n">segment_length_target_pr</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3253.65</span><span class="p">,</span> <span class="mf">813.413</span><span class="p">]</span>  <span class="c1"># from output to shorted end</span>
+        <span class="n">caps_fingers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
+        <span class="n">caps_length</span> <span class="o">=</span> <span class="p">[</span><span class="mf">36.8</span><span class="p">,</span> <span class="mf">71.5</span><span class="p">,</span> <span class="mf">36.2</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
+        <span class="n">caps_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">,</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="s2">&quot;gap&quot;</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
+
+        <span class="c1"># Readout resonator first segement</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">wg1_end</span> <span class="o">=</span> <span class="n">port_qubit_sh</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross1_length</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_qubit_sh</span><span class="p">,</span>
+                <span class="n">port_qubit_sh</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">wg1_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">wg1_end</span><span class="p">,</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_length</span> <span class="o">+</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
+        <span class="n">cross1_inst</span><span class="p">,</span> <span class="n">cross1_refpoints_abs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">cross1</span><span class="p">,</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">wg1_end</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">])</span>
+        <span class="p">)</span>
+
+        <span class="n">meander2_end</span> <span class="o">=</span> <span class="n">cross1_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">630</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">cross1_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">meander2_end</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">,</span>
+            <span class="n">meanders</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="n">cross2_refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cross1</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">port_rel_cross2_wg2</span> <span class="o">=</span> <span class="n">cross2_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span>
+        <span class="n">port_rel_cross2_jcap</span> <span class="o">=</span> <span class="n">cross2_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span>
+        <span class="n">port_rel_cross2_wg3</span> <span class="o">=</span> <span class="n">cross2_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span>
+        <span class="n">cross2_inst</span><span class="p">,</span> <span class="n">port_abs_cross2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross1</span><span class="p">,</span>
+                                                        <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">meander2_end</span> <span class="o">-</span> <span class="n">port_rel_cross2_wg2</span><span class="p">))</span>
+
+        <span class="c1"># Last bit of the readout resonator</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span>
+                <span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">))</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Capacitor J</span>
+        <span class="n">capj</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">caps_fingers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">caps_length</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">caps_type</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">port_rel_capj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">capj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">capj</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_capj</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]))</span>
+
+        <span class="n">cross3_inst</span><span class="p">,</span> <span class="n">port_abs_cross3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross1</span><span class="p">,</span>
+                                       <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                                  <span class="n">port_abs_cross2</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_capj</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span> <span class="o">+</span>
+                                                  <span class="n">port_rel_capj</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_cross2_wg2</span><span class="p">))</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_length</span>
+
+        <span class="n">meander3_end</span> <span class="o">=</span> <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">meander3_inst</span><span class="p">,</span> <span class="n">meander3_inst_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">],</span>
+            <span class="n">end</span><span class="o">=</span><span class="n">meander3_end</span><span class="p">,</span>
+            <span class="n">length</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+            <span class="n">meanders</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">meander3_end</span><span class="p">,</span>
+                <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="mi">400</span><span class="p">),</span>
+                <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="mi">400</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="n">waveguide_length</span> <span class="o">+=</span> <span class="n">waveguide2</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">meander3_inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">)</span>
+
+        <span class="c1"># Last bit of the Purcell filter of shaping resonator</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
+        <span class="n">wg6_end</span> <span class="o">=</span> <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span>
+                <span class="n">wg6_end</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span>
+            <span class="n">term2</span><span class="o">=</span><span class="p">(</span><span class="mi">40</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tunable</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Purcell resonator SQUID</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tunable</span><span class="p">):</span>
+            <span class="c1"># SQUID refpoint at the ground plane edge</span>
+            <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="n">transf</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                    <span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span> <span class="o">-</span> <span class="mi">15</span><span class="p">),</span>
+                    <span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">+</span><span class="mi">20</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span> <span class="o">-</span> <span class="mi">15</span><span class="p">),</span>
+                    <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">wg6_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">+</span><span class="mi">20</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span> <span class="o">-</span> <span class="mi">15</span><span class="p">))</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                    <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                    <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+                <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Capacitor Kappa</span>
+        <span class="n">capk</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">caps_fingers</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">caps_length</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">caps_type</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">port_rel_capk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">capk</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">capk_inst</span><span class="p">,</span> <span class="n">port_abs_capk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">capk</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
+                                                                     <span class="n">meander3_end</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="mi">400</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span>
+                                                                     <span class="n">port_rel_capk</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]))</span>
+
+        <span class="c1"># Output port of the purcell resonator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_capk</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span>
+                <span class="n">port_abs_capk</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">port_abs_capk</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;ES&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;ES&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;ES&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+        <span class="n">waveguide_length</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Capacitor for the driveline</span>
+        <span class="n">capi</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">caps_fingers</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">caps_length</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">caps_type</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">port_rel_capi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">capi</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">capi_inst</span><span class="p">,</span> <span class="n">port_abs_capi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">capi</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cross1_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">port_rel_capi</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]))</span>
+
+        <span class="c1"># Driveline of the shaping resonator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
+                <span class="n">port_abs_capi</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span>
+                <span class="n">port_abs_capi</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">port_abs_capi</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+                <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+        <span class="p">)</span>
+
+        <span class="c1"># chip frame and possibly ground plane grid</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

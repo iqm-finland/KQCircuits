@@ -1,0 +1,10 @@
+kqcircuits.elements.waveguide\_coplanar\_splitter
+=================================================
+
+.. automodule:: kqcircuits.elements.waveguide_coplanar_splitter
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.waveguide_coplanar_splitter
+.. image:: ../pcell_images/kqcircuits.elements.waveguide_coplanar_splitter.png

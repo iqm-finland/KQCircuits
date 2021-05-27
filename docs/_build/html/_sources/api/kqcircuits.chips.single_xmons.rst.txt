@@ -1,0 +1,10 @@
+kqcircuits.chips.single\_xmons
+==============================
+
+.. automodule:: kqcircuits.chips.single_xmons
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.single_xmons
+.. image:: ../pcell_images/kqcircuits.chips.single_xmons.png

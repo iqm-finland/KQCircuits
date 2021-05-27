@@ -1,0 +1,10 @@
+kqcircuits.elements.circular\_capacitor
+=======================================
+
+.. automodule:: kqcircuits.elements.circular_capacitor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.circular_capacitor
+.. image:: ../pcell_images/kqcircuits.elements.circular_capacitor.png

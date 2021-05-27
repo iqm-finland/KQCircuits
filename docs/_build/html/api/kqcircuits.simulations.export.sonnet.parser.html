@@ -1,0 +1,310 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.simulations.export.sonnet.parser &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.simulations.export.sonnet.sonnet_export" href="kqcircuits.simulations.export.sonnet.sonnet_export.html" />
+    <link rel="prev" title="kqcircuits.simulations.export.sonnet" href="kqcircuits.simulations.export.sonnet.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.simulations.html">kqcircuits.simulations</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a> &raquo;</li>
+        
+      <li>kqcircuits.simulations.export.sonnet.parser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.simulations.export.sonnet.parser.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.simulations.export.sonnet.parser">
+<span id="kqcircuits-simulations-export-sonnet-parser"></span><h1>kqcircuits.simulations.export.sonnet.parser<a class="headerlink" href="#module-kqcircuits.simulations.export.sonnet.parser" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.apply_template">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">apply_template</code><span class="sig-paren">(</span><em class="sig-param">filename_template</em>, <em class="sig-param">filename_output</em>, <em class="sig-param">rules</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#apply_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.apply_template" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.polygon_head">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">polygon_head</code><span class="sig-paren">(</span><em class="sig-param">nvertices</em>, <em class="sig-param">debugid</em>, <em class="sig-param">ilevel=0</em>, <em class="sig-param">mtype=-1</em>, <em class="sig-param">filltype='N'</em>, <em class="sig-param">xmin=1</em>, <em class="sig-param">ymin=1</em>, <em class="sig-param">xmax=100</em>, <em class="sig-param">ymax=100</em>, <em class="sig-param">conmax=0</em>, <em class="sig-param">res=0</em>, <em class="sig-param">edge_mesh='Y'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#polygon_head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.polygon_head" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.symmetry">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">symmetry</code><span class="sig-paren">(</span><em class="sig-param">sym: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#symmetry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.symmetry" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.box">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">box</code><span class="sig-paren">(</span><em class="sig-param">xwidth: float = 8000.0</em>, <em class="sig-param">ywidth: float = 8000.0</em>, <em class="sig-param">xcells: int = 8000</em>, <em class="sig-param">ycells: int = 8000</em>, <em class="sig-param">materials_type: str = 'Si BT'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.box" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.refplane">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">refplane</code><span class="sig-paren">(</span><em class="sig-param">position: str</em>, <em class="sig-param">length: int = 0</em>, <em class="sig-param">port_ipoly: str = ''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#refplane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.refplane" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.refplanes">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">refplanes</code><span class="sig-paren">(</span><em class="sig-param">positions</em>, <em class="sig-param">length</em>, <em class="sig-param">port_ipolys</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#refplanes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.refplanes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.port">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">port</code><span class="sig-paren">(</span><em class="sig-param">portnum</em>, <em class="sig-param">ipolygon</em>, <em class="sig-param">ivertex</em>, <em class="sig-param">port_type='STD'</em>, <em class="sig-param">xcord=0</em>, <em class="sig-param">ycord=0</em>, <em class="sig-param">group=''</em>, <em class="sig-param">resist=50</em>, <em class="sig-param">react=0</em>, <em class="sig-param">induct=0</em>, <em class="sig-param">capac=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.control">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">control</code><span class="sig-paren">(</span><em class="sig-param">control_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#control"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.control" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.polygons">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">polygons</code><span class="sig-paren">(</span><em class="sig-param">polygons</em>, <em class="sig-param">v</em>, <em class="sig-param">dbu</em>, <em class="sig-param">ilevel</em>, <em class="sig-param">fill_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#polygons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.polygons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.simulations.export.sonnet.parser.via">
+<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.parser.</code><code class="sig-name descname">via</code><span class="sig-paren">(</span><em class="sig-param">poly</em>, <em class="sig-param">debugid</em>, <em class="sig-param">ilevel</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/parser.html#via"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.parser.via" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<img alt="../_images/kqcircuits.simulations.export.sonnet.parser.png" src="../_images/kqcircuits.simulations.export.sonnet.parser.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.simulations.export.sonnet.sonnet_export.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.sonnet.sonnet_export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.simulations.export.sonnet.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.sonnet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

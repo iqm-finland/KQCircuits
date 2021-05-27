@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>kqcircuits.elements.spiral_resonator_rectangle &mdash; KQCircuits 2019 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.elements.spiral_resonator_rectangle_multiface" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html" />
+    <link rel="prev" title="kqcircuits.elements.spiral_resonator_polygon" href="kqcircuits.elements.spiral_resonator_polygon.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.qubits.html">kqcircuits.elements.qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square_multiface.html">kqcircuits.elements.finger_capacitor_square_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.spiral_resonator_rectangle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html">kqcircuits.elements.spiral_resonator_rectangle_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar.html">kqcircuits.elements.waveguide_coplanar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_curved.html">kqcircuits.elements.waveguide_coplanar_curved</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.elements.html">kqcircuits.elements</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.spiral_resonator_rectangle</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/kqcircuits.elements.spiral_resonator_rectangle.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.elements.spiral_resonator_rectangle">
+<span id="kqcircuits-elements-spiral-resonator-rectangle"></span><h1>kqcircuits.elements.spiral_resonator_rectangle<a class="headerlink" href="#module-kqcircuits.elements.spiral_resonator_rectangle" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.spiral_resonator_rectangle.</code><code class="sig-name descname">SpiralResonatorRectangle</code><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
+<p>The PCell declaration for a rectangular spiral resonator.</p>
+<p>The input of the resonator (refpoint <cite>base</cite>) is at left edge of the resonator. The space above, below,
+and right of the input are parameters, so the resonator will be within a box right of the input. The resonator
+length and spacings between spiral segments are parameters. Optionally, airbridge crossings can be added to all
+spiral segments on one side of the spiral.</p>
+<dl class="method">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.produce_impl">
+<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method builds the PCell.</p>
+<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.produce_spiral_resonator">
+<code class="sig-name descname">produce_spiral_resonator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle.produce_spiral_resonator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.produce_spiral_resonator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces the spiral resonator waveguide and airbridges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True, if it was possible to create the resonator with the current spacings
+False, if it was not possible to create the resonator with the current spacings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.add_segment">
+<code class="sig-name descname">add_segment</code><span class="sig-paren">(</span><em class="sig-param">point1</em>, <em class="sig-param">point2</em>, <em class="sig-param">current_len</em>, <em class="sig-param">rotation</em>, <em class="sig-param">res_trans</em>, <em class="sig-param">space</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle.add_segment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.add_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts waveguides for a segment between point1 and point2.</p>
+<p>This assumes that there is already a 90-degree corner waveguide ending at point1. It then creates either a
+straight waveguide, or straight waveguide and less than 90-degree corner, or straight waveguide and
+90-degree corner, such that the entire waveguide in the resonator is within self.length. The straight segment
+will start at distance self.r from point1 and end at distance self.r from point2 (or closer to point1,
+if length would be exceeded).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> – start point of the segment</p></li>
+<li><p><strong>point2</strong> – end point of the segment</p></li>
+<li><p><strong>current_len</strong> – current length of the resonator waveguide</p></li>
+<li><p><strong>rotation</strong> – rotation in units of 90-degrees, 0 for left-to-right segment, 1 for
+bottom-to-up segment, 2 for right-to-left segment, 3 for up-to-bottom segment</p></li>
+<li><p><strong>res_trans</strong> – transformation applied to the entire resonator</p></li>
+<li><p><strong>space</strong> – space left for the next turn</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><code class="docutils literal notranslate"><span class="pre">(current_len,</span> <span class="pre">final_segment,</span> <span class="pre">can_create_resonator)</span></code></p>
+<p>Where <code class="docutils literal notranslate"><span class="pre">current_len</span></code> is length of the resonator waveguide after adding this segment.
+<code class="docutils literal notranslate"><span class="pre">final_segment</span></code> is True if this is the last segment of the resonator, False otherwise.
+<code class="docutils literal notranslate"><span class="pre">can_create_resonator</span></code> is True if it was possible to create the resonator with the
+given parameters, False otherwise.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.get_segment_data">
+<code class="sig-name descname">get_segment_data</code><span class="sig-paren">(</span><em class="sig-param">point1</em>, <em class="sig-param">point2</em>, <em class="sig-param">current_len</em>, <em class="sig-param">rotation</em>, <em class="sig-param">space</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle.get_segment_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.get_segment_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get data about spiral segment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>point1</strong> – start point of the segment</p></li>
+<li><p><strong>point2</strong> – end point of the segment</p></li>
+<li><p><strong>current_len</strong> – current length of the resonator waveguide</p></li>
+<li><p><strong>rotation</strong> – rotation in units of 90-degrees, 0 for left-to-right segment, 1 for bottom-to-up segment,
+2 for right-to-left segment, 3 for up-to-bottom segment</p></li>
+<li><p><strong>space</strong> – space left for the next turn</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p><code class="docutils literal notranslate"><span class="pre">(segment_len,</span> <span class="pre">segment_dir,</span> <span class="pre">corner_offset,</span> <span class="pre">straight_len,</span> <span class="pre">curve_angle,</span> <span class="pre">final_segment)</span></code></p>
+<ul class="simple">
+<li><p>segment_len (float): length of the segment</p></li>
+<li><p>segment_dir (DVector): direction of the segment</p></li>
+<li><p>corner_offset (DVector): offset to be applied to the curved waveguide position</p></li>
+<li><p>straight_len (float): length of the straight part of the segment</p></li>
+<li><p>curve_angle (float): angle (alpha) for the curved waveguide</p></li>
+<li><p>final_segment: True if this is the last segment of the resonator, False otherwise</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.produce_crossing_airbridges">
+<code class="sig-name descname">produce_crossing_airbridges</code><span class="sig-paren">(</span><em class="sig-param">guide_points</em>, <em class="sig-param">top_right_point_idx</em>, <em class="sig-param">res_trans</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle.produce_crossing_airbridges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.produce_crossing_airbridges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces crossing airbridges on the sides defined by pcell parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guide_points</strong> – points for the spiral waveguide, where each point (except possibly the last) marks a corner</p></li>
+<li><p><strong>top_right_point_idx</strong> – index of the top-right-most point in guide_points</p></li>
+<li><p><strong>res_trans</strong> – transformation applied to the entire resonator</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.get_spiral_dimensions">
+<code class="sig-name descname">get_spiral_dimensions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle.html#SpiralResonatorRectangle.get_spiral_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle.get_spiral_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the spiral edges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>A tuple composed of the following elements</p>
+<ul class="simple">
+<li><p>left: x-coordinate of the left edge</p></li>
+<li><p>bottom: x-coordinate of the left edge</p></li>
+<li><p>right: x-coordinate of the left edge</p></li>
+<li><p>top: x-coordinate of the left edge</p></li>
+<li><p>mirrored: if top and bottom are flipped</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>above_space</strong><em> (Double)</em><span> - Space above the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
+<li><p><strong>below_space</strong><em> (Double)</em><span> - Space below the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code></p></li>
+<li><p><strong>right_space</strong><em> (Double)</em><span> - Space right of the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000</span></code></p></li>
+<li><p><strong>length</strong><em> (Double)</em><span> - Length of the resonator</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">4200</span></code></p></li>
+<li><p><strong>auto_spacing</strong><em> (Boolean)</em><span> - Automatic determination of spacing</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>x_spacing</strong><em> (Double)</em><span> - Spacing between vertical segments</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>y_spacing</strong><em> (Double)</em><span> - Spacing between horizontal segments</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridges_left</strong><em> (Boolean)</em><span> - Crossing airbridges left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridges_bottom</strong><em> (Boolean)</em><span> - Crossing airbridges bottom</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridges_right</strong><em> (Boolean)</em><span> - Crossing airbridges right</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridges_top</strong><em> (Boolean)</em><span> - Crossing airbridges top</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<img alt="../_images/kqcircuits.elements.spiral_resonator_rectangle.png" src="../_images/kqcircuits.elements.spiral_resonator_rectangle.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html" class="btn btn-neutral float-right" title="kqcircuits.elements.spiral_resonator_rectangle_multiface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="kqcircuits.elements.spiral_resonator_polygon.html" class="btn btn-neutral float-left" title="kqcircuits.elements.spiral_resonator_polygon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2021, IQM
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+kqcircuits.elements.markers.marker\_standard
+============================================
+
+.. automodule:: kqcircuits.elements.markers.marker_standard
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.markers.marker_standard
+.. image:: ../pcell_images/kqcircuits.elements.markers.marker_standard.png

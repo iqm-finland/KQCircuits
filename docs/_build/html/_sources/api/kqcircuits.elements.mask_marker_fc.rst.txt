@@ -1,0 +1,10 @@
+kqcircuits.elements.mask\_marker\_fc
+====================================
+
+.. automodule:: kqcircuits.elements.mask_marker_fc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.mask_marker_fc
+.. image:: ../pcell_images/kqcircuits.elements.mask_marker_fc.png

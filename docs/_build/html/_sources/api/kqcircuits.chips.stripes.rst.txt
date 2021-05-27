@@ -1,0 +1,10 @@
+kqcircuits.chips.stripes
+========================
+
+.. automodule:: kqcircuits.chips.stripes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.stripes
+.. image:: ../pcell_images/kqcircuits.chips.stripes.png
