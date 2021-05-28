@@ -54,7 +54,8 @@ class QualityFactorTwoface(MultiFace):
                   docstring="Width of the gap in the resonators [μm]")
     resonator_type = Param(pdt.TypeString, "Routing type", "capped",
                            choices=[["Capped (1)", "capped"], ["Two-face resonator (2)", "twoface"],
-                                    ["Resonator on top (3)", "top"], ["Etched top chip (4)", "etched"]])
+                                    ["Resonator on top (3)", "top"], ["Etched top chip (4)", "etched"],
+                                    ["Solid top chip (5)", "solid"]])
     connector_distances = Param(pdt.TypeList, "Resonator input to face to face connector",
                                 [500, 1300, 2100, 2900, 3700, 4500], unit="[μm]",
                                 docstring="Distances of face to face connectors from resonator inputs")
@@ -218,11 +219,13 @@ class QualityFactorTwoface(MultiFace):
         self.insert_cell(WaveguideComposite, nodes=nodes_left, margin=self.margin, a=self.a, b=self.b)
         self.insert_cell(WaveguideComposite, nodes=nodes_right, margin=self.margin, a=self.a, b=self.b)
 
-        # Etched top chip at protection layer
-        if self.resonator_type == "etched":
+        # Top chip etching and ground grid avoidance
+        if self.resonator_type == "etched" or self.resonator_type == "solid":
             region = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id=0)))
             region &= pya.Region([pya.DPolygon([
                 self.face1_box.p1, pya.DPoint(self.face1_box.p1.x, self.face1_box.p2.y),
                 self.face1_box.p2, pya.DPoint(self.face1_box.p2.x, self.face1_box.p1.y)
             ]).to_itype(self.layout.dbu)])
-            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id=1)).insert(region)
+            if self.resonator_type == "etched":
+                self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id=1)).insert(region)
+            self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id=1)).insert(region)
