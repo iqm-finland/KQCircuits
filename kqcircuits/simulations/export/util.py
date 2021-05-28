@@ -34,6 +34,7 @@ def export_layers(filename, layout, cells=None, layers=None, output_format=defau
         svopt.clear_cells()
         for cell in cells:
             svopt.add_cell(cell.cell_index())
+    svopt.no_empty_cells = True
 
     layout.write(filename, svopt)
 
