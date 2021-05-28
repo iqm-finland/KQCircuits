@@ -19,7 +19,7 @@
 """PCell declaration classes for elements.
 
 Elements represent all the different structures that form a quantum circuit. They are implemented as PCells, with the
-base class of ELement being PCellDeclarationHelper. After loading elements into KLayout PCell libraries, they can be
+base class of Element being PCellDeclarationHelper. After loading elements into KLayout PCell libraries, they can be
 placed in a layout using the KLayout GUI or in code.
 
 Elements contain some shared PCell parameters, including a list of refpoints which can be used to position them. They

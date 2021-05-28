@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License along with this program. If not, see
 # https://www.gnu.org/licenses/gpl-3.0.html.
 #
-# The software distribution should follow IQM trademark policy for open-source software 
+# The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
- 
+
 
 from autologging import logged, traced
 
@@ -91,7 +91,7 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
     Args:
         cell (Cell): The cell where the squids to be replaced are
         squid_type: class name of the code generated squid that replaces the other squids
-        parameter_name (str): Name of the parameter to be sweeped
+        parameter_name (str): Name of the parameter to be swept
         parameter_start: Start value of the parameter
         parameter_step: Parameter value increment step
         parameter_end: End value of the parameter. If None, there is no limit for the parameter value, so that all

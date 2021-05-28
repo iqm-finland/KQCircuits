@@ -69,7 +69,7 @@ class Param():
             owner: get all parameters of this class
 
         Returns:
-            a name-to-Param dictionary of all paramters of class `owner` or an empty one if it has none.
+            a name-to-Param dictionary of all parameters of class `owner` or an empty one if it has none.
         """
 
         if owner in cls._index:

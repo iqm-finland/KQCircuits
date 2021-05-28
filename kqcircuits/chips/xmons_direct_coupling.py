@@ -125,7 +125,7 @@ class XMonsDirectCoupling(Chip):
         Assumes following attributes:
 
         * arm_width_a
-        * arm_wdith_b
+        * arm_width_b
         * qubit_spacing
         * fluxline_type
         * rr_cpl_width

@@ -74,8 +74,8 @@ def box(
 ):
     xcells2 = 2 * xcells
     ycells2 = 2 * ycells
-    nsubs = 20  # placeholder for depricated parameter
-    eeff = 0  # placeholder for depricated parameter
+    nsubs = 20  # placeholder for deprecated parameter
+    eeff = 0  # placeholder for deprecated parameter
 
     materials = {
         "Si RT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (room temperature)\"",

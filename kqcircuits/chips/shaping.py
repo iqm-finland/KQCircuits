@@ -103,7 +103,7 @@ class Shaping(Chip):
         cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
         cross1_length = cross1_refpoints_rel["port_right"].distance(cross1_refpoints_rel["port_left"])
 
-        # Readout resonator first segement
+        # Readout resonator first segment
         waveguide_length = 0
         wg1_end = port_qubit_ro + pya.DVector(0, segment_length_target_rr[0] - cross1_length)
         self.insert_cell(WaveguideCoplanar,
@@ -258,7 +258,7 @@ class Shaping(Chip):
         caps_length = [36.8, 71.5, 36.2]  # J, kappa, drive
         caps_type = ["gap", "interdigital", "gap"]  # J, kappa, drive
 
-        # Readout resonator first segement
+        # Readout resonator first segment
         waveguide_length = 0
         wg1_end = port_qubit_sh + pya.DVector(0, -(segment_length_target_rr[0] - cross1_length))
         self.insert_cell(WaveguideCoplanar,

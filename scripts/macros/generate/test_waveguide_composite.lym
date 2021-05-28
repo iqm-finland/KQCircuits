@@ -29,10 +29,10 @@
 # You should have received a copy of the GNU General Public License along with this program. If not, see
 # https://www.gnu.org/licenses/gpl-3.0.html.
 #
-# The software distribution should follow IQM trademark policy for open-source software 
+# The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
- 
+
 
 import pya
 
@@ -77,12 +77,12 @@ top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
 
 nodes = [
     Node(pya.DPoint(0, -800)),
-    Node(pya.DPoint(50,-800), WaveguideCoplanarTCross, 
+    Node(pya.DPoint(50,-800), WaveguideCoplanarTCross,
          align=("port_left", "port_right"),                # Specify input and output port to connect
          length_extra_side=100),
 #    Node(pya.DPoint(150, 0)),                             # A bend is inserted towards the next point automatically
     Node(pya.DPoint(250, -750)),                           # Specify one point before the next TCross to define it's direction
-    Node(pya.DPoint(300, -750), WaveguideCoplanarTCross, 
+    Node(pya.DPoint(300, -750), WaveguideCoplanarTCross,
          align=("port_right", "port_left"),                # Reverse port order to change orientation
          inst_name="second_tee",                           # Specify instance name to export element refpoints
          length_extra_side=100),
@@ -90,7 +90,7 @@ nodes = [
     Node(pya.DPoint(500, -750), WaveguideCoplanarTCross,
          align=("port_bottom", "port_right")),             # Ports can be at arbitrary angles if they have corner refpoints
     Node(pya.DPoint(600, -1000)),
-    Node(pya.DPoint(600, -1100), face_id="t", 
+    Node(pya.DPoint(600, -1100), face_id="t",
          output_rotation=90),                              # Flip chip connectors can also make corners
     Node(pya.DPoint(400, -1000)),
 ]
