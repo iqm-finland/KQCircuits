@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License along with this program. If not, see
 # https://www.gnu.org/licenses/gpl-3.0.html.
 #
-# The software distribution should follow IQM trademark policy for open-source software 
+# The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
- 
+
 
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.meander import Meander
@@ -193,14 +193,14 @@ class XMonsDirectCouplingFullChipSim(Simulation):
                 launchers["NE"][0]])
 
         if self.enable_drive_lines:
-            # Qb1 chargline
+            # Qb1 chargeline
             self.produce_waveguide([
                 launchers["WN"][0],
                 pya.DPoint(launchers["NW"][0].x - tl_gap, launchers["WN"][0].y),
                 pya.DPoint(launchers["NW"][0].x - tl_gap, launchers["WS"][0].y + tl_gap),
                 pya.DPoint(pos_qb1_dr.x, launchers["WS"][0].y + tl_gap),
                 pos_qb1_dr], term2=self.b)
-            # Qb2 chargline
+            # Qb2 chargeline
             self.produce_waveguide([
                 launchers["SW"][0],
                 pya.DPoint(launchers["SW"][0].x, launchers["WS"][0].y - tl_gap),

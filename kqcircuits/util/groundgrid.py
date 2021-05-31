@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License along with this program. If not, see
 # https://www.gnu.org/licenses/gpl-3.0.html.
 #
-# The software distribution should follow IQM trademark policy for open-source software 
+# The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
- 
+
 
 import numpy
 
@@ -24,10 +24,10 @@ from kqcircuits.pya_resolver import pya
 def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5):
     """Generates the ground grid.
 
-  Returns a `Region` covering `boundbox` with `Box`es not overlaping with
+  Returns a `Region` covering `boundbox` with `Box`es not overlapping with
   the avoid `Region`.
 
-  All arguments are in databse unit, not in micrometers!
+  All arguments are in database unit, not in micrometers!
 
   """
 

@@ -17,9 +17,10 @@
 
 
 import json
+from os import cpu_count
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_layers, default_netlist_breakdown
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 import logging
@@ -37,6 +38,8 @@ def export_cell_netlist(cell, filename):
     layout = cell.layout()
     shapes_iter = layout.begin_shapes(cell, layout.layer(default_layers["b_ports"]))
     ltn = pya.LayoutToNetlist(shapes_iter)
+    # parallel processing
+    ltn.threads = cpu_count()
     # select conducting layers
     connector_region = ltn.make_layer(layout.layer(default_layers["b_ports"]), "connector")
     ltn.connect(connector_region)
@@ -45,7 +48,7 @@ def export_cell_netlist(cell, filename):
     netlist = ltn.netlist()
     # extract cell to circuit map for finding the netlist of interest
     cm = ltn.const_cell_mapping_into(layout, cell)
-    reverse_cell_map = dict(zip(cm.table().values(), cm.table().keys()))
+    reverse_cell_map = {v: k for k, v in cm.table().items()}
     # export the circuit of interest
     circuit = netlist.circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
     if circuit:
@@ -66,6 +69,15 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         cell_mapping: CellMapping object as given by pya LayoutToNetlist object
 
     """
+    # first flatten subcircuits mentioned in elements to breakdown
+    # TODO implement an efficient depth first search or similar solution (also maybe w/o extract_subcircuit)
+    for _ in range(internal_layout.top_cell().hierarchy_levels()):
+        subcircuits = [e for e in circuit.each_subcircuit()]
+        for subcircuit in subcircuits:
+            _, used_internal_cell = extract_subcircuit(internal_layout, subcircuit)
+            if used_internal_cell.name.split('$')[0] in default_netlist_breakdown:
+                circuit.flatten_subcircuit(subcircuit)
+
     nets_for_export = {}
     for net in circuit.each_net():
         nets_for_export[net.expanded_name()] = \

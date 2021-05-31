@@ -26,7 +26,7 @@ from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 class TsvTestPattern(TestStructure):
     """PCell declaration for TSV test structures which resembles a TSV fencing for a CPW transmission line.
 
-    Contains a given number of TSVs in `through silioon via`-layer with given vertical, horizontal pitch,
+    Contains a given number of TSVs in `through silicon via`-layer with given vertical, horizontal pitch,
     placeholder for CPW, diameter and the lateral profile of the TSV.
     """
 

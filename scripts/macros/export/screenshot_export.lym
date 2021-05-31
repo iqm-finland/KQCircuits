@@ -27,7 +27,7 @@
 # You should have received a copy of the GNU General Public License along with this program. If not, see
 # https://www.gnu.org/licenses/gpl-3.0.html.
 #
-# The software distribution should follow IQM trademark policy for open-source software 
+# The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
@@ -43,40 +43,40 @@ class ScreenshotDialog(pya.QDialog):
   """
 
   def __init__(self, parent):
-    
+
     super().__init__(parent)
-        
+
     self.setWindowTitle("Save Screenshot")
     layout = pya.QGridLayout(self)
     self.setLayout(layout)
-    
+
     label = pya.QLabel(self)
     label.text = "Width"
     layout.addWidget(label, 0, 0, 1, 1)
-    
+
     width = pya.QLineEdit(self)
     width.text = "1000"
     layout.addWidget(width, 0, 1, 1, 1)
-    
+
     label = pya.QLabel(self)
     label.text = "Height"
     layout.addWidget(label, 1, 0, 1, 1)
-    
+
     height = pya.QLineEdit(self)
     height.text = "1000"
     layout.addWidget(height, 1, 1, 1, 1)
-    
+
     label = pya.QLabel(self)
     label.text = "or use resolution (um/pixel):"
     layout.addWidget(label, 0, 2, 1, 1)
-      
+
     resolution = pya.QLineEdit.new(self)
     resolution.text = "1.0"
     layout.addWidget(resolution, 0, 3, 1, 1)
-    
+
     res_compute = pya.QPushButton(self)
     res_compute.text = "Set Size"
-    
+
     def set_size():
       try:
         view = parent.current_view()
@@ -88,53 +88,53 @@ class ScreenshotDialog(pya.QDialog):
         height.text = str(math.floor(view.viewport_height()*factor + 0.5))
       except Exception as ex:
         pya.QMessageBox.critical(self, "Error", str(ex))
-        
+
     res_compute.clicked = set_size
     layout.addWidget(res_compute, 0, 4, 1, 1)
-    
+
     label = pya.QLabel(self)
     label.text = "File"
     layout.addWidget(label, 2, 0, 1, 1)
-      
+
     filename = pya.QLineEdit(self)
     filename.text = "file.png"
     layout.addWidget(filename, 2, 1, 1, 3)
-    
+
     browse = pya.QPushButton(self)
     browse.text = "..."
     layout.addWidget(browse, 2, 4, 1, 1)
-    
+
     def choose_file():
         chosen_filename = pya.QFileDialog.getSaveFileName(self, "Choose file to save screenshot")
         if chosen_filename:
           filename.text = chosen_filename
-        
-    browse.clicked =  choose_file  
-    
+
+    browse.clicked =  choose_file
+
     cancel = pya.QPushButton(self)
     cancel.text = "Cancel"
     layout.addWidget(cancel, 4, 4, 1, 1)
     cancel.clicked = lambda: self.reject()
-    
+
     save = pya.QPushButton(self)
     save.text = "Save"
     layout.addWidget(save, 4, 0, 1, 1)
-    
+
     def save_screenshot():
       try:
         view = parent.current_view()
         if not view:
-          raise RuntimeError("No view open")  
+          raise RuntimeError("No view open")
         view.save_image(filename.text, int(width.text), int(height.text))
         self.accept()
       except Exception as ex:
         pya.QMessageBox.critical(self, "Error", str(ex))
-      
+
     save.clicked = save_screenshot
-    
+
     layout.setRowStretch(3, 1)
-    
-    
+
+
 dialog = ScreenshotDialog(pya.Application.instance().main_window())
 dialog.exec_()</text>
 </klayout-macro>

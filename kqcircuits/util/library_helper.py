@@ -209,7 +209,7 @@ def to_library_name(class_name=None):
 @traced
 @logged
 def _register_pcell(pcell_class, library, library_name):
-    """Registers the PCell to the libary.
+    """Registers the PCell to the library.
 
     Args:
         pcell_class: class of the PCell

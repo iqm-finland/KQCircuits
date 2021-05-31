@@ -11,10 +11,10 @@
 # You should have received a copy of the GNU General Public License along with this program. If not, see
 # https://www.gnu.org/licenses/gpl-3.0.html.
 #
-# The software distribution should follow IQM trademark policy for open-source software 
+# The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
- 
+
 
 """Configuration file for KQCircuits.
 
@@ -257,3 +257,11 @@ default_marker_type = "Marker Standard"
 default_junction_test_pads_type = "Junction Test Pads Simple"
 
 default_drc_runset = "example.drc"
+
+
+# default elements to breakdown before netlist export
+# list of strings
+default_netlist_breakdown = [
+    "Waveguide Composite",
+    "Meander",
+]
