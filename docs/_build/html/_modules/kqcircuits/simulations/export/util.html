@@ -166,7 +166,7 @@
 <span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
 <span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
 <span class="c1">#</span>
-<span class="c1"># The software distribution should follow IQM trademark policy for open-source software </span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
@@ -189,6 +189,7 @@
         <span class="n">svopt</span><span class="o">.</span><span class="n">clear_cells</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
             <span class="n">svopt</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
+    <span class="n">svopt</span><span class="o">.</span><span class="n">no_empty_cells</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="n">layout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">svopt</span><span class="p">)</span></div>
 

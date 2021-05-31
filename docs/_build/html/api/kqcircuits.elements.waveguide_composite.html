@@ -211,7 +211,7 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Specifies a single node of a composite waveguide.</p>
 <p>Node is as a <code class="docutils literal notranslate"><span class="pre">position</span></code> and optionally other parameters. The <code class="docutils literal notranslate"><span class="pre">element</span></code> argument sets an Element
-type that get’s inserted in the waveguide. Typically this is an Airbridge, but any element with
+type that gets inserted in the waveguide. Typically this is an Airbridge, but any element with
 port_a and port_b is supported.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -284,7 +284,7 @@ only be placed collinear with each other.</p>
 parameters: <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> or <code class="docutils literal notranslate"><span class="pre">face_id</span></code>. They insert a WaveguideCoplanarTaper or a
 FlipChipConnector, respectively and change the defaults too.</p>
 <p>Using _a/_b sets a/b for the AirbridgeConnection but does not change the waveguide’s defaults.
-Used for directly setting the first airbrige in a waveguide or for circumventing scaling issues
+Used for directly setting the first airbridge in a waveguide or for circumventing scaling issues
 of AirbridgeConnection. See “test_wgc_airbridge.lym” for examples.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">ab_across=True</span></code> parameter places a single airbridge across the node. The <code class="docutils literal notranslate"><span class="pre">n_bridges=N</span></code>
 parameter puts N airbridges evenly distributed across the preceding edge.</p>

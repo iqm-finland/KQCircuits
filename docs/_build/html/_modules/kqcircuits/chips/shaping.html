@@ -258,7 +258,7 @@
         <span class="n">cross1_refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cross1</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">cross1_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">])</span>
 
-        <span class="c1"># Readout resonator first segement</span>
+        <span class="c1"># Readout resonator first segment</span>
         <span class="n">waveguide_length</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">wg1_end</span> <span class="o">=</span> <span class="n">port_qubit_ro</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross1_length</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
@@ -413,7 +413,7 @@
         <span class="n">caps_length</span> <span class="o">=</span> <span class="p">[</span><span class="mf">36.8</span><span class="p">,</span> <span class="mf">71.5</span><span class="p">,</span> <span class="mf">36.2</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
         <span class="n">caps_type</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gap&quot;</span><span class="p">,</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="s2">&quot;gap&quot;</span><span class="p">]</span>  <span class="c1"># J, kappa, drive</span>
 
-        <span class="c1"># Readout resonator first segement</span>
+        <span class="c1"># Readout resonator first segment</span>
         <span class="n">waveguide_length</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">wg1_end</span> <span class="o">=</span> <span class="n">port_qubit_sh</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">segment_length_target_rr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">cross1_length</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>

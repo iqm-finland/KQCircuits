@@ -166,10 +166,10 @@
 <span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
 <span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
 <span class="c1">#</span>
-<span class="c1"># The software distribution should follow IQM trademark policy for open-source software </span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
- 
+
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher</span> <span class="kn">import</span> <span class="n">Launcher</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
@@ -348,14 +348,14 @@
                 <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]])</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enable_drive_lines</span><span class="p">:</span>
-            <span class="c1"># Qb1 chargline</span>
+            <span class="c1"># Qb1 chargeline</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide</span><span class="p">([</span>
                 <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">tl_gap</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">),</span>
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">tl_gap</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tl_gap</span><span class="p">),</span>
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">pos_qb1_dr</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">tl_gap</span><span class="p">),</span>
                 <span class="n">pos_qb1_dr</span><span class="p">],</span> <span class="n">term2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
-            <span class="c1"># Qb2 chargline</span>
+            <span class="c1"># Qb2 chargeline</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide</span><span class="p">([</span>
                 <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span>
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;SW&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">tl_gap</span><span class="p">),</span>

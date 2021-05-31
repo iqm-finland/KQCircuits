@@ -166,10 +166,10 @@
 <span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
 <span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
 <span class="c1">#</span>
-<span class="c1"># The software distribution should follow IQM trademark policy for open-source software </span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
- 
+
 
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
@@ -195,7 +195,7 @@
     <span class="sd">&quot;&quot;&quot;Specifies a single node of a composite waveguide.</span>
 
 <span class="sd">    Node is as a ``position`` and optionally other parameters. The ``element`` argument sets an Element</span>
-<span class="sd">    type that get&#39;s inserted in the waveguide. Typically this is an Airbridge, but any element with</span>
+<span class="sd">    type that gets inserted in the waveguide. Typically this is an Airbridge, but any element with</span>
 <span class="sd">    port_a and port_b is supported.</span>
 
 <span class="sd">    Args:</span>
@@ -320,7 +320,7 @@
 <span class="sd">    FlipChipConnector, respectively and change the defaults too.</span>
 
 <span class="sd">    Using _a/_b sets a/b for the AirbridgeConnection but does not change the waveguide&#39;s defaults.</span>
-<span class="sd">    Used for directly setting the first airbrige in a waveguide or for circumventing scaling issues</span>
+<span class="sd">    Used for directly setting the first airbridge in a waveguide or for circumventing scaling issues</span>
 <span class="sd">    of AirbridgeConnection. See &quot;test_wgc_airbridge.lym&quot; for examples.</span>
 
 <span class="sd">    The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``</span>
@@ -461,7 +461,7 @@
 
         <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
 
-        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_a&#39;</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_b&#39;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="c1"># obverride a/b if it looks funny</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_a&#39;</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_b&#39;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="c1"># override a/b if it looks funny</span>
 
         <span class="k">if</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">{</span><span class="s1">&#39;a1&#39;</span><span class="p">,</span> <span class="s1">&#39;b1&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">}</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">):</span>
@@ -597,7 +597,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab_cell</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_terminator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Terminate a the waveguide ending with an Element.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Terminate the waveguide ending with an Element.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">term1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">p1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>

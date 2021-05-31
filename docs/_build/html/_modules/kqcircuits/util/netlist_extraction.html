@@ -172,9 +172,10 @@
 
 
 <span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">cpu_count</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_cell_path_length</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_netlist_breakdown</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -192,6 +193,8 @@
     <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
     <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]))</span>
     <span class="n">ltn</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutToNetlist</span><span class="p">(</span><span class="n">shapes_iter</span><span class="p">)</span>
+    <span class="c1"># parallel processing</span>
+    <span class="n">ltn</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
     <span class="c1"># select conducting layers</span>
     <span class="n">connector_region</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span> <span class="s2">&quot;connector&quot;</span><span class="p">)</span>
     <span class="n">ltn</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connector_region</span><span class="p">)</span>
@@ -200,7 +203,7 @@
     <span class="n">netlist</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">netlist</span><span class="p">()</span>
     <span class="c1"># extract cell to circuit map for finding the netlist of interest</span>
     <span class="n">cm</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">const_cell_mapping_into</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
-    <span class="n">reverse_cell_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">table</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">cm</span><span class="o">.</span><span class="n">table</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="n">reverse_cell_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">cm</span><span class="o">.</span><span class="n">table</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
     <span class="c1"># export the circuit of interest</span>
     <span class="n">circuit</span> <span class="o">=</span> <span class="n">netlist</span><span class="o">.</span><span class="n">circuit_by_cell_index</span><span class="p">(</span><span class="n">reverse_cell_map</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()])</span>
     <span class="k">if</span> <span class="n">circuit</span><span class="p">:</span>
@@ -221,6 +224,15 @@
 <span class="sd">        cell_mapping: CellMapping object as given by pya LayoutToNetlist object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># first flatten subcircuits mentioned in elements to breakdown</span>
+    <span class="c1"># TODO implement an efficient depth first search or similar solution (also maybe w/o extract_subcircuit)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">internal_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">()</span><span class="o">.</span><span class="n">hierarchy_levels</span><span class="p">()):</span>
+        <span class="n">subcircuits</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">each_subcircuit</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">subcircuits</span><span class="p">:</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">used_internal_cell</span> <span class="o">=</span> <span class="n">extract_subcircuit</span><span class="p">(</span><span class="n">internal_layout</span><span class="p">,</span> <span class="n">subcircuit</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">used_internal_cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">default_netlist_breakdown</span><span class="p">:</span>
+                <span class="n">circuit</span><span class="o">.</span><span class="n">flatten_subcircuit</span><span class="p">(</span><span class="n">subcircuit</span><span class="p">)</span>
+
     <span class="n">nets_for_export</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">net</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">each_net</span><span class="p">():</span>
         <span class="n">nets_for_export</span><span class="p">[</span><span class="n">net</span><span class="o">.</span><span class="n">expanded_name</span><span class="p">()]</span> <span class="o">=</span> \
