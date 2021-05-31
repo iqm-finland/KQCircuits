@@ -57,13 +57,3 @@ The independence from KLayout GUI makes it possible to do all development of
 KQCircuits fully within a Python IDE of your choice. For example, standalone
 debuggers and automated testing (see :ref:`testing`) can be done, which would
 not be possible without the standalone KLayout module.
-
-There is an example Jupyter notebook ``viewer.ipynb`` in the notebooks
-folder, which shows how to create and visualize KQCircuits elements with the
-standalone KLayout module. Any other files in the notebooks folder will be
-ignored by git, so you can create your own notebooks based on ``viewer.ipynb``
-in that folder. This notebook requires that ``gds_export`` and
-optionally ``png_export`` were specified as features during installation. On
-windows, the CairoSVG package required for ``png_export`` may not work, so
-the lines using the ``.png`` export may have to be removed from the notebook
-for it to be usable.
