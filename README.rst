@@ -1,9 +1,14 @@
-KQCircuits
-==========
+.. image:: /docs/images/logo-small.png
+   :target: https://github.com/iqm-finland/KQCircuits
+   :alt: KQCircuits
+   :width: 300
+   :align: center
 
-KQCircuits is a Python library developed by IQM for automating the design of
+**KQCircuits** is a Python library developed by IQM for automating the design of
 superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design program
 API.
+
+----
 
 KQCircuits generates multi-layer 2-dimensional-geometry representing common structures in quantum
 processing units (QPU). It includes definitions of parametrized geometrical objects or “elements”,
@@ -14,8 +19,8 @@ designs to create optical mask layout and EBL patterns for fabrication of quantu
 export a set of files for a mask as needed for QPU fabrication.
 
 .. image:: /docs/images/readme/single_xmons_chip_3.png
-    :alt: example layout
-    :align: center
+   :alt: example layout
+   :align: center
 
 Getting started
 ---------------
