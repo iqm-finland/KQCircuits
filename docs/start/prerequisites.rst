@@ -16,8 +16,8 @@ because the KLayout python folder is only created then.
 Successfully tested versions:
 
 - Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.26.12
-- MacOS: KLayout 0.26.3
-- Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7, 0.26.8
+- MacOS: KLayout 0.26.3, 0.26.12 (recommended version `HomeBrew-Python3 included`)
+- Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12
 
 Python
 ------
@@ -29,7 +29,8 @@ install that.
 
 Succesfully tested versions:
 
-- Windows: Python 3.7.6, 3.8.5
+- Windows: Python 3.7.6, 3.8.5, 3.9.4
+- MacOS: Python 3.9.4
 - Ubuntu 18.04 LTS: Python 3.6.9 and Python 3.8.5
 
 Note, that KLayout will run macros with it's own Python version, ignoring
