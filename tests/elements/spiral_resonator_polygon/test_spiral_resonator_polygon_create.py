@@ -99,6 +99,50 @@ def test_length_only_input_path():
     assert relative_error < relative_length_tolerance
 
 
+def test_length_very_short_resonator():
+    relative_error = _get_length_error(
+        length=100,
+        auto_spacing=False,
+        manual_spacing=150,
+        input_path=pya.DPath([pya.DPoint(0, 0)], 10),
+        poly_path=pya.DPath([pya.DPoint(1000, 0),
+                             pya.DPoint(800, 350),
+                             pya.DPoint(-200, 350),
+                             pya.DPoint(0, 0)], 10)
+    )
+    assert relative_error < relative_length_tolerance
+
+
+def test_length_resonator_with_consecutive_curves():
+    relative_error = _get_length_error(
+        length=3000,
+        auto_spacing=False,
+        manual_spacing=150,
+        input_path=pya.DPath([pya.DPoint(0, 0)], 10),
+        poly_path=pya.DPath([pya.DPoint(1000, 0),
+                             pya.DPoint(800, 350),
+                             pya.DPoint(-200, 350),
+                             pya.DPoint(0, 0)], 10)
+    )
+    assert relative_error < relative_length_tolerance
+
+
+def test_length_too_long_resonator(capfd):
+    relative_error = _get_length_error(
+        length=3200,
+        auto_spacing=False,
+        manual_spacing=150,
+        input_path=pya.DPath([pya.DPoint(0, 0)], 10),
+        poly_path=pya.DPath([pya.DPoint(1000, 0),
+                             pya.DPoint(800, 351),
+                             pya.DPoint(-200, 351),
+                             pya.DPoint(0, 0)], 10)
+    )
+    # the resonator should either have small relative error or fail
+    out, err = capfd.readouterr()
+    assert relative_error < relative_length_tolerance or err != ""
+
+
 def test_continuity_straight_last_segment():
     layout = pya.Layout()
     cell = SpiralResonatorPolygon.create(

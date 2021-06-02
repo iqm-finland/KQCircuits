@@ -166,17 +166,18 @@ class SpiralResonatorPolygon(Element):
                 if (intersection_point - points[-1]).sprod_sign(current_edge.d()) <= 0:
                     return False
 
-                # if the new segment is not long enough for the curve in the beginning, resonator cannot be created
-                corner_cut_dist = 0.0
                 if len(points) > 1:
-                    corner_cut_dist = self._corner_cut_distance(points[-2], points[-1], intersection_point)
-                if (intersection_point - points[-1]).length() < corner_cut_dist:
-                    return False
-                # if the last segment is not long enough for the curves at each end, resonator cannot be created
-                if len(points) > 2:
-                    corner_cut_dist += self._corner_cut_distance(points[-3], points[-2], points[-1])
-                if (points[-1] - points[-2]).length() < corner_cut_dist:
-                    return False
+                    # distance between point[-1] and start of the curve (safe margin 1e-13 compensates errors due to
+                    # floating point arithmetics and allows two curves without straight segment in between)
+                    corner_cut_dist = self._corner_cut_distance(points[-2], points[-1], intersection_point) - 1e-13
+                    # if the new segment is not long enough for the curve in the beginning, resonator cannot be created
+                    if (intersection_point - points[-1]).length() < corner_cut_dist:
+                        return False
+                    # if the last segment is not long enough for the curves at each end, resonator cannot be created
+                    if len(points) > 2:
+                        corner_cut_dist += self._corner_cut_distance(points[-3], points[-2], points[-1])
+                    if (points[-1] - points[-2]).length() < corner_cut_dist:
+                        return False
 
                 # create waveguide cell with all points (including the intersection point) to check length
                 points.append(intersection_point)
@@ -194,9 +195,7 @@ class SpiralResonatorPolygon(Element):
                 i += 1
 
         # handle correctly the last waveguide segment
-        can_create_res, last_segment_curved = self._fix_waveguide_end(points, length)
-        if not can_create_res:
-            return False
+        last_segment_curved = self._fix_waveguide_end(points, length)
         if last_segment_curved:
             term2 = 0
 
@@ -220,36 +219,34 @@ class SpiralResonatorPolygon(Element):
             current_length: length of the resonator if points are not modified
 
         Returns:
-            A tuple ``(can_create_resonator, last_segment_curved)``
-
-            * ``can_create_resonator`` (Boolean): can the resonator be created with current parameters?
-            * ``last_segment_curved`` (Boolean: is the last segment curved?
+            True if the last segment is curved and False if it's straight
         """
         extra_len = current_length - self.length
         last_seg_len, last_seg_dir = vector_length_and_direction(points[-1] - points[-2])
-        v1, v2, alpha1, alpha2, corner_pos = WaveguideCoplanar.get_corner_data(points[-3], points[-2], points[-1],
-                                                                               self.r)
-        # distance between points[-2] and start of the curve
-        corner_cut_dist = self.r * tan((pi - abs(pi - abs(alpha2 - alpha1))) / 2)
-        # check if last waveguide segment is too short to be straight
-        if last_seg_len - extra_len < corner_cut_dist:
-            # remove last point and move the new last point to the start position of the old curve
-            points.pop()
-            points[-1] -= corner_cut_dist * vector_length_and_direction(points[-1] - points[-2])[1]
-            # calculate how long the new curve piece needs to be
-            tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
-            curve_length = self.length - tmp_cell.length()
-            curve_alpha = curve_length / self.r
-            # add new curve piece at the waveguide end
-            curve_cell = self.add_element(WaveguideCoplanarCurved, SpiralResonatorPolygon, alpha=curve_alpha)
-            curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0, corner_pos)
-            self.insert_cell(curve_cell, curve_trans)
-            WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans)
-            return True, True
+        if len(points) > 2:
+            v1, v2, alpha1, alpha2, corner_pos = WaveguideCoplanar.get_corner_data(points[-3], points[-2], points[-1],
+                                                                                   self.r)
+            # distance between points[-2] and start of the curve
+            corner_cut_dist = self.r * tan((pi - abs(pi - abs(alpha2 - alpha1))) / 2)
+            # check if last waveguide segment is too short to be straight
+            if last_seg_len - extra_len < corner_cut_dist:
+                # remove last point and move the new last point to the start position of the old curve
+                points.pop()
+                points[-1] -= corner_cut_dist * vector_length_and_direction(points[-1] - points[-2])[1]
+                # calculate how long the new curve piece needs to be
+                tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
+                curve_length = self.length - tmp_cell.length()
+                curve_alpha = curve_length / self.r
+                # add new curve piece at the waveguide end
+                curve_cell = self.add_element(WaveguideCoplanarCurved, SpiralResonatorPolygon, alpha=curve_alpha)
+                curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0, corner_pos)
+                self.insert_cell(curve_cell, curve_trans)
+                WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans)
+                return True
 
         # set last point to correct position based on length
         points[-1] = points[-1] - extra_len * last_seg_dir
-        return True, False
+        return False
 
     def _produce_airbridges_for_segment(self, points, end_point_idx, dist_to_next_bridge):
         """Produces airbridges in the segment between points[end_point_idx-1] and points[end_point_idx].
