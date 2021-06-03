@@ -8,7 +8,7 @@
  <title>KQCircuits</title>
  <doc>KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.</doc>
  <doc-url>https://iqm-finland.github.io/KQCircuits/</doc-url>
- <url>https://github.com/iqm-finland/KQCircuits.git</url>
+ <url>https://github.com/iqm-finland/KQCircuits.git/tags/v3.0.0</url>
  <license>GPLv3</license>
  <author>IQM Finland Oy</author>
  <author-contact>developers@meetiqm.com</author-contact>

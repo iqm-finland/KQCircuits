@@ -8,7 +8,7 @@ Prerequisites
 
 First install :ref:`klayout`.
 
-Deveoper setup may be done independently from the GUI based installation of the KQCircuits Salt
+Developer setup may be done independently from the GUI based installation of the KQCircuits Salt
 package. But you should not do both without removing the other one. Otherwise there will be
 duplicate macros and possibly other problems.
 
@@ -24,7 +24,7 @@ KQCircuits installation requires Python 3, which should be already installed on 
 you may have to install it. If your Python installation does not already contain the ``pip`` package
 manager, you have to also install that.
 
-Succesfully tested versions:
+Successfully tested versions:
 
 - Ubuntu 18.04 and 20.04 LTS with Python 3.6.9 and Python 3.8.5
 - Windows: Python 3.7.6, 3.8.5
