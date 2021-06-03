@@ -54,7 +54,10 @@ logging.info(f"Element path: {element_path}")
 
 # Figure out the python import path from the specified file path
 path_without_extension = pathlib.Path(element_path).with_suffix('')
-module_path = '.'.join(path_without_extension.parts)
+if path_without_extension.parts[0] == "python":
+    module_path = '.'.join(path_without_extension.parts[1:])
+else:
+    module_path = '.'.join(path_without_extension.parts)
 module_name = path_without_extension.name
 
 # Import module

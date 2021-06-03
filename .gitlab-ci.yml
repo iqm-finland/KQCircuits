@@ -7,7 +7,7 @@ cache:
 
 before_script:
   - mkdir -p $HOME/.klayout/python .pip-cache
-  - pip --cache-dir=.pip-cache install -e ".[docs,tests]"
+  - pip --cache-dir=.pip-cache install -e "python[docs,tests]"
   - python setup_within_klayout.py
 
 test:
