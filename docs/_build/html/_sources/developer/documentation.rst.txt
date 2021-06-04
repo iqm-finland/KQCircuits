@@ -7,6 +7,9 @@ command line in the ``docs`` folder and write ``make html``. If you want to
 completely rebuild the documentation, run ``make clean`` to remove the built
 files first.
 
+.. note::
+    KLayout needs to be installed for generating PCell images.
+
 The API documentation is generated from the ``.rst`` files in ``docs/api``
 folder, which are generated automatically by sphinx-apidoc when you run
 ``make html``. The template files used to generate these are in

@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Setup with KLayout standalone Python module &mdash; KQCircuits 2019 documentation</title>
+  <title>Developer Setup &mdash; KQCircuits 2019 documentation</title>
   
 
   
@@ -17,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -37,7 +40,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Architecture" href="architecture.html" />
+    <link rel="next" title="KLayout Standalone Usage" href="standalone.html" />
     <link rel="prev" title="Developer Guide" href="index.html" /> 
 </head>
 
@@ -52,7 +55,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> KQCircuits
+            <a href="../index.html" class="icon icon-home"> KQCircuits
           
 
           
@@ -86,20 +89,29 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Developer Guide</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Setup with KLayout standalone Python module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Developer Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python">Python</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#sources">Sources</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#linux-or-macos">Linux or MacOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="standalone.html">KLayout Standalone Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html">Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="coding_style.html">Coding Style</a></li>
 <li class="toctree-l2"><a class="reference internal" href="documentation.html">Documentation</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/kqcircuits.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
@@ -143,6 +155,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -151,12 +165,12 @@
         
           <li><a href="index.html">Developer Guide</a> &raquo;</li>
         
-      <li>Setup with KLayout standalone Python module</li>
+      <li>Developer Setup</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/developer/setup.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -170,64 +184,110 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="setup-with-klayout-standalone-python-module">
-<span id="standalone"></span><h1>Setup with KLayout standalone Python module<a class="headerlink" href="#setup-with-klayout-standalone-python-module" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="../start/index.html#getting-started"><span class="std std-ref">Getting Started</span></a> section described setting up KQCircuits for use
-with KLayout Editor (GUI). However, KQC can also be used without KLayout
-Editor by using the standalone KLayout Python module. This lets you develop
-and use KQCircuits completely within any Python development environment of
-your choice, without running KLayout GUI. For example, any debugger can then
-be used and automated tests can be performed. The KQCircuits elements can
-also be visualized using any suitable viewer or library during development.</p>
+  <div class="section" id="developer-setup">
+<span id="id1"></span><h1>Developer Setup<a class="headerlink" href="#developer-setup" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
-<p>If you want to run KQCircuits outside of the KLayout Editor, you will need
-a Python 3 installation. The installation also requires <cite>pip</cite>.</p>
-<p>Successfully tested with</p>
+<p>First install <a class="reference internal" href="../start/installation.html#klayout"><span class="std std-ref">KLayout</span></a>.</p>
+<p>Developer setup may be done independently from the GUI based installation of the KQCircuits Salt
+package. But you should not do both without removing the other one. Otherwise there will be
+duplicate macros and possibly other problems.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You must open KLayout at least once before installing KQCircuits, because the KLayout python
+folder <code class="docutils literal notranslate"><span class="pre">~/.klayout/python</span></code> is only created then. The documentation uses Linux paths unless
+explicitely mentioned otherwise.</p>
+</div>
+<div class="section" id="python">
+<h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
+<p>KQCircuits installation requires Python 3, which should be already installed on Linux. On Windows
+you may have to install it. If your Python installation does not already contain the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package
+manager, you have to also install that.</p>
+<p>Successfully tested versions:</p>
 <ul class="simple">
-<li><p>Python 3.7.6, 3.8.5</p></li>
+<li><p>Ubuntu 18.04 and 20.04 LTS with Python 3.6.9 and Python 3.8.5</p></li>
+<li><p>Windows: Python 3.7.6, 3.8.5</p></li>
 </ul>
 </div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>If you have not yet done so, <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span></code> the KQCircuits source code from
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits">https://github.com/iqm-finland/KQCircuits</a> to a location of your choice.</p>
-<p>This section explains how to install KQC in “development mode”, so that a
-link to your local KQC repo is added to the python environment. When using
-KQC installed in this way, the version in your local repo is thus used.</p>
-<p>To do this, activate your python environment and write in command prompt /
-terminal:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+</div>
+<div class="section" id="sources">
+<h2>Sources<a class="headerlink" href="#sources" title="Permalink to this headline">¶</a></h2>
+<p>Get KQCircuits’ sources with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">iqm</span><span class="o">-</span><span class="n">finland</span><span class="o">/</span><span class="n">KQCircuits</span>
 </pre></div>
 </div>
-<p>The previous command installs only the packages which are always required
-when using KQC. Other packages may be required for specific purposes, and
-these can be installed by using instead a command like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">docs</span><span class="p">,</span><span class="n">tests</span><span class="p">,</span><span class="n">gds_export</span><span class="p">,</span><span class="n">png_export</span><span class="p">]</span>
+<p>Alternatively, you may re-use the Salt package as a git repository for quick tests. It is under the
+<code class="docutils literal notranslate"><span class="pre">.klayout/salt/KQCircuits</span></code> directory. In this case creating symbolic links or installing some
+dependencies may not be required. Beware, a Salt package update <strong>will overwrite your code</strong> in this
+directory without any warning!</p>
+</div>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>This section explains basic installation, where the required packages
+are automatically installed in the default locations where KLayout looks for
+them. If you want to have more control over the installation process, see the
+next section.</p>
+<p>Open a command line / terminal (in Windows you must open it with
+administrator privileges) and <code class="docutils literal notranslate"><span class="pre">cd</span></code> to your KQCircuits folder. Then write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup_within_klayout</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
-<p>You can choose for which purposes you want to install the requirements by
-modifying the text in the square brackets. Note that there should not be any
-spaces within the brackets.</p>
-<p>The required packages are defined in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> (in KQC root directory), so
-if there are problems with some specific package, you may try modifying it or
-install those packages manually.</p>
+<p>to install KQC. You may have to write <code class="docutils literal notranslate"><span class="pre">python</span></code> or <code class="docutils literal notranslate"><span class="pre">py</span></code> instead of
+<code class="docutils literal notranslate"><span class="pre">python3</span></code> depending on your OS and Python installation, just make sure that
+the command refers to Python 3.</p>
+<p>If your Python installation does not already contain the <code class="docutils literal notranslate"><span class="pre">pip</span></code> package
+manager, you have to also install that too.</p>
+<p>Note, that KLayout will run macros with it’s own Python version, ignoring
+virtualenv settings. KLayout is linked together with libpython*.so on Linux and
+libpython*.dll on Windows.</p>
 </div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The independence from KLayout GUI makes it possible to do all development of
-KQCircuits fully within a Python IDE of your choice. For example, standalone
-debuggers and automated testing (see <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Testing</span></a>) can be done, which would
-not be possible without the standalone KLayout module.</p>
-<p>There is an example Jupyter notebook <code class="docutils literal notranslate"><span class="pre">viewer.ipynb</span></code> in the notebooks
-folder, which shows how to create and visualize KQCircuits elements with the
-standalone KLayout module. Any other files in the notebooks folder will be
-ignored by git, so you can create your own notebooks based on <code class="docutils literal notranslate"><span class="pre">viewer.ipynb</span></code>
-in that folder. This notebook requires that <code class="docutils literal notranslate"><span class="pre">gds_export</span></code> and
-optionally <code class="docutils literal notranslate"><span class="pre">png_export</span></code> were specified as features during installation. On
-windows, the CairoSVG package required for <code class="docutils literal notranslate"><span class="pre">png_export</span></code> may not work, so
-the lines using the <code class="docutils literal notranslate"><span class="pre">.png</span></code> export may have to be removed from the notebook
-for it to be usable.</p>
+<div class="section" id="manual-installation">
+<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline">¶</a></h2>
+<p>To use KQCircuits in KLayout Editor, symlinks must be created from KLayout’s
+python folder to your KQCircuits folder. Some Python packages must also be
+installed for KQCircuits to work. The details of these steps for different
+operating systems are explained in the following subsections. The script
+<code class="docutils literal notranslate"><span class="pre">setup_within_klayout.py</span></code> used in the previous section attempts to
+automatically do the same steps as explained below.</p>
+<div class="section" id="linux-or-macos">
+<h3>Linux or MacOS<a class="headerlink" href="#linux-or-macos" title="Permalink to this headline">¶</a></h3>
+<p>Create a symlink from KLayout to the  kqcircuits package and scripts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">ksqcircuits</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits_scripts</span>
+</pre></div>
+</div>
+<p>To install the required packages, open a terminal in your KQCircuits folder
+(which contains <code class="docutils literal notranslate"><span class="pre">requirements_within_klayout_unix.txt</span></code>), and write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_unix</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>The previous command installs the packages to your system’s default Python
+environment, because that is where KLayout looks for the packages on Linux.
+If you want to install the packages in a separate environment instead, you
+have to create a symlink to there.</p>
+</div>
+<div class="section" id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>Create a symlink from KLayout to kqcircuits by opening a command prompt with
+administrator privileges, and do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">KLayout</span>\<span class="n">python</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\python\kqcircuits&quot;</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits_scripts&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\python\scripts&quot;</span>
+</pre></div>
+</div>
+<p>Install the required packages by opening command prompt in your KQCircuits
+folder (which contains <code class="docutils literal notranslate"><span class="pre">requirements_within_klayout_windows.txt</span></code>), and writing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_windows</span><span class="o">.</span><span class="n">txt</span> <span class="o">--</span><span class="n">target</span><span class="o">=%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">AppData</span>\<span class="n">Roaming</span>\<span class="n">KLayout</span>\<span class="n">lib</span>\<span class="n">python3</span><span class="mf">.7</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>
+</pre></div>
+</div>
+<p>The previous command installs the packages to KLayout’s embedded Python
+environment, which is where KLayout looks for packages on Windows. If you
+want to install the packages in another environment instead, you have to
+create a symlink to there.</p>
+<p>Some packages, like numpy, must be compiled on the same compiler as the
+embedded Python in KLayout. Since KLayout 0.26.2, a correct version of numpy
+is already included with KLayout, so this shouldn’t be a problem.</p>
+</div>
 </div>
 </div>
 
@@ -236,37 +296,29 @@ for it to be usable.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="architecture.html" class="btn btn-neutral float-right" title="Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral float-left" title="Developer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="standalone.html" class="btn btn-neutral float-right" title="KLayout Standalone Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Developer Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2019-2021, IQM
+        &#169; Copyright 2019-2021, IQM.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

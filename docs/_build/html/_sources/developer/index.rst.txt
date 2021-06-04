@@ -8,6 +8,7 @@ is hosted here: https://github.com/iqm-finland/KQCircuits.
     :glob:
 
     setup
+    standalone
     architecture
     testing
     coding_style

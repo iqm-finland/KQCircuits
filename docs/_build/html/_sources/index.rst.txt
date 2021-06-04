@@ -15,8 +15,8 @@ Documentation
 
    start/index
    user_guide/index
-   libraries/index
    developer/index
+   libraries/index
    api/kqcircuits
    contributing
    trademarks
