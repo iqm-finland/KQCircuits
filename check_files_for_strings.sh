@@ -16,6 +16,7 @@ excluded_paths=( \
 "*.png" \
 "*tmp" \
 "*pycache*" \
+"./grain.xml" \
 "*docs/_build/html/_static*" \
 )
 for path in "${excluded_paths[@]}"; do

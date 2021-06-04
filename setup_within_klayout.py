@@ -68,8 +68,8 @@ print("KLayout python directory assumed to be \"{}\"".format(klayout_python_path
 
 # create symlink between KLayout python folder and kqcircuits folder
 link_map = (
-    ("kqcircuits", "kqcircuits"),
-    ("scripts", "kqcircuits_scripts"),
+    ("python/kqcircuits", "kqcircuits"),
+    ("python/scripts", "kqcircuits_scripts"),
 )
 for target, name in link_map:
     link_name = os.path.join(klayout_python_path, name)

@@ -43,11 +43,12 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.layer_cluster import LayerCluster
 
 # project paths
-ROOT_PATH = Path(os.path.dirname(os.path.realpath(__file__))).parent
-SRC_PATHS = [ROOT_PATH.joinpath("kqcircuits")]
+ROOT_PATH = Path(os.path.dirname(os.path.realpath(__file__))).parent.parent
+PY_PATH = ROOT_PATH.joinpath("python")
+SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
 TMP_PATH = ROOT_PATH.joinpath("tmp")
 TMP_PATH.mkdir(exist_ok=True)
-ANSYS_SCRIPTS_PATH = ROOT_PATH.joinpath("scripts").joinpath("simulations").joinpath("ansys")
+ANSYS_SCRIPTS_PATH = PY_PATH.joinpath("scripts").joinpath("simulations").joinpath("ansys")
 
 # printed to corners of all chips and top of all masks
 # could be for example "IQM" or "A!"

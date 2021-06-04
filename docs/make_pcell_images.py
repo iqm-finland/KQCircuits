@@ -23,13 +23,13 @@ import sys
 import subprocess
 from multiprocessing import Pool
 from kqcircuits.util.library_helper import _get_all_pcell_classes
-from kqcircuits.defaults import ROOT_PATH
+from kqcircuits.defaults import ROOT_PATH, PY_PATH
 
 
 DIR = ROOT_PATH.joinpath("docs/pcell_images")
 DIR.mkdir(exist_ok=True)
 
-script = ROOT_PATH.joinpath("scripts/util/pcell2png.py")
+script = PY_PATH.joinpath("scripts").joinpath("util").joinpath("pcell2png.py")
 
 if os.name == "nt":
     exe = os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")

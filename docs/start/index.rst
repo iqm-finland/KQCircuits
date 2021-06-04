@@ -10,6 +10,5 @@ Python module, for that see :ref:`standalone`.
 .. toctree::
    :maxdepth: 2
 
-   prerequisites
    installation
    usage

@@ -1,9 +1,14 @@
-KQCircuits
-==========
+.. image:: /docs/images/logo-small.png
+   :target: https://github.com/iqm-finland/KQCircuits
+   :alt: KQCircuits
+   :width: 300
+   :align: center
 
-KQCircuits is a Python library developed by IQM for automating the design of
+**KQCircuits** is a Python library developed by IQM for automating the design of
 superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design program
 API.
+
+----
 
 KQCircuits generates multi-layer 2-dimensional-geometry representing common structures in quantum
 processing units (QPU). It includes definitions of parametrized geometrical objects or “elements”,
@@ -14,8 +19,8 @@ designs to create optical mask layout and EBL patterns for fabrication of quantu
 export a set of files for a mask as needed for QPU fabrication.
 
 .. image:: /docs/images/readme/single_xmons_chip_3.png
-    :alt: example layout
-    :align: center
+   :alt: example layout
+   :align: center
 
 Getting started
 ---------------
@@ -24,20 +29,20 @@ KQCircuits is a KLayout extension. KLayout can be used either using a graphical 
 a standalone python module. KQCircuits supports both modes of operation. For the first time users,
 the graphical user interface mode is recommended.
 
-Install and run KLayout once. Run `python3 setup_within_klayout.py` then klayout will contain
+Install and run KLayout once. Run ``python3 setup_within_klayout.py`` then klayout will contain
 KQCircuits. For further details see the `getting started documentation
-<https://iqm-finland.github.io/KQCircuits/start/index.html>`__.
+<https://iqm-finland.github.io/KQCircuits/_build/html/start/index.html>`__.
 
-For stand alone mode run `python -m pip install -e .[docs,tests]`. Then scripts may be run and
+For stand-alone mode run ``python -m pip install -e python[docs,tests]``. Then scripts may be run and
 documentation can be built. For further details see the `documentation
-<https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
+<https://iqm-finland.github.io/KQCircuits/_build/html/developer/setup.html>`__.
 
 Documentation
 -------------
 
 Documentation for KQCircuits can be found `here <https://iqm-finland.github.io/KQCircuits/>`__.
 
-It may also be generated from the sources with `make html` in the docs directory.
+It may also be generated from the sources with ``make html`` in the docs directory.
 
 Contributing
 ------------

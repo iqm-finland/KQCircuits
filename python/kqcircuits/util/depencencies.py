@@ -1,4 +1,4 @@
-# This code is part of KQCircuits
+# This code is part of KQCirquits
 # Copyright (C) 2021 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -15,28 +15,28 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+from importlib import util
 
-from setuptools import setup, find_packages
 
-setup(
-    name='kqcircuits',
-    version="2.5.3",
-    description="KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.",
-    author="IQM Finland Oy",
-    author_email="developers@meetiqm.com",
-    url="meetiqm.com",
-    packages=find_packages(),
-    python_requires=">=3.6.9,<3.10",  # klayout package not yet released for 3.10
-    install_requires=[
-        "klayout>=0.26,<0.27",
-        "numpy>=1.18",
-        "Autologging~=1.3",
-        "scipy>=1.2",
-    ],
-    extras_require={
-        "docs": ["sphinx~=2.4", "sphinx-rtd-theme~=0.4"],
-        "tests": ["pytest>=6.0.2", "pytest-cov~=2.8", "pytest-xdist>=2.1", "tox>=3.18"],
-        "gds_export": ["gdspy~=1.5"],
-        "png_export": ["cairosvg~=2.4"],
-    },
-)
+def check():
+    """Check KQCircuits' dependencies and install if missing.
+
+    That this is *only* for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
+    """
+
+    _missing_mods = []
+    for mod in ["autologging", "numpy", "scipy"]:  # The needed modules are defined here
+        if util.find_spec(mod) is None:
+            _missing_mods.append(mod)
+    if not _missing_mods:
+        return
+
+    # Install missing modules inside KLayout.
+    import pya
+    from pip import __main__
+    main = __main__._main
+    ask = pya.MessageBox.warning("Install packages?", "Install missing packages using 'pip': " +
+                                 ", ".join(_missing_mods), pya.MessageBox.Yes + pya.MessageBox.No)
+    if ask == pya.MessageBox.Yes:
+        for mod in _missing_mods:
+            main(['install', mod])
