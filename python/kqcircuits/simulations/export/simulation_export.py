@@ -15,6 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+import logging
 from itertools import product
 from pathlib import Path
 
@@ -40,6 +41,8 @@ def export_simulation_oas(simulations, path: Path, file_prefix='simulation'):
 def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     """Create simulation sweep by varying one parameter at time. Return list of simulations."""
     simulations = []
+    lengths = [len(l) for l in sweeps.values()]
+    logging.info(f'Added simulations: {" + ".join([str(l) for l in lengths])} = {sum(lengths)}')
     for param in sweeps:
         for value in sweeps[param]:
             parameters = {**sim_parameters, param: value,
@@ -53,6 +56,7 @@ def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     simulations = []
     keys = [key for key in sweeps]
     sets = [list(prod) for prod in product(*sweeps.values())]
+    logging.info(f'Added simulations: {" * ".join([str(len(l)) for l in sweeps.values()])} = {len(sets)}')
     for values in sets:
         parameters = {**sim_parameters}
         for i in range(len(keys)):

@@ -91,12 +91,22 @@ class Qubit(Element):
         if self.fluxline_type == "none":
             return
 
-        fluxline = self.add_element(Fluxline, fluxline_type=self.fluxline_type,
-                                    a=self.a,
-                                    b=self.b,
-                                    fluxline_gap_width=self.fluxline_gap_width,
-                                    fluxline_h_length=self.fluxline_h_length,
-                                    face_ids=self.face_ids)
+        # Pass only fluxline parameters which differ from the class default value. This allows subclasses to override
+        # the default value
+        fluxline_parameters = {}
+        for key, param in type(self).get_schema().items():
+            if key.startswith('fluxline_'):
+                value = self.__getattribute__(key)
+                if value != param.default:
+                    fluxline_parameters[key] = value
+
+        fluxline = self.add_element(
+            Fluxline,
+            a=self.a,
+            b=self.b,
+            face_ids=self.face_ids,
+            **fluxline_parameters,
+        )
 
         refpoints_so_far = self.get_refpoints(self.cell)
         squid_edge = refpoints_so_far["origin_squid"]

@@ -22,22 +22,23 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 
+
 @traced
 @logged
 class FluxlineStandard(Fluxline):
     """Fluxline variant "standard"."""
-
-    width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
+    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
+    fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 
     def produce_impl(self):
         # shorthands
         a = self.a  # waveguide center width
         b = self.b  # waveguide gap width
-        fa = 10. / 3  # fluxline center width
-        fb = fa * (b / a)  # fluxline gap width
-        w = self.width
-        l1 = 30  # straight down
-        l2 = 50  # tapering to waveguide port
+        fb = self.fluxline_gap_width  # fluxline gap width
+        fa = self.fluxline_gap_width * (self.a / self.b)  # fluxline center width
+        w = self.fluxline_width
+        l1 = 30  # length of straight down section
+        l2 = 50  # length of taper to waveguide port
 
         # origin at edge of the qubit gap
         right_gap = pya.DPolygon([

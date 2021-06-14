@@ -36,7 +36,7 @@ Get KQCircuits' sources with::
 
     git clone https://github.com/iqm-finland/KQCircuits
 
-Alternatively, you may re-use the Salt package as a git repository for quick tests. It is under the
+Alternatively, you may re-use the Salt package itself for quick tests, it is under the
 ``.klayout/salt/KQCircuits`` directory. In this case creating symbolic links or installing some
 dependencies may not be required. Beware, a Salt package update **will overwrite your code** in this
 directory without any warning!

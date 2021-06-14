@@ -400,15 +400,17 @@ class WaveguideComposite(Element):
 
         sn = self._nodes[start_index]
         if not sn.element and "ab_across" in sn.params and sn.params["ab_across"]:
-            self._ab_across(self._nodes[start_index+1].position, sn.position, 0)
+            ab_len = sn.params['bridge_length'] if "bridge_length" in sn.params else None
+            self._ab_across(self._nodes[start_index+1].position, sn.position, 0, ab_len)
 
         for i in range(start_index + 1, end_index + 1):
             node = self._nodes[i]
+            ab_len = node.params['bridge_length'] if "bridge_length" in node.params else None
             points.append(end_pos if end_pos and i == end_index else node.position)
             if "ab_across" in node.params and node.params["ab_across"]:
-                self._ab_across(points[-2], points[-1], 0)
+                self._ab_across(points[-2], points[-1], 0, ab_len)
             if "n_bridges" in node.params and node.params["n_bridges"] > 0:
-                self._ab_across(points[-2], points[-1], node.params["n_bridges"])
+                self._ab_across(points[-2], points[-1], node.params["n_bridges"], ab_len)
 
         params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": pya.DPath(points, 1)}
 
@@ -424,12 +426,15 @@ class WaveguideComposite(Element):
         self._wg_start_pos = points[-1]
         _, self._wg_start_dir = vector_length_and_direction(points[-1] - points[-2])
 
-    def _ab_across(self, start, end, num):
+    def _ab_across(self, start, end, num, ab_len=None):
         """Creates ``num`` airbridge crossings equally distributed between ``start`` and ``end``.
-        If ``num == 0`` then one airbridge crossing is created at the node.
+        If ``num == 0`` then one airbridge crossing is created at the node. ``ab_len`` is the airbridges' lenght.
         """
 
-        ab_cell = self.add_element(Airbridge, Airbridge, airbridge_type=self.airbridge_type)
+        params = {'airbridge_type': self.airbridge_type}
+        if ab_len:
+            params['bridge_length'] = ab_len
+        ab_cell = self.add_element(Airbridge, Airbridge, **params)
         v_dir = end - start
         alpha = get_angle(v_dir)
 
