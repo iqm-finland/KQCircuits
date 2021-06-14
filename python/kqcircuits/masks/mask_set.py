@@ -74,12 +74,13 @@ class MaskSet:
         self.used_chips = {}
         self._mask_layouts_per_face = {}  # dict of {face_id: number of mask layouts}
 
-    def add_mask_layout(self, chips_map, face_id="b", **kwargs):
+    def add_mask_layout(self, chips_map, face_id="b", mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
 
         Args:
             chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)
             face_id: face_id of the mask layout
+            mask_layout_type: type of the mask layout (MaskLayout or a child class of it)
             kwargs: keyword arguments passed to the mask layout
         Returns:
             the created mask layout
@@ -95,7 +96,8 @@ class MaskSet:
         if ("mask_export_layers" not in kwargs) and self.mask_export_layers:
             kwargs["mask_export_layers"] = self.mask_export_layers
 
-        mask_layout = MaskLayout(self.layout, self.name, self.version, self.with_grid, chips_map, face_id, **kwargs)
+        mask_layout = mask_layout_type(self.layout, self.name, self.version, self.with_grid, chips_map, face_id,
+                                       **kwargs)
         self.mask_layouts.append(mask_layout)
         return mask_layout
 

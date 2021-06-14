@@ -3,12 +3,12 @@
  <name>KQCircuits</name>
  <token/>
  <hidden>false</hidden>
- <version>3.0.0</version>
+ <version>3.2.0</version>
  <api-version>0.26</api-version>
  <title>KQCircuits</title>
  <doc>KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.</doc>
  <doc-url>https://iqm-finland.github.io/KQCircuits/</doc-url>
- <url>https://github.com/iqm-finland/KQCircuits.git/tags/v3.0.0</url>
+ <url>https://github.com/iqm-finland/KQCircuits.git/tags/v3.2.0</url>
  <license>GPLv3</license>
  <author>IQM Finland Oy</author>
  <author-contact>developers@meetiqm.com</author-contact>
