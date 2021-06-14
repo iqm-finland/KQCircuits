@@ -258,13 +258,14 @@ mask.export(…)</p>
 
 <dl class="method">
 <dt id="kqcircuits.masks.mask_set.MaskSet.add_mask_layout">
-<code class="sig-name descname">add_mask_layout</code><span class="sig-paren">(</span><em class="sig-param">chips_map</em>, <em class="sig-param">face_id='b'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_mask_layout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_mask_layout" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_mask_layout</code><span class="sig-paren">(</span><em class="sig-param">chips_map</em>, <em class="sig-param">face_id='b'</em>, <em class="sig-param">mask_layout_type=&lt;class 'kqcircuits.masks.mask_layout.MaskLayout'&gt;</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_mask_layout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_mask_layout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a mask layout from chips_map and adds it to self.mask_layouts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chips_map</strong> – List of lists (2D-array) of strings, each string is a chip name (or — for no chip)</p></li>
 <li><p><strong>face_id</strong> – face_id of the mask layout</p></li>
+<li><p><strong>mask_layout_type</strong> – type of the mask layout (MaskLayout or a child class of it)</p></li>
 <li><p><strong>kwargs</strong> – keyword arguments passed to the mask layout</p></li>
 </ul>
 </dd>

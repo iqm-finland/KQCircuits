@@ -182,22 +182,23 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines.fluxline</span> <span class="kn">import</span> <span class="n">Fluxline</span>
 
+
 <div class="viewcode-block" id="FluxlineStandard"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_standard.html#kqcircuits.elements.fluxlines.fluxline_standard.FluxlineStandard">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">FluxlineStandard</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fluxline variant &quot;standard&quot;.&quot;&quot;&quot;</span>
-
-    <span class="n">width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline width&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">fluxline_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline width&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">fluxline_gap_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline gap width&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FluxlineStandard.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_standard.html#kqcircuits.elements.fluxlines.fluxline_standard.FluxlineStandard.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthands</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  <span class="c1"># waveguide center width</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>  <span class="c1"># waveguide gap width</span>
-        <span class="n">fa</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">/</span> <span class="mi">3</span>  <span class="c1"># fluxline center width</span>
-        <span class="n">fb</span> <span class="o">=</span> <span class="n">fa</span> <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span>  <span class="c1"># fluxline gap width</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
-        <span class="n">l1</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># straight down</span>
-        <span class="n">l2</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># tapering to waveguide port</span>
+        <span class="n">fb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_gap_width</span>  <span class="c1"># fluxline gap width</span>
+        <span class="n">fa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_gap_width</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>  <span class="c1"># fluxline center width</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_width</span>
+        <span class="n">l1</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c1"># length of straight down section</span>
+        <span class="n">l2</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># length of taper to waveguide port</span>
 
         <span class="c1"># origin at edge of the qubit gap</span>
         <span class="n">right_gap</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">([</span>

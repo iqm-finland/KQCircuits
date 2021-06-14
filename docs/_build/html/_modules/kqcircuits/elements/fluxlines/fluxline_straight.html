@@ -179,6 +179,7 @@
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines.fluxline</span> <span class="kn">import</span> <span class="n">Fluxline</span>
 
 
@@ -186,6 +187,7 @@
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">FluxlineStraight</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fluxline variant &quot;straight vertical&quot;.&quot;&quot;&quot;</span>
+    <span class="n">fluxline_gap_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline gap width&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FluxlineStraight.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_straight.html#kqcircuits.elements.fluxlines.fluxline_straight.FluxlineStraight.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 

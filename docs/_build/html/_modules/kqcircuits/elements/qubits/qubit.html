@@ -251,12 +251,22 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">fluxline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">,</span> <span class="n">fluxline_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span><span class="p">,</span>
-                                    <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
-                                    <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
-                                    <span class="n">fluxline_gap_width</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxline_gap_width</span><span class="p">,</span>
-                                    <span class="n">fluxline_h_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxline_h_length</span><span class="p">,</span>
-                                    <span class="n">face_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)</span>
+        <span class="c1"># Pass only fluxline parameters which differ from the class default value. This allows subclasses to override</span>
+        <span class="c1"># the default value</span>
+        <span class="n">fluxline_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;fluxline_&#39;</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+                    <span class="n">fluxline_parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="n">fluxline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span>
+            <span class="n">Fluxline</span><span class="p">,</span>
+            <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+            <span class="n">face_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">fluxline_parameters</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="n">refpoints_so_far</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">squid_edge</span> <span class="o">=</span> <span class="n">refpoints_so_far</span><span class="p">[</span><span class="s2">&quot;origin_squid&quot;</span><span class="p">]</span>
