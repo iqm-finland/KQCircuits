@@ -15,6 +15,9 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+from ._version import __version__
+del _version  # remove to avoid confusion with __version__
+
 # Check for needed dependencies and install if missing.
 from kqcircuits.util.depencencies import check
 check()
