@@ -18,10 +18,11 @@
 
 import math
 from autologging import logged, traced
+from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_layers, default_brand, default_faces, default_mask_parameters, \
-    default_layers_to_mask, default_mask_export_layers
+    default_layers_to_mask, default_mask_export_layers, default_bar_format
 from kqcircuits.util import merge
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.elements.mask_marker_fc import MaskMarkerFc
@@ -113,7 +114,7 @@ class MaskLayout:
         """
         self.chips_map_legend = {}
 
-        for name, cell in chips_map_legend.items():
+        for name, cell in tqdm(chips_map_legend.items(), desc='Building cell hierarchy', bar_format=default_bar_format):
             # create copies of the chips, so that modifying these only affects the ones in this MaskLayout
             new_cell = self.layout.create_cell(name)
             new_cell.copy_tree(cell)
@@ -152,7 +153,7 @@ class MaskLayout:
                 )
         self.top_cell.insert(pya.DCellInstArray(labels_cell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
 
-        for (i, row) in enumerate(self.chips_map):
+        for (i, row) in enumerate(tqdm(self.chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
             for (j, slot) in enumerate(row):
                 position = step_ver * (i + 1) + step_hor * j
                 pos_index_name = chr(ord("A") + i) + ("{:02d}".format(j))

@@ -19,12 +19,13 @@
 import os
 from autologging import logged, traced
 import subprocess
+from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, ROOT_PATH
+    default_mask_parameters, default_drc_runset, default_bar_format, ROOT_PATH
 from kqcircuits.util.netlist_extraction import export_cell_netlist
 """Functions for exporting mask sets."""
 
@@ -53,7 +54,7 @@ def export_designs(mask_set, export_dir):
         export_masks_of_face(export_dir, mask_layout, mask_set)
 
     # export chips
-    for chip_name, cell in mask_set.used_chips.items():
+    for chip_name, cell in tqdm(mask_set.used_chips.items(), desc='Exporting chips', bar_format=default_bar_format):
         export_chip(cell, chip_name, export_dir, layout, mask_set)
 
 

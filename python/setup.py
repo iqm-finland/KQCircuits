@@ -44,6 +44,7 @@ setup(
         "numpy>=1.18",
         "Autologging~=1.3",
         "scipy>=1.2",
+        "tqdm>=4.61",
     ],
     extras_require={
         "docs": ["sphinx~=2.4", "sphinx-rtd-theme~=0.4"],

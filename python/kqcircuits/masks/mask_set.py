@@ -15,11 +15,12 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
 from autologging import logged, traced
+from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
 import kqcircuits.masks.mask_export as mask_export
+from kqcircuits.defaults import default_bar_format
 from kqcircuits.masks.mask_layout import MaskLayout
 
 
@@ -82,6 +83,7 @@ class MaskSet:
             face_id: face_id of the mask layout
             mask_layout_type: type of the mask layout (MaskLayout or a child class of it)
             kwargs: keyword arguments passed to the mask layout
+
         Returns:
             the created mask layout
         """
@@ -100,6 +102,16 @@ class MaskSet:
                                        **kwargs)
         self.mask_layouts.append(mask_layout)
         return mask_layout
+
+    def add_chips(self, chips):
+        """Add list of chips with parameters to self.chips_map_legend
+
+        Args:
+            chips: List of tuples that ``add_chip`` uses.
+                For example, ``(QualityFactor, "QDG", parameters)``.
+        """
+        for chip_class, variant_name, params in tqdm(chips, desc='Building variants', bar_format=default_bar_format):
+            self.add_chip(chip_class, variant_name, **params)
 
     def add_chip(self, chip_class, variant_name, **kwargs):
         """Adds a chip with the given name and parameters to self.chips_map_legend.
