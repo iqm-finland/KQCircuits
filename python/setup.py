@@ -23,7 +23,7 @@ setup(
     version="3.2.1",
     description="KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.",
     author="IQM Finland Oy",
-    author_email="developers@meetiqm.com",
+    author_email="kqcircuits@meetiqm.com",
     url="meetiqm.com",
     packages=find_packages(),
     python_requires=">=3.6.9,<3.10",  # klayout package not yet released for 3.10
