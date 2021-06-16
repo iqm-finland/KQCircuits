@@ -123,6 +123,7 @@ class MultiFace(Chip):
             self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 1))).merged()
         existing_bumps = pya.Region(
             self.cell.begin_shapes_rec(self.get_layer("indium_bump"))).merged()
+        existing_bump_count = existing_bumps.count()
         avoidance_existing_bumps = existing_bumps.sized((existing_bump_avoidance_margin / 2) / self.layout.dbu)
         avoidance_region = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps).merged()
 
@@ -142,7 +143,8 @@ class MultiFace(Chip):
         for location in bump_locations:
             self.insert_cell(bump, pya.DTrans(location))
 
-        self.__log.info(f'Inserted {len(bump_locations)} ground bumps')
+        self.__log.info(f'Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} ground bumps, '
+                        + f'totalling {existing_bump_count + len(bump_locations)} bumps.')
 
     def produce_ground_grid(self):
         """Produces ground grid on t and b faces."""
