@@ -81,11 +81,6 @@ def get_version_from_git():
         return
     if p.wait() != 0:
         return
-    if not os.path.samefile(p.communicate()[0].decode().rstrip("\n"), distr_root):
-        # The top-level directory of the current Git repository is not the same
-        # as the root directory of the distribution: do not extract the
-        # version from Git.
-        return
 
     # git describe --first-parent does not take into account tags from branches
     # that were merged-in. The '--long' flag gets us the 'dev' version and
