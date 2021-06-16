@@ -47,6 +47,17 @@ check_confidential_strings:
   tags:
     - docker
 
+check_copyright_headers:
+  stage: test
+  script:
+    - python check_copyright_headers.py --exclude-paths python/kqcircuits/_static_version.py python/kqcircuits/_version.py
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  tags:
+    - docker
 
 pages:
   stage: deploy
