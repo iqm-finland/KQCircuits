@@ -191,7 +191,8 @@ class WaveguideComposite(Element):
 
         # Measure segment lengths, counting only "regular waveguides"
         layout = cell.layout()
-        child_cells = [layout.cell(cell_index) for cell_index in cell.each_child_cell()]
+        # Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235
+        child_cells = [layout.cell(inst.cell_index) for inst in cell.each_inst()]
         annotation_layer = layout.layer(default_layers['waveguide_length'])
         segment_lengths = [get_cell_path_length(child_cell, annotation_layer) for child_cell in child_cells
                            if child_cell.name == "Waveguide Coplanar"]
