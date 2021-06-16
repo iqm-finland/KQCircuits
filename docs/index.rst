@@ -18,7 +18,6 @@ Documentation
    developer/index
    libraries/index
    api/kqcircuits
-   contributing
    trademarks
 
 Indices and tables

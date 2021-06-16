@@ -13,3 +13,4 @@ is hosted here: https://github.com/iqm-finland/KQCircuits.
     testing
     coding_style
     documentation
+    contributing

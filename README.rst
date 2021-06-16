@@ -47,10 +47,11 @@ It may also be generated from the sources with ``make html`` in the docs directo
 Contributing
 ------------
 
-Contributions to KQC are welcome from the community. Contributors are expected
-to accept IQM Individual Contributor License Agreement by filling
-`a form at IQM website <https://meetiqm.com/developers/clas>`__. See also
-section *Contributing* in documentation.
+Contributions to KQC are welcome from the community. Contributors are expected to accept IQM
+Individual Contributor License Agreement by filling `a form at IQM website
+<https://meetiqm.com/developers/clas>`__. See also section `Contributing
+<https://iqm-finland.github.io/KQCircuits/_build/html/developer/contributing.html>`__ in the
+documentation.
 
 Copyright
 ---------
