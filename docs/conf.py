@@ -81,12 +81,15 @@ import sphinx_rtd_theme
 
 # -- Project information -----------------------------------------------------
 
+import re
+from kqcircuits._version import get_version
+
 project = 'KQCircuits'
 copyright = '2019-2021, IQM'
 author = 'IQM'
 
 # The full version, including alpha/beta/rc tags
-release = '2019'
+release = re.match(r'([0-9]+\.[0-9]+\.[0-9+])\.', get_version()).group(1)
 
 # -- General configuration ---------------------------------------------------
 

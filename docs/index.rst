@@ -1,3 +1,4 @@
+.. title:: KQCircuits documentation
 
 |LOGO|
 ======
