@@ -9,7 +9,7 @@
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
  <shortcut/>
- <show-in-menu>true</show-in-menu>
+ <show-in-menu>false</show-in-menu>
  <group-name>Macros</group-name>
  <menu-path>edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
  <interpreter>python</interpreter>
@@ -31,6 +31,8 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+
+# TODO It does not work with KLayout 0.27.
 
 # reload libraries
 from kqcircuits.util.library_helper import load_libraries

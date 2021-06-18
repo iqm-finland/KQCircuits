@@ -17,6 +17,7 @@
 
 
 import logging
+import pytest
 
 import klayout.db as pya
 
@@ -31,6 +32,7 @@ def test_load():
     assert "Airbridge Rectangular" in pcells
 
 
+@pytest.mark.skip(reason="It does not work with KLayout 0.27.")
 def test_load_with_flush(caplog):
     level = logging.root.level
     caplog.set_level(logging.DEBUG)

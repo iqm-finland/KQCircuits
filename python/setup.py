@@ -40,7 +40,7 @@ setup(
     packages=find_packages(),
     python_requires=">=3.6.9,<3.10",  # klayout package not yet released for 3.10
     install_requires=[
-        "klayout>=0.26,<0.27",
+        "klayout>=0.26",
         "numpy>=1.18",
         "Autologging~=1.3",
         "scipy>=1.2",

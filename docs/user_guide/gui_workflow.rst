@@ -6,7 +6,7 @@ KQCircuits in KLayout Editor. It is assumed that KLayout and KQCircuits are
 already installed.
 
 Do not assume all of the GUI makes sense. At the moment KLayout is
-version 0.26! It is already quite powerful, but most features make sense
+version 0.27! It is already quite powerful, but most features make sense
 only after you know the API.
 
 #. **Generate Demo chip**

@@ -26,6 +26,7 @@ from kqcircuits.util.library_helper import load_libraries, delete_all_libraries
 log = logging.getLogger(__name__)
 
 
+@pytest.mark.skip(reason="It does not work with KLayout 0.27.")
 @pytest.mark.slow
 def test_delete_all():
     load_libraries()

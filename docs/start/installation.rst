@@ -13,7 +13,7 @@ these instructions, that KLayout has been installed in the default location.
 
 Successfully tested versions:
 
-- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.26.12
+- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.27.1
 - MacOS: KLayout 0.26.3, 0.26.12 (recommended version `HomeBrew-Python3 included`)
 - Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12
 
