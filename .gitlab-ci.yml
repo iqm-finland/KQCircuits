@@ -10,8 +10,12 @@ before_script:
 
 test:
   stage: test
+  parallel:
+    matrix:
+      - KLAYOUT_VERSION: [0.26.7, 0.26.12, 1.latest]
   script:
-    - tox
+    - pip install --force-reinstall "klayout<=$KLAYOUT_VERSION"
+    - tox -e matrix
   artifacts:
     reports:
       junit: test_report.xml

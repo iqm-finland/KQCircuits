@@ -13,17 +13,71 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     container: ghcr.io/iqm-finland/kqcircuits
+    strategy:
+      fail-fast: false
+      matrix:
+        klayout_version: [0.26.7, 0.26.12, 1.latest]
     steps:
       - uses: actions/checkout@v2
       - name: Init KQCircuits
         run: ci/init_kqc.sh
+      - name: Select KLayout version
+        run: pip install --force-reinstall "klayout<=${{ matrix.klayout_version }}"
       - name: Run tests
-        run: tox
+        run: tox -e matrix
       - name: Upload test results
-        uses: EnricoMi/publish-unit-test-result-action@v1
         if: always()
+        uses: actions/upload-artifact@v2
         with:
-          files: test_report.xml
+          name: Test results (KLayout=${{ matrix.klayout_version }})
+          path: test_report.xml
+
+  test_non_linux:
+    name: Tests (non-🐧)
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+        klayout_version: [0.26.7, 0.26.12, 1.latest]
+        exclude:
+          - os: macos-latest
+            klayout_version: 0.26.7
+    steps:
+      - uses: actions/checkout@v2
+      - name: macOS setup
+        run: |
+          brew install python
+          ln -s -f /usr/local/bin/python3.7 /usr/local/bin/python
+        if: ${{ matrix.os == 'macos-latest' }}
+      - name: Init KQCircuits
+        run: pip3 install -e "python[docs,tests]"
+        continue-on-error: true
+      - name: Select KLayout version
+        run: pip3 install --force-reinstall "klayout<=${{ matrix.klayout_version }}"
+      - name: Run tests
+        run: tox -e matrix
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: Test results (${{ matrix.os }} KLayout=${{ matrix.klayout_version }})
+          path: test_report.xml
+
+  publish_test_results:
+    name: Publish test results
+    needs: [ test, test_non_linux ]
+    runs-on: ubuntu-latest
+    if: success() || failure()
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v2
+        with:
+          path: artifacts
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: artifacts/**/*.xml
           check_name: Test results
 
   verify_documentation:
@@ -50,7 +104,7 @@ jobs:
 
   pages:
     name: Deploy documentation
-    needs: [ test, verify_documentation ]
+    needs: [ test, test_non_linux, verify_documentation ]
     runs-on: ubuntu-latest
     container: ghcr.io/iqm-finland/kqcircuits
     if: ${{ github.ref == 'refs/heads/main' }}
