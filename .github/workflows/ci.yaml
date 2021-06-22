@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    steps:
+      - uses: actions/checkout@v2
+      - name: Init KQCircuits
+        run: ci/init_kqc.sh
+      - name: Run tests
+        run: tox
+      - name: Upload test results
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        if: always()
+        with:
+          files: test_report.xml
+          check_name: Test results
+
+  verify_documentation:
+    name: Verify documentation
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    steps:
+      - uses: actions/checkout@v2
+      - name: Init KQCircuits
+        run: ci/init_kqc.sh
+      - name: Make docs
+        run: |
+          Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
+          cd docs
+          make html SPHINXOPTS="-W --keep-going"
+      - name: Docs to artifact
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: docs
+          path: docs/_build/html/
+
+  pages:
+    name: Deploy documentation
+    needs: [ test, verify_documentation ]
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download docs artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: docs
+          path: public
+      - name: Install rsync  # https://github.com/JamesIves/github-pages-deploy-action#using-a-container-
+        run: apt-get update && apt-get install -y rsync
+      - name: Upload pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: public

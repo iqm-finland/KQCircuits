@@ -8,6 +8,10 @@
 superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__ layout design program
 API.
 
+.. image:: https://github.com/iqm-finland/KQCircuits/actions/workflows/ci.yaml/badge.svg
+   :target: https://github.com/iqm-finland/KQCircuits/actions/workflows/ci.yaml
+   :alt: Continuous Integration
+
 ----
 
 KQCircuits generates multi-layer 2-dimensional-geometry representing common structures in quantum
