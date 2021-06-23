@@ -32,6 +32,8 @@ jobs:
     container: ghcr.io/iqm-finland/kqcircuits
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # fetch tags as well
       - name: Init KQCircuits
         run: ci/init_kqc.sh
       - name: Make docs

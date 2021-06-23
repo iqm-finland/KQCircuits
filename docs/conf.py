@@ -89,7 +89,7 @@ copyright = '2019-2021, IQM'
 author = 'IQM'
 
 # The full version, including alpha/beta/rc tags
-release = re.match(r'([0-9]+\.[0-9]+\.[0-9+])\.', get_version()).group(1)
+release = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version()).group(1)
 
 # -- General configuration ---------------------------------------------------
 
