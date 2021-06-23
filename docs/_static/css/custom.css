@@ -36,6 +36,10 @@ a {
     background-color: #000000 !important;
 }
 
+.wy-nav-top {  /* Mobile nav */
+    background-color: #000000 !important;
+}
+
 .wy-menu-vertical a {
     color: #ffffff !important;
 }
