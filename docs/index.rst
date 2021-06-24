@@ -5,6 +5,11 @@
 
 .. image:: https://img.shields.io/badge/source-github-ff69b4.svg
    :target: https://github.com/iqm-finland/KQCircuits
+   :alt: GitHub
+
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4944796.svg
+   :target: https://doi.org/10.5281/zenodo.4944796
+   :alt: DOI
 
 **KQCircuits** is a Python library developed by IQM for automating the design of
 superconducting quantum circuits. It uses the `KLayout <https://klayout.de>`__
@@ -45,6 +50,7 @@ Documentation
    developer/index
    libraries/index
    api/kqcircuits
+   citing
    trademarks
 
 Indices and tables

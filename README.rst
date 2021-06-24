@@ -12,6 +12,10 @@ API.
    :target: https://github.com/iqm-finland/KQCircuits/actions/workflows/ci.yaml
    :alt: Continuous Integration
 
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.4944796.svg
+   :target: https://doi.org/10.5281/zenodo.4944796
+   :alt: DOI
+
 .. image:: https://img.shields.io/badge/License-GPLv3-blue.svg
    :target: https://github.com/iqm-finland/kqcircuits/blob/master/LICENSE
    :alt: License
