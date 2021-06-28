@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.simulations.export.sonnet.sonnet_export &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.simulations.export.sonnet.sonnet_export</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.simulations.export.sonnet.sonnet_export</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.sonnet</span> <span class="kn">import</span> <span class="n">parser</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
+
+
+<div class="viewcode-block" id="poly_and_edge_indices"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices">[docs]</a><span class="k">def</span> <span class="nf">poly_and_edge_indices</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">signal_edge</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span>
+        <span class="n">polygons</span><span class="p">,</span>
+        <span class="n">location</span><span class="p">,</span>
+        <span class="n">dbu</span><span class="p">,</span>
+        <span class="n">tolerance</span><span class="o">=</span><span class="mf">5.0</span>  <span class="c1"># hardcoded, feel free to change</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">port</span><span class="p">(</span>
+        <span class="n">portnum</span><span class="o">=</span><span class="n">number</span><span class="p">,</span>
+        <span class="n">ipolygon</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">ivertex</span><span class="o">=</span><span class="n">j</span><span class="p">,</span>
+        <span class="n">port_type</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;CUP&quot;</span> <span class="k">if</span> <span class="n">group</span> <span class="k">else</span> <span class="s2">&quot;STD&quot;</span><span class="p">),</span>
+        <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span>
+        <span class="n">resist</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span>
+        <span class="n">react</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span>
+        <span class="n">induct</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span>
+        <span class="n">capac</span><span class="o">=</span><span class="n">port</span><span class="o">.</span><span class="n">capacitance</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="export_sonnet_son"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son">[docs]</a><span class="k">def</span> <span class="nf">export_sonnet_son</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lower_accuracy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                      <span class="n">control</span><span class="o">=</span><span class="s1">&#39;ABS&#39;</span><span class="p">,</span> <span class="n">fill_type</span><span class="o">=</span><span class="s1">&#39;Staircase&#39;</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export simulation into son file.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        simulation: The simulation to be exported.</span>
+<span class="sd">        path: Location where to write son files.</span>
+<span class="sd">        detailed_resonance: More info in www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf</span>
+<span class="sd">        lower_accuracy: False sets Sonnet to Fine/Edge meshing and True to Coarse/Edge Meshing.</span>
+<span class="sd">        fill_type: Value &#39;Staircase&#39; sets the default fill type for polygons. The other option is &#39;Conformal&#39; which can be faster but less accurate. A good workflow could be to set everything to Staircase and then set some meanders to Conformal in Sonnet.</span>
+<span class="sd">        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection errors.</span>
+<span class="sd">        control: Selects what analysis control is used in Sonnet. Options are &#39;Simple&#39;, &#39;ABS&#39; and &#39;Sweep&#39; for parameter sweeping.</span>
+<span class="sd">        simulation_safety: Adds extra ground area to a simulation environment (in µm).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to exported son file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_sonnet_strings</span><span class="p">(</span><span class="n">material_type</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+        <span class="n">dbu</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">dbu</span>
+        <span class="n">layer_pad</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_pads&quot;</span><span class="p">])</span>
+        <span class="n">layer_bridge</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">])</span>
+        <span class="n">layer_son</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">])</span>
+        <span class="n">layer_son_ground</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">simple_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">poly</span><span class="o">.</span><span class="n">to_simple_polygon</span><span class="p">()</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">region</span><span class="o">.</span><span class="n">each</span><span class="p">()])</span>  <span class="c1"># .to_itype(dbu)</span>
+
+        <span class="n">simpolygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span> <span class="o">+</span> \
+                      <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son_ground</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
+        <span class="n">airbridge_polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_bridge</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
+        <span class="n">airpads_polygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_pad</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">airpads_polygons</span><span class="p">:</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">isVia</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">level_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">simpolygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[(</span><span class="mi">2</span> <span class="k">if</span> <span class="n">material_type</span> <span class="o">==</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">+</span>
+                          <span class="nb">len</span><span class="p">(</span><span class="n">airbridge_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">airpads_polygons</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">polys</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">polygons</span><span class="p">(</span><span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span> <span class="o">+</span> <span class="n">airpads_polygons</span><span class="p">,</span>
+                                <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">),</span> <span class="n">dbu</span><span class="p">,</span>
+                                <span class="c1"># get the bottom left corner</span>
+                                <span class="n">ilevel</span><span class="o">=</span><span class="n">level_iter</span><span class="p">,</span> <span class="n">fill_type</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;V&quot;</span> <span class="k">if</span> <span class="p">(</span><span class="n">fill_type</span> <span class="o">==</span> <span class="s2">&quot;Conformal&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;N&quot;</span><span class="p">)</span>
+                                <span class="p">)</span>
+
+        <span class="c1"># find port edges</span>
+        <span class="n">sstring_ports</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">refplane_dirs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">port_ipolys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">group_ascii</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">)</span>
+        <span class="n">calgroup</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_ports</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">InternalPort</span><span class="p">):</span>
+                    <span class="n">sstring_ports</span> <span class="o">+=</span> <span class="n">poly_and_edge_indices</span><span class="p">(</span>
+                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span>
+                        <span class="n">port</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span> <span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">))</span>
+                    <span class="n">sstring_ports</span> <span class="o">+=</span> <span class="n">poly_and_edge_indices</span><span class="p">(</span>
+                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span>
+                        <span class="n">port</span><span class="p">,</span> <span class="o">-</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">ground_location</span><span class="p">,</span> <span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">))</span>
+                    <span class="n">calgroup</span> <span class="o">+=</span> <span class="s1">&#39;CUPGRP &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">ID 28</span><span class="se">\n</span><span class="s1">GNDREF F</span><span class="se">\n</span><span class="s1">TWTYPE FEED</span><span class="se">\n</span><span class="s1">END</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="n">group_ascii</span><span class="p">))</span>
+                    <span class="n">group_ascii</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">EdgePort</span><span class="p">):</span>
+                    <span class="c1"># TODO: re-implement calibration</span>
+                    <span class="c1">#</span>
+                    <span class="c1">#     refplane_dirs.append(port.side)</span>
+                    <span class="c1">#     ipoly = poly_and_edge_indeces(cell, simpolygons + airbridge_polygons, dbu, port, ls)</span>
+                    <span class="c1">#     logging.info(re.findall(r&#39;POLY (\d+)&#39;, ipoly))</span>
+                    <span class="c1">#     port_ipolys.append(re.findall(r&#39;POLY (\d+)&#39;, ipoly)) # scan ipolygon</span>
+                    <span class="n">sstring_ports</span> <span class="o">+=</span> <span class="n">poly_and_edge_indices</span><span class="p">(</span>
+                        <span class="n">simpolygons</span> <span class="o">+</span> <span class="n">airbridge_polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span>
+                        <span class="n">port</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">sonnet_box</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">box</span><span class="p">(</span>
+            <span class="n">xwidth</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span>
+            <span class="n">ywidth</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span>
+            <span class="n">xcells</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="n">grid_size</span><span class="p">),</span>
+            <span class="n">ycells</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">/</span> <span class="n">grid_size</span><span class="p">),</span>
+            <span class="n">materials_type</span><span class="o">=</span><span class="n">material_type</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;polygons&quot;</span><span class="p">:</span> <span class="n">polys</span><span class="p">,</span>
+            <span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="n">sonnet_box</span><span class="p">,</span>
+            <span class="s2">&quot;ports&quot;</span><span class="p">:</span> <span class="n">sstring_ports</span><span class="p">,</span>
+            <span class="s2">&quot;calgroup&quot;</span><span class="p">:</span> <span class="n">calgroup</span><span class="p">,</span>
+            <span class="s2">&quot;refplanes&quot;</span><span class="p">:</span> <span class="n">parser</span><span class="o">.</span><span class="n">refplanes</span><span class="p">(</span><span class="n">refplane_dirs</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">),</span>
+            <span class="s2">&quot;symmetry&quot;</span><span class="p">:</span> <span class="n">parser</span><span class="o">.</span><span class="n">symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="p">),</span>
+            <span class="s2">&quot;nports&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">])),</span>
+            <span class="s2">&quot;resonance_abs&quot;</span><span class="p">:</span> <span class="s2">&quot;DET_ABS_RES Y&quot;</span> <span class="k">if</span> <span class="n">detailed_resonance</span> <span class="k">else</span> <span class="s2">&quot;DET_ABS_RES N&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lower_accuracy&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span> <span class="k">if</span> <span class="n">lower_accuracy</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="s2">&quot;j&quot;</span> <span class="k">if</span> <span class="n">current</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+        <span class="p">}</span>
+
+    <span class="c1"># detect airbridges</span>
+    <span class="n">shapes_in_air</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span>
+        <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_airbridge_flyover&quot;</span><span class="p">]))</span>
+    <span class="n">materials_type</span> <span class="o">=</span> <span class="s2">&quot;Si+Al&quot;</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">shapes_in_air</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span><span class="o">.</span><span class="n">is_null</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;Si BT&quot;</span>
+
+    <span class="n">sonnet_strings</span> <span class="o">=</span> <span class="n">get_sonnet_strings</span><span class="p">(</span><span class="n">materials_type</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">sonnet_strings</span><span class="p">[</span><span class="s2">&quot;control&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+
+    <span class="n">son_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.son&#39;</span><span class="p">))</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">apply_template</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s2">&quot;template.son&quot;</span><span class="p">),</span>
+        <span class="n">son_filename</span><span class="p">,</span>
+        <span class="n">sonnet_strings</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">son_filename</span></div>
+
+
+<div class="viewcode-block" id="export_sonnet"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet">[docs]</a><span class="k">def</span> <span class="nf">export_sonnet</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">detailed_resonance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lower_accuracy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="s1">&#39;ABS&#39;</span><span class="p">,</span>
+                  <span class="n">fill_type</span><span class="o">=</span><span class="s1">&#39;Staircase&#39;</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export Sonnet simulations by writing son files.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        simulations: List of simulations to be exported.</span>
+<span class="sd">        path: Location where to write export files.</span>
+<span class="sd">        detailed_resonance: More info in www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf</span>
+<span class="sd">        lower_accuracy: False sets Sonnet to Fine/Edge meshing and True to Coarse/Edge Meshing.</span>
+<span class="sd">        fill_type: Value &#39;Staircase&#39; sets the default fill type for polygons. The other option is &#39;Conformal&#39; which can be faster but less accurate. A good workflow could be to set everything to Staircase and then set some meanders to Conformal in Sonnet.</span>
+<span class="sd">        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection errors.</span>
+<span class="sd">        control: Selects what analysis control is used in Sonnet. Options are &#39;Simple&#39;, &#39;ABS&#39; and &#39;Sweep&#39; for parameter sweeping.</span>
+<span class="sd">        simulation_safety: Adds extra ground area to a simulation environment (in µm).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of paths to exported son files.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">son_filenames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
+        <span class="n">son_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_sonnet_son</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">detailed_resonance</span><span class="o">=</span><span class="n">detailed_resonance</span><span class="p">,</span>
+                                               <span class="n">lower_accuracy</span><span class="o">=</span><span class="n">lower_accuracy</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="n">current</span><span class="p">,</span> <span class="n">control</span><span class="o">=</span><span class="n">control</span><span class="p">,</span>
+                                               <span class="n">fill_type</span><span class="o">=</span><span class="n">fill_type</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="o">=</span><span class="n">simulation_safety</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">son_filenames</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

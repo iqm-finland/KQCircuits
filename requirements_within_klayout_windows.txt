@@ -1,8 +1,0 @@
-# Packages required to use KQC in KLayout Editor in Windows.
-#
-# In Windows, some packages are already installed in the KLayout
-# site-packages folder, so they are not included here. Those preinstalled
-# packages, such as numpy, have been compiled with the correct compiler for
-# KLayout.
-
-Autologging==1.3.2

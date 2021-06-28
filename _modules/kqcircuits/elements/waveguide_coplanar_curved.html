@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.elements.waveguide_coplanar_curved &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.waveguide_coplanar_curved</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.elements.waveguide_coplanar_curved</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">vector_length_and_direction</span>
+
+
+<div class="viewcode-block" id="up_mod"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.up_mod">[docs]</a><span class="k">def</span> <span class="nf">up_mod</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">per</span><span class="p">):</span>
+    <span class="c1"># Finds remainder in the same direction as periodicity</span>
+    <span class="k">if</span> <span class="n">a</span> <span class="o">*</span> <span class="n">per</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">%</span> <span class="n">per</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">-</span> <span class="n">per</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">a</span> <span class="o">/</span> <span class="n">per</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="arc"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.arc">[docs]</a><span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">start</span>
+
+    <span class="n">alpha_rel</span> <span class="o">=</span> <span class="n">up_mod</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># from 0 to 2 pi</span>
+    <span class="n">alpha_step</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">alpha_rel</span> <span class="o">&gt;</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># shorter dir  n_steps = math.floor((2*math.pi-alpha_rel)/abs(alpha_step) if alpha_rel &gt; math.pi else alpha_rel/abs(alpha_step))</span>
+    <span class="n">n_steps</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span>
+        <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">-</span> <span class="n">alpha_rel</span><span class="p">)</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha_step</span><span class="p">)</span> <span class="k">if</span> <span class="n">alpha_rel</span> <span class="o">&gt;</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="k">else</span> <span class="n">alpha_rel</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha_step</span><span class="p">))</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">start</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">)))</span>
+        <span class="n">alpha</span> <span class="o">+=</span> <span class="n">alpha_step</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">alpha</span>
+
+    <span class="k">if</span> <span class="n">last</span> <span class="o">!=</span> <span class="n">stop</span><span class="p">:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">stop</span>
+        <span class="n">pts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">alpha</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">alpha</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">pts</span></div>
+
+
+<div class="viewcode-block" id="WaveguideCoplanarCurved"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved">[docs]</a><span class="k">class</span> <span class="nc">WaveguideCoplanarCurved</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration of a curved segment of a coplanar waveguide.</span>
+
+<span class="sd">    Coordinate origin is left at the center of the arc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Curve angle (rad)&quot;</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Actual length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WaveguideCoplanarCurved.coerce_parameters_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.coerce_parameters_impl">[docs]</a>    <span class="k">def</span> <span class="nf">coerce_parameters_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Update length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WaveguideCoplanarCurved.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">left_inner_arc</span><span class="p">,</span> <span class="n">left_outer_arc</span><span class="p">,</span> <span class="n">right_inner_arc</span><span class="p">,</span> <span class="n">right_outer_arc</span><span class="p">,</span> <span class="n">left_protection_arc</span><span class="p">,</span> <span class="n">right_protection_arc</span><span class="p">,</span> \
+            <span class="n">annotation_arc</span> <span class="o">=</span> <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">create_curve_arcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="c1"># Left gap</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">left_inner_arc</span> <span class="o">+</span> <span class="n">left_outer_arc</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># Right gap</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">right_inner_arc</span> <span class="o">+</span> <span class="n">right_outer_arc</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># Protection layer</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">left_protection_arc</span> <span class="o">+</span> <span class="n">right_protection_arc</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># Annotation</span>
+        <span class="n">pts</span> <span class="o">=</span> <span class="n">annotation_arc</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WaveguideCoplanarCurved.create_curve_arcs"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.create_curve_arcs">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">create_curve_arcs</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates arcs of points for a curved waveguide.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            elem: Element from which the waveguide parameters for the arc are taken</span>
+<span class="sd">            angle (double): angle of the curved waveguide</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A tuple consisting of lists of points, each list representing one of the arcs. (left_gap_inner,</span>
+<span class="sd">            left_gap_outer, right_gap_inner, right_gap_outer, left_protection, right_protection, annotation)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alphastart</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">alphastop</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="n">left_gap_inner</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span> <span class="o">-</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">left_gap_outer</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span> <span class="o">-</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elem</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">right_gap_inner</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">right_gap_outer</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">left_protection</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span> <span class="o">-</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">elem</span><span class="o">.</span><span class="n">b</span> <span class="o">-</span> <span class="n">elem</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">right_protection</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">annotation</span> <span class="o">=</span> <span class="n">arc</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">alphastart</span><span class="p">,</span> <span class="n">alphastop</span><span class="p">,</span> <span class="n">elem</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">left_gap_inner</span><span class="p">,</span> <span class="n">left_gap_outer</span><span class="p">,</span> <span class="n">right_gap_inner</span><span class="p">,</span> <span class="n">right_gap_outer</span><span class="p">,</span> <span class="n">left_protection</span><span class="p">,</span> <span class="n">right_protection</span><span class="p">,</span>\
+            <span class="n">annotation</span></div>
+
+<div class="viewcode-block" id="WaveguideCoplanarCurved.produce_curve_termination"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_curve_termination">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">produce_curve_termination</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">term_len</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">face_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces termination for a curved waveguide.</span>
+
+<span class="sd">        The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.</span>
+<span class="sd">        The termination is placed at the position where a curved waveguide with alpha=angle and trans=trans would end.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            elem: Element from which the waveguide parameters for the termination are taken</span>
+<span class="sd">            angle (double): angle of the curved waveguide</span>
+<span class="sd">            term_len (double): termination length, assumed positive</span>
+<span class="sd">            trans (DTrans): transformation applied to the termination</span>
+<span class="sd">            face_index (int): face index of the face in elem where the termination is created</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left_inner_arc</span><span class="p">,</span> <span class="n">left_outer_arc</span><span class="p">,</span> <span class="n">right_inner_arc</span><span class="p">,</span> <span class="n">right_outer_arc</span><span class="p">,</span> <span class="n">left_protection_arc</span><span class="p">,</span> <span class="n">right_protection_arc</span><span class="p">,</span>\
+            <span class="n">annotation_arc</span> <span class="o">=</span> <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">create_curve_arcs</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+
+        <span class="c1"># direction of the termination box</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">term_dir</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">left_outer_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">left_outer_arc</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">term_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># metal gap for termination</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">left_inner_arc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">left_outer_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">left_outer_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">term_len</span><span class="o">*</span><span class="n">term_dir</span><span class="p">,</span>
+                <span class="n">right_outer_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">term_len</span><span class="o">*</span><span class="n">term_dir</span><span class="p">,</span>
+                <span class="n">right_outer_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">right_inner_arc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">]</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+            <span class="n">elem</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">face_index</span><span class="p">)[</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="c1"># grid avoidance for termination</span>
+        <span class="n">protection_pts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">left_protection_arc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">left_protection_arc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">term_len</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span><span class="o">*</span><span class="n">term_dir</span><span class="p">,</span>
+            <span class="n">right_protection_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">term_len</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span><span class="o">*</span><span class="n">term_dir</span><span class="p">,</span>
+            <span class="n">right_protection_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">]</span>
+        <span class="n">protection_shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">protection_pts</span><span class="p">)</span>
+        <span class="n">elem</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">face_index</span><span class="p">)[</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span><span class="o">*</span><span class="n">protection_shape</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

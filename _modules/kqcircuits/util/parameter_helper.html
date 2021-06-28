@@ -1,0 +1,508 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.util.parameter_helper &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.util.parameter_helper</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.util.parameter_helper</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper module for pcell parameter schemas.</span>
+
+<span class="sd">    Typical usage example:</span>
+
+<span class="sd">    from kqcircuits.util.parameter_helper import Validator</span>
+<span class="sd">    schema = {</span>
+<span class="sd">        &quot;n&quot;: {</span>
+<span class="sd">            &quot;type&quot;: pya.PCellParameterDeclaration.TypeInt,</span>
+<span class="sd">            &quot;description&quot;: &quot;Number of elements&quot;,</span>
+<span class="sd">            &quot;default&quot;: 10</span>
+<span class="sd">        }</span>
+<span class="sd">    }</span>
+<span class="sd">    validator = Validator(schema)</span>
+<span class="sd">    if validator.validate({&quot;n&quot;: 100}):</span>
+<span class="sd">        # Do something with validated parameters...</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="normalize_rules"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.normalize_rules">[docs]</a><span class="nd">@traced</span>
+<span class="k">def</span> <span class="nf">normalize_rules</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Normalizes rule fields corresponding to specified name.</span>
+
+<span class="sd">    Adds missing optional rule fields with default settings.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing all rule fields.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;hidden&quot;</span><span class="p">:</span> <span class="n">_get_rule</span><span class="p">(</span><span class="s2">&quot;hidden&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">rules</span><span class="p">),</span>
+        <span class="s2">&quot;readonly&quot;</span><span class="p">:</span> <span class="n">_get_rule</span><span class="p">(</span><span class="s2">&quot;readonly&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">rules</span><span class="p">),</span>
+        <span class="s2">&quot;unit&quot;</span><span class="p">:</span> <span class="n">_get_rule</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rules</span><span class="p">),</span>
+        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">_get_rule</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rules</span><span class="p">),</span>
+        <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="n">_get_rule</span><span class="p">(</span><span class="s2">&quot;choices&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rules</span><span class="p">),</span>
+        <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="n">_get_rule</span><span class="p">(</span><span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+    <span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Validator"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.Validator">[docs]</a><span class="nd">@logged</span>
+<span class="k">class</span> <span class="nc">Validator</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Validates KLayout parameters according to specified schema.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        schema: Dictionary containing rules for validating KLayout parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">schema</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="n">schema</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__validate_schema</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Validator.validate"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.Validator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates KLayout parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameters: KLayout parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if validation is successful.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MissingParameterException: Failed to validate because a required parameter is missing.</span>
+<span class="sd">            InvalidParameterException: Failed to validate parameter because of invalid value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">rules</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">rules</span> <span class="o">=</span> <span class="n">normalize_rules</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rules</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validating </span><span class="si">{}</span><span class="s2"> using rules [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rules</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">]:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_missing_parameter_message</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_is_of_type</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_parameter_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_missing_parameter_message</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="kc">True</span></div>
+
+    <span class="k">def</span> <span class="nf">__validate_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Validates schema.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if validation is successful.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            MissingRuleFieldException: Failed to validate schema because a required rule field is missing.</span>
+<span class="sd">            InvalidRuleValueException: Failed to validate schema because of invalid rule value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">rules</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_missing_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s2">&quot;type&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_valid_type</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;description&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_missing_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="s2">&quot;description&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;hidden&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;hidden&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;hidden&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;hidden&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;readonly&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;readonly&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;readonly&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;readonly&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;unit&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;unit&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;default&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_of_type</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">],</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;choices&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">_is_valid_choices</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;choices&quot;</span><span class="p">],</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;choices&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;choices&quot;</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="s2">&quot;required&quot;</span> <span class="ow">in</span> <span class="n">rules</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rules</span><span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">],</span> <span class="nb">bool</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;required&quot;</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="c1"># ********************************************************************************</span>
+<span class="c1"># PRIVATE METHODS</span>
+<span class="c1"># ********************************************************************************</span>
+
+
+<span class="k">def</span> <span class="nf">_get_rule</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get rule from dictionary without raising exception.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name: Rule name.</span>
+<span class="sd">        default: Default rule value.</span>
+<span class="sd">        rules: Rules dictionary.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dictionary containing rule.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">rules</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
+
+
+<span class="k">def</span> <span class="nf">_is_valid_type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if value is a KLayout parameter type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Type value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if value is of a Klayout parameter type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeBoolean</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeDouble</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeInt</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeLayer</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeList</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeNone</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeShape</span> \
+        <span class="ow">or</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeString</span>
+
+
+<span class="k">def</span> <span class="nf">_is_of_type</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if value is a KLayout parameter type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Rule value.</span>
+<span class="sd">        rule_type: Rule type.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if value is compatible with specified Klayout parameter type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeBoolean</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeDouble</span> <span class="ow">and</span> <span class="n">_is_float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeInt</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeLayer</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeList</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeNone</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeShape</span> <span class="ow">and</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeString</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span> <span class="nf">_is_valid_choices</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choice_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validate choices.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Choices.</span>
+<span class="sd">        choice_type: Choice type.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if valid choices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">_is_valid_choice</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choice_type</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_is_valid_choice</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choice_type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Validate choice type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Choice value.</span>
+<span class="sd">        choice_type: Choice type.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if value is valid choice type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">value</span>
+            <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+            <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">choice_type</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_is_float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if valid float.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        value: Number value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        True if value is valid float.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">))))</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_missing_rule_message</span><span class="p">(</span><span class="n">rule_name</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Message string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Missing required key [</span><span class="si">{}</span><span class="s2">] in schema rule [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">rule_name</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">rule_name</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Message string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Invalid value [</span><span class="si">{}</span><span class="s2">] for [</span><span class="si">{}</span><span class="s2">] in schema rule [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">rule_name</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_missing_parameter_message</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Message string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Missing required value for parameter [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_invalid_parameter_message</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Message string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;Invalid value [</span><span class="si">{}</span><span class="s2">] specified for parameter [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

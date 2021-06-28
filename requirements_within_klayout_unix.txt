@@ -1,5 +1,0 @@
-# Packages required to use KQC in KLayout Editor in Linux or MacOS
-
-numpy>=1.18
-scipy>=1.2
-Autologging==1.3.2

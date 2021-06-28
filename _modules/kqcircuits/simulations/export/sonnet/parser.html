@@ -1,0 +1,390 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.simulations.export.sonnet.parser &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.simulations.export.sonnet.parser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.simulations.export.sonnet.parser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+
+
+<div class="viewcode-block" id="apply_template"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.apply_template">[docs]</a><span class="k">def</span> <span class="nf">apply_template</span><span class="p">(</span><span class="n">filename_template</span><span class="p">,</span> <span class="n">filename_output</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
+    <span class="n">filein</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_template</span><span class="p">)</span>
+    <span class="n">src</span> <span class="o">=</span> <span class="n">Template</span><span class="p">(</span><span class="n">filein</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">filein</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">rules</span><span class="p">)</span>
+    <span class="n">fileout</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename_output</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">fileout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">fileout</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    dirname_sondata = os.path.join(os.path.dirname(filename_output), &quot;sondata&quot;)</span>
+<span class="sd">    if not os.path.exists(dirname_sondata):</span>
+<span class="sd">        os.mkdir(dirname_sondata)</span>
+<span class="sd">    dirname_project = os.path.join(dirname_sondata, os.path.splitext(os.path.basename(filename_output))[0])</span>
+<span class="sd">    if not os.path.exists(dirname_project):</span>
+<span class="sd">        os.mkdir(dirname_project)</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="polygon_head"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.polygon_head">[docs]</a><span class="k">def</span> <span class="nf">polygon_head</span><span class="p">(</span>
+        <span class="n">nvertices</span><span class="p">,</span>  <span class="c1"># number of vertices of the polygon</span>
+        <span class="n">debugid</span><span class="p">,</span>  <span class="c1"># unique number for sonnet internal debugging</span>
+        <span class="n">ilevel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># sonnet layer number</span>
+        <span class="n">mtype</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># metallization type index, -1 for lossless</span>
+        <span class="n">filltype</span><span class="o">=</span><span class="s2">&quot;N&quot;</span><span class="p">,</span>  <span class="c1"># N for staircase, T for diagonal, V for conformal</span>
+        <span class="n">xmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># minimum subsection size</span>
+        <span class="n">ymin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># minimum subsection size</span>
+        <span class="n">xmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># maximum subsection size</span>
+        <span class="n">ymax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># maximum subsection size</span>
+        <span class="n">conmax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># maximum length for conformal mesh subsection, 0 for auto</span>
+        <span class="n">res</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># reserved for sonnet future</span>
+        <span class="n">edge_mesh</span><span class="o">=</span><span class="s2">&quot;Y&quot;</span>  <span class="c1"># edge mesh on (Y) or off (N)</span>
+<span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="si">{ilevel}</span><span class="s2"> </span><span class="si">{nvertices}</span><span class="s2"> </span><span class="si">{mtype}</span><span class="s2"> </span><span class="si">{filltype}</span><span class="s2"> </span><span class="si">{debugid}</span><span class="s2"> </span><span class="si">{xmin}</span><span class="s2"> </span><span class="si">{ymin}</span><span class="s2"> </span><span class="si">{xmax}</span><span class="s2"> </span><span class="si">{ymax}</span><span class="s2"> </span><span class="si">{conmax}</span><span class="s2"> </span><span class="si">{res}</span><span class="s2"> </span><span class="si">{res}</span><span class="s2"> </span><span class="si">{edge_mesh}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="o">**</span><span class="nb">locals</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="symmetry"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.symmetry">[docs]</a><span class="k">def</span> <span class="nf">symmetry</span><span class="p">(</span><span class="n">sym</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">sym</span><span class="p">):</span>
+        <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;SYM&quot;</span>
+    <span class="k">return</span> <span class="n">sonnet_str</span></div>
+
+
+<div class="viewcode-block" id="box"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.box">[docs]</a><span class="k">def</span> <span class="nf">box</span><span class="p">(</span>
+        <span class="n">xwidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.</span><span class="p">,</span>
+        <span class="n">ywidth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8000.</span><span class="p">,</span>
+        <span class="n">xcells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
+        <span class="n">ycells</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">,</span>
+        <span class="n">materials_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Si BT&quot;</span>
+<span class="p">):</span>
+    <span class="n">xcells2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">xcells</span>
+    <span class="n">ycells2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ycells</span>
+    <span class="n">nsubs</span> <span class="o">=</span> <span class="mi">20</span>  <span class="c1"># placeholder for deprecated parameter</span>
+    <span class="n">eeff</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># placeholder for deprecated parameter</span>
+
+    <span class="n">materials</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Si RT&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">500 11.7 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Silicon (room temperature)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Si BT&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">500 11.45 1 1e-006 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Silicon (10mK)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SiOx+Si&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">0.55 3.78 11.7 1 0 0 0 </span><span class="se">\&quot;</span><span class="s2">SiOx (10mK)</span><span class="se">\&quot;\n</span><span class="s2">525 11.45 1 1e-06 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Si (10mK)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Si+Al&quot;</span><span class="p">:</span> <span class="s2">&quot;3000 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">0.5 9.9 1 0.0001 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Alumina (99.5%)</span><span class="se">\&quot;\n</span><span class="s2">0.45 1 1 0 0 0 0 </span><span class="se">\&quot;</span><span class="s2">vacuum</span><span class="se">\&quot;\n</span><span class="s2">525 11.45 1 1e-06 0 0 0 </span><span class="se">\&quot;</span><span class="s2">Si (10mK)</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">}[</span><span class="n">materials_type</span><span class="p">]</span>
+
+    <span class="n">nlev</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Si&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;Si BT&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;SiOx+Si&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;Si+Al&quot;</span><span class="p">:</span> <span class="mi">3</span>
+    <span class="p">}[</span><span class="n">materials_type</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="s2">&quot;BOX </span><span class="si">{nlev}</span><span class="s2"> </span><span class="si">{xwidth}</span><span class="s2"> </span><span class="si">{ywidth}</span><span class="s2"> </span><span class="si">{xcells2}</span><span class="s2"> </span><span class="si">{ycells2}</span><span class="s2"> </span><span class="si">{nsubs}</span><span class="s2"> </span><span class="si">{eeff}</span><span class="se">\n</span><span class="si">{materials}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="refplane"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.refplane">[docs]</a><span class="k">def</span> <span class="nf">refplane</span><span class="p">(</span>
+        <span class="n">position</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>  <span class="c1"># &quot;LEFT&quot; | &quot;RIGHT&quot; | &quot;TOP&quot; | &quot;BOTTOM&quot;,</span>
+        <span class="n">length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">port_ipoly</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span> <span class="c1"># &quot;LINK&quot; or &quot;FIX&quot;</span>
+        <span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">port_ipoly</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">plane_type</span> <span class="o">=</span> <span class="s2">&quot;LINK&quot;</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="s2">&quot;POLY </span><span class="si">{}</span><span class="s2"> 1</span><span class="se">\n</span><span class="s2">0</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port_ipoly</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plane_type</span> <span class="o">=</span> <span class="s2">&quot;FIX&quot;</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;DRP1 </span><span class="si">{position}</span><span class="s2"> </span><span class="si">{plane_type}</span><span class="s2"> </span><span class="si">{length}</span><span class="se">\n</span><span class="si">{poly}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">locals</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="refplanes"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.refplanes">[docs]</a><span class="k">def</span> <span class="nf">refplanes</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">):</span>
+    <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">positions</span><span class="p">)):</span>
+        <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">refplane</span><span class="p">(</span><span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">length</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">sonnet_str</span></div>
+
+
+<div class="viewcode-block" id="port"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.port">[docs]</a><span class="k">def</span> <span class="nf">port</span><span class="p">(</span>
+        <span class="n">portnum</span><span class="p">,</span>
+        <span class="n">ipolygon</span><span class="p">,</span>
+        <span class="n">ivertex</span><span class="p">,</span>
+        <span class="n">port_type</span><span class="o">=</span><span class="s2">&quot;STD&quot;</span><span class="p">,</span>  <span class="c1"># STD for standard | AGND autogrounded | CUP cocalibrated</span>
+        <span class="n">xcord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">ycord</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">group</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">resist</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+        <span class="n">react</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">induct</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">capac</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">group</span> <span class="o">+</span> <span class="s1">&#39;&quot;&#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="nb">locals</span><span class="p">())</span>
+    <span class="k">return</span> <span class="s2">&quot;POR1 </span><span class="si">{port_type}</span><span class="s2"> </span><span class="si">{group}</span><span class="se">\n</span><span class="s2">POLY </span><span class="si">{ipolygon}</span><span class="s2"> 1</span><span class="se">\n</span><span class="si">{ivertex}</span><span class="se">\n</span><span class="si">{portnum}</span><span class="s2"> </span><span class="si">{resist}</span><span class="s2"> </span><span class="si">{react}</span><span class="s2"> </span><span class="si">{induct}</span><span class="s2"> </span><span class="si">{capac}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="o">**</span><span class="nb">locals</span><span class="p">())</span>  <span class="c1"># {xcord} {ycord} [reftype rpcallen]</span></div>
+
+
+<span class="c1"># def ports(shapes):</span>
+<span class="c1">#  sonnet_str = &quot;&quot;</span>
+<span class="c1">#  polygons = 0</span>
+<span class="c1">#</span>
+<span class="c1">#  # FIXME Maybe the shapes will not have the same indexes as polygons in the region!</span>
+<span class="c1">#  for shape in shapes.each():</span>
+<span class="c1">#    if shape:</span>
+<span class="c1">#      polygons += 1</span>
+<span class="c1">#      ivertex = shape.property(&quot;sonnet_port_edge&quot;)</span>
+<span class="c1">#      portnum = shape.property(&quot;sonnet_port_nr&quot;)</span>
+<span class="c1">#      if ivertex!=None and portnum!=None:</span>
+<span class="c1">#        sonnet_str += port(ipolygon=polygons-1, portnum=portnum, ivertex=ivertex)</span>
+<span class="c1">#</span>
+<span class="c1">#  return sonnet_str</span>
+
+<div class="viewcode-block" id="control"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.control">[docs]</a><span class="k">def</span> <span class="nf">control</span><span class="p">(</span><span class="n">control_type</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;Simple&quot;</span><span class="p">:</span> <span class="s2">&quot;SIMPLE&quot;</span><span class="p">,</span>  <span class="c1"># Linear frequency sweep</span>
+        <span class="s2">&quot;ABS&quot;</span><span class="p">:</span> <span class="s2">&quot;ABS&quot;</span><span class="p">,</span> <span class="c1"># Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates the rest</span>
+        <span class="s2">&quot;Sweep&quot;</span><span class="p">:</span> <span class="s2">&quot;VARSWP&quot;</span>
+    <span class="p">}[</span><span class="n">control_type</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="polygons"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.polygons">[docs]</a><span class="k">def</span> <span class="nf">polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">,</span> <span class="n">fill_type</span><span class="p">):</span>
+    <span class="n">sonnet_str</span> <span class="o">=</span> <span class="s1">&#39;NUM </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">polygons</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">hole_poly</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">polygons</span><span class="p">):</span>
+        <span class="n">poly</span> <span class="o">=</span> <span class="n">hole_poly</span><span class="o">.</span><span class="n">resolved_holes</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="s1">&#39;isVia&#39;</span><span class="p">):</span>
+            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">via</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">debugid</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">ilevel</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="n">polygon_head</span><span class="p">(</span><span class="n">nvertices</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">num_points_hull</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                                   <span class="n">debugid</span><span class="o">=</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="nb">next</span><span class="p">(</span><span class="n">ilevel</span><span class="p">),</span>
+                                   <span class="n">filltype</span><span class="o">=</span><span class="n">fill_type</span><span class="p">)</span>  <span class="c1"># &quot;Debugid&quot; is actually used for mapping ports to polygons, 0 is not allowed</span>
+
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">each_point_hull</span><span class="p">()):</span>
+            <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                                           <span class="o">-</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>  <span class="c1"># sonnet Y-coordinate goes in the other direction</span>
+        <span class="n">point</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">each_point_hull</span><span class="p">())</span>  <span class="c1"># first point again to close the polygon</span>
+        <span class="n">sonnet_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="se">\n</span><span class="s2">END</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">*</span> <span class="n">dbu</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">sonnet_str</span></div>
+
+
+<div class="viewcode-block" id="via"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.parser.html#kqcircuits.simulations.export.sonnet.parser.via">[docs]</a><span class="k">def</span> <span class="nf">via</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">debugid</span><span class="p">,</span> <span class="n">ilevel</span><span class="p">):</span>
+    <span class="n">via_head</span> <span class="o">=</span> <span class="n">polygon_head</span><span class="p">(</span><span class="n">nvertices</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">num_points_hull</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">debugid</span><span class="o">=</span><span class="n">debugid</span><span class="p">,</span> <span class="n">ilevel</span><span class="o">=</span><span class="n">ilevel</span><span class="p">,</span> <span class="n">mtype</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;VIA POLYGON</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">via_head</span> <span class="o">+</span> <span class="s2">&quot;TOLEVEL 1 RING COVERS</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.test_structures.airbridge_dc &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.test_structures.airbridge_dc</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.test_structures.airbridge_dc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.test_structures.test_structure</span> <span class="kn">import</span> <span class="n">TestStructure</span>
+
+
+<div class="viewcode-block" id="AirbridgeDC"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC">[docs]</a><span class="k">class</span> <span class="nc">AirbridgeDC</span><span class="p">(</span><span class="n">TestStructure</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for an airbridge test structure for four-point DC measurements.&quot;&quot;&quot;</span>
+
+    <span class="n">n_ab</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of airbridges&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+    <span class="n">pad_height</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad height&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Total width&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AirbridgeDC.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># create airbridges and islands through which they are connected</span>
+
+        <span class="n">cell_ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="s2">&quot;Airbridge Rectangular&quot;</span><span class="p">)</span>
+
+        <span class="n">ab_params</span> <span class="o">=</span> <span class="n">cell_ab</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
+        <span class="n">ab_pad_width</span> <span class="o">=</span> <span class="n">ab_params</span><span class="p">[</span><span class="s2">&quot;pad_length&quot;</span><span class="p">]</span>
+        <span class="n">ab_pad_length</span> <span class="o">=</span> <span class="n">ab_params</span><span class="p">[</span><span class="s2">&quot;pad_length&quot;</span><span class="p">]</span>
+        <span class="n">bridge_length</span> <span class="o">=</span> <span class="n">ab_params</span><span class="p">[</span><span class="s2">&quot;bridge_length&quot;</span><span class="p">]</span>
+        <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">ab_params</span><span class="p">[</span><span class="s2">&quot;bridge_width&quot;</span><span class="p">]</span>
+        <span class="n">ab_pad_extra</span> <span class="o">=</span> <span class="n">ab_params</span><span class="p">[</span><span class="s2">&quot;pad_extra&quot;</span><span class="p">]</span>
+
+        <span class="n">island_margin</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># how much an island extends beyond airbridge pads</span>
+        <span class="n">island_width</span> <span class="o">=</span> <span class="n">bridge_width</span> <span class="o">+</span> <span class="n">ab_pad_extra</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">island_margin</span>
+        <span class="n">airbridge_separation</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="n">island_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">ab_pad_length</span> <span class="o">+</span> <span class="n">ab_pad_width</span><span class="o">/</span><span class="mi">2</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">ab_pad_width</span><span class="o">+</span><span class="n">ab_pad_extra</span><span class="p">))</span> <span class="o">+</span> <span class="n">airbridge_separation</span>\
+                        <span class="o">+</span> <span class="n">island_margin</span><span class="o">*</span><span class="mi">2</span>
+        <span class="n">island</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">([</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">island_height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">island_width</span><span class="p">,</span> <span class="n">island_height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">island_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+        <span class="p">])</span>
+
+        <span class="n">islands_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+
+        <span class="n">x_step</span> <span class="o">=</span> <span class="n">island_width</span> <span class="o">+</span> <span class="n">bridge_length</span>
+        <span class="n">y_step</span> <span class="o">=</span> <span class="n">island_height</span> <span class="o">+</span> <span class="n">bridge_length</span>
+
+        <span class="n">pad_spacing_y</span> <span class="o">=</span> <span class="mi">150</span>
+
+        <span class="c1"># The airbridges are created from left to right, by &quot;snaking&quot; in such a way that minimal horizontal space is</span>
+        <span class="c1"># used, while keeping within the vertical extents of the pads.</span>
+
+        <span class="n">n_ab_placed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n_ab_remaining</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_ab</span>
+        <span class="n">n_ab_horizontal</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># The ab_type here depends the position and direction of the airbridge:</span>
+        <span class="c1"># &quot;bottom&quot; and &quot;top&quot; for horizontal airbridges at top or bottom of a vertical sequence of airbridges</span>
+        <span class="c1"># &quot;up&quot; and &quot;down&quot; for vertical airbridges depending on which direction the airbridge is compared to previous one</span>
+        <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;bottom&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="n">n_ab_remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">ab_type</span> <span class="o">==</span> <span class="s2">&quot;bottom&quot;</span><span class="p">:</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">island_width</span> <span class="o">+</span> <span class="n">x_step</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">y</span> <span class="o">+</span> <span class="n">island_margin</span> <span class="o">+</span> <span class="n">ab_pad_width</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">ab_pad_extra</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">x_step</span>
+                <span class="k">if</span> <span class="n">row</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_ab_remaining</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;top&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span>
+                <span class="n">n_ab_horizontal</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">ab_type</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">island_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">y</span> <span class="o">+</span> <span class="n">island_height</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_step</span> <span class="o">-</span> <span class="n">island_height</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">+=</span> <span class="n">y_step</span>
+                <span class="n">row</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">island_height</span> <span class="o">+</span> <span class="n">bridge_length</span> <span class="o">&gt;</span> <span class="n">pad_spacing_y</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span> <span class="o">+</span> <span class="n">island_height</span><span class="o">/</span><span class="mi">2</span> <span class="ow">or</span> \
+                   <span class="p">(</span><span class="n">row</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n_ab_remaining</span> <span class="o">&lt;=</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">n_ab_remaining</span> <span class="o">==</span> <span class="n">row</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)):</span>
+                    <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;top&quot;</span>
+            <span class="k">elif</span> <span class="n">ab_type</span> <span class="o">==</span> <span class="s2">&quot;top&quot;</span><span class="p">:</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">island_width</span> <span class="o">+</span> <span class="n">x_step</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                                      <span class="n">y</span> <span class="o">+</span> <span class="n">island_height</span> <span class="o">-</span> <span class="n">island_margin</span> <span class="o">-</span> <span class="n">ab_pad_width</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">ab_pad_extra</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">+=</span> <span class="n">x_step</span>
+                <span class="k">if</span> <span class="n">row</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_ab_remaining</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;bottom&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;down&quot;</span>
+                <span class="n">n_ab_horizontal</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># ab_type == &quot;down&quot;</span>
+                <span class="n">ab_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">island_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="p">(</span><span class="n">y_step</span> <span class="o">-</span> <span class="n">island_height</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">y</span> <span class="o">-=</span> <span class="n">y_step</span>
+                <span class="n">row</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">y</span> <span class="o">-</span> <span class="n">island_height</span> <span class="o">-</span> <span class="n">bridge_length</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">pad_spacing_y</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span> <span class="o">+</span> <span class="n">island_height</span><span class="o">/</span><span class="mi">2</span> <span class="ow">or</span> \
+                   <span class="p">(</span><span class="n">row</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">n_ab_remaining</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">row</span> <span class="o">+</span> <span class="mi">4</span> <span class="ow">or</span> <span class="n">n_ab_remaining</span> <span class="o">==</span> <span class="o">-</span><span class="n">row</span> <span class="o">+</span> <span class="mi">6</span><span class="p">))</span> <span class="ow">or</span> \
+                   <span class="p">(</span><span class="n">row</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_ab_remaining</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">):</span>
+                    <span class="n">ab_type</span> <span class="o">=</span> <span class="s2">&quot;bottom&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell_ab</span><span class="p">,</span> <span class="n">ab_trans</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">n_ab_remaining</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">island_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+                <span class="n">islands_region</span><span class="o">.</span><span class="n">insert</span><span class="p">((</span><span class="n">island_trans</span><span class="o">*</span><span class="n">island</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+
+            <span class="n">n_ab_placed</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">n_ab_remaining</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="n">pad_spacing_x</span> <span class="o">=</span> <span class="n">n_ab_horizontal</span><span class="o">*</span><span class="p">(</span><span class="n">bridge_length</span> <span class="o">+</span> <span class="n">island_width</span><span class="p">)</span> <span class="o">-</span> <span class="n">island_width</span>
+
+        <span class="c1"># once all the airbridges and islands have been created, transform them so that they are centered around (0, 0)</span>
+        <span class="n">islands_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">pad_spacing_x</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">island_width</span><span class="p">,</span> <span class="o">-</span><span class="n">island_height</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">islands_region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">islands_trans</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+            <span class="n">inst</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">islands_trans</span><span class="p">)</span>
+
+        <span class="c1"># create pads</span>
+        <span class="n">pads_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="n">gap_extra</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># how much the gap layer extends beyond the pads</span>
+        <span class="n">pad_width</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">pad_spacing_x</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">gap_extra</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_four_point_pads</span><span class="p">(</span><span class="n">pads_region</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span><span class="p">,</span> <span class="n">pad_spacing_x</span><span class="p">,</span> <span class="n">pad_spacing_y</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">refpoint_distance</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+        <span class="c1"># combine pads and islands and create the metal gap region based on them</span>
+        <span class="n">metal_region</span> <span class="o">=</span> <span class="n">islands_region</span> <span class="o">+</span> <span class="n">pads_region</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_etched_region</span><span class="p">(</span><span class="n">metal_region</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="n">pad_width</span> <span class="o">+</span> <span class="n">pad_spacing_x</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">gap_extra</span><span class="p">,</span>
+                                   <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span> <span class="o">+</span> <span class="n">pad_spacing_y</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">gap_extra</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

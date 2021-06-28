@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.chips.multi_face.quality_factor_twoface" href="kqcircuits.chips.multi_face.quality_factor_twoface.html" />
+    <link rel="prev" title="kqcircuits.chips.multi_face.lithography_test_twoface" href="kqcircuits.chips.multi_face.lithography_test_twoface.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.crossing_twoface.html">kqcircuits.chips.multi_face.crossing_twoface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.daisy_woven.html">kqcircuits.chips.multi_face.daisy_woven</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.demo_twoface.html">kqcircuits.chips.multi_face.demo_twoface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.lithography_test_twoface.html">kqcircuits.chips.multi_face.lithography_test_twoface</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.chips.multi_face.multi_face</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.quality_factor_twoface.html">kqcircuits.chips.multi_face.quality_factor_twoface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.html#module-kqcircuits.chips.multi_face">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.airbridge_crossings.html">kqcircuits.chips.airbridge_crossings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.airbridge_dc_test.html">kqcircuits.chips.airbridge_dc_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.chip.html">kqcircuits.chips.chip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.dc_test.html">kqcircuits.chips.dc_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.demo.html">kqcircuits.chips.demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.empty.html">kqcircuits.chips.empty</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.junction_test.html">kqcircuits.chips.junction_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.junction_test2.html">kqcircuits.chips.junction_test2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.lithography_test.html">kqcircuits.chips.lithography_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.quality_factor.html">kqcircuits.chips.quality_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.sample_holder_test.html">kqcircuits.chips.sample_holder_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.shaping.html">kqcircuits.chips.shaping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.single_xmons.html">kqcircuits.chips.single_xmons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.stripes.html">kqcircuits.chips.stripes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.tsv_test.html">kqcircuits.chips.tsv_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.xmons_direct_coupling.html">kqcircuits.chips.xmons_direct_coupling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.html#module-kqcircuits.chips">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.chips.html">kqcircuits.chips</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a> &raquo;</li>
+        
+      <li>kqcircuits.chips.multi_face.multi_face</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/kqcircuits.chips.multi_face.multi_face.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.chips.multi_face.multi_face">
+<span id="kqcircuits-chips-multi-face-multi-face"></span><h1>kqcircuits.chips.multi_face.multi_face<a class="headerlink" href="#module-kqcircuits.chips.multi_face.multi_face" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.chips.multi_face.multi_face.</code><code class="sig-name descname">MultiFace</code><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.chips.chip.Chip</span></code></a></p>
+<p>Base class for multi-face chips.</p>
+<p>Produces labels in pixel corners, dicing edge, markers and optionally grid for all chip faces. Contains methods for
+producing launchers in face 0, connectors between faces 0 and 1, and default routing waveguides from the
+launchers to the connectors.</p>
+<dl class="attribute">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.version">
+<code class="sig-name descname">version</code><em class="property"> = 1</em><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.produce_impl">
+<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method builds the PCell.</p>
+<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.produce_structures">
+<code class="sig-name descname">produce_structures</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.produce_structures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_structures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces chip frame and possibly other structures before the ground grid.</p>
+<p>This method is called in produce_impl(). Override this method to produce a different set of chip frames.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations">
+<code class="sig-name descname">get_ground_bump_locations</code><span class="sig-paren">(</span><em class="sig-param">box</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.get_ground_bump_locations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the locations for ground bumps. This method returns the full bump grid, but the chip will only
+place bumps on locations that do not interfere with the ground grid avoidance or manually placed bumps.</p>
+<p>This method can be overridden by subclasses to use define a different ground bump grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>box</strong> – DBox specifying the region that should be filled with ground bumps</p>
+</dd>
+</dl>
+<p>Returns: list of DPoint coordinates where a ground bump can be placed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.produce_ground_grid">
+<code class="sig-name descname">produce_ground_grid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.produce_ground_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_ground_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces ground grid on t and b faces.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.merge_layout_layers">
+<code class="sig-name descname">merge_layout_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.merge_layout_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.merge_layout_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges layers on t and b faces.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.produce_default_connectors_and_launchers">
+<code class="sig-name descname">produce_default_connectors_and_launchers</code><span class="sig-paren">(</span><em class="sig-param">launchers_type=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.produce_default_connectors_and_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_default_connectors_and_launchers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces default connectors, launchers and routing waveguides.</p>
+<p>Produces launchers in face 0, connectors between faces 0 and 1, and default routing waveguides from the
+launchers to the connectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>launchers_type</strong> – String determining the arrangement of launchers, “SMA8” | “ARD24”, no launchers if empty
+string or unknown name</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>face1_box</strong><em> (Shape)</em><span> - Border of Face 1</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(1500,1500;8500,8500)</span></code></p></li>
+<li><p><strong>with_gnd_bumps</strong><em> (Boolean)</em><span> - Make ground bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>a_capped</strong><em> (Double)</em><span> - Width of center conductor in the capped region [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>b_capped</strong><em> (Double)</em><span> - Width of gap in the capped region </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type for CPW waveguides</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+</ul>
+<img alt="../_images/kqcircuits.chips.multi_face.multi_face.png" src="../_images/kqcircuits.chips.multi_face.multi_face.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="kqcircuits.chips.multi_face.quality_factor_twoface.html" class="btn btn-neutral float-right" title="kqcircuits.chips.multi_face.quality_factor_twoface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.chips.multi_face.lithography_test_twoface.html" class="btn btn-neutral float-left" title="kqcircuits.chips.multi_face.lithography_test_twoface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

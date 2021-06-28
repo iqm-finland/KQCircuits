@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.spiral_resonator_polygon</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.elements.spiral_resonator_polygon</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">atan2</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_curved</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarCurved</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">vector_length_and_direction</span><span class="p">,</span> <span class="n">is_clockwise</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+
+
+<div class="viewcode-block" id="SpiralResonatorPolygon"><a class="viewcode-back" href="../../../api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="s2">&quot;term1&quot;</span><span class="p">,</span> <span class="s2">&quot;term2&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SpiralResonatorPolygon</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for a polygon shaped spiral resonator.</span>
+
+<span class="sd">    The resonator waveguide starts at the first point of `self.input_path` and goes through each each of its points. The</span>
+<span class="sd">    last point of `self.input_path` will connect to the first point of `self.poly_path`, unless the length of</span>
+<span class="sd">    `self.input_path` is already longer than `self.length`.</span>
+
+<span class="sd">    The polygon shape is defined by `self.poly_path`, where each point is a vertex of the polygon. The points should</span>
+<span class="sd">    either be in clockwise or counter-clockwise order. The waveguide will first continue along the polygon edges, and</span>
+<span class="sd">    then spiral inside the polygon such that each segment will be parallel to one of the edges defined by</span>
+<span class="sd">    `self.polygon_path`.</span>
+
+<span class="sd">    Note, that if you want the segment from `self.input_path` to `self.poly_path` to be &quot;a part of the spiral&quot;</span>
+<span class="sd">    (following the polygon shape), you will need to choose the points such that the edge</span>
+<span class="sd">    `self.input_path[-1] - self.poly_path[0]` is parallel to the edge `self.poly_path[0] - self.poly_path[-1]`.</span>
+
+<span class="sd">    The spacing between waveguides in the spiral can either be chosen manually or automatically. The automatic spacing</span>
+<span class="sd">    attempts to find the largest possible spacing, and the accuracy/speed of finding it can be adjusted.</span>
+
+<span class="sd">    Airbridges can optionally be placed with a given spacing along the resonator waveguide.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Resonator length&quot;</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">input_path</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Input waveguide path&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">poly_path</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Polygon path&quot;</span><span class="p">,</span>
+                      <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">800</span><span class="p">)],</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="n">auto_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use automatic spacing&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">manual_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Manual spacing between waveguide centers&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">spacing_tolerance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Automatic spacing optimality tolerance (larger=faster)&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">bridges</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Airbridges&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">bridge_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Airbridge spacing&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SpiralResonatorPolygon.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.spiral_resonator_polygon.html#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auto_spacing</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_resonator_automatic_spacing</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_resonator_manual_spacing</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_produce_resonator_automatic_spacing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces polygon spiral resonator with automatically determined waveguide spacing.</span>
+
+<span class="sd">        This creates resonators with different spacing, until it finds the largest spacing that can be used to create</span>
+<span class="sd">        a valid resonator. Only the final resonator with optimal spacing is inserted to `self.cell` in the end.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># find optimal spacing using bisection method</span>
+        <span class="n">min_spacing</span><span class="p">,</span> <span class="n">max_spacing</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span>
+        <span class="n">optimal_spacing</span><span class="p">,</span> <span class="n">spacing</span> <span class="o">=</span> <span class="n">min_spacing</span><span class="p">,</span> <span class="n">max_spacing</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">can_create_resonator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_produce_resonator</span><span class="p">(</span><span class="n">spacing</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">can_create_resonator</span><span class="p">:</span>
+                <span class="n">optimal_spacing</span> <span class="o">=</span> <span class="n">spacing</span>
+                <span class="n">min_spacing</span> <span class="o">=</span> <span class="n">spacing</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">max_spacing</span> <span class="o">=</span> <span class="n">spacing</span>
+            <span class="n">new_spacing</span> <span class="o">=</span> <span class="p">(</span><span class="n">min_spacing</span> <span class="o">+</span> <span class="n">max_spacing</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">new_spacing</span> <span class="o">-</span> <span class="n">spacing</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">spacing_tolerance</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">spacing</span> <span class="o">=</span> <span class="n">new_spacing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>  <span class="c1"># clear any instances created while finding optimal spacing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_resonator</span><span class="p">(</span><span class="n">optimal_spacing</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_resonator_manual_spacing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces polygon spiral resonator with spacing defined by `self.manual_spacing`.</span>
+
+<span class="sd">        If the resonator cannot be created with the chosen spacing, it will instead produce a cell with error text in</span>
+<span class="sd">        the annotation layer, and raise a ValueError.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">can_create_resonator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_produce_resonator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manual_spacing</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">can_create_resonator</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="s2">&quot;Cannot create a resonator with the given parameters. Try decreasing the &quot;</span> \
+                        <span class="s2">&quot;spacings or increasing the available area.&quot;</span>
+            <span class="n">error_text_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;TEXT&quot;</span><span class="p">,</span> <span class="s2">&quot;Basic&quot;</span><span class="p">,</span> <span class="p">{</span>
+                <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;annotations&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">error_msg</span><span class="p">,</span>
+                <span class="s2">&quot;mag&quot;</span><span class="p">:</span> <span class="mf">10.0</span>
+            <span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">error_text_cell</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_resonator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spacing</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces a polygon spiral resonator with the given spacing</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            spacing: spacing between waveguide centers inside the polygon</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if it was possible to create a valid spiral resonator with the given spacing, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">term2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span>
+
+        <span class="c1"># segments based on input_path points</span>
+        <span class="n">input_path_points_iter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_path</span><span class="o">.</span><span class="n">each_point</span><span class="p">()</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">input_path_points_iter</span><span class="p">)]</span>
+        <span class="k">while</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">input_path_points_iter</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">tmp_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="n">tmp_cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">n_input_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+
+        <span class="c1"># segments based on poly_path points</span>
+        <span class="n">poly_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">poly_path</span><span class="o">.</span><span class="n">each_point</span><span class="p">()]</span>
+        <span class="n">n_poly_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">poly_points</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="ow">and</span> <span class="n">n_poly_points</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">poly_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">(</span><span class="n">poly_points</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">poly_points</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_poly_points</span><span class="p">)]</span>
+            <span class="n">clockwise</span> <span class="o">=</span> <span class="n">is_clockwise</span><span class="p">(</span><span class="n">poly_points</span><span class="p">)</span>
+            <span class="c1"># get the normal vectors (toward inside of polygon) of each edge</span>
+            <span class="n">normals</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">poly_edges</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">edge</span><span class="o">.</span><span class="n">p2</span> <span class="o">-</span> <span class="n">edge</span><span class="o">.</span><span class="n">p1</span><span class="p">)</span>
+                <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">direction</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="o">-</span><span class="n">direction</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">clockwise</span> <span class="k">else</span>
+                               <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">direction</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">direction</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">current_edge</span> <span class="o">=</span> <span class="n">poly_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">shortcut_length</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">while</span> <span class="n">length</span> <span class="o">-</span> <span class="n">shortcut_length</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+                <span class="c1"># get the edge with i//len spacing from the corresponding poly edge</span>
+                <span class="n">next_edge_without_shift</span> <span class="o">=</span> <span class="n">poly_edges</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_poly_points</span><span class="p">]</span>
+                <span class="n">shift</span> <span class="o">=</span> <span class="n">spacing</span><span class="o">*</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">//</span><span class="n">n_poly_points</span><span class="p">)</span><span class="o">*</span><span class="n">normals</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_poly_points</span><span class="p">]</span>
+                <span class="n">next_edge</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">(</span><span class="n">next_edge_without_shift</span><span class="o">.</span><span class="n">p1</span> <span class="o">+</span> <span class="n">shift</span><span class="p">,</span> <span class="n">next_edge_without_shift</span><span class="o">.</span><span class="n">p2</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span>
+                <span class="c1"># Find intersection point of the lines defined by current_edge and next_edge.</span>
+                <span class="c1"># We use `extended` since we want intersections between the &quot;infinite&quot; lines instead of finite edges.</span>
+                <span class="n">intersection_point</span> <span class="o">=</span> <span class="n">current_edge</span><span class="o">.</span><span class="n">extended</span><span class="p">(</span><span class="mf">1e7</span><span class="p">)</span><span class="o">.</span><span class="n">crossing_point</span><span class="p">(</span><span class="n">next_edge</span><span class="o">.</span><span class="n">extended</span><span class="p">(</span><span class="mf">1e7</span><span class="p">))</span>
+                <span class="c1"># if the shift was so large that the new segment would end up in the opposite direction,</span>
+                <span class="c1"># resonator cannot be created</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">intersection_point</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">sprod_sign</span><span class="p">(</span><span class="n">current_edge</span><span class="o">.</span><span class="n">d</span><span class="p">())</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># distance between point[-1] and start of the curve (safe margin 1e-13 compensates errors due to</span>
+                    <span class="c1"># floating point arithmetics and allows two curves without straight segment in between)</span>
+                    <span class="n">corner_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corner_cut_distance</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">intersection_point</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1e-13</span>
+                    <span class="c1"># if the new segment is not long enough for the curve in the beginning, resonator cannot be created</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">intersection_point</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">corner_cut_dist</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+                    <span class="c1"># if the last segment is not long enough for the curves at each end, resonator cannot be created</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">corner_cut_dist</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corner_cut_distance</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">corner_cut_dist</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span>
+
+                <span class="c1"># create waveguide cell with all points (including the intersection point) to check length</span>
+                <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">intersection_point</span><span class="p">)</span>
+                <span class="n">tmp_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="n">length</span> <span class="o">=</span> <span class="n">tmp_cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+                <span class="c1"># Compute outer curve shortcut length for the next point.</span>
+                <span class="c1"># This may limit the length of the last straight segment to avoid overlapping with the outer segment.</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">n_poly_points</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">&gt;</span> <span class="n">spacing</span><span class="p">:</span>
+                    <span class="n">next_corner_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corner_cut_distance</span><span class="p">(</span><span class="n">poly_points</span><span class="p">[(</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_poly_points</span><span class="p">],</span>
+                                                                     <span class="n">poly_points</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">n_poly_points</span><span class="p">],</span>
+                                                                     <span class="n">poly_points</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n_poly_points</span><span class="p">])</span>
+                    <span class="n">shortcut_length</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">-</span> <span class="n">spacing</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">next_corner_cut_dist</span>
+                <span class="c1"># prepare for the next iteration</span>
+                <span class="n">current_edge</span> <span class="o">=</span> <span class="n">next_edge</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># handle correctly the last waveguide segment</span>
+        <span class="n">last_segment_curved</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_waveguide_end</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last_segment_curved</span><span class="p">:</span>
+            <span class="n">term2</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># produce bridges</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridges</span><span class="p">:</span>
+            <span class="n">dist_to_next_bridge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge_spacing</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)):</span>
+                <span class="n">dist_to_next_bridge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_produce_airbridges_for_segment</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">dist_to_next_bridge</span><span class="p">)</span>
+
+        <span class="n">wg_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">term2</span><span class="o">=</span><span class="n">term2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg_cell</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_fix_waveguide_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">current_length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.</span>
+
+<span class="sd">        This is required since WaveguideCoplanar cannot end in the middle of a curved segment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            points: list of points used to create the resonator waveguide, may be modified by this method</span>
+<span class="sd">            current_length: length of the resonator if points are not modified</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if the last segment is curved and False if it&#39;s straight</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">extra_len</span> <span class="o">=</span> <span class="n">current_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span>
+        <span class="n">last_seg_len</span><span class="p">,</span> <span class="n">last_seg_dir</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">corner_pos</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                                                   <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+            <span class="c1"># distance between points[-2] and start of the curve</span>
+            <span class="n">corner_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">tan</span><span class="p">((</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha2</span> <span class="o">-</span> <span class="n">alpha1</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># check if last waveguide segment is too short to be straight</span>
+            <span class="k">if</span> <span class="n">last_seg_len</span> <span class="o">-</span> <span class="n">extra_len</span> <span class="o">&lt;</span> <span class="n">corner_cut_dist</span><span class="p">:</span>
+                <span class="c1"># remove last point and move the new last point to the start position of the old curve</span>
+                <span class="n">points</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="n">corner_cut_dist</span> <span class="o">*</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="c1"># calculate how long the new curve piece needs to be</span>
+                <span class="n">tmp_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="n">curve_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">-</span> <span class="n">tmp_cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+                <span class="n">curve_alpha</span> <span class="o">=</span> <span class="n">curve_length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+                <span class="c1"># add new curve piece at the waveguide end</span>
+                <span class="n">curve_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarCurved</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">curve_alpha</span><span class="p">)</span>
+                <span class="n">curve_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degrees</span><span class="p">(</span><span class="n">alpha1</span><span class="p">)</span> <span class="o">-</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">*</span><span class="mi">90</span><span class="p">,</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">corner_pos</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">curve_cell</span><span class="p">,</span> <span class="n">curve_trans</span><span class="p">)</span>
+                <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">produce_curve_termination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span><span class="p">,</span> <span class="n">curve_trans</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># set last point to correct position based on length</span>
+        <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">extra_len</span> <span class="o">*</span> <span class="n">last_seg_dir</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_produce_airbridges_for_segment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">end_point_idx</span><span class="p">,</span> <span class="n">dist_to_next_bridge</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces airbridges in the segment between points[end_point_idx-1] and points[end_point_idx].</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            points: list of points used to create the resonator waveguide</span>
+<span class="sd">            end_point_idx: index of the segment end point</span>
+<span class="sd">            dist_to_next_bridge: distance until the next airbridge should created</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            distance until the next airbridge should created</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">segment_len</span><span class="p">,</span> <span class="n">segment_dir</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;pad_width&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
+        <span class="n">remaining_len</span> <span class="o">=</span> <span class="n">segment_len</span> <span class="o">-</span> <span class="n">bridge_width</span>
+        <span class="n">prev_pos</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># ensure that the bridge will not be too close to the corner before</span>
+        <span class="k">if</span> <span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">corner_1_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corner_cut_distance</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span>
+                                                          <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span><span class="p">])</span>
+            <span class="n">dist_to_next_bridge</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dist_to_next_bridge</span><span class="p">,</span> <span class="n">corner_1_cut_dist</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">remaining_len</span> <span class="o">&gt;</span> <span class="n">dist_to_next_bridge</span><span class="p">:</span>
+            <span class="n">add_bridge</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># ensure that the bridge will not be too close to the corner after</span>
+            <span class="k">if</span> <span class="n">end_point_idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="n">corner_2_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corner_cut_distance</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span><span class="p">],</span>
+                                                              <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">remaining_len</span> <span class="o">-</span> <span class="n">dist_to_next_bridge</span> <span class="o">&lt;</span> <span class="n">corner_2_cut_dist</span><span class="p">:</span>
+                    <span class="n">remaining_len</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">dist_to_next_bridge</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">add_bridge</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="c1"># create bridge</span>
+            <span class="k">if</span> <span class="n">add_bridge</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">prev_pos</span> <span class="o">+</span> <span class="n">dist_to_next_bridge</span><span class="o">*</span><span class="n">segment_dir</span>
+                <span class="n">angle</span> <span class="o">=</span> <span class="n">degrees</span><span class="p">(</span><span class="n">atan2</span><span class="p">(</span><span class="n">segment_dir</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">segment_dir</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pos</span><span class="p">),</span> <span class="n">face_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)</span>
+                <span class="n">remaining_len</span> <span class="o">-=</span> <span class="n">dist_to_next_bridge</span>
+                <span class="n">dist_to_next_bridge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge_spacing</span>
+                <span class="n">prev_pos</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="n">dist_to_next_bridge</span> <span class="o">-=</span> <span class="n">remaining_len</span>
+        <span class="k">return</span> <span class="n">dist_to_next_bridge</span>
+
+    <span class="k">def</span> <span class="nf">_corner_cut_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">,</span> <span class="n">point3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the distance from waveguide path corner to the start of a curved waveguide placed at the corner.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            point1: point before corner</span>
+<span class="sd">            point2: corner point</span>
+<span class="sd">            point3: point after corner</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">,</span> <span class="n">point3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">abs_curve</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha2</span> <span class="o">-</span> <span class="n">alpha1</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">*</span><span class="n">tan</span><span class="p">(</span><span class="n">abs_curve</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

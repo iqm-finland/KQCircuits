@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.chips.xmons_direct_coupling &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.chips.xmons_direct_coupling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.chips.xmons_direct_coupling</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_squid_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.qubits.qubit</span> <span class="kn">import</span> <span class="n">Qubit</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_tcross</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTCross</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_taper</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTaper</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.coupler_lib</span> <span class="kn">import</span> <span class="n">produce_library_capacitor</span>
+
+
+<div class="viewcode-block" id="XMonsDirectCoupling"><a class="viewcode-back" href="../../../api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Qubit</span><span class="p">,</span> <span class="s2">&quot;squid_type&quot;</span><span class="p">,</span> <span class="s2">&quot;fluxline_type&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">XMonsDirectCoupling</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for an XMonsDirectCoupling chip.&quot;&quot;&quot;</span>
+
+    <span class="n">qubit_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit spacing&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">arm_width_a</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit 1 and 3 arm width&quot;</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">arm_width_b</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit 2 arm width&quot;</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">rr_cpl_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;RR to QB coupler width (um for each RR)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">])</span>
+
+<div class="viewcode-block" id="XMonsDirectCoupling.produce_readout_resonator"><a class="viewcode-back" href="../../../api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.produce_readout_resonator">[docs]</a>    <span class="k">def</span> <span class="nf">produce_readout_resonator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_start</span><span class="p">,</span> <span class="n">end_y</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">c_kappa_l_fingers</span><span class="p">):</span>
+        <span class="c1"># 86 ohms</span>
+        <span class="n">ro_a</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="n">ro_b</span> <span class="o">=</span> <span class="mi">20</span>
+
+        <span class="n">taper_length</span> <span class="o">=</span> <span class="mi">100</span>
+
+        <span class="c1"># T to PL</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pl_cross_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanarTCross</span><span class="p">,</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pos_start</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">end_y</span><span class="p">),</span>
+            <span class="n">inst_name</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;RO</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">label_trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
+            <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+            <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Finger cap</span>
+        <span class="n">cplr_cell</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">c_kappa_l_fingers</span><span class="p">,</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">)</span>
+        <span class="n">cplr_ref_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cplr_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
+        <span class="n">cplr_inst</span><span class="p">,</span> <span class="n">cplr_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">cplr_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pl_cross_ref</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">cplr_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">])</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
+
+        <span class="c1"># Taper to T</span>
+        <span class="n">taper_cell</span><span class="p">,</span> <span class="n">taper_ref_rel</span> <span class="o">=</span> <span class="n">WaveguideCoplanarTaper</span><span class="o">.</span><span class="n">create_with_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
+            <span class="n">a1</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
+            <span class="n">b1</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
+            <span class="n">a2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
+            <span class="n">b2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
+            <span class="n">taper_length</span><span class="o">=</span><span class="n">taper_length</span>
+        <span class="p">)</span>
+        <span class="n">taper_inst</span><span class="p">,</span> <span class="n">taper_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">taper_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">cplr_ref</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">taper_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">])</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
+
+        <span class="c1"># T to tail and straight</span>
+        <span class="n">rr_cross_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarTCross</span><span class="p">,</span>
+            <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+            <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
+            <span class="n">a2</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
+            <span class="n">b2</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">rr_cross_ref_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">rr_cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
+        <span class="n">rr_cross_inst</span><span class="p">,</span> <span class="n">rr_cross_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
+            <span class="n">rr_cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">taper_ref</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">rr_cross_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">])</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
+
+        <span class="c1"># straight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">Node</span><span class="p">(</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]),</span>
+                <span class="n">Node</span><span class="p">(</span><span class="n">pos_start</span><span class="p">,</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># tail</span>
+        <span class="n">non_tail_length</span> <span class="o">=</span> <span class="p">(</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">pos_start</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">tail_r</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">tail_v</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="n">length</span>
+                                  <span class="o">-</span> <span class="n">non_tail_length</span>  <span class="c1"># straight down</span>
+                                  <span class="o">-</span> <span class="p">(</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>  <span class="c1"># t-piece</span>
+                                  <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">tail_r</span>  <span class="c1"># curve</span>
+                                  <span class="o">+</span> <span class="n">tail_r</span>  <span class="c1"># vertical offset for the straight part with fixed length</span>
+                                  <span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span>
+            <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">Node</span><span class="p">(</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">]),</span>
+                <span class="n">Node</span><span class="p">(</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;port_bottom_corner&quot;</span><span class="p">]),</span>
+                <span class="n">Node</span><span class="p">(</span><span class="n">rr_cross_ref</span><span class="p">[</span><span class="s2">&quot;port_bottom_corner&quot;</span><span class="p">]</span><span class="o">+</span><span class="n">tail_v</span><span class="p">,</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+            <span class="p">],</span>
+            <span class="n">a</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
+            <span class="n">b</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
+            <span class="n">r</span><span class="o">=</span><span class="n">tail_r</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="XMonsDirectCoupling.produce_qubits"><a class="viewcode-back" href="../../../api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.produce_qubits">[docs]</a>    <span class="k">def</span> <span class="nf">produce_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A dedicated function to be used also by the corresponding simulation object.</span>
+
+<span class="sd">        Assumes following attributes:</span>
+
+<span class="sd">        * arm_width_a</span>
+<span class="sd">        * arm_width_b</span>
+<span class="sd">        * qubit_spacing</span>
+<span class="sd">        * fluxline_type</span>
+<span class="sd">        * rr_cpl_width</span>
+<span class="sd">        * squid_type</span>
+<span class="sd">        * layout</span>
+<span class="sd">        * insert_cell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Finnmon</span>
+        <span class="n">arm_length</span> <span class="o">=</span> <span class="mi">146</span>
+        <span class="n">qubit_props_common</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;arm_length&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">arm_length</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s2">&quot;corner_r&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;port_width&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+            <span class="s2">&quot;fluxline_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span><span class="p">,</span>
+            <span class="s2">&quot;squid_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span>
+        <span class="p">}</span>
+        <span class="n">arm_width_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_width_a</span>
+        <span class="n">arm_width_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_width_b</span>
+        <span class="n">gap_width</span> <span class="o">=</span> <span class="mi">72</span>
+        <span class="n">qb1_coupler_width</span><span class="p">,</span> <span class="n">qb2_coupler_width</span><span class="p">,</span> <span class="n">qb3_coupler_width</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rr_cpl_width</span><span class="p">]</span>
+        <span class="n">finnmon_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span>
+            <span class="n">arm_width</span><span class="o">=</span><span class="p">[</span><span class="n">arm_width_a</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">gap_width</span><span class="o">=</span><span class="n">gap_width</span><span class="p">,</span>
+            <span class="n">cpl_gap</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">110</span><span class="p">],</span>
+            <span class="n">cpl_length</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">134</span><span class="o">+</span><span class="n">qb1_coupler_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">cpl_width</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="n">qb1_coupler_width</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+            <span class="n">cl_offset</span><span class="o">=</span><span class="p">[</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">qubit_props_common</span><span class="p">)</span>
+        <span class="n">finnmon_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span>
+            <span class="n">arm_width</span><span class="o">=</span><span class="p">[</span><span class="n">arm_width_b</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="n">gap_width</span><span class="o">=</span><span class="n">gap_width</span><span class="p">,</span>
+            <span class="n">cpl_gap</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">110</span><span class="p">],</span>
+            <span class="n">cpl_length</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">116</span><span class="o">+</span><span class="n">qb2_coupler_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">cpl_width</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="n">qb2_coupler_width</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+            <span class="n">cl_offset</span><span class="o">=</span><span class="p">[</span><span class="mi">150</span><span class="p">,</span> <span class="mi">150</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">qubit_props_common</span><span class="p">)</span>
+        <span class="n">finnmon_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span>
+            <span class="n">arm_width</span><span class="o">=</span><span class="p">[</span><span class="n">arm_width_a</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">gap_width</span><span class="o">=</span><span class="n">gap_width</span><span class="p">,</span>
+            <span class="n">cpl_gap</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">110</span><span class="p">],</span>
+            <span class="n">cpl_length</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">134</span><span class="o">+</span><span class="n">qb3_coupler_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+            <span class="n">cpl_width</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="n">qb3_coupler_width</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
+            <span class="n">cl_offset</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">150</span><span class="p">,</span> <span class="o">-</span><span class="mi">150</span><span class="p">],</span>
+            <span class="o">**</span><span class="n">qubit_props_common</span><span class="p">)</span>
+
+        <span class="n">qubit_y</span> <span class="o">=</span> <span class="mf">5e3</span>
+        <span class="n">qubit_step</span> <span class="o">=</span> <span class="p">((</span><span class="n">gap_width</span><span class="o">-</span><span class="n">arm_width_a</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">gap_width</span><span class="o">-</span><span class="n">arm_width_b</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">arm_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">finnmon_1</span><span class="p">,</span>
+                         <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mf">5e3</span> <span class="o">-</span> <span class="n">qubit_step</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubit_spacing</span><span class="p">,</span> <span class="n">qubit_y</span><span class="p">),</span>
+                         <span class="n">inst_name</span><span class="o">=</span><span class="s2">&quot;QB1&quot;</span><span class="p">,</span>
+                         <span class="n">label_trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
+                         <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">finnmon_2</span><span class="p">,</span>
+                         <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mf">5e3</span><span class="p">,</span> <span class="n">qubit_y</span><span class="p">),</span>
+                         <span class="n">inst_name</span><span class="o">=</span><span class="s2">&quot;QB2&quot;</span><span class="p">,</span>
+                         <span class="n">label_trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
+                         <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span>
+                         <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">finnmon_3</span><span class="p">,</span>
+                         <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mf">5e3</span> <span class="o">+</span> <span class="n">qubit_step</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubit_spacing</span><span class="p">,</span> <span class="n">qubit_y</span><span class="p">),</span>
+                         <span class="n">inst_name</span><span class="o">=</span><span class="s2">&quot;QB3&quot;</span><span class="p">,</span>
+                         <span class="n">label_trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
+                         <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span>
+                         <span class="p">)</span></div>
+
+<div class="viewcode-block" id="XMonsDirectCoupling.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_SMA8</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_junction_tests</span><span class="p">(</span><span class="n">squid_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubits</span><span class="p">()</span>
+
+        <span class="c1"># Readout resonators</span>
+        <span class="n">height_rr_feedline</span> <span class="o">=</span> <span class="mf">7.9e3</span>
+        <span class="c1"># target parameters V2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_readout_resonator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_cplr1&quot;</span><span class="p">],</span> <span class="n">height_rr_feedline</span><span class="p">,</span> <span class="mf">2421.5</span> <span class="o">+</span> <span class="mf">2447.1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">,</span>
+            <span class="n">c_kappa_l_fingers</span><span class="o">=</span><span class="mf">60.8</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_readout_resonator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_cplr1&quot;</span><span class="p">],</span> <span class="n">height_rr_feedline</span><span class="p">,</span> <span class="mi">2436</span> <span class="o">+</span> <span class="mf">2246.3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="p">,</span>
+            <span class="n">c_kappa_l_fingers</span><span class="o">=</span><span class="mf">61.55</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_readout_resonator</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_cplr1&quot;</span><span class="p">],</span> <span class="n">height_rr_feedline</span><span class="p">,</span> <span class="mf">2438.5</span> <span class="o">+</span> <span class="mf">2248.2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;3&quot;</span><span class="p">,</span>
+            <span class="n">c_kappa_l_fingers</span><span class="o">=</span><span class="mf">58.1</span>
+        <span class="p">)</span>
+
+        <span class="c1"># PL input cap</span>
+        <span class="n">pl_in_cap_cell</span> <span class="o">=</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mf">55.4</span><span class="p">)</span>  <span class="c1"># 35 fF</span>
+        <span class="n">pl_in_cap_ref_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">pl_in_cap_cell</span><span class="p">)</span>
+        <span class="n">pl_in_cap_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_cplr1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="mi">300</span><span class="p">,</span> <span class="n">height_rr_feedline</span><span class="p">)</span> <span class="o">-</span> <span class="n">pl_in_cap_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">pl_in_cap_cell</span><span class="p">,</span> <span class="n">pl_in_cap_trans</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="s2">&quot;IN&quot;</span><span class="p">)</span>
+        <span class="c1"># Transmission lines</span>
+        <span class="n">tl_gap</span> <span class="o">=</span> <span class="mi">300</span>
+        <span class="c1"># RR feedline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;NW_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;NW_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">height_rr_feedline</span><span class="p">)),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;IN_port_a&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;IN_port_b&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;RO1_port_left&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;RO1_port_right&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;RO2_port_left&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;RO2_port_right&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;RO3_port_left&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;RO3_port_right&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;NE_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">height_rr_feedline</span><span class="p">),</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;NE_port&quot;</span><span class="p">]),</span>
+        <span class="p">])</span>
+        <span class="c1"># Qb1 driveline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;WN_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;NW_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">tl_gap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;WN_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_drive&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">term2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="c1"># Qb1 fluxline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;WS_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;WS_port_corner&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_flux_corner&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB1_port_flux&quot;</span><span class="p">])</span>
+        <span class="p">])</span>
+        <span class="c1"># Qb2 driveline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;SW_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;SW_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;WS_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">tl_gap</span><span class="p">)),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_drive&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_drive&quot;</span><span class="p">])</span>
+        <span class="p">],</span> <span class="n">term2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="c1"># Qb2 fluxline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;SE_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;SE_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;ES_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">tl_gap</span><span class="p">)),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_flux_corner&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB2_port_flux&quot;</span><span class="p">])</span>
+        <span class="p">])</span>
+        <span class="c1"># Qb3 driveline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;EN_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;NE_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">tl_gap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;EN_port&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_drive&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+        <span class="p">],</span> <span class="n">term2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="c1"># Qb3 fluxline</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;ES_port&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;ES_port_corner&quot;</span><span class="p">]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_flux_corner&quot;</span><span class="p">],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">30</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_flux&quot;</span><span class="p">])</span>
+        <span class="p">])</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

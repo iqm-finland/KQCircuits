@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.simulations.export.ansys.ansys_export</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.simulations.export.ansys.ansys_export</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">EdgePort</span><span class="p">,</span> <span class="n">InternalPort</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">get_enclosing_polygon</span><span class="p">,</span> <span class="n">find_edge_from_point_in_cell</span><span class="p">,</span> <span class="n">export_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">ANSYS_SCRIPTS_PATH</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+
+
+<div class="viewcode-block" id="copy_ansys_scripts_to_directory"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory">[docs]</a><span class="k">def</span> <span class="nf">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copies Ansys scripts into directory path.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        path: Location where to copy scripts folder.</span>
+<span class="sd">        import_script_folder: Name of the folder in it&#39;s new location.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">ANSYS_SCRIPTS_PATH</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span>
+                      <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                      <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export Ansys simulation into json and gds files.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        simulation: The simulation to be exported.</span>
+<span class="sd">        path: Location where to write json and gds files.</span>
+<span class="sd">        ansys_tool: Determines whether to use HFSS (&#39;hfss&#39;) or Q3D Extractor (&#39;q3d&#39;).</span>
+<span class="sd">        frequency_units: Units of frequency.</span>
+<span class="sd">        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
+<span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
+<span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
+<span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
+<span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
+<span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
+<span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
+<span class="sd">        sweep_enabled: Determines if HFSS frequency sweep is enabled.</span>
+<span class="sd">        sweep_start: The lowest frequency in the sweep.</span>
+<span class="sd">        sweep_end: The highest frequency in the sweep.</span>
+<span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">         Path to exported json file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
+
+    <span class="c1"># gather port data</span>
+    <span class="n">port_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_ports</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
+            <span class="c1"># Basic data from Port</span>
+            <span class="n">p_data</span> <span class="o">=</span> <span class="n">port</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
+
+            <span class="c1"># Define a 3D polygon for each port</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">EdgePort</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
+                    <span class="n">port_top_height</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height_top</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">port_top_height</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box_height</span>
+
+                <span class="c1"># Determine which edge this port is on</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">left</span>
+                        <span class="ow">or</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">right</span><span class="p">):</span>
+                    <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">]</span>
+                    <span class="p">]</span>
+
+                <span class="k">elif</span> <span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">top</span>
+                      <span class="ow">or</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">bottom</span><span class="p">):</span>
+                    <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
+                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">],</span>
+                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">]</span>
+                    <span class="p">]</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="p">(</span>
+                        <span class="ne">ValueError</span><span class="p">,</span>
+                        <span class="s2">&quot;Port </span><span class="si">{}</span><span class="s2"> is an EdgePort but not on the edge of the simulation box&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">InternalPort</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">signal_edge</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_cell</span><span class="p">(</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Signal edge of port </span><span class="si">{}</span><span class="s1"> on layer </span><span class="si">{}</span><span class="s1"> not found at location (</span><span class="si">{:.3f}</span><span class="s1">, </span><span class="si">{:.3f}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span>
+                    <span class="p">))</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ground_edge</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_cell</span><span class="p">(</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_ground&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">ground_location</span><span class="p">,</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Ground edge of port </span><span class="si">{}</span><span class="s1"> on layer </span><span class="si">{}</span><span class="s1"> not found at location (</span><span class="si">{:.3f}</span><span class="s1">, </span><span class="si">{:.3f}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
+                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
+                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span>
+                    <span class="p">))</span>
+
+                <span class="n">port_z</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
+                <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_enclosing_polygon</span><span class="p">(</span>
+                    <span class="p">[[</span><span class="n">signal_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">signal_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span> <span class="p">[</span><span class="n">signal_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">signal_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span>
+                     <span class="p">[</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span> <span class="p">[</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="s2">&quot;Port </span><span class="si">{}</span><span class="s2"> has unsupported port class </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+            <span class="n">port_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_data</span><span class="p">)</span>
+
+    <span class="c1"># ansys_data and optional_layers</span>
+    <span class="n">ansys_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="n">ansys_tool</span><span class="p">,</span>
+        <span class="s1">&#39;gds_file&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;stack_type&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span><span class="p">,</span>
+        <span class="s1">&#39;signal_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">],</span>
+        <span class="s1">&#39;ground_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">],</span>
+        <span class="s1">&#39;airbridge_flyover_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">],</span>
+        <span class="s1">&#39;airbridge_pads_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_pads&quot;</span><span class="p">],</span>
+        <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;um&#39;</span><span class="p">,</span>  <span class="c1"># hardcoded assumption in multiple places</span>
+        <span class="s1">&#39;substrate_height&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">,</span>
+        <span class="s1">&#39;airbridge_height&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">airbridge_height</span><span class="p">,</span>
+        <span class="s1">&#39;box_height&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box_height</span><span class="p">,</span>
+        <span class="s1">&#39;permittivity&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">permittivity</span><span class="p">,</span>
+        <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
+        <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="n">port_data</span><span class="p">,</span>
+        <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>
+        <span class="s1">&#39;analysis_setup&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="n">frequency_units</span><span class="p">,</span>
+            <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
+            <span class="s1">&#39;max_delta_s&#39;</span><span class="p">:</span> <span class="n">max_delta_s</span><span class="p">,</span>  <span class="c1"># stopping criterion for HFSS</span>
+            <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>  <span class="c1"># stopping criterion for Q3D</span>
+            <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="n">percent_refinement</span><span class="p">,</span>
+            <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
+            <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
+            <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="n">minimum_converged_passes</span><span class="p">,</span>
+            <span class="s1">&#39;sweep_enabled&#39;</span><span class="p">:</span> <span class="n">sweep_enabled</span><span class="p">,</span>
+            <span class="s1">&#39;sweep_start&#39;</span><span class="p">:</span> <span class="n">sweep_start</span><span class="p">,</span>
+            <span class="s1">&#39;sweep_end&#39;</span><span class="p">:</span> <span class="n">sweep_end</span><span class="p">,</span>
+            <span class="s1">&#39;sweep_count&#39;</span><span class="p">:</span> <span class="n">sweep_count</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
+        <span class="n">ansys_data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">ansys_data</span><span class="p">,</span>
+                      <span class="s2">&quot;substrate_height_top&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height_top</span><span class="p">,</span>
+                      <span class="s2">&quot;chip_distance&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span><span class="p">,</span>
+                      <span class="s2">&quot;t_signal_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">],</span>
+                      <span class="s2">&quot;t_ground_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">],</span>
+                      <span class="s2">&quot;b_bump_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_indium_bump&quot;</span><span class="p">],</span>
+                      <span class="s2">&quot;t_bump_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_indium_bump&quot;</span><span class="p">],</span>
+                      <span class="p">}</span>
+        <span class="n">optional_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">],</span>
+                           <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">],</span>
+                           <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_indium_bump&quot;</span><span class="p">],</span>
+                           <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_indium_bump&quot;</span><span class="p">]}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">optional_layers</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># write .json file</span>
+    <span class="n">json_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">ansys_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># write .gds file</span>
+    <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">))</span>
+    <span class="n">export_layers</span><span class="p">(</span><span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
+                  <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
+                  <span class="n">layers</span><span class="o">=</span><span class="p">{</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">],</span>
+                          <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">],</span>
+                          <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">],</span>
+                          <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_pads&quot;</span><span class="p">],</span>
+                          <span class="o">*</span><span class="n">optional_layers</span><span class="p">}</span>
+                  <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_filename</span></div>
+
+
+<div class="viewcode-block" id="export_ansys_bat"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\AnsysEM21.1\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
+                     <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span>
+                     <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a batch file for running one or more already exported simulations.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        json_filenames: List of paths to json files to be included into the batch.</span>
+<span class="sd">        path: Location where to write the bat file.</span>
+<span class="sd">        file_prefix: Name of the batch file to be created.</span>
+<span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
+<span class="sd">        ansys_executable: Path to the Ansys Electronics Desktop executable.</span>
+<span class="sd">        import_script_folder: Path to the Ansys-scripts folder.</span>
+<span class="sd">        import_script: Name of import script file.</span>
+<span class="sd">        post_process_script: Name of post processing script file.</span>
+<span class="sd">        use_rel_path: Determines if to use relative paths.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">         Path to exported bat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">run_cmd</span> <span class="o">=</span> <span class="s1">&#39;RunScriptAndExit&#39;</span> <span class="k">if</span> <span class="n">exit_after_run</span> <span class="k">else</span> <span class="s1">&#39;RunScript&#39;</span>
+
+    <span class="n">bat_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;.bat&#39;</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;@echo off</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Commands for each simulation</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
+            <span class="n">printing</span> <span class="o">=</span> <span class="s1">&#39;echo Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1"> - </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">),</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)))</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">printing</span><span class="p">)</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; -scriptargs &quot;</span><span class="si">{}</span><span class="s1">&quot; -</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ansys_executable</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_rel_path</span> <span class="k">else</span> <span class="n">json_filename</span><span class="p">),</span>
+                <span class="n">run_cmd</span><span class="p">,</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script</span><span class="p">)))</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="c1"># Post-process command</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; -</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">ansys_executable</span><span class="p">,</span>
+            <span class="n">run_cmd</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">)))</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">bat_filename</span></div>
+
+
+<div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+                 <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                 <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span>
+                 <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\AnsysEM21.1\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
+                 <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
+                 <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        simulations: List of simulations to be exported.</span>
+<span class="sd">        path: Location where to write export files.</span>
+<span class="sd">        ansys_tool: Determines whether to use HFSS (&#39;hfss&#39;) or Q3D Extractor (&#39;q3d&#39;).</span>
+<span class="sd">        import_script_folder: Path to the Ansys-scripts folder.</span>
+<span class="sd">        file_prefix: Name of the batch file to be created.</span>
+<span class="sd">        frequency_units: Units of frequency.</span>
+<span class="sd">        frequency: Frequency for mesh refinement. To set up multifrequency analysis in HFSS use list of numbers.</span>
+<span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
+<span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
+<span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
+<span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
+<span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
+<span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
+<span class="sd">        sweep_enabled: Determines if HFSS frequency sweep is enabled.</span>
+<span class="sd">        sweep_start: The lowest frequency in the sweep.</span>
+<span class="sd">        sweep_end: The highest frequency in the sweep.</span>
+<span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
+<span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
+<span class="sd">        ansys_executable: Path to the Ansys Electronics Desktop executable.</span>
+<span class="sd">        import_script: Name of import script file.</span>
+<span class="sd">        post_process_script: Name of post processing script file.</span>
+<span class="sd">        use_rel_path: Determines if to use relative paths.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Path to exported bat file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">)</span>
+    <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
+        <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="n">ansys_tool</span><span class="p">,</span>
+                                                <span class="n">frequency_units</span><span class="o">=</span><span class="n">frequency_units</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+                                                <span class="n">max_delta_s</span><span class="o">=</span><span class="n">max_delta_s</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
+                                                <span class="n">percent_refinement</span><span class="o">=</span><span class="n">percent_refinement</span><span class="p">,</span>
+                                                <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
+                                                <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
+                                                <span class="n">sweep_enabled</span><span class="o">=</span><span class="n">sweep_enabled</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="n">sweep_start</span><span class="p">,</span>
+                                                <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
+                            <span class="n">ansys_executable</span><span class="o">=</span><span class="n">ansys_executable</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">,</span>
+                            <span class="n">import_script</span><span class="o">=</span><span class="n">import_script</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="n">post_process_script</span><span class="p">,</span>
+                            <span class="n">use_rel_path</span><span class="o">=</span><span class="n">use_rel_path</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

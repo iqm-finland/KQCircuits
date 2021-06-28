@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Elements &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Chips" href="chips.html" />
+    <link rel="prev" title="Libraries" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libraries</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Elements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#airbridge">Airbridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#chipframe">ChipFrame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#element">Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fingercapacitorsquare">FingerCapacitorSquare</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fingercapacitortaper">FingerCapacitorTaper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flip-chip-connector">Flip chip connector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#flip-chip-connector-rf">Flip chip connector Rf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tsv-connector">TSV connector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manual-squids">Manual SQUIDs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launcher">Launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launcherdc">LauncherDC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#marker">Marker</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maskmarkerfc">MaskMarkerFc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#meander">Meander</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spiralresonatorrectangle">SpiralResonatorRectangle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#swissmon">Swissmon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanar">WaveguideCoplanar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="chips.html">Chips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="test_structures.html">Test structures</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Libraries</a> &raquo;</li>
+        
+      <li>Elements</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/libraries/elements.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="elements">
+<h1>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="airbridge">
+<h2>Airbridge<a class="headerlink" href="#airbridge" title="Permalink to this headline">¶</a></h2>
+<p>Origin is at the geometric center. The airbridge is in vertical direction. There are multiple types of airbridges.</p>
+<p>Normal:
+Bottom parts of pads in bottom layer, bridge and top parts of pads in top layer. Pads and bridge are rectangular.
+Refpoints “port_a” and “port_b” at top pad points closest to origin.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pad_length</strong><em> (Double)</em><span> - Pad length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">14</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pad_extra</strong><em> (Double)</em><span> - Bottom pad extra</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridge_length</strong><em> (Double)</em><span> - Bridge length (from pad to pad)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> Center</p>
+<img alt="airbridge" src="../_images/airbridge_normal.png" />
+</div>
+<div class="section" id="chipframe">
+<h2>ChipFrame<a class="headerlink" href="#chipframe" title="Permalink to this headline">¶</a></h2>
+<p>The chip frame consists of a dicing edge, and labels and markers in the corners.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>box</strong><em> (Shape)</em><span> - Bounding box of the chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
+<li><p><strong>with_grid</strong><em> (Boolean)</em><span> - Make ground plane grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>dice_width</strong><em> (Double)</em><span> - Dicing width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer for dicing edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M99</span></code></p></li>
+<li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">CTest</span></code></p></li>
+<li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>text_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer around the text</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>marker_dist</strong><em> (Double)</em><span> - Distance of markers from closest edges of the chip face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1500</span></code></p></li>
+<li><p><strong>marker_diagonals</strong><em> (Int)</em><span> - Number of diagonal squares for the markers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
+<li><p><strong>use_face_prefix</strong><em> (Boolean)</em><span> - Use face prefix for chip name label</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="element">
+<h2>Element<a class="headerlink" href="#element" title="Permalink to this headline">¶</a></h2>
+<p>Base class for all elements.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
+<li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
+<li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
+<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f2f7b831280&gt;}</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="fingercapacitorsquare">
+<h2>FingerCapacitorSquare<a class="headerlink" href="#fingercapacitorsquare" title="Permalink to this headline">¶</a></h2>
+<p>Two ports with reference points. The arm leading to the finger has the
+same width as fingers. The feedline has the same length as the width of
+the ground gap around the coupler.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>a2</strong><em> (Double)</em><span> - Width of center conductor on the other end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Width of gap on the other end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_number</strong><em> (Int)</em><span> - Number of fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
+<li><p><strong>finger_width</strong><em> (Double)</em><span> - Width of a finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_gap_side</strong><em> (Double)</em><span> - Gap between the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_gap_end</strong><em> (Double)</em><span> - Gap between the finger and other pad</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_length</strong><em> (Double)</em><span> - Length of the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>ground_padding</strong><em> (Double)</em><span> - Ground plane padding</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>corner_r</strong><em> (Double)</em><span> - Corner radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>fixed_length</strong><em> (Double)</em><span> - Fixed length of element, 0 for auto-length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> Center</p>
+<img alt="fingercaps" src="../_images/fingercaps.png" />
+</div>
+<div class="section" id="fingercapacitortaper">
+<h2>FingerCapacitorTaper<a class="headerlink" href="#fingercapacitortaper" title="Permalink to this headline">¶</a></h2>
+<p>Two ports with reference points. Ground plane gap is automatically
+adjusted to maintain the a/b ratio.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>finger_number</strong><em> (Int)</em><span> - Number of fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
+<li><p><strong>finger_width</strong><em> (Double)</em><span> - Width of a finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_gap</strong><em> (Double)</em><span> - Gap between the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_length</strong><em> (Double)</em><span> - Length of the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>taper_length</strong><em> (Double)</em><span> - Length of the taper</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">60</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>corner_r</strong><em> (Double)</em><span> - Corner radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> Center</p>
+<img alt="fingercapt" src="../_images/fingercapt.png" />
+</div>
+<div class="section" id="flip-chip-connector">
+<h2>Flip chip connector<a class="headerlink" href="#flip-chip-connector" title="Permalink to this headline">¶</a></h2>
+<p>Dc connectors for flip-chip</p>
+<img alt="flip_chip_dc" src="../_images/flip_chip_dc.png" />
+</div>
+<div class="section" id="flip-chip-connector-rf">
+<h2>Flip chip connector Rf<a class="headerlink" href="#flip-chip-connector-rf" title="Permalink to this headline">¶</a></h2>
+<p>Radio frequency connectors for flip-chip</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+<li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>output_rotation</strong><em> (Double)</em><span> - Rotation of output port w.r.t. input port</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
+</ul>
+<img alt="flip_chip_rf" src="../_images/flip_chip_rf.png" />
+</div>
+<div class="section" id="tsv-connector">
+<h2>TSV connector<a class="headerlink" href="#tsv-connector" title="Permalink to this headline">¶</a></h2>
+<p>Through silicon via geometry</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>tsv_diameter</strong><em> (Double)</em><span> - TSV diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">25</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>tsv_type</strong><em> (String)</em><span> - TSV type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">circular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['circular',</span> <span class="pre">'oval']</span></code></p></li>
+<li><p><strong>tsv_elliptical_width</strong><em> (Double)</em><span> - Oval TSV width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<img alt="tsv" src="../_images/tsv.png" />
+</div>
+<div class="section" id="manual-squids">
+<h2>Manual SQUIDs<a class="headerlink" href="#manual-squids" title="Permalink to this headline">¶</a></h2>
+<p>These SQUIDs are manually drawn and automatically loaded from a library
+file. SQUIDs are referred to by the Cell name in the library file.</p>
+<img alt="qcd1" src="../_images/qcd1.png" />
+<img alt="sim1" src="../_images/sim1.png" />
+</div>
+<div class="section" id="launcher">
+<h2>Launcher<a class="headerlink" href="#launcher" title="Permalink to this headline">¶</a></h2>
+<p>Launcher for connecting wirebonds. Default wirebond direction to west,
+waveguide to east. Uses default ratio <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> for scaling the
+gap. Taper length is from waveguide port to the rectangular part of
+the launcher pad. Pad width is also used for the length of the launcher pad.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>s</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>l</strong><em> (Double)</em><span> - Tapering length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> Waveguide port</p>
+<img alt="launcher" src="../_images/launcher.png" />
+</div>
+<div class="section" id="launcherdc">
+<h2>LauncherDC<a class="headerlink" href="#launcherdc" title="Permalink to this headline">¶</a></h2>
+<p>DC launcher for connecting wirebonds.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>width</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> center</p>
+<img alt="launcher_dc" src="../_images/launcher_dc.png" />
+</div>
+<div class="section" id="marker">
+<h2>Marker<a class="headerlink" href="#marker" title="Permalink to this headline">¶</a></h2>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>window</strong><em> (Boolean)</em><span> - Window in airbridge flyover and UBM layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>diagonal_squares</strong><em> (Int)</em><span> - Number of diagonal squares in the marker</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="maskmarkerfc">
+<h2>MaskMarkerFc<a class="headerlink" href="#maskmarkerfc" title="Permalink to this headline">¶</a></h2>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>window</strong><em> (Boolean)</em><span> - Window in airbridge flyover and UBM layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>arrow_number</strong><em> (Int)</em><span> - Number of arrow pairs in the marker</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="meander">
+<h2>Meander<a class="headerlink" href="#meander" title="Permalink to this headline">¶</a></h2>
+<p>Defined by two points, total length and number of meanders. Uses the
+same bending radius as the underling waveguide. Each perpendicular
+segment is a meander.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>start</strong><em> (Shape)</em><span> - Start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-600,0</span></code></p></li>
+<li><p><strong>end</strong><em> (Shape)</em><span> - End</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">600,0</span></code></p></li>
+<li><p><strong>length</strong><em> (Double)</em><span> - Length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3000</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>meanders</strong><em> (Int)</em><span> - Number of meanders (at least 1)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> absolute position of <code class="docutils literal notranslate"><span class="pre">start</span></code></p>
+<img alt="meander" src="../_images/meander.png" />
+</div>
+<div class="section" id="spiralresonatorrectangle">
+<h2>SpiralResonatorRectangle<a class="headerlink" href="#spiralresonatorrectangle" title="Permalink to this headline">¶</a></h2>
+<p>The input of the resonator (refpoint <cite>base</cite>) is at left edge of the resonator
+. The space above, below, and right of the input are parameters, so the
+resonator will be within a box right of the input. The resonator length is a
+parameter, and it is attempted to be fit into the box such that the spacing
+between waveguides is as large as possible.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>above_space</strong><em> (Double)</em><span> - Space above the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
+<li><p><strong>below_space</strong><em> (Double)</em><span> - Space below the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code></p></li>
+<li><p><strong>right_space</strong><em> (Double)</em><span> - Space right of the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000</span></code></p></li>
+<li><p><strong>length</strong><em> (Double)</em><span> - Length of the resonator</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">4200</span></code></p></li>
+<li><p><strong>auto_spacing</strong><em> (Boolean)</em><span> - Automatic determination of spacing</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>x_spacing</strong><em> (Double)</em><span> - Spacing between vertical segments</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>y_spacing</strong><em> (Double)</em><span> - Spacing between horizontal segments</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridges_left</strong><em> (Boolean)</em><span> - Crossing airbridges left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridges_bottom</strong><em> (Boolean)</em><span> - Crossing airbridges bottom</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridges_right</strong><em> (Boolean)</em><span> - Crossing airbridges right</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridges_top</strong><em> (Boolean)</em><span> - Crossing airbridges top</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<img alt="spiral resonator" src="../_images/spiral_resonator.png" />
+</div>
+<div class="section" id="swissmon">
+<h2>Swissmon<a class="headerlink" href="#swissmon" title="Permalink to this headline">¶</a></h2>
+<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own
+width. “Hole” for the island has the same <code class="docutils literal notranslate"><span class="pre">gap_width</span></code> for each arm.
+SQUID is loaded from another library. Option of having fluxline.
+Refpoints for 3 couplers, fluxline position and chargeline position.
+Length between the ports is from waveguide port to the rectangular part of the launcher pad.
+Length of the fingers is also used for the length of the launcher pad.</p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>arm_length</strong><em> (List)</em><span> - Arm length (um, WNES))</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[150.0,</span> <span class="pre">150.0,</span> <span class="pre">150.0,</span> <span class="pre">150.0]</span></code></p></li>
+<li><p><strong>arm_width</strong><em> (List)</em><span> - Arm width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
+<li><p><strong>gap_width</strong><em> (Double)</em><span> - Arm gap full width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>cpl_width</strong><em> (List)</em><span> - Coupler width (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
+<li><p><strong>cpl_length</strong><em> (List)</em><span> - Coupler lengths (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[160,</span> <span class="pre">160,</span> <span class="pre">160]</span></code></p></li>
+<li><p><strong>cpl_gap</strong><em> (List)</em><span> - Coupler gap (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[102,</span> <span class="pre">102,</span> <span class="pre">102]</span></code></p></li>
+<li><p><strong>port_width</strong><em> (List)</em><span> - Port width (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">10,</span> <span class="pre">10]</span></code></p></li>
+<li><p><strong>cl_offset</strong><em> (List)</em><span> - Chargeline offset (um, um)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[200,</span> <span class="pre">200]</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> Center of the cross.</p>
+<img alt="swissmon" src="../_images/swissmon.png" />
+</div>
+<div class="section" id="waveguidecoplanar">
+<h2>WaveguideCoplanar<a class="headerlink" href="#waveguidecoplanar" title="Permalink to this headline">¶</a></h2>
+<p>Coplanar waveguide defined by the width of the center conductor and gap.
+It can follow any segmented lines with predefined bending radius. It
+actually consists of straight and curved PCells. Termination lengths are lengths of extra ground
+gaps for opened transmission lines</p>
+<p><strong>Warning</strong> Arbitrary angle bents actually have very small gaps between
+bends and straight segments due to precision of arithmetic. To be fixed
+in a future release.</p>
+<p><strong>Parameters:</strong></p>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>path</strong><em> (Shape)</em><span> - TLine</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;100,0)</span> <span class="pre">w=0</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
+<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>corner_safety_overlap</strong><em> (Double)</em><span> - Extend straight sections near corners by this amount [μm] to ensure all sections overlap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.001</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<p><strong>Origin:</strong> One port or follows the absolute coordinates of the path.</p>
+<img alt="waveguide" src="../_images/waveguide.png" />
+<img alt="waveguide2" src="../_images/waveguide2.png" />
+</div>
+<div class="section" id="waveguidecoplanarcurved">
+<h2>WaveguideCoplanarCurved<a class="headerlink" href="#waveguidecoplanarcurved" title="Permalink to this headline">¶</a></h2>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>alpha</strong><em> (Double)</em><span> - Curve angle (rad)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3.141592653589793</span></code></p></li>
+<li><p><strong>length</strong><em> (Double)</em><span> - Actual length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="waveguidecoplanarstraight">
+<h2>WaveguideCoplanarStraight<a class="headerlink" href="#waveguidecoplanarstraight" title="Permalink to this headline">¶</a></h2>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>l</strong><em> (Double)</em><span> - Length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="waveguidecoplanartaper">
+<h2>WaveguideCoplanarTaper<a class="headerlink" href="#waveguidecoplanartaper" title="Permalink to this headline">¶</a></h2>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">31.41592653589793</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a1</strong><em> (Double)</em><span> - Width of left waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b1</strong><em> (Double)</em><span> - Width of left waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>m1</strong><em> (Double)</em><span> - Margin of left waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a2</strong><em> (Double)</em><span> - Width of right waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Width of right waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">12</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>m2</strong><em> (Double)</em><span> - Margin of right waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+</ul>
+<img alt="waveguide_taper" src="../_images/waveguide_taper.png" />
+</div>
+<div class="section" id="waveguidecoplanartcross">
+<h2>WaveguideCoplanarTCross<a class="headerlink" href="#waveguidecoplanartcross" title="Permalink to this headline">¶</a></h2>
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>a2</strong><em> (Double)</em><span> - Width of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Gap of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code></p></li>
+<li><p><strong>length_extra</strong><em> (Double)</em><span> - Extra length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><strong>length_extra_side</strong><em> (Double)</em><span> - Extra length of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><strong>use_airbridges</strong><em> (Boolean)</em><span> - Use airbridges at a distance from the centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bridge_distance</strong><em> (Double)</em><span> - Bridges distance from centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code></p></li>
+<li><p><strong>bridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular']</span></code></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="chips.html" class="btn btn-neutral float-right" title="Chips" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Libraries" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,489 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.elements.element &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kqcircuits.elements.finger_capacitor_square" href="kqcircuits.elements.finger_capacitor_square.html" />
+    <link rel="prev" title="kqcircuits.elements.circular_capacitor" href="kqcircuits.elements.circular_capacitor.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.qubits.html">kqcircuits.elements.qubits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square_multiface.html">kqcircuits.elements.finger_capacitor_square_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle.html">kqcircuits.elements.spiral_resonator_rectangle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html">kqcircuits.elements.spiral_resonator_rectangle_multiface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar.html">kqcircuits.elements.waveguide_coplanar</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_curved.html">kqcircuits.elements.waveguide_coplanar_curved</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.defaults.html">kqcircuits.defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.klayout_view.html">kqcircuits.klayout_view</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_cluster.html">kqcircuits.layer_cluster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.pya_resolver.html">kqcircuits.pya_resolver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.html#module-kqcircuits">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
+        
+          <li><a href="kqcircuits.elements.html">kqcircuits.elements</a> &raquo;</li>
+        
+      <li>kqcircuits.elements.element</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/kqcircuits.elements.element.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-kqcircuits.elements.element">
+<span id="kqcircuits-elements-element"></span><h1>kqcircuits.elements.element<a class="headerlink" href="#module-kqcircuits.elements.element" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="kqcircuits.elements.element.get_refpoints">
+<code class="sig-prename descclassname">kqcircuits.elements.element.</code><code class="sig-name descname">get_refpoints</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">cell</em>, <em class="sig-param">cell_transf=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#get_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.get_refpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract reference points from cell from layer as dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> – layer specification for source of refpoints</p></li>
+<li><p><strong>cell</strong> – cell containing the refpoints</p></li>
+<li><p><strong>cell_transf</strong> – transform for converting refpoints into target coordinate system</p></li>
+<li><p><strong>rec_levels</strong> – recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary, where keys are refpoints names, values are DPoints.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="kqcircuits.elements.element.Element">
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.element.</code><code class="sig-name descname">Element</code><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">klayout.db.pcell_declaration_helper._PCellDeclarationHelper</span></code></p>
+<p>Element PCell declaration.</p>
+<p>PCell parameters for an element are defined as class attributes of Param type.
+Elements have ports.</p>
+<dl class="attribute">
+<dt id="kqcircuits.elements.element.Element.LIBRARY_NAME">
+<code class="sig-name descname">LIBRARY_NAME</code><em class="property"> = 'Element Library'</em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.elements.element.Element.LIBRARY_DESCRIPTION">
+<code class="sig-name descname">LIBRARY_DESCRIPTION</code><em class="property"> = 'Superconducting quantum circuit library for elements.'</em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.elements.element.Element.LIBRARY_PATH">
+<code class="sig-name descname">LIBRARY_PATH</code><em class="property"> = 'elements'</em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.create_cell_from_shape">
+<em class="property">static </em><code class="sig-name descname">create_cell_from_shape</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_cell_from_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_cell_from_shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.create">
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create cell for this element in layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.create_with_refpoints">
+<em class="property">classmethod </em><code class="sig-name descname">create_with_refpoints</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">refpoint_transform=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_with_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_with_refpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience function to create cell and return refpoints too.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
+<li><p><strong>refpoint_transform</strong> – transform for converting refpoints into target coordinate system</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element, as keyword argument</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.add_element">
+<code class="sig-name descname">add_element</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">whitelist=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_element" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new cell for the given element in this layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> – Element subclass to be created</p></li>
+<li><p><strong>whitelist</strong> – A classname. Its parameter names are used as a whitelist for passing
+parameters of <cite>self</cite> to the <cite>cls</cite> cell.</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the created cell</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.insert_cell">
+<code class="sig-name descname">insert_cell</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">trans=None</em>, <em class="sig-param">inst_name=None</em>, <em class="sig-param">label_trans=None</em>, <em class="sig-param">align_to=None</em>, <em class="sig-param">align=None</em>, <em class="sig-param">rec_levels=0</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.insert_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.insert_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a subcell into the present cell.</p>
+<p>It will use the given <cite>cell</cite> object or if <cite>cell</cite> is an Element class’ name then directly
+take the provided keyword arguments to first create the cell object.</p>
+<p>If <cite>inst_name</cite> given, the refpoints of the cell are added to the <cite>self.refpoints</cite> with <cite>inst_name</cite> as a prefix,
+and also adds a label <cite>inst_name</cite> to “`”labels layer” at the <cite>base</cite> refpoint and <cite>label_trans</cite> transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> – cell object or Element class name</p></li>
+<li><p><strong>trans</strong> – used transformation for placement. None by default, which places the subcell into the coordinate
+origin of the parent cell. If <cite>align</cite> and <cite>align_to</cite> arguments are used, <cite>trans</cite> is applied to the
+<cite>cell</cite> before alignment transform which allows for example rotation of the <cite>cell</cite> before placement.</p></li>
+<li><p><strong>inst_name</strong> – possible instance name inserted into subcell properties under <cite>id</cite>. Default is None</p></li>
+<li><p><strong>label_trans</strong> – relative transformation for the instance name label</p></li>
+<li><p><strong>align_to</strong> – location in parent cell coordinates for alignment of cell. Can be either string indicating
+the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default is None</p></li>
+<li><p><strong>align</strong> – name of the <cite>cell</cite> refpoint aligned to argument <cite>align_to</cite>. Default is None</p></li>
+<li><p><strong>rec_levels</strong> – recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element, as keyword argument</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of placed cell instance and reference points with the same transformation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.face">
+<code class="sig-name descname">face</code><span class="sig-paren">(</span><em class="sig-param">face_index=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.face"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the face dictionary corresponding to self.face_ids[face_index].</p>
+<p>The face dictionary contains key “id” for the face ID and keys for all the available layers in that face.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>face_index</strong> – index of the face_id in self.face_ids, default=0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.pcell_params_by_name">
+<code class="sig-name descname">pcell_params_by_name</code><span class="sig-paren">(</span><em class="sig-param">whitelist=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.pcell_params_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.pcell_params_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give PCell parameters as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>whitelist</strong> – A classname. Its parameter names are used for filtering.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of all PCell parameter names and corresponding current values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.add_port">
+<code class="sig-name descname">add_port</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">pos</em>, <em class="sig-param">direction=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a port location to the list of reference points as well as ports layer for netlist extraction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – name for the port. Will be “decorated” for annotation layer, left as is for port layer. If evaluates
+to False, it will be replaced with <cite>port</cite></p></li>
+<li><p><strong>pos</strong> – pya.DVector or pya.DPoint marking the position of the port in the Element base</p></li>
+<li><p><strong>direction</strong> – direction of the signal going _to_ the port to determine the location of the “corner” reference
+point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
+added.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.get_schema">
+<em class="property">classmethod </em><code class="sig-name descname">get_schema</code><span class="sig-paren">(</span><em class="sig-param">noparents=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_schema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the combined parameters of the class “cls” and all its ancestor classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>noparents</strong> – If True then only return the parameters of “cls”, not including ancestors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.produce_impl">
+<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method builds the PCell.</p>
+<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.display_text_impl">
+<code class="sig-name descname">display_text_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.display_text_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.display_text_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>default implementation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.get_refpoints">
+<code class="sig-name descname">get_refpoints</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">cell_transf=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_refpoints" title="Permalink to this definition">¶</a></dt>
+<dd><p>See <cite>get_refpoints</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.get_layer">
+<code class="sig-name descname">get_layer</code><span class="sig-paren">(</span><em class="sig-param">layer_name</em>, <em class="sig-param">face_id=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the specified Layer object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer_name</strong> – layer name text</p></li>
+<li><p><strong>face_id</strong> – index of the face id, default=0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<strong>PCell parameters:</strong><div class="line"><br /></div>
+<ul class="simple">
+<li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
+<li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
+<li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
+<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f2f7b831280&gt;}</span></code></p></li>
+</ul>
+<img alt="../_images/kqcircuits.elements.element.png" src="../_images/kqcircuits.elements.element.png" />
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="kqcircuits.elements.finger_capacitor_square.html" class="btn btn-neutral float-right" title="kqcircuits.elements.finger_capacitor_square" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.elements.circular_capacitor.html" class="btn btn-neutral float-left" title="kqcircuits.elements.circular_capacitor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

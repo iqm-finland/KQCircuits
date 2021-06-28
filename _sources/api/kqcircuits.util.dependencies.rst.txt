@@ -1,0 +1,10 @@
+kqcircuits.util.dependencies
+============================
+
+.. automodule:: kqcircuits.util.dependencies
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.dependencies
+.. image:: ../pcell_images/kqcircuits.util.dependencies.png

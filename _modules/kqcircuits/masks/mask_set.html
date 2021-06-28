@@ -1,0 +1,424 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 3.3.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.masks.mask_set</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.masks.mask_set</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">import</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="k">as</span> <span class="nn">mask_export</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
+
+
+<div class="viewcode-block" id="MaskSet"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet">[docs]</a><span class="nd">@traced</span>
+<span class="nd">@logged</span>
+<span class="k">class</span> <span class="nc">MaskSet</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class representing a set of masks for different chip faces.</span>
+
+<span class="sd">    A mask set consists of one or more MaskLayouts, each of which is for a certain face.</span>
+
+<span class="sd">    To create a mask, add mask layouts to the mask set using add_mask_layout() and set the self.chips_map_legend (or add</span>
+<span class="sd">    chips using add_chip()) to define the chips in these mask layouts. Then call build() to create the actual cells.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        mask = MaskSet(...)</span>
+<span class="sd">        mask.add_mask_layout(...)</span>
+<span class="sd">        mask.add_mask_layout(...)</span>
+<span class="sd">        mask.chips_map_legend = {...}</span>
+<span class="sd">        mask.build()</span>
+<span class="sd">        mask.export(...)</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        layout: pya.Layout of this mask set</span>
+<span class="sd">        name: Name of the mask set</span>
+<span class="sd">        version: Version of the mask set</span>
+<span class="sd">        with_grid: Boolean determining if ground grid is generated</span>
+<span class="sd">        export_drc: Boolean determining if DRC report is exported</span>
+<span class="sd">        chips_map_legend: Dictionary where keys are chip names, values are chip cells</span>
+<span class="sd">        mask_layouts: list of MaskLayout objects in this mask set</span>
+<span class="sd">        mask_export_layers: list of names of the layers which are exported for each MaskLayout</span>
+<span class="sd">        used_chips: similar to chips_map_legend, but only includes chips which are actually used in mask layouts</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MaskSet&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">export_drc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">mask_export_layers</span><span class="o">=</span><span class="p">[]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">layout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">):</span>
+            <span class="n">error_text</span> <span class="o">=</span> <span class="s2">&quot;Cannot create mask with invalid or nil layout.&quot;</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_text</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_text</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">error</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span> <span class="o">=</span> <span class="n">with_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span> <span class="o">=</span> <span class="n">export_drc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span> <span class="o">=</span> <span class="n">mask_export_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_layouts_per_face</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dict of {face_id: number of mask layouts}</span>
+
+<div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a mask layout from chips_map and adds it to self.mask_layouts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)</span>
+<span class="sd">            face_id: face_id of the mask layout</span>
+<span class="sd">            mask_layout_type: type of the mask layout (MaskLayout or a child class of it)</span>
+<span class="sd">            kwargs: keyword arguments passed to the mask layout</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the created mask layout</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># add extra_id to distinguish mask layouts in the same face</span>
+        <span class="k">if</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_layouts_per_face</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_layouts_per_face</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;extra_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mask_layouts_per_face</span><span class="p">[</span><span class="n">face_id</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mask_layouts_per_face</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;mask_export_layers&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mask_export_layers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span>
+
+        <span class="n">mask_layout</span> <span class="o">=</span> <span class="n">mask_layout_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span>
+                                       <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_layout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mask_layout</span></div>
+
+<div class="viewcode-block" id="MaskSet.add_chips"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chips">[docs]</a>    <span class="k">def</span> <span class="nf">add_chips</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add list of chips with parameters to self.chips_map_legend</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chips: List of tuples that ``add_chip`` uses.</span>
+<span class="sd">                For example, ``(QualityFactor, &quot;QDG&quot;, parameters)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">chips</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Building variants&#39;</span><span class="p">,</span> <span class="n">bar_format</span><span class="o">=</span><span class="n">default_bar_format</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MaskSet.add_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">[docs]</a>    <span class="k">def</span> <span class="nf">add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a chip with the given name and parameters to self.chips_map_legend.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chip_class: the chip type class</span>
+<span class="sd">            variant_name: name for specific variant, the same as in the mask layout</span>
+<span class="sd">            **kwargs: any parameters passed to the chip PCell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variant_definition</span><span class="p">(</span><span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MaskSet.variant_definition"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.variant_definition">[docs]</a>    <span class="k">def</span> <span class="nf">variant_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns chip variant definition with default mask specific parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chip_class: the chip type class</span>
+<span class="sd">            variant_name: name for specific variant, the same as in the mask layout</span>
+<span class="sd">            **kwargs: any parameters passed to the chip PCell</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dictionary compatible with mask map structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Resolving </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)</span>
+
+        <span class="n">chip_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name_chip&quot;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
+            <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
+            <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;name_copy&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;with_grid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="n">variant_name</span><span class="p">:</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">chip_parameters</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="MaskSet.build"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remove_guiding_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds the mask set.</span>
+
+<span class="sd">        Creates cells for the mask based on self.mask_layouts and self.chips_map_legend. Optionally removes</span>
+<span class="sd">        guiding shapes from the layout. Populates self.used_chips with the chips used in the mask layouts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            remove_guiding_shapes (Boolean): determines if the guiding shapes are removed</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># populate used_chips with chips which exist in some mask_layout</span>
+        <span class="k">for</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">chip_name</span> <span class="ow">in</span> <span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">chips_map</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span><span class="p">[</span><span class="n">chip_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span>
+                    <span class="k">break</span>
+
+        <span class="c1"># build mask layouts</span>
+        <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
+            <span class="c1"># include face_id in mask_layout.name only for multi-face masks</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">mask_layout</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">face_id</span>
+            <span class="n">mask_layout</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="p">)</span>
+
+        <span class="c1"># remove the guiding shapes, like chip boxes and waveguide paths</span>
+        <span class="k">if</span> <span class="n">remove_guiding_shapes</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">is_valid_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="MaskSet.export"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Exports designs, bitmaps and documentation of this mask set.</span>
+
+<span class="sd">        Assumes that self.build() has been called before.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: path where the folder for this mask set is created</span>
+<span class="sd">            view: KLayout view object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask_export</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MaskSet.chips_map_from_box_map"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.chips_map_from_box_map">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">chips_map_from_box_map</span><span class="p">(</span><span class="n">box_map</span><span class="p">,</span> <span class="n">mask_map</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the chips_map created from box_map and mask_map.</span>
+
+<span class="sd">        Given NxN box map and MxM mask_map, creates chips_map of size MNxMN. So each element of mask map is &quot;replaced&quot;</span>
+<span class="sd">        by a box in the box map. Assumes that box_map and mask_map are square.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            box_map: dictionary where keys are strings identifying the box type, and values are 2D arrays (lists of</span>
+<span class="sd">                lists) where each element is a string identifying the chip type</span>
+
+<span class="sd">            mask_map: 2D array (list of lists), where each element is a string identifying the box type</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_box_map_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">box_map</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">num_mask_map_rows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_map</span><span class="p">)</span>
+        <span class="n">num_chip_rows</span> <span class="o">=</span> <span class="n">num_box_map_rows</span><span class="o">*</span><span class="n">num_mask_map_rows</span>
+
+        <span class="n">chips_map</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_chip_rows</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_chip_rows</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">box_row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mask_map</span><span class="p">):</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_row</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">box</span> <span class="ow">in</span> <span class="n">box_map</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box_map</span><span class="p">[</span><span class="n">box</span><span class="p">]):</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">slot</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                            <span class="n">chips_map</span><span class="p">[</span><span class="n">k</span><span class="o">*</span><span class="n">num_box_map_rows</span> <span class="o">+</span> <span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="o">*</span><span class="n">num_box_map_rows</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">slot</span>
+
+        <span class="k">return</span> <span class="n">chips_map</span></div></div>
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
