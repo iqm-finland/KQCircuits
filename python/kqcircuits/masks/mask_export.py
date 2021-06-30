@@ -25,7 +25,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, default_bar_format, ROOT_PATH
+    default_mask_parameters, default_drc_runset, default_bar_format, ROOT_PATH, SCRIPTS_PATH
 from kqcircuits.util.netlist_extraction import export_cell_netlist
 """Functions for exporting mask sets."""
 
@@ -264,20 +264,23 @@ def export_drc_reports(mask_set, export_dir):
     else:
         klayout_executable = "klayout"
 
-    drc_runset_path = os.path.join(ROOT_PATH, "kqcircuits scripts", "drc", default_drc_runset)
+    drc_runset_path = os.path.join(SCRIPTS_PATH, "drc", default_drc_runset)
 
     def export_drc_report(name, subpath):
         input_file = os.path.join(export_dir, subpath, f"{name}.oas")
         output_file = os.path.join(export_dir, subpath, f"{name}_drc_report.lyrdb")
         export_drc_reports._log.info("Exporting DRC report to %s", output_file)
         try:
-            subprocess.run(f"\"{klayout_executable}\" -b -rm \"{drc_runset_path}\" -rd input=\"{input_file}\""
-                           f" -rd output=\"{output_file}\"", check=True)
+            subprocess.run([klayout_executable, "-b",
+                            "-rm", drc_runset_path,
+                            "-rd", f"input={input_file}",
+                            "-rd", f"output={output_file}"
+                            ], check=True)
         except subprocess.CalledProcessError as e:
             export_drc_reports._log.error(e.output)
 
     # drc report for each chip
-    for name in mask_set.used_chips:
+    for name in tqdm(mask_set.used_chips, desc='Exporting DRC reports for chips', bar_format=default_bar_format):
         chip_path = os.path.join("Chips", name)
         export_drc_report(name, chip_path)
 

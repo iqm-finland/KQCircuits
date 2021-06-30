@@ -42,13 +42,19 @@ from pathlib import Path
 from kqcircuits.pya_resolver import pya
 from kqcircuits.layer_cluster import LayerCluster
 
+_kqcircuits_path = Path(os.path.dirname(os.path.realpath(__file__)))
+# workaround for Windows because os.path.realpath doesn't work there before Python 3.8
+if os.name == "nt" and os.path.islink(Path(__file__).parent):
+    _kqcircuits_path = Path(os.readlink(str(Path(__file__).parent)))
+
 # project paths
-ROOT_PATH = Path(os.path.dirname(os.path.realpath(__file__))).parent.parent
+ROOT_PATH = _kqcircuits_path.parent.parent
 PY_PATH = ROOT_PATH.joinpath("python")
 SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
 TMP_PATH = ROOT_PATH.joinpath("tmp")
 TMP_PATH.mkdir(exist_ok=True)
-ANSYS_SCRIPTS_PATH = PY_PATH.joinpath("scripts").joinpath("simulations").joinpath("ansys")
+SCRIPTS_PATH = PY_PATH.joinpath("scripts")
+ANSYS_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")
 
 # printed to corners of all chips and top of all masks
 # could be for example "IQM" or "A!"
