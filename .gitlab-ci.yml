@@ -61,6 +61,18 @@ check_copyright_headers:
   tags:
     - docker
 
+check_license:
+  stage: test
+  script:
+    - sha256sum -c license_manifest.txt
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  tags:
+    - docker
+
 pages:
   stage: deploy
   script:

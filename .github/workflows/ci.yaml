@@ -102,6 +102,28 @@ jobs:
           name: docs
           path: docs/_build/html/
 
+  check_copyright_headers:
+    name: Check copyright headers
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    steps:
+      - uses: actions/checkout@v2
+      - name: Init KQCircuits
+        run: ci/init_kqc.sh
+      - name: Run copyright headers check
+        run: python check_copyright_headers.py --exclude-paths python/kqcircuits/_static_version.py python/kqcircuits/_version.py
+
+  check_license:
+    name: Check license
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    steps:
+      - uses: actions/checkout@v2
+      - name: Init KQCircuits
+        run: ci/init_kqc.sh
+      - name: Run license check
+        run: sha256sum -c license_manifest.txt
+
   pages:
     name: Deploy documentation
     needs: [ test, test_non_linux, verify_documentation ]
