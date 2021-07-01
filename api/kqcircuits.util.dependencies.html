@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.dependencies &mdash; KQCircuits 3.3.0 documentation</title>
+  <title>kqcircuits.util.dependencies &mdash; KQCircuits 3.4.0 documentation</title>
   
 
   
@@ -38,6 +38,7 @@
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="kqcircuits.util.export_helper" href="kqcircuits.util.export_helper.html" />
@@ -126,6 +127,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
 </ul>
 
             
@@ -200,10 +202,11 @@
   <div class="section" id="module-kqcircuits.util.dependencies">
 <span id="kqcircuits-util-dependencies"></span><h1>kqcircuits.util.dependencies<a class="headerlink" href="#module-kqcircuits.util.dependencies" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="kqcircuits.util.dependencies.check">
-<code class="sig-prename descclassname">kqcircuits.util.dependencies.</code><code class="sig-name descname">check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/dependencies.html#check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.dependencies.check" title="Permalink to this definition">¶</a></dt>
+<dt id="kqcircuits.util.dependencies.install_kqc_dependencies">
+<code class="sig-prename descclassname">kqcircuits.util.dependencies.</code><code class="sig-name descname">install_kqc_dependencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/dependencies.html#install_kqc_dependencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.dependencies.install_kqc_dependencies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check KQCircuits’ dependencies and install if missing.</p>
-<p>That this is <em>only</em> for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.</p>
+<p>This is <em>only</em> for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
+This function should run only once at KLayout startup.</p>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.util.dependencies.png" src="../_images/kqcircuits.util.dependencies.png" />

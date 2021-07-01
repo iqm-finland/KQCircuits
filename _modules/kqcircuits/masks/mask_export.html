@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_export &mdash; KQCircuits 3.3.0 documentation</title>
+  <title>kqcircuits.masks.mask_export &mdash; KQCircuits 3.4.0 documentation</title>
   
 
   
@@ -38,6 +38,7 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="../../../about.html" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -92,6 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
 </ul>
 
             
@@ -185,7 +187,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span><span class="p">,</span> <span class="n">resolve_default_layer_info</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">mask_bitmap_export_layers</span><span class="p">,</span> <span class="n">chip_export_layer_clusters</span><span class="p">,</span> <span class="n">default_layers</span><span class="p">,</span> \
-    <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">,</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">ROOT_PATH</span>
+    <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">,</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">ROOT_PATH</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.netlist_extraction</span> <span class="kn">import</span> <span class="n">export_cell_netlist</span>
 <span class="sd">&quot;&quot;&quot;Functions for exporting mask sets.&quot;&quot;&quot;</span>
 
@@ -424,20 +426,23 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">klayout_executable</span> <span class="o">=</span> <span class="s2">&quot;klayout&quot;</span>
 
-    <span class="n">drc_runset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ROOT_PATH</span><span class="p">,</span> <span class="s2">&quot;kqcircuits scripts&quot;</span><span class="p">,</span> <span class="s2">&quot;drc&quot;</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">)</span>
+    <span class="n">drc_runset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SCRIPTS_PATH</span><span class="p">,</span> <span class="s2">&quot;drc&quot;</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">export_drc_report</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">subpath</span><span class="p">):</span>
         <span class="n">input_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">subpath</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
         <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">subpath</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_drc_report.lyrdb&quot;</span><span class="p">)</span>
         <span class="n">export_drc_reports</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exporting DRC report to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">klayout_executable</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> -b -rm </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">drc_runset_path</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> -rd input=</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span>
-                           <span class="sa">f</span><span class="s2">&quot; -rd output=</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">klayout_executable</span><span class="p">,</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;-rm&quot;</span><span class="p">,</span> <span class="n">drc_runset_path</span><span class="p">,</span>
+                            <span class="s2">&quot;-rd&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;input=</span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                            <span class="s2">&quot;-rd&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;output=</span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span>
+                            <span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">export_drc_reports</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
 
     <span class="c1"># drc report for each chip</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">used_chips</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">used_chips</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Exporting DRC reports for chips&#39;</span><span class="p">,</span> <span class="n">bar_format</span><span class="o">=</span><span class="n">default_bar_format</span><span class="p">):</span>
         <span class="n">chip_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;Chips&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">export_drc_report</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">)</span></div>
 

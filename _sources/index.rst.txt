@@ -52,6 +52,7 @@ Documentation
    api/kqcircuits
    citing
    trademarks
+   about
 
 Indices and tables
 ==================
