@@ -88,8 +88,13 @@ project = 'KQCircuits'
 copyright = '2019-2021, IQM'
 author = 'IQM'
 
-# The full version, including alpha/beta/rc tags
-release = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version()).group(1)
+# Set supplied KQC version if found from Git tags
+matched_version = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version())
+if not matched_version:
+    print(f'KQC version not matched for: {get_version()}')
+else:
+    version = matched_version.group(1)
+    release = version
 
 # -- General configuration ---------------------------------------------------
 
