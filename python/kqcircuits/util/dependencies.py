@@ -17,26 +17,35 @@
 
 from importlib import util
 
+# Record dependencies in setup.py too
+kqc_python_dependencies = {
+    "numpy": "numpy>=1.16",
+    "autologging": "Autologging~=1.3",
+    "scipy": "scipy>=1.2",
+    "tqdm": "tqdm>=4.61",
+}
 
-def check():
+def install_kqc_dependencies():
     """Check KQCircuits' dependencies and install if missing.
 
-    That this is *only* for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
+    This is *only* for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
+    This function should run only once at KLayout startup.
     """
 
-    _missing_mods = []
-    for mod in ["autologging", "numpy", "scipy"]:  # The needed modules are defined here
-        if util.find_spec(mod) is None:
-            _missing_mods.append(mod)
-    if not _missing_mods:
+    missing_pkgs = []
+
+    for pkg in kqc_python_dependencies.keys():
+        if util.find_spec(pkg) is None:
+            missing_pkgs.append(pkg)
+    if not missing_pkgs:
         return
 
     # Install missing modules inside KLayout.
     import pya
     from pip import __main__
     main = __main__._main
+
     ask = pya.MessageBox.warning("Install packages?", "Install missing packages using 'pip': " +
-                                 ", ".join(_missing_mods), pya.MessageBox.Yes + pya.MessageBox.No)
+                                 ", ".join(missing_pkgs), pya.MessageBox.Yes + pya.MessageBox.No)
     if ask == pya.MessageBox.Yes:
-        for mod in _missing_mods:
-            main(['install', mod])
+        main(['install'] + [kqc_python_dependencies[pkg] for pkg in missing_pkgs])

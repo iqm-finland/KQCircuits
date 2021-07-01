@@ -19,5 +19,5 @@ from ._version import __version__
 del _version  # remove to avoid confusion with __version__
 
 # Check for needed dependencies and install if missing.
-from kqcircuits.util.dependencies import check
-check()
+from kqcircuits.util.dependencies import install_kqc_dependencies
+install_kqc_dependencies()

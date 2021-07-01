@@ -39,9 +39,9 @@ setup(
     url="meetiqm.com",
     packages=find_packages(),
     python_requires=">=3.6.9,<3.10",  # klayout package not yet released for 3.10
-    install_requires=[
+    install_requires=[                # Record dependencies in kqcircuits/util/dependecies.py too
         "klayout>=0.26",
-        "numpy>=1.18",
+        "numpy>=1.16",
         "Autologging~=1.3",
         "scipy>=1.2",
         "tqdm>=4.61",
