@@ -61,10 +61,11 @@ jobs:
         with:
           name: docs
           path: public
-      - name: Add redirect
+      - name: Add redirect and 404
         run: |
           mkdir -p public/_build/html
           cp public/_static/redirect.html public/_build/html/index.html
+          cp public/_static/404.html public/404.html
       - name: Install rsync  # https://github.com/JamesIves/github-pages-deploy-action#using-a-container-
         run: apt-get update && apt-get install -y rsync
       - name: Upload pages
