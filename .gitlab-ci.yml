@@ -26,6 +26,17 @@ test:
   tags:
     - docker
 
+static_analysis:
+  stage: test
+  script:
+    - tox -e static_analysis
+  only:
+    - master
+    - merge_requests
+    - tags
+  tags:
+    - docker
+
 verify_documentation:
   stage: test
   script:

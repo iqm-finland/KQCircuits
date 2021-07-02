@@ -80,6 +80,17 @@ jobs:
           files: artifacts/**/*.xml
           check_name: Test results
 
+  static_analysis:
+    name: Static code analysis
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    steps:
+      - uses: actions/checkout@v2
+      - name: Init KQCircuits
+        run: ci/init_kqc.sh
+      - name: Run static code analysis
+        run: tox -e static_analysis
+
   verify_documentation:
     name: Verify documentation
     runs-on: ubuntu-latest
@@ -126,7 +137,8 @@ jobs:
 
   pages:
     name: Deploy documentation
-    needs: [ test, test_non_linux, verify_documentation ]
+    needs: [ test, test_non_linux, static_analysis, check_copyright_headers,
+             check_license, verify_documentation ]
     runs-on: ubuntu-latest
     container: ghcr.io/iqm-finland/kqcircuits
     if: ${{ github.ref == 'refs/heads/main' }}

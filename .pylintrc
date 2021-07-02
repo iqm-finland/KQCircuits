@@ -1,0 +1,44 @@
+[BASIC]
+# allow short names, but require snake_case
+argument-rgx=[a-z_][a-z0-9_]{0,30}
+attr-rgx=[a-z_][a-z0-9_]{0,30}
+const-rgx=[a-z_][a-z0-9_]{0,30}
+variable-rgx=[a-z_][a-z0-9_]{0,30}
+
+[FORMAT]
+max-line-length=120
+
+[TYPECHECK]
+# otherwise all usages of pya and klayout.db cause warnings
+ignored-modules=pya,klayout.db
+
+[MESSAGES CONTROL]
+disable=
+    arguments-differ,
+    attribute-defined-outside-init,  # for pcells attributes have to be defined
+                                     # in produce_impl() instead of __init__()
+    disallowed-name,
+    duplicate-code,
+    fixme,
+    import-error,  # false positives for simulation scripts
+    logging-fstring-interpolation,
+    missing-class-docstring,
+    missing-function-docstring,
+    missing-module-docstring,
+    no-else-return,
+    no-member,  # false positives for example in simulations and __log calls
+    protected-access,  # problems with _log
+    redefined-outer-name,
+    too-few-public-methods,
+    too-many-arguments,
+    too-many-boolean-expressions,
+    too-many-branches,
+    too-many-format-args,
+    too-many-instance-attributes,
+    too-many-locals,
+    too-many-nested-blocks,
+    too-many-return-statements,
+    too-many-statements,
+    undefined-variable,  # false positives for things such as simulation scripts
+                         # and klayout scripts taking command line arguments
+
