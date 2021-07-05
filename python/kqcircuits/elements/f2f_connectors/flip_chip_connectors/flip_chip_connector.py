@@ -14,7 +14,7 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
+from kqcircuits.pya_resolver import pya
 from autologging import logged, traced
 
 from kqcircuits.util.geometry_helper import circle_polygon

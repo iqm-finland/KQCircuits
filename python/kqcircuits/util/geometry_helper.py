@@ -212,20 +212,21 @@ def is_clockwise(polygon_points):
     return True if det < 0 else False
 
 
-def circle_polygon(r, n):
+def circle_polygon(r, n=64, origin=pya.DPoint(0, 0)):
     """
     Returns a polygon for a full circle around the origin.
 
     Args:
-        r: radius
-        n: number of points
+        r: Radius
+        origin: Center of the circle, default (0,0)
+        n: Number of points.
 
     Returns: list of ``DPoint``s, length ``n``.
     """
-    return pya.DPolygon([pya.DPoint(cos(a / n * 2 * pi) * r, sin(a / n * 2 * pi) * r) for a in range(0, n)])
+    return pya.DPolygon([origin + pya.DPoint(cos(a / n * 2 * pi) * r, sin(a / n * 2 * pi) * r) for a in range(0, n)])
 
 
-def arc_points(r, start=0, stop=2 * pi, n=64):
+def arc_points(r, start=0, stop=2 * pi, n=64, origin=pya.DPoint(0, 0)):
     """
     Returns point describing an arc around the origin with specified start and stop angles. The start and stop angle
     are included.
@@ -236,9 +237,10 @@ def arc_points(r, start=0, stop=2 * pi, n=64):
         r: Arc radius
         start: Start angle in radians, default 0
         stop: Stop angle in radians, default 2*pi
+        origin: Center of the arc, default (0,0)
         n: Number of steps corresponding to a full circle.
 
     """
     n_steps = ceil(n * abs(stop - start) / (2 * pi))
     step = (stop - start) / (n_steps - 1)
-    return [pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]
+    return [origin + pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]
