@@ -27,34 +27,33 @@ class Launcher(Element):
     """The PCell declaration for a launcher for connecting wirebonds.
 
     Default wirebond direction to west, waveguide to east. Uses default ratio a
-    and b for scaling the gap.
+    and b for scaling the gap if a_launcher and b_launcher not specified.
     """
 
     s = Param(pdt.TypeDouble, "Pad width", 300, unit="μm")
     l = Param(pdt.TypeDouble, "Tapering length", 300, unit="μm")
+    a_launcher = Param(pdt.TypeDouble, "Outer trace width", 240, unit="μm")
+    b_launcher = Param(pdt.TypeDouble, "Outer gap width", 144, unit="μm")
 
     def produce_impl(self):
         # optical layer
 
-        # keep the a/b ratio the same, but scale up a and b
-        f = self.s / float(self.a)
-
         # shape for the inner conductor
         pts = [
             pya.DPoint(0, self.a / 2 + 0),
-            pya.DPoint(self.l, f * (self.a / 2)),
-            pya.DPoint(self.l + self.s, f * (self.a / 2)),
-            pya.DPoint(self.l + self.s, -f * (self.a / 2)),
-            pya.DPoint(self.l, -f * (self.a / 2)),
+            pya.DPoint(self.l, self.a_launcher / 2),
+            pya.DPoint(self.l + self.s, self.a_launcher / 2),
+            pya.DPoint(self.l + self.s, -self.a_launcher / 2),
+            pya.DPoint(self.l, -self.a_launcher / 2),
             pya.DPoint(0, -self.a / 2 + 0)
         ]
 
         shifts = [
             pya.DVector(0, self.b),
-            pya.DVector(0, self.b * f),
-            pya.DVector(self.b * f, self.b * f),
-            pya.DVector(self.b * f, -self.b * f),
-            pya.DVector(0, -self.b * f),
+            pya.DVector(0, self.b_launcher),
+            pya.DVector(self.b_launcher, self.b_launcher),
+            pya.DVector(self.b_launcher, -self.b_launcher),
+            pya.DVector(0, -self.b_launcher),
             pya.DVector(0, -self.b),
         ]
         pts2 = [p + s for p, s in zip(pts, shifts)]

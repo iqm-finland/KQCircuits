@@ -85,7 +85,7 @@ class Chip(Element):
 
         return launcher_assignments
 
-    def produce_launcher(self, pos, direction, name, port_id, width, launcher_type="RF"):
+    def produce_launcher(self, pos, direction, name, port_id, width, gap, launcher_type="RF"):
         """Inserts a launcher in the chip.
 
         Args:
@@ -94,11 +94,12 @@ class Chip(Element):
             name: name inserted as property "id" in the launcher
             port_id: id inserted as property "port_id" in the launcher
             width: controls the pad width and tapering length of the launcher
+            gap: controls the gap from pad to ground
             launcher_type: type of the launcher, "RF" or "DC"
         """
 
         if launcher_type == "RF":
-            launcher_cell = self.add_element(Launcher, s=width, l=width)
+            launcher_cell = self.add_element(Launcher, s=width, l=width, a_launcher=width, b_launcher=gap)
         elif launcher_type == "DC":
             launcher_cell = self.add_element(LauncherDC, width=width)
 
@@ -138,7 +139,8 @@ class Chip(Element):
 
         for port_id in enabled:
             launcher = launchers[port_id]
-            self.produce_launcher(launcher[0], launcher[1], launcher_map[port_id], port_id, launcher[2])
+            self.produce_launcher(launcher[0], launcher[1], launcher_map[port_id],
+                                  port_id, width=launcher[2], gap=180)
         return launchers
 
     def produce_launchers_ARD24(self, launcher_assignments=None):
@@ -153,11 +155,11 @@ class Chip(Element):
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
-        launchers = self.produce_n_launchers(24, "RF", 240, 680, launcher_assignments, 1200)
+        launchers = self.produce_n_launchers(24, "RF", 240, 144, 680, launcher_assignments, 1200)
         return launchers
 
     def produce_launchers_RF80(self, launcher_assignments=None):
-        launchers = self.produce_n_launchers(80, "RF", 160, 520, launcher_assignments, 635)
+        launchers = self.produce_n_launchers(80, "RF", 160, 96, 520, launcher_assignments, 635)
         return launchers
 
     def produce_launchers_DC(self, launcher_assignments=None):
@@ -169,7 +171,7 @@ class Chip(Element):
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
-        launchers = self.produce_n_launchers(24, "DC", 500, 680, launcher_assignments, 850)
+        launchers = self.produce_n_launchers(24, "DC", 500, 300, 680, launcher_assignments, 850)
         return launchers
 
     def produce_junction_tests(self, squid_type=default_squid_type):
@@ -341,13 +343,15 @@ class Chip(Element):
                 launcher_map[key] = value
         return launcher_map
 
-    def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_indent, launcher_assignments, pad_pitch):
+    def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent,
+                            launcher_assignments, pad_pitch):
         """Produces n launchers at default locations.
 
         Args:
             n: number of launcher pads
             launcher_type: type of the launchers, "RF" or "DC"
             launcher_width: width of the launchers
+            launcher_gap: pad to ground gap of the launchers
             launcher_indent: distance between the chip edge and pad port
             launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
             pad_pitch: distance between pad centers
@@ -377,6 +381,7 @@ class Chip(Element):
             port_id = i + 1
             name = launcher_map[port_id]
             launchers[name] = spec
-            self.produce_launcher(spec[0], spec[1], name, port_id, launcher_width, launcher_type=launcher_type)
+            self.produce_launcher(spec[0], spec[1], name, port_id, launcher_width,
+                                  gap=launcher_gap, launcher_type=launcher_type)
 
         return launchers

@@ -40,12 +40,16 @@ class FlipChipConnectorRf(FlipChipConnector):
             * ``Coax``: signal transmitting bump is surrounded by four ground bumps
         inter_bump_distance: distance between ground bumps
         output_rotation: rotation of the output port w.r.t. the input port
+        a2: Trace width of the centre conductor, 0 for automatic a/b ratio
+        b2: Gap width of the centre conductor, 0 for automatic a/b ratio
     """
 
     connector_type = Param(pdt.TypeString, "Connector type", "Coax",
         choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
-    inter_bump_distance = Param(pdt.TypeDouble, "Distance between In bumps ", 100, unit="μm")
+    inter_bump_distance = Param(pdt.TypeDouble, "Distance between In bumps", 100, unit="μm")
     output_rotation = Param(pdt.TypeDouble, "Rotation of output port w.r.t. input port", 180, unit="degrees")
+    a2 = Param(pdt.TypeDouble, "Width of flip-chip center conductor", 40, unit="μm")
+    b2 = Param(pdt.TypeDouble, "Width of flip-chip center gap", 40, unit="μm")
 
     def produce_impl(self):
         # Flip-chip bump
@@ -58,10 +62,10 @@ class FlipChipConnectorRf(FlipChipConnector):
         # Taper geometry
         taper = self.add_element(Launcher,
                                  s=self.ubm_diameter, l=self.ubm_diameter, face_ids=[self.face_ids[0]],
-                                 a=self.a, b=self.b)
+                                 a=self.a, b=self.b, a_launcher=self.a2, b_launcher=self.b2)
         taper_t = self.add_element(Launcher,
                                    s=self.ubm_diameter, l=self.ubm_diameter, face_ids=[self.face_ids[1]],
-                                   a=self.a, b=self.b)
+                                   a=self.a, b=self.b, a_launcher=self.a2, b_launcher=self.b2)
         self.insert_cell(taper, pya.DCplxTrans(
             1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_diameter, 0)), self.face_ids[0])
         self.insert_cell(taper_t, pya.DCplxTrans(
