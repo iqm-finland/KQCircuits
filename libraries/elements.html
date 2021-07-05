@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Elements &mdash; KQCircuits 3.4.0 documentation</title>
+  <title>Elements &mdash; KQCircuits 3.4.2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                3.4.0
+                3.4.2
               </div>
             
           
@@ -93,6 +93,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Libraries</a><ul class="current">
@@ -245,7 +246,7 @@ Refpoints “port_a” and “port_b” at top pad points closest to origin.</p>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
-<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f1719732550&gt;}</span></code></p></li>
+<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f89686e95e0&gt;}</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="fingercapacitorsquare">
@@ -296,8 +297,10 @@ adjusted to maintain the a/b ratio.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
-<li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>output_rotation</strong><em> (Double)</em><span> - Rotation of output port w.r.t. input port</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
+<li><p><strong>a2</strong><em> (Double)</em><span> - Width of flip-chip center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Width of flip-chip center gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="flip_chip_rf" src="../_images/flip_chip_rf.png" />
 </div>
@@ -329,6 +332,8 @@ the launcher pad. Pad width is also used for the length of the launcher pad.</p>
 <ul class="simple">
 <li><p><strong>s</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>l</strong><em> (Double)</em><span> - Tapering length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a_launcher</strong><em> (Double)</em><span> - Outer trace width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">240</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b_launcher</strong><em> (Double)</em><span> - Outer gap width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">144</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <p><strong>Origin:</strong> Waveguide port</p>
 <img alt="launcher" src="../_images/launcher.png" />

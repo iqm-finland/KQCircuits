@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 3.4.0 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits 3.4.2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                3.4.0
+                3.4.2
               </div>
             
           
@@ -93,6 +93,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
@@ -266,7 +267,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 
 <dl class="method">
 <dt id="kqcircuits.chips.chip.Chip.produce_launcher">
-<code class="sig-name descname">produce_launcher</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">direction</em>, <em class="sig-param">name</em>, <em class="sig-param">port_id</em>, <em class="sig-param">width</em>, <em class="sig-param">launcher_type='RF'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launcher" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">produce_launcher</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">direction</em>, <em class="sig-param">name</em>, <em class="sig-param">port_id</em>, <em class="sig-param">width</em>, <em class="sig-param">gap</em>, <em class="sig-param">launcher_type='RF'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inserts a launcher in the chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -276,6 +277,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <li><p><strong>name</strong> – name inserted as property “id” in the launcher</p></li>
 <li><p><strong>port_id</strong> – id inserted as property “port_id” in the launcher</p></li>
 <li><p><strong>width</strong> – controls the pad width and tapering length of the launcher</p></li>
+<li><p><strong>gap</strong> – controls the gap from pad to ground</p></li>
 <li><p><strong>launcher_type</strong> – type of the launcher, “RF” or “DC”</p></li>
 </ul>
 </dd>
@@ -428,7 +430,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 
 <dl class="method">
 <dt id="kqcircuits.chips.chip.Chip.produce_n_launchers">
-<code class="sig-name descname">produce_n_launchers</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">launcher_type</em>, <em class="sig-param">launcher_width</em>, <em class="sig-param">launcher_indent</em>, <em class="sig-param">launcher_assignments</em>, <em class="sig-param">pad_pitch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">produce_n_launchers</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">launcher_type</em>, <em class="sig-param">launcher_width</em>, <em class="sig-param">launcher_gap</em>, <em class="sig-param">launcher_indent</em>, <em class="sig-param">launcher_assignments</em>, <em class="sig-param">pad_pitch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces n launchers at default locations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -436,6 +438,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <li><p><strong>n</strong> – number of launcher pads</p></li>
 <li><p><strong>launcher_type</strong> – type of the launchers, “RF” or “DC”</p></li>
 <li><p><strong>launcher_width</strong> – width of the launchers</p></li>
+<li><p><strong>launcher_gap</strong> – pad to ground gap of the launchers</p></li>
 <li><p><strong>launcher_indent</strong> – distance between the chip edge and pad port</p></li>
 <li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a role to some of the launchers</p></li>
 <li><p><strong>pad_pitch</strong> – distance between pad centers</p></li>

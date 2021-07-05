@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 3.4.0 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits 3.4.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                3.4.0
+                3.4.2
               </div>
             
           
@@ -91,6 +91,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
@@ -251,7 +252,7 @@
 
         <span class="k">return</span> <span class="n">launcher_assignments</span></div>
 
-<div class="viewcode-block" id="Chip.produce_launcher"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launcher">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">port_id</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">launcher_type</span><span class="o">=</span><span class="s2">&quot;RF&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="Chip.produce_launcher"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launcher">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">port_id</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">gap</span><span class="p">,</span> <span class="n">launcher_type</span><span class="o">=</span><span class="s2">&quot;RF&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inserts a launcher in the chip.</span>
 
 <span class="sd">        Args:</span>
@@ -260,11 +261,12 @@
 <span class="sd">            name: name inserted as property &quot;id&quot; in the launcher</span>
 <span class="sd">            port_id: id inserted as property &quot;port_id&quot; in the launcher</span>
 <span class="sd">            width: controls the pad width and tapering length of the launcher</span>
+<span class="sd">            gap: controls the gap from pad to ground</span>
 <span class="sd">            launcher_type: type of the launcher, &quot;RF&quot; or &quot;DC&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">launcher_type</span> <span class="o">==</span> <span class="s2">&quot;RF&quot;</span><span class="p">:</span>
-            <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Launcher</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
+            <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Launcher</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">a_launcher</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">b_launcher</span><span class="o">=</span><span class="n">gap</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">launcher_type</span> <span class="o">==</span> <span class="s2">&quot;DC&quot;</span><span class="p">:</span>
             <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">LauncherDC</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">)</span>
 
@@ -304,7 +306,8 @@
 
         <span class="k">for</span> <span class="n">port_id</span> <span class="ow">in</span> <span class="n">enabled</span><span class="p">:</span>
             <span class="n">launcher</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="n">port_id</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">produce_launcher</span><span class="p">(</span><span class="n">launcher</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">launcher</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">launcher_map</span><span class="p">[</span><span class="n">port_id</span><span class="p">],</span> <span class="n">port_id</span><span class="p">,</span> <span class="n">launcher</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_launcher</span><span class="p">(</span><span class="n">launcher</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">launcher</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">launcher_map</span><span class="p">[</span><span class="n">port_id</span><span class="p">],</span>
+                                  <span class="n">port_id</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">launcher</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">gap</span><span class="o">=</span><span class="mi">180</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">launchers</span></div>
 
 <div class="viewcode-block" id="Chip.produce_launchers_ARD24"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers_ARD24">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers_ARD24</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -319,11 +322,11 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="mi">1200</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">launchers</span></div>
 
 <div class="viewcode-block" id="Chip.produce_launchers_RF80"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers_RF80">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers_RF80</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">520</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="mi">635</span><span class="p">)</span>
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">520</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="mi">635</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">launchers</span></div>
 
 <div class="viewcode-block" id="Chip.produce_launchers_DC"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers_DC">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers_DC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -335,7 +338,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="s2">&quot;DC&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="mi">850</span><span class="p">)</span>
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="s2">&quot;DC&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="mi">850</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">launchers</span></div>
 
 <div class="viewcode-block" id="Chip.produce_junction_tests"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_junction_tests">[docs]</a>    <span class="k">def</span> <span class="nf">produce_junction_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">default_squid_type</span><span class="p">):</span>
@@ -507,13 +510,15 @@
                 <span class="n">launcher_map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">launcher_map</span>
 
-<div class="viewcode-block" id="Chip.produce_n_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_n_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">launcher_type</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">pad_pitch</span><span class="p">):</span>
+<div class="viewcode-block" id="Chip.produce_n_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_n_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">launcher_type</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span> <span class="n">launcher_gap</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span>
+                            <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">pad_pitch</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces n launchers at default locations.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            n: number of launcher pads</span>
 <span class="sd">            launcher_type: type of the launchers, &quot;RF&quot; or &quot;DC&quot;</span>
 <span class="sd">            launcher_width: width of the launchers</span>
+<span class="sd">            launcher_gap: pad to ground gap of the launchers</span>
 <span class="sd">            launcher_indent: distance between the chip edge and pad port</span>
 <span class="sd">            launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers</span>
 <span class="sd">            pad_pitch: distance between pad centers</span>
@@ -543,7 +548,8 @@
             <span class="n">port_id</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">launcher_map</span><span class="p">[</span><span class="n">port_id</span><span class="p">]</span>
             <span class="n">launchers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">spec</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">produce_launcher</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">port_id</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span> <span class="n">launcher_type</span><span class="o">=</span><span class="n">launcher_type</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_launcher</span><span class="p">(</span><span class="n">spec</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">spec</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">port_id</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span>
+                                  <span class="n">gap</span><span class="o">=</span><span class="n">launcher_gap</span><span class="p">,</span> <span class="n">launcher_type</span><span class="o">=</span><span class="n">launcher_type</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">launchers</span></div></div>
 </pre></div>

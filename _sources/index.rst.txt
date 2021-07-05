@@ -46,6 +46,7 @@ Documentation
    :maxdepth: 2
 
    start/index
+   support
    user_guide/index
    developer/index
    libraries/index

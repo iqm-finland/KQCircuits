@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 3.4.0 documentation</title>
+  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 3.4.2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                3.4.0
+                3.4.2
               </div>
             
           
@@ -93,6 +93,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
@@ -330,13 +331,14 @@
 
 <dl class="function">
 <dt id="kqcircuits.util.geometry_helper.circle_polygon">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">circle_polygon</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#circle_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.circle_polygon" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">circle_polygon</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">n=64</em>, <em class="sig-param">origin=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#circle_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.circle_polygon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a polygon for a full circle around the origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> – radius</p></li>
-<li><p><strong>n</strong> – number of points</p></li>
+<li><p><strong>r</strong> – Radius</p></li>
+<li><p><strong>origin</strong> – Center of the circle, default (0,0)</p></li>
+<li><p><strong>n</strong> – Number of points.</p></li>
 </ul>
 </dd>
 </dl>
@@ -345,7 +347,7 @@
 
 <dl class="function">
 <dt id="kqcircuits.util.geometry_helper.arc_points">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">arc_points</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">start=0</em>, <em class="sig-param">stop=6.283185307179586</em>, <em class="sig-param">n=64</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#arc_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.arc_points" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">arc_points</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">start=0</em>, <em class="sig-param">stop=6.283185307179586</em>, <em class="sig-param">n=64</em>, <em class="sig-param">origin=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#arc_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.arc_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns point describing an arc around the origin with specified start and stop angles. The start and stop angle
 are included.</p>
 <p>If start &lt; stop, the points are counter-clockwise; if start &gt; stop, the points are clockwise.</p>
@@ -355,6 +357,7 @@ are included.</p>
 <li><p><strong>r</strong> – Arc radius</p></li>
 <li><p><strong>start</strong> – Start angle in radians, default 0</p></li>
 <li><p><strong>stop</strong> – Stop angle in radians, default 2*pi</p></li>
+<li><p><strong>origin</strong> – Center of the arc, default (0,0)</p></li>
 <li><p><strong>n</strong> – Number of steps corresponding to a full circle.</p></li>
 </ul>
 </dd>

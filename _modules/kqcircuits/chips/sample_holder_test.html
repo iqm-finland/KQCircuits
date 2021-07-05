@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.sample_holder_test &mdash; KQCircuits 3.4.0 documentation</title>
+  <title>kqcircuits.chips.sample_holder_test &mdash; KQCircuits 3.4.2 documentation</title>
   
 
   
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                3.4.0
+                3.4.2
               </div>
             
           
@@ -91,6 +91,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
@@ -202,11 +203,12 @@
     <span class="n">n_launchers</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of launchers&quot;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
     <span class="n">launcher_pitch</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Launcher pitch&quot;</span><span class="p">,</span> <span class="mi">635</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">launcher_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Launcher width&quot;</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">launcher_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Launcher gap&quot;</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">launcher_indent</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Launcher indent from edge&quot;</span><span class="p">,</span> <span class="mi">520</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SampleHolderTest.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">launcher_assignments</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_launchers</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">launcher_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">launcher_indent</span><span class="p">,</span>
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_launchers</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">launcher_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">launcher_gap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">launcher_indent</span><span class="p">,</span>
                                              <span class="n">launcher_assignments</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">launcher_pitch</span><span class="p">)</span>
 
         <span class="n">nr_pads_per_side</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_launchers</span> <span class="o">/</span> <span class="mf">4.</span><span class="p">)</span>

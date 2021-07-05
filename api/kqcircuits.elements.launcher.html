@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.launcher &mdash; KQCircuits 3.4.0 documentation</title>
+  <title>kqcircuits.elements.launcher &mdash; KQCircuits 3.4.2 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                3.4.0
+                3.4.2
               </div>
             
           
@@ -93,6 +93,7 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
@@ -222,7 +223,7 @@
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for a launcher for connecting wirebonds.</p>
 <p>Default wirebond direction to west, waveguide to east. Uses default ratio a
-and b for scaling the gap.</p>
+and b for scaling the gap if a_launcher and b_launcher not specified.</p>
 <dl class="method">
 <dt id="kqcircuits.elements.launcher.Launcher.produce_impl">
 <code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/launcher.html#Launcher.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.launcher.Launcher.produce_impl" title="Permalink to this definition">¶</a></dt>
@@ -236,6 +237,8 @@ and b for scaling the gap.</p>
 <ul class="simple">
 <li><p><strong>s</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>l</strong><em> (Double)</em><span> - Tapering length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a_launcher</strong><em> (Double)</em><span> - Outer trace width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">240</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b_launcher</strong><em> (Double)</em><span> - Outer gap width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">144</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.launcher.png" src="../_images/kqcircuits.elements.launcher.png" />
 </div>
