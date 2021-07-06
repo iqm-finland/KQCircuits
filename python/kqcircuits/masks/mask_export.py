@@ -26,6 +26,7 @@ from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
     default_mask_parameters, default_drc_runset, default_bar_format, ROOT_PATH, SCRIPTS_PATH
+from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.util.netlist_extraction import export_cell_netlist
 """Functions for exporting mask sets."""
 
@@ -194,12 +195,34 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
                 f.write("| **{}** | {} |\n".format(
                         param_declaration.description.replace("|", "&#124;"),
                         str(params[param_name])))
+            f.write("\n")
+
+            f.write("### Other Chip Information\n")
+            f.write("| | |\n")
+            f.write("| :--- | :--- |\n")
+            # launcher assignments
             launcher_assignments = Chip.get_launcher_assignments(cell)
             if len(launcher_assignments) > 0:
                 f.write("| **Launcher assignments** |")
                 for key, value in launcher_assignments.items():
                     f.write("{} = {}, ".format(key, value))
                 f.write("|\n")
+            # flip-chip bump count
+            bump_count = 0
+            def count_bumps_in_inst(inst):
+                nonlocal bump_count
+                if type(inst.pcell_declaration()) == FlipChipConnectorDc:
+                    bump_count += 1
+                # cannot use just inst.cell due to klayout bug, see
+                # https://www.klayout.de/forum/discussion/1191
+                inst_cell = inst.layout().cell(inst.cell_index)
+                for child_inst in inst_cell.each_inst():
+                    count_bumps_in_inst(child_inst)
+            for inst in cell.each_inst():
+                count_bumps_in_inst(inst)
+            if bump_count > 0:
+                f.write(f"| **Total bump count** | {bump_count} |\n")
+
             f.write("\n")
 
             f.write("___\n")
