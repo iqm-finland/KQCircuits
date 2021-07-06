@@ -31,6 +31,27 @@ log = logging.getLogger(__name__)
 def export_cell_netlist(cell, filename):
     """ Exports netlist into `filename` in JSON
 
+    The file will have three sections: ``{"nets": {...}, "subcircuits": {...}, "circuits": {...}}``
+
+    KLayout's `terminology <https://www.klayout.de/doc-qt5/manual/lvs_overview.html>`__ differs
+    from the one used in typical EDA tools where we have components (resistors, capacitors, etc.),
+    pins (the endpoints of components) and nets (i.e. wires between pins). Components are PCell
+    instances, a.k.a. cells, these are called subcircuits in the netlist file.
+
+    The main conceptual difference is that waveguides, that would be analogous to wires, are also
+    treated as components. Consequently, a net in the ``nets`` section usually contains exactly two
+    overlapping pins that belong to two different components each identified by a unique
+    ``subcircuit_id``. One of these is almost always a waveguide. Unconnected pins are not shown
+    except for Launchers.
+
+    The ``subcircuits`` section is a dictionary of the used cells: ``<subcircuit_id>: {"cell_name":
+    "...", "subcircuit_location": [<x>, <y>]}``. Where ``cell_name`` is the name of the used Element
+    optionally appended with ``$<n>`` if there are more than one Elements of the same type.
+    Different instances of the same cell will have different ``subcircuit_id`` but identical
+    ``cell_name``.
+
+    The ``circuits`` section maps ``cell_name`` to a dictionary of the named Element's parameters.
+
     Args:
         cell: pya Cell object
         filename: absolute path as convertible to string
