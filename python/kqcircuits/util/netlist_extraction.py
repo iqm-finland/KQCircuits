@@ -67,17 +67,13 @@ def export_cell_netlist(cell, filename):
     ltn.connect(connector_region)
     # extract netlist for the cell
     ltn.extract_netlist()
-    netlist = ltn.netlist()
     # extract cell to circuit map for finding the netlist of interest
     cm = ltn.const_cell_mapping_into(layout, cell)
     reverse_cell_map = {v: k for k, v in cm.table().items()}
     # export the circuit of interest
-    circuit = netlist.circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
-    if circuit:
-        log.info(f"Exporting netlist to {filename}")
-        export_netlist(circuit, filename, ltn.internal_layout(), layout, cm)
-    else:
-        log.info(f"No circuit found for {cell.display_title()}")
+    circuit = ltn.netlist().circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
+    log.info(f"Exporting netlist to {filename}")
+    export_netlist(circuit, filename, ltn.internal_layout(), layout, cm)
 
 
 def export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping):
@@ -92,47 +88,36 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
 
     """
     # first flatten subcircuits mentioned in elements to breakdown
-    # TODO implement an efficient depth first search or similar solution (also maybe w/o extract_subcircuit)
+    # TODO implement an efficient depth first search or similar solution
     for _ in range(internal_layout.top_cell().hierarchy_levels()):
         subcircuits = list(circuit.each_subcircuit())
         for subcircuit in subcircuits:
-            _, used_internal_cell = extract_subcircuit(internal_layout, subcircuit)
-            if used_internal_cell.name.split('$')[0] in default_netlist_breakdown:
+            internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
+            if internal_cell.name.split('$')[0] in default_netlist_breakdown:
                 circuit.flatten_subcircuit(subcircuit)
 
     nets_for_export = {}
     for net in circuit.each_net():
-        nets_for_export[net.expanded_name()] = \
-            extract_nets(net)
+        nets_for_export[net.expanded_name()] = extract_nets(net)
 
     subcircuits_for_export = {}
     used_internal_cells = set()
     for subcircuit in circuit.each_subcircuit():
-        subcircuit_for_export, used_internal_cell = extract_subcircuit(internal_layout, subcircuit)
-        used_internal_cells.add(used_internal_cell)
-        subcircuits_for_export[subcircuit.id()] = subcircuit_for_export
+        internal_cell_index = subcircuit.circuit_ref().cell_index
+        internal_cell = internal_layout.cell(internal_cell_index)
+        used_internal_cells.add(internal_cell)
+        subcircuits_for_export[subcircuit.id()] = {
+            "cell_name": internal_cell.name,
+            "subcircuit_location": subcircuit.circuit_ref().boundary.bbox().center()
+        }
 
     circuits_for_export = {}
-    for internal_cell in used_internal_cells:
-        circuits_for_export[internal_cell.name] = \
-            extract_circuits(cell_mapping, internal_cell, original_layout)
+    for internal_cell in sorted(used_internal_cells, key=lambda cell: cell.name):
+        circuits_for_export[internal_cell.name] =  extract_circuits(cell_mapping, internal_cell, original_layout)
 
     with open(str(filename), 'w') as fp:
         json.dump({"nets": nets_for_export, "subcircuits": subcircuits_for_export, "circuits": circuits_for_export}, fp,
                   cls=GeometryJsonEncoder, indent=4)
-
-
-def extract_subcircuit(internal_layout, subcircuit):
-    circuit = subcircuit.circuit_ref()
-    internal_cell_index = circuit.cell_index
-    internal_cell = internal_layout.cell(internal_cell_index)
-    used_internal_cell = internal_cell
-    subcircuit_for_export = {
-        "cell_name": internal_cell.name,
-        "subcircuit_name": subcircuit.expanded_name(),
-        "subcircuit_location": circuit.boundary.bbox().center()
-    }
-    return subcircuit_for_export, used_internal_cell
 
 
 def extract_nets(net):
@@ -141,7 +126,6 @@ def extract_nets(net):
     for pin_ref in net.each_subcircuit_pin():
         net_for_export.append({
             "subcircuit_id": pin_ref.subcircuit().id(),
-            "subcircuit_name": pin_ref.subcircuit().expanded_name(),
             "pin": pin_ref.pin().expanded_name()
         })
 

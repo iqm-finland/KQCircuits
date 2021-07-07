@@ -59,7 +59,7 @@ for obj in layout_view.object_selection:
         # TODO: replace by `cell = obj.inst().cell` once KLayout bug is fixed
 
         cell = obj.layout().cell(obj.inst().cell_index)
-        netlist_file = TMP_PATH / f"netlist_{cell.display_title()}.json"
+        netlist_file = TMP_PATH / f'netlist_{cell.basic_name().replace(" ", "")}.json'
         export_cell_netlist(cell, netlist_file)
         print(f"Exported {netlist_file}")</text>
 </klayout-macro>
