@@ -96,7 +96,8 @@ The primary use case is to estimate capacitive couplings between different eleme
 of interest has a port in the simulation. The capacitances are represented as a matrix, where the *Cij* is the
 capacitance between two ports *i* and *j*, and *Cii* is the capacitance between port *i* and ground.
 
-Available scripts:
+Main scripts:
+"""""""""""""
 
 * ``import_simulation_geometry.py``
 
@@ -129,6 +130,35 @@ Available scripts:
   Argument: path to json file exported by ``export_ansys_json``.
 
   Performs the full simulation sequence including running the three other scripts, saving the project, and running the simulation.
+
+
+Additional scripts for use cases other than capacitive coupling exist.
+These are enabled in ``import_and_simulate.py`` with a list of strings as parameters to ``export_ansys``,
+e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (``.sNp``) files::
+
+    export_ansys(..., export_processing=['tdr', 'snp_no_deembed'])
+
+The optional scripts are listed below.
+
+Optional scripts:
+"""""""""""""""""
+
+* ``export_snp_no_deembed.py``
+
+  No argument.
+
+  Disables de-embedding and exports the :math:`S`-matrix network data to a Touchstone (``.sNp``) file.
+
+  Works only in HFSS.
+
+* ``export_tdr.py``
+
+  No argument.
+
+  Creates a Time Domain Reflectometry report using ``TDRZt(port)`` for all ports and exports the data to a ``.csv``.
+
+  Works only in HFSS.
+
 
 Sonnet export
 -------------

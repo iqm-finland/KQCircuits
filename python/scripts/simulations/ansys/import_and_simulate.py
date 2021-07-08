@@ -58,3 +58,11 @@ oDesktop.RunScript(os.path.join(scriptpath, 'export_solution_data.py'))
 # Read export_processing settings from .json
 with open(jsonfile, 'r') as fp:
     export_processing = json.load(fp)['export_processing']
+
+# Time Domain Reflectometry
+if 'tdr' in export_processing:
+    oDesktop.RunScript(os.path.join(scriptpath, 'export_tdr.py'))
+
+# Export Touchstone S-matrix (.sNp) w/o de-embedding
+if 'snp_no_deembed' in export_processing:
+    oDesktop.RunScript(os.path.join(scriptpath, 'export_snp_no_deembed.py'))
