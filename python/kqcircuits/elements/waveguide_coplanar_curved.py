@@ -18,12 +18,10 @@
 
 import math
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
 from kqcircuits.elements.element import Element
-from kqcircuits.defaults import default_layers
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import vector_length_and_direction
+from kqcircuits.util.parameters import Param, pdt
 
 
 def up_mod(a, per):
@@ -40,13 +38,15 @@ def arc(r, start, stop, n):
 
     alpha_rel = up_mod(stop - start, math.pi * 2)  # from 0 to 2 pi
     alpha_step = 2 * math.pi / n * (
-        -1 if alpha_rel > math.pi else 1)  # shorter dir  n_steps = math.floor((2*math.pi-alpha_rel)/abs(alpha_step) if alpha_rel > math.pi else alpha_rel/abs(alpha_step))
+        -1 if alpha_rel > math.pi else 1)
+    # shorter dir
+    # n_steps = math.floor((2*math.pi-alpha_rel)/abs(alpha_step) if alpha_rel > math.pi else alpha_rel/abs(alpha_step))
     n_steps = math.floor(
         (2 * math.pi - alpha_rel) / abs(alpha_step) if alpha_rel > math.pi else alpha_rel / abs(alpha_step))
 
     alpha = start
 
-    for i in range(0, n_steps + 1):
+    for _ in range(0, n_steps + 1):
         pts.append(pya.DPoint(r * math.cos(alpha), r * math.sin(alpha)))
         alpha += alpha_step
         last = alpha
@@ -132,7 +132,7 @@ class WaveguideCoplanarCurved(Element):
             face_index (int): face index of the face in elem where the termination is created
         """
         left_inner_arc, left_outer_arc, right_inner_arc, right_outer_arc, left_protection_arc, right_protection_arc,\
-            annotation_arc = WaveguideCoplanarCurved.create_curve_arcs(elem, angle)
+            _ = WaveguideCoplanarCurved.create_curve_arcs(elem, angle)
 
         # direction of the termination box
         _, term_dir = vector_length_and_direction(left_outer_arc[0] - left_outer_arc[1])
@@ -158,4 +158,4 @@ class WaveguideCoplanarCurved(Element):
             right_protection_arc[0],
         ]
         protection_shape = pya.DPolygon(protection_pts)
-        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground_grid_avoidance"])).insert(trans*protection_shape)
+        elem.cell.shapes(elem.get_layer("ground_grid_avoidance", face_index)).insert(trans*protection_shape)

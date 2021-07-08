@@ -25,7 +25,7 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from geometry import create_box, create_polygon
+from geometry import create_box, create_polygon  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -35,9 +35,8 @@ oDesktop.AddMessage("", "", 0, "Starting import script (%s)" % time.asctime(time
 jsonfile = ScriptArgument
 path = os.path.dirname(jsonfile)
 
-fjsonfile = open(jsonfile, 'r')
-data = json.load(fjsonfile)
-fjsonfile.close()
+with open(jsonfile, 'r') as fjsonfile:
+    data = json.load(fjsonfile)
 
 ansys_tool = data['ansys_tool'] if 'ansys_tool' in data else 'hfss'
 gds_file = data['gds_file']
@@ -319,7 +318,7 @@ if ansys_tool == 'hfss':
 
         # Create polygon spanning the two edges
         create_polygon(oEditor, polyname,
-                       [[x for x in p] for p in port['polygon']], units)
+                       [list(p) for p in port['polygon']], units)
 
         is_wave_port = port['type'] == 'EdgePort'
 
@@ -348,7 +347,7 @@ elif ansys_tool == 'q3d':
             # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
             signal_location = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
         else:
-            signal_location = [x for x in port['signal_location']]
+            signal_location = list(port['signal_location'])
         signal_location += [chip_distance if port['face'] == 1 else 0.0]  # z-component
 
         port_object = oEditor.GetBodyNamesByPosition(
@@ -421,7 +420,7 @@ if 'analysis_setup' in data:
 
     if ansys_tool == 'hfss':
         # create setup_list for analysis setup with TWO OPTIONS: multiple frequency or single frequency
-        multiple_frequency = (type(setup['frequency']) == list)
+        multiple_frequency = (isinstance(setup['frequency'], list))
         setup_list = [
             "NAME:Setup1",
             "AdaptMultipleFreqs:=", multiple_frequency
@@ -429,7 +428,7 @@ if 'analysis_setup' in data:
 
         if multiple_frequency:
             max_delta_s = setup['max_delta_s']
-            if type(max_delta_s) != list:
+            if not isinstance(type(max_delta_s), list):
                 max_delta_s = [max_delta_s] * len(setup['frequency'])  # make max_delta_s a list
             maf_setup_list = ["NAME:MultipleAdaptiveFreqsSetup"]
             for f, s in zip(setup['frequency'], max_delta_s):
@@ -497,7 +496,7 @@ if 'analysis_setup' in data:
              "EnforceCausality:=", False
              ])
     elif ansys_tool == 'q3d':
-        if type(setup['frequency']) == list:
+        if isinstance(type(setup['frequency']), list):
             setup['frequency'] = setup['frequency'][0]
             oDesktop.AddMessage("", "", 0, "Multi-frequency is not supported in Q3D. Create setup with frequency "
                                            "{}.".format(str(setup['frequency']) + setup['frequency_units']))

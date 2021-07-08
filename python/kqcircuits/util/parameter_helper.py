@@ -15,29 +15,27 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+"""
+    Helper module for pcell parameter schemas.
+
+    Typical usage example::
+
+        from kqcircuits.util.parameter_helper import Validator
+        schema = {
+            "n": {
+                "type": pya.PCellParameterDeclaration.TypeInt,
+                "description": "Number of elements",
+                "default": 10
+            }
+        }
+        validator = Validator(schema)
+        if validator.validate({"n": 100}):
+            # Do something with validated parameters...
+"""
 
 from autologging import logged, traced
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
-"""
-    Helper module for pcell parameter schemas.
-
-    Typical usage example:
-
-    from kqcircuits.util.parameter_helper import Validator
-    schema = {
-        "n": {
-            "type": pya.PCellParameterDeclaration.TypeInt,
-            "description": "Number of elements",
-            "default": 10
-        }
-    }
-    validator = Validator(schema)
-    if validator.validate({"n": 100}):
-        # Do something with validated parameters...
-"""
 
 
 @traced
@@ -96,9 +94,8 @@ class Validator():
                 if value is None:
                     if rules["required"]:
                         raise ValueError(_generate_missing_parameter_message(name))
-                    else:
-                        self.__log.debug("Validated {}.".format(name))
-                        return True
+                    self.__log.debug("Validated {}.".format(name))
+                    return True
                 else:
                     if _is_of_type(value, rules["type"]):
                         self.__log.debug("Validated {}.".format(name))
@@ -108,9 +105,8 @@ class Validator():
             else:
                 if rules["required"]:
                     raise ValueError(_generate_missing_parameter_message(name))
-                else:
-                    self.__log.debug("Validated {}.".format(name))
-                    return True
+                self.__log.debug("Validated {}.".format(name))
+                return True
 
     def __validate_schema(self):
         """Validates schema.
@@ -210,15 +206,13 @@ def _is_of_type(value, rule_type):
     if rule_type is pya.PCellParameterDeclaration.TypeNone and value is None:
         return True
     if rule_type is pya.PCellParameterDeclaration.TypeShape and (
-            isinstance(value, pya.DBox)
-            or isinstance(value, pya.DEdge)
-            or isinstance(value, pya.DPoint)
-            or isinstance(value, pya.DPolygon)
-            or isinstance(value, pya.DPath)
+            isinstance(value, (pya.DBox, pya.DEdge, pya.DPoint, pya.DPolygon, pya.DPath))
     ):
         return True
     if rule_type is pya.PCellParameterDeclaration.TypeString and isinstance(value, str):
         return True
+
+    return False
 
 
 def _is_valid_choices(value, choice_type):

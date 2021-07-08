@@ -16,11 +16,9 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-
-from kqcircuits.elements.element import Element
-from kqcircuits.defaults import default_layers
 
 
 class Launcher(Element):

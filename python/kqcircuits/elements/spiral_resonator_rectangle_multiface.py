@@ -70,7 +70,7 @@ class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
         if space + numerical_inaccuracy < 0.0:
             return current_len, False, False
 
-        segment_len, segment_dir, corner_offset, straight_len, curve_angle, final_segment = \
+        _, segment_dir, corner_offset, straight_len, curve_angle, final_segment = \
             self.get_segment_data(point1, point2, current_len, rotation, max(0.0, space))
 
         if (not final_segment and space < 2 * self.r) or \
@@ -90,7 +90,7 @@ class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
                     connector_len < straight_len + numerical_inaccuracy:
                 dist1 = max(connector_len / 2, self.connector_dist - current_len)
                 connector_trans = pya.DTrans(rotation, False, point1 + (self.r + dist1) * segment_dir)
-                connector_inst, connector_ref = self.insert_cell(connector_cell, res_trans * connector_trans)
+                _, connector_ref = self.insert_cell(connector_cell, res_trans * connector_trans)
                 face_0_len = dist1 - connector_len / 2
                 face_1_len = straight_len - dist1 - connector_len / 2
                 if face_0_len > numerical_inaccuracy:

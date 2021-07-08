@@ -25,7 +25,8 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the HFSS internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from util import get_enabled_setup, get_enabled_setup_and_sweep, get_solution_data, ComplexEncoder
+from util import get_enabled_setup, get_enabled_setup_and_sweep, get_solution_data, \
+    ComplexEncoder  # pylint: disable=wrong-import-position
 
 
 def calculate_total_capacitance_to_ground(c_matrix):
@@ -40,12 +41,11 @@ def calculate_total_capacitance_to_ground(c_matrix):
 
 def save_capacitance_matrix(file_name, c_matrix, c_to_ground, detail=''):
     """Save capacitance matrix in readable format. """
-    out_file = open(file_name, 'w')
-    out_file.write("Capacitance matrix" + detail + ":\n" + '\n'.join(
-        ['\t'.join(['%8.3f' % (item * 1e15) for item in row]) for row in c_matrix]) + '\n')
-    out_file.write("Total capacitance to ground" + detail + ":\n" +
-                   '\t'.join(['%8.3f' % (item * 1e15) for item in c_to_ground]) + '\n')
-    out_file.close()
+    with open(file_name, 'w') as out_file:
+        out_file.write("Capacitance matrix" + detail + ":\n" + '\n'.join(
+            ['\t'.join(['%8.3f' % (item * 1e15) for item in row]) for row in c_matrix]) + '\n')
+        out_file.write("Total capacitance to ground" + detail + ":\n" +
+                       '\t'.join(['%8.3f' % (item * 1e15) for item in c_to_ground]) + '\n')
 
 
 # Set up environment
@@ -88,17 +88,18 @@ if design_type == "HFSS":
     save_capacitance_matrix(matrix_filename, CMatrix, Cg, detail=' at ' + freq)
 
     # Save results in json format
-    outfile = open(json_filename, 'w')
-    json.dump({'CMatrix': CMatrix,
-               'Cg': Cg,
-               'yyMatrix': yyMatrix,
-               'freq': freq,
-               'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                           ["yy_{}_{}".format(port_i, port_j) for port_j in ports for port_i in ports]),
-               'Cdata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                          ["C_{}_{}".format(port_i, port_j) for port_j in ports for port_i in ports])
-               }, outfile, cls=ComplexEncoder, indent=4)
-    outfile.close()
+    with open(json_filename, 'w') as outfile:
+        json.dump({'CMatrix': CMatrix,
+                   'Cg': Cg,
+                   'yyMatrix': yyMatrix,
+                   'freq': freq,
+                   'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
+                                               ["yy_{}_{}".format(port_i, port_j) for port_j in ports
+                                                for port_i in ports]),
+                   'Cdata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
+                                              ["C_{}_{}".format(port_i, port_j) for port_j in ports
+                                               for port_i in ports])
+                   }, outfile, cls=ComplexEncoder, indent=4)
 
     # S-parameter export (only for HFSS)
     file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
@@ -135,14 +136,13 @@ elif design_type == "Q3D Extractor":
     save_capacitance_matrix(matrix_filename, CMatrix, Cg)
 
     # Save results in json format
-    outfile = open(json_filename, 'w')
-    json.dump({'CMatrix': CMatrix,
-               'Cg': Cg,
-               'Cdata': get_solution_data(oReportSetup, "Matrix", solution, context, [],
-                                          ["C_{}_{}".format(net_i, net_j) for net_j in signal_nets for net_i in
-                                           signal_nets])
-               }, outfile, cls=ComplexEncoder, indent=4)
-    outfile.close()
+    with open(json_filename, 'w') as outfile:
+        json.dump({'CMatrix': CMatrix,
+                   'Cg': Cg,
+                   'Cdata': get_solution_data(oReportSetup, "Matrix", solution, context, [],
+                                              ["C_{}_{}".format(net_i, net_j) for net_j in signal_nets for net_i in
+                                               signal_nets])
+                   }, outfile, cls=ComplexEncoder, indent=4)
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Done exporting PI model results (%s)" % time.asctime(time.localtime()))

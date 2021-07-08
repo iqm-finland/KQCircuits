@@ -32,7 +32,8 @@ class XMonsDirectCouplingSim(Simulation):
     squid_type = Param(pdt.TypeString, "SQUID Type", "SIM1")
     fluxline_type = Param(pdt.TypeString, "Fluxline Type", "none")
 
-    waveguide_length = Param(pdt.TypeDouble, "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
+    waveguide_length = Param(pdt.TypeDouble,
+                             "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
     cpl_width = Param(pdt.TypeDouble, "Qubit RR coupler width", 24, unit="μm")
 
     produce_qubits = XMonsDirectCoupling.produce_qubits
@@ -101,6 +102,9 @@ class XMonsDirectCouplingSim(Simulation):
         )
 
         # qubits
-        self.ports.append(InternalPort(7, *self.etched_line(self.refpoints["QB1_port_squid_a"], self.refpoints["QB1_port_squid_b"])))
-        self.ports.append(InternalPort(8, *self.etched_line(self.refpoints["QB2_port_squid_a"], self.refpoints["QB2_port_squid_b"])))
-        self.ports.append(InternalPort(9, *self.etched_line(self.refpoints["QB3_port_squid_a"], self.refpoints["QB3_port_squid_b"])))
+        self.ports.append(
+            InternalPort(7, *self.etched_line(self.refpoints["QB1_port_squid_a"], self.refpoints["QB1_port_squid_b"])))
+        self.ports.append(
+            InternalPort(8, *self.etched_line(self.refpoints["QB2_port_squid_a"], self.refpoints["QB2_port_squid_b"])))
+        self.ports.append(
+            InternalPort(9, *self.etched_line(self.refpoints["QB3_port_squid_a"], self.refpoints["QB3_port_squid_b"])))

@@ -16,8 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
@@ -30,13 +28,11 @@ from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.util.coupler_lib import produce_library_capacitor
 
 
-"""
-v1.1
-With this version of the qfactor, airbridges to the left and right parts of the resonators are added.
--The padding size for layer_3 has been changed to 25 um * 23 um.
--The bridge measurements on the layer_4 changed to 42 um * 18 um.
--The pad measurements layer_4 has been changed to 21 um * 19 um.
-"""
+# v1.1
+# With this version of the qfactor, airbridges to the left and right parts of the resonators are added.
+# -The padding size for layer_3 has been changed to 25 um * 23 um.
+# -The bridge measurements on the layer_4 changed to 42 um * 18 um.
+# -The pad measurements layer_4 has been changed to 21 um * 19 um.
 
 version = 1.1
 
@@ -47,7 +43,8 @@ class QualityFactor(Chip):
     res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589])
     n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4])
     l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28, 3])
-    type_coupler = Param(pdt.TypeList, "Coupler type", ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
+    type_coupler = Param(pdt.TypeList, "Coupler type",
+                         ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
     n_ab = Param(pdt.TypeList, "Number of resonator airbridges", [5, 0, 5, 5, 5, 5])
     res_term = Param(pdt.TypeList, "Resonator termination type",
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
@@ -101,7 +98,7 @@ class QualityFactor(Chip):
         for i in range(resonators):
             # Cross
             cross_trans = pya.DTrans(tl_start + v_res_step * (i + 0.5))
-            inst_cross, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
+            _, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
 
             # Coupler
             cplr = produce_library_capacitor(self.layout, n_fingers[i], l_fingers[i], type_coupler[i])

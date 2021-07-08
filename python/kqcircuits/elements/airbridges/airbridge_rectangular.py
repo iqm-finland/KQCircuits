@@ -16,11 +16,11 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from autologging import logged, traced
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 
 @traced

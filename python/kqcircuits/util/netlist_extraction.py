@@ -17,13 +17,14 @@
 
 
 import json
+import logging
 from os import cpu_count
+
+from kqcircuits.defaults import default_layers, default_netlist_breakdown
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
-from kqcircuits.defaults import default_layers, default_netlist_breakdown
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
-import logging
 log = logging.getLogger(__name__)
 
 
@@ -72,7 +73,7 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
     # first flatten subcircuits mentioned in elements to breakdown
     # TODO implement an efficient depth first search or similar solution (also maybe w/o extract_subcircuit)
     for _ in range(internal_layout.top_cell().hierarchy_levels()):
-        subcircuits = [e for e in circuit.each_subcircuit()]
+        subcircuits = list(circuit.each_subcircuit())
         for subcircuit in subcircuits:
             _, used_internal_cell = extract_subcircuit(internal_layout, subcircuit)
             if used_internal_cell.name.split('$')[0] in default_netlist_breakdown:

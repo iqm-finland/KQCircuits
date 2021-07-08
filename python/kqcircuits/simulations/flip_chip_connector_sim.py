@@ -28,7 +28,7 @@ class FlipChipConnectorSim(Simulation):
         fcc_cell = self.add_element(FlipChipConnectorRf, **self.get_parameters())
 
         transf = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
-        isnt, refp = self.insert_cell(fcc_cell, transf)
+        _, refp = self.insert_cell(fcc_cell, transf)
 
         self.produce_waveguide_to_port(refp["b_port"], refp["b_port_corner"], 1, 'left', face=0)
         self.produce_waveguide_to_port(refp["t_port"], refp["t_port_corner"], 2, 'right', face=1)

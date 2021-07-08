@@ -16,28 +16,22 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import os
-from string import Template
 import logging
-from kqcircuits.pya_resolver import pya
+from string import Template
 
 
 def apply_template(filename_template, filename_output, rules):
-    filein = open(filename_template)
-    src = Template(filein.read())
-    filein.close()
+    with open(filename_template) as filein:
+        src = Template(filein.read())
     results = src.substitute(rules)
-    fileout = open(filename_output, "w")
-    fileout.write(results)
-    fileout.close()
-    """
-    dirname_sondata = os.path.join(os.path.dirname(filename_output), "sondata")
-    if not os.path.exists(dirname_sondata):
-        os.mkdir(dirname_sondata)
-    dirname_project = os.path.join(dirname_sondata, os.path.splitext(os.path.basename(filename_output))[0])
-    if not os.path.exists(dirname_project):
-        os.mkdir(dirname_project)
-    """
+    with open(filename_output, "w") as fileout:
+        fileout.write(results)
+    # dirname_sondata = os.path.join(os.path.dirname(filename_output), "sondata")
+    # if not os.path.exists(dirname_sondata):
+    #     os.mkdir(dirname_sondata)
+    # dirname_project = os.path.join(dirname_sondata, os.path.splitext(os.path.basename(filename_output))[0])
+    # if not os.path.exists(dirname_project):
+    #     os.mkdir(dirname_project)
 
 
 def polygon_head(
@@ -54,13 +48,13 @@ def polygon_head(
         res=0,  # reserved for sonnet future
         edge_mesh="Y"  # edge mesh on (Y) or off (N)
 ):
-    return "{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} {edge_mesh}\n".format(
-        **locals())
+    return f"{ilevel} {nvertices} {mtype} {filltype} {debugid} {xmin} {ymin} {xmax} {ymax} {conmax} {res} {res} " \
+           f"{edge_mesh}\n"
 
 
 def symmetry(sym: bool = False):
     sonnet_str = ""
-    if (sym):
+    if sym:
         sonnet_str = "SYM"
     return sonnet_str
 
@@ -80,8 +74,10 @@ def box(
     materials = {
         "Si RT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.7 1 0 0 0 0 \"Silicon (room temperature)\"",
         "Si BT": "3000 1 1 0 0 0 0 \"vacuum\"\n500 11.45 1 1e-006 0 0 0 \"Silicon (10mK)\"",
-        "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
-        "Si+Al": "3000 1 1 0 0 0 0 \"vacuum\"\n0.5 9.9 1 0.0001 0 0 0 \"Alumina (99.5%)\"\n0.45 1 1 0 0 0 0 \"vacuum\"\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
+        "SiOx+Si": "3000 1 1 0 0 0 0 \"vacuum\"\n0.55 3.78 11.7 1 0 0 0 \"SiOx (10mK)\"\n525 11.45 1 1e-06 0 0 0 \"Si "
+                   "(10mK)\"",
+        "Si+Al": "3000 1 1 0 0 0 0 \"vacuum\"\n0.5 9.9 1 0.0001 0 0 0 \"Alumina (99.5%)\"\n0.45 1 1 0 0 0 0 \"vacuum\""
+                 "\n525 11.45 1 1e-06 0 0 0 \"Si (10mK)\"",
     }[materials_type]
 
     nlev = {
@@ -91,7 +87,7 @@ def box(
         "Si+Al": 3
     }[materials_type]
 
-    return "BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n{materials}".format(**locals())
+    return f"BOX {nlev} {xwidth} {ywidth} {xcells2} {ycells2} {nsubs} {eeff}\n{materials}"
 
 
 def refplane(
@@ -99,19 +95,20 @@ def refplane(
         length: int = 0,
         port_ipoly: str = "" # "LINK" or "FIX"
         ):
-    if (port_ipoly != ""):
+    if port_ipoly != "":
         plane_type = "LINK"
         poly = "POLY {} 1\n0\n".format(port_ipoly[0])
         length = ""
     else:
         plane_type = "FIX"
         poly = ""
-    return "DRP1 {position} {plane_type} {length}\n{poly}".format(**locals())
+    return f"DRP1 {position} {plane_type} {length}\n{poly}"
+
 
 def refplanes(positions, length, port_ipolys):
     sonnet_str = ""
-    for i in range(0, len(positions)):
-        sonnet_str += refplane(positions[i], length, port_ipolys[i])
+    for i, pos in enumerate(positions):
+        sonnet_str += refplane(pos, length, port_ipolys[i])
     return sonnet_str
 
 
@@ -120,8 +117,8 @@ def port(
         ipolygon,
         ivertex,
         port_type="STD",  # STD for standard | AGND autogrounded | CUP cocalibrated
-        xcord=0,
-        ycord=0,
+        xcord=0,  # pylint: disable=unused-argument
+        ycord=0,  # pylint: disable=unused-argument
         group="",
         resist=50,
         react=0,
@@ -131,8 +128,8 @@ def port(
     if group:
         group = '"' + group + '"'
     logging.info(locals())
-    return "POR1 {port_type} {group}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} {resist} {react} {induct} {capac}\n".format(
-        **locals())  # {xcord} {ycord} [reftype rpcallen]
+    return f"POR1 {port_type} {group}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} {resist} {react} {induct} {capac}\n"
+    # {xcord} {ycord} [reftype rpcallen]
 
 
 # def ports(shapes):
@@ -153,7 +150,8 @@ def port(
 def control(control_type):
     return {
         "Simple": "SIMPLE",  # Linear frequency sweep
-        "ABS": "ABS", # Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates the rest
+        "ABS": "ABS", # Sonnet guesses the resonances, simulates about 5 points around the resonance and interpolates
+                      # the rest
         "Sweep": "VARSWP"
     }[control_type]
 
@@ -168,9 +166,10 @@ def polygons(polygons, v, dbu, ilevel, fill_type):
         else:
             sonnet_str += polygon_head(nvertices=poly.num_points_hull() + 1,
                                    debugid=i + 1, ilevel=next(ilevel),
-                                   filltype=fill_type)  # "Debugid" is actually used for mapping ports to polygons, 0 is not allowed
+                                   filltype=fill_type)  # "Debugid" is actually used for mapping ports to polygons, 0 is
+                                                        # not allowed
 
-        for j, point in enumerate(poly.each_point_hull()):
+        for _, point in enumerate(poly.each_point_hull()):
             sonnet_str += "{} {}\n".format(point.x * dbu + v.x,
                                            -(point.y * dbu + v.y))  # sonnet Y-coordinate goes in the other direction
         point = next(poly.each_point_hull())  # first point again to close the polygon

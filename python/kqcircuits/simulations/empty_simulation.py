@@ -17,7 +17,6 @@
 
 
 from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.pya_resolver import pya
 
 
 class EmptySimulation(Simulation):

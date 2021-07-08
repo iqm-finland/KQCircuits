@@ -52,7 +52,8 @@ class TsvTest(Chip):
         self.insert_cell(cell_pattern, pya.DCplxTrans(1, 0, False, 5000, 5000))
 
         # metrology cell for crossectional analysis
-        min_spacing = self.tsv_diameter if self.tsv_type == "circular" else max([self.tsv_diameter, self.tsv_ellipse_width])
+        min_spacing = self.tsv_diameter if self.tsv_type == "circular" else max([self.tsv_diameter,
+                                                                                 self.tsv_ellipse_width])
         self.create_xsection(position=pya.DPoint(1250, 1250), array_form=[10, 10],
                              pitch=self.metrology_pitch + min_spacing)
         self.create_xsection(position=pya.DPoint(1250, 8750), array_form=[8, 8],

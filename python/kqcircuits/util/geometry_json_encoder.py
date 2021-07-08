@@ -22,15 +22,15 @@ from kqcircuits.pya_resolver import pya
 
 class GeometryJsonEncoder(json.JSONEncoder):
     """JSON encoder that converts several pya D* types into nested lists."""
-    def default(self, obj):
-        if isinstance(obj, pya.DPoint) or isinstance(obj, pya.DVector):
-            return [obj.x, obj.y]
-        if isinstance(obj, pya.DBox):
-            return [[obj.p1.x, obj.p1.y], [obj.p2.x, obj.p2.y]]
-        if isinstance(obj, pya.LayerInfo):
-            return obj.layer
-        if isinstance(obj, pya.DPath):
-            return [(p.x, p.y) for p in obj.each_point()]
+    def default(self, o):
+        if isinstance(o, (pya.DPoint, pya.DVector)):
+            return [o.x, o.y]
+        if isinstance(o, pya.DBox):
+            return [[o.p1.x, o.p1.y], [o.p2.x, o.p2.y]]
+        if isinstance(o, pya.LayerInfo):
+            return o.layer
+        if isinstance(o, pya.DPath):
+            return [(p.x, p.y) for p in o.each_point()]
 
         # Use the default JSON encoder for any other types
-        return json.JSONEncoder.default(self, obj)
+        return json.JSONEncoder.default(self, o)

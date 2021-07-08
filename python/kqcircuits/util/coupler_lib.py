@@ -40,7 +40,7 @@ def produce_library_capacitor_typestring(layout, typestring: str, length: float,
 
 def produce_library_capacitor(layout, fingers, length, coupler_type="interdigital", **kwargs):
     # Capacitor
-    if (coupler_type == "gap"):
+    if coupler_type == "gap":
         cap = FingerCapacitorSquare.create(layout,
                                            finger_number=fingers,
                                            finger_length=0,
@@ -51,7 +51,7 @@ def produce_library_capacitor(layout, fingers, length, coupler_type="interdigita
                                            # corner_r=0,
                                            **kwargs
                                            )
-    elif (coupler_type == "interdigital"):
+    elif coupler_type == "interdigital":
         cap = FingerCapacitorSquare.create(layout,
                                            finger_number=fingers,
                                            finger_length=length,

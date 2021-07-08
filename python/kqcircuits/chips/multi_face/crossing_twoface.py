@@ -16,14 +16,10 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
 from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
-
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 version = 1
 
@@ -106,8 +102,7 @@ class CrossingTwoface(MultiFace):
             nodes.append(Node((ref_x_1, last_y), face_id="b"))
             nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
-        nodes.append(Node((self.face1_box.p1.x + 100, self.refpoints["WS_port"].y),
-                          a=self.a, b=self.b)),
+        nodes.append(Node((self.face1_box.p1.x + 100, self.refpoints["WS_port"].y), a=self.a, b=self.b))
         nodes.append(Node(self.refpoints["WS_port_corner"]))
         nodes.append(Node(self.refpoints["WS_port"]))
         self.insert_cell(WaveguideComposite,

@@ -15,6 +15,11 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+"""M004 mask.
+
+Q and AB tests
+
+"""
 
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
@@ -22,11 +27,6 @@ from kqcircuits.defaults import TMP_PATH
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.masks.mask_set import MaskSet
 
-"""M004 mask.
-
-Q and AB tests
-
-"""
 
 view = KLayoutView(current=True, initialize=True)
 layout = KLayoutView.get_active_layout()
@@ -52,8 +52,9 @@ m004.add_mask_layout(MaskSet.chips_map_from_box_map(box_map, mask_map))
 parameters_qd = {
     "res_lengths": [4649.6, 4743.3, 4869.9, 4962.9, 5050.7, 5138.7, 5139., 5257., 5397.4, 5516.8, 5626.6, 5736.2,
                     5742.9, 5888.7, 6058.3, 6202.5, 6350., 6489.4],
-    "type_coupler": ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap", "interdigital", "interdigital", "interdigital", "gap",
-                     "gap", "gap", "interdigital", "interdigital", "interdigital", "interdigital", "gap", "gap"],
+    "type_coupler": ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap", "interdigital",
+                     "interdigital", "interdigital", "gap", "gap", "gap", "interdigital", "interdigital",
+                     "interdigital", "interdigital", "gap", "gap"],
     "l_fingers": [19.9, 54.6, 6.7, 9.7, 22.8, 30.5, 26.1, 14.2, 18.2, 10.9, 19.8, 26.4, 34.2, 19.9, 25.3, 8., 15.8,
                   22.2],
     "n_fingers": [4, 2, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 4, 4],

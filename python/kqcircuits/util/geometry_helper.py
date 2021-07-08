@@ -209,7 +209,7 @@ def is_clockwise(polygon_points):
     b = polygon_points[bottom_left_point_idx]
     c = polygon_points[(bottom_left_point_idx + 1) % len(polygon_points)]
     det = (b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y)
-    return True if det < 0 else False
+    return det < 0
 
 
 def circle_polygon(r, n=64, origin=pya.DPoint(0, 0)):

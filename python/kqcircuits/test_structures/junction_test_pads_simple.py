@@ -16,8 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import numpy
-
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 
 

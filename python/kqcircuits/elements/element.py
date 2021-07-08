@@ -16,15 +16,15 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.util.geometry_helper import get_cell_path_length
-from autologging import logged, traced
 from inspect import isclass
 
+from autologging import logged, traced
+
 from kqcircuits.defaults import default_layers, default_faces
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.util.library_helper import load_libraries, to_library_name
+from kqcircuits.util.parameters import Param, pdt
 
 
 @traced
@@ -171,7 +171,7 @@ class Element(pya.PCellDeclarationHelper):
             trans = pya.DTrans()
         if (align_to and align) is not None:
             align = self.get_refpoints(cell, trans)[align]
-            if type(align_to) == str:
+            if isinstance(align_to, str):
                 align_to = self.refpoints[align_to]
             trans = pya.DCplxTrans(align_to - align) * trans
 
@@ -279,19 +279,19 @@ class Element(pya.PCellDeclarationHelper):
             return self.layout.layer(self.face(face_id)[layer_name])
 
     @staticmethod
-    def _create_cell(cls, layout, **parameters):
-        """Create cell for cls in layout.
+    def _create_cell(elem_cls, layout, **parameters):
+        """Create cell for elem_cls in layout.
 
         This is separated from the class method `create` to enable invocation from classes where `create` is shadowed.
 
         Args:
-            cls: element class for which the cell is created
+            elem_cls: element class for which the cell is created
             layout: pya.Layout object where this cell is created
             **parameters: PCell parameters for the element as keyword arguments
         """
-        cell_library_name = to_library_name(cls.__name__)
-        load_libraries(path=cls.LIBRARY_PATH)
-        return layout.create_cell(cell_library_name, cls.LIBRARY_NAME, parameters)
+        cell_library_name = to_library_name(elem_cls.__name__)
+        load_libraries(path=elem_cls.LIBRARY_PATH)
+        return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
 
     def _add_parameter(self, name, value_type, description,
                        default=None, unit=None, hidden=False, readonly=False, choices=None, docstring=None):
@@ -306,6 +306,7 @@ class Element(pya.PCellDeclarationHelper):
         For TypeLayer parameters this also defines a `name_layer` read accessor for the layer index and modifies
         `self._layer_param_index` accordingly.
         """
+        # pylint: disable=unused-argument
 
         # special handling of layer parameters
         if value_type == pya.PCellParameterDeclaration.TypeLayer:

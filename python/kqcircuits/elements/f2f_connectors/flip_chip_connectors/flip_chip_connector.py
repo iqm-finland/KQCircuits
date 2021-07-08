@@ -14,12 +14,11 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-from kqcircuits.pya_resolver import pya
 from autologging import logged, traced
 
+from kqcircuits.elements.element import Element
 from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.elements.element import Element
 
 
 @traced
@@ -33,9 +32,6 @@ class FlipChipConnector(Element):
 
     ubm_diameter = Param(pdt.TypeDouble, "Under-bump metalization diameter", 40, unit="μm")
     bump_diameter = Param(pdt.TypeDouble, "Bump diameter", 25, unit="μm")
-
-    def produce_impl(self):
-        super().produce_impl()
 
     def create_bump_connector(self):
         ubm_shape = circle_polygon(self.ubm_diameter / 2, self.n)

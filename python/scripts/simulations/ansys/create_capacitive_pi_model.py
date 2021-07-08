@@ -16,14 +16,16 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-# This is a Python 2.7 script that should be run in Ansys Electronics Desktop in order to create plot of capacitance matrix elements.
-import time
-import ScriptEnv
-
 import os
 import sys
+# This is a Python 2.7 script that should be run in Ansys Electronics Desktop in order to create plot of capacitance
+# matrix elements.
+import time
+
+import ScriptEnv
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from util import get_enabled_setup_and_sweep, get_enabled_setup
+from util import get_enabled_setup_and_sweep, get_enabled_setup  # pylint: disable=wrong-import-position
 
 
 def create_cap_vs_freq_plot(report_setup, report_type, solution_name, context_array, y_label, y_components):

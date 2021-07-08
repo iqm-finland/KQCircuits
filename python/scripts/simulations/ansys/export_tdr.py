@@ -18,14 +18,14 @@
 
 # This is a Python 2.7 script that should be run in Ansys Electronics Desktop
 # in order to create Time Domain Reflectometry and export it.
-import time
-import ScriptEnv
-
 import os
 import sys
+import time
+
+import ScriptEnv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from util import get_enabled_setup_and_sweep, get_enabled_setup
+from util import get_enabled_setup_and_sweep  # pylint: disable=wrong-import-position
 
 
 def create_z_vs_time_plot(report_setup, report_type, solution_name, context_array, y_label, y_components):

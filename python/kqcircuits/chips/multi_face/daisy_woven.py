@@ -16,13 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-from autologging import logged, traced
+from autologging import traced
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.elements.element import Element
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 
 @traced

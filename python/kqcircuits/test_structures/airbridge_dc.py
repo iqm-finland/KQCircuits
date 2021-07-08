@@ -16,12 +16,10 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.pya_resolver import pya
 from kqcircuits.test_structures.test_structure import TestStructure
+from kqcircuits.util.parameters import Param, pdt
 
 
 class AirbridgeDC(TestStructure):

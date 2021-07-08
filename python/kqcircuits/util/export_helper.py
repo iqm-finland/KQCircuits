@@ -71,12 +71,10 @@ def generate_probepoints_json(cell):
         # does the name correspond to a probepoint?
         if name_parts[0] in probe_types.keys() and (probepoint_name.endswith("_l") or probepoint_name.endswith("_c")):
             best_distance = 1e99
-            best_refpoint = None
             best_refpoint_name = None
             for name, refpoint in probe_types[name_parts[0]].items():
                 if refpoint.distance(probepoint) < best_distance:
                     best_distance = refpoint.distance(probepoint)
-                    best_refpoint = refpoint
                     best_refpoint_name = name
             groups[best_refpoint_name]["pads"].append({
                 "id": probepoint_name,
@@ -137,5 +135,3 @@ def write_commit_reference_file(path: Path):
     with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
         file.write("KQCircuits revision number: " +
                    subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii'))
-
-

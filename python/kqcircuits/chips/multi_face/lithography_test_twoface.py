@@ -16,11 +16,9 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-import numpy
-from kqcircuits.pya_resolver import pya
 from kqcircuits.chips.lithography_test import LithographyTest
 from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.pya_resolver import pya
 
 
 class LithographyTestTwoface(MultiFace):

@@ -37,16 +37,13 @@ class Shaping(Chip):
 
     tunable = Param(pdt.TypeBoolean, "Tunable", False)
 
-    def __init__(self):
-        super().__init__()
-
     def produce_impl(self):
 
         # Launcher
         launchers = self.produce_launchers_SMA8()
 
         # Finnmon
-        finnmon_inst, finnmon_refpoints_abs = self.insert_cell(Swissmon, pya.DTrans(3, False, 4000, 5000),
+        _, finnmon_refpoints_abs = self.insert_cell(Swissmon, pya.DTrans(3, False, 4000, 5000),
             arm_width=[30, 23, 30, 23],
             arm_length=[190, 96, 160, 96],
             gap_width=89,
@@ -104,7 +101,6 @@ class Shaping(Chip):
         cross1_length = cross1_refpoints_rel["port_right"].distance(cross1_refpoints_rel["port_left"])
 
         # Readout resonator first segment
-        waveguide_length = 0
         wg1_end = port_qubit_ro + pya.DVector(0, segment_length_target_rr[0] - cross1_length)
         self.insert_cell(WaveguideCoplanar,
             path=pya.DPath([
@@ -117,7 +113,7 @@ class Shaping(Chip):
         )
 
         waveguide_length = cross1_length + cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
-        cross1_inst, cross1_refpoints_abs = self.insert_cell(
+        _, cross1_refpoints_abs = self.insert_cell(
             cross1,
             pya.DTrans(1, False, wg1_end - pya.DTrans(1, False, 0, 0) * cross1_refpoints_rel["port_left"])
         )
@@ -133,9 +129,7 @@ class Shaping(Chip):
 
         cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(2, False, 0, 0))
         port_rel_cross2_wg2 = cross2_refpoints_rel["port_right"]
-        port_rel_cross2_jcap = cross2_refpoints_rel["port_left"]
-        port_rel_cross2_wg3 = cross2_refpoints_rel["port_bottom"]
-        cross2_inst, port_abs_cross2 = self.insert_cell(
+        _, port_abs_cross2 = self.insert_cell(
             cross1, pya.DTrans(2, False, meander2_end - port_rel_cross2_wg2))
 
         # Last bit of the readout resonator
@@ -153,13 +147,13 @@ class Shaping(Chip):
         port_rel_capj = self.get_refpoints(capj, pya.DTrans())
         self.insert_cell(capj, pya.DTrans(port_abs_cross2["port_left"] - port_rel_capj["port_a"]))
 
-        cross3_inst, port_abs_cross3 = self.insert_cell(
+        _, port_abs_cross3 = self.insert_cell(
             cross1, pya.DTrans(2, False, port_abs_cross2["port_left"] -
                                port_rel_capj["port_a"] + port_rel_capj["port_b"] - port_rel_cross2_wg2))
         waveguide_length = cross1_length
 
         meander3_end = port_abs_cross3["port_left"] + pya.DVector(900, 0)
-        meander3_inst, meander3_inst_ref = self.insert_cell(Meander,
+        meander3_inst, _ = self.insert_cell(Meander,
             start=port_abs_cross3["port_left"],
             end=meander3_end,
             length=1500,
@@ -194,7 +188,7 @@ class Shaping(Chip):
         )
 
         # Purcell resonator SQUID
-        if (self.tunable):
+        if self.tunable:
             # SQUID refpoint at the ground plane edge
             transf = pya.DTrans(2, False, wg6_end + pya.DVector(0, 40))
             self.insert_cell(Squid, transf)
@@ -213,7 +207,7 @@ class Shaping(Chip):
         # Capacitor Kappa
         capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
         port_rel_capk = self.get_refpoints(capk, pya.DTrans(1, False, 0, 0))
-        capk_inst, port_abs_capk = self.insert_cell(capk, pya.DTrans(1, False,
+        _, port_abs_capk = self.insert_cell(capk, pya.DTrans(1, False,
                                            meander3_end + pya.DVector(self.r, 400 + self.r) -
                                            port_rel_capk["port_a"]))
 
@@ -228,15 +222,12 @@ class Shaping(Chip):
             ], 1),
             r=self.r
         )
-        waveguide_length = 0
 
         # Capacitor for the driveline
         capi = produce_library_capacitor(self.layout, caps_fingers[2], caps_length[2], caps_type[2])
         port_rel_capi = self.get_refpoints(capi, pya.DTrans(1, False, 0, 0))
-        capi_inst, port_abs_capi = self.insert_cell(capi,
-                                     pya.DTrans(1, False,
-                                               cross1_refpoints_abs["port_right"] - port_rel_capi[
-                                                   "port_a"]))
+        _, port_abs_capi = self.insert_cell(capi, pya.DTrans(1, False, cross1_refpoints_abs["port_right"] -
+                                                             port_rel_capi["port_a"]))
 
         # Driveline of the readout resonator
         self.insert_cell(WaveguideCoplanar,
@@ -259,7 +250,6 @@ class Shaping(Chip):
         caps_type = ["gap", "interdigital", "gap"]  # J, kappa, drive
 
         # Readout resonator first segment
-        waveguide_length = 0
         wg1_end = port_qubit_sh + pya.DVector(0, -(segment_length_target_rr[0] - cross1_length))
         self.insert_cell(WaveguideCoplanar,
             path=pya.DPath([
@@ -272,7 +262,7 @@ class Shaping(Chip):
         )
 
         waveguide_length = cross1_length + cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
-        cross1_inst, cross1_refpoints_abs = self.insert_cell(
+        _, cross1_refpoints_abs = self.insert_cell(
             cross1,
             pya.DTrans(1, False, wg1_end - pya.DTrans(1, False, 0, 0) * cross1_refpoints_rel["port_right"])
         )
@@ -288,9 +278,7 @@ class Shaping(Chip):
 
         cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
         port_rel_cross2_wg2 = cross2_refpoints_rel["port_left"]
-        port_rel_cross2_jcap = cross2_refpoints_rel["port_right"]
-        port_rel_cross2_wg3 = cross2_refpoints_rel["port_bottom"]
-        cross2_inst, port_abs_cross2 = self.insert_cell(cross1,
+        _, port_abs_cross2 = self.insert_cell(cross1,
                                                         pya.DTrans(0, False, meander2_end - port_rel_cross2_wg2))
 
         # Last bit of the readout resonator
@@ -308,14 +296,14 @@ class Shaping(Chip):
         port_rel_capj = self.get_refpoints(capj)
         self.insert_cell(capj, pya.DTrans(port_abs_cross2["port_right"] - port_rel_capj["port_a"]))
 
-        cross3_inst, port_abs_cross3 = self.insert_cell(cross1,
+        _, port_abs_cross3 = self.insert_cell(cross1,
                                        pya.DTrans(0, False,
                                                   port_abs_cross2["port_right"] - port_rel_capj["port_a"] +
                                                   port_rel_capj["port_b"] - port_rel_cross2_wg2))
         waveguide_length = cross1_length
 
         meander3_end = port_abs_cross3["port_right"] + pya.DVector(900, 0)
-        meander3_inst, meander3_inst_ref = self.insert_cell(Meander,
+        meander3_inst, _ = self.insert_cell(Meander,
             start=port_abs_cross3["port_right"],
             end=meander3_end,
             length=1500,
@@ -349,7 +337,7 @@ class Shaping(Chip):
         )
 
         # Purcell resonator SQUID
-        if (self.tunable):
+        if self.tunable:
             # SQUID refpoint at the ground plane edge
             transf = pya.DTrans(0, False, wg6_end + pya.DVector(0, -40))
             self.insert_cell(Squid, transf)
@@ -368,7 +356,7 @@ class Shaping(Chip):
         # Capacitor Kappa
         capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
         port_rel_capk = self.get_refpoints(capk, pya.DTrans(3, False, 0, 0))
-        capk_inst, port_abs_capk = self.insert_cell(capk, pya.DTrans(3, False,
+        _, port_abs_capk = self.insert_cell(capk, pya.DTrans(3, False,
                                                                      meander3_end + pya.DVector(self.r, -400 - self.r) -
                                                                      port_rel_capk["port_a"]))
 
@@ -383,12 +371,11 @@ class Shaping(Chip):
             ], 1),
             r=self.r
         )
-        waveguide_length = 0
 
         # Capacitor for the driveline
         capi = produce_library_capacitor(self.layout, caps_fingers[2], caps_length[2], caps_type[2])
         port_rel_capi = self.get_refpoints(capi, pya.DTrans(3, False, 0, 0))
-        capi_inst, port_abs_capi = self.insert_cell(
+        _, port_abs_capi = self.insert_cell(
             capi, pya.DTrans(3, False, cross1_refpoints_abs["port_left"] - port_rel_capi["port_a"]))
 
         # Driveline of the shaping resonator

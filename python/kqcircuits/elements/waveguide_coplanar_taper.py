@@ -17,13 +17,11 @@
 
 
 import math
-
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from math import ceil
 
 from kqcircuits.elements.element import Element
-from kqcircuits.defaults import default_layers
-from math import ceil
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 
 class WaveguideCoplanarTaper(Element):
@@ -78,4 +76,3 @@ class WaveguideCoplanarTaper(Element):
         self.add_port("b", pya.DPoint(self.taper_length, 0))
         # adds annotation based on refpoints calculated above
         super().produce_impl()
-

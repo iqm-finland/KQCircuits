@@ -18,6 +18,7 @@
 
 from kqcircuits.pya_resolver import pya
 
+
 def add_parameters_from(cls, *args):
     """Decorator function to add parameters to the decorated class.
 
@@ -38,10 +39,10 @@ def add_parameters_from(cls, *args):
                 param.__set_name__(obj, name)
         return obj
 
-    return lambda obj: _decorate(obj)
+    return _decorate
 
 
-class pdt:
+class pdt:  # pylint: disable=invalid-name
     """A namespace for pya.PCellParameterDeclaration types."""
     TypeDouble = pya.PCellParameterDeclaration.TypeDouble
     TypeInt = pya.PCellParameterDeclaration.TypeInt
@@ -53,7 +54,7 @@ class pdt:
     TypeLayer = pya.PCellParameterDeclaration.TypeLayer
 
 
-class Param():
+class Param:
     """PCell parameters as Element class attributes.
 
     This should be used for defining PCell parameters in Element subclasses.
@@ -93,9 +94,9 @@ class Param():
         if obj is None or not hasattr(obj, "_param_values") or obj._param_values is None:
             return self.default
         if hasattr(obj, "_param_value_map"):    # Element
-           return obj._param_values[obj._param_value_map[self.name]]
+            return obj._param_values[obj._param_value_map[self.name]]
         else:                                   # Simulation
-           return obj._param_values[self.name]
+            return obj._param_values[self.name]
 
     def __set__(self, obj, value):
         if not hasattr(obj, "_param_values") or obj._param_values is None:

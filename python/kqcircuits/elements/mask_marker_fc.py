@@ -106,8 +106,8 @@ class MaskMarkerFc(Element):
             insert_to_main_layers(inner_shapes)
             inner_corner_shape = pya.DCplxTrans(1, 0, False,
                                                 pya.DVector(shift)) * self.create_cross(cross_length, cross_width)
-            [self.cell.shapes(layer_insert).insert(inner_corner_shape) for layer_insert in
-             [layer_pads]]
+            for layer_insert in [layer_pads]:
+                self.cell.shapes(layer_insert).insert(inner_corner_shape)
             negative_offset = pya.DCplxTrans(1, 0, False,
                                              pya.DVector(shift)) * self.create_cross(arm_lengths[i], arm_widths[i])
             negative_layer -= pya.Region([negative_offset.to_itype(self.layout.dbu)])
@@ -122,5 +122,5 @@ class MaskMarkerFc(Element):
                 arrows_shape = pya.DCplxTrans(1, 0, j != 1,
                                               j * pya.DVector(0, 200 * i + 400)) * arrow
                 insert_to_main_layers(arrows_shape)
-                [self.cell.shapes(layer_insert).insert(arrows_shape) for layer_insert in
-                 [layer_pads, layer_indium_bump]]
+                for layer_insert in [layer_pads, layer_indium_bump]:
+                    self.cell.shapes(layer_insert).insert(arrows_shape)

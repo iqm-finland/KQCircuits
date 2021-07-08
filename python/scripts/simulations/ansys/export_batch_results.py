@@ -29,7 +29,7 @@ prefix = os.path.basename(os.path.abspath(path))
 result_files = [f for f in os.listdir(path) if f.endswith('_project_results.json')]
 definition_files = [f.replace('_project_results.json', '.json') for f in result_files]
 keys = [f.replace('_project_results.json', '') for f in result_files]
-nominal = min(keys, key=lambda x: len(x))
+nominal = min(keys, key=len)
 
 # Load result data
 data = {}
@@ -49,7 +49,7 @@ for key, definition_file, result_file in zip(keys, definition_files, result_file
 # Find parameters that are swept
 parameters = []
 for parameter in parameter_dict[nominal]:
-    if not all([parameter_dict[key][parameter] == parameter_dict[nominal][parameter] for key in keys]):
+    if not all(parameter_dict[key][parameter] == parameter_dict[nominal][parameter] for key in keys):
         parameters.append(parameter)
 
 # Tabulate C matrix as CSV

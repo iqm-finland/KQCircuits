@@ -18,7 +18,7 @@
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_layers
-from kqcircuits.elements.waveguide_composite import WaveguideComposite, produce_fixed_length_bend
+from kqcircuits.elements.waveguide_composite import produce_fixed_length_bend
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 

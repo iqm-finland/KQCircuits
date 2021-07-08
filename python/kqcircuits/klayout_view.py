@@ -20,8 +20,8 @@ from autologging import logged, traced
 
 from kqcircuits.pya_resolver import pya
 
-from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bitmap_export_layers, all_layers_bitmap_hide_layers, \
-    default_faces, SRC_PATHS
+from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bitmap_export_layers, \
+    all_layers_bitmap_hide_layers, default_faces, SRC_PATHS
 
 
 @traced
@@ -102,6 +102,7 @@ class KLayoutView():
 
     def export_layers_bitmaps(self, path, cell, filename="", layers_set=mask_bitmap_export_layers,
                               face_id=None):
+        # pylint: disable=dangerous-default-value
         if filename == "":
             filename = cell.name
         for layer_name in layers_set:
@@ -130,6 +131,7 @@ class KLayoutView():
 
     def _export_bitmap(self, path, cell=None, filename="", layers_set=mask_bitmap_export_layers,
                        z_box=pya.DBox(0, 0, 0, 0), face_id=None, pngsize=default_png_dimensions):
+        # pylint: disable=dangerous-default-value
         if cell is None:
             self.__log.warning("Cannot export bitmap of unspecified cell. Defaulting to active cell in view.")
             cell = pya.CellView.active().cell

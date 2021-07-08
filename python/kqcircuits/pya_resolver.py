@@ -34,7 +34,7 @@ except ImportError:
 
 def is_standalone_session():
     try:
-        app = pya.Application
+        pya.Application
     except AttributeError:
         standalone = True
     else:

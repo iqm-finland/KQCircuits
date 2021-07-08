@@ -45,27 +45,27 @@ class FingerCapacitorTaper(Element):
         l = self.finger_length
         g = self.finger_gap
         t = self.taper_length
-        W = float(n) * (w + g) - g  # total width
+        total_width = float(n) * (w + g) - g
         a = self.a
         b = self.b
 
         region_ground = pya.Region([pya.DPolygon([
-            pya.DPoint((l + g) / 2, W * (b / a) + W / 2),
+            pya.DPoint((l + g) / 2, total_width * (b / a) + total_width / 2),
             pya.DPoint((l + g) / 2 + t, b + a / 2),
             pya.DPoint((l + g) / 2 + t, -b - a / 2),
-            pya.DPoint((l + g) / 2, -W * (b / a) - W / 2),
-            pya.DPoint(-(l + g) / 2, -W * (b / a) - W / 2),
+            pya.DPoint((l + g) / 2, -total_width * (b / a) - total_width / 2),
+            pya.DPoint(-(l + g) / 2, -total_width * (b / a) - total_width / 2),
             pya.DPoint(-(l + g) / 2 - t, -b - a / 2),
             pya.DPoint(-(l + g) / 2 - t, b + a / 2),
-            pya.DPoint(-(l + g) / 2, W * (b / a) + W / 2),
+            pya.DPoint(-(l + g) / 2, total_width * (b / a) + total_width / 2),
 
         ]).to_itype(self.layout.dbu)])
 
         region_taper_right = pya.Region([pya.DPolygon([
-            pya.DPoint((l + g) / 2, W / 2),
+            pya.DPoint((l + g) / 2, total_width / 2),
             pya.DPoint((l + g) / 2 + t, a / 2),
             pya.DPoint((l + g) / 2 + t, -a / 2),
-            pya.DPoint((l + g) / 2, -W / 2)
+            pya.DPoint((l + g) / 2, -total_width / 2)
         ]).to_itype(self.layout.dbu)])
         region_taper_left = region_taper_right.transformed(pya.Trans().M90)
 
@@ -77,8 +77,8 @@ class FingerCapacitorTaper(Element):
             pya.DPoint(-l / 2, w)
         ])
         for i in range(0, n):
-            trans = pya.DTrans(pya.DVector(g / 2, i * (g + w) - W / 2)) if i % 2 else pya.DTrans(
-                pya.DVector(-g / 2, i * (g + w) - W / 2))
+            trans = pya.DTrans(pya.DVector(g / 2, i * (g + w) - total_width / 2)) if i % 2 else pya.DTrans(
+                pya.DVector(-g / 2, i * (g + w) - total_width / 2))
             polys_fingers.append(trans * poly_finger)
 
         region_fingers = pya.Region([
@@ -88,10 +88,10 @@ class FingerCapacitorTaper(Element):
         region_etch.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
 
         region_taper_right_small = pya.Region([pya.DPolygon([
-            pya.DPoint((l + g) / 2 + self.corner_r, (W / 2 - a / 2) * (t - 2 * self.corner_r) / t + a / 2),
+            pya.DPoint((l + g) / 2 + self.corner_r, (total_width / 2 - a / 2) * (t - 2 * self.corner_r) / t + a / 2),
             pya.DPoint((l + g) / 2 + t, a / 2),
             pya.DPoint((l + g) / 2 + t, -a / 2),
-            pya.DPoint((l + g) / 2 + self.corner_r, -(W / 2 - a / 2) * (t - 2 * self.corner_r) / t - a / 2)
+            pya.DPoint((l + g) / 2 + self.corner_r, -(total_width / 2 - a / 2) * (t - 2 * self.corner_r) / t - a / 2)
         ]).to_itype(self.layout.dbu)])
         region_taper_left_small = region_taper_right_small.transformed(pya.Trans().M90)
 

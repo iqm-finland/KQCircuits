@@ -16,20 +16,16 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
 from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.elements.spiral_resonator_rectangle_multiface import SpiralResonatorRectangleMultiface
-
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import produce_library_capacitor
-from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.util.geometry_helper import point_shift_along_vector
+from kqcircuits.util.parameters import Param, pdt
 
 version = 1
 
@@ -118,7 +114,7 @@ class QualityFactorTwoface(MultiFace):
 
             # Cross
             cross_trans = pya.DTrans(tl_start + v_res_step * (i + 0.5)) * rot_2
-            inst_cross, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
+            _, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
 
             # Coupler
             cplr_pos = cross_refpoints_abs["port_bottom"] + cplr_pos_post

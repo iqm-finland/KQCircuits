@@ -15,6 +15,16 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+"""
+    Helper module for building KLayout libraries.
+
+    Typical usage example::
+
+        from kqcircuits.elements.airbridges import Airbridge
+        from kqcircuits.util.library_helper import load_libraries
+        load_libraries(path=Airbridge.LIBRARY_PATH)
+        cell = Airbridge.create(layout, **kwargs)
+"""
 
 import re
 import types
@@ -26,16 +36,6 @@ from autologging import logged, traced
 from kqcircuits.defaults import SRC_PATHS
 from kqcircuits.pya_resolver import pya
 
-"""
-    Helper module for building KLayout libraries.
-
-    Typical usage example:
-
-    from kqcircuits.elements.airbridges import Airbridge
-    from kqcircuits.util.library_helper import load_libraries
-    load_libraries(path=Airbridge.LIBRARY_PATH)
-    cell = Airbridge.create(layout, **kwargs)
-"""
 
 _kqc_libraries = {}  # dictionary {library name: (library, library path relative to kqcircuits)}
 
@@ -56,7 +56,7 @@ _excluded_module_names = (
 
 @traced
 @logged
-def load_libraries(flush=False, path=""):   #TODO `flush=True` does not work with KLayout 0.27
+def load_libraries(flush=False, path=""):   # TODO `flush=True` does not work with KLayout 0.27
     """Load all KQCircuits libraries from the given path.
 
     Args:
@@ -74,7 +74,7 @@ def load_libraries(flush=False, path=""):   #TODO `flush=True` does not work wit
         load_libraries._log.debug("Deleted all libraries.")
     else:
         # if a library with the given path already exist, use it
-        for lib, lib_path in _kqc_libraries.values():
+        for _, lib_path in _kqc_libraries.values():
             if lib_path == path:
                 return {key: value[0] for key, value in _kqc_libraries.items()}
 
@@ -220,7 +220,7 @@ def _register_pcell(pcell_class, library, library_name):
         pcell_name = to_library_name(pcell_class.__name__)
         library.layout().register_pcell(pcell_name, pcell_class())
         _register_pcell._log.debug("Registered pcell [{}] to library {}.".format(pcell_name, library_name))
-    except Exception as e:
+    except Exception:  # pylint: disable=broad-except
         _register_pcell._log.warning(
             "Failed to register pcell in class {} to library {}.".format(pcell_class, library_name),
             exc_info=True
@@ -333,7 +333,7 @@ def _get_library_dependencies(library):
     library_dependencies = set()
     for pcell_name in library.layout().pcell_names():
         pcell_class = library.layout().pcell_declaration(pcell_name).__class__
-        for name, obj in inspect.getmembers(sys.modules[pcell_class.__module__]):
+        for _, obj in inspect.getmembers(sys.modules[pcell_class.__module__]):
             if hasattr(obj, "LIBRARY_NAME"):
                 if obj.LIBRARY_NAME != pcell_class.LIBRARY_NAME:
                     library_dependencies.add(obj.LIBRARY_NAME)

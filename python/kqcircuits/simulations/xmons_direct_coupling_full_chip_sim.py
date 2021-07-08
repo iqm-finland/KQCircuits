@@ -16,14 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.meander import Meander
-from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.simulations.port import InternalPort, EdgePort
-from kqcircuits.defaults import default_layers
+from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.port import InternalPort
+from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.parameters import Param, pdt
 
 
@@ -55,7 +53,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
         qubit_trans = pya.DTrans(0, False, center_x, center_y)
         qubit_inst = self.cell.insert(pya.DCellInstArray(qubit_cell.cell_index(), qubit_trans))
         if name:
-          qubit_inst.set_property("id", name)
+            qubit_inst.set_property("id", name)
 
         refpoints_abs = self.get_refpoints(qubit_cell, qubit_inst.dtrans)
         port_qubit_dr = refpoints_abs["port_drive"]
@@ -87,11 +85,9 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             meanders=8,
             r=50
         )
-        meander_inst = self.cell.insert(pya.DCellInstArray(meander.cell_index(), pya.DTrans()))
+        self.cell.insert(pya.DCellInstArray(meander.cell_index(), pya.DTrans()))
 
-        return
-
-    def produce_launcher(self, pos, direction, name="", width=300):
+    def produce_launcher(self, pos, direction):
         """Wrapper function for launcher PCell placement at `pos` with `direction`, `name` and `width`."""
 
         subcell = self.add_element(WaveguideCoplanar,
@@ -103,7 +99,6 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             term2=0,
         )
 
-        #subcell = self.add_element(Launcher, name=name, s=width, l=width)
         if isinstance(direction, str):
             direction = {"E": 0, "W": 180, "S": -90, "N": 90}[direction]
         transf = pya.DCplxTrans(1, direction, False, pos)
@@ -123,6 +118,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             launchers dictionary, where keys are launcher names and values are tuples of (point, heading, distance from
             chip edge)
         """
+        # pylint: disable=invalid-name,dangerous-default-value
         # dictionary of point, heading, distance from chip edge
         launchers = {
             "WS": (pya.DPoint(800, 2800), "W", 300),
@@ -135,7 +131,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             "NE": (pya.DPoint(7200, 9200), "N", 300)
         }
         for name in enabled:
-            self.produce_launcher(launchers[name][0], launchers[name][1], name)
+            self.produce_launcher(launchers[name][0], launchers[name][1])
         return launchers
 
     def build(self):
@@ -171,9 +167,12 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             arm_width=[self.arm_width_b] * 4,
             gap_width=72, **qubit_props_common)
 
-        (pos_qb1_dr, pos_qb1_fl, pos_qb1_rr, port_qubit1_squid_a, port_qubit1_squid_b) = self.produce_qubit(finnmon_a, 5e3 - 330 - self.qubit_spacing, name="qb_1")
-        (pos_qb2_dr, pos_qb2_fl, pos_qb2_rr, port_qubit2_squid_a, port_qubit2_squid_b) = self.produce_qubit(finnmon_b, 5e3, name="qb_`2")
-        (pos_qb3_dr, pos_qb3_fl, pos_qb3_rr, port_qubit3_squid_a, port_qubit3_squid_b) = self.produce_qubit(finnmon_a, 5e3 + 330 + self.qubit_spacing, name="qb_3")
+        (pos_qb1_dr, pos_qb1_fl, pos_qb1_rr, port_qubit1_squid_a, port_qubit1_squid_b) = \
+            self.produce_qubit(finnmon_a, 5e3 - 330 - self.qubit_spacing, name="qb_1")
+        (pos_qb2_dr, pos_qb2_fl, pos_qb2_rr, port_qubit2_squid_a, port_qubit2_squid_b) = \
+            self.produce_qubit(finnmon_b, 5e3, name="qb_`2")
+        (pos_qb3_dr, pos_qb3_fl, pos_qb3_rr, port_qubit3_squid_a, port_qubit3_squid_b) = \
+            self.produce_qubit(finnmon_a, 5e3 + 330 + self.qubit_spacing, name="qb_3")
 
         # Readout resonators
         height_rr_feedline = 7.3e3

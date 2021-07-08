@@ -17,12 +17,13 @@
 
 
 import math
+
 import numpy as np
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from autologging import logged, traced
 
 from kqcircuits.elements.element import Element
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 
 
 @traced

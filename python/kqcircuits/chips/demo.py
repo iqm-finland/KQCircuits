@@ -16,8 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
@@ -173,9 +171,9 @@ class Demo(Chip):
         _, cap_ref_abs = self.insert_cell(FingerCapacitorSquare, pya.DTrans(cap_rot), align_to=meander_end,
                                           align="port_a", finger_number=cap_finger_nr)
 
-        _, tcross_ref_abs_ = self.insert_cell(WaveguideCoplanarTCross, pya.DTrans(tcross_rot, False, 0, 0),
-                                              inst_name="RO{}".format(qubit_nr), label_trans=pya.DCplxTrans(0.2),
-                                              align_to=cap_ref_abs["port_b"], align="port_bottom", length_extra_side=30)
+        self.insert_cell(WaveguideCoplanarTCross, pya.DTrans(tcross_rot, False, 0, 0),inst_name="RO{}".format(qubit_nr),
+                         label_trans=pya.DCplxTrans(0.2), align_to=cap_ref_abs["port_b"], align="port_bottom",
+                         length_extra_side=30)
 
     def produce_probelines(self):
         self.produce_probeline("RO-A", 1, 2, False, 6)

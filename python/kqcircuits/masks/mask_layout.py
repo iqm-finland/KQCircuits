@@ -260,6 +260,7 @@ class MaskLayout:
         for chip_name, cell in self.chips_map_legend.items():
             if search_cell == cell:
                 return chip_name
+        return ""
 
     def _add_chip_graphical_representation_layer(self, chip_name, position, pos_index_name):
         chip_name_text = self.layout.create_cell("TEXT", "Basic", {

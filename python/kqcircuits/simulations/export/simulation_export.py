@@ -26,7 +26,7 @@ def export_simulation_oas(simulations, path: Path, file_prefix='simulation'):
     """
     Write single OASIS file containing all simulations in list.
     """
-    unique_layouts = set([simulation.layout for simulation in simulations])
+    unique_layouts = {simulation.layout for simulation in simulations}
     if len(unique_layouts) != 1:
         raise ValueError("Cannot write batch OASIS file since not all simulations are on the same layout.")
 
@@ -54,13 +54,13 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
 def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     """Create simulation sweep by cross varying all parameters. Return list of simulations."""
     simulations = []
-    keys = [key for key in sweeps]
+    keys = list(sweeps)
     sets = [list(prod) for prod in product(*sweeps.values())]
     logging.info(f'Added simulations: {" * ".join([str(len(l)) for l in sweeps.values()])} = {len(sets)}')
     for values in sets:
         parameters = {**sim_parameters}
-        for i in range(len(keys)):
-            parameters[keys[i]] = values[i]
+        for i, key in enumerate(keys):
+            parameters[key] = values[i]
         parameters['name'] = sim_parameters['name'] + '_' + '_'.join([str(value) for value in values])
         simulations.append(sim_class(layout, **parameters))
     return simulations

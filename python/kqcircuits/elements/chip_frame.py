@@ -134,10 +134,8 @@ class ChipFrame(Element):
             self._produce_label(labels[0], pya.DPoint(x_min, y_max), "topleft")
         if self.name_chip:
             self._produce_label(labels[1], pya.DPoint(x_max, y_max), "topright")
-        if True:
-            self._produce_label(labels[2], pya.DPoint(x_max, y_min), "bottomright")
-        if True:
-            self._produce_label(labels[3], pya.DPoint(x_min, y_min), "bottomleft")
+        self._produce_label(labels[2], pya.DPoint(x_max, y_min), "bottomright")
+        self._produce_label(labels[3], pya.DPoint(x_min, y_min), "bottomleft")
 
     def _produce_label(self, label, location, origin):
         """Produces Text PCells with text `label` with `origin` of the text at `location`.

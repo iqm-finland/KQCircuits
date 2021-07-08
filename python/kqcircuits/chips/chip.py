@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
 import numpy
 from autologging import logged, traced
 
@@ -110,6 +109,9 @@ class Chip(Element):
         launcher_inst.set_property("port_id", port_id)
         self.add_port(name, launcher_refpoints["port"])
 
+    # disable pylint warning to allow capitalized sample holder names
+    # pylint: disable=invalid-name
+
     def produce_launchers_SMA8(self, enabled=["WS", "WN", "ES", "EN", "SW", "SE", "NW", "NE"],
                                launcher_assignments=None):
         """Produces enabled launchers for SMA8 sample holder default locations.
@@ -124,6 +126,7 @@ class Chip(Element):
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
+        # pylint: disable=dangerous-default-value
         # dictionary of point, heading, distance from chip edge
         launchers = {
             "WS": (pya.DPoint(800, 2800), "W", 300),
@@ -135,7 +138,7 @@ class Chip(Element):
             "SE": (pya.DPoint(7200, 800), "S", 300),
             "NE": (pya.DPoint(7200, 9200), "N", 300)
         }
-        launcher_map = self._create_launcher_map({name: name for name in launchers.keys()}, launcher_assignments)
+        launcher_map = self._create_launcher_map({name: name for name in launchers}, launcher_assignments)
 
         for port_id in enabled:
             launcher = launchers[port_id]
@@ -173,6 +176,9 @@ class Chip(Element):
         """
         launchers = self.produce_n_launchers(24, "DC", 500, 300, 680, launcher_assignments, 850)
         return launchers
+
+    # re-enable pylint warning disabled above
+    # pylint: enable=invalid-name
 
     def produce_junction_tests(self, squid_type=default_squid_type):
         """Produces junction test pads in the chip.
@@ -369,7 +375,7 @@ class Chip(Element):
                                    (self.box.p2.x - self.box.p1.x) / 2
                                    + pad_pitch * (i + 0.5 - int(nr_pads_per_side / 2)))
 
-        for direction, rot, trans in (
+        for direction, _, trans in (
                 ("N", pya.DTrans.R270, pya.DTrans(3, 0, self.box.p1.x, self.box.p2.y)),
                 ("E", pya.DTrans.R180, pya.DTrans(2, 0, self.box.p2.x, self.box.p2.y)),
                 ("S", pya.DTrans.R90, pya.DTrans(1, 0, self.box.p2.x, self.box.p1.y)),

@@ -52,7 +52,7 @@ class WaveguideCoplanar(Element):
         return pya.Trans()
 
     def produce_waveguide(self):
-        points = [point for point in self.path.each_point()]
+        points = list(self.path.each_point())
 
         # Termination before the first segment
         WaveguideCoplanar.produce_end_termination(self, points[1], points[0], self.term1)
@@ -79,7 +79,8 @@ class WaveguideCoplanar(Element):
 
             transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
             self.insert_cell(cell_straight, transf)
-            segment_last = (points[i + 1] + v2 * (1 / v2.abs()) * cut - self.corner_safety_overlap*v2/v2.length()).to_p()
+            segment_last = \
+                (points[i + 1] + v2 * (1 / v2.abs()) * cut - self.corner_safety_overlap*v2/v2.length()).to_p()
 
             # Curve at the corner
             alpha = alpha2 - alpha1
@@ -220,6 +221,7 @@ class WaveguideCoplanar(Element):
                 found_connected_point = False
 
                 for j in range(num_segments):
+                    # pylint: disable=cell-var-from-loop
                     if i != j and (point.distance(endpoints[j][1]) < tolerance
                                    or point.distance(endpoints[j][0]) < tolerance):
                         # print("{} | {} | {}".format(point, endpoints[j][1], endpoints[j][0]))

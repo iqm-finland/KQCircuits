@@ -57,7 +57,7 @@ class SingleXmonsFullChipSim(Simulation):
         chip.layout().cell(f'{default_junction_test_pads_type}$1').delete()
 
         # Insert chip and get refpoints
-        cell_inst, refpoints = self.insert_cell(chip, rec_levels=None)
+        _, refpoints = self.insert_cell(chip, rec_levels=None)
 
         if not self.launchers:
             # Remove launchers

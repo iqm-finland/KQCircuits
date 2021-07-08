@@ -30,7 +30,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = FlipChipConnectorSim
+sim_class = FlipChipConnectorSim  # pylint: disable=invalid-name
 sim_parameters = {
     'name': 'flip_chip',
     'use_internal_ports': False,

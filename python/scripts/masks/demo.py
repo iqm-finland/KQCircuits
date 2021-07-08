@@ -15,6 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+"""Demo mask."""
 
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.chip import Chip
@@ -30,8 +31,6 @@ from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_set import MaskSet
 from kqcircuits.klayout_view import KLayoutView
-
-"""Demo mask."""
 
 
 view = KLayoutView(current=True, initialize=True)
@@ -68,6 +67,7 @@ mdemo.add_mask_layout([
 ], "b", layers_to_mask=layers_to_mask)
 
 # t-face mask
+# pylint: disable=line-too-long
 mdemo.add_mask_layout([
     ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---"],
     ["---", "---", "---", "---", "---", "---", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "---", "---", "---", "---", "---", "---"],
@@ -91,6 +91,7 @@ mdemo.add_mask_layout([
     ["---", "---", "---", "---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---", "---", "---", "---"],
     ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---"],
 ], "t", layers_to_mask=layers_to_mask)
+# pylint: enable=line-too-long
 
 # chip definitions
 mdemo.add_chip(AirbridgeCrossings, "AC1", b_number=4, crossings=8)

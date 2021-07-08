@@ -45,9 +45,6 @@ class MultiFace(Chip):
     connector_type = Param(pdt.TypeString, "Connector type for CPW waveguides", "Coax",
                            choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
 
-    def produce_impl(self):
-        super().produce_impl()
-
     def produce_structures(self):
         # produce frame for face 0
         bottom_frame_parameters = {
@@ -76,7 +73,7 @@ class MultiFace(Chip):
         if self.with_gnd_bumps:
             self._produce_ground_bumps()
 
-    def get_ground_bump_locations(self, box):
+    def get_ground_bump_locations(self, box):  # pylint: disable=no-self-use
         """
         Define the locations for ground bumps. This method returns the full bump grid, but the chip will only
         place bumps on locations that do not interfere with the ground grid avoidance or manually placed bumps.

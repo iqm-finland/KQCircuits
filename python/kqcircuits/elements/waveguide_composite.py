@@ -61,7 +61,7 @@ class Node:
     align: Tuple
 
     def __init__(self, position, element=None, inst_name=None, align=tuple(), **params):
-        if type(position) == tuple:
+        if isinstance(position, tuple):
             self.position = pya.DPoint(position[0], position[1])
         else:
             self.position = position
@@ -90,7 +90,7 @@ class Node:
         all_params = {**self.params, **magic_params}
         if all_params:
             for pn, pv in all_params.items():
-                if type(pv) is pya.DPoint:  # encode DPoint as tuple
+                if isinstance(pv, pya.DPoint):  # encode DPoint as tuple
                     all_params[pn] = (pv.x, pv.y)
             txt += f", {all_params}"
         return "(" + txt + ")"
@@ -112,7 +112,7 @@ class Node:
         element = None
         params = {}
         if len(node) > 2:
-            if type(node[2]) is dict:
+            if isinstance(node[2], dict):
                 params = node[2]
             else:
                 element = node[2]
@@ -134,7 +134,7 @@ class Node:
         # re-create DPoint from tuple
         magic_params = ('align', 'inst_name')
         for pn, pv in params.items():
-            if type(pv) is tuple and pn not in magic_params:
+            if isinstance(pv, tuple) and pn not in magic_params:
                 params[pn] = pya.DPoint(pv[0], pv[1])
 
         return cls(pya.DPoint(x, y), element, **params)
@@ -238,6 +238,7 @@ class WaveguideComposite(Element):
 
                 self._terminator(i)
 
+        # pylint: disable=undefined-loop-variable
         if node.element is None:
             self._add_waveguide(i)
 
@@ -255,7 +256,7 @@ class WaveguideComposite(Element):
             list of Node objects
         """
 
-        if type(self.nodes) is list:
+        if isinstance(self.nodes, list):
             self.nodes = ", ".join(self.nodes)
         node_list = ast.literal_eval(self.nodes + ",")
 
@@ -363,7 +364,7 @@ class WaveguideComposite(Element):
 
         trans = pya.DCplxTrans(1, get_angle(waveguide_dir) - get_angle(element_dir), False, node.position)
 
-        if ind == 0 or ind == len(self._nodes) - 1:
+        if ind in (0, len(self._nodes) - 1):
             trans *= pya.DTrans(-rel_ref[before if ind == 0 else after])
 
         _, ref = self.insert_cell(cell, trans)
@@ -495,10 +496,10 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
         # floods the database with PCell variants :(
         root = root_scalar(objective, bracket=(element.r, target_len / 2))
         cell = _var_length_bend(element.layout, root.root, point_a, point_a_corner, point_b, point_b_corner, bridges)
-        inst, ref = element.insert_cell(cell)
-    except ValueError:
+        inst, _ = element.insert_cell(cell)
+    except ValueError as e:
         raise ValueError("Cannot create a waveguide bend with length {} between points {} and {}".format(
-            target_len, point_a, point_b))
+            target_len, point_a, point_b)) from e
 
     return inst
 

@@ -25,16 +25,18 @@ kqc_python_dependencies = {
     "tqdm": "tqdm>=4.61",
 }
 
+
 def install_kqc_dependencies():
     """Check KQCircuits' dependencies and install if missing.
 
     This is *only* for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
     This function should run only once at KLayout startup.
     """
+    # pylint: disable=import-outside-toplevel
 
     missing_pkgs = []
 
-    for pkg in kqc_python_dependencies.keys():
+    for pkg in kqc_python_dependencies:
         if util.find_spec(pkg) is None:
             missing_pkgs.append(pkg)
     if not missing_pkgs:

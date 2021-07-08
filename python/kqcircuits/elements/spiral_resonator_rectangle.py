@@ -18,16 +18,15 @@
 
 import math
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.defaults import default_layers
+from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
-from kqcircuits.util.geometry_helper import vector_length_and_direction, get_cell_path_length
-from kqcircuits.defaults import default_layers
-
-from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import vector_length_and_direction
+from kqcircuits.util.parameters import Param, pdt
 
 numerical_inaccuracy = 1e-7
 
@@ -58,7 +57,7 @@ class SpiralResonatorRectangle(Element):
     def produce_impl(self):
         can_create_resonator = False
         if self.auto_spacing:
-            left, bottom, right, top, mirrored = self.get_spiral_dimensions()
+            left, bottom, right, top, _ = self.get_spiral_dimensions()
             spacing = max(right - left, top - bottom) / 4
             step = spacing
             best_spacing = None
@@ -209,7 +208,7 @@ class SpiralResonatorRectangle(Element):
         if space + numerical_inaccuracy < 0.0:
             return current_len, False, False
 
-        segment_len, segment_dir, corner_offset, straight_len, curve_angle, final_segment = \
+        _, segment_dir, corner_offset, straight_len, curve_angle, final_segment = \
             self.get_segment_data(point1, point2, current_len, rotation, max(0.0, space))
 
         if (not final_segment and space < 2 * self.r) or \
@@ -307,12 +306,12 @@ class SpiralResonatorRectangle(Element):
         }
         cell = self.add_element(Airbridge)
         dist_from_corner = 20
-        for direction_name, (rotation, include_bridges) in directions_dict.items():
+        for _, (rotation, include_bridges) in directions_dict.items():
             side = 1
             if include_bridges:
                 for i in range(top_right_point_idx, len(guide_points)):
                     if (i - top_right_point_idx) % 4 == rotation:
-                        segment_len, segment_dir = vector_length_and_direction(guide_points[i] - guide_points[i-1])
+                        _, segment_dir = vector_length_and_direction(guide_points[i] - guide_points[i-1])
                         if side == 1:
                             trans = pya.DTrans(rotation, False,
                                                guide_points[i] - (self.r + dist_from_corner)*segment_dir)

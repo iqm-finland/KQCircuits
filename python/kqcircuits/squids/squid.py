@@ -18,12 +18,11 @@
 
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_squid_type
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.squids import squid_type_choices
-from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.library_helper import load_libraries, to_library_name
+from kqcircuits.util.parameters import Param, pdt
 
 
 @traced
@@ -128,12 +127,11 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
         if (parameter_end is None) or (parameter_value <= parameter_end):
             # create new squid at old squid's position
             parameters = {parameter_name: parameter_value}
-            squid_cell = Squid.create(layout, squid_type=squid_type, face_ids=inst.pcell_parameter("face_ids"), **parameters)
+            squid_cell = Squid.create(layout, squid_type=squid_type, face_ids=inst.pcell_parameter("face_ids"),
+                                      **parameters)
             cell.insert(pya.DCellInstArray(squid_cell.cell_index(), dtrans))
             replace_squids._log.info("Replaced squid \"{}\" with dtrans={} by a squid \"{}\" with {}={}."
                                      .format(name, dtrans, squid_type, parameter_name, parameter_value))
             parameter_value += parameter_step
         # delete old squid
         inst.delete()
-
-

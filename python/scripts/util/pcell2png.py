@@ -19,12 +19,12 @@
 # Helper script to create a .png image of the given pcell.
 #
 # Specify library, class name and destination directory for the .png file. For example:
-# klayout -z -nc -r pcell2png.py -rd lib_name=kqcircuits.elements.finger_capacitor_square -rd cls_name=FingerCapacitorSquare -rd dest_dir=tmp
+# klayout -z -nc -r pcell2png.py -rd lib_name=kqcircuits.elements.finger_capacitor_square -rd
+# cls_name=FingerCapacitorSquare -rd dest_dir=tmp
 
-from sys import argv
-from os import mkdir
-from pathlib import Path
 from importlib import import_module
+from pathlib import Path
+
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.pya_resolver import pya
 

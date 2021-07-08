@@ -28,7 +28,7 @@ class FingerCapacitorSim(Simulation):
         capacitor_cell = self.add_element(FingerCapacitorSquare, **{**self.get_parameters()})
 
         cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
-        cap_inst, refp = self.insert_cell(capacitor_cell, cap_trans)
+        _, refp = self.insert_cell(capacitor_cell, cap_trans)
 
         self.produce_waveguide_to_port(refp["port_a"], refp["port_a_corner"], 1, 'left')
         self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right')

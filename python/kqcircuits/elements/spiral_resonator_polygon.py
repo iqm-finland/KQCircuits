@@ -136,10 +136,9 @@ class SpiralResonatorPolygon(Element):
                 break
             tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
             length = tmp_cell.length()
-        n_input_points = len(points)
 
         # segments based on poly_path points
-        poly_points = [p for p in self.poly_path.each_point()]
+        poly_points = list(self.poly_path.each_point())
         n_poly_points = len(poly_points)
         if length < self.length and n_poly_points > 2:
             poly_edges = [pya.DEdge(poly_points[i - 1], poly_points[i]) for i in range(n_poly_points)]
@@ -239,7 +238,8 @@ class SpiralResonatorPolygon(Element):
                 curve_alpha = curve_length / self.r
                 # add new curve piece at the waveguide end
                 curve_cell = self.add_element(WaveguideCoplanarCurved, SpiralResonatorPolygon, alpha=curve_alpha)
-                curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0, corner_pos)
+                curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0,
+                                             corner_pos)
                 self.insert_cell(curve_cell, curve_trans)
                 WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans)
                 return True
@@ -301,4 +301,3 @@ class SpiralResonatorPolygon(Element):
         _, _, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(point1, point2, point3, self.r)
         abs_curve = pi - abs(pi - abs(alpha2 - alpha1))
         return self.r*tan(abs_curve/2)
-

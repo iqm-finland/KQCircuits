@@ -112,9 +112,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                     ]
 
                 else:
-                    raise (
-                        ValueError,
-                        "Port {} is an EdgePort but not on the edge of the simulation box".format(port.number))
+                    raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
 
             elif isinstance(port, InternalPort):
                 try:
@@ -123,13 +121,13 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                         simulation.get_layer('simulation_signal', port.face),
                         port.signal_location,
                         simulation.layout.dbu)
-                except ValueError:
+                except ValueError as e:
                     raise ValueError('Signal edge of port {} on layer {} not found at location ({:.3f}, {:.3f})'.format(
                         port.number,
                         simulation.get_layer('simulation_signal', port.face),
                         port.signal_location.x,
                         port.signal_location.y
-                    ))
+                    )) from e
 
                 try:
                     _, _, ground_edge = find_edge_from_point_in_cell(
@@ -137,20 +135,20 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                         simulation.get_layer('simulation_ground', port.face),
                         port.ground_location,
                         simulation.layout.dbu)
-                except ValueError:
+                except ValueError as e:
                     raise ValueError('Ground edge of port {} on layer {} not found at location ({:.3f}, {:.3f})'.format(
                         port.number,
                         simulation.get_layer('simulation_signal', port.face),
                         port.signal_location.x,
                         port.signal_location.y
-                    ))
+                    )) from e
 
                 port_z = simulation.chip_distance if port.face == 1 else 0
                 p_data['polygon'] = get_enclosing_polygon(
                     [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
                      [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])
             else:
-                raise (ValueError, "Port {} has unsupported port class {}".format(port.number, type(port).__name__))
+                raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
 
             port_data.append(p_data)
 

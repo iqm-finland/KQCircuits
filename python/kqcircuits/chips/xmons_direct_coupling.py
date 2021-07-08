@@ -16,20 +16,17 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
 import math
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-
 from kqcircuits.chips.chip import Chip
-from kqcircuits.defaults import default_squid_type
 from kqcircuits.elements.qubits.qubit import Qubit
 from kqcircuits.elements.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
+from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @add_parameters_from(Qubit, "squid_type", "fluxline_type")
@@ -60,7 +57,7 @@ class XMonsDirectCoupling(Chip):
         # Finger cap
         cplr_cell = produce_library_capacitor(self.layout, 4, c_kappa_l_fingers, "interdigital")
         cplr_ref_rel = self.get_refpoints(cplr_cell, pya.DTrans.R90)
-        cplr_inst, cplr_ref = self.insert_cell(
+        _, cplr_ref = self.insert_cell(
             cplr_cell, pya.DTrans(pl_cross_ref["port_bottom"]-cplr_ref_rel["port_b"])*pya.DTrans.R90)
 
         # Taper to T
@@ -71,7 +68,7 @@ class XMonsDirectCoupling(Chip):
             b2=self.b,
             taper_length=taper_length
         )
-        taper_inst, taper_ref = self.insert_cell(
+        _, taper_ref = self.insert_cell(
             taper_cell, pya.DTrans(cplr_ref["port_a"]-taper_ref_rel["port_b"])*pya.DTrans.R90)
 
         # T to tail and straight
@@ -84,7 +81,7 @@ class XMonsDirectCoupling(Chip):
             b2=ro_b,
         )
         rr_cross_ref_rel = self.get_refpoints(rr_cross_cell, pya.DTrans.R90)
-        rr_cross_inst, rr_cross_ref = self.insert_cell(
+        _, rr_cross_ref = self.insert_cell(
             rr_cross_cell, pya.DTrans(taper_ref["port_a"]-rr_cross_ref_rel["port_right"])*pya.DTrans.R90)
 
         # straight
@@ -116,8 +113,6 @@ class XMonsDirectCoupling(Chip):
             b=ro_b,
             r=tail_r
         )
-
-        return
 
     def produce_qubits(self):
         """A dedicated function to be used also by the corresponding simulation object.

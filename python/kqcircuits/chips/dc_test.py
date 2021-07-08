@@ -17,7 +17,6 @@
 
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.pya_resolver import pya
 
 
 class DcTest(Chip):

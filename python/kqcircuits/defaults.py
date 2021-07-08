@@ -193,7 +193,7 @@ mask_bitmap_export_layers = [
 ]
 
 # Layers to hide when exporting a bitmap with "all" layers.
-all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict.keys()] + [
+all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + [
     default_layers["b_ports"],
     default_layers["b_base_metal_gap"],
     default_layers["b_ground_grid"],
@@ -278,4 +278,5 @@ default_netlist_breakdown = [
 ]
 
 # default progress bar formatting with tqdm
-default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}{postfix}]'
+default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}' \
+                     '{postfix}]'

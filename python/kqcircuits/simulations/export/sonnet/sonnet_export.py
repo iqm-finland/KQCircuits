@@ -29,7 +29,7 @@ from kqcircuits.util.export_helper import write_commit_reference_file
 
 
 def poly_and_edge_indices(polygons, dbu, port, number, location, group):
-    i, j, signal_edge = find_edge_from_point_in_polygons(
+    i, j, _ = find_edge_from_point_in_polygons(
         polygons,
         location,
         dbu,
@@ -57,11 +57,16 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
     Arguments:
         simulation: The simulation to be exported.
         path: Location where to write son files.
-        detailed_resonance: More info in www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf
+        detailed_resonance: More info in
+            www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf
         lower_accuracy: False sets Sonnet to Fine/Edge meshing and True to Coarse/Edge Meshing.
-        fill_type: Value 'Staircase' sets the default fill type for polygons. The other option is 'Conformal' which can be faster but less accurate. A good workflow could be to set everything to Staircase and then set some meanders to Conformal in Sonnet.
-        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection errors.
-        control: Selects what analysis control is used in Sonnet. Options are 'Simple', 'ABS' and 'Sweep' for parameter sweeping.
+        fill_type: Value 'Staircase' sets the default fill type for polygons. The other option is 'Conformal' which can
+            be faster but less accurate. A good workflow could be to set everything to Staircase and then set some
+            meanders to Conformal in Sonnet.
+        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection
+            errors.
+        control: Selects what analysis control is used in Sonnet. Options are 'Simple', 'ABS' and 'Sweep' for parameter
+            sweeping.
         simulation_safety: Adds extra ground area to a simulation environment (in µm).
 
     Returns:
@@ -77,9 +82,6 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
         layer_bridge = layout.layer(default_layers["b_simulation_airbridge_flyover"])
         layer_son = layout.layer(default_layers["b_simulation_signal"])
         layer_son_ground = layout.layer(default_layers["b_simulation_ground"])
-
-        def simple_region(region):
-            return pya.Region([poly.to_simple_polygon() for poly in region.each()])  # .to_itype(dbu)
 
         simpolygons = [p.polygon for p in simulation.cell.shapes(layer_son).each()] + \
                       [p.polygon for p in simulation.cell.shapes(layer_son_ground).each()]
@@ -141,7 +143,7 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
             "calgroup": calgroup,
             "refplanes": parser.refplanes(refplane_dirs, simulation_safety, port_ipolys),
             "symmetry": parser.symmetry(symmetry),
-            "nports": len(set([abs(port.number) for port in simulation.ports])),
+            "nports": len({abs(port.number) for port in simulation.ports}),
             "resonance_abs": "DET_ABS_RES Y" if detailed_resonance else "DET_ABS_RES N",
             "lower_accuracy": "1" if lower_accuracy else "0",
             "current": "j" if current else ""
@@ -172,11 +174,16 @@ def export_sonnet(simulations, path: Path, detailed_resonance=False, lower_accur
     Arguments:
         simulations: List of simulations to be exported.
         path: Location where to write export files.
-        detailed_resonance: More info in www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf
+        detailed_resonance: More info in
+            www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf
         lower_accuracy: False sets Sonnet to Fine/Edge meshing and True to Coarse/Edge Meshing.
-        fill_type: Value 'Staircase' sets the default fill type for polygons. The other option is 'Conformal' which can be faster but less accurate. A good workflow could be to set everything to Staircase and then set some meanders to Conformal in Sonnet.
-        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection errors.
-        control: Selects what analysis control is used in Sonnet. Options are 'Simple', 'ABS' and 'Sweep' for parameter sweeping.
+        fill_type: Value 'Staircase' sets the default fill type for polygons. The other option is 'Conformal' which can
+            be faster but less accurate. A good workflow could be to set everything to Staircase and then set some
+            meanders to Conformal in Sonnet.
+        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection
+            errors.
+        control: Selects what analysis control is used in Sonnet. Options are 'Simple', 'ABS' and 'Sweep' for parameter
+            sweeping.
         simulation_safety: Adds extra ground area to a simulation environment (in µm).
 
     Returns:

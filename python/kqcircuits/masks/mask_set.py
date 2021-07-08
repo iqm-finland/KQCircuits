@@ -19,7 +19,7 @@ from autologging import logged, traced
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
-import kqcircuits.masks.mask_export as mask_export
+from kqcircuits.masks import mask_export
 from kqcircuits.defaults import default_bar_format
 from kqcircuits.masks.mask_layout import MaskLayout
 
@@ -55,23 +55,22 @@ class MaskSet:
 
     """
 
-    def __init__(self, layout, name="MaskSet", version=1, with_grid=False, export_drc=False, mask_export_layers=[]):
+    def __init__(self, layout, name="MaskSet", version=1, with_grid=False, export_drc=False, mask_export_layers=None):
         super().__init__()
         if layout is None or not isinstance(layout, pya.Layout):
             error_text = "Cannot create mask with invalid or nil layout."
             error = ValueError(error_text)
             self.__log.exception(error_text, exc_info=error)
             raise error
-        else:
-            self.layout = layout
 
+        self.layout = layout
         self.name = name
         self.version = version
         self.with_grid = with_grid
         self.export_drc = export_drc
         self.chips_map_legend = {}
         self.mask_layouts = []
-        self.mask_export_layers = mask_export_layers
+        self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
         self._mask_layouts_per_face = {}  # dict of {face_id: number of mask layouts}
 
@@ -214,5 +213,3 @@ class MaskSet:
                             chips_map[k*num_box_map_rows + i][l*num_box_map_rows + j] = slot
 
         return chips_map
-
-

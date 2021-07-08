@@ -15,20 +15,21 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+"""Functions for exporting mask sets."""
 
 import os
-from autologging import logged, traced
 import subprocess
+
+from autologging import logged, traced
 from tqdm import tqdm
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, default_bar_format, ROOT_PATH, SCRIPTS_PATH
+    default_mask_parameters, default_drc_runset, default_bar_format, SCRIPTS_PATH
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
+from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.netlist_extraction import export_cell_netlist
-"""Functions for exporting mask sets."""
 
 
 @traced
@@ -149,13 +150,12 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
 
             f.write("### Number of Chips in Mask Layout {}\n".format(mask_layout.face_id + mask_layout.extra_id))
 
-            counts = {}
+            chip_counts = {}
 
-            def count_chips(mlayout):
+            def count_chips(mlayout, counts):
 
-                for row in range(0, len(mlayout.chips_map)):
-                    for element in range(0, len(mlayout.chips_map[row])):
-                        curr_name = mlayout.chips_map[row][element]
+                for _, row_chips in enumerate(mlayout.chips_map):
+                    for _, curr_name in enumerate(row_chips):
                         if curr_name == "---":
                             continue
                         if curr_name in counts:
@@ -163,14 +163,14 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
                         else:
                             counts[curr_name] = 1
 
-                for submask_layout, submask_pos in mlayout.submasks:
-                    count_chips(submask_layout)
+                for submask_layout, _ in mlayout.submasks:
+                    count_chips(submask_layout, counts)
 
-            count_chips(mask_layout)
+            count_chips(mask_layout, chip_counts)
 
             f.write("| **Chip Name** | **Amount** |\n")
             f.write("| :--- | :--- |\n")
-            for chip, amount in counts.items():
+            for chip, amount in chip_counts.items():
                 f.write("| **{}** | **{}** |\n".format(chip, amount))
             f.write("\n")
 
@@ -182,8 +182,8 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
             f.write("### {} Chip\n".format(name))
 
             path = os.path.join("Chips", name, name)
-            f.write("[{}.oas]({}.oas)\n\n".format(path, path))
-            f.write("![{} Chip Image]({}.png)\n".format(name, path))
+            f.write(f"[{path}.oas]({path}.oas)\n\n")
+            f.write(f"![{name} Chip Image]({path}.png)\n")
             f.write("\n")
 
             f.write("### Chip Parameters\n")
@@ -211,7 +211,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
             bump_count = 0
             def count_bumps_in_inst(inst):
                 nonlocal bump_count
-                if type(inst.pcell_declaration()) == FlipChipConnectorDc:
+                if isinstance(inst.pcell_declaration(), FlipChipConnectorDc):
                     bump_count += 1
                 # cannot use just inst.cell due to klayout bug, see
                 # https://www.klayout.de/forum/discussion/1191
@@ -233,19 +233,19 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
             mask_layout_path = os.path.join(str(export_dir), mask_layout_str)
 
             f.write("### Mask Files:\n")
-            for filename in os.listdir(mask_layout_path):
-                if filename.endswith(".oas"):
+            for file_name in os.listdir(mask_layout_path):
+                if file_name.endswith(".oas"):
                     # the spaces are replaced by "%20" to make links to filenames with spaces work
-                    f.write(" + [{}]({})\n".format(filename,
-                                                   os.path.join(mask_layout_str, filename).replace(" ", "%20")))
+                    f.write(" + [{}]({})\n".format(file_name,
+                                                   os.path.join(mask_layout_str, file_name).replace(" ", "%20")))
             f.write("\n")
 
             f.write("### Mask Images:\n")
-            for filename in os.listdir(mask_layout_path):
-                if filename.endswith(".png"):
+            for file_name in os.listdir(mask_layout_path):
+                if file_name.endswith(".png"):
                     # the spaces are replaced by "%20" to make links to filenames with spaces work
-                    f.write("+ [{}]({})\n".format(filename,
-                                                  os.path.join(mask_layout_str, filename).replace(" ", "%20")))
+                    f.write("+ [{}]({})\n".format(file_name,
+                                                  os.path.join(mask_layout_str, file_name).replace(" ", "%20")))
 
         f.close()
 
@@ -254,6 +254,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
 @logged
 def export_bitmaps(mask_set, export_dir, view, spec_layers=mask_bitmap_export_layers):
     """Exports bitmaps for the mask_set."""
+    # pylint: disable=dangerous-default-value
     if view is None or not isinstance(view, KLayoutView):
         error_text = "Cannot export bitmap of mask with invalid or nil view."
         error = ValueError(error_text)
@@ -313,14 +314,14 @@ def export_drc_reports(mask_set, export_dir):
     #     export_drc_report(name, name)
 
 
-def _export_cell(path, cell=None, layers_to_export={}):
+def _export_cell(path, cell=None, layers_to_export=None):
     if cell is None:
         error_text = "Cannot export nil cell."
         error = ValueError(error_text)
         _export_cell._log.exception(error_text, exc_info=error)
         raise error
     layout = cell.layout()
-    if layers_to_export == "":
+    if (layers_to_export is None) or (layers_to_export == ""):
         layers_to_export = {}
 
     svopt = pya.SaveLayoutOptions()
@@ -336,7 +337,7 @@ def _export_cell(path, cell=None, layers_to_export={}):
         svopt.deselect_all_layers()
         svopt.clear_cells()
         svopt.add_cell(cell.cell_index())
-        for layer_name, layer in items:
+        for _, layer in items:
             layer_info = cell.layout().layer_infos()[layer]
             svopt.add_layer(layer, layer_info)
         svopt.write_context_info = False

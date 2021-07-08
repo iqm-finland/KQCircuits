@@ -18,7 +18,7 @@
 
 def deep_delete_pcells(cell):
     for inst in cell.each_inst():
-        if (cell.is_pcell_variant(inst)):
+        if cell.is_pcell_variant(inst):
             inst.delete()
 
 

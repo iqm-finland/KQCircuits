@@ -28,7 +28,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = SingleXmonsFullChipSim
+sim_class = SingleXmonsFullChipSim  # pylint: disable=invalid-name
 sim_parameters = {
     'use_ports': True,
     'launchers': True,  # True includes bonding pads and tapers, false includes only waveguides

@@ -38,4 +38,3 @@ class LayerCluster:
     def all_layers(self):
         """Returns main_layers + extra_layers."""
         return self.main_layers + self.extra_layers
-

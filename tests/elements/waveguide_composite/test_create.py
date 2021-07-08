@@ -34,7 +34,8 @@ def nodes1():
     """ Node list that uses all features and parameters and some combinations of these """
     return [
         Node(pya.DPoint(0, 0)),
-        Node(pya.DPoint(200, 0), AirbridgeConnection, airbridge_type="Airbridge Rectangular", with_side_airbridges=False, b=4, a=5),
+        Node(pya.DPoint(200, 0), AirbridgeConnection, airbridge_type="Airbridge Rectangular",
+             with_side_airbridges=False, b=4, a=5),
         Node(pya.DPoint(400, 0), FlipChipConnectorRf, face_id="t"),
         Node(pya.DPoint(600, 0), AirbridgeConnection, with_side_airbridges=False),
         Node(pya.DPoint(800, 0), FingerCapacitorSquare),
@@ -125,7 +126,7 @@ def test_crash_and_node_formats(capfd, nodes1, nodes2):
 def _make_wg(capfd, nodes):
     layout = pya.Layout()
     wg = WaveguideComposite.create(layout, nodes=nodes)
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     assert err == "", err
     return wg.length()
 
@@ -179,5 +180,5 @@ def test_segment_lengths(nodes_with_expected_segment_lengths):
     wg = WaveguideComposite.create(layout, nodes=nodes)
 
     tolerance = 1e-4
-    assert (all([abs(real / expected - 1) < tolerance for real, expected in
-                 zip(wg.segment_lengths(), expected_segment_lengths)]))
+    assert (all(abs(real / expected - 1) < tolerance for (real, expected) in
+                zip(wg.segment_lengths(), expected_segment_lengths)))

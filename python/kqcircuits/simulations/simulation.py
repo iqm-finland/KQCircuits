@@ -19,15 +19,13 @@
 import abc
 from typing import List
 
-from kqcircuits.defaults import default_layers
-from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.elements.element import Element
 from kqcircuits.simulations.port import Port, InternalPort, EdgePort
 from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @add_parameters_from(Element)
@@ -95,9 +93,8 @@ class Simulation:
             error = ValueError(error_text)
             self.__log.exception(error_text, exc_info=error)
             raise error
-        else:
-            self.layout = layout
 
+        self.layout = layout
         schema = type(self).get_schema()
 
         # Apply kwargs or default value
@@ -257,7 +254,8 @@ class Simulation:
             face: face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.
         """
 
-        waveguide_safety_overlap = 0.005  # Extend waveguide by this amount to avoid gaps due to nm-scale rounding errors
+        waveguide_safety_overlap = 0.005  # Extend waveguide by this amount to avoid gaps due to nm-scale rounding
+                                          # errors
         waveguide_gap_extension = 1  # Extend gaps beyond waveguides into ground plane to define the ground port edge
 
         if turn_radius is None:

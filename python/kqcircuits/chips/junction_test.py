@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
 import numpy
 
 from kqcircuits.pya_resolver import pya
@@ -37,8 +36,6 @@ class JunctionTest(Chip):
     def produce_impl(self):
 
         # defining the parameters for local use
-        edge_len = self.edge_len
-        inter_space = self.inter_space
 
         left = self.box.left
         right = self.box.right
@@ -78,8 +75,8 @@ class JunctionTest(Chip):
         reg1 = pya.Region(poly.to_itype(self.layout.dbu))
         reg2 = pya.Region()
 
-        for i in range(0, len(b_array)):
-            reg2.insert(b_array[i])
+        for b in b_array:
+            reg2.insert(b)
 
         result = reg1 - reg2
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(result)

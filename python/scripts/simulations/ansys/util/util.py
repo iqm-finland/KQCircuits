@@ -23,7 +23,7 @@ def get_enabled_setup(oDesign, tab="General"):
     """Returns enabled analysis setup. Returns None if not enabled."""
     setup_names = oDesign.GetModule("AnalysisSetup").GetSetups()
     for name in setup_names:
-        if 'true' == oDesign.GetPropertyValue(tab, "AnalysisSetup:" + name, "Enabled"):
+        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + name, "Enabled") == 'true':
             return name
     return None
 
@@ -36,7 +36,7 @@ def get_enabled_setup_and_sweep(oDesign, tab="HfssTab"):
 
     sweep_names = oDesign.GetModule("AnalysisSetup").GetSweeps(str(setup))
     for name in sweep_names:
-        if 'true' == oDesign.GetPropertyValue(tab, "AnalysisSetup:" + setup + ":" + name, "Enabled"):
+        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + setup + ":" + name, "Enabled") == 'true':
             return (setup, name)
     return (setup, None)
 
@@ -71,8 +71,8 @@ def get_solution_data(report_setup, report_type, solution_name, context_array, f
 
 # Helper class to encode complex data in json output
 class ComplexEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, complex):
-            return [obj.real, obj.imag]
+    def default(self, o):
+        if isinstance(o, complex):
+            return [o.real, o.imag]
         # Let the base class default method raise the TypeError
-        return json.JSONEncoder.default(self, obj)
+        return json.JSONEncoder.default(self, o)

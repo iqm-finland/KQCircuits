@@ -57,12 +57,7 @@ class Swissmon(Qubit):
 
     def _produce_chargeline(self):
         # shorthands
-        g = self.gap_width  # gap width
-        [we, wn, ww, ws] = [float(width) / 2 for width in self.arm_width]  # length of the horizontal segment
-        w = wn  # length of the horizontal segment
         l = [float(offset) for offset in self.cl_offset]  # swissmon arm length from the center of the cross (refpoint)
-        a = self.a  # cpw center conductor width
-        b = self.b  # cpw gap width
 
         # add ref point
         # port_ref = pya.DPoint(-g-b-a/2, -l)
@@ -128,7 +123,8 @@ class Swissmon(Qubit):
         if l > 0:
             protection = pya.DBox(-g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin,
                                   b + self.margin)
-            self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection.transformed((rotation * transf)))
+            self.cell.shapes(self.get_layer("ground_grid_avoidance")).\
+                insert(protection.transformed((rotation * transf)))
 
         # add ref point
         port_ref = pya.DPoint(0, b)

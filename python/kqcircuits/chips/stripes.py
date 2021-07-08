@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import sys
 import numpy
 
 from kqcircuits.pya_resolver import pya
@@ -38,9 +37,6 @@ class Stripes(Chip):
     def produce_impl(self):
 
         # defining the dimensions for creating the polygonal area of test
-        edge_len = self.edge_len
-        inter_space = self.inter_space
-
         left = self.box.left
         right = self.box.right
         top = self.box.top
@@ -54,9 +50,6 @@ class Stripes(Chip):
 
         width = right - left
         height = top - bottom
-
-        p_width = p_right - p_left
-        p_height = p_top - p_bottom
 
         # create the test area polygon
         poly = pya.DPolygon([
@@ -76,7 +69,6 @@ class Stripes(Chip):
 
         # create the box array
         b_array = []
-        t = 0
 
         square_y_reach = bottom + height
         square_x_start = left + 120
@@ -85,7 +77,7 @@ class Stripes(Chip):
         step = self.edge_len + self.inter_space
         stripe_step = step * 2
 
-        if (self.axis == "Vertical"):
+        if self.axis == "Vertical":
             stripe_start = left + self.dice_width + self.inter_space
             stripe_reach = left + width
 
@@ -97,7 +89,7 @@ class Stripes(Chip):
             square_y_step = step
             square_x_step = step * 2
 
-        elif (self.axis == "Horizontal"):
+        elif self.axis == "Horizontal":
             stripe_start = bottom + self.dice_width + self.inter_space
             stripe_reach = bottom + height
 
@@ -111,11 +103,11 @@ class Stripes(Chip):
 
         # creating the stripes for all of the ground grid
         for c in numpy.arange(stripe_start, stripe_reach, stripe_step):
-            if (self.axis == "Vertical"):
+            if self.axis == "Vertical":
                 stripe_top_right_x = c + self.edge_len
                 stripe_bottom_left_x = c
 
-            elif (self.axis == "Horizontal"):
+            elif self.axis == "Horizontal":
                 stripe_top_right_y = c + self.edge_len
                 stripe_bottom_left_y = c
 
@@ -134,8 +126,8 @@ class Stripes(Chip):
         reg1 = pya.Region(poly.to_itype(self.layout.dbu))
         reg2 = pya.Region()
 
-        for i in range(0, len(b_array)):
-            reg2.insert(b_array[i])
+        for b in b_array:
+            reg2.insert(b)
 
         result = reg1 - reg2
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(result)

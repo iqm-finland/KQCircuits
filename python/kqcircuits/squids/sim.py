@@ -16,8 +16,9 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.pya_resolver import pya
 from autologging import logged, traced
+
+from kqcircuits.pya_resolver import pya
 from kqcircuits.squids.squid import Squid
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
