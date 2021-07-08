@@ -173,13 +173,17 @@ default_mask_export_layers = [
     "airbridge_flyover",
 ]
 
-# Layer names (without face prefix) on which the covered region on wafer boundary, mask aligners,
-# and mask IDs are exported. The indices appear in postfix in mask label
+# Layer names (without face prefix) with mask label postfix for mask label and mask covered region creation.
 default_layers_to_mask = {
     "base_metal_gap_wo_grid": "1",
     "airbridge_pads": "2",
     "airbridge_flyover": "3"
 }
+
+# Layer names (without face prefix) in `layers_to_mask` for which mask covered region is not created.
+default_covered_region_excluded_layers = [
+    "indium_bump",
+]
 
 # Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not
 # apply to individual pixels).

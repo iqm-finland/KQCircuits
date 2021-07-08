@@ -22,7 +22,7 @@ from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_layers, default_brand, default_faces, default_mask_parameters, \
-    default_layers_to_mask, default_mask_export_layers, default_bar_format
+    default_layers_to_mask, default_covered_region_excluded_layers, default_mask_export_layers, default_bar_format
 from kqcircuits.util import merge
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.elements.mask_marker_fc import MaskMarkerFc
@@ -42,7 +42,8 @@ class MaskLayout:
         version: Mask version
         with_grid: Boolean determining if ground grid is generated
         face_id: face_id of this mask layout, "b" | "t" | "c"
-        layers_to_mask: dictionary of layers with mask label postfix for mask border creation
+        layers_to_mask: dictionary of layers with mask label postfix for mask label and mask covered region creation
+        covered_region_excluded_layers: list of layers in `layers_to_mask` for which mask covered region is not created
         chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)
         chips_map_legend: Dictionary where keys are chip names, values are chip cells
         wafer_rad: Wafer radius
@@ -75,6 +76,8 @@ class MaskLayout:
         self.chips_map_legend = None
 
         self.layers_to_mask = kwargs.get("layers_to_mask", default_layers_to_mask)
+        self.covered_region_excluded_layers = kwargs.get("covered_region_excluded_layers",
+                                                        default_covered_region_excluded_layers)
         self.wafer_rad = kwargs.get("wafer_rad", default_mask_parameters[self.face_id]["wafer_rad"])
         self.wafer_center = (pya.DVector(self.wafer_rad, -self.wafer_rad) +
                              kwargs.get("wafer_center_offset",
@@ -240,8 +243,11 @@ class MaskLayout:
             self._add_markers(maskextra_cell, region_covered, cell_marker, marker_transes)
 
         maskextra_cell.shapes(self.layout.layer(default_layers["mask_graphical_rep"])).insert(region_covered)
+        # remove unwanted circle boundary and filling from `layers_to_mask` which have been excluded in
+        # `covered_region_excluded_layers`
         for layer_name in layers_dict.keys():
-            maskextra_cell.shapes(self.layout.layer(self._face()[layer_name])).insert(region_covered)
+            if layer_name not in self.covered_region_excluded_layers:
+                maskextra_cell.shapes(self.layout.layer(self._face()[layer_name])).insert(region_covered)
 
         self.top_cell.insert(pya.DCellInstArray(maskextra_cell.cell_index(), pya.DTrans()))
 
