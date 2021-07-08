@@ -23,7 +23,6 @@ import sys
 import json
 import ScriptEnv
 
-
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
 from geometry import create_box, create_polygon
@@ -241,7 +240,7 @@ if wafer_stack_type == 'multiface':
              "CheckFaceFaceIntersection:=", False,
              "SweepVectorX:=", "0um",
              "SweepVectorY:=", "0um",
-             "SweepVectorZ:=", "{} {}".format(chip_distance /2, units)
+             "SweepVectorZ:=", "{} {}".format(chip_distance / 2, units)
              ])
         oEditor.ChangeProperty(
             ["NAME:AllTabs",
@@ -264,7 +263,7 @@ if wafer_stack_type == 'multiface':
              "CheckFaceFaceIntersection:=", False,
              "SweepVectorX:=", "0um",
              "SweepVectorY:=", "0um",
-             "SweepVectorZ:=", "{} {}".format(-chip_distance /2, units)
+             "SweepVectorZ:=", "{} {}".format(-chip_distance / 2, units)
              ])
         oEditor.ChangeProperty(
             ["NAME:AllTabs",
@@ -311,7 +310,6 @@ if airbridge_flyover_objects:
          "TranslateVectorY:=", "0um",
          "TranslateVectorZ:=", "{} {}".format(airbridge_height, units)
          ])
-
 
 # Create ports or nets
 if ansys_tool == 'hfss':
@@ -383,7 +381,6 @@ elif ansys_tool == 'q3d':
              ])
     oBoundarySetup.AutoIdentifyNets()  # Combine Nets by conductor connections. Order: GroundNet, SignalNet, FloatingNet
 
-
 # Create substrate and vacuum boxes
 import_bounding_box = oEditor.GetModelBoundingBox()
 
@@ -417,7 +414,6 @@ if wafer_stack_type == 'multiface':
 
 # Fit window to objects
 oEditor.FitAll()
-
 
 # Insert analysis setup
 if 'analysis_setup' in data:
@@ -512,19 +508,18 @@ if 'analysis_setup' in data:
                                        "AdaptiveFreq:=", str(setup['frequency']) + setup['frequency_units'],
                                        "SaveFields:=", False,
                                        "Enabled:=", True,
-               [
-                   "NAME:Cap",
-                   "MaxPass:=", setup['maximum_passes'],
-                   "MinPass:=", setup['minimum_passes'],
-                   "MinConvPass:=", setup['minimum_converged_passes'],
-                   "PerError:=", setup['percent_error'],
-                   "PerRefine:=", setup['percent_refinement'],
-                   "AutoIncreaseSolutionOrder:=", True,
-                   "SolutionOrder:=", "High",
-                   "Solver Type:=", "Iterative"
-               ]
-           ])
-
+                                       [
+                                           "NAME:Cap",
+                                           "MaxPass:=", setup['maximum_passes'],
+                                           "MinPass:=", setup['minimum_passes'],
+                                           "MinConvPass:=", setup['minimum_converged_passes'],
+                                           "PerError:=", setup['percent_error'],
+                                           "PerRefine:=", setup['percent_refinement'],
+                                           "AutoIncreaseSolutionOrder:=", True,
+                                           "SolutionOrder:=", "High",
+                                           "Solver Type:=", "Iterative"
+                                       ]
+                                   ])
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Import completed (%s)" % time.asctime(time.localtime()))

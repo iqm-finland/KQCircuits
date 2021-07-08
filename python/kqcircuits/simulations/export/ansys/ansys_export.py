@@ -43,7 +43,7 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
-                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101):
+                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, export_processing=None):
     """
     Export Ansys simulation into json and gds files.
 
@@ -63,12 +63,15 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         sweep_start: The lowest frequency in the sweep.
         sweep_end: The highest frequency in the sweep.
         sweep_count: Number of frequencies in the sweep.
+        export_processing: Optional export processing, given as list of strings
 
     Returns:
          Path to exported json file.
     """
     if simulation is None or not isinstance(simulation, Simulation):
         raise ValueError("Cannot export without simulation")
+    if export_processing is None:
+        export_processing = []
 
     # gather port data
     port_data = []
@@ -181,7 +184,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'sweep_start': sweep_start,
             'sweep_end': sweep_end,
             'sweep_count': sweep_count
-        }
+        },
+        'export_processing': export_processing
     }
     if simulation.wafer_stack_type == "multiface":
         ansys_data = {**ansys_data,
@@ -243,7 +247,7 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 
     bat_filename = str(path.joinpath(file_prefix + '.bat'))
     with open(bat_filename, 'w') as file:
-        file.write('@echo off\n')
+        file.write('@echo off\ntitle Run Simulations\n')
 
         # Commands for each simulation
         for i, json_filename in enumerate(json_filenames):
@@ -275,7 +279,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101,
                  exit_after_run=False, ansys_executable=r"%PROGRAMFILES%\AnsysEM\AnsysEM21.1\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
-                 use_rel_path=True):
+                 use_rel_path=True, export_processing=None):
     """
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -302,6 +306,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         import_script: Name of import script file.
         post_process_script: Name of post processing script file.
         use_rel_path: Determines if to use relative paths.
+        export_processing: Optional export processing, given as list of strings
 
     Returns:
         Path to exported bat file.
@@ -317,7 +322,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                                 maximum_passes=maximum_passes, minimum_passes=minimum_passes,
                                                 minimum_converged_passes=minimum_converged_passes,
                                                 sweep_enabled=sweep_enabled, sweep_start=sweep_start,
-                                                sweep_end=sweep_end, sweep_count=sweep_count))
+                                                sweep_end=sweep_end, sweep_count=sweep_count,
+                                                export_processing=export_processing))
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
                             ansys_executable=ansys_executable, import_script_folder=import_script_folder,
                             import_script=import_script, post_process_script=post_process_script,

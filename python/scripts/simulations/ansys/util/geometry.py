@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-
 def format_position(x, units):
     if isinstance(x, list):
         return [format_position(p, units) for p in x]

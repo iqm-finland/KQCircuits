@@ -18,6 +18,7 @@
 
 # This is a Python 2.7 script that should be run in HFSS in order to import and run the simulation
 import os
+import json
 import ScriptEnv
 
 # Set up environment
@@ -48,3 +49,12 @@ oProject.Save()
 
 # Export results
 oDesktop.RunScript(os.path.join(scriptpath, 'export_solution_data.py'))
+
+
+#######################
+# Optional processing #
+#######################
+
+# Read export_processing settings from .json
+with open(jsonfile, 'r') as fp:
+    export_processing = json.load(fp)['export_processing']
