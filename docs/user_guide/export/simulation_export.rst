@@ -31,7 +31,7 @@ Create an instance of ``Simulation``::
 
 The ``simulation`` object is needed for Ansys export and Sonnet export (more details in following sections). Alternatively, run following macros in Klayout:
 
-* ``scripts/macros/export/ansys_sonnet.lym``
+* ``scripts/macros/export/export_ansys.lym``
 * ``scripts/macros/export/export_sonnet.lym``
 
 Geometry from KQCircuits library

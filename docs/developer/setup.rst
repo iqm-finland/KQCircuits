@@ -15,7 +15,7 @@ duplicate macros and possibly other problems.
 .. note::
     You must open KLayout at least once before installing KQCircuits, because the KLayout python
     folder ``~/.klayout/python`` is only created then. The documentation uses Linux paths unless
-    explicitely mentioned otherwise.
+    explicitly mentioned otherwise.
 
 Python
 ^^^^^^
@@ -78,9 +78,9 @@ automatically do the same steps as explained below.
 Linux or MacOS
 ^^^^^^^^^^^^^^
 
-Create a symlink from KLayout to the  kqcircuits package and scripts::
+Create a symlink from KLayout to the kqcircuits package and scripts::
 
-    ln -s /Path_to_KQCircuits/python/ksqcircuits ~/.klayout/python/kqcircuits
+    ln -s /Path_to_KQCircuits/python/kqcircuits ~/.klayout/python/kqcircuits
     ln -s /Path_to_KQCircuits/python/scripts ~/.klayout/python/kqcircuits_scripts
 
 To install the required packages, open a terminal in your KQCircuits folder
