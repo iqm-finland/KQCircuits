@@ -195,6 +195,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">mask_bitmap_export_layers</span><span class="p">,</span> <span class="n">chip_export_layer_clusters</span><span class="p">,</span> <span class="n">default_layers</span><span class="p">,</span> \
     <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">,</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">ROOT_PATH</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc</span> <span class="kn">import</span> <span class="n">FlipChipConnectorDc</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.netlist_extraction</span> <span class="kn">import</span> <span class="n">export_cell_netlist</span>
 <span class="sd">&quot;&quot;&quot;Functions for exporting mask sets.&quot;&quot;&quot;</span>
 
@@ -363,12 +364,34 @@
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;| **</span><span class="si">{}</span><span class="s2">** | </span><span class="si">{}</span><span class="s2"> |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">param_declaration</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;#124;&quot;</span><span class="p">),</span>
                         <span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">param_name</span><span class="p">])))</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;### Other Chip Information</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;| | |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;| :--- | :--- |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># launcher assignments</span>
             <span class="n">launcher_assignments</span> <span class="o">=</span> <span class="n">Chip</span><span class="o">.</span><span class="n">get_launcher_assignments</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">launcher_assignments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;| **Launcher assignments** |&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">launcher_assignments</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> = </span><span class="si">{}</span><span class="s2">, &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;|</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="c1"># flip-chip bump count</span>
+            <span class="n">bump_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">def</span> <span class="nf">count_bumps_in_inst</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
+                <span class="k">nonlocal</span> <span class="n">bump_count</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span> <span class="o">==</span> <span class="n">FlipChipConnectorDc</span><span class="p">:</span>
+                    <span class="n">bump_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># cannot use just inst.cell due to klayout bug, see</span>
+                <span class="c1"># https://www.klayout.de/forum/discussion/1191</span>
+                <span class="n">inst_cell</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">child_inst</span> <span class="ow">in</span> <span class="n">inst_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+                    <span class="n">count_bumps_in_inst</span><span class="p">(</span><span class="n">child_inst</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+                <span class="n">count_bumps_in_inst</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bump_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| **Total bump count** | </span><span class="si">{</span><span class="n">bump_count</span><span class="si">}</span><span class="s2"> |</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
             <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;___</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>

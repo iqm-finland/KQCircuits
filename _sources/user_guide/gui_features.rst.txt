@@ -32,7 +32,7 @@ If an ``Element`` is in the layout, one can change its **parameters** by double 
 take effect when one clicks **Ok** or **Apply**.
 At this event, corresponding **PCell** instance is created or reused from the **Library**.
 
-.. image:: ../images/gui_workflows/modifing_pcell.gif
+.. image:: ../images/gui_workflows/modifying_pcell.gif
 
 Due to the non-intuitive way KLayout is implemented there are a few common mistakes which prevent one from getting
 **Object properties** window when double clicking the element.
@@ -54,4 +54,4 @@ in the toolbar.
 
 PCell shape is updated after each change in the parameters.
 
-.. image:: ../images/gui_workflows/modifing_waveguide.gif
+.. image:: ../images/gui_workflows/modifying_waveguide.gif

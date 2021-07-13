@@ -5,7 +5,7 @@ Full description of KLayout database is in the `API
 documentation <https://www.klayout.de/doc-qt5/programming/database_api.html>`__.
 Here is a short summary.
 
-#. Cell: Every structure that contains shapes or other cells inside is
+#. Cell : Every structure that contains shapes or other cells inside is
    called a cell.
 #. PCell : Every cell that is parameterizable and contains shapes, cells
    or PCells inside is called a PCell.
@@ -14,7 +14,7 @@ Here is a short summary.
 #. Point : The most basic Shape of KLayout. By using multiple points, it
    is possible to create Boxes and Polygons.
 #. Macro : A script you can run in KLayout environment. Can use
-   definitions from libraries. Can appear in KLayout GUI menues.
+   definitions from libraries. Can appear in KLayout GUI menus.
 #. Chips : Chip corresponds to a single quantum circuit we can embed in
    the package for experimentation. Preferably implemented by a PCells,
    but some are manually drawn Cells.

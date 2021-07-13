@@ -191,7 +191,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_brand</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">default_mask_parameters</span><span class="p">,</span> \
-    <span class="n">default_layers_to_mask</span><span class="p">,</span> <span class="n">default_mask_export_layers</span><span class="p">,</span> <span class="n">default_bar_format</span>
+    <span class="n">default_layers_to_mask</span><span class="p">,</span> <span class="n">default_covered_region_excluded_layers</span><span class="p">,</span> <span class="n">default_mask_export_layers</span><span class="p">,</span> <span class="n">default_bar_format</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util</span> <span class="kn">import</span> <span class="n">merge</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.markers.marker</span> <span class="kn">import</span> <span class="n">Marker</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.mask_marker_fc</span> <span class="kn">import</span> <span class="n">MaskMarkerFc</span>
@@ -211,7 +211,8 @@
 <span class="sd">        version: Mask version</span>
 <span class="sd">        with_grid: Boolean determining if ground grid is generated</span>
 <span class="sd">        face_id: face_id of this mask layout, &quot;b&quot; | &quot;t&quot; | &quot;c&quot;</span>
-<span class="sd">        layers_to_mask: dictionary of layers with mask label postfix for mask border creation</span>
+<span class="sd">        layers_to_mask: dictionary of layers with mask label postfix for mask label and mask covered region creation</span>
+<span class="sd">        covered_region_excluded_layers: list of layers in `layers_to_mask` for which mask covered region is not created</span>
 <span class="sd">        chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)</span>
 <span class="sd">        chips_map_legend: Dictionary where keys are chip names, values are chip cells</span>
 <span class="sd">        wafer_rad: Wafer radius</span>
@@ -244,6 +245,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layers_to_mask</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;layers_to_mask&quot;</span><span class="p">,</span> <span class="n">default_layers_to_mask</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covered_region_excluded_layers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;covered_region_excluded_layers&quot;</span><span class="p">,</span>
+                                                        <span class="n">default_covered_region_excluded_layers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_rad&quot;</span><span class="p">,</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;wafer_rad&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wafer_center</span> <span class="o">=</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">)</span> <span class="o">+</span>
                              <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_center_offset&quot;</span><span class="p">,</span>
@@ -409,8 +412,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_markers</span><span class="p">(</span><span class="n">maskextra_cell</span><span class="p">,</span> <span class="n">region_covered</span><span class="p">,</span> <span class="n">cell_marker</span><span class="p">,</span> <span class="n">marker_transes</span><span class="p">)</span>
 
         <span class="n">maskextra_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;mask_graphical_rep&quot;</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region_covered</span><span class="p">)</span>
+        <span class="c1"># remove unwanted circle boundary and filling from `layers_to_mask` which have been excluded in</span>
+        <span class="c1"># `covered_region_excluded_layers`</span>
         <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">maskextra_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_face</span><span class="p">()[</span><span class="n">layer_name</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region_covered</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">covered_region_excluded_layers</span><span class="p">:</span>
+                <span class="n">maskextra_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_face</span><span class="p">()[</span><span class="n">layer_name</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region_covered</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">top_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">maskextra_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span>
 
