@@ -17,17 +17,18 @@
 
 
 import json
-
+import sys
 import matplotlib.pyplot as plt
 import networkx as nx
 
-from kqcircuits.defaults import TMP_PATH
+if len(sys.argv) < 2:
+    print("Usage: netlist_as_graph.py <path to netlist file> (<optional, use true locations, 0 or 1>)")
+    sys.exit(-1)
 
-with open(str(TMP_PATH / "netlist_Chip Library.Demo.json"), "r") as fp:
+with open(str(sys.argv[1]), "r") as fp:
     network = json.load(fp)
 
-
-def plot_network_as_graph():
+def plot_network_as_graph(true_locations: bool = True):
     edges = []
     used_subcircuit_ids = set()
     for net in network["nets"].values():
@@ -35,15 +36,16 @@ def plot_network_as_graph():
             edges.append([net[0]["subcircuit_id"], net[1]["subcircuit_id"]])
             used_subcircuit_ids.add(net[0]["subcircuit_id"])
             used_subcircuit_ids.add(net[1]["subcircuit_id"])
-    labels = {}
+    labels, pos = {}, {}
     for subcircuit_id in used_subcircuit_ids:
-        labels[subcircuit_id] = network["subcircuits"][f"{subcircuit_id}"]["cell_name"]
+        labels[subcircuit_id] = network["subcircuits"][str(subcircuit_id)]["cell_name"]
+        pos[subcircuit_id] = network["subcircuits"][str(subcircuit_id)]["subcircuit_location"]
     graph_1 = nx.Graph()
     graph_1.add_edges_from(edges)
-    pos = nx.spring_layout(graph_1, k=0.5, iterations=2000)
+    pos = pos if true_locations else nx.spring_layout(graph_1, k=0.5, iterations=2000)
     plt.figure(3, figsize=(12, 12))
     nx.draw(graph_1, pos, labels=labels, with_labels=True)
 
 
-plot_network_as_graph()
+plot_network_as_graph(true_locations=(sys.argv[2] == '1') if (len(sys.argv) >= 3) else True)
 plt.show()
