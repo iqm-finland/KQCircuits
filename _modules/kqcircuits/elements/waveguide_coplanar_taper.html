@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_coplanar_taper &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar_taper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -186,13 +183,11 @@
 
 
 <span class="kn">import</span> <span class="nn">math</span>
-
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 
 
 <div class="viewcode-block" id="WaveguideCoplanarTaper"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_taper.html#kqcircuits.elements.waveguide_coplanar_taper.WaveguideCoplanarTaper">[docs]</a><span class="k">class</span> <span class="nc">WaveguideCoplanarTaper</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
@@ -247,7 +242,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">taper_length</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="c1"># adds annotation based on refpoints calculated above</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
-
 </pre></div>
 
            </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.mask_marker_fc &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.elements.mask_marker_fc &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -275,8 +272,8 @@
             <span class="n">insert_to_main_layers</span><span class="p">(</span><span class="n">inner_shapes</span><span class="p">)</span>
             <span class="n">inner_corner_shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
                                                 <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">shift</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_cross</span><span class="p">(</span><span class="n">cross_length</span><span class="p">,</span> <span class="n">cross_width</span><span class="p">)</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_insert</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">inner_corner_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer_insert</span> <span class="ow">in</span>
-             <span class="p">[</span><span class="n">layer_pads</span><span class="p">]]</span>
+            <span class="k">for</span> <span class="n">layer_insert</span> <span class="ow">in</span> <span class="p">[</span><span class="n">layer_pads</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_insert</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">inner_corner_shape</span><span class="p">)</span>
             <span class="n">negative_offset</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span>
                                              <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">shift</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_cross</span><span class="p">(</span><span class="n">arm_lengths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">arm_widths</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">negative_layer</span> <span class="o">-=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">negative_offset</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)])</span>
@@ -291,8 +288,8 @@
                 <span class="n">arrows_shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">j</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">,</span>
                                               <span class="n">j</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">400</span><span class="p">))</span> <span class="o">*</span> <span class="n">arrow</span>
                 <span class="n">insert_to_main_layers</span><span class="p">(</span><span class="n">arrows_shape</span><span class="p">)</span>
-                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_insert</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arrows_shape</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer_insert</span> <span class="ow">in</span>
-                 <span class="p">[</span><span class="n">layer_pads</span><span class="p">,</span> <span class="n">layer_indium_bump</span><span class="p">]]</span></div></div>
+                <span class="k">for</span> <span class="n">layer_insert</span> <span class="ow">in</span> <span class="p">[</span><span class="n">layer_pads</span><span class="p">,</span> <span class="n">layer_indium_bump</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_insert</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">arrows_shape</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.library_helper &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.util.library_helper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -184,6 +181,16 @@
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper module for building KLayout libraries.</span>
+
+<span class="sd">    Typical usage example::</span>
+
+<span class="sd">        from kqcircuits.elements.airbridges import Airbridge</span>
+<span class="sd">        from kqcircuits.util.library_helper import load_libraries</span>
+<span class="sd">        load_libraries(path=Airbridge.LIBRARY_PATH)</span>
+<span class="sd">        cell = Airbridge.create(layout, **kwargs)</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">types</span>
@@ -195,16 +202,6 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">SRC_PATHS</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper module for building KLayout libraries.</span>
-
-<span class="sd">    Typical usage example:</span>
-
-<span class="sd">    from kqcircuits.elements.airbridges import Airbridge</span>
-<span class="sd">    from kqcircuits.util.library_helper import load_libraries</span>
-<span class="sd">    load_libraries(path=Airbridge.LIBRARY_PATH)</span>
-<span class="sd">    cell = Airbridge.create(layout, **kwargs)</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="n">_kqc_libraries</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dictionary {library name: (library, library path relative to kqcircuits)}</span>
 
@@ -225,7 +222,7 @@
 
 <div class="viewcode-block" id="load_libraries"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>   <span class="c1">#TODO `flush=True` does not work with KLayout 0.27</span>
+<span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>   <span class="c1"># TODO `flush=True` does not work with KLayout 0.27</span>
     <span class="sd">&quot;&quot;&quot;Load all KQCircuits libraries from the given path.</span>
 
 <span class="sd">    Args:</span>
@@ -243,7 +240,7 @@
         <span class="n">load_libraries</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Deleted all libraries.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># if a library with the given path already exist, use it</span>
-        <span class="k">for</span> <span class="n">lib</span><span class="p">,</span> <span class="n">lib_path</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">lib_path</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">lib_path</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
@@ -389,7 +386,7 @@
         <span class="n">pcell_name</span> <span class="o">=</span> <span class="n">to_library_name</span><span class="p">(</span><span class="n">pcell_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">register_pcell</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">,</span> <span class="n">pcell_class</span><span class="p">())</span>
         <span class="n">_register_pcell</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Registered pcell [</span><span class="si">{}</span><span class="s2">] to library </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">,</span> <span class="n">library_name</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
         <span class="n">_register_pcell</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
             <span class="s2">&quot;Failed to register pcell in class </span><span class="si">{}</span><span class="s2"> to library </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">library_name</span><span class="p">),</span>
             <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
@@ -502,7 +499,7 @@
     <span class="n">library_dependencies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">pcell_name</span> <span class="ow">in</span> <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>
         <span class="n">pcell_class</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">)</span><span class="o">.</span><span class="vm">__class__</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">pcell_class</span><span class="o">.</span><span class="vm">__module__</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">pcell_class</span><span class="o">.</span><span class="vm">__module__</span><span class="p">]):</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;LIBRARY_NAME&quot;</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">LIBRARY_NAME</span> <span class="o">!=</span> <span class="n">pcell_class</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">:</span>
                     <span class="n">library_dependencies</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>

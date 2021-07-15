@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.squids.squid &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.squids.squid &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -187,12 +184,11 @@
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_squid_type</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 
 
 <div class="viewcode-block" id="Squid"><a class="viewcode-back" href="../../../api/kqcircuits.squids.squid.html#kqcircuits.squids.squid.Squid">[docs]</a><span class="nd">@traced</span>
@@ -297,15 +293,14 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">parameter_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">parameter_value</span> <span class="o">&lt;=</span> <span class="n">parameter_end</span><span class="p">):</span>
             <span class="c1"># create new squid at old squid&#39;s position</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">parameter_name</span><span class="p">:</span> <span class="n">parameter_value</span><span class="p">}</span>
-            <span class="n">squid_cell</span> <span class="o">=</span> <span class="n">Squid</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">squid_type</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="n">squid_cell</span> <span class="o">=</span> <span class="n">Squid</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">squid_type</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span>
+                                      <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
             <span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">squid_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">dtrans</span><span class="p">))</span>
             <span class="n">replace_squids</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Replaced squid </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with dtrans=</span><span class="si">{}</span><span class="s2"> by a squid </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with </span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">.&quot;</span>
                                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_value</span><span class="p">))</span>
             <span class="n">parameter_value</span> <span class="o">+=</span> <span class="n">parameter_step</span>
         <span class="c1"># delete old squid</span>
         <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
-
-
 </pre></div>
 
            </div>

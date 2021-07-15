@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Export for external simulation tools &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>Export for external simulation tools &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -66,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -280,7 +277,8 @@
 <p>The primary use case is to estimate capacitive couplings between different elements in the layout, where each element
 of interest has a port in the simulation. The capacitances are represented as a matrix, where the <em>Cij</em> is the
 capacitance between two ports <em>i</em> and <em>j</em>, and <em>Cii</em> is the capacitance between port <em>i</em> and ground.</p>
-<p>Available scripts:</p>
+<div class="section" id="main-scripts">
+<h4>Main scripts:<a class="headerlink" href="#main-scripts" title="Permalink to this headline">¶</a></h4>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">import_simulation_geometry.py</span></code></p>
 <p>Argument: path to json file exported by <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code>.</p>
@@ -305,6 +303,29 @@ In case of HFSS, <em>projectname_SMatrix.s2p</em> contains the S-parameters.</p>
 <p>Performs the full simulation sequence including running the three other scripts, saving the project, and running the simulation.</p>
 </li>
 </ul>
+<p>Additional scripts for use cases other than capacitive coupling exist.
+These are enabled in <code class="docutils literal notranslate"><span class="pre">import_and_simulate.py</span></code> with a list of strings as parameters to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>,
+e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) files:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_ansys</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">export_processing</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tdr&#39;</span><span class="p">,</span> <span class="s1">&#39;snp_no_deembed&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>The optional scripts are listed below.</p>
+</div>
+<div class="section" id="optional-scripts">
+<h4>Optional scripts:<a class="headerlink" href="#optional-scripts" title="Permalink to this headline">¶</a></h4>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_snp_no_deembed.py</span></code></p>
+<p>No argument.</p>
+<p>Disables de-embedding and exports the <span class="math notranslate nohighlight">\(S\)</span>-matrix network data to a Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) file.</p>
+<p>Works only in HFSS.</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_tdr.py</span></code></p>
+<p>No argument.</p>
+<p>Creates a Time Domain Reflectometry report using <code class="docutils literal notranslate"><span class="pre">TDRZt(port)</span></code> for all ports and exports the data to a <code class="docutils literal notranslate"><span class="pre">.csv</span></code>.</p>
+<p>Works only in HFSS.</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="section" id="sonnet-export">

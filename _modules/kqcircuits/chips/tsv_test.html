@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.tsv_test &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.chips.tsv_test &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -221,7 +218,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell_pattern</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">))</span>
 
         <span class="c1"># metrology cell for crossectional analysis</span>
-        <span class="n">min_spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_diameter</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_type</span> <span class="o">==</span> <span class="s2">&quot;circular&quot;</span> <span class="k">else</span> <span class="nb">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_diameter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_ellipse_width</span><span class="p">])</span>
+        <span class="n">min_spacing</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_diameter</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tsv_type</span> <span class="o">==</span> <span class="s2">&quot;circular&quot;</span> <span class="k">else</span> <span class="nb">max</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_diameter</span><span class="p">,</span>
+                                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">tsv_ellipse_width</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_xsection</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">1250</span><span class="p">),</span> <span class="n">array_form</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
                              <span class="n">pitch</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metrology_pitch</span> <span class="o">+</span> <span class="n">min_spacing</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_xsection</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1250</span><span class="p">,</span> <span class="mi">8750</span><span class="p">),</span> <span class="n">array_form</span><span class="o">=</span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>

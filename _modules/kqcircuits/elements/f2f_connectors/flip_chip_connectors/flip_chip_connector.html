@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../../../_static/underscore.js"></script>
         <script src="../../../../../_static/doctools.js"></script>
         <script src="../../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -183,12 +180,11 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 
 
 <div class="viewcode-block" id="FlipChipConnector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector">[docs]</a><span class="nd">@traced</span>
@@ -202,9 +198,6 @@
 
     <span class="n">ubm_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Under-bump metalization diameter&quot;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">bump_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bump diameter&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FlipChipConnector.produce_impl"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="FlipChipConnector.create_bump_connector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector.create_bump_connector">[docs]</a>    <span class="k">def</span> <span class="nf">create_bump_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ubm_shape</span> <span class="o">=</span> <span class="n">circle_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ubm_diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -305,10 +302,9 @@
                 <span class="k">break</span>
             <span class="n">tmp_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
             <span class="n">length</span> <span class="o">=</span> <span class="n">tmp_cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
-        <span class="n">n_input_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
 
         <span class="c1"># segments based on poly_path points</span>
-        <span class="n">poly_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">poly_path</span><span class="o">.</span><span class="n">each_point</span><span class="p">()]</span>
+        <span class="n">poly_points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poly_path</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
         <span class="n">n_poly_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">poly_points</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">length</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="ow">and</span> <span class="n">n_poly_points</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">poly_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">(</span><span class="n">poly_points</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">poly_points</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_poly_points</span><span class="p">)]</span>
@@ -408,7 +404,8 @@
                 <span class="n">curve_alpha</span> <span class="o">=</span> <span class="n">curve_length</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
                 <span class="c1"># add new curve piece at the waveguide end</span>
                 <span class="n">curve_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarCurved</span><span class="p">,</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">curve_alpha</span><span class="p">)</span>
-                <span class="n">curve_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degrees</span><span class="p">(</span><span class="n">alpha1</span><span class="p">)</span> <span class="o">-</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">*</span><span class="mi">90</span><span class="p">,</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">corner_pos</span><span class="p">)</span>
+                <span class="n">curve_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">degrees</span><span class="p">(</span><span class="n">alpha1</span><span class="p">)</span> <span class="o">-</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span><span class="o">*</span><span class="mi">90</span><span class="p">,</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span>
+                                             <span class="n">corner_pos</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">curve_cell</span><span class="p">,</span> <span class="n">curve_trans</span><span class="p">)</span>
                 <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">produce_curve_termination</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">curve_alpha</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">term2</span><span class="p">,</span> <span class="n">curve_trans</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">True</span>
@@ -470,7 +467,6 @@
         <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">point1</span><span class="p">,</span> <span class="n">point2</span><span class="p">,</span> <span class="n">point3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
         <span class="n">abs_curve</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha2</span> <span class="o">-</span> <span class="n">alpha1</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">*</span><span class="n">tan</span><span class="p">(</span><span class="n">abs_curve</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div>
-
 </pre></div>
 
            </div>

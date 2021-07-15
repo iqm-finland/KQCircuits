@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.xmons_direct_coupling_full_chip_sim &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.simulations.xmons_direct_coupling_full_chip_sim &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -185,14 +182,12 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher</span> <span class="kn">import</span> <span class="n">Launcher</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 
 
@@ -224,7 +219,7 @@
         <span class="n">qubit_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">qubit_inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">qubit_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">qubit_trans</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-          <span class="n">qubit_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">qubit_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
 
         <span class="n">refpoints_abs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">qubit_cell</span><span class="p">,</span> <span class="n">qubit_inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">)</span>
         <span class="n">port_qubit_dr</span> <span class="o">=</span> <span class="n">refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_drive&quot;</span><span class="p">]</span>
@@ -256,11 +251,9 @@
             <span class="n">meanders</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
             <span class="n">r</span><span class="o">=</span><span class="mi">50</span>
         <span class="p">)</span>
-        <span class="n">meander_inst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">meander</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">meander</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span></div>
 
-        <span class="k">return</span></div>
-
-<div class="viewcode-block" id="XMonsDirectCouplingFullChipSim.produce_launcher"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html#kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.XMonsDirectCouplingFullChipSim.produce_launcher">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+<div class="viewcode-block" id="XMonsDirectCouplingFullChipSim.produce_launcher"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html#kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.XMonsDirectCouplingFullChipSim.produce_launcher">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Wrapper function for launcher PCell placement at `pos` with `direction`, `name` and `width`.&quot;&quot;&quot;</span>
 
         <span class="n">subcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
@@ -272,7 +265,6 @@
             <span class="n">term2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="c1">#subcell = self.add_element(Launcher, name=name, s=width, l=width)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">direction</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;E&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">:</span> <span class="mi">180</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">}[</span><span class="n">direction</span><span class="p">]</span>
         <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
@@ -292,6 +284,7 @@
 <span class="sd">            launchers dictionary, where keys are launcher names and values are tuples of (point, heading, distance from</span>
 <span class="sd">            chip edge)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=invalid-name,dangerous-default-value</span>
         <span class="c1"># dictionary of point, heading, distance from chip edge</span>
         <span class="n">launchers</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;WS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">2800</span><span class="p">),</span> <span class="s2">&quot;W&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">),</span>
@@ -304,7 +297,7 @@
             <span class="s2">&quot;NE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">7200</span><span class="p">,</span> <span class="mi">9200</span><span class="p">),</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">enabled</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">produce_launcher</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">launchers</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_launcher</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">launchers</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">launchers</span></div>
 
 <div class="viewcode-block" id="XMonsDirectCouplingFullChipSim.build"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html#kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.XMonsDirectCouplingFullChipSim.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -340,9 +333,12 @@
             <span class="n">arm_width</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">arm_width_b</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
             <span class="n">gap_width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span> <span class="o">**</span><span class="n">qubit_props_common</span><span class="p">)</span>
 
-        <span class="p">(</span><span class="n">pos_qb1_dr</span><span class="p">,</span> <span class="n">pos_qb1_fl</span><span class="p">,</span> <span class="n">pos_qb1_rr</span><span class="p">,</span> <span class="n">port_qubit1_squid_a</span><span class="p">,</span> <span class="n">port_qubit1_squid_b</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubit</span><span class="p">(</span><span class="n">finnmon_a</span><span class="p">,</span> <span class="mf">5e3</span> <span class="o">-</span> <span class="mi">330</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubit_spacing</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qb_1&quot;</span><span class="p">)</span>
-        <span class="p">(</span><span class="n">pos_qb2_dr</span><span class="p">,</span> <span class="n">pos_qb2_fl</span><span class="p">,</span> <span class="n">pos_qb2_rr</span><span class="p">,</span> <span class="n">port_qubit2_squid_a</span><span class="p">,</span> <span class="n">port_qubit2_squid_b</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubit</span><span class="p">(</span><span class="n">finnmon_b</span><span class="p">,</span> <span class="mf">5e3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qb_`2&quot;</span><span class="p">)</span>
-        <span class="p">(</span><span class="n">pos_qb3_dr</span><span class="p">,</span> <span class="n">pos_qb3_fl</span><span class="p">,</span> <span class="n">pos_qb3_rr</span><span class="p">,</span> <span class="n">port_qubit3_squid_a</span><span class="p">,</span> <span class="n">port_qubit3_squid_b</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubit</span><span class="p">(</span><span class="n">finnmon_a</span><span class="p">,</span> <span class="mf">5e3</span> <span class="o">+</span> <span class="mi">330</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubit_spacing</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qb_3&quot;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">pos_qb1_dr</span><span class="p">,</span> <span class="n">pos_qb1_fl</span><span class="p">,</span> <span class="n">pos_qb1_rr</span><span class="p">,</span> <span class="n">port_qubit1_squid_a</span><span class="p">,</span> <span class="n">port_qubit1_squid_b</span><span class="p">)</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubit</span><span class="p">(</span><span class="n">finnmon_a</span><span class="p">,</span> <span class="mf">5e3</span> <span class="o">-</span> <span class="mi">330</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubit_spacing</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qb_1&quot;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">pos_qb2_dr</span><span class="p">,</span> <span class="n">pos_qb2_fl</span><span class="p">,</span> <span class="n">pos_qb2_rr</span><span class="p">,</span> <span class="n">port_qubit2_squid_a</span><span class="p">,</span> <span class="n">port_qubit2_squid_b</span><span class="p">)</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubit</span><span class="p">(</span><span class="n">finnmon_b</span><span class="p">,</span> <span class="mf">5e3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qb_`2&quot;</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">pos_qb3_dr</span><span class="p">,</span> <span class="n">pos_qb3_fl</span><span class="p">,</span> <span class="n">pos_qb3_rr</span><span class="p">,</span> <span class="n">port_qubit3_squid_a</span><span class="p">,</span> <span class="n">port_qubit3_squid_b</span><span class="p">)</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_qubit</span><span class="p">(</span><span class="n">finnmon_a</span><span class="p">,</span> <span class="mf">5e3</span> <span class="o">+</span> <span class="mi">330</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">qubit_spacing</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;qb_3&quot;</span><span class="p">)</span>
 
         <span class="c1"># Readout resonators</span>
         <span class="n">height_rr_feedline</span> <span class="o">=</span> <span class="mf">7.3e3</span>

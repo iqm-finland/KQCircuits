@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.parameter_helper &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.util.parameter_helper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -66,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -208,6 +205,21 @@
             
   <div class="section" id="module-kqcircuits.util.parameter_helper">
 <span id="kqcircuits-util-parameter-helper"></span><h1>kqcircuits.util.parameter_helper<a class="headerlink" href="#module-kqcircuits.util.parameter_helper" title="Permalink to this headline">¶</a></h1>
+<p>Helper module for pcell parameter schemas.</p>
+<p>Typical usage example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.util.parameter_helper</span> <span class="kn">import</span> <span class="n">Validator</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Number of elements&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">validator</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">validator</span><span class="o">.</span><span class="n">validate</span><span class="p">({</span><span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}):</span>
+    <span class="c1"># Do something with validated parameters...</span>
+</pre></div>
+</div>
 <dl class="function">
 <dt id="kqcircuits.util.parameter_helper.normalize_rules">
 <code class="sig-prename descclassname">kqcircuits.util.parameter_helper.</code><code class="sig-name descname">normalize_rules</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">rules</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameter_helper.html#normalize_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.parameter_helper.normalize_rules" title="Permalink to this definition">¶</a></dt>

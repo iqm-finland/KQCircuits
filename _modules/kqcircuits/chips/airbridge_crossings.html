@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.airbridge_crossings &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.chips.airbridge_crossings &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -185,9 +182,6 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">math</span>
-
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 
@@ -249,7 +243,7 @@
         <span class="n">crossings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crossings</span>  <span class="c1"># must be even</span>
         <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">crossings</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">wiggle</span> <span class="o">=</span> <span class="mi">250</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span><span class="p">,</span> <span class="n">last_y</span><span class="p">),</span> <span class="n">AirbridgeConnection</span><span class="p">))</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
@@ -269,7 +263,7 @@
         <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">])]</span>
         <span class="n">ref_x</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;NE&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">wiggle</span> <span class="o">+</span> <span class="mi">50</span>
         <span class="n">last_y</span> <span class="o">=</span> <span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;EN&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">y</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
             <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
@@ -298,11 +292,11 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_produce_mechanical_test</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_number</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">create_airbridges</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_mechanical_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">create_airbridges</span><span class="p">):</span>
-
+        <span class="c1"># pylint: disable=unused-argument</span>
         <span class="n">wg_len</span> <span class="o">=</span> <span class="p">((</span><span class="n">number</span> <span class="o">*</span> <span class="p">(</span><span class="n">distance</span> <span class="o">+</span> <span class="n">width</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span>
         <span class="n">wg_start</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">wg_len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">wg_end</span> <span class="o">=</span> <span class="n">loc</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">+</span><span class="n">wg_len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">v_step</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">((</span><span class="n">distance</span> <span class="o">+</span> <span class="n">width</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># v_step = pya.DVector((distance + width) * 2, 0)</span>
 
         <span class="n">ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span>
             <span class="c1"># pad_width=1.1 * width,</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.export_helper &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.util.export_helper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -240,12 +237,10 @@
         <span class="c1"># does the name correspond to a probepoint?</span>
         <span class="k">if</span> <span class="n">name_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">probe_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">probepoint_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_l&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">probepoint_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;_c&quot;</span><span class="p">)):</span>
             <span class="n">best_distance</span> <span class="o">=</span> <span class="mf">1e99</span>
-            <span class="n">best_refpoint</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">best_refpoint_name</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">refpoint</span> <span class="ow">in</span> <span class="n">probe_types</span><span class="p">[</span><span class="n">name_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">probepoint</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">best_distance</span><span class="p">:</span>
                     <span class="n">best_distance</span> <span class="o">=</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">probepoint</span><span class="p">)</span>
-                    <span class="n">best_refpoint</span> <span class="o">=</span> <span class="n">refpoint</span>
                     <span class="n">best_refpoint_name</span> <span class="o">=</span> <span class="n">name</span>
             <span class="n">groups</span><span class="p">[</span><span class="n">best_refpoint_name</span><span class="p">][</span><span class="s2">&quot;pads&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
                 <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">probepoint_name</span><span class="p">,</span>
@@ -306,8 +301,6 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;COMMIT_REFERENCE&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;KQCircuits revision number: &quot;</span> <span class="o">+</span>
                    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;rev-parse&#39;</span><span class="p">,</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span></div>
-
-
 </pre></div>
 
            </div>

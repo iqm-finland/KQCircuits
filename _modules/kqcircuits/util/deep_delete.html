@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.deep_delete &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.util.deep_delete &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -187,7 +184,7 @@
 
 <div class="viewcode-block" id="deep_delete_pcells"><a class="viewcode-back" href="../../../api/kqcircuits.util.deep_delete.html#kqcircuits.util.deep_delete.deep_delete_pcells">[docs]</a><span class="k">def</span> <span class="nf">deep_delete_pcells</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">is_pcell_variant</span><span class="p">(</span><span class="n">inst</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">is_pcell_variant</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
             <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 

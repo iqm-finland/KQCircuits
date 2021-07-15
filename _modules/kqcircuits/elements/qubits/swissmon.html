@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.qubits.swissmon &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.elements.qubits.swissmon &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -226,12 +223,7 @@
 
     <span class="k">def</span> <span class="nf">_produce_chargeline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthands</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap_width</span>  <span class="c1"># gap width</span>
-        <span class="p">[</span><span class="n">we</span><span class="p">,</span> <span class="n">wn</span><span class="p">,</span> <span class="n">ww</span><span class="p">,</span> <span class="n">ws</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">width</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_width</span><span class="p">]</span>  <span class="c1"># length of the horizontal segment</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">wn</span>  <span class="c1"># length of the horizontal segment</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span> <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cl_offset</span><span class="p">]</span>  <span class="c1"># swissmon arm length from the center of the cross (refpoint)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  <span class="c1"># cpw center conductor width</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>  <span class="c1"># cpw gap width</span>
 
         <span class="c1"># add ref point</span>
         <span class="c1"># port_ref = pya.DPoint(-g-b-a/2, -l)</span>
@@ -297,7 +289,8 @@
         <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">protection</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="o">-</span><span class="n">g</span> <span class="o">-</span> <span class="n">w</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="o">-</span><span class="n">l</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">g</span> <span class="o">+</span> <span class="n">w</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span>
                                   <span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="o">.</span><span class="n">transformed</span><span class="p">((</span><span class="n">rotation</span> <span class="o">*</span> <span class="n">transf</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span>\
+                <span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="o">.</span><span class="n">transformed</span><span class="p">((</span><span class="n">rotation</span> <span class="o">*</span> <span class="n">transf</span><span class="p">)))</span>
 
         <span class="c1"># add ref point</span>
         <span class="n">port_ref</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>

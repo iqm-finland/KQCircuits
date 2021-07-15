@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -214,9 +211,6 @@
     <span class="n">connector_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Connector type for CPW waveguides&quot;</span><span class="p">,</span> <span class="s2">&quot;Coax&quot;</span><span class="p">,</span>
                            <span class="n">choices</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;Single&quot;</span><span class="p">,</span> <span class="s2">&quot;Single&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;GSG&quot;</span><span class="p">,</span> <span class="s2">&quot;GSG&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Coax&quot;</span><span class="p">,</span> <span class="s2">&quot;Coax&quot;</span><span class="p">]])</span>
 
-<div class="viewcode-block" id="MultiFace.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
-
 <div class="viewcode-block" id="MultiFace.produce_structures"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_structures">[docs]</a>    <span class="k">def</span> <span class="nf">produce_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># produce frame for face 0</span>
         <span class="n">bottom_frame_parameters</span> <span class="o">=</span> <span class="p">{</span>
@@ -245,7 +239,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_bumps</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_bumps</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="MultiFace.get_ground_bump_locations"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_ground_bump_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiFace.get_ground_bump_locations"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_ground_bump_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Define the locations for ground bumps. This method returns the full bump grid, but the chip will only</span>
 <span class="sd">        place bumps on locations that do not interfere with the ground grid avoidance or manually placed bumps.</span>

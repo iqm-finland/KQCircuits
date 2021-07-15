@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.library_helper &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.util.library_helper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -66,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -208,6 +205,14 @@
             
   <div class="section" id="module-kqcircuits.util.library_helper">
 <span id="kqcircuits-util-library-helper"></span><h1>kqcircuits.util.library_helper<a class="headerlink" href="#module-kqcircuits.util.library_helper" title="Permalink to this headline">¶</a></h1>
+<p>Helper module for building KLayout libraries.</p>
+<p>Typical usage example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges</span> <span class="kn">import</span> <span class="n">Airbridge</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span>
+<span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">Airbridge</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="function">
 <dt id="kqcircuits.util.library_helper.load_libraries">
 <code class="sig-prename descclassname">kqcircuits.util.library_helper.</code><code class="sig-name descname">load_libraries</code><span class="sig-paren">(</span><em class="sig-param">flush=False</em>, <em class="sig-param">path=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#load_libraries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.library_helper.load_libraries" title="Permalink to this definition">¶</a></dt>

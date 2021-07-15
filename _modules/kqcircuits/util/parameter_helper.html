@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.parameter_helper &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.util.parameter_helper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -184,29 +181,27 @@
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper module for pcell parameter schemas.</span>
+
+<span class="sd">    Typical usage example::</span>
+
+<span class="sd">        from kqcircuits.util.parameter_helper import Validator</span>
+<span class="sd">        schema = {</span>
+<span class="sd">            &quot;n&quot;: {</span>
+<span class="sd">                &quot;type&quot;: pya.PCellParameterDeclaration.TypeInt,</span>
+<span class="sd">                &quot;description&quot;: &quot;Number of elements&quot;,</span>
+<span class="sd">                &quot;default&quot;: 10</span>
+<span class="sd">            }</span>
+<span class="sd">        }</span>
+<span class="sd">        validator = Validator(schema)</span>
+<span class="sd">        if validator.validate({&quot;n&quot;: 100}):</span>
+<span class="sd">            # Do something with validated parameters...</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Helper module for pcell parameter schemas.</span>
-
-<span class="sd">    Typical usage example:</span>
-
-<span class="sd">    from kqcircuits.util.parameter_helper import Validator</span>
-<span class="sd">    schema = {</span>
-<span class="sd">        &quot;n&quot;: {</span>
-<span class="sd">            &quot;type&quot;: pya.PCellParameterDeclaration.TypeInt,</span>
-<span class="sd">            &quot;description&quot;: &quot;Number of elements&quot;,</span>
-<span class="sd">            &quot;default&quot;: 10</span>
-<span class="sd">        }</span>
-<span class="sd">    }</span>
-<span class="sd">    validator = Validator(schema)</span>
-<span class="sd">    if validator.validate({&quot;n&quot;: 100}):</span>
-<span class="sd">        # Do something with validated parameters...</span>
-<span class="sd">&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="normalize_rules"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.normalize_rules">[docs]</a><span class="nd">@traced</span>
@@ -265,9 +260,8 @@
                 <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">]:</span>
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_missing_parameter_message</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-                        <span class="k">return</span> <span class="kc">True</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="kc">True</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">_is_of_type</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
@@ -277,9 +271,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">rules</span><span class="p">[</span><span class="s2">&quot;required&quot;</span><span class="p">]:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">_generate_missing_parameter_message</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-                    <span class="k">return</span> <span class="kc">True</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Validated </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
 
     <span class="k">def</span> <span class="nf">__validate_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validates schema.</span>
@@ -379,15 +372,13 @@
     <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeNone</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeShape</span> <span class="ow">and</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">)</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DEdge</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">))</span>
     <span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="n">rule_type</span> <span class="ow">is</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeString</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="kc">False</span>
 
 
 <span class="k">def</span> <span class="nf">_is_valid_choices</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choice_type</span><span class="p">):</span>

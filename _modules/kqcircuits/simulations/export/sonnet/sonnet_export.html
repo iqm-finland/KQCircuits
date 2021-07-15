@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.sonnet.sonnet_export &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.simulations.export.sonnet.sonnet_export &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../../../_static/underscore.js"></script>
         <script src="../../../../../_static/doctools.js"></script>
         <script src="../../../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -198,7 +195,7 @@
 
 
 <div class="viewcode-block" id="poly_and_edge_indices"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices">[docs]</a><span class="k">def</span> <span class="nf">poly_and_edge_indices</span><span class="p">(</span><span class="n">polygons</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">signal_edge</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span>
+    <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span>
         <span class="n">polygons</span><span class="p">,</span>
         <span class="n">location</span><span class="p">,</span>
         <span class="n">dbu</span><span class="p">,</span>
@@ -226,11 +223,16 @@
 <span class="sd">    Arguments:</span>
 <span class="sd">        simulation: The simulation to be exported.</span>
 <span class="sd">        path: Location where to write son files.</span>
-<span class="sd">        detailed_resonance: More info in www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf</span>
+<span class="sd">        detailed_resonance: More info in</span>
+<span class="sd">            www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf</span>
 <span class="sd">        lower_accuracy: False sets Sonnet to Fine/Edge meshing and True to Coarse/Edge Meshing.</span>
-<span class="sd">        fill_type: Value &#39;Staircase&#39; sets the default fill type for polygons. The other option is &#39;Conformal&#39; which can be faster but less accurate. A good workflow could be to set everything to Staircase and then set some meanders to Conformal in Sonnet.</span>
-<span class="sd">        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection errors.</span>
-<span class="sd">        control: Selects what analysis control is used in Sonnet. Options are &#39;Simple&#39;, &#39;ABS&#39; and &#39;Sweep&#39; for parameter sweeping.</span>
+<span class="sd">        fill_type: Value &#39;Staircase&#39; sets the default fill type for polygons. The other option is &#39;Conformal&#39; which can</span>
+<span class="sd">            be faster but less accurate. A good workflow could be to set everything to Staircase and then set some</span>
+<span class="sd">            meanders to Conformal in Sonnet.</span>
+<span class="sd">        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection</span>
+<span class="sd">            errors.</span>
+<span class="sd">        control: Selects what analysis control is used in Sonnet. Options are &#39;Simple&#39;, &#39;ABS&#39; and &#39;Sweep&#39; for parameter</span>
+<span class="sd">            sweeping.</span>
 <span class="sd">        simulation_safety: Adds extra ground area to a simulation environment (in µm).</span>
 
 <span class="sd">    Returns:</span>
@@ -246,9 +248,6 @@
         <span class="n">layer_bridge</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">])</span>
         <span class="n">layer_son</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">])</span>
         <span class="n">layer_son_ground</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">])</span>
-
-        <span class="k">def</span> <span class="nf">simple_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">poly</span><span class="o">.</span><span class="n">to_simple_polygon</span><span class="p">()</span> <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">region</span><span class="o">.</span><span class="n">each</span><span class="p">()])</span>  <span class="c1"># .to_itype(dbu)</span>
 
         <span class="n">simpolygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span> <span class="o">+</span> \
                       <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son_ground</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>
@@ -310,7 +309,7 @@
             <span class="s2">&quot;calgroup&quot;</span><span class="p">:</span> <span class="n">calgroup</span><span class="p">,</span>
             <span class="s2">&quot;refplanes&quot;</span><span class="p">:</span> <span class="n">parser</span><span class="o">.</span><span class="n">refplanes</span><span class="p">(</span><span class="n">refplane_dirs</span><span class="p">,</span> <span class="n">simulation_safety</span><span class="p">,</span> <span class="n">port_ipolys</span><span class="p">),</span>
             <span class="s2">&quot;symmetry&quot;</span><span class="p">:</span> <span class="n">parser</span><span class="o">.</span><span class="n">symmetry</span><span class="p">(</span><span class="n">symmetry</span><span class="p">),</span>
-            <span class="s2">&quot;nports&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">])),</span>
+            <span class="s2">&quot;nports&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">({</span><span class="nb">abs</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">)</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">}),</span>
             <span class="s2">&quot;resonance_abs&quot;</span><span class="p">:</span> <span class="s2">&quot;DET_ABS_RES Y&quot;</span> <span class="k">if</span> <span class="n">detailed_resonance</span> <span class="k">else</span> <span class="s2">&quot;DET_ABS_RES N&quot;</span><span class="p">,</span>
             <span class="s2">&quot;lower_accuracy&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span> <span class="k">if</span> <span class="n">lower_accuracy</span> <span class="k">else</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
             <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="s2">&quot;j&quot;</span> <span class="k">if</span> <span class="n">current</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
@@ -341,11 +340,16 @@
 <span class="sd">    Arguments:</span>
 <span class="sd">        simulations: List of simulations to be exported.</span>
 <span class="sd">        path: Location where to write export files.</span>
-<span class="sd">        detailed_resonance: More info in www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf</span>
+<span class="sd">        detailed_resonance: More info in</span>
+<span class="sd">            www.sonnetsoftware.com/support/downloads/techdocs/Enhanced_Resonance_Detection_Feature.pdf</span>
 <span class="sd">        lower_accuracy: False sets Sonnet to Fine/Edge meshing and True to Coarse/Edge Meshing.</span>
-<span class="sd">        fill_type: Value &#39;Staircase&#39; sets the default fill type for polygons. The other option is &#39;Conformal&#39; which can be faster but less accurate. A good workflow could be to set everything to Staircase and then set some meanders to Conformal in Sonnet.</span>
-<span class="sd">        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection errors.</span>
-<span class="sd">        control: Selects what analysis control is used in Sonnet. Options are &#39;Simple&#39;, &#39;ABS&#39; and &#39;Sweep&#39; for parameter sweeping.</span>
+<span class="sd">        fill_type: Value &#39;Staircase&#39; sets the default fill type for polygons. The other option is &#39;Conformal&#39; which can</span>
+<span class="sd">            be faster but less accurate. A good workflow could be to set everything to Staircase and then set some</span>
+<span class="sd">            meanders to Conformal in Sonnet.</span>
+<span class="sd">        current: True computes currents in Sonnet which adds to simulation time but can used to easily see connection</span>
+<span class="sd">            errors.</span>
+<span class="sd">        control: Selects what analysis control is used in Sonnet. Options are &#39;Simple&#39;, &#39;ABS&#39; and &#39;Sweep&#39; for parameter</span>
+<span class="sd">            sweeping.</span>
 <span class="sd">        simulation_safety: Adds extra ground area to a simulation environment (in µm).</span>
 
 <span class="sd">    Returns:</span>

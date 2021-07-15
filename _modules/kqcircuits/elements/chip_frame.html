@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.chip_frame &mdash; KQCircuits 3.4.2 documentation</title>
+  <title>kqcircuits.elements.chip_frame &mdash; KQCircuits  documentation</title>
   
 
   
@@ -36,6 +36,7 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -64,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                3.4.2
-              </div>
             
           
 
@@ -303,10 +300,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">),</span> <span class="s2">&quot;topleft&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_chip</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_max</span><span class="p">),</span> <span class="s2">&quot;topright&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">),</span> <span class="s2">&quot;bottomright&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">),</span> <span class="s2">&quot;bottomleft&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">),</span> <span class="s2">&quot;bottomright&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">),</span> <span class="s2">&quot;bottomleft&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces Text PCells with text `label` with `origin` of the text at `location`.</span>
