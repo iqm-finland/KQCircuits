@@ -72,8 +72,11 @@ def export_cell_netlist(cell, filename):
     reverse_cell_map = {v: k for k, v in cm.table().items()}
     # export the circuit of interest
     circuit = ltn.netlist().circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
-    log.info(f"Exporting netlist to {filename}")
-    export_netlist(circuit, filename, ltn.internal_layout(), layout, cm)
+    if circuit:
+        log.info(f"Exporting netlist to {filename}")
+        export_netlist(circuit, filename, ltn.internal_layout(), layout, cm)
+    else:
+        log.info(f"No circuit found for {cell.display_title()}")
 
 
 def export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping):
@@ -103,12 +106,19 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
     subcircuits_for_export = {}
     used_internal_cells = set()
     for subcircuit in circuit.each_subcircuit():
-        internal_cell_index = subcircuit.circuit_ref().cell_index
-        internal_cell = internal_layout.cell(internal_cell_index)
+        internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
         used_internal_cells.add(internal_cell)
+
+        if internal_cell.name.split('$')[0] == 'Waveguide Coplanar':
+            location = subcircuit.circuit_ref().boundary.bbox().center()
+        elif hasattr(subcircuit, "trans"):
+            location = subcircuit.trans.disp
+        else: # sane defaults for klayout 0.26 as it does not have `subcircuit.trans`
+            location = [0.0, 0.0]
+
         subcircuits_for_export[subcircuit.id()] = {
             "cell_name": internal_cell.name,
-            "subcircuit_location": subcircuit.circuit_ref().boundary.bbox().center()
+            "subcircuit_location": location,
         }
 
     circuits_for_export = {}
