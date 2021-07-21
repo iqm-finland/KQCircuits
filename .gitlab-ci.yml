@@ -28,7 +28,15 @@ test:
 static_analysis:
   stage: test
   script:
-    - tox -e static_analysis
+    - pip install pylint-gitlab
+    - >
+      tox -e static_analysis --
+      --output-format=pylint_gitlab.GitlabCodeClimateReporter
+      --output=codeclimate.json
+  artifacts:
+    reports:
+      codequality: codeclimate.json
+    when: always
   only:
     - master
     - merge_requests
