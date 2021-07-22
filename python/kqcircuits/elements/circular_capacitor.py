@@ -69,6 +69,7 @@ class CircularCapacitor(Element):
             pya.DPoint(self.r_outer - self.outer_island_width / 2, -y_right),
             pya.DPoint(x_end, -y_right),
         ]).to_itype(self.layout.dbu)])
+        capacitor_neg.round_corners(5 / self.layout.dbu, 5 / self.layout.dbu, self.n)
         self._add_waveguides(capacitor_neg, x_end, y_left, y_right)
 
         # define the capacitor in the ground
