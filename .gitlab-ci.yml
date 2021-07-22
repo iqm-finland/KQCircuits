@@ -6,6 +6,8 @@ default:
       - .pip-cache
   before_script:
     - ci/init_kqc.sh
+  tags:
+    - docker
 
 test:
   stage: test
@@ -22,8 +24,6 @@ test:
     - master
     - merge_requests
     - tags
-  tags:
-    - docker
 
 static_analysis:
   stage: test
@@ -33,8 +33,6 @@ static_analysis:
     - master
     - merge_requests
     - tags
-  tags:
-    - docker
 
 verify_documentation:
   stage: test
@@ -44,8 +42,6 @@ verify_documentation:
     - make html SPHINXOPTS="-W --keep-going"
   only:
     - merge_requests
-  tags:
-    - docker
 
 check_confidential_strings:
   stage: test
@@ -56,8 +52,6 @@ check_confidential_strings:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
-  tags:
-    - docker
 
 check_copyright_headers:
   stage: test
@@ -68,8 +62,6 @@ check_copyright_headers:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
-  tags:
-    - docker
 
 check_license:
   stage: test
@@ -80,8 +72,6 @@ check_license:
       - merge_requests
     variables:
       - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
-  tags:
-    - docker
 
 pages:
   stage: deploy
@@ -96,5 +86,3 @@ pages:
     - public
   only:
     - master
-  tags:
-    - docker
