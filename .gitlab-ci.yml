@@ -1,12 +1,11 @@
-image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:kqc-test-02
-
-cache:
-  key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
-  paths:
-    - .pip-cache
-
-before_script:
-  - ci/init_kqc.sh
+default:
+  image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:kqc-test-02
+  cache:
+    key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
+    paths:
+      - .pip-cache
+  before_script:
+    - ci/init_kqc.sh
 
 test:
   stage: test
