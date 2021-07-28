@@ -1,3 +1,8 @@
+..
+  comment: this file is under docs/ so that it is discoverable by GitHub.
+  See https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors#adding-a-contributing-file
+
+
 Contributing
 ============
 

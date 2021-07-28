@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.circular_capacitor &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.circular_capacitor &mdash; KQCircuits 3.4.4 documentation</title>
   
 
   
@@ -65,6 +65,10 @@
 
           
             
+            
+              <div class="version">
+                3.4.4
+              </div>
             
           
 
@@ -235,6 +239,7 @@
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r_outer</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">outer_island_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">y_right</span><span class="p">),</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_end</span><span class="p">,</span> <span class="o">-</span><span class="n">y_right</span><span class="p">),</span>
         <span class="p">])</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)])</span>
+        <span class="n">capacitor_neg</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="mi">5</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="mi">5</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_waveguides</span><span class="p">(</span><span class="n">capacitor_neg</span><span class="p">,</span> <span class="n">x_end</span><span class="p">,</span> <span class="n">y_left</span><span class="p">,</span> <span class="n">y_right</span><span class="p">)</span>
 
         <span class="c1"># define the capacitor in the ground</span>

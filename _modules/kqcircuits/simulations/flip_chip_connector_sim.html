@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.flip_chip_connector_sim &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.flip_chip_connector_sim &mdash; KQCircuits 3.4.4 documentation</title>
   
 
   
@@ -65,6 +65,10 @@
 
           
             
+            
+              <div class="version">
+                3.4.4
+              </div>
             
           
 
@@ -197,7 +201,10 @@
         <span class="n">_</span><span class="p">,</span> <span class="n">refp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">fcc_cell</span><span class="p">,</span> <span class="n">transf</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;b_port&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;b_port_corner&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;t_port&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;t_port_corner&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div></div>
+        <span class="n">diff_to_rotation</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_rotation</span> <span class="o">%</span> <span class="mi">360</span><span class="p">))</span>
+        <span class="n">port_dir</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">:</span> <span class="s1">&#39;bottom&#39;</span><span class="p">,</span> <span class="mi">180</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="mi">270</span><span class="p">:</span> <span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="mi">360</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">}</span>\
+            <span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">min</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">,</span> <span class="mi">360</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="n">diff_to_rotation</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;t_port&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;t_port_corner&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port_dir</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
