@@ -241,6 +241,6 @@ def arc_points(r, start=0, stop=2 * pi, n=64, origin=pya.DPoint(0, 0)):
         n: Number of steps corresponding to a full circle.
 
     """
-    n_steps = ceil(n * abs(stop - start) / (2 * pi))
+    n_steps = max(ceil(n * abs(stop - start) / (2 * pi)), 2)
     step = (stop - start) / (n_steps - 1)
     return [origin + pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]
