@@ -55,7 +55,7 @@ except ImportError:
     from sphinx import apidoc
 
 output_dir = os.path.join(__location__, "api")
-module_dir = os.path.join(__location__, "../python/kqcircuits")
+module_dir = os.path.join(__location__, "../klayout_package/python/kqcircuits")
 try:
     shutil.rmtree(output_dir)
 except FileNotFoundError:

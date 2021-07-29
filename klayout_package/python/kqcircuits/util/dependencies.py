@@ -15,7 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from importlib import util
+from importlib import util, import_module
 
 # Record dependencies in setup.py too
 kqc_python_dependencies = {
@@ -27,7 +27,7 @@ kqc_python_dependencies = {
 
 
 def install_kqc_dependencies():
-    """Check KQCircuits' dependencies and install if missing.
+    """Check KQCircuits' dependencies and install/upgrade if missing.
 
     This is *only* for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
     This function should run only once at KLayout startup.
@@ -36,9 +36,16 @@ def install_kqc_dependencies():
 
     missing_pkgs = []
 
-    for pkg in kqc_python_dependencies:
+    for pkg, pkg_ver in kqc_python_dependencies.items():
         if util.find_spec(pkg) is None:
             missing_pkgs.append(pkg)
+        else:
+            mod = import_module(pkg)
+            v_inst = tuple(map(int, (mod.__version__.split("."))))
+            v_reqd = tuple(map(int, (pkg_ver.rsplit("=", maxsplit=1)[-1].split("."))))
+            if v_reqd > v_inst:
+                missing_pkgs.append(pkg)
+
     if not missing_pkgs:
         return
 

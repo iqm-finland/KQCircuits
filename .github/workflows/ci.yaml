@@ -51,7 +51,7 @@ jobs:
           ln -s -f /usr/local/bin/python3.7 /usr/local/bin/python
         if: ${{ matrix.os == 'macos-latest' }}
       - name: Init KQCircuits
-        run: pip3 install -e "python[docs,tests]"
+        run: pip3 install -e "klayout_package/python[docs,tests]"
         continue-on-error: true
       - name: Select KLayout version
         run: pip3 install --force-reinstall "klayout<=${{ matrix.klayout_version }}"
@@ -122,7 +122,10 @@ jobs:
       - name: Init KQCircuits
         run: ci/init_kqc.sh
       - name: Run copyright headers check
-        run: python check_copyright_headers.py --exclude-paths python/kqcircuits/_static_version.py python/kqcircuits/_version.py
+        run: >
+          python check_copyright_headers.py --exclude-paths
+          klayout_package/python/kqcircuits/_static_version.py
+          klayout_package/python/kqcircuits/_version.py
 
   check_license:
     name: Check license

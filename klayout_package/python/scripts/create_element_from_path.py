@@ -42,7 +42,7 @@ from kqcircuits.util.log_router import route_log_to_stdout
 # To use this as an external tool in Pycharm:
 # - Under Settings -> Tools -> External Tools create a new entry as follows:
 #   - Program: point to klayout_app.exe (Windows) or the klayout executable (Linux)
-#   - Arguments: -e -rx -rm "$ContentRoot$\scripts\create_element_from_path.py" -rd
+#   - Arguments: -e -rx -rm "$ContentRoot$\klayout_package\python\scripts\create_element_from_path.py" -rd
 #                element_path="$FilePathRelativeToProjectRoot$"
 # - To execute, right click the python file (in the Project browser on the editor tab) containing the element to create
 #   and choose the tool under External Tools.
@@ -55,8 +55,8 @@ logging.info(f"Element path: {element_path}")
 
 # Figure out the python import path from the specified file path
 path_without_extension = pathlib.Path(element_path).with_suffix('')
-if path_without_extension.parts[0] == "python":
-    module_path = '.'.join(path_without_extension.parts[1:])
+if path_without_extension.parts[0] == "klayout_package" and path_without_extension.parts[1] == "python":
+    module_path = '.'.join(path_without_extension.parts[2:])
 else:
     module_path = '.'.join(path_without_extension.parts)
 module_name = path_without_extension.name

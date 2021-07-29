@@ -68,17 +68,16 @@ print("KLayout python directory assumed to be \"{}\"".format(klayout_python_path
 
 # create symlink between KLayout python folder and kqcircuits folder
 link_map = (
-    ("python/kqcircuits", "kqcircuits"),
-    ("python/scripts", "kqcircuits_scripts"),
+    ("klayout_package/python/kqcircuits", "kqcircuits"),
+    ("klayout_package/python/scripts", "kqcircuits_scripts"),
 )
 for target, name in link_map:
     link_name = os.path.join(klayout_python_path, name)
     link_target = os.path.join(kqc_root_path, target)
-    if not os.path.exists(link_name):
-        os.symlink(link_target, link_name, target_is_directory=True)
-        print("Created symlink \"{}\" to \"{}\"".format(link_name, link_target))
-    else:
-        print("Found existing symlink \"{}\" to \"{}\"".format(link_name, link_name))
+    if os.path.lexists(link_name):
+        os.unlink(link_name)
+    os.symlink(link_target, link_name, target_is_directory=True)
+    print("Created symlink \"{}\" to \"{}\"".format(link_name, link_target))
 
 print("Installing required packages")
 # install required packages

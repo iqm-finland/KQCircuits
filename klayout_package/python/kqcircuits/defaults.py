@@ -48,8 +48,12 @@ if os.name == "nt" and os.path.islink(Path(__file__).parent):
     _kqcircuits_path = Path(os.readlink(str(Path(__file__).parent)))
 
 # project paths
-ROOT_PATH = _kqcircuits_path.parent.parent
-PY_PATH = ROOT_PATH.joinpath("python")
+ROOT_PATH = _kqcircuits_path.parents[2]
+if ROOT_PATH.parts[-1] == "salt":  # need different paths for KQC Salt package
+    ROOT_PATH = _kqcircuits_path.parents[1]
+    PY_PATH = ROOT_PATH.joinpath("python")
+else:
+    PY_PATH = ROOT_PATH.joinpath("klayout_package").joinpath("python")
 SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
 TMP_PATH = ROOT_PATH.joinpath("tmp")
 TMP_PATH.mkdir(exist_ok=True)
