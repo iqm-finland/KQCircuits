@@ -263,8 +263,8 @@ automatically do the same steps as explained below.</p>
 <div class="section" id="linux-or-macos">
 <h3>Linux or MacOS<a class="headerlink" href="#linux-or-macos" title="Permalink to this headline">¶</a></h3>
 <p>Create a symlink from KLayout to the kqcircuits package and scripts:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span>
-<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits_scripts</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">Path_to_KQCircuits</span><span class="o">/</span><span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span> <span class="o">~/.</span><span class="n">klayout</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits_scripts</span>
 </pre></div>
 </div>
 <p>To install the required packages, open a terminal in your KQCircuits folder
@@ -281,9 +281,9 @@ have to create a symlink to there.</p>
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
 <p>Create a symlink from KLayout to kqcircuits by opening a command prompt with
 administrator privileges, and do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">KLayout</span>\<span class="n">python</span>
-<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\python\kqcircuits&quot;</span>
-<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits_scripts&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\python\scripts&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">KLayout</span>\<span class="n">klayout_package</span>\<span class="n">python</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\kqcircuits&quot;</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits_scripts&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\scripts&quot;</span>
 </pre></div>
 </div>
 <p>Install the required packages by opening command prompt in your KQCircuits

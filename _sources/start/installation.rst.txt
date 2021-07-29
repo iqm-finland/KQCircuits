@@ -13,9 +13,9 @@ these instructions, that KLayout has been installed in the default location.
 
 Successfully tested versions:
 
-- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.27.1
+- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.27.2
 - MacOS: KLayout 0.26.3, 0.26.12 (recommended version `HomeBrew-Python3 included`)
-- Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12
+- Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12, 0.27.2
 
 Basic automatic installation
 ----------------------------
@@ -28,3 +28,20 @@ Note that KLayout was started in edit mode, see :ref:`usage`.
 
 Developers should rather check out the source code and run KQCircuits from
 there, see the :ref:`developer_setup`.
+
+Upgrading Salt Package
+----------------------
+
+After upgrading KQCircuits package KLayout needs to be restarted. See the release notes
+for further details.
+
+Downgrading or upgrading several steps at once is not guaranteed to always work. Upgrading KQC
+usually works but the safest approach is to uninstall KQC and then install a new version.
+
+Release Notes
+-------------
+
+Version 3.3.0 needed manual install of ``tqdm``.
+
+It is advisable to uninstall KQC before installing version 4.0.0, so that no unnecessary files are
+left behind.

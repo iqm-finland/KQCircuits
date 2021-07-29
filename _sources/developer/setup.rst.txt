@@ -80,8 +80,8 @@ Linux or MacOS
 
 Create a symlink from KLayout to the kqcircuits package and scripts::
 
-    ln -s /Path_to_KQCircuits/python/kqcircuits ~/.klayout/python/kqcircuits
-    ln -s /Path_to_KQCircuits/python/scripts ~/.klayout/python/kqcircuits_scripts
+    ln -s /Path_to_KQCircuits/klayout_package/python/kqcircuits ~/.klayout/python/kqcircuits
+    ln -s /Path_to_KQCircuits/klayout_package/python/scripts ~/.klayout/python/kqcircuits_scripts
 
 To install the required packages, open a terminal in your KQCircuits folder
 (which contains ``requirements_within_klayout_unix.txt``), and write::
@@ -99,9 +99,9 @@ Windows
 Create a symlink from KLayout to kqcircuits by opening a command prompt with
 administrator privileges, and do::
 
-    cd %HOMEPATH%\KLayout\python
-    mklink /D 'kqcircuits' "Path_to_KQCircuits\python\kqcircuits"
-    mklink /D 'kqcircuits_scripts' "Path_to_KQCircuits\python\scripts"
+    cd %HOMEPATH%\KLayout\klayout_package\python
+    mklink /D 'kqcircuits' "Path_to_KQCircuits\klayout_package\python\kqcircuits"
+    mklink /D 'kqcircuits_scripts' "Path_to_KQCircuits\klayout_package\python\scripts"
 
 Install the required packages by opening command prompt in your KQCircuits
 folder (which contains ``requirements_within_klayout_windows.txt``), and writing::

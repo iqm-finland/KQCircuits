@@ -99,6 +99,8 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#klayout">KLayout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#basic-automatic-installation">Basic automatic installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#upgrading-salt-package">Upgrading Salt Package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#release-notes">Release Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html">Usage</a></li>
@@ -191,9 +193,9 @@ for your OS. Otherwise you need to build KLayout yourself. We will assume in
 these instructions, that KLayout has been installed in the default location.</p>
 <p>Successfully tested versions:</p>
 <ul class="simple">
-<li><p>Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.27.1</p></li>
+<li><p>Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.27.2</p></li>
 <li><p>MacOS: KLayout 0.26.3, 0.26.12 (recommended version <cite>HomeBrew-Python3 included</cite>)</p></li>
-<li><p>Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12</p></li>
+<li><p>Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12, 0.27.2</p></li>
 </ul>
 </div>
 <div class="section" id="basic-automatic-installation">
@@ -203,6 +205,19 @@ these instructions, that KLayout has been installed in the default location.</p>
 <p>Note that KLayout was started in edit mode, see <a class="reference internal" href="usage.html#usage"><span class="std std-ref">Usage</span></a>.</p>
 <p>Developers should rather check out the source code and run KQCircuits from
 there, see the <a class="reference internal" href="../developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a>.</p>
+</div>
+<div class="section" id="upgrading-salt-package">
+<h2>Upgrading Salt Package<a class="headerlink" href="#upgrading-salt-package" title="Permalink to this headline">¶</a></h2>
+<p>After upgrading KQCircuits package KLayout needs to be restarted. See the release notes
+for further details.</p>
+<p>Downgrading or upgrading several steps at once is not guaranteed to always work. Upgrading KQC
+usually works but the safest approach is to uninstall KQC and then install a new version.</p>
+</div>
+<div class="section" id="release-notes">
+<h2>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h2>
+<p>Version 3.3.0 needed manual install of <code class="docutils literal notranslate"><span class="pre">tqdm</span></code>.</p>
+<p>It is advisable to uninstall KQC before installing version 4.0.0, so that no unnecessary files are
+left behind.</p>
 </div>
 </div>
 
