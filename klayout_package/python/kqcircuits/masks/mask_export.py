@@ -30,6 +30,7 @@ from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector
 from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.netlist_extraction import export_cell_netlist
+from kqcircuits.util.area import get_area_and_density
 
 
 @traced
@@ -134,7 +135,6 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
 @logged
 def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
     """Exports mask documentation containing mask layouts and parameters of all chips in the mask_set."""
-
     file_location = str(os.path.join(str(export_dir), filename))
 
     with open(file_location, "w+", encoding="utf-8") as f:
@@ -200,6 +200,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
             f.write("### Other Chip Information\n")
             f.write("| | |\n")
             f.write("| :--- | :--- |\n")
+
             # launcher assignments
             launcher_assignments = Chip.get_launcher_assignments(cell)
             if len(launcher_assignments) > 0:
@@ -207,6 +208,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
                 for key, value in launcher_assignments.items():
                     f.write("{} = {}, ".format(key, value))
                 f.write("|\n")
+
             # flip-chip bump count
             bump_count = 0
             def count_bumps_in_inst(inst):
@@ -222,7 +224,15 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
                 count_bumps_in_inst(inst)
             if bump_count > 0:
                 f.write(f"| **Total bump count** | {bump_count} |\n")
+            f.write("\n")
 
+            # layer area and density
+            f.write("#### Layer area and density\n")
+            f.write("| **Layer** | **Total area (µm^2)** | **Density (%)** |\n")
+            f.write("| :--- | :--- | :--- |\n")
+            for layer, area, density in zip(*get_area_and_density(cell)):
+                if area != 0.0:
+                    f.write(f"| {layer} | {area:.2f} | {density * 100:.2f} |\n")
             f.write("\n")
 
             f.write("___\n")
