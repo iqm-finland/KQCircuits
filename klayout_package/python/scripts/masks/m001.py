@@ -17,16 +17,16 @@
 
 """M001 mask.
 
-Q and AB tests.
+Q and AB tests. Showcases box maps and how to load cells from files to a mask.
 
 """
-
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.masks.mask_set import MaskSet
-
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util import macro_prepare
 
 view = KLayoutView(current=True, initialize=True)
 layout = KLayoutView.get_active_layout()
@@ -58,7 +58,7 @@ parameters_qd = {
     "l_fingers": [19.9, 54.6, 6.7, 9.7, 22.8, 30.5, 26.1, 14.2, 18.2, 10.9, 19.8, 26.4, 34.2, 19.9, 25.3, 8., 15.8,
                   22.2],
     "n_fingers": [4, 2, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 4, 4],
-    "res_beg": ["galvanic"]*18
+    "res_beg": ["galvanic"] * 18
 }
 
 parameters_qs = {
@@ -66,8 +66,36 @@ parameters_qs = {
     "type_coupler": ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"],
     "l_fingers": [19.9, 7.3, 15.2, 10.9, 18.5, 23.6],
     "n_fingers": [4, 4, 2, 4, 4, 4],
-    "res_beg": ["galvanic"]*6
+    "res_beg": ["galvanic"] * 6
 }
+
+# We demonstrate how to add chips from different files to a mask
+# Create an empty layout with top cell and generate and export cell to file
+layout_2, _, _ = macro_prepare.prep_empty_layout()
+top_cell = layout_2.create_cell("Another file")
+cell = QualityFactor.create(layout_2, name_chip="QDD", name_mask="M001",
+                            **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
+top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+save_opts = pya.SaveLayoutOptions()
+save_opts.write_context_info = True
+file_name = str(TMP_PATH / "m001_QDD.gds")
+cell.write(file_name, save_opts)
+pya.MainWindow.instance().close_current_view()
+
+# Load the cell from a file
+if not 'imported' in globals() or not imported:
+    print("Loading:", file_name)
+    load_opts = pya.LoadLayoutOptions()
+    if pya.Application.instance().version() >= 'KLayout 0.27.0':
+        load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
+    m001.layout.read(file_name, load_opts)
+    qdd = m001.layout.top_cells()[-1]
+    imported = True
+
+# Chip from file added manually
+m001.chips_map_legend.update({
+    "QDD": qdd,
+})
 
 m001.add_chips([
     (AirbridgeCrossings, "AB1", {'crossings': 1}),
@@ -78,7 +106,6 @@ m001.add_chips([
     (QualityFactor, "QDG", {**parameters_qd, 'n_ab': 18 * [0], 'res_term': 18 * ["galvanic"]}),
     (QualityFactor, "QDA", {**parameters_qd, 'n_ab': 18 * [0], 'res_term': 18 * ["airbridge"]}),
     (QualityFactor, "QDC", {**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["galvanic"]}),
-    (QualityFactor, "QDD", {**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["galvanic"]}),
 ])
 
 m001.build()
