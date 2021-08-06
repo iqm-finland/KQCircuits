@@ -70,15 +70,15 @@ parameters_qs = {
 }
 
 m001.add_chips([
-    (AirbridgeCrossings, "AB1", {'crossings':1}),
-    (AirbridgeCrossings, "AB2", {'crossings':10}),
-    (QualityFactor, "QSG", {**parameters_qs, 'n_ab':6*[0], 'res_term':6*["galvanic"]}),
-    (QualityFactor, "QSA", {**parameters_qs, 'n_ab':6*[0], 'res_term':6*["airbridge"]}),
-    (QualityFactor, "QSC", {**parameters_qs, 'n_ab':6*[5], 'res_term':6*["galvanic"]}),
-    (QualityFactor, "QDG", {**parameters_qd, 'n_ab':18*[0], 'res_term':18*["galvanic"]}),
-    (QualityFactor, "QDA", {**parameters_qd, 'n_ab':18*[0], 'res_term':18*["airbridge"]}),
-    (QualityFactor, "QDC", {**parameters_qd, 'n_ab':18*[5], 'res_term':18*["galvanic"]}),
-    (QualityFactor, "QDD", {**parameters_qd, 'n_ab':18*[5], 'res_term':18*["galvanic"]}),
+    (AirbridgeCrossings, "AB1", {'crossings': 1}),
+    (AirbridgeCrossings, "AB2", {'crossings': 10}),
+    (QualityFactor, "QSG", {**parameters_qs, 'n_ab': 6 * [0], 'res_term': 6 * ["galvanic"]}),
+    (QualityFactor, "QSA", {**parameters_qs, 'n_ab': 6 * [0], 'res_term': 6 * ["airbridge"]}),
+    (QualityFactor, "QSC", {**parameters_qs, 'n_ab': 6 * [5], 'res_term': 6 * ["galvanic"]}),
+    (QualityFactor, "QDG", {**parameters_qd, 'n_ab': 18 * [0], 'res_term': 18 * ["galvanic"]}),
+    (QualityFactor, "QDA", {**parameters_qd, 'n_ab': 18 * [0], 'res_term': 18 * ["airbridge"]}),
+    (QualityFactor, "QDC", {**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["galvanic"]}),
+    (QualityFactor, "QDD", {**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["galvanic"]}),
 ])
 
 m001.build()

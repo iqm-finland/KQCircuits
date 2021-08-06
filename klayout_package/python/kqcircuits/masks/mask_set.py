@@ -196,7 +196,6 @@ class MaskSet:
         Args:
             box_map: dictionary where keys are strings identifying the box type, and values are 2D arrays (lists of
                 lists) where each element is a string identifying the chip type
-
             mask_map: 2D array (list of lists), where each element is a string identifying the box type
 
         """
