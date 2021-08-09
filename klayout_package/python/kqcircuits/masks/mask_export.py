@@ -91,7 +91,9 @@ def export_chip(cell, chip_name, export_dir, layout, mask_set):
             path = chip_dir / "{} {}.gds".format(chip_name, cluster_name)
             _export_cell(path, temporary_cell, layers_to_export)
             temporary_cell.delete()
-    mask_set.layout.prune_cell(static_cell.cell_index(), -1)
+    # remove static_cell only if a new cell was created
+    if cell.is_proxy():
+        mask_set.layout.prune_cell(static_cell.cell_index(), -1)
     # export netlist
     path = chip_dir / "{}-netlist.json".format(chip_name)
     export_cell_netlist(cell, path)
