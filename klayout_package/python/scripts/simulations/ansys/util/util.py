@@ -69,6 +69,38 @@ def get_solution_data(report_setup, report_type, solution_name, context_array, f
     return result
 
 
+def create_x_vs_y_plot(report_setup, plot_name, report_type, solution_name, context_array, input_family,
+                       x_components, y_label, y_components):
+    """ Create report (plot) with x vs. y in the given context. Report is docked to view. """
+    report_setup.CreateReport(
+        plot_name,
+        report_type,
+        "Rectangular Plot",
+        solution_name,
+        context_array,
+        input_family,
+        ["X Component:=", x_components, "Y Component:=", y_components]
+    )
+    report_setup.ChangeProperty(
+        ["NAME:AllTabs",
+         ["NAME:Legend",
+          ["NAME:PropServers", "%s:Legend" % plot_name],
+          ["NAME:ChangedProps",
+           ["NAME:Show Variation Key", "Value:=", False],
+           ["NAME:Show Solution Name", "Value:=", False],
+           ["NAME:DockMode", "Value:=", "Dock Right"]
+           ]
+          ],
+         ["NAME:Axis",
+          ["NAME:PropServers", "%s:AxisY1" % plot_name],
+          ["NAME:ChangedProps",
+           ["NAME:Specify Name", "Value:=", True],
+           ["NAME:Name", "Value:=", y_label]
+           ]
+          ]
+         ])
+
+
 # Helper class to encode complex data in json output
 class ComplexEncoder(json.JSONEncoder):
     def default(self, o):

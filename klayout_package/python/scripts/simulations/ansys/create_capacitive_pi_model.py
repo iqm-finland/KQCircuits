@@ -25,36 +25,7 @@ import time
 import ScriptEnv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from util import get_enabled_setup_and_sweep, get_enabled_setup  # pylint: disable=wrong-import-position
-
-
-def create_cap_vs_freq_plot(report_setup, report_type, solution_name, context_array, y_label, y_components):
-    report_setup.CreateReport(
-        "Capacitance vs Frequency",
-        report_type,
-        "Rectangular Plot",
-        solution_name,
-        context_array,
-        ["Freq:=", ["All"]],
-        ["X Component:=", "Freq", "Y Component:=", y_components])
-    report_setup.ChangeProperty(
-        ["NAME:AllTabs",
-         ["NAME:Legend",
-          ["NAME:PropServers", "Capacitance vs Frequency:Legend"],
-          ["NAME:ChangedProps",
-           ["NAME:Show Variation Key", "Value:=", False],
-           ["NAME:Show Solution Name", "Value:=", False],
-           ["NAME:DockMode", "Value:=", "Dock Right"]
-           ]
-          ],
-         ["NAME:Axis",
-          ["NAME:PropServers", "Capacitance vs Frequency:AxisY1"],
-          ["NAME:ChangedProps",
-           ["NAME:Specify Name", "Value:=", True],
-           ["NAME:Name", "Value:=", y_label]
-           ]
-          ]
-         ])
+from util import get_enabled_setup_and_sweep, get_enabled_setup, create_x_vs_y_plot  # pylint: disable=wrong-import-position
 
 
 # Set up environment
@@ -77,7 +48,8 @@ if design_type == "HFSS":
     context = [] if sweep is None else ["Domain:=", "Sweep"]
 
     ports = oBoundarySetup.GetExcitations()[::2]
-    unique_elements = []  # The unique elements (half matrix), used for plotting
+    unique_elements_c = []  # The unique elements (half matrix), used for plotting C-matrix
+    unique_elements_s = []  # The unique elements (half matrix), used for plotting S-matrix
     for (i, port_i) in enumerate(ports):
         for (j, port_j) in enumerate(ports):
             # PI model admittance element
@@ -105,9 +77,15 @@ if design_type == "HFSS":
                 [])
 
             if j >= i:
-                unique_elements.append("C_%s_%s" % (port_i, port_j))
+                unique_elements_c.append("C_%s_%s" % (port_i, port_j))
+                unique_elements_s.append("dB(St(%s,%s))" % (port_i, port_j))
 
-    create_cap_vs_freq_plot(oReportSetup, "Terminal Solution Data", solution, context, "C [fF]", unique_elements)
+    create_x_vs_y_plot(oReportSetup, "Capacitance vs Frequency", "Terminal Solution Data", solution, context,
+                       ["Freq:=", ["All"]], "Freq", "C [fF]", unique_elements_c)
+    create_x_vs_y_plot(oReportSetup, "S vs Frequency", "Terminal Solution Data", setup + " : LastAdaptive", context,
+                       ["Freq:=", ["All"]], "Freq", "S [dB]", unique_elements_s)
+    create_x_vs_y_plot(oReportSetup, "Solution Convergence", "Terminal Solution Data", setup + " : AdaptivePass",
+                       context, ["Pass:=", ["All"], "Freq:=", ["All"]], "Pass", "S [dB]", unique_elements_s)
 
 elif design_type == "Q3D Extractor":
     nets = oBoundarySetup.GetExcitations()[::2]
@@ -132,8 +110,12 @@ elif design_type == "Q3D Extractor":
             if j >= i:
                 unique_elements.append("C_{}_{}".format(net_i, net_j))
 
-    create_cap_vs_freq_plot(oReportSetup, "Matrix", get_enabled_setup(oDesign) + " : LastAdaptive",
-                            ["Context:=", "Original"], "C", unique_elements)
+    create_x_vs_y_plot(oReportSetup, "Capacitance vs Frequency", "Matrix",
+                       get_enabled_setup(oDesign) + " : LastAdaptive", ["Context:=", "Original"],
+                       ["Freq:=", ["All"]], "Freq", "C", unique_elements)
+    create_x_vs_y_plot(oReportSetup, "Solution Convergence", "Matrix", get_enabled_setup(oDesign) + " : AdaptivePass",
+                       ["Context:=", "Original"], ["Pass:=", ["All"], "Freq:=", ["All"]], "Pass", "C",
+                       unique_elements)
 
 
 # Notify the end of script
