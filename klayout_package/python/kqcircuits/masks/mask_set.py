@@ -106,11 +106,12 @@ class MaskSet:
         """Add list of chips with parameters to self.chips_map_legend
 
         Args:
-            chips: List of tuples that ``add_chip`` uses.
+            chips: List of tuples that ``add_chip`` uses. Parameters are optional.
                 For example, ``(QualityFactor, "QDG", parameters)``.
+
         """
-        for chip_class, variant_name, params in tqdm(chips, desc='Building variants', bar_format=default_bar_format):
-            self.add_chip(chip_class, variant_name, **params)
+        for chip_class, variant_name, *params in tqdm(chips, desc='Building variants', bar_format=default_bar_format):
+            self.add_chip(chip_class, variant_name, **(params[0] if params else {}))
 
     def add_chip(self, chip_class, variant_name, **kwargs):
         """Adds a chip with the given name and parameters to self.chips_map_legend.

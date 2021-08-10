@@ -94,17 +94,19 @@ mdemo.add_mask_layout([
 # pylint: enable=line-too-long
 
 # chip definitions
-mdemo.add_chip(AirbridgeCrossings, "AC1", b_number=4, crossings=8)
-mdemo.add_chip(Chip, "CH1")
-mdemo.add_chip(Demo, "DE1")
-mdemo.add_chip(DemoTwoface, "DT1")
-mdemo.add_chip(JunctionTest, "JT1")
-mdemo.add_chip(JunctionTest2, "JT2", pad_width=300)
-mdemo.add_chip(MultiFace, "MF1")
-mdemo.add_chip(QualityFactor, "QF1", n_ab=[1, 2, 3, 4, 5, 6])
-mdemo.add_chip(Shaping, "SH1")
-mdemo.add_chip(SingleXmons, "SX1")
-mdemo.add_chip(Stripes, "ST1")
+mdemo.add_chips([
+    (AirbridgeCrossings, "AC1", {'b_number': 4, 'crossings': 8}),
+    (Chip, "CH1"),
+    (Demo, "DE1"),
+    (DemoTwoface, "DT1"),
+    (JunctionTest, "JT1"),
+    (JunctionTest2, "JT2", {'pad_width': 300}),
+    (MultiFace, "MF1"),
+    (QualityFactor, "QF1", {'n_ab': [1, 2, 3, 4, 5, 6]}),
+    (Shaping, "SH1"),
+    (SingleXmons, "SX1"),
+    (Stripes, "ST1"),
+])
 
 mdemo.build()
 mdemo.export(TMP_PATH, view)
