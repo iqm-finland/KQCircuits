@@ -126,9 +126,9 @@ class SpiralResonatorRectangle(Element):
             left = max(0, curve_x - self.r + self.x_spacing)
 
         else:
-            curve_cell = self.add_element(WaveguideCoplanarCurved, Element, alpha=math.pi/2)
+            curve_cell = self.add_element(WaveguideCoplanarCurved, Element, alpha=math.pi / 2)
             trans = pya.DTrans(-1, False, pya.DPoint(0, self.r))
-            self.insert_cell(curve_cell, res_trans*trans)
+            self.insert_cell(curve_cell, res_trans * trans)
             current_len += self.r * math.pi / 2
             guide_points = [pya.DPoint(self.r, top)]
             current_len, final_segment, can_create_resonator = self.add_segment(pya.DPoint(self.r, 0), guide_points[0],
@@ -174,7 +174,7 @@ class SpiralResonatorRectangle(Element):
 
         self.produce_crossing_airbridges(guide_points, 1, res_trans)
 
-        self.add_port("in", pya.DPoint(0,0), pya.DVector(-1, 0))
+        self.add_port("in", pya.DPoint(0, 0), pya.DVector(-1, 0))
         super().produce_impl()
         return True
 
@@ -219,19 +219,19 @@ class SpiralResonatorRectangle(Element):
         if straight_len > numerical_inaccuracy:
             subcell = self.add_element(WaveguideCoplanarStraight, Element, l=straight_len)
             trans = pya.DTrans(rotation, False, point1 + self.r * segment_dir)
-            self.insert_cell(subcell, res_trans*trans)
+            self.insert_cell(subcell, res_trans * trans)
         # curved waveguide part
         if curve_angle < -numerical_inaccuracy:
             subcell = self.add_element(WaveguideCoplanarCurved, Element, alpha=curve_angle)
-            trans = res_trans*pya.DTrans(rotation + 1, False,
-                                         point1 + (self.r + straight_len) * segment_dir + corner_offset)
+            trans = res_trans * pya.DTrans(rotation + 1, False,
+                                           point1 + (self.r + straight_len) * segment_dir + corner_offset)
             self.insert_cell(subcell, trans)
             if final_segment:
                 WaveguideCoplanarCurved.produce_curve_termination(self, curve_angle, self.term2, trans)
         elif final_segment:
             # in this case the straight segment was the last segment, so need to terminate that
-            WaveguideCoplanar.produce_end_termination(self, res_trans*point1,
-                                                      res_trans*(point1 + (self.r + straight_len)*segment_dir),
+            WaveguideCoplanar.produce_end_termination(self, res_trans * point1,
+                                                      res_trans * (point1 + (self.r + straight_len) * segment_dir),
                                                       self.term2)
 
         return current_len + straight_len - curve_angle * self.r, final_segment, True
@@ -309,16 +309,16 @@ class SpiralResonatorRectangle(Element):
         for _, (rotation, include_bridges) in directions_dict.items():
             side = 1
             if include_bridges:
-                for i in range(top_right_point_idx, len(guide_points)):
+                for i in range(top_right_point_idx, len(guide_points) - 1):
                     if (i - top_right_point_idx) % 4 == rotation:
-                        _, segment_dir = vector_length_and_direction(guide_points[i] - guide_points[i-1])
+                        _, segment_dir = vector_length_and_direction(guide_points[i] - guide_points[i - 1])
                         if side == 1:
                             trans = pya.DTrans(rotation, False,
-                                               guide_points[i] - (self.r + dist_from_corner)*segment_dir)
+                                               guide_points[i] - (self.r + dist_from_corner) * segment_dir)
                         else:
                             trans = pya.DTrans(rotation, False,
-                                               guide_points[i-1] + (self.r + dist_from_corner)*segment_dir)
-                        self.insert_cell(cell, res_trans*trans)
+                                               guide_points[i - 1] + (self.r + dist_from_corner) * segment_dir)
+                        self.insert_cell(cell, res_trans * trans)
                         side = -side
 
     def get_spiral_dimensions(self):
@@ -334,7 +334,7 @@ class SpiralResonatorRectangle(Element):
             * mirrored: if top and bottom are flipped
         """
 
-        if self.above_space == 0 or self.above_space > self.below_space:
+        if self.above_space == 0 or self.above_space > self.below_space > 0:
             top = self.above_space
             bottom = -self.below_space
             mirrored = False
