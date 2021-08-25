@@ -30,9 +30,11 @@ class WaveguideCoplanar(Element):
     """The PCell declaration for an arbitrary coplanar waveguide.
 
     Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
-    predefined bending radios. It actually consists of straight and bent PCells. Warning: Arbitrary angle bents
-    actually have very small gaps between bends and straight segments due to precision of arithmetic. To be fixed in a
-    future release.
+    predefined bending radios. It actually consists of straight and bent PCells.
+
+    Warning:
+        Arbitrary angle bents actually have very small gaps between bends and straight segments due to
+        precision of arithmetic. To be fixed in a future release.
     """
 
     path = Param(pdt.TypeShape, "TLine", pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0))
@@ -69,7 +71,6 @@ class WaveguideCoplanar(Element):
         for i in range(0, len(points) - 2):
             # Corner coordinates
             v1, v2, alpha1, alpha2, corner_pos = self.get_corner_data(points[i], points[i+1], points[i+2], self.r)
-            # Straight segment before the corner
             segment_start = segment_last
             segment_end = points[i + 1]
             cut = v1.vprod_sign(v2) * self.r / math.tan((math.pi - (alpha2 - alpha1)) / 2)
@@ -105,6 +106,25 @@ class WaveguideCoplanar(Element):
         subcell = self.add_element(WaveguideCoplanarStraight, Element, l=l)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
         self.insert_cell(subcell, transf)
+
+        # Raise error on non-physical design
+        # TODO complains when shouldn't and sometimes doesn't complain when should
+        shapes = self.cell.begin_shapes_rec(self.get_layer("base_metal_gap_wo_grid"))
+        shapes.max_depth = 1
+        region = pya.Region()
+        while not shapes.at_end():
+            if shapes.shape():
+                new_shape = pya.Shapes()
+                new_shape.insert(shapes.shape())
+                new_region = pya.Region(new_shape)
+                print('AREA &', (region & new_region).area())
+                if (region & new_region).area() == 0:
+                    region += new_region
+                else:
+                    print('Non-physical waveguide')
+                    raise ValueError('Non-physical waveguide')
+                print(region.area())
+            shapes.next()
 
     def produce_impl(self):
         self.produce_waveguide()

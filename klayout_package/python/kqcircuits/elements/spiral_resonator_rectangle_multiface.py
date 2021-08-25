@@ -33,9 +33,12 @@ class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
     """The PCell declaration for a two-face rectangular spiral resonator.
 
     Otherwise similar to SpiralResonatorRectangle, but the resonator waveguide will change to face 1
-    (through a flip-chip connector) after specified distance. WARNING: If the connector is located immediately next to
-    corners, the connector is located in the next straight segment it can fit, so the distance is not exact. In this
-    case, the other parameters should be adjusted to avoid having the connector right next to a corner.
+    (through a flip-chip connector) after specified distance.
+
+    Warning:
+         If the connector is located immediately next to corners, the connector is located in the next straight segment
+         it can fit, so the distance is not exact. In this case, the other parameters should be adjusted to avoid having
+         the connector right next to a corner.
     """
 
     connector_dist = Param(pdt.TypeDouble, "Distance of face to face connector from input", 0)
