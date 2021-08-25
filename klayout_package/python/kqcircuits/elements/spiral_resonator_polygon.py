@@ -58,7 +58,6 @@ class SpiralResonatorPolygon(Element):
                       pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(0, -800)], 10))
     auto_spacing = Param(pdt.TypeBoolean, "Use automatic spacing", True)
     manual_spacing = Param(pdt.TypeDouble, "Manual spacing between waveguide centers", 300, unit="μm")
-    spacing_tolerance = Param(pdt.TypeDouble, "Automatic spacing optimality tolerance (larger=faster)", 20, unit="μm")
     bridges = Param(pdt.TypeBoolean, "Airbridges", False)
     bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 300, unit="μm")
 
@@ -79,20 +78,18 @@ class SpiralResonatorPolygon(Element):
         """
         # find optimal spacing using bisection method
         min_spacing, max_spacing = 0, self.length
-        optimal_spacing, spacing = min_spacing, max_spacing
-        while True:
-            can_create_resonator = self._produce_resonator(spacing)
-            if can_create_resonator:
-                optimal_spacing = spacing
+        spacing_tolerance = 0.001
+        optimal_points = self._produce_path_points(min_spacing)
+        while max_spacing - min_spacing > spacing_tolerance:
+            spacing = (min_spacing + max_spacing) / 2
+            points = self._produce_path_points(spacing)
+            if points is not None:
+                optimal_points = points
                 min_spacing = spacing
             else:
                 max_spacing = spacing
-            new_spacing = (min_spacing + max_spacing)/2
-            if abs(new_spacing - spacing) < self.spacing_tolerance:
-                break
-            spacing = new_spacing
         self.cell.clear()  # clear any instances created while finding optimal spacing
-        self._produce_resonator(optimal_spacing)
+        self._produce_resonator(optimal_points)
 
     def _produce_resonator_manual_spacing(self):
         """Produces polygon spiral resonator with spacing defined by `self.manual_spacing`.
@@ -100,8 +97,8 @@ class SpiralResonatorPolygon(Element):
         If the resonator cannot be created with the chosen spacing, it will instead produce a cell with error text in
         the annotation layer, and raise a ValueError.
         """
-        can_create_resonator = self._produce_resonator(self.manual_spacing)
-        if not can_create_resonator:
+        points = self._produce_path_points(self.manual_spacing)
+        if points is None:
             self.cell.clear()
             error_msg = "Cannot create a resonator with the given parameters. Try decreasing the " \
                         "spacings or increasing the available area."
@@ -112,35 +109,78 @@ class SpiralResonatorPolygon(Element):
             })
             self.insert_cell(error_text_cell)
             raise ValueError(error_msg)
+        self._produce_resonator(points)
 
-    def _produce_resonator(self, spacing):
-        """Produces a polygon spiral resonator with the given spacing
+    def _produce_path_points(self, spacing):
+        """Creates resonator path points with the given spacing.
+        Function _produce_resonator takes these points as an argument.
+        If spacing is unsuitable for creating points, the return value is None.
 
         Args:
             spacing: spacing between waveguide centers inside the polygon
 
         Returns:
-            True if it was possible to create a valid spiral resonator with the given spacing, False otherwise
+            List of DPoints or None
         """
-        length = 0
 
-        term2 = self.term2
+        def get_updated_length(pts, prev_length):
+            """Updates the resonator length by adding the last point.
+
+            Args:
+                pts: list of DPoints
+                prev_length: resonator length before adding the last point
+
+            Returns:
+                 resonator length including all points (or None if waveguide bends can't fit)
+            """
+            if len(pts) <= 1:
+                return 0.0
+
+            last_segment_len = (pts[-1] - pts[-2]).length()
+            if len(pts) == 2:
+                return last_segment_len
+
+            # compute new length for the resonator
+            _, _, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(pts[-3], pts[-2], pts[-1], self.r)
+            abs_curve = pi - abs(pi - abs(alpha2 - alpha1))
+            corner_cut_dist = self.r * tan(abs_curve / 2)
+            updated_length = prev_length - 2 * corner_cut_dist + self.r * abs_curve + last_segment_len
+
+            # if the new segment is not long enough for the curve in the beginning, resonator cannot be created
+            if last_segment_len < corner_cut_dist - 1e-13:
+                return None
+
+            # if the previous segment is not long enough for the curves at each end, resonator cannot be created
+            if len(pts) > 3:
+                corner_cut_dist += self._corner_cut_distance(pts[-4], pts[-3], pts[-2])
+            if (pts[-2] - pts[-3]).length() < corner_cut_dist - 1e-13:
+                return None
+
+            return updated_length
 
         # segments based on input_path points
         input_path_points_iter = self.input_path.each_point()
+        length = 0.0
         points = [next(input_path_points_iter)]
-        while length < self.length:
+        while True:
             try:
                 points.append(next(input_path_points_iter))
             except StopIteration:
                 break
-            tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
-            length = tmp_cell.length()
+
+            # Update length after adding the last point
+            length = get_updated_length(points, length)
+            if length is None:
+                return None
+
+            # Test if the resonator is long enough
+            if length >= self.length:
+                return points
 
         # segments based on poly_path points
         poly_points = list(self.poly_path.each_point())
         n_poly_points = len(poly_points)
-        if length < self.length and n_poly_points > 2:
+        if n_poly_points > 2:
             poly_edges = [pya.DEdge(poly_points[i - 1], poly_points[i]) for i in range(n_poly_points)]
             clockwise = is_clockwise(poly_points)
             # get the normal vectors (toward inside of polygon) of each edge
@@ -151,8 +191,7 @@ class SpiralResonatorPolygon(Element):
                                pya.DVector(-direction.y, direction.x))
             i = 0
             current_edge = poly_edges[0]
-            shortcut_length = 0.0
-            while length - shortcut_length < self.length:
+            while True:
                 # get the edge with i//len spacing from the corresponding poly edge
                 next_edge_without_shift = poly_edges[(i + 1) % n_poly_points]
                 shift = spacing*((i + 1)//n_poly_points)*normals[(i + 1) % n_poly_points]
@@ -163,40 +202,46 @@ class SpiralResonatorPolygon(Element):
                 # if the shift was so large that the new segment would end up in the opposite direction,
                 # resonator cannot be created
                 if (intersection_point - points[-1]).sprod_sign(current_edge.d()) <= 0:
-                    return False
+                    return None
 
-                if len(points) > 1:
-                    # distance between point[-1] and start of the curve (safe margin 1e-13 compensates errors due to
-                    # floating point arithmetics and allows two curves without straight segment in between)
-                    corner_cut_dist = self._corner_cut_distance(points[-2], points[-1], intersection_point) - 1e-13
-                    # if the new segment is not long enough for the curve in the beginning, resonator cannot be created
-                    if (intersection_point - points[-1]).length() < corner_cut_dist:
-                        return False
-                    # if the last segment is not long enough for the curves at each end, resonator cannot be created
-                    if len(points) > 2:
-                        corner_cut_dist += self._corner_cut_distance(points[-3], points[-2], points[-1])
-                    if (points[-1] - points[-2]).length() < corner_cut_dist:
-                        return False
-
-                # create waveguide cell with all points (including the intersection point) to check length
+                # Append point and update length
                 points.append(intersection_point)
-                tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
-                length = tmp_cell.length()
-                # Compute outer curve shortcut length for the next point.
+                length = get_updated_length(points, length)
+                if length is None:
+                    return None
+
+                # Compute outer curve shortcut length for the last point.
                 # This may limit the length of the last straight segment to avoid overlapping with the outer segment.
                 if i >= n_poly_points and self.r > spacing:
                     next_corner_cut_dist = self._corner_cut_distance(poly_points[(i - 1) % n_poly_points],
                                                                      poly_points[i % n_poly_points],
                                                                      poly_points[(i + 1) % n_poly_points])
                     shortcut_length = (self.r - spacing) / self.r * next_corner_cut_dist
+                else:
+                    shortcut_length = 0.0
+
+                # Test if the resonator is long enough
+                if length - shortcut_length >= self.length:
+                    return points
+
                 # prepare for the next iteration
                 current_edge = next_edge
                 i += 1
 
+        return None
+
+    def _produce_resonator(self, points):
+        """Produces a polygon spiral resonator with the given path points
+
+        Args:
+            points: List of DPoints created by function _produce_path_points
+        """
+        tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
+        length = tmp_cell.length()
+
         # handle correctly the last waveguide segment
         last_segment_curved = self._fix_waveguide_end(points, length)
-        if last_segment_curved:
-            term2 = 0
+        term2 = 0 if last_segment_curved else self.term2
 
         # produce bridges
         if self.bridges:
@@ -206,7 +251,6 @@ class SpiralResonatorPolygon(Element):
 
         wg_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0), term2=term2)
         self.insert_cell(wg_cell)
-        return True
 
     def _fix_waveguide_end(self, points, current_length):
         """Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.
