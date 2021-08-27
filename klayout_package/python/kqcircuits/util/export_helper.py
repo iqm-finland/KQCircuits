@@ -30,10 +30,10 @@ from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 
 @traced
 @logged
-def generate_probepoints_json(cell):
+def generate_probepoints_json(cell, face='b'):
     # make autoprober json string for cell with reference points with magical names
-    if cell is None:
-        error_text = "Cannot export probe points corresponding to nil cell."
+    if cell is None or face not in ['b', 't']:
+        error_text = f"Invalid face '{face}' or 'nil' cell ."
         error = ValueError(error_text)
         generate_probepoints_json._log.exception(error_text, exc_info=error)
         raise error
@@ -42,46 +42,55 @@ def generate_probepoints_json(cell):
 
     refpoints = get_refpoints(layout.layer(default_layers["refpoints"]), cell)
 
-    # Assumes existence of standard markers
-    probe_types = {
-        "testarray": {
-            "testarrays NW": refpoints["b_marker_nw"],
-            "testarrays SE": refpoints["b_marker_se"]
-        },
-        "qb": {
-            "qubits NW": refpoints["b_marker_nw"],
-            "qubits SE": refpoints["b_marker_se"]
-        }
-    }
+    # Check existence of standard markers important for us
+    if f"{face}_marker_nw" in refpoints and f"{face}_marker_se" in refpoints:
+        markers = {'NW': refpoints[f"{face}_marker_nw"], 'SE': refpoints[f"{face}_marker_se"]}
+    else:
+        generate_probepoints_json._log.error(f"There are no usable markers in {face}-face of the cell! Not a Chip?")
+        return {}
+
+    # flip top-markers back to top side
+    if face == 't':
+        origin = refpoints["b_marker_se"]
+        markers = {k: flip(v, origin) for k, v in markers.items()}
 
     eu = 1e-3  # export unit
+    probe_types = {"testarray":"testarrays", "qb":"qubits"}
 
     # initialize dictionaries for each probe point group
     groups = {}
-    for markers in probe_types.values():
+    for probe_name in probe_types.values():
         for marker_name, marker in markers.items():
-            groups[marker_name] = {
-                "alignment": {"x": marker.x * eu, "y": marker.y * eu},
+            groups[f"{probe_name} {marker_name}"] = {
+                "alignment": {"x": round(marker.x * eu, 3), "y": round(marker.y * eu, 3)},
                 "pads": []
             }
 
     # divide probe points into groups by closest marker
     for probepoint_name, probepoint in refpoints.items():
-        name_parts = probepoint_name.split("_")
+        name_type = probepoint_name.split("_")[0]
+
         # does the name correspond to a probepoint?
-        if name_parts[0] in probe_types.keys() and (probepoint_name.endswith("_l") or probepoint_name.endswith("_c")):
+        if name_type in probe_types.keys() and (probepoint_name.endswith("_c") or probepoint_name.endswith("_l")):
+
+            if face == 't':
+                probepoint = flip(probepoint, origin)
+
             best_distance = 1e99
-            best_refpoint_name = None
-            for name, refpoint in probe_types[name_parts[0]].items():
+            closest_marker = None
+            for marker, refpoint in markers.items():
                 if refpoint.distance(probepoint) < best_distance:
                     best_distance = refpoint.distance(probepoint)
-                    best_refpoint_name = name
-            groups[best_refpoint_name]["pads"].append({
+                    closest_marker = marker
+
+            groups[f"{probe_types[name_type]} {closest_marker}"]["pads"].append({
                 "id": probepoint_name,
-                "x": probepoint.x * eu,
-                "y": probepoint.y * eu,
-                "side": "left"
+                "x": round(probepoint.x * eu, 3),
+                "y": round(probepoint.y * eu, 3),
             })
+
+    # remove empty groups
+    groups = {k: v for k, v in groups.items() if v["pads"]}
 
     # sort from left to right, bottom to top, for faster probing
     for group in groups.values():
@@ -96,6 +105,9 @@ def generate_probepoints_json(cell):
 
     return comp_json
 
+def flip(point, origin=pya.DPoint(0,0)):
+    """Gets correct flip chip coordinates by setting a new origin and mirroring ``point`` by the y-axis."""
+    return pya.DPoint(origin.x - point.x, point.y - origin.y)
 
 def create_or_empty_tmp_directory(dir_name):
     """Creates directory into TMP_PATH or removes its content if it exists.

@@ -40,5 +40,7 @@ from kqcircuits.util.export_helper import generate_probepoints_json
 top_cell = KLayoutView.get_active_cell()
 
 ### Action
-print(generate_probepoints_json(top_cell))</text>
+# Note that this works on the bottom face by default. For the top, specify a second 't' argument.
+print(generate_probepoints_json(top_cell))
+</text>
 </klayout-macro>

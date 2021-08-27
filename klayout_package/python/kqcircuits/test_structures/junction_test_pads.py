@@ -91,6 +91,7 @@ class JunctionTestPads(TestStructure):
         arm_width = 8
 
         junction_idx = 0
+        y_flip = -1 if self.face_ids[0] == 't' else 1
         if self.junctions_horizontal:
             for x in numpy.arange(self.pad_spacing*1.5 + self.pad_width, self.area_width - pad_step, 2*pad_step,
                                   dtype=numpy.double):
@@ -99,8 +100,8 @@ class JunctionTestPads(TestStructure):
                     self.produce_pad(x - pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
                     self.produce_pad(x + pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
                     self._produce_junctions(x, y, pads_region, arm_width)
-                    self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x - pad_step / 2, y)
-                    self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x + pad_step / 2, y)
+                    self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x - pad_step * y_flip / 2, y)
+                    self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x + pad_step * y_flip/ 2, y)
                     junction_idx += 1
         else:
             for y in numpy.arange(self.pad_spacing*1.5 + self.pad_width, self.area_height - pad_step, 2*pad_step,
