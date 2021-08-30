@@ -60,7 +60,7 @@ class Param:
     This should be used for defining PCell parameters in Element subclasses.
     """
 
-    _index = {} # A private dictionary of parameter dictionaries indexed by owner classes
+    _index = {} # A private dictionary of parameter dictionaries indexed by owner classes' name
 
     @classmethod
     def get_all(cls, owner):
@@ -73,8 +73,9 @@ class Param:
             a name-to-Param dictionary of all parameters of class `owner` or an empty one if it has none.
         """
 
-        if owner in cls._index:
-            return cls._index[owner]
+        owner_name = f'{owner.__module__}.{owner.__qualname__}'
+        if owner_name in cls._index:
+            return cls._index[owner_name]
         else:
             return {}
 
@@ -86,9 +87,10 @@ class Param:
 
     def __set_name__(self, owner, name):
         self.name = name
-        if owner not in self._index:
-            self._index[owner] = {}
-        self._index[owner][name] = self
+        owner_name = f'{owner.__module__}.{owner.__qualname__}'
+        if owner_name not in self._index:
+            self._index[owner_name] = {}
+        self._index[owner_name][name] = self
 
     def __get__(self, obj, objtype):
         if obj is None or not hasattr(obj, "_param_values") or obj._param_values is None:
