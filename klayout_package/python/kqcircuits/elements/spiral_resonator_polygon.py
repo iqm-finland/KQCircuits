@@ -78,8 +78,18 @@ class SpiralResonatorPolygon(Element):
         """
         # find optimal spacing using bisection method
         min_spacing, max_spacing = 0, self.length
-        spacing_tolerance = 0.001
         optimal_points = self._produce_path_points(min_spacing)
+        if optimal_points is None:
+            error_msg = "Cannot create a resonator with the given parameters. Try decreasing the turn radius."
+            error_text_cell = self.layout.create_cell("TEXT", "Basic", {
+                "layer": default_layers["annotations"],
+                "text": error_msg,
+                "mag": 10.0
+            })
+            self.insert_cell(error_text_cell)
+            raise ValueError(error_msg)
+
+        spacing_tolerance = 0.001
         while max_spacing - min_spacing > spacing_tolerance:
             spacing = (min_spacing + max_spacing) / 2
             points = self._produce_path_points(spacing)
@@ -88,7 +98,6 @@ class SpiralResonatorPolygon(Element):
                 min_spacing = spacing
             else:
                 max_spacing = spacing
-        self.cell.clear()  # clear any instances created while finding optimal spacing
         self._produce_resonator(optimal_points)
 
     def _produce_resonator_manual_spacing(self):
@@ -99,9 +108,8 @@ class SpiralResonatorPolygon(Element):
         """
         points = self._produce_path_points(self.manual_spacing)
         if points is None:
-            self.cell.clear()
-            error_msg = "Cannot create a resonator with the given parameters. Try decreasing the " \
-                        "spacings or increasing the available area."
+            error_msg = "Cannot create a resonator with the given parameters. Try decreasing the spacings or the " \
+                        "turn radius."
             error_text_cell = self.layout.create_cell("TEXT", "Basic", {
                 "layer": default_layers["annotations"],
                 "text": error_msg,
