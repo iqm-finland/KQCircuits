@@ -81,15 +81,24 @@ class Qubit(Element):
 
         return squid_unetch_region, refpoints_rel
 
-    def produce_fluxline(self):
+    def produce_fluxline(self, **parameters):
         """Produces the fluxline.
 
         Creates the fluxline cell and inserts it as a subcell. The "flux" and "flux_corner" ports
         are made available for the qubit.
+
+        To pass a parameter for the fluxline either introduce a parameter of equal name in Qubit subclass or give it
+        as an argument for this function.
+
+        Args:
+            parameters: parameters for the fluxline to overwrite default and subclass parameters
+
+        Returns:
+            The unetch region of the fluxline
         """
 
         if self.fluxline_type == "none":
-            return
+            return pya.Region([])
 
         # Pass only fluxline parameters which differ from the class default value. This allows subclasses to override
         # the default value
@@ -100,12 +109,12 @@ class Qubit(Element):
                 if value != param.default:
                     fluxline_parameters[key] = value
 
-        fluxline = self.add_element(
+        cell = self.add_element(
             Fluxline,
             a=self.a,
             b=self.b,
             face_ids=self.face_ids,
-            **fluxline_parameters,
+            **{**fluxline_parameters, **parameters},
         )
 
         refpoints_so_far = self.get_refpoints(self.cell)
@@ -115,5 +124,14 @@ class Qubit(Element):
         rotation = math.atan2(a.y, a.x) / math.pi * 180 + 90
         transf = pya.DCplxTrans(1, rotation, False, squid_edge-base)
 
-        _, fl_ref = self.insert_cell(fluxline, transf)
+        # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
+        # the cell, convert the integer transform back to float to keep cell and geometry consistent
+        integer_transf = transf.to_itrans(self.layout.dbu)
+        float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
+
+        _, fl_ref = self.insert_cell(cell, float_transf)
         self.add_port("flux", fl_ref["port_flux"], fl_ref["port_flux_corner"] - fl_ref["port_flux"])
+
+        unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
+        unetch_region.transform(integer_transf)
+        return unetch_region
