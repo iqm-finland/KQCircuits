@@ -46,7 +46,7 @@ class SpiralResonatorPolygon(Element):
     `self.input_path[-1] - self.poly_path[0]` is parallel to the edge `self.poly_path[0] - self.poly_path[-1]`.
 
     The spacing between waveguides in the spiral can either be chosen manually or automatically. The automatic spacing
-    attempts to find the largest possible spacing, and the accuracy/speed of finding it can be adjusted.
+    attempts to find the largest possible spacing.
 
     Airbridges can optionally be placed with a given spacing along the resonator waveguide.
 
