@@ -58,13 +58,16 @@ def export_cell_netlist(cell, filename):
     """
     # get LayoutToNetlist object
     layout = cell.layout()
-    shapes_iter = layout.begin_shapes(cell, layout.layer(default_layers["b_ports"]))
+    shapes_iter = pya.RecursiveShapeIterator(layout, cell, [layout.layer(default_layers["b_ports"]),
+                                                            layout.layer(default_layers["t_ports"])])
     ltn = pya.LayoutToNetlist(shapes_iter)
     # parallel processing
     ltn.threads = cpu_count()
     # select conducting layers
-    connector_region = ltn.make_layer(layout.layer(default_layers["b_ports"]), "connector")
-    ltn.connect(connector_region)
+    connector_region_b = ltn.make_layer(layout.layer(default_layers["b_ports"]), "connector_b")
+    connector_region_t = ltn.make_layer(layout.layer(default_layers["t_ports"]), "connector_t")
+    ltn.connect(connector_region_b)
+    ltn.connect(connector_region_t)
     # extract netlist for the cell
     ltn.extract_netlist()
     # extract cell to circuit map for finding the netlist of interest
