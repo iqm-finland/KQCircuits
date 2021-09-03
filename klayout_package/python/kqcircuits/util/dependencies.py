@@ -34,6 +34,11 @@ def install_kqc_dependencies():
     """
     # pylint: disable=import-outside-toplevel
 
+    import pya
+    # Skip installation in stand-alone python package mode
+    if not hasattr(pya, 'MessageBox'):
+        return
+
     missing_pkgs = []
 
     for pkg, pkg_ver in kqc_python_dependencies.items():
@@ -50,7 +55,6 @@ def install_kqc_dependencies():
         return
 
     # Install missing modules inside KLayout.
-    import pya
     from pip import __main__
     main = __main__._main
 
