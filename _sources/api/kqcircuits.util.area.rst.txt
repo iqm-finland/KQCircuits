@@ -1,0 +1,10 @@
+kqcircuits.util.area
+====================
+
+.. automodule:: kqcircuits.util.area
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.area
+.. image:: ../pcell_images/kqcircuits.util.area.png

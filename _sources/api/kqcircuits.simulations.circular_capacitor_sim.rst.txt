@@ -1,0 +1,10 @@
+kqcircuits.simulations.circular\_capacitor\_sim
+===============================================
+
+.. automodule:: kqcircuits.simulations.circular_capacitor_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.circular_capacitor_sim
+.. image:: ../pcell_images/kqcircuits.simulations.circular_capacitor_sim.png

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits 4.0.0 documentation</title>
+  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits 4.0.4 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.0
+                4.0.4
               </div>
             
           
@@ -228,13 +228,16 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># get LayoutToNetlist object</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
-    <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">begin_shapes</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]))</span>
+    <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span>
+                                                            <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_ports&quot;</span><span class="p">])])</span>
     <span class="n">ltn</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutToNetlist</span><span class="p">(</span><span class="n">shapes_iter</span><span class="p">)</span>
     <span class="c1"># parallel processing</span>
     <span class="n">ltn</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
     <span class="c1"># select conducting layers</span>
-    <span class="n">connector_region</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span> <span class="s2">&quot;connector&quot;</span><span class="p">)</span>
-    <span class="n">ltn</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connector_region</span><span class="p">)</span>
+    <span class="n">connector_region_b</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span> <span class="s2">&quot;connector_b&quot;</span><span class="p">)</span>
+    <span class="n">connector_region_t</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">make_layer</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_ports&quot;</span><span class="p">]),</span> <span class="s2">&quot;connector_t&quot;</span><span class="p">)</span>
+    <span class="n">ltn</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connector_region_b</span><span class="p">)</span>
+    <span class="n">ltn</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">connector_region_t</span><span class="p">)</span>
     <span class="c1"># extract netlist for the cell</span>
     <span class="n">ltn</span><span class="o">.</span><span class="n">extract_netlist</span><span class="p">()</span>
     <span class="c1"># extract cell to circuit map for finding the netlist of interest</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.export_helper &mdash; KQCircuits 4.0.0 documentation</title>
+  <title>kqcircuits.util.export_helper &mdash; KQCircuits 4.0.4 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.0
+                4.0.4
               </div>
             
           
@@ -108,6 +108,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.util.html">kqcircuits.util</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.area.html">kqcircuits.util.area</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
@@ -211,8 +212,14 @@
 <span id="kqcircuits-util-export-helper"></span><h1>kqcircuits.util.export_helper<a class="headerlink" href="#module-kqcircuits.util.export_helper" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="kqcircuits.util.export_helper.generate_probepoints_json">
-<code class="sig-prename descclassname">kqcircuits.util.export_helper.</code><code class="sig-name descname">generate_probepoints_json</code><span class="sig-paren">(</span><em class="sig-param">cell</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#generate_probepoints_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.export_helper.generate_probepoints_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kqcircuits.util.export_helper.</code><code class="sig-name descname">generate_probepoints_json</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">face='b'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#generate_probepoints_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.export_helper.generate_probepoints_json" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.export_helper.flip">
+<code class="sig-prename descclassname">kqcircuits.util.export_helper.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param">point</em>, <em class="sig-param">origin=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.export_helper.flip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets correct flip chip coordinates by setting a new origin and mirroring <code class="docutils literal notranslate"><span class="pre">point</span></code> by the y-axis.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="kqcircuits.util.export_helper.create_or_empty_tmp_directory">

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 4.0.0 documentation</title>
+  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 4.0.4 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.0
+                4.0.4
               </div>
             
           
@@ -411,7 +411,7 @@
 <span class="sd">        n: Number of steps corresponding to a full circle.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">n_steps</span> <span class="o">=</span> <span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">))</span>
+    <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">origin</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">sin</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)]</span></div>
 </pre></div>

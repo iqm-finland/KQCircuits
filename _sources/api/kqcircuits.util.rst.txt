@@ -4,6 +4,7 @@ kqcircuits.util
 
 .. toctree::
 
+   kqcircuits.util.area
    kqcircuits.util.coupler_lib
    kqcircuits.util.deep_delete
    kqcircuits.util.dependencies

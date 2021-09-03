@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.airbridge_connection &mdash; KQCircuits 4.0.0 documentation</title>
+  <title>kqcircuits.elements.airbridge_connection &mdash; KQCircuits 4.0.4 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.0
+                4.0.4
               </div>
             
           
@@ -206,6 +206,7 @@
     <span class="n">with_right_waveguide</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;With waveguide on right side&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">waveguide_separation</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Distance between waveguide center conductors&quot;</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
     <span class="n">airbridge_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Airbridge type&quot;</span><span class="p">,</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">airbridge_type_choices</span><span class="p">)</span>
+    <span class="n">gap_between_bridges</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Inner distance between adjacent bridges&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AirbridgeConnection.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.airbridge_connection.html#kqcircuits.elements.airbridge_connection.AirbridgeConnection.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">taper_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarTaper</span><span class="p">,</span> <span class="n">WaveguideCoplanarTaper</span><span class="p">,</span>
@@ -234,9 +235,8 @@
         <span class="n">ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="n">Airbridge</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">airbridge_type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_side_airbridges</span><span class="p">:</span>
-            <span class="n">gap_between_bridges</span> <span class="o">=</span> <span class="mi">20</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span> <span class="o">+</span> <span class="n">gap_between_bridges</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span> <span class="o">-</span> <span class="n">gap_between_bridges</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>  <span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap_between_bridges</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap_between_bridges</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_right_waveguide</span><span class="p">:</span>
             <span class="n">taper_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarTaper</span><span class="p">,</span> <span class="n">WaveguideCoplanarTaper</span><span class="p">,</span>
