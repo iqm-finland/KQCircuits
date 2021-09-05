@@ -28,6 +28,38 @@ continuity_tolerance = 0.003
 relative_length_tolerance = 0.05
 
 
+def test_too_few_points(capfd):
+    layout = pya.Layout()
+    WaveguideCoplanar.create(layout, path=pya.DPath([pya.DPoint(0, 0)], 1))
+    _, err = capfd.readouterr()
+    assert err != ""
+
+
+def test_straight_doesnt_fit_between_corners(capfd):
+    layout = pya.Layout()
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(200, 0),
+        pya.DPoint(200, 190),
+        pya.DPoint(400, 190)
+    ]
+    WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
+    _, err = capfd.readouterr()
+    assert err != ""
+
+
+def test_too_short_last_segment(capfd):
+    layout = pya.Layout()
+    points = [
+        pya.DPoint(0, 0),
+        pya.DPoint(200, 0),
+        pya.DPoint(200, 90)
+    ]
+    WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
+    _, err = capfd.readouterr()
+    assert err != ""
+
+
 def test_continuity_90degree_turn():
     layout = pya.Layout()
     points = [

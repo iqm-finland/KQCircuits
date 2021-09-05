@@ -326,3 +326,20 @@ class Element(pya.PCellDeclarationHelper):
                     raise ValueError("Each item in choices list/tuple must be a two-element array [description, value]")
                 param_decl.add_choice(choice[0], choice[1])
         self._param_decls.append(param_decl)
+
+    def raise_error_on_cell(self, error_msg, position=pya.DPoint()):
+        """Replaces cell with error text in the annotation layer, and raises ValueError with the same error message.
+
+        Args:
+             error_msg: the error message
+             position: location of the text center (optional)
+        """
+        self.cell.clear()
+        error_text_cell = self.layout.create_cell("TEXT", "Basic", {
+            "layer": default_layers["annotations"],
+            "text": error_msg,
+            "mag": 10.0
+        })
+        text_center = error_text_cell.bbox().center().to_dtype(self.layout.dbu)
+        self.insert_cell(error_text_cell, pya.DTrans(position - text_center))
+        raise ValueError(error_msg)

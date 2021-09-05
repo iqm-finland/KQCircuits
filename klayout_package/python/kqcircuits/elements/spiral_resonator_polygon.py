@@ -18,7 +18,6 @@
 
 from math import pi, tan, degrees, atan2
 
-from kqcircuits.defaults import default_layers
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -80,14 +79,8 @@ class SpiralResonatorPolygon(Element):
         min_spacing, max_spacing = 0, self.length
         optimal_points = self._produce_path_points(min_spacing)
         if optimal_points is None:
-            error_msg = "Cannot create a resonator with the given parameters. Try decreasing the turn radius."
-            error_text_cell = self.layout.create_cell("TEXT", "Basic", {
-                "layer": default_layers["annotations"],
-                "text": error_msg,
-                "mag": 10.0
-            })
-            self.insert_cell(error_text_cell)
-            raise ValueError(error_msg)
+            self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the turn "
+                                     "radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
 
         spacing_tolerance = 0.001
         while max_spacing - min_spacing > spacing_tolerance:
@@ -103,20 +96,12 @@ class SpiralResonatorPolygon(Element):
     def _produce_resonator_manual_spacing(self):
         """Produces polygon spiral resonator with spacing defined by `self.manual_spacing`.
 
-        If the resonator cannot be created with the chosen spacing, it will instead produce a cell with error text in
-        the annotation layer, and raise a ValueError.
+        If the resonator cannot be created with the chosen spacing, it will instead raise a ValueError.
         """
         points = self._produce_path_points(self.manual_spacing)
         if points is None:
-            error_msg = "Cannot create a resonator with the given parameters. Try decreasing the spacings or the " \
-                        "turn radius."
-            error_text_cell = self.layout.create_cell("TEXT", "Basic", {
-                "layer": default_layers["annotations"],
-                "text": error_msg,
-                "mag": 10.0
-            })
-            self.insert_cell(error_text_cell)
-            raise ValueError(error_msg)
+            self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the spacings "
+                                     "or the turn radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
         self._produce_resonator(points)
 
     def _produce_path_points(self, spacing):

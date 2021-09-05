@@ -40,7 +40,7 @@ def nodes1():
         Node(pya.DPoint(600, 0), AirbridgeConnection, with_side_airbridges=False),
         Node(pya.DPoint(800, 0), FingerCapacitorSquare),
         Node(pya.DPoint(1000, 100)),
-        Node(pya.DPoint(1050, 100), ab_across=True),
+        Node(pya.DPoint(1060, 100), ab_across=True),
         Node(pya.DPoint(1100, 100), WaveguideCoplanarTaper, a=10, b=5),
         Node(pya.DPoint(1300, 100)),
         Node(pya.DPoint(1400, 0), n_bridges=3),
@@ -53,8 +53,8 @@ def nodes1():
         Node(pya.DPoint(2500, 50)),
         Node(pya.DPoint(2600, 50), WaveguideCoplanarTCross, align=("port_bottom", "port_right")),
         Node(pya.DPoint(2700, -200)),
-        Node(pya.DPoint(2700, -300), FlipChipConnectorRf, face_id="t", output_rotation=90),
-        Node(pya.DPoint(2500, -200)),
+        Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="t", output_rotation=90),
+        Node(pya.DPoint(2500, -400)),
     ]
 
 
@@ -68,7 +68,7 @@ def nodes2():
         Node((600, 0), Airbridge),
         Node((800, 0), FingerCapacitorSquare),
         Node((1000, 100)),
-        Node((1050, 100), ab_across=True),
+        Node((1060, 100), ab_across=True),
         Node((1100, 100), a=10, b=5),
         Node((1300, 100)),
         Node((1400, 0), n_bridges=3),
@@ -81,8 +81,8 @@ def nodes2():
         Node(pya.DPoint(2500, 50)),
         Node(pya.DPoint(2600, 50), WaveguideCoplanarTCross, align=("port_bottom", "port_right")),
         Node(pya.DPoint(2700, -200)),
-        Node(pya.DPoint(2700, -300), face_id="t", output_rotation=90),
-        Node(pya.DPoint(2500, -200)),
+        Node(pya.DPoint(2700, -500), face_id="t", output_rotation=90),
+        Node(pya.DPoint(2500, -400)),
     ]
 
 
@@ -115,6 +115,13 @@ def nodes_with_expected_segment_lengths():
     expected_segment_lengths = [300 - 0, 550 - 350, 920 - 700, 1200 - 1080]
 
     return nodes, expected_segment_lengths
+
+
+def test_too_few_nodes(capfd):
+    layout = pya.Layout()
+    WaveguideComposite.create(layout, nodes=[Node((0, 0))])
+    _, err = capfd.readouterr()
+    assert err != ""
 
 
 def test_crash_and_node_formats(capfd, nodes1, nodes2):

@@ -33,8 +33,8 @@ class WaveguideCoplanar(Element):
     predefined bending radios. It actually consists of straight and bent PCells.
 
     Warning:
-        Arbitrary angle bents actually have very small gaps between bends and straight segments due to
-        precision of arithmetic. To be fixed in a future release.
+        Arbitrary angle bents can have very small gaps between bends and straight segments due to
+        precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.
     """
 
     path = Param(pdt.TypeShape, "TLine", pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0))
@@ -55,76 +55,63 @@ class WaveguideCoplanar(Element):
 
     def produce_waveguide(self):
         points = list(self.path.each_point())
+        if len(points) < 2:
+            self.raise_error_on_cell("Need at least 2 points for a waveguide.",
+                                     points[0] if len(points) == 1 else pya.DPoint())
+
+        # distance between points[0] and beginning of the straight
+        last_cut_dist = 0.0 if self.term1 == 0 else -self.corner_safety_overlap
+
+        # For each segment except the last
+        for i in range(0, len(points) - 2):
+            # Check if straight can fit between points[i] and points[i + 1]
+            v1, _, alpha1, alpha2, corner_pos = self.get_corner_data(points[i], points[i + 1], points[i + 2], self.r)
+            alpha = (alpha2 - alpha1 + math.pi) % (2 * math.pi) - math.pi  # turn angle (between -pi and pi) in radians
+            # distance between points[i + 1] and beginning of the straight
+            cut_dist = self.r * math.tan(abs(alpha) / 2) - self.corner_safety_overlap
+            straight_length = v1.length() - last_cut_dist - cut_dist
+            if straight_length < 0:
+                self.raise_error_on_cell("Straight segment cannot fit. Try decreasing the turn radius.",
+                                         points[i] + v1 / 2)
+
+            # Straight segment before corner
+            if straight_length > self.corner_safety_overlap:
+                cell_straight = self.add_element(WaveguideCoplanarStraight, Element, l=straight_length)
+                start_point = points[i] + last_cut_dist / v1.length() * v1
+                transf = pya.DCplxTrans(1, math.degrees(alpha1), False, start_point)
+                self.insert_cell(cell_straight, transf)
+
+            # Curved segment at the corner
+            if 2 * cut_dist >= self.corner_safety_overlap:
+                cell_curved = self.add_element(WaveguideCoplanarCurved, Element, alpha=alpha, n=self.n)
+                transf = pya.DCplxTrans(1, math.degrees(alpha1) + (90 if alpha < 0 else -90), False, corner_pos)
+                self.insert_cell(cell_curved, transf)
+
+            # Prepare for next iteration
+            last_cut_dist = cut_dist
+
+        # Check if straight can fit between the last two points
+        v1 = points[-1] - points[-2]
+        cut_dist = 0.0 if self.term2 == 0 else -self.corner_safety_overlap
+        straight_length = v1.length() - last_cut_dist - cut_dist
+        if straight_length < 0:
+            self.raise_error_on_cell("Straight segment cannot fit. Try decreasing the turn radius.",
+                                     points[-2] + v1 / 2)
+
+        # Straight segment at the end
+        if straight_length > self.corner_safety_overlap:
+            subcell = self.add_element(WaveguideCoplanarStraight, Element, l=straight_length)
+            start_point = points[-2] + last_cut_dist / v1.length() * v1
+            transf = pya.DCplxTrans(1, math.degrees(math.atan2(v1.y, v1.x)), False, start_point)
+            self.insert_cell(subcell, transf)
 
         # Termination before the first segment
         WaveguideCoplanar.produce_end_termination(self, points[1], points[0], self.term1)
-        self.add_port("a", points[0], points[0]-points[1])
-
-        # For each segment except the last
-        if self.term1 > 0 and len(points) > 1:
-            # Extend segment_last negatively
-            v2 = points[1] - points[0]
-            segment_last = (points[0] - self.corner_safety_overlap*v2/v2.length()).to_p()
-        else:
-            segment_last = points[0]
-
-        for i in range(0, len(points) - 2):
-            # Corner coordinates
-            v1, v2, alpha1, alpha2, corner_pos = self.get_corner_data(points[i], points[i+1], points[i+2], self.r)
-            segment_start = segment_last
-            segment_end = points[i + 1]
-            cut = v1.vprod_sign(v2) * self.r / math.tan((math.pi - (alpha2 - alpha1)) / 2)
-            l = segment_start.distance(segment_end) - cut + self.corner_safety_overlap
-            angle = 180 / math.pi * math.atan2(segment_end.y - segment_start.y, segment_end.x - segment_start.x)
-            cell_straight = self.add_element(WaveguideCoplanarStraight, Element, l=l)
-
-            transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
-            self.insert_cell(cell_straight, transf)
-            segment_last = \
-                (points[i + 1] + v2 * (1 / v2.abs()) * cut - self.corner_safety_overlap*v2/v2.length()).to_p()
-
-            # Curve at the corner
-            alpha = alpha2 - alpha1
-            min_angle = 1e-5  # close to the smallest angle that can create a valid curved waveguide
-            if abs(alpha) >= min_angle:
-                cell_curved = self.add_element(WaveguideCoplanarCurved, Element, alpha=alpha, n=self.n)
-                transf = pya.DCplxTrans(1, alpha1 / math.pi * 180.0 - v1.vprod_sign(v2) * 90, False, corner_pos)
-                self.insert_cell(cell_curved, transf)
-
-        # Last segment
-        segment_start = segment_last
-        segment_end = points[-1]
-        l = segment_start.distance(segment_end)
-        if self.term2 > 0:
-            l += self.corner_safety_overlap
-        angle = 180 / math.pi * math.atan2(segment_end.y - segment_start.y, segment_end.x - segment_start.x)
+        self.add_port("a", points[0], points[0] - points[1])
 
         # Terminate the end
         WaveguideCoplanar.produce_end_termination(self, points[-2], points[-1], self.term2)
-        self.add_port("b", points[-1], points[-1]-points[-2])
-
-        subcell = self.add_element(WaveguideCoplanarStraight, Element, l=l)
-        transf = pya.DCplxTrans(1, angle, False, pya.DVector(segment_start))
-        self.insert_cell(subcell, transf)
-
-        # Raise error on non-physical design
-        # TODO complains when shouldn't and sometimes doesn't complain when should
-        shapes = self.cell.begin_shapes_rec(self.get_layer("base_metal_gap_wo_grid"))
-        shapes.max_depth = 1
-        region = pya.Region()
-        while not shapes.at_end():
-            if shapes.shape():
-                new_shape = pya.Shapes()
-                new_shape.insert(shapes.shape())
-                new_region = pya.Region(new_shape)
-                print('AREA &', (region & new_region).area())
-                if (region & new_region).area() == 0:
-                    region += new_region
-                else:
-                    print('Non-physical waveguide')
-                    raise ValueError('Non-physical waveguide')
-                print(region.area())
-            shapes.next()
+        self.add_port("b", points[-1], points[-1] - points[-2])
 
     def produce_impl(self):
         self.produce_waveguide()

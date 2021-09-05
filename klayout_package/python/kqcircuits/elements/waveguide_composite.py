@@ -19,6 +19,7 @@
 import ast
 from importlib import import_module
 from typing import Tuple
+from math import pi, tan
 
 from scipy.optimize import root_scalar
 
@@ -210,7 +211,8 @@ class WaveguideComposite(Element):
         self._nodes = self._nodes_from_string()
         self._child_refpoints = {}
         if len(self._nodes) < 2:
-            return
+            self.raise_error_on_cell("Need at least 2 Nodes for a WaveguideComposite.",
+                                     self._nodes[0].position if len(self._nodes) == 1 else pya.DPoint())
 
         self._wg_start_idx = 0      # next waveguide starts here
         self._wg_start_pos = self._nodes[0].position
@@ -491,7 +493,7 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
     """
     def objective(x):
         return _length_of_var_length_bend(element.layout, x, point_a, point_a_corner, point_b, point_b_corner,
-                                          bridges) - target_len
+                                          bridges, element.r) - target_len
     try:
         # floods the database with PCell variants :(
         root = root_scalar(objective, bracket=(element.r, target_len / 2))
@@ -504,7 +506,25 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
     return inst
 
 
-def _length_of_var_length_bend(layout, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges):
+def _length_of_var_length_bend(layout, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges, r):
+    # This function shouldn't raise exception, so we have to manually test if waveguide doesn't fit.
+    # These tests do not cover all cases, but are enough in most cases
+    point_a_shift = point_shift_along_vector(point_a, point_a_corner, corner_dist)
+    point_b_shift = point_shift_along_vector(point_b, point_b_corner, corner_dist)
+    v1, v2, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(point_a, point_a_shift, point_b_shift, r)
+    _, v3, _, alpha3, _ = WaveguideCoplanar.get_corner_data(point_a_shift, point_b_shift, point_b, r)
+    cut_dist1 = r * tan((pi - abs(pi - abs(alpha2 - alpha1))) / 2)
+    cut_dist2 = r * tan((pi - abs(pi - abs(alpha3 - alpha2))) / 2)
+    if v1.length() < cut_dist1 or v3.length() < cut_dist2:
+        return -1e30  # straight doesn't fit at the ends -> corner_dist is probably too short
+    if v2.length() < cut_dist1 + cut_dist2:
+        return 1e30  # straight doesn't fit between corners -> corner_dist is probably too large
+    b_crosses_a = (v1.vprod_sign(point_b - point_a) * v1.vprod_sign(point_b_shift - point_a)) < 0
+    a_crosses_b = (v3.vprod_sign(point_a - point_b) * v3.vprod_sign(point_a_shift - point_b)) < 0
+    if b_crosses_a and a_crosses_b:
+        return 1e30  # waveguide is crossing itself -> corner_dist is probably too large
+
+    # Create waveguide and measure it's length
     cell = _var_length_bend(layout, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges)
     length = get_cell_path_length(cell, layout.layer(default_layers["waveguide_length"]))
     return length

@@ -150,13 +150,6 @@ class Shaping(Chip):
         waveguide_length = cross1_length
 
         meander3_end = port_abs_cross3["port_left"] + pya.DVector(900, 0)
-        meander3_inst, _ = self.insert_cell(Meander,
-            start=port_abs_cross3["port_left"],
-            end=meander3_end,
-            length=1500,
-            meanders=3,
-            r=self.r
-        )
 
         waveguide2 = self.add_element(WaveguideCoplanar,
             path=pya.DPath([
@@ -170,7 +163,14 @@ class Shaping(Chip):
         self.insert_cell(waveguide2)
 
         waveguide_length += waveguide2.length()
-        meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0] - waveguide_length)
+
+        self.insert_cell(Meander,
+                         start=port_abs_cross3["port_left"],
+                         end=meander3_end,
+                         length=segment_length_target_pr[0] - waveguide_length,
+                         meanders=3,
+                         r=self.r
+                         )
 
         # Last bit of the Purcell filter of RR
         waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
@@ -300,14 +300,6 @@ class Shaping(Chip):
         waveguide_length = cross1_length
 
         meander3_end = port_abs_cross3["port_right"] + pya.DVector(900, 0)
-        meander3_inst, _ = self.insert_cell(Meander,
-            start=port_abs_cross3["port_right"],
-            end=meander3_end,
-            length=1500,
-            meanders=3,
-            r=self.r
-        )
-
         self.insert_cell(WaveguideCoplanar,
             path=pya.DPath([
                 meander3_end,
@@ -319,7 +311,14 @@ class Shaping(Chip):
         )
 
         waveguide_length += waveguide2.length()
-        meander3_inst.change_pcell_parameter("length", segment_length_target_pr[0] - waveguide_length)
+
+        self.insert_cell(Meander,
+                         start=port_abs_cross3["port_right"],
+                         end=meander3_end,
+                         length=segment_length_target_pr[0] - waveguide_length,
+                         meanders=3,
+                         r=self.r
+                         )
 
         # Last bit of the Purcell filter of shaping resonator
         waveguide_length = cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
