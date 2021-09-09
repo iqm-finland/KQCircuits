@@ -31,24 +31,42 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
 import pya
+from tqdm import tqdm
 
 import kqcircuits.util.macro_prepare as macroprep
 from kqcircuits.chips.chip import Chip
+from kqcircuits.defaults import default_bar_format
 
 libname = Chip.LIBRARY_NAME
 library = pya.Library.library_by_name(libname)
 
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 top_cell = layout.create_cell("Top Cell")
-cell_view.cell_name=top_cell.name     # Shows the new cell
+cell_view.cell_name = top_cell.name  # Shows the new cell
 
-chip_step_x = pya.DVector(12e3, 0)
-chip_step_y = pya.DVector(0, -12e3)
+columns = 5
+chip_step_x = pya.DVector(2.5e3, 0)
+chip_step_y = pya.DVector(0, -2.5e3)
 
-for i, pcell_name in enumerate(library.layout().pcell_names()):
-    print("generating ", pcell_name)
+x, y, y0 = 0, 0, 0
+for i, pcell_name in tqdm(enumerate(library.layout().pcell_names()), desc='Generating chips',
+                          bar_format=default_bar_format):
     cell = layout.create_cell(pcell_name, libname, {"name_chip": pcell_name})
-    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans((i%5) *chip_step_x+int(i/5) *chip_step_y)))</text>
+
+    chip_frame = [i.cell for i in cell.each_inst() if 'Chip Frame' in i.cell.name]
+    chip_frame = chip_frame[0] if chip_frame else cell
+    height, width = chip_frame.bbox().height() * layout.dbu, chip_frame.bbox().width() * layout.dbu
+
+    base = pya.DVector(x, -(height + y0))
+    top_cell.insert(pya.DCellInstArray(cell.cell_index(),
+                    pya.DTrans((i % columns) * chip_step_x + int(i / columns) * chip_step_y + base)))
+
+    y = max(y, height + y0)
+    if (i + 1) % columns == 0:
+        x = 0
+        y0 = y
+    else:
+        x += width
+    </text>
 </klayout-macro>
