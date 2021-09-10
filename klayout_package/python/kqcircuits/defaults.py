@@ -284,3 +284,9 @@ default_netlist_breakdown = [
 # default progress bar formatting with tqdm
 default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}' \
                      '{postfix}]'
+
+# dictionary of probepoint types for probepoint export
+# key is the refpoint name prefix for a type of probepoints, value is a text representation of the probepoint type
+default_probe_types = {"testarray": "testarrays", "qb": "qubits"}
+# tuple of refpoint name suffixes that are used (together with probe_types) to identify refpoints as probepoints
+default_probe_suffixes = ("_c", "_l")

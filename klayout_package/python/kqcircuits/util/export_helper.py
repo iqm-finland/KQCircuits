@@ -20,12 +20,12 @@ import json
 import subprocess
 from pathlib import Path
 
-import pya
 from autologging import logged, traced
 
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.defaults import default_layers, TMP_PATH
+from kqcircuits.defaults import default_layers, TMP_PATH, default_probe_types, default_probe_suffixes
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
+from kqcircuits.pya_resolver import pya
 
 
 @traced
@@ -55,11 +55,10 @@ def generate_probepoints_json(cell, face='b'):
         markers = {k: flip(v, origin) for k, v in markers.items()}
 
     eu = 1e-3  # export unit
-    probe_types = {"testarray":"testarrays", "qb":"qubits"}
 
     # initialize dictionaries for each probe point group
     groups = {}
-    for probe_name in probe_types.values():
+    for probe_name in default_probe_types.values():
         for marker_name, marker in markers.items():
             groups[f"{probe_name} {marker_name}"] = {
                 "alignment": {"x": round(marker.x * eu, 3), "y": round(marker.y * eu, 3)},
@@ -69,9 +68,13 @@ def generate_probepoints_json(cell, face='b'):
     # divide probe points into groups by closest marker
     for probepoint_name, probepoint in refpoints.items():
         name_type = probepoint_name.split("_")[0]
-
+        # if name_type starts with some probe_type, truncate name_type to be the probe_type
+        for probe_type in default_probe_types:
+            if name_type.startswith(probe_type):
+                name_type = probe_type
+                break
         # does the name correspond to a probepoint?
-        if name_type in probe_types.keys() and (probepoint_name.endswith("_c") or probepoint_name.endswith("_l")):
+        if name_type in default_probe_types.keys() and probepoint_name.endswith(default_probe_suffixes):
 
             if face == 't':
                 probepoint = flip(probepoint, origin)
@@ -83,7 +86,7 @@ def generate_probepoints_json(cell, face='b'):
                     best_distance = refpoint.distance(probepoint)
                     closest_marker = marker
 
-            groups[f"{probe_types[name_type]} {closest_marker}"]["pads"].append({
+            groups[f"{default_probe_types[name_type]} {closest_marker}"]["pads"].append({
                 "id": probepoint_name,
                 "x": round(probepoint.x * eu, 3),
                 "y": round(probepoint.y * eu, 3),
