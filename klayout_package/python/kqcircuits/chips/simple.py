@@ -38,7 +38,7 @@ class Simple(Chip):
     def produce_impl(self):
 
         # Launcher
-        launchers = self.produce_launchers_SMA8(enabled=["WN", "EN", "SE"])
+        launchers = self.produce_launchers("SMA8", enabled=["WN", "EN", "SE"])
 
         # Swissmon
         _pos = pya.DTrans(3, False, 2500, launchers["WN"][0].y)

@@ -59,7 +59,7 @@ class Demo(Chip):
             19: "DL-QB3",
             24: "DL-QB1",
         }
-        self.produce_launchers_ARD24(launcher_assignments)
+        self.produce_launchers("ARD24", launcher_assignments)
 
         self.produce_qubits()
         if self.include_couplers:

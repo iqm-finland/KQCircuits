@@ -165,15 +165,15 @@ class MultiFace(Chip):
         """
         connector_positions = self._produce_connectors(launchers_type)
         if launchers_type == "SMA8":
-            launchers = self.produce_launchers_SMA8()
+            launchers = self.produce_launchers("SMA8")
             if self.routing_waveguides:
                 self._produce_default_routing_sma8(launchers, connector_positions)
         elif launchers_type == "ARD24":
-            launchers = self.produce_launchers_ARD24()
+            launchers = self.produce_launchers("ARD24")
             if self.routing_waveguides:
                 self._produce_default_routing_ard24(launchers, connector_positions)
         elif launchers_type == "RF80":
-            launchers = self.produce_launchers_RF80()
+            launchers = self.produce_launchers("RF80")
 
     def _produce_connectors(self, launchers_type):
         # the connector ids increase from left to right and from top to bottom

@@ -39,9 +39,8 @@ class SampleHolderTest(Chip):
     launcher_indent = Param(pdt.TypeDouble, "Launcher indent from edge", 520, unit="[μm]")
 
     def produce_impl(self):
-        launcher_assignments = {}
         self.produce_n_launchers(self.n_launchers, "RF", self.launcher_width, self.launcher_gap, self.launcher_indent,
-                                 launcher_assignments, self.launcher_pitch)
+                                 self.launcher_pitch)
 
         nr_pads_per_side = int(self.n_launchers / 4.)
 

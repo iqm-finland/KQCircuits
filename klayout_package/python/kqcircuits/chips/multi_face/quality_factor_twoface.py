@@ -181,7 +181,7 @@ class QualityFactorTwoface(MultiFace):
             right_point = cross_refpoints_abs["port_right"]
 
         # Launchers
-        self.produce_launchers_SMA8(enabled=["WN", "EN"])
+        self.produce_launchers("SMA8", enabled=["WN", "EN"])
 
         # Waveguides to the launchers
         if self.waveguide_indentation > 0.0:

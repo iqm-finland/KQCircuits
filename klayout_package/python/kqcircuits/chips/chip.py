@@ -83,102 +83,6 @@ class Chip(Element):
 
         return launcher_assignments
 
-    def produce_launcher(self, pos, direction, name, port_id, width, gap, launcher_type="RF"):
-        """Inserts a launcher in the chip.
-
-        Args:
-            pos: position of the launcher
-            direction: float rotation in degrees, or one of "E", "W", "S", "N"
-            name: name inserted as property "id" in the launcher
-            port_id: id inserted as property "port_id" in the launcher
-            width: controls the pad width and tapering length of the launcher
-            gap: controls the gap from pad to ground
-            launcher_type: type of the launcher, "RF" or "DC"
-        """
-
-        if launcher_type == "RF":
-            launcher_cell = self.add_element(Launcher, s=width, l=width, a_launcher=width, b_launcher=gap)
-        elif launcher_type == "DC":
-            launcher_cell = self.add_element(LauncherDC, width=width)
-
-        if isinstance(direction, str):
-            direction = {"E": 0, "W": 180, "S": -90, "N": 90}[direction]
-        transf = pya.DCplxTrans(1, direction, False, pos)
-        launcher_inst, launcher_refpoints = self.insert_cell(launcher_cell, transf, name)
-        launcher_inst.set_property("port_id", port_id)
-        self.add_port(name, launcher_refpoints["port"])
-
-    # disable pylint warning to allow capitalized sample holder names
-    # pylint: disable=invalid-name
-
-    def produce_launchers_SMA8(self, enabled=["WS", "WN", "ES", "EN", "SW", "SE", "NW", "NE"],
-                               launcher_assignments=None):
-        """Produces enabled launchers for SMA8 sample holder default locations.
-
-        Args:
-            enabled: List of enabled standard launchers from set ("WS", "WN", "ES", "EN", "SW", "SE", "NW", "NE")
-            launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
-
-        Effect:
-            launchers PCells added to the class parent cell.
-
-        Returns:
-            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
-        """
-        # pylint: disable=dangerous-default-value
-        # dictionary of point, heading, distance from chip edge
-        launchers = {
-            "WS": (pya.DPoint(800, 2800), "W", 300),
-            "ES": (pya.DPoint(9200, 2800), "E", 300),
-            "WN": (pya.DPoint(800, 7200), "W", 300),
-            "EN": (pya.DPoint(9200, 7200), "E", 300),
-            "SW": (pya.DPoint(2800, 800), "S", 300),
-            "NW": (pya.DPoint(2800, 9200), "N", 300),
-            "SE": (pya.DPoint(7200, 800), "S", 300),
-            "NE": (pya.DPoint(7200, 9200), "N", 300)
-        }
-        launcher_map = self._create_launcher_map({name: name for name in launchers}, launcher_assignments)
-
-        for port_id in enabled:
-            launcher = launchers[port_id]
-            self.produce_launcher(launcher[0], launcher[1], launcher_map[port_id],
-                                  port_id, width=launcher[2], gap=180)
-        return launchers
-
-    def produce_launchers_ARD24(self, launcher_assignments=None):
-        """Produces launchers for ARD24 sample holder default locations.
-
-         Args:
-            launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
-
-        Effect:
-            launchers PCells added to the class parent cell.
-
-        Returns:
-            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
-        """
-        launchers = self.produce_n_launchers(24, "RF", 240, 144, 680, launcher_assignments, 1200)
-        return launchers
-
-    def produce_launchers_RF80(self, launcher_assignments=None):
-        launchers = self.produce_n_launchers(80, "RF", 160, 96, 520, launcher_assignments, 635)
-        return launchers
-
-    def produce_launchers_DC(self, launcher_assignments=None):
-        """Produces launchers for DC sample holder default locations.
-
-        Args:
-            launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
-
-        Returns:
-            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
-        """
-        launchers = self.produce_n_launchers(24, "DC", 500, 300, 680, launcher_assignments, 850)
-        return launchers
-
-    # re-enable pylint warning disabled above
-    # pylint: enable=invalid-name
-
     def produce_junction_tests(self, squid_type=default_squid_type):
         """Produces junction test pads in the chip.
 
@@ -333,60 +237,101 @@ class Chip(Element):
                     label_trans = label_trans * rel_label_trans
                 self.insert_cell(cell, label_trans)
 
-    @staticmethod
-    def _create_launcher_map(default_launcher_map, launcher_assignments):
-        """Returns launcher map, which is a dictionary of (port_id: launcher_id).
+    def produce_launchers(self, sampleholder_type, launcher_assignments=None, enabled=None):
+        """Produces launchers for typical sample holders.
+
+        This is a wrapper around ``produce_n_launchers()`` to generate typical launcher configurations.
 
         Args:
-            default_launcher_map: default value for the launcher map
-            launcher_assignments: used to replace certain elements in default_launcher_map
+            sampleholder_type: name of the sample holder type
+            launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
+            enabled: list of enabled launchers, empty means all
+
+        Returns:
+            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
 
         """
-        launcher_map = default_launcher_map
-        if launcher_assignments is not None:
-            for key, value in launcher_assignments.items():
-                launcher_map[key] = value
-        return launcher_map
 
-    def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent,
-                            launcher_assignments, pad_pitch):
+        if sampleholder_type == "SMA8":  # this is special: it has default launcher assignments
+            if not launcher_assignments:
+                launcher_assignments = {1: "NW", 2: "NE", 3: "EN", 4: "ES", 5: "SE", 6: "SW", 7: "WS", 8: "WN"}
+            return self.produce_n_launchers(8, "RF", 300, 180, 800, 4400, launcher_assignments, enabled)
+        elif sampleholder_type == "ARD24":
+            return self.produce_n_launchers(24, "RF", 240, 144, 680, 1200, launcher_assignments, enabled)
+        elif sampleholder_type == "RF80":
+            return self.produce_n_launchers(80, "RF", 160, 96, 520, 635, launcher_assignments, enabled)
+        elif sampleholder_type == "DC24":
+            return self.produce_n_launchers(24, "DC", 500, 300, 680, 850, launcher_assignments, enabled)
+
+        return {}
+
+    def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent, pad_pitch,
+                            launcher_assignments=None, enabled=None):
         """Produces n launchers at default locations.
 
+        Launcher pads are equally distributed around the chip. This may be overridden by specifying
+        the number of pads desired per chip side if ``n`` is an array of 4 numbers.
+
+        Pads not in ``launcher_assignments`` are disabled by default. The ``enabled`` argument may
+        override this. If neither argument is defined then all pads are enabled with default names.
+
         Args:
-            n: number of launcher pads
+            n: number of launcher pads or an array of pad numbers per side
             launcher_type: type of the launchers, "RF" or "DC"
             launcher_width: width of the launchers
             launcher_gap: pad to ground gap of the launchers
             launcher_indent: distance between the chip edge and pad port
-            launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers
             pad_pitch: distance between pad centers
+            launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
+            enabled: optional list of enabled launchers
 
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
 
-        nr_pads_per_side = int(n/4.)
-        launcher_map = self._create_launcher_map({i: str(i) for i in range(1, n + 1)}, launcher_assignments)
+        if launcher_type == "DC":
+            launcher_cell = self.add_element(LauncherDC, width=launcher_width)
+        else:
+            launcher_cell = self.add_element(Launcher, s=launcher_width, l=launcher_width,
+                                             a_launcher=launcher_width, b_launcher=launcher_gap)
+
+        pads_per_side = n
+        if not isinstance(n, tuple):
+            n = int((n + n % 4) / 4)
+            pads_per_side = [n, n, n, n]
+
+        dirs = (90, 0, -90, 180)
+        trans = (pya.DTrans(3, 0, self.box.p1.x, self.box.p2.y),
+                 pya.DTrans(2, 0, self.box.p2.x, self.box.p2.y),
+                 pya.DTrans(1, 0, self.box.p2.x, self.box.p1.y),
+                 pya.DTrans(0, 0, self.box.p1.x, self.box.p1.y))
+        _w = self.box.p2.x - self.box.p1.x
+        _h = self.box.p2.y - self.box.p1.y
+        sides = [_w, _h, _w, _h]
 
         launchers = {}  # dictionary of point, heading, distance from chip edge
-        launchers_specs = []
-        loc = lambda i: pya.DPoint(launcher_indent,
-                                   (self.box.p2.x - self.box.p1.x) / 2
-                                   + pad_pitch * (i + 0.5 - int(nr_pads_per_side / 2)))
 
-        for direction, _, trans in (
-                ("N", pya.DTrans.R270, pya.DTrans(3, 0, self.box.p1.x, self.box.p2.y)),
-                ("E", pya.DTrans.R180, pya.DTrans(2, 0, self.box.p2.x, self.box.p2.y)),
-                ("S", pya.DTrans.R90, pya.DTrans(1, 0, self.box.p2.x, self.box.p1.y)),
-                ("W", pya.DTrans.R0, pya.DTrans(0, 0, self.box.p1.x, self.box.p1.y))):
-            for i in range(nr_pads_per_side):
-                launchers_specs.append((trans * loc(i), direction, launcher_width))
+        port_id = 0
+        for np, dr, tr, si in zip(pads_per_side, dirs, trans, sides):
+            for i in range(np):
+                port_id += 1
+                if launcher_assignments:
+                    if port_id in launcher_assignments:
+                        name = launcher_assignments[port_id]
+                    else:
+                        continue
+                else:
+                    name = str(port_id)
 
-        for i, spec in enumerate(launchers_specs):
-            port_id = i + 1
-            name = launcher_map[port_id]
-            launchers[name] = spec
-            self.produce_launcher(spec[0], spec[1], name, port_id, launcher_width,
-                                  gap=launcher_gap, launcher_type=launcher_type)
+                if enabled and name not in enabled:
+                    continue
+
+                loc = tr * pya.DPoint(launcher_indent, si / 2 + pad_pitch * (i + 0.5 - np / 2))
+                launchers[name] = (loc, dr, launcher_width)
+
+                transf = pya.DCplxTrans(1, dr, False, loc)
+                launcher_inst, launcher_refpoints = self.insert_cell(launcher_cell, transf, name)
+                launcher_inst.set_property("port_id", port_id)
+                self.add_port(name, launcher_refpoints["port"])
 
         return launchers

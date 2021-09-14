@@ -70,7 +70,7 @@ class SingleXmons(Chip):
         """Produces a SingleXmons PCell."""
 
         self.produce_junction_tests(self.squid_type)
-        self.launchers = self.produce_launchers_SMA8(enabled=["WN", "EN", "NE", "NW", "SW", "WS", "SE", "ES"])
+        self.launchers = self.produce_launchers("SMA8")
         self.qubits_refpoints = self._produce_qubits()
 
         feedline_x_distance = 1200

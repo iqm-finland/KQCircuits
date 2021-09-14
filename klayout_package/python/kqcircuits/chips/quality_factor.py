@@ -63,7 +63,7 @@ class QualityFactor(Chip):
         res_beg = self.res_beg
 
         # Launchers
-        launchers = self.produce_launchers_SMA8(enabled=["WN", "EN"])
+        launchers = self.produce_launchers("SMA8", enabled=["WN", "EN"])
 
         marker_safety = 1.0e3  # depends on the marker size
         points_fl = [launchers["WN"][0],

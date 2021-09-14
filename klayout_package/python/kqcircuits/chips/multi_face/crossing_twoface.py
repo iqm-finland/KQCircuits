@@ -40,7 +40,7 @@ class CrossingTwoface(MultiFace):
                          choices=[["Single", "Single"], ["Two Face", "Two Face"]])
 
     def produce_impl(self):
-        launchers = self.produce_launchers_SMA8()
+        launchers = self.produce_launchers("SMA8")
         self._produce_transmission_lines(launchers)
         super().produce_impl()
 

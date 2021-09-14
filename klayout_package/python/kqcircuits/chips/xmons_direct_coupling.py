@@ -189,7 +189,7 @@ class XMonsDirectCoupling(Chip):
 
     def produce_impl(self):
 
-        self.produce_launchers_SMA8()
+        self.produce_launchers("SMA8")
         self.produce_junction_tests(squid_type=self.squid_type)
         self.produce_qubits()
 

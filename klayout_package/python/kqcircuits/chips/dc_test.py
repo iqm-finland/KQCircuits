@@ -24,6 +24,6 @@ class DcTest(Chip):
 
     def produce_impl(self):
 
-        self.produce_launchers_DC()
+        self.produce_launchers("DC24")
 
         super().produce_impl()

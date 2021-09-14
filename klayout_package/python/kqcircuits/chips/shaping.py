@@ -37,7 +37,7 @@ class Shaping(Chip):
     def produce_impl(self):
 
         # Launcher
-        launchers = self.produce_launchers_SMA8()
+        launchers = self.produce_launchers("SMA8")
 
         # Finnmon
         _, finnmon_refpoints_abs = self.insert_cell(Swissmon, pya.DTrans(3, False, 4000, 5000),
