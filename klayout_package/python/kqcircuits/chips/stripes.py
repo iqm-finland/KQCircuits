@@ -24,9 +24,6 @@ from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.chips.chip import Chip
 
 
-version = 1
-
-
 class Stripes(Chip):
     """The PCell declaration for a Stripes chip."""
 

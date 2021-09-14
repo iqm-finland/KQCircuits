@@ -22,7 +22,6 @@ from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
-version = 1
 
 
 @logged

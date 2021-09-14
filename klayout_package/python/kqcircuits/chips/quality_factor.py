@@ -34,8 +34,6 @@ from kqcircuits.util.coupler_lib import produce_library_capacitor
 # -The bridge measurements on the layer_4 changed to 42 um * 18 um.
 # -The pad measurements layer_4 has been changed to 21 um * 19 um.
 
-version = 1.1
-
 
 class QualityFactor(Chip):
     """The PCell declaration for a QualityFactor chip."""

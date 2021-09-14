@@ -29,9 +29,6 @@ from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCros
 from kqcircuits.util.coupler_lib import produce_library_capacitor
 
 
-version = 1
-
-
 class Shaping(Chip):
     """The PCell declaration for a Shaping chip."""
 

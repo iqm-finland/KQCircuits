@@ -31,7 +31,6 @@ class Sim(Squid):
     Origin at the center of junction layer bottom edge.
 
     """
-    version = 1
 
     def produce_impl(self):
 

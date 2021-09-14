@@ -21,8 +21,6 @@ from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
-version = 1
-
 
 class CrossingTwoface(MultiFace):
     """The PCell declaration for an CrossingTwoFace MultiFace chip.

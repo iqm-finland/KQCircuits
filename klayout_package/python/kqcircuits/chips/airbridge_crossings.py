@@ -26,9 +26,6 @@ from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
 
-version = 1
-
-
 class AirbridgeCrossings(Chip):
     """The PCell declaration for an AirbridgeCrossings chip.
 

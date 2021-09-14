@@ -35,7 +35,6 @@ class MultiFace(Chip):
     producing launchers in face 0, connectors between faces 0 and 1, and default routing waveguides from the
     launchers to the connectors.
     """
-    version = 1
 
     face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
     with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)

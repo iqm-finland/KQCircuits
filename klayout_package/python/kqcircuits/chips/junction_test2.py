@@ -26,9 +26,6 @@ from kqcircuits.squids import squid_type_choices
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 
 
-version = 1
-
-
 class JunctionTest2(Chip):
     """The PCell declaration for a JunctionTest2 chip."""
 

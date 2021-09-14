@@ -24,9 +24,6 @@ from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.chips.chip import Chip
 
 
-version = 1
-
-
 class JunctionTest(Chip):
     """The PCell declaration for a JunctionTest chip."""
 

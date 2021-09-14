@@ -27,8 +27,6 @@ from kqcircuits.util.coupler_lib import produce_library_capacitor
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 from kqcircuits.util.parameters import Param, pdt
 
-version = 1
-
 
 class QualityFactorTwoface(MultiFace):
     """The PCell declaration for an QualityFactorTwoFace MultiFace chip.

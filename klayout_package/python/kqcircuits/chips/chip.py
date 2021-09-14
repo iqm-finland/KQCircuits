@@ -42,7 +42,6 @@ class Chip(Element):
 
     Provides helpers to produce launchers and junction tests.
     """
-    version = 2
 
     LIBRARY_NAME = "Chip Library"
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for chips."
