@@ -53,6 +53,7 @@ class MaskLayout:
         dice_width: Dicing width for this mask layout
         text_margin: Text margin for this mask layout
         chip_size: side width of the chips (assuming square chips)
+        edge_clearance: minimum clearance of outer chips from the edge of the mask, measured from the chip center
         chip_box_offset: Offset (pya.DVector) from chip origin of the chip frame boxes for this face
         chip_trans: DTrans applied to all chips
         mask_name_offset: mask name label offset from default position in vertical direction (float)
@@ -87,6 +88,7 @@ class MaskLayout:
         self.dice_width = kwargs.get("dice_width", default_mask_parameters[self.face_id]["dice_width"])
         self.text_margin = kwargs.get("text_margin", default_mask_parameters[self.face_id]["text_margin"])
         self.chip_size = kwargs.get("chip_size", default_mask_parameters[self.face_id]["chip_size"])
+        self.edge_clearance = kwargs.get("edge_clearance", self.chip_size)
         self.chip_box_offset = kwargs.get("chip_box_offset", default_mask_parameters[self.face_id]["chip_box_offset"])
         self.chip_trans = kwargs.get("chip_trans", default_mask_parameters[self.face_id]["chip_trans"])
         self.mask_name_offset = kwargs.get("mask_name_offset", default_mask_parameters[self.face_id][
@@ -158,7 +160,7 @@ class MaskLayout:
 
         for (i, row) in enumerate(tqdm(self.chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
             for (j, slot) in enumerate(row):
-                position = step_ver * (i + 1) + step_hor * j
+                position = pya.DPoint(step_ver * (i + 1) + step_hor * j)
                 pos_index_name = chr(ord("A") + i) + ("{:02d}".format(j))
                 added_chip, region_chip = self._add_chip(labels_cell, step_ver, step_hor, position, pos_index_name,
                                                          slot)
@@ -196,20 +198,21 @@ class MaskLayout:
         # center of the chip at distance self.chip_size from the mask edge
         chip_region = pya.Region()
         if (position - step_ver * 0.5 + step_hor * 0.5 - self.wafer_center).length() - self.wafer_rad < \
-                -self.chip_size:
+                -self.edge_clearance:
             if slot in self.chips_map_legend.keys():
                 trans = pya.DTrans(position - self.chip_box_offset) * self.chip_trans
                 self.top_cell.insert(pya.DCellInstArray(self.chips_map_legend[slot].cell_index(), trans))
-                produce_label(label_cell, pos_index_name, position + pya.DVector(self.chip_size, 0), "bottomright",
-                              self.dice_width, self.text_margin,
+                trans3 = pya.DTrans() if self.chip_trans.is_mirror() else self.chip_trans
+                produce_label(label_cell, pos_index_name, trans3*(position + pya.DVector(self.chip_size, 0)),
+                              "bottomright", self.dice_width, self.text_margin,
                               [self._face()["base_metal_gap_wo_grid"], self._face()["base_metal_gap_for_EBL"]],
                               self._face()["ground_grid_avoidance"])
-                trans2 = pya.DTrans(position)
+                trans2 = trans*pya.DTrans(self.chip_box_offset)
                 chip_region = pya.Region(pya.Box(trans2 * pya.DBox(0, 0, self.chip_size, self.chip_size) * (
                         1 / self.layout.dbu)))
                 # add graphical representation
                 chip_name = self._get_chip_name(self.chips_map_legend[slot])
-                self._add_chip_graphical_representation_layer(chip_name, position, pos_index_name)
+                self._add_chip_graphical_representation_layer(chip_name, trans3 * position, pos_index_name)
                 return True, chip_region
         return False, chip_region
 
