@@ -22,7 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.markers.marker import Marker
-from kqcircuits.defaults import default_brand
+from kqcircuits.defaults import default_brand, default_marker_type
 
 
 @traced
@@ -118,6 +118,8 @@ class ChipFrame(Element):
         docstring="Distance of markers from closest edges of the chip face")
     marker_diagonals = Param(pdt.TypeInt, "Number of diagonal squares for the markers", 10)
     use_face_prefix = Param(pdt.TypeBoolean, "Use face prefix for chip name label", False)
+    marker_type = Param(pdt.TypeList, "Market type for each chip corner, starting from lower left and going clockwise",
+                       default=[default_marker_type]*4)
 
     def produce_impl(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""
@@ -156,19 +158,19 @@ class ChipFrame(Element):
 
     def _produce_markers(self):
         x_min, x_max, y_min, y_max = self._box_points()
-        self._produce_marker_sqr(pya.DTrans(x_min + self.marker_dist, y_min + self.marker_dist) * pya.DTrans.R180,
+        self._produce_marker(self.marker_type[0], pya.DTrans(x_min + self.marker_dist, y_min + self.marker_dist) * pya.DTrans.R180,
                                  self.face()["id"] + "_marker_sw")
-        self._produce_marker_sqr(pya.DTrans(x_max - self.marker_dist, y_min + self.marker_dist) * pya.DTrans.R270,
+        self._produce_marker(self.marker_type[3], pya.DTrans(x_max - self.marker_dist, y_min + self.marker_dist) * pya.DTrans.R270,
                                  self.face()["id"] + "_marker_se")
-        self._produce_marker_sqr(pya.DTrans(x_min + self.marker_dist, y_max - self.marker_dist) * pya.DTrans.R90,
+        self._produce_marker(self.marker_type[1], pya.DTrans(x_min + self.marker_dist, y_max - self.marker_dist) * pya.DTrans.R90,
                                  self.face()["id"] + "_marker_nw")
-        self._produce_marker_sqr(pya.DTrans(x_max - self.marker_dist, y_max - self.marker_dist) * pya.DTrans.R0,
+        self._produce_marker(self.marker_type[2], pya.DTrans(x_max - self.marker_dist, y_max - self.marker_dist) * pya.DTrans.R0,
                                  self.face()["id"] + "_marker_ne")
 
-    def _produce_marker_sqr(self, trans, name):
+    def _produce_marker(self, marker_type, trans, name):
         parameters = {
             **self.cell.pcell_parameters_by_name(),
-            **{"window": False, "diagonal_squares": self.marker_diagonals,
+            **{"marker_type": marker_type, "window": False, "diagonal_squares": self.marker_diagonals,
                "face_ids": self.face_ids}
         }
         cell_marker = self.add_element(Marker, **parameters)
