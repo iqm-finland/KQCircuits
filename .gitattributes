@@ -1,1 +1,4 @@
 iqc/_static_version.py export-subst
+
+# Declare LF line endings for shell scripts
+*.sh text eol=lf

@@ -1,5 +1,5 @@
 default:
-  image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:kqc-test-02
+  image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits
   cache:
     key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
     paths:
@@ -97,3 +97,49 @@ pages:
     - public
   only:
     - master
+
+.kaniko:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  before_script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+
+deploy_image:
+  extends: .kaniko
+  stage: deploy
+  script:
+    - |
+      if expr $CI_COMMIT_REF_NAME : "v[0-9]\+.\?[0-9]\+\?.\?[0-9]\+\?" ; then
+          export "LATEST=--destination $CI_REGISTRY_IMAGE:latest"
+      fi
+    - >
+      /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/ci/Dockerfile
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+      --cache-repo=$CI_REGISTRY_IMAGE/cache
+      --cache=true
+      $LATEST
+  only:
+    - master
+    - tags
+
+test_image:
+  extends: .kaniko
+  stage: test
+  script:
+    - >
+      /kaniko/executor
+      --context $CI_PROJECT_DIR
+      --dockerfile $CI_PROJECT_DIR/ci/Dockerfile
+      --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+      --cache-repo=$CI_REGISTRY_IMAGE/cache
+      --cache=true
+      --no-push
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
