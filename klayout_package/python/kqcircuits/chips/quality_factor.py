@@ -62,14 +62,18 @@ class QualityFactor(Chip):
         res_term = self.res_term
         res_beg = self.res_beg
 
-        # Launchers
-        launchers = self.produce_launchers("SMA8", enabled=["WN", "EN"])
+        # center the resonators in the chip regardless of size
+        max_res_len = max(res_lengths)
+        chip_side = self.box.p2.y - self.box.p1.y
+        wg_top_y = (chip_side + max_res_len) / 2
+
+        # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from the corners
+        launchers = self.produce_n_launchers((0, 2, 0, 2), "RF", 300, 180, 800, chip_side - 5600, {4: "WN", 1: "EN"})
 
         marker_safety = 1.0e3  # depends on the marker size
         points_fl = [launchers["WN"][0],
                      launchers["WN"][0] + pya.DVector(self.r + marker_safety, 0),
-                     launchers["WN"][0] + pya.DVector(self.r + marker_safety, 1.1e3),
-                     launchers["WN"][0] + pya.DVector(self.r * 2 + marker_safety, 1.1e3)
+                     pya.DPoint(launchers["WN"][0].x + self.r * 2 + marker_safety, wg_top_y)
                      ]
         tl_start = points_fl[-1]
 
@@ -207,8 +211,7 @@ class QualityFactor(Chip):
         # Last feedline
         self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
             "path": pya.DPath(points_fl + [
-                launchers["EN"][0] + pya.DVector(-self.r * 2 - marker_safety, 1.1e3),
-                launchers["EN"][0] + pya.DVector(-self.r - marker_safety, 1.1e3),
+                pya.DPoint(launchers["EN"][0].x - self.r * 2 - marker_safety, wg_top_y),
                 launchers["EN"][0] + pya.DVector(-self.r - marker_safety, 0),
                 launchers["EN"][0]
             ], 1),
