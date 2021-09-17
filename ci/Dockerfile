@@ -16,7 +16,8 @@ RUN apt-get update && apt-get install -y apt-utils && apt-get upgrade -y && \
     md5sum --check klayout.md5  && \
     apt-get install -y ./klayout_0.27.3-1_amd64.deb && \
     apt-get clean -y && rm -rf /var/lib/apt/lists/* ./klayout* && apt-get clean && \
-    python -m pip install --upgrade pip
+    python -m pip install --upgrade pip && \
+    rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
 
 # build from parent directory with -f ci/Dockerfile
 COPY . /kqc

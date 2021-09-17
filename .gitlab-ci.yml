@@ -1,5 +1,7 @@
 default:
-  image: gitlab.iqm.fi:5005/iqm/qe/kqcircuits
+  image:
+    name: gitlab.iqm.fi:5005/iqm/qe/kqcircuits
+    entrypoint: ['']
   cache:
     key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
     paths:

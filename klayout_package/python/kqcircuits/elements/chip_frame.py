@@ -158,14 +158,14 @@ class ChipFrame(Element):
 
     def _produce_markers(self):
         x_min, x_max, y_min, y_max = self._box_points()
-        self._produce_marker(self.marker_type[0], pya.DTrans(x_min + self.marker_dist, y_min + self.marker_dist) * pya.DTrans.R180,
-                                 self.face()["id"] + "_marker_sw")
-        self._produce_marker(self.marker_type[3], pya.DTrans(x_max - self.marker_dist, y_min + self.marker_dist) * pya.DTrans.R270,
-                                 self.face()["id"] + "_marker_se")
-        self._produce_marker(self.marker_type[1], pya.DTrans(x_min + self.marker_dist, y_max - self.marker_dist) * pya.DTrans.R90,
-                                 self.face()["id"] + "_marker_nw")
-        self._produce_marker(self.marker_type[2], pya.DTrans(x_max - self.marker_dist, y_max - self.marker_dist) * pya.DTrans.R0,
-                                 self.face()["id"] + "_marker_ne")
+        self._produce_marker(self.marker_type[0], pya.DTrans(x_min + self.marker_dist, y_min + self.marker_dist) \
+                             * pya.DTrans.R180, self.face()["id"] + "_marker_sw")
+        self._produce_marker(self.marker_type[3], pya.DTrans(x_max - self.marker_dist, y_min + self.marker_dist) \
+                             * pya.DTrans.R270, self.face()["id"] + "_marker_se")
+        self._produce_marker(self.marker_type[1], pya.DTrans(x_min + self.marker_dist, y_max - self.marker_dist) \
+                             * pya.DTrans.R90, self.face()["id"] + "_marker_nw")
+        self._produce_marker(self.marker_type[2], pya.DTrans(x_max - self.marker_dist, y_max - self.marker_dist) \
+                             * pya.DTrans.R0, self.face()["id"] + "_marker_ne")
 
     def _produce_marker(self, marker_type, trans, name):
         parameters = {

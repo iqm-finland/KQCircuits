@@ -119,4 +119,3 @@ class MarkerStandard(Marker):
                 self.cell.shapes(extra_layer).insert(diag_square_shape)
             self.cell.shapes(layer_protection).insert(
                 (pya.DCplxTrans(20, 0, False, pya.DVector(50 * i - 20 * 6, 50 * i - 20 * 6)) * sqr))
-

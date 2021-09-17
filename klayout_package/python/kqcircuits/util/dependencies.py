@@ -34,7 +34,7 @@ def install_kqc_dependencies():
     """
     # pylint: disable=import-outside-toplevel
 
-    import pya
+    from kqcircuits.pya_resolver import pya
     # Skip installation in stand-alone python package mode
     if not hasattr(pya, 'MessageBox'):
         return
