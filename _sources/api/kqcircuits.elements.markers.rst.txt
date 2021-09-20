@@ -6,3 +6,11 @@ kqcircuits.elements.markers
 
    kqcircuits.elements.markers.marker
    kqcircuits.elements.markers.marker_standard
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.elements.markers
+   :members:
+   :undoc-members:
+   :show-inheritance:

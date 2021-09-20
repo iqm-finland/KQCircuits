@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.spiral_resonator_rectangle_multiface &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_rectangle_multiface &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -226,9 +226,13 @@
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle.html#kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle" title="kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.spiral_resonator_rectangle.SpiralResonatorRectangle</span></code></a></p>
 <p>The PCell declaration for a two-face rectangular spiral resonator.</p>
 <p>Otherwise similar to SpiralResonatorRectangle, but the resonator waveguide will change to face 1
-(through a flip-chip connector) after specified distance. WARNING: If the connector is located immediately next to
-corners, the connector is located in the next straight segment it can fit, so the distance is not exact. In this
-case, the other parameters should be adjusted to avoid having the connector right next to a corner.</p>
+(through a flip-chip connector) after specified distance.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If the connector is located immediately next to corners, the connector is located in the next straight segment
+it can fit, so the distance is not exact. In this case, the other parameters should be adjusted to avoid having
+the connector right next to a corner.</p>
+</div>
 <dl class="method">
 <dt id="kqcircuits.elements.spiral_resonator_rectangle_multiface.SpiralResonatorRectangleMultiface.produce_impl">
 <code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_rectangle_multiface.html#SpiralResonatorRectangleMultiface.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_rectangle_multiface.SpiralResonatorRectangleMultiface.produce_impl" title="Permalink to this definition">¶</a></dt>

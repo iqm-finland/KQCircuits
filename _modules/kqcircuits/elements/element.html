@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -495,7 +495,24 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each item in choices list/tuple must be a two-element array [description, value]&quot;</span><span class="p">)</span>
                 <span class="n">param_decl</span><span class="o">.</span><span class="n">add_choice</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">choice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_param_decls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_decl</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_decls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param_decl</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Element.raise_error_on_cell"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.raise_error_on_cell">[docs]</a>    <span class="k">def</span> <span class="nf">raise_error_on_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">()):</span>
+        <span class="sd">&quot;&quot;&quot;Replaces cell with error text in the annotation layer, and raises ValueError with the same error message.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">             error_msg: the error message</span>
+<span class="sd">             position: location of the text center (optional)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">error_text_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;TEXT&quot;</span><span class="p">,</span> <span class="s2">&quot;Basic&quot;</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;annotations&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">error_msg</span><span class="p">,</span>
+            <span class="s2">&quot;mag&quot;</span><span class="p">:</span> <span class="mf">10.0</span>
+        <span class="p">})</span>
+        <span class="n">text_center</span> <span class="o">=</span> <span class="n">error_text_cell</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">error_text_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">text_center</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

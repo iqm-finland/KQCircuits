@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.spiral_resonator_rectangle_multiface &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_rectangle_multiface &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -203,9 +203,12 @@
     <span class="sd">&quot;&quot;&quot;The PCell declaration for a two-face rectangular spiral resonator.</span>
 
 <span class="sd">    Otherwise similar to SpiralResonatorRectangle, but the resonator waveguide will change to face 1</span>
-<span class="sd">    (through a flip-chip connector) after specified distance. WARNING: If the connector is located immediately next to</span>
-<span class="sd">    corners, the connector is located in the next straight segment it can fit, so the distance is not exact. In this</span>
-<span class="sd">    case, the other parameters should be adjusted to avoid having the connector right next to a corner.</span>
+<span class="sd">    (through a flip-chip connector) after specified distance.</span>
+
+<span class="sd">    Warning:</span>
+<span class="sd">         If the connector is located immediately next to corners, the connector is located in the next straight segment</span>
+<span class="sd">         it can fit, so the distance is not exact. In this case, the other parameters should be adjusted to avoid having</span>
+<span class="sd">         the connector right next to a corner.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">connector_dist</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Distance of face to face connector from input&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.qubits.qubit &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.qubits.qubit &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -264,10 +264,20 @@ in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
 
 <dl class="method">
 <dt id="kqcircuits.elements.qubits.qubit.Qubit.produce_fluxline">
-<code class="sig-name descname">produce_fluxline</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/qubits/qubit.html#Qubit.produce_fluxline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.qubits.qubit.Qubit.produce_fluxline" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">produce_fluxline</code><span class="sig-paren">(</span><em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/qubits/qubit.html#Qubit.produce_fluxline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.qubits.qubit.Qubit.produce_fluxline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces the fluxline.</p>
 <p>Creates the fluxline cell and inserts it as a subcell. The “flux” and “flux_corner” ports
 are made available for the qubit.</p>
+<p>To pass a parameter for the fluxline either introduce a parameter of equal name in Qubit subclass or give it
+as an argument for this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameters</strong> – parameters for the fluxline to overwrite default and subclass parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The unetch region of the fluxline</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

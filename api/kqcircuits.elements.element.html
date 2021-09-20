@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -432,6 +432,20 @@ added.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="kqcircuits.elements.element.Element.raise_error_on_cell">
+<code class="sig-name descname">raise_error_on_cell</code><span class="sig-paren">(</span><em class="sig-param">error_msg</em>, <em class="sig-param">position=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.raise_error_on_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.raise_error_on_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces cell with error text in the annotation layer, and raises ValueError with the same error message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>error_msg</strong> – the error message</p></li>
+<li><p><strong>position</strong> – location of the text center (optional)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
@@ -443,7 +457,7 @@ added.</p></li>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
-<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fa777943670&gt;}</span></code></p></li>
+<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fa085ed0ca0&gt;}</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.element.png" src="../_images/kqcircuits.elements.element.png" />
 </div>

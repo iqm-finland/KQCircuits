@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.qubits.qubit &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.qubits.qubit &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -251,15 +251,24 @@
 
         <span class="k">return</span> <span class="n">squid_unetch_region</span><span class="p">,</span> <span class="n">refpoints_rel</span></div>
 
-<div class="viewcode-block" id="Qubit.produce_fluxline"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.qubits.qubit.html#kqcircuits.elements.qubits.qubit.Qubit.produce_fluxline">[docs]</a>    <span class="k">def</span> <span class="nf">produce_fluxline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Qubit.produce_fluxline"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.qubits.qubit.html#kqcircuits.elements.qubits.qubit.Qubit.produce_fluxline">[docs]</a>    <span class="k">def</span> <span class="nf">produce_fluxline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces the fluxline.</span>
 
 <span class="sd">        Creates the fluxline cell and inserts it as a subcell. The &quot;flux&quot; and &quot;flux_corner&quot; ports</span>
 <span class="sd">        are made available for the qubit.</span>
+
+<span class="sd">        To pass a parameter for the fluxline either introduce a parameter of equal name in Qubit subclass or give it</span>
+<span class="sd">        as an argument for this function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameters: parameters for the fluxline to overwrite default and subclass parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The unetch region of the fluxline</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([])</span>
 
         <span class="c1"># Pass only fluxline parameters which differ from the class default value. This allows subclasses to override</span>
         <span class="c1"># the default value</span>
@@ -270,12 +279,12 @@
                 <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
                     <span class="n">fluxline_parameters</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
-        <span class="n">fluxline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span>
             <span class="n">Fluxline</span><span class="p">,</span>
             <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span>
             <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span>
             <span class="n">face_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">fluxline_parameters</span><span class="p">,</span>
+            <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">fluxline_parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">},</span>
         <span class="p">)</span>
 
         <span class="n">refpoints_so_far</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
@@ -285,8 +294,17 @@
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">+</span> <span class="mi">90</span>
         <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">squid_edge</span><span class="o">-</span><span class="n">base</span><span class="p">)</span>
 
-        <span class="n">_</span><span class="p">,</span> <span class="n">fl_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">fluxline</span><span class="p">,</span> <span class="n">transf</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">,</span> <span class="n">fl_ref</span><span class="p">[</span><span class="s2">&quot;port_flux&quot;</span><span class="p">],</span> <span class="n">fl_ref</span><span class="p">[</span><span class="s2">&quot;port_flux_corner&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fl_ref</span><span class="p">[</span><span class="s2">&quot;port_flux&quot;</span><span class="p">])</span></div></div>
+        <span class="c1"># For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting</span>
+        <span class="c1"># the cell, convert the integer transform back to float to keep cell and geometry consistent</span>
+        <span class="n">integer_transf</span> <span class="o">=</span> <span class="n">transf</span><span class="o">.</span><span class="n">to_itrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="n">float_transf</span> <span class="o">=</span> <span class="n">integer_transf</span><span class="o">.</span><span class="n">to_itrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>  <span class="c1"># Note: ICplxTrans.to_itrans returns DCplxTrans</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">fl_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">float_transf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">,</span> <span class="n">fl_ref</span><span class="p">[</span><span class="s2">&quot;port_flux&quot;</span><span class="p">],</span> <span class="n">fl_ref</span><span class="p">[</span><span class="s2">&quot;port_flux_corner&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">fl_ref</span><span class="p">[</span><span class="s2">&quot;port_flux&quot;</span><span class="p">])</span>
+
+        <span class="n">unetch_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">)))</span>
+        <span class="n">unetch_region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">integer_transf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unetch_region</span></div></div>
 </pre></div>
 
            </div>

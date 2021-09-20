@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -189,6 +189,7 @@
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span>
 
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">root_scalar</span>
 
@@ -380,7 +381,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_from_string</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_child_refpoints</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span><span class="s2">&quot;Need at least 2 Nodes for a WaveguideComposite.&quot;</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">())</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_idx</span> <span class="o">=</span> <span class="mi">0</span>      <span class="c1"># next waveguide starts here</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
@@ -661,7 +663,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_length_of_var_length_bend</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span>
-                                          <span class="n">bridges</span><span class="p">)</span> <span class="o">-</span> <span class="n">target_len</span>
+                                          <span class="n">bridges</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">target_len</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># floods the database with PCell variants :(</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">root_scalar</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">bracket</span><span class="o">=</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="n">target_len</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
@@ -674,7 +676,25 @@
     <span class="k">return</span> <span class="n">inst</span></div>
 
 
-<span class="k">def</span> <span class="nf">_length_of_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_length_of_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+    <span class="c1"># This function shouldn&#39;t raise exception, so we have to manually test if waveguide doesn&#39;t fit.</span>
+    <span class="c1"># These tests do not cover all cases, but are enough in most cases</span>
+    <span class="n">point_a_shift</span> <span class="o">=</span> <span class="n">point_shift_along_vector</span><span class="p">(</span><span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">)</span>
+    <span class="n">point_b_shift</span> <span class="o">=</span> <span class="n">point_shift_along_vector</span><span class="p">(</span><span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">)</span>
+    <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_shift</span><span class="p">,</span> <span class="n">point_b_shift</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">v3</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">alpha3</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">point_a_shift</span><span class="p">,</span> <span class="n">point_b_shift</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+    <span class="n">cut_dist1</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">tan</span><span class="p">((</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha2</span> <span class="o">-</span> <span class="n">alpha1</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">cut_dist2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">tan</span><span class="p">((</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha3</span> <span class="o">-</span> <span class="n">alpha2</span><span class="p">)))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">v1</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">cut_dist1</span> <span class="ow">or</span> <span class="n">v3</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">cut_dist2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">1e30</span>  <span class="c1"># straight doesn&#39;t fit at the ends -&gt; corner_dist is probably too short</span>
+    <span class="k">if</span> <span class="n">v2</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">cut_dist1</span> <span class="o">+</span> <span class="n">cut_dist2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1e30</span>  <span class="c1"># straight doesn&#39;t fit between corners -&gt; corner_dist is probably too large</span>
+    <span class="n">b_crosses_a</span> <span class="o">=</span> <span class="p">(</span><span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">point_b</span> <span class="o">-</span> <span class="n">point_a</span><span class="p">)</span> <span class="o">*</span> <span class="n">v1</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">point_b_shift</span> <span class="o">-</span> <span class="n">point_a</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="n">a_crosses_b</span> <span class="o">=</span> <span class="p">(</span><span class="n">v3</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">point_a</span> <span class="o">-</span> <span class="n">point_b</span><span class="p">)</span> <span class="o">*</span> <span class="n">v3</span><span class="o">.</span><span class="n">vprod_sign</span><span class="p">(</span><span class="n">point_a_shift</span> <span class="o">-</span> <span class="n">point_b</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">b_crosses_a</span> <span class="ow">and</span> <span class="n">a_crosses_b</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1e30</span>  <span class="c1"># waveguide is crossing itself -&gt; corner_dist is probably too large</span>
+
+    <span class="c1"># Create waveguide and measure it&#39;s length</span>
     <span class="n">cell</span> <span class="o">=</span> <span class="n">_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">)</span>
     <span class="n">length</span> <span class="o">=</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">length</span>

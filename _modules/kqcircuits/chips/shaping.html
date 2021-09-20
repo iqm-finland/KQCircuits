@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.shaping &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.chips.shaping &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -199,9 +199,6 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.coupler_lib</span> <span class="kn">import</span> <span class="n">produce_library_capacitor</span>
 
 
-<span class="n">version</span> <span class="o">=</span> <span class="mi">1</span>
-
-
 <div class="viewcode-block" id="Shaping"><a class="viewcode-back" href="../../../api/kqcircuits.chips.shaping.html#kqcircuits.chips.shaping.Shaping">[docs]</a><span class="k">class</span> <span class="nc">Shaping</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The PCell declaration for a Shaping chip.&quot;&quot;&quot;</span>
 
@@ -323,13 +320,6 @@
         <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_length</span>
 
         <span class="n">meander3_end</span> <span class="o">=</span> <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">meander3_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">],</span>
-            <span class="n">end</span><span class="o">=</span><span class="n">meander3_end</span><span class="p">,</span>
-            <span class="n">length</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
-            <span class="n">meanders</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
-        <span class="p">)</span>
 
         <span class="n">waveguide2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
             <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
@@ -343,7 +333,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide2</span><span class="p">)</span>
 
         <span class="n">waveguide_length</span> <span class="o">+=</span> <span class="n">waveguide2</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
-        <span class="n">meander3_inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
+                         <span class="n">start</span><span class="o">=</span><span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">],</span>
+                         <span class="n">end</span><span class="o">=</span><span class="n">meander3_end</span><span class="p">,</span>
+                         <span class="n">length</span><span class="o">=</span><span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">,</span>
+                         <span class="n">meanders</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                         <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+                         <span class="p">)</span>
 
         <span class="c1"># Last bit of the Purcell filter of RR</span>
         <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>
@@ -473,14 +470,6 @@
         <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_length</span>
 
         <span class="n">meander3_end</span> <span class="o">=</span> <span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">meander3_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">],</span>
-            <span class="n">end</span><span class="o">=</span><span class="n">meander3_end</span><span class="p">,</span>
-            <span class="n">length</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
-            <span class="n">meanders</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-            <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
-        <span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
             <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span>
                 <span class="n">meander3_end</span><span class="p">,</span>
@@ -492,7 +481,14 @@
         <span class="p">)</span>
 
         <span class="n">waveguide_length</span> <span class="o">+=</span> <span class="n">waveguide2</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
-        <span class="n">meander3_inst</span><span class="o">.</span><span class="n">change_pcell_parameter</span><span class="p">(</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span>
+                         <span class="n">start</span><span class="o">=</span><span class="n">port_abs_cross3</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">],</span>
+                         <span class="n">end</span><span class="o">=</span><span class="n">meander3_end</span><span class="p">,</span>
+                         <span class="n">length</span><span class="o">=</span><span class="n">segment_length_target_pr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">waveguide_length</span><span class="p">,</span>
+                         <span class="n">meanders</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                         <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span>
+                         <span class="p">)</span>
 
         <span class="c1"># Last bit of the Purcell filter of shaping resonator</span>
         <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">cross1_refpoints_rel</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">])</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_coplanar &mdash; KQCircuits 4.0.4 documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar &mdash; KQCircuits 4.0.8 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.4
+                4.0.8
               </div>
             
           
@@ -226,9 +226,12 @@
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for an arbitrary coplanar waveguide.</p>
 <p>Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
-predefined bending radios. It actually consists of straight and bent PCells. Warning: Arbitrary angle bents
-actually have very small gaps between bends and straight segments due to precision of arithmetic. To be fixed in a
-future release.</p>
+predefined bending radios. It actually consists of straight and bent PCells.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Arbitrary angle bents can have very small gaps between bends and straight segments due to
+precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.</p>
+</div>
 <dl class="method">
 <dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl">
 <code class="sig-name descname">can_create_from_shape_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.can_create_from_shape_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl" title="Permalink to this definition">¶</a></dt>
