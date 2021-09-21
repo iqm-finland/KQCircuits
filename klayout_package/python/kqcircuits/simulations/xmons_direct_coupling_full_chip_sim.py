@@ -17,7 +17,7 @@
 
 
 from kqcircuits.elements.meander import Meander
-from kqcircuits.elements.qubits.swissmon import Swissmon
+from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.port import InternalPort

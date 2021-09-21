@@ -39,6 +39,10 @@ class Qubit(Element):
     * SQUID name parameter
     """
 
+    LIBRARY_NAME = "Qubit Library"
+    LIBRARY_DESCRIPTION = "Library for qubits."
+    LIBRARY_PATH = "qubits"
+
     corner_r = Param(pdt.TypeDouble, "Center island rounding radius", 5, unit="μm")
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     junction_width = Param(pdt.TypeDouble, "Junction width for code generated squids", 0.02,

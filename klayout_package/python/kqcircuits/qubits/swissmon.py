@@ -20,7 +20,7 @@ import math
 from autologging import traced
 
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.elements.qubits.qubit import Qubit
+from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
 
 

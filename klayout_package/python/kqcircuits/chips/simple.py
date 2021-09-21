@@ -20,7 +20,7 @@
 from kqcircuits.pya_resolver import pya
 from kqcircuits.chips.chip import Chip
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.elements.qubits.swissmon import Swissmon
+from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare

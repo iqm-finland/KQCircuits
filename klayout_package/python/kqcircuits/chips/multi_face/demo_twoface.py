@@ -20,7 +20,7 @@ from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.meander import Meander
-from kqcircuits.elements.qubits.swissmon import Swissmon
+from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya

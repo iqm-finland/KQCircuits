@@ -30,10 +30,9 @@ import re
 import types
 import inspect
 import importlib
-import sys
 from autologging import logged, traced
 
-from kqcircuits.defaults import SRC_PATHS
+from kqcircuits.defaults import SRC_PATHS, kqc_library_names
 from kqcircuits.pya_resolver import pya
 
 
@@ -41,7 +40,8 @@ _kqc_libraries = {}  # dictionary {library name: (library, library path relative
 
 # modules NOT to be included in the library, (python file names without extension)
 _excluded_module_names = (
-    "__init__", "library_helper",
+    "__init__",
+    "library_helper",
     "element",
     "qubit",
     "airbridge",
@@ -52,7 +52,6 @@ _excluded_module_names = (
     "marker",
     "junction_test_pads",
 )
-
 
 @traced
 @logged
@@ -98,7 +97,11 @@ def load_libraries(flush=False, path=""):   # TODO `flush=True` does not work wi
                 _kqc_libraries[library_name] = (library, library_path)
             _register_pcell(cls, library, library_name)
 
-    for library_name, (library, _) in _kqc_libraries.items():
+    # Libraries should be registered in dependency-order, otherwise reload will crash.
+    for library_name in kqc_library_names:
+        if library_name not in _kqc_libraries:
+            continue
+        library, _ = _kqc_libraries[library_name]
         _load_manual_designs(library_name)
         if library_name not in library.library_names():
             library.register(library_name)  # library must be registered only after all cells have been added to it
@@ -109,7 +112,7 @@ def load_libraries(flush=False, path=""):   # TODO `flush=True` does not work wi
 @traced
 def delete_all_libraries():
     """Delete all KQCircuits libraries from KLayout memory."""
-    for name in list(_kqc_libraries.keys()):
+    for name in reversed(kqc_library_names):
         delete_library(name)
 
 
@@ -124,24 +127,20 @@ def delete_library(name=None):
     Args:
         name: name of the library
     """
+    if name is None:
+        return
     library = pya.Library.library_by_name(name)
-    if library is not None:
-        # find any libraries which depend on this library, and delete them
-        for other_name in pya.Library.library_names():
-            if other_name != name:
-                other_library = pya.Library.library_by_name(other_name)
-                if other_library:
-                    dependencies = _get_library_dependencies(other_library)
-                    if name in dependencies:
-                        delete_library(other_name)
-        # delete this library
-        library.delete()
-        if name in _kqc_libraries:
-            _kqc_libraries.pop(name)
-        if library._destroyed():
-            delete_library._log.info("Successfully deleted library '{}'.".format(name))
-        else:
-            raise SystemError("Failed to delete library '[]'.".format(name))
+    if library is None:  # already deleted
+        return
+
+    # delete this library
+    library.delete()
+    if name in _kqc_libraries:
+        _kqc_libraries.pop(name)
+    if library._destroyed():
+        delete_library._log.info("Successfully deleted library '{}'.".format(name))
+    else:
+        raise SystemError("Failed to delete library '[]'.".format(name))
 
 
 @traced
@@ -317,28 +316,6 @@ def _get_pcell_class(name=None, module=None):
         return value
     else:
         return None
-
-
-@traced
-@logged
-def _get_library_dependencies(library):
-    """Returns a set of library names, which are dependencies of the library.
-
-    This checks every PCell class in the library for other PCell classes which are imported by it. Then the LIBRARY_NAME
-    of each of those PCell classes is added to the set of dependencies that is returned.
-
-    Args:
-        library: pya.Library object whose dependencies are returned
-    """
-    library_dependencies = set()
-    for pcell_name in library.layout().pcell_names():
-        pcell_class = library.layout().pcell_declaration(pcell_name).__class__
-        for _, obj in inspect.getmembers(sys.modules[pcell_class.__module__]):
-            if hasattr(obj, "LIBRARY_NAME"):
-                if obj.LIBRARY_NAME != pcell_class.LIBRARY_NAME:
-                    library_dependencies.add(obj.LIBRARY_NAME)
-    return library_dependencies
-
 
 @traced
 def _is_valid_class_name(value=None):

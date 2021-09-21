@@ -290,3 +290,12 @@ default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Lef
 default_probe_types = {"testarray": "testarrays", "qb": "qubits"}
 # tuple of refpoint name suffixes that are used (together with probe_types) to identify refpoints as probepoints
 default_probe_suffixes = ("_c", "_l")
+
+# Library names in dependency order. Every library should have its dependencies before its own entry.
+kqc_library_names = (
+    'Element Library',
+    'SQUID Library',
+    'Test Structure Library',
+    'Qubit Library',
+    'Chip Library',
+)

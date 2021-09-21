@@ -19,7 +19,7 @@
 import numpy
 
 from kqcircuits.defaults import default_squid_type
-from kqcircuits.elements.qubits.qubit import Qubit
+from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.library_helper import load_libraries, to_library_name
