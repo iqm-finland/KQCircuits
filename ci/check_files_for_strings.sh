@@ -6,7 +6,7 @@
 # There should be one string per line in the input file.
 # Returns 0 if no instances of the strings are found, returns 1 otherwise.
 #
-# usage: ./check_files_for_strings.sh strings_to_find.txt
+# usage: ci/check_files_for_strings.sh strings_to_find.txt
 
 file="$1"
 

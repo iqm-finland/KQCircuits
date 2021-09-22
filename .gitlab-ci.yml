@@ -56,7 +56,7 @@ verify_documentation:
 check_confidential_strings:
   stage: test
   script:
-    - bash check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
+    - bash ci/check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
   only:
     refs:
       - merge_requests
@@ -67,7 +67,7 @@ check_copyright_headers:
   stage: test
   script:
     - >
-      python check_copyright_headers.py --exclude-paths
+      python ci/check_copyright_headers.py --exclude-paths
       klayout_package/python/kqcircuits/_static_version.py
       klayout_package/python/kqcircuits/_version.py
   only:
@@ -79,7 +79,7 @@ check_copyright_headers:
 check_license:
   stage: test
   script:
-    - sha256sum -c license_manifest.txt
+    - sha256sum -c ci/license_manifest.txt
   only:
     refs:
       - merge_requests

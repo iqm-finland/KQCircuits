@@ -18,13 +18,14 @@
 
 """Checks all files for existence of IQM copyright header.
 
-The required copyright header is taken from a file named COPYRIGHT in the working directory.
+The required copyright header is taken from a file ci/COPYRIGHT.
 
 Paths to exclude from the copyright check can be given using --exclude-paths. These paths should be relative to the
 working directory.
 
 Usage:
-    python check_copyright_headers.py --exclude-paths path/to/exclude1 path/to/exclude2.py
+    python ci/check_copyright_headers.py --exclude-paths path/to/exclude1
+    path/to/exclude2.py
 
 Exits with code -1 if files without copyright were found, exits with code 0 otherwise. Prints the names of any files
 without copyright.
@@ -57,7 +58,7 @@ if __name__ == "__main__":
             file_paths_2.append(path)
 
     files_without_copyright = []
-    copyright_string = open("COPYRIGHT").read()
+    copyright_string = open("ci/COPYRIGHT").read()
     for file in file_paths_2:
         if copyright_string not in open(file, encoding="utf-8").read():
             files_without_copyright.append(file)

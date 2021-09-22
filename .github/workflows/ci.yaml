@@ -123,7 +123,7 @@ jobs:
         run: ci/init_kqc.sh
       - name: Run copyright headers check
         run: >
-          python check_copyright_headers.py --exclude-paths
+          python ci/check_copyright_headers.py --exclude-paths
           klayout_package/python/kqcircuits/_static_version.py
           klayout_package/python/kqcircuits/_version.py
 
@@ -136,7 +136,7 @@ jobs:
       - name: Init KQCircuits
         run: ci/init_kqc.sh
       - name: Run license check
-        run: sha256sum -c license_manifest.txt
+        run: sha256sum -c ci/license_manifest.txt
 
   pages:
     name: Deploy documentation
