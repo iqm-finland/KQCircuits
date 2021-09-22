@@ -93,7 +93,7 @@ class QualityFactorTwoface(MultiFace):
                                       face_ids=face_config, margin=self.margin)
 
         for i in range(resonators):
-            cplr = produce_library_capacitor(self.layout, n_fingers[i], l_fingers[i], type_coupler[i],
+            cplr = produce_library_capacitor(self, n_fingers[i], l_fingers[i], type_coupler[i],
                                              face_ids=face_config, margin=self.margin,
                                              a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
             cplr_refpoints_rel = self.get_refpoints(cplr)

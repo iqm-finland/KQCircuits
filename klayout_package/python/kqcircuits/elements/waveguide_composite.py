@@ -187,8 +187,8 @@ class WaveguideComposite(Element):
     taper_length = Param(pdt.TypeDouble, "Taper length", 100, unit="μm")
 
     @classmethod
-    def create(cls, layout, **parameters):
-        cell = super().create(layout, **parameters)
+    def create(cls, layout, library=None, **parameters):
+        cell = super().create(layout, library, **parameters)
 
         # Measure segment lengths, counting only "regular waveguides"
         layout = cell.layout()
@@ -492,12 +492,13 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
 
     """
     def objective(x):
-        return _length_of_var_length_bend(element.layout, x, point_a, point_a_corner, point_b, point_b_corner,
-                                          bridges, element.r) - target_len
+        return _length_of_var_length_bend(element.layout, element.LIBRARY_NAME, x, point_a, point_a_corner, point_b,
+                                          point_b_corner, bridges, element.r) - target_len
     try:
         # floods the database with PCell variants :(
         root = root_scalar(objective, bracket=(element.r, target_len / 2))
-        cell = _var_length_bend(element.layout, root.root, point_a, point_a_corner, point_b, point_b_corner, bridges)
+        cell = _var_length_bend(element.layout, element.LIBRARY_NAME, root.root, point_a, point_a_corner, point_b,
+                                point_b_corner, bridges)
         inst, _ = element.insert_cell(cell)
     except ValueError as e:
         raise ValueError("Cannot create a waveguide bend with length {} between points {} and {}".format(
@@ -506,7 +507,8 @@ def produce_fixed_length_bend(element, target_len, point_a, point_a_corner, poin
     return inst
 
 
-def _length_of_var_length_bend(layout, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges, r):
+def _length_of_var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner,
+                               bridges, r):
     # This function shouldn't raise exception, so we have to manually test if waveguide doesn't fit.
     # These tests do not cover all cases, but are enough in most cases
     point_a_shift = point_shift_along_vector(point_a, point_a_corner, corner_dist)
@@ -525,13 +527,13 @@ def _length_of_var_length_bend(layout, corner_dist, point_a, point_a_corner, poi
         return 1e30  # waveguide is crossing itself -> corner_dist is probably too large
 
     # Create waveguide and measure it's length
-    cell = _var_length_bend(layout, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges)
+    cell = _var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges)
     length = get_cell_path_length(cell, layout.layer(default_layers["waveguide_length"]))
     return length
 
 
-def _var_length_bend(layout, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges):
-    cell = WaveguideComposite.create(layout, nodes=[
+def _var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges):
+    cell = WaveguideComposite.create(layout, library, nodes=[
         Node(point_a, ab_across=bridges.endswith("ends")),
         Node(point_shift_along_vector(point_a, point_a_corner, corner_dist)),
         Node(point_shift_along_vector(point_b, point_b_corner, corner_dist), n_bridges=bridges.startswith("middle")),

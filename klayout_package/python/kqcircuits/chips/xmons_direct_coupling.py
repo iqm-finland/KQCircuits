@@ -55,13 +55,14 @@ class XMonsDirectCoupling(Chip):
         )
 
         # Finger cap
-        cplr_cell = produce_library_capacitor(self.layout, 4, c_kappa_l_fingers, "interdigital")
+        cplr_cell = produce_library_capacitor(self, 4, c_kappa_l_fingers, "interdigital")
         cplr_ref_rel = self.get_refpoints(cplr_cell, pya.DTrans.R90)
         _, cplr_ref = self.insert_cell(
             cplr_cell, pya.DTrans(pl_cross_ref["port_bottom"]-cplr_ref_rel["port_b"])*pya.DTrans.R90)
 
         # Taper to T
-        taper_cell, taper_ref_rel = WaveguideCoplanarTaper.create_with_refpoints(self.layout, pya.DTrans.R90,
+        taper_cell, taper_ref_rel = WaveguideCoplanarTaper.create_with_refpoints(
+            self.layout, self.LIBRARY_NAME, pya.DTrans.R90,
             a1=ro_a,
             b1=ro_b,
             a2=self.a,
@@ -210,7 +211,7 @@ class XMonsDirectCoupling(Chip):
         )
 
         # PL input cap
-        pl_in_cap_cell = produce_library_capacitor(self.layout, 8, 55.4)  # 35 fF
+        pl_in_cap_cell = produce_library_capacitor(self, 8, 55.4)  # 35 fF
         pl_in_cap_ref_rel = self.get_refpoints(pl_in_cap_cell)
         pl_in_cap_trans = pya.DTrans(
             pya.DPoint(self.refpoints["QB1_port_cplr1"].x - 300, height_rr_feedline) - pl_in_cap_ref_rel["port_b"])

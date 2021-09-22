@@ -89,7 +89,7 @@ class QualityFactor(Chip):
             _, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
 
             # Coupler
-            cplr = produce_library_capacitor(self.layout, n_fingers[i], l_fingers[i], type_coupler[i],
+            cplr = produce_library_capacitor(self, n_fingers[i], l_fingers[i], type_coupler[i],
                                              a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             cplr_pos = cross_refpoints_abs["port_bottom"] - pya.DTrans.R90 * cplr_refpoints_rel["port_b"]

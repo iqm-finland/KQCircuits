@@ -29,11 +29,12 @@ class Marker(Element):
     """Base Class for Markers."""
 
     @classmethod
-    def create(cls, layout, marker_type=None, **parameters):
+    def create(cls, layout, library=None, marker_type=None, **parameters):
         """Create a Marker cell in layout.
 
         Args:
             layout: pya.Layout object where the cell is created
+            library: LIBRARY_NAME of the calling PCell instance
             marker_type: (str): name of the Marker subclass
             **parameters: PCell parameters as keyword arguments
 
@@ -47,8 +48,8 @@ class Marker(Element):
         library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
         if marker_type in library_layout.pcell_names():
             pcell_class = type(library_layout.pcell_declaration(marker_type))
-            return Element._create_cell(pcell_class, layout, **parameters)
+            return Element._create_cell(pcell_class, layout, library, **parameters)
         elif marker_type != default_marker_type:
-            return Marker.create(layout, marker_type=default_marker_type, **parameters)
+            return Marker.create(layout, library, marker_type=default_marker_type, **parameters)
         else:
             raise ValueError(f'Unknown Marker subclass "{marker_type}"!')

@@ -95,29 +95,31 @@ class Element(pya.PCellDeclarationHelper):
         return layout.create_cell(name, Element.LIBRARY_NAME)
 
     @classmethod
-    def create(cls, layout, **parameters):
+    def create(cls, layout, library=None, **parameters):
         """Create cell for this element in layout.
 
         Args:
             layout: pya.Layout object where this cell is created
+            library: LIBRARY_NAME of the calling PCell instance
             **parameters: PCell parameters for the element as keyword arguments
         """
-        cell = Element._create_cell(cls, layout, **parameters)
+        cell = Element._create_cell(cls, layout, library, **parameters)
         if not cell.bbox_per_layer(layout.layer(default_layers['waveguide_length'])).empty():
             l = get_cell_path_length(cell, layout.layer(default_layers['waveguide_length']))
             setattr(cell, "length", lambda: l)
         return cell
 
     @classmethod
-    def create_with_refpoints(cls, layout, refpoint_transform=pya.DTrans(), **parameters):
+    def create_with_refpoints(cls, layout, library=None, refpoint_transform=pya.DTrans(), **parameters):
         """Convenience function to create cell and return refpoints too.
 
         Args:
             layout: pya.Layout object where this cell is created
+            library: LIBRARY_NAME of the calling PCell instance
             refpoint_transform: transform for converting refpoints into target coordinate system
             **parameters: PCell parameters for the element, as keyword argument
         """
-        cell = cls.create(layout, **parameters)
+        cell = cls.create(layout, library, **parameters)
         refp = get_refpoints(layout.layer(default_layers["refpoints"]), cell, refpoint_transform)
         return cell, refp
 
@@ -136,7 +138,7 @@ class Element(pya.PCellDeclarationHelper):
         if whitelist is not None:
             parameters = {**self.pcell_params_by_name(whitelist), **parameters}
 
-        return cls.create(self.layout, **parameters)
+        return cls.create(self.layout, library=self.LIBRARY_NAME, **parameters)
 
     def insert_cell(self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None, rec_levels=0,
                     **parameters):
@@ -165,7 +167,7 @@ class Element(pya.PCellDeclarationHelper):
             tuple of placed cell instance and reference points with the same transformation
         """
         if isclass(cell):
-            cell = cell.create(self.layout, **parameters)
+            cell = cell.create(self.layout, library=self.LIBRARY_NAME, **parameters)
 
         if trans is None:
             trans = pya.DTrans()
@@ -279,7 +281,7 @@ class Element(pya.PCellDeclarationHelper):
             return self.layout.layer(self.face(face_id)[layer_name])
 
     @staticmethod
-    def _create_cell(elem_cls, layout, **parameters):
+    def _create_cell(elem_cls, layout, library=None, **parameters):
         """Create cell for elem_cls in layout.
 
         This is separated from the class method `create` to enable invocation from classes where `create` is shadowed.
@@ -287,11 +289,15 @@ class Element(pya.PCellDeclarationHelper):
         Args:
             elem_cls: element class for which the cell is created
             layout: pya.Layout object where this cell is created
+            library: LIBRARY_NAME of the calling PCell instance
             **parameters: PCell parameters for the element as keyword arguments
         """
         cell_library_name = to_library_name(elem_cls.__name__)
-        load_libraries(path=elem_cls.LIBRARY_PATH)
-        return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
+        if elem_cls.LIBRARY_NAME == library:  # Matthias' workaround: https://github.com/KLayout/klayout/issues/905
+            return layout.create_cell(cell_library_name, parameters)
+        else:
+            load_libraries(path=elem_cls.LIBRARY_PATH)
+            return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
 
     def _add_parameter(self, name, value_type, description,
                        default=None, unit=None, hidden=False, readonly=False, choices=None, docstring=None):

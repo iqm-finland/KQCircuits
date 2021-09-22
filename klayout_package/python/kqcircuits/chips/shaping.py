@@ -140,7 +140,7 @@ class Shaping(Chip):
         )
 
         # Capacitor J
-        capj = produce_library_capacitor(self.layout, caps_fingers[0], caps_length[0], caps_type[0])
+        capj = produce_library_capacitor(self, caps_fingers[0], caps_length[0], caps_type[0])
         port_rel_capj = self.get_refpoints(capj, pya.DTrans())
         self.insert_cell(capj, pya.DTrans(port_abs_cross2["port_left"] - port_rel_capj["port_a"]))
 
@@ -202,7 +202,7 @@ class Shaping(Chip):
             )
 
         # Capacitor Kappa
-        capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
+        capk = produce_library_capacitor(self, caps_fingers[1], caps_length[1], caps_type[1])
         port_rel_capk = self.get_refpoints(capk, pya.DTrans(1, False, 0, 0))
         _, port_abs_capk = self.insert_cell(capk, pya.DTrans(1, False,
                                            meander3_end + pya.DVector(self.r, 400 + self.r) -
@@ -221,7 +221,7 @@ class Shaping(Chip):
         )
 
         # Capacitor for the driveline
-        capi = produce_library_capacitor(self.layout, caps_fingers[2], caps_length[2], caps_type[2])
+        capi = produce_library_capacitor(self, caps_fingers[2], caps_length[2], caps_type[2])
         port_rel_capi = self.get_refpoints(capi, pya.DTrans(1, False, 0, 0))
         _, port_abs_capi = self.insert_cell(capi, pya.DTrans(1, False, cross1_refpoints_abs["port_right"] -
                                                              port_rel_capi["port_a"]))
@@ -289,7 +289,7 @@ class Shaping(Chip):
         )
 
         # Capacitor J
-        capj = produce_library_capacitor(self.layout, caps_fingers[0], caps_length[0], caps_type[0])
+        capj = produce_library_capacitor(self, caps_fingers[0], caps_length[0], caps_type[0])
         port_rel_capj = self.get_refpoints(capj)
         self.insert_cell(capj, pya.DTrans(port_abs_cross2["port_right"] - port_rel_capj["port_a"]))
 
@@ -350,7 +350,7 @@ class Shaping(Chip):
             )
 
         # Capacitor Kappa
-        capk = produce_library_capacitor(self.layout, caps_fingers[1], caps_length[1], caps_type[1])
+        capk = produce_library_capacitor(self, caps_fingers[1], caps_length[1], caps_type[1])
         port_rel_capk = self.get_refpoints(capk, pya.DTrans(3, False, 0, 0))
         _, port_abs_capk = self.insert_cell(capk, pya.DTrans(3, False,
                                                                      meander3_end + pya.DVector(self.r, -400 - self.r) -
@@ -369,7 +369,7 @@ class Shaping(Chip):
         )
 
         # Capacitor for the driveline
-        capi = produce_library_capacitor(self.layout, caps_fingers[2], caps_length[2], caps_type[2])
+        capi = produce_library_capacitor(self, caps_fingers[2], caps_length[2], caps_type[2])
         port_rel_capi = self.get_refpoints(capi, pya.DTrans(3, False, 0, 0))
         _, port_abs_capi = self.insert_cell(
             capi, pya.DTrans(3, False, cross1_refpoints_abs["port_left"] - port_rel_capi["port_a"]))

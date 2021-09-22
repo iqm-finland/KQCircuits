@@ -335,7 +335,7 @@ class SingleXmons(Chip):
             cross_refpoints_abs = self.get_refpoints(cell_cross, inst_crosses[i].dtrans)
 
             # Coupler
-            cplr = produce_library_capacitor(self.layout, int(self.n_fingers[i]), float(self.l_fingers[i]),
+            cplr = produce_library_capacitor(self, int(self.n_fingers[i]), float(self.l_fingers[i]),
                                              self.type_coupler[i], n=self.n)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             if i % 2 == 0:

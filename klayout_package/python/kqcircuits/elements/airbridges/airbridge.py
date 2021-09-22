@@ -39,7 +39,7 @@ class Airbridge(Element):
     bridge_length = Param(pdt.TypeDouble, "Bridge length (from pad to pad)", 48, unit="μm")
 
     @classmethod
-    def create(cls, layout, airbridge_type=None, **parameters):
+    def create(cls, layout, library=None, airbridge_type=None, **parameters):
         """Create cell for an airbridge in layout.
 
         The cell is created either from a pcell class or a from a manual design file, depending on airbridge_type.
@@ -49,6 +49,7 @@ class Airbridge(Element):
 
         Args:
             layout: pya.Layout object where this cell is created
+            library: LIBRARY_NAME of the calling PCell instance
             airbridge_type (str): name of the Airbridge subclass or manually designed cell
             **parameters: PCell parameters for the element as keyword arguments
 
@@ -62,11 +63,11 @@ class Airbridge(Element):
         library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
         if airbridge_type in library_layout.pcell_names():     # code generated, create like a normal element
             pcell_class = type(library_layout.pcell_declaration(airbridge_type))
-            return Element._create_cell(pcell_class, layout, **parameters)
+            return Element._create_cell(pcell_class, layout, library, **parameters)
         elif library_layout.cell(airbridge_type):              # manually designed, load from .oas
             return layout.create_cell(airbridge_type, cls.LIBRARY_NAME)
         else:                                               # fallback is the default
-            return Airbridge.create(layout, airbridge_type=cls.default_type, **parameters)
+            return Airbridge.create(layout, library, airbridge_type=cls.default_type, **parameters)
 
     def _produce_bottom_pads(self, pts):
         shape = pya.DPolygon(pts)

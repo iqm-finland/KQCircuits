@@ -45,7 +45,7 @@ class Squid(Element):
     junction_width = Param(pdt.TypeDouble, "Junction width [μm]", 0.02)
 
     @classmethod
-    def create(cls, layout, squid_type=None, **parameters):
+    def create(cls, layout, library=None, squid_type=None, **parameters):
         """Create cell for a squid in layout.
 
         The squid cell is created either from a pcell class or a from a manual design file, depending on squid_type. If
@@ -55,6 +55,7 @@ class Squid(Element):
 
         Args:
             layout: pya.Layout object where this cell is created
+            library: LIBRARY_NAME of the calling PCell instance
             squid_type (str): name of the squid class or of the manually designed squid cell
             **parameters: PCell parameters for the element as keyword arguments
 
@@ -71,10 +72,11 @@ class Squid(Element):
             if squid_type in library_layout.pcell_names():
                 # if code-generated, create like a normal element
                 pcell_class = squids_library.layout().pcell_declaration(squid_type).__class__
-                return Element._create_cell(pcell_class, layout, **parameters)
+                return Element._create_cell(pcell_class, layout, library, **parameters)
             elif library_layout.cell(squid_type):
                 # if manually designed squid, load from squids.oas
                 return layout.create_cell(squid_type, cls.LIBRARY_NAME)
+
         # fallback to NoSquid if there is no squid corresponding to squid_type
         return layout.create_cell("NoSquid", Squid.LIBRARY_NAME)
 

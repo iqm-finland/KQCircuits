@@ -39,6 +39,8 @@ class Simulation:
     existing cell. In this case no ports will be added.
     """
 
+    LIBRARY_NAME = None  # This is needed by some methods inherited from Element.
+
     # Metadata associated with simulation
     ports: List[Port]
 
