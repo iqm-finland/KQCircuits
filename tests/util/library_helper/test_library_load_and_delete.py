@@ -18,12 +18,16 @@
 
 import logging
 
-import klayout.db as pya
+import pytest
 
-from kqcircuits.util.library_helper import load_libraries
+from kqcircuits.pya_resolver import pya
+
+from kqcircuits.util.library_helper import load_libraries, delete_library, delete_all_libraries
 
 log = logging.getLogger(__name__)
 
+
+# normal cases
 
 def test_load():
     libraries = load_libraries(path="elements")
@@ -37,7 +41,7 @@ def test_load_with_flush(caplog):
     libraries = load_libraries(flush=True, path="elements")
     pcells = [name for library in libraries.values() for name in library.layout().pcell_names()]
     assert "Airbridge Rectangular" in pcells
-    assert "Successfully deleted library 'Element Library'." in caplog.text
+    assert "Deleted all libraries." in caplog.text
     assert "Reloaded module 'airbridge_rectangular'." in caplog.text
     caplog.set_level(level)
 
@@ -49,3 +53,46 @@ def test_load_all():
     assert "Chip Library" in pya.Library.library_names()
     assert "Test Structure Library" in pya.Library.library_names()
     assert "SQUID Library" in pya.Library.library_names()
+
+
+@pytest.mark.slow
+def test_delete_all():
+    load_libraries()
+    assert len(pya.Library.library_names()) > 1
+    delete_all_libraries()
+    assert pya.Library.library_names() == ["Basic"]
+
+
+def test_delete():
+    delete_library("Chip Library")
+    load_libraries(path="elements")
+    assert "Element Library" in pya.Library.library_names()
+    assert "Chip Library" not in pya.Library.library_names()
+    delete_library("Element Library")
+    assert "Element Library" not in pya.Library.library_names()
+
+
+# edge cases
+
+def test_without_input():
+    load_libraries()
+    before_count = len(pya.Library.library_names())
+    delete_library()
+    after_count = len(pya.Library.library_names())
+    assert before_count == after_count
+
+
+def test_none():
+    load_libraries()
+    before_count = len(pya.Library.library_names())
+    delete_library(None)
+    after_count = len(pya.Library.library_names())
+    assert before_count == after_count
+
+
+def test_invalid_name():
+    load_libraries()
+    before_count = len(pya.Library.library_names())
+    delete_library("foo")
+    after_count = len(pya.Library.library_names())
+    assert before_count == after_count
