@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.0.8 documentation</title>
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.0.9 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.8
+                4.0.9
               </div>
             
           
@@ -335,15 +335,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">connector_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_produce_connectors</span><span class="p">(</span><span class="n">launchers_type</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">launchers_type</span> <span class="o">==</span> <span class="s2">&quot;SMA8&quot;</span><span class="p">:</span>
-            <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_SMA8</span><span class="p">()</span>
+            <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;SMA8&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">routing_waveguides</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_produce_default_routing_sma8</span><span class="p">(</span><span class="n">launchers</span><span class="p">,</span> <span class="n">connector_positions</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">launchers_type</span> <span class="o">==</span> <span class="s2">&quot;ARD24&quot;</span><span class="p">:</span>
-            <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_ARD24</span><span class="p">()</span>
+            <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;ARD24&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">routing_waveguides</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_produce_default_routing_ard24</span><span class="p">(</span><span class="n">launchers</span><span class="p">,</span> <span class="n">connector_positions</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">launchers_type</span> <span class="o">==</span> <span class="s2">&quot;RF80&quot;</span><span class="p">:</span>
-            <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_RF80</span><span class="p">()</span></div>
+            <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;RF80&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_produce_connectors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launchers_type</span><span class="p">):</span>
         <span class="c1"># the connector ids increase from left to right and from top to bottom</span>

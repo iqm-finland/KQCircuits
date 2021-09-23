@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.shaping &mdash; KQCircuits 4.0.8 documentation</title>
+  <title>kqcircuits.chips.shaping &mdash; KQCircuits 4.0.9 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.8
+                4.0.9
               </div>
             
           
@@ -207,7 +207,7 @@
 <div class="viewcode-block" id="Shaping.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.shaping.html#kqcircuits.chips.shaping.Shaping.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Launcher</span>
-        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers_SMA8</span><span class="p">()</span>
+        <span class="n">launchers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;SMA8&quot;</span><span class="p">)</span>
 
         <span class="c1"># Finnmon</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">finnmon_refpoints_abs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">),</span>

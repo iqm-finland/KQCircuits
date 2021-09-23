@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.0.8 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.0.9 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.8
+                4.0.9
               </div>
             
           
@@ -265,88 +265,6 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 </dd></dl>
 
 <dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_launcher">
-<code class="sig-name descname">produce_launcher</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">direction</em>, <em class="sig-param">name</em>, <em class="sig-param">port_id</em>, <em class="sig-param">width</em>, <em class="sig-param">gap</em>, <em class="sig-param">launcher_type='RF'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inserts a launcher in the chip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pos</strong> – position of the launcher</p></li>
-<li><p><strong>direction</strong> – float rotation in degrees, or one of “E”, “W”, “S”, “N”</p></li>
-<li><p><strong>name</strong> – name inserted as property “id” in the launcher</p></li>
-<li><p><strong>port_id</strong> – id inserted as property “port_id” in the launcher</p></li>
-<li><p><strong>width</strong> – controls the pad width and tapering length of the launcher</p></li>
-<li><p><strong>gap</strong> – controls the gap from pad to ground</p></li>
-<li><p><strong>launcher_type</strong> – type of the launcher, “RF” or “DC”</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_launchers_SMA8">
-<code class="sig-name descname">produce_launchers_SMA8</code><span class="sig-paren">(</span><em class="sig-param">enabled=['WS', 'WN', 'ES', 'EN', 'SW', 'SE', 'NW', 'NE'], launcher_assignments=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers_SMA8"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers_SMA8" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces enabled launchers for SMA8 sample holder default locations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>enabled</strong> – List of enabled standard launchers from set (“WS”, “WN”, “ES”, “EN”, “SW”, “SE”, “NW”, “NE”)</p></li>
-<li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a role to some of the launchers</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="simple">
-<dt>Effect:</dt><dd><p>launchers PCells added to the class parent cell.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>launchers as a dictionary <code class="code docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">(point,</span> <span class="pre">heading,</span> <span class="pre">distance</span> <span class="pre">from</span> <span class="pre">chip</span> <span class="pre">edge)}</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_launchers_ARD24">
-<code class="sig-name descname">produce_launchers_ARD24</code><span class="sig-paren">(</span><em class="sig-param">launcher_assignments=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers_ARD24"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers_ARD24" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces launchers for ARD24 sample holder default locations.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><p>launcher_assignments: dictionary of (port_id: name) that assigns a role to some of the launchers</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl class="simple">
-<dt>Effect:</dt><dd><p>launchers PCells added to the class parent cell.</p>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>launchers as a dictionary <code class="code docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">(point,</span> <span class="pre">heading,</span> <span class="pre">distance</span> <span class="pre">from</span> <span class="pre">chip</span> <span class="pre">edge)}</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_launchers_RF80">
-<code class="sig-name descname">produce_launchers_RF80</code><span class="sig-paren">(</span><em class="sig-param">launcher_assignments=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers_RF80"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers_RF80" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_launchers_DC">
-<code class="sig-name descname">produce_launchers_DC</code><span class="sig-paren">(</span><em class="sig-param">launcher_assignments=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers_DC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers_DC" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces launchers for DC sample holder default locations.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a role to some of the launchers</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>launchers as a dictionary <code class="code docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">(point,</span> <span class="pre">heading,</span> <span class="pre">distance</span> <span class="pre">from</span> <span class="pre">chip</span> <span class="pre">edge)}</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="kqcircuits.chips.chip.Chip.produce_junction_tests">
 <code class="sig-name descname">produce_junction_tests</code><span class="sig-paren">(</span><em class="sig-param">squid_type='QCD1'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces junction test pads in the chip.</p>
@@ -428,19 +346,43 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 </dd></dl>
 
 <dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_n_launchers">
-<code class="sig-name descname">produce_n_launchers</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">launcher_type</em>, <em class="sig-param">launcher_width</em>, <em class="sig-param">launcher_gap</em>, <em class="sig-param">launcher_indent</em>, <em class="sig-param">launcher_assignments</em>, <em class="sig-param">pad_pitch</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces n launchers at default locations.</p>
+<dt id="kqcircuits.chips.chip.Chip.produce_launchers">
+<code class="sig-name descname">produce_launchers</code><span class="sig-paren">(</span><em class="sig-param">sampleholder_type</em>, <em class="sig-param">launcher_assignments=None</em>, <em class="sig-param">enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces launchers for typical sample holders.</p>
+<p>This is a wrapper around <code class="docutils literal notranslate"><span class="pre">produce_n_launchers()</span></code> to generate typical launcher configurations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> – number of launcher pads</p></li>
+<li><p><strong>sampleholder_type</strong> – name of the sample holder type</p></li>
+<li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a name to some of the launchers</p></li>
+<li><p><strong>enabled</strong> – list of enabled launchers, empty means all</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>launchers as a dictionary <code class="code docutils literal notranslate"><span class="pre">{name:</span> <span class="pre">(point,</span> <span class="pre">heading,</span> <span class="pre">distance</span> <span class="pre">from</span> <span class="pre">chip</span> <span class="pre">edge)}</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.chip.Chip.produce_n_launchers">
+<code class="sig-name descname">produce_n_launchers</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">launcher_type</em>, <em class="sig-param">launcher_width</em>, <em class="sig-param">launcher_gap</em>, <em class="sig-param">launcher_indent</em>, <em class="sig-param">pad_pitch</em>, <em class="sig-param">launcher_assignments=None</em>, <em class="sig-param">enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces n launchers at default locations.</p>
+<p>Launcher pads are equally distributed around the chip. This may be overridden by specifying
+the number of pads desired per chip side if <code class="docutils literal notranslate"><span class="pre">n</span></code> is an array of 4 numbers.</p>
+<p>Pads not in <code class="docutils literal notranslate"><span class="pre">launcher_assignments</span></code> are disabled by default. The <code class="docutils literal notranslate"><span class="pre">enabled</span></code> argument may
+override this. If neither argument is defined then all pads are enabled with default names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – number of launcher pads or an array of pad numbers per side</p></li>
 <li><p><strong>launcher_type</strong> – type of the launchers, “RF” or “DC”</p></li>
 <li><p><strong>launcher_width</strong> – width of the launchers</p></li>
 <li><p><strong>launcher_gap</strong> – pad to ground gap of the launchers</p></li>
 <li><p><strong>launcher_indent</strong> – distance between the chip edge and pad port</p></li>
-<li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a role to some of the launchers</p></li>
 <li><p><strong>pad_pitch</strong> – distance between pad centers</p></li>
+<li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a name to some of the launchers</p></li>
+<li><p><strong>enabled</strong> – optional list of enabled launchers</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
