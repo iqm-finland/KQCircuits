@@ -15,10 +15,8 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
-
-from kqcircuits.util.parameters import Param, pdt
-
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_squid_type
 from kqcircuits.pya_resolver import pya
@@ -26,6 +24,7 @@ from kqcircuits.squids import squid_type_choices
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 
 
+@add_parameters_from(ChipFrame, "marker_type")
 class JunctionTest2(Chip):
     """The PCell declaration for a JunctionTest2 chip."""
 
