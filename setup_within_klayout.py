@@ -82,7 +82,13 @@ for target, name in link_map:
 print("Installing required packages")
 # install required packages
 if os.name == "nt":
-    klayout_packages_path = os.path.join(os.getenv("APPDATA"), "KLayout", "lib", "python3.7", "site-packages")
+    # KLayout python folder name changes when its python version is updated, try to make sure we find it
+    python_versions = [(major, minor) for major in [3, 4] for minor in range(30)]
+    for major, minor in python_versions:
+        klayout_packages_path = os.path.join(os.getenv("APPDATA"), "KLayout", "lib", f"python{major}.{minor}",
+                                             "site-packages")
+        if os.path.exists(klayout_packages_path):
+            break
     klayout_packages_path = find_path_or_ask(klayout_packages_path, "Could not find path to KLayout site-packages "
                                                                     "directory. Please enter the path:")
     print("Required packages will be installed in \"{}\"".format(klayout_packages_path))
