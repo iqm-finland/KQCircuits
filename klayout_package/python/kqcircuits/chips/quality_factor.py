@@ -21,18 +21,11 @@ from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.util.coupler_lib import produce_library_capacitor
-
-
-# v1.1
-# With this version of the qfactor, airbridges to the left and right parts of the resonators are added.
-# -The padding size for layer_3 has been changed to 25 um * 23 um.
-# -The bridge measurements on the layer_4 changed to 42 um * 18 um.
-# -The pad measurements layer_4 has been changed to 21 um * 19 um.
+from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
 
 class QualityFactor(Chip):
@@ -48,13 +41,17 @@ class QualityFactor(Chip):
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
     res_beg = Param(pdt.TypeList, "Resonator beginning type",
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
-    res_a = Param(pdt.TypeDouble, "Resonator waveguide center conductor width", 10, unit="[μm]")
-    res_b = Param(pdt.TypeDouble, "Resonator waveguide gap width", 6, unit="[μm]")
+    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [5, 10, 20, 5, 10, 20], unit="[μm]",
+                  docstring="Width of the center conductor in the resonators [μm]")
+    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="[μm]",
+                  docstring="Width of the gap in the resonators [μm]")
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
 
     def produce_impl(self):
         # Interpretation of parameter lists
         res_lengths = [float(foo) for foo in self.res_lengths]
+        res_a = [float(foo) for foo in self.res_a]
+        res_b = [float(foo) for foo in self.res_b]
         n_fingers = [int(foo) for foo in self.n_fingers]
         type_coupler = self.type_coupler
         n_ab = [int(foo) for foo in self.n_ab]
@@ -81,21 +78,10 @@ class QualityFactor(Chip):
         v_res_step = (launchers["EN"][0] - launchers["WN"][0] - pya.DVector((self.r * 4 + marker_safety * 2), 0)) * \
                      (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross,
-            length_extra_side=2 * self.a)
+            length_extra_side=2 * self.a, a=self.a, b=self.b, a2=self.a, b2=self.b)
 
         # Airbridge crossing resonators
         cell_ab_crossing = self.add_element(Airbridge)
-
-        # todo
-        # Airbridge for beginning of a resonator
-        cell_ab_beginning = self.add_element(Airbridge,
-            pad_width=self.a - 2,
-            pad_length=self.a * 2,
-            bridge_length=self.b * 1 + 4 + 19,
-            bridge_width=self.a - 2,
-            pad_extra=0,
-
-        )
 
         for i in range(resonators):
             # Cross
@@ -103,7 +89,8 @@ class QualityFactor(Chip):
             _, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
 
             # Coupler
-            cplr = produce_library_capacitor(self.layout, n_fingers[i], l_fingers[i], type_coupler[i])
+            cplr = produce_library_capacitor(self.layout, n_fingers[i], l_fingers[i], type_coupler[i],
+                                             a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             cplr_pos = cross_refpoints_abs["port_bottom"] - pya.DTrans.R90 * cplr_refpoints_rel["port_b"]
             cplr_trans = pya.DTrans(1, False, cplr_pos.x, cplr_pos.y)
@@ -112,74 +99,20 @@ class QualityFactor(Chip):
             pos_res_start = cplr_pos + pya.DTrans.R90 * cplr_refpoints_rel["port_a"]
             pos_res_end = pos_res_start + pya.DVector(0, -res_lengths[i])
 
-            # todo
+            # create resonator using WaveguideComposite
             if res_beg[i] == "airbridge":
-                pos_res_start = cplr_pos + pya.DTrans.R90 * cplr_refpoints_rel["port_a"] + \
-                    pya.DVector(0, self.a - 65)  # todo
-                pos_res_end = pos_res_start + pya.DVector(0, -res_lengths[i]) + pya.DVector(0, self.a + 45)  # todo
-
-                pos_beg_ab = pos_res_start + pya.DVector(0, -self.b / 2 + 16)  # todo
-                self.insert_cell(cell_ab_beginning, pya.DTrans(0, False, pos_beg_ab))
-
-                pos_conn_start = cplr_pos + pya.DTrans.R90 * cplr_refpoints_rel["port_a"]
-
-                self.insert_cell(WaveguideCoplanar,
-                    path=pya.DPath([
-                        pos_conn_start,
-                        pos_conn_start + pya.DVector(0, self.a - 40),
-                    ], 1),
-                    term2=self.b,
-                    term1=0,
-                    a=self.res_a,
-                    b=self.res_b,
-                )
-
-                end_term_1 = self.b
+                node_beg = Node(pos_res_start, AirbridgeConnection, with_side_airbridges=False)
             else:
-
-                # waveguide taper for connecting resonator to capacitor
-                if self.res_a != self.a or self.res_b != self.b:
-                    taper_length = 100
-                    self.insert_cell(WaveguideCoplanarTaper, pya.DTrans(3, False, pos_res_start),
-                        taper_length=taper_length,
-                        a1=self.a,
-                        b1=self.b,
-                        m1=self.margin,
-                        a2=self.res_a,
-                        b2=self.res_b,
-                        m2=self.margin,
-                    )
-                    pos_res_start -= pya.DPoint(0, taper_length)
-
-                end_term_1 = 0
+                node_beg = Node(pos_res_start)
 
             if res_term[i] == "airbridge":
-                # add airbridge termination
-                cell_ab_terminate = self.add_element(AirbridgeConnection,
-                    with_side_airbridges=False,
-                    with_right_waveguide=False,
-                )
-                ab_terminate_params = cell_ab_terminate.pcell_parameters_by_name()
-                bridge_length = ab_terminate_params["bridge_length"]
-                pad_length = ab_terminate_params["pad_length"]
-                taper_length = ab_terminate_params["taper_length"]
-                pos_term_ab = pos_res_end + pya.DVector(0, bridge_length/2)
-                self.insert_cell(cell_ab_terminate, pya.DTrans(3, False, pos_term_ab))
-                # end point of even-width part of the resonator waveguide
-                pos_even_width_end = pos_term_ab + pya.DVector(0, bridge_length/2 + 2*pad_length + taper_length)
+                node_end = Node(pos_res_end, AirbridgeConnection,
+                                with_side_airbridges=False, with_right_waveguide=False, n_bridges=n_ab[i])
             else:
-                pos_even_width_end = pos_res_end  # end point of even-width part of the resonator waveguide
+                node_end = Node(pos_res_end, n_bridges=n_ab[i])
 
-            # the even-width part of the resonator between possible tapers at the ends
-            self.insert_cell(WaveguideCoplanar,
-                path=pya.DPath([
-                    pos_res_start,
-                    pos_even_width_end,
-                ], 1),
-                term1=end_term_1,
-                a=self.res_a,
-                b=self.res_b,
-            )
+            wg = self.add_element(WaveguideComposite, nodes=[node_beg, node_end], a=res_a[i], b=res_b[i])
+            self.insert_cell(wg)
 
             # Feedline
             self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
@@ -189,13 +122,6 @@ class QualityFactor(Chip):
                 "term2": 0
             }})
             points_fl = [cross_refpoints_abs["port_right"]]
-
-            # Airbridges
-            if n_ab[i]:
-                ab_step = (pos_res_end - pos_res_start) * (1. / n_ab[i])
-                for j in range(n_ab[i]):
-                    pos_ab = pos_res_start + ab_step * (j + 0.5)
-                    self.insert_cell(cell_ab_crossing, pya.DTrans(1, False, pos_ab))
 
             # airbridges on the left and right side of the couplers
             if self.tl_airbridges:

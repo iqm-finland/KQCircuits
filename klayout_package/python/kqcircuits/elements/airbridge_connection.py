@@ -63,7 +63,7 @@ class AirbridgeConnection(Element):
         self.insert_cell(terminator_l, pya.DTrans(0, 0))
 
         ab = self.add_element(Airbridge, Airbridge, airbridge_type=self.airbridge_type)
-        self.insert_cell(ab, pya.DTrans.R90)
+        _, ab_ref_abs = self.insert_cell(ab, pya.DTrans.R90)
         if self.with_side_airbridges:
             self.insert_cell(ab, pya.DTrans(1, False, 0,  self.bridge_width + self.gap_between_bridges))
             self.insert_cell(ab, pya.DTrans(1, False, 0, -self.bridge_width - self.gap_between_bridges))
@@ -93,6 +93,8 @@ class AirbridgeConnection(Element):
         self.add_port("a", taper_l_ref_abs["port_a"])
         if self.with_right_waveguide:
             self.add_port("b", taper_r_ref_abs["port_b"])
+        else:
+            self.add_port("b", ab_ref_abs["port_b"])
 
         path_airbridge = pya.DPath([pya.DPoint(-self.waveguide_separation/2, 0),
                                     pya.DPoint(self.waveguide_separation/2, 0)], self.bridge_width)

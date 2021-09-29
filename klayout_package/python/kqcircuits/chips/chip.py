@@ -293,7 +293,8 @@ class Chip(Element):
             launcher_cell = self.add_element(LauncherDC, width=launcher_width)
         else:
             launcher_cell = self.add_element(Launcher, s=launcher_width, l=launcher_width,
-                                             a_launcher=launcher_width, b_launcher=launcher_gap)
+                                             a_launcher=launcher_width, b_launcher=launcher_gap,
+                                             a=self.a, b=self.b)
 
         pads_per_side = n
         if not isinstance(n, tuple):
