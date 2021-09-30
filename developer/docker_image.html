@@ -211,6 +211,8 @@ See <a class="reference external" href="https://www.klayout.de/command_args.html
 your local KQCircuits environment should be mounted to overwrite the one in the container.
 To this end, simply mount <code class="docutils literal notranslate"><span class="pre">/kqc</span></code>.</p>
 </div>
+<p>If using the older HyperV backend on Windows, you might need to increase your RAM limit from the 1GB default depending on your usage.
+See <a class="reference external" href="https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory">Docker Runtime options with Memory</a> for details.</p>
 <p>To override <code class="docutils literal notranslate"><span class="pre">ci/run_script.sh</span></code> entirely, you can use the <a class="reference external" href="https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime">Docker entrypoint argument</a>.</p>
 </div>
 <div class="section" id="ci-usage">

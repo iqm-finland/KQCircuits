@@ -29,6 +29,9 @@ See `CLI arguments for KLayout <https://www.klayout.de/command_args.html>`_ for 
     your local KQCircuits environment should be mounted to overwrite the one in the container.
     To this end, simply mount ``/kqc``.
 
+If using the older HyperV backend on Windows, you might need to increase your RAM limit from the 1GB default depending on your usage. 
+See `Docker Runtime options with Memory <https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory>`_ for details.
+
 To override ``ci/run_script.sh`` entirely, you can use the `Docker entrypoint argument <https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime>`_.
 
 .. _docker_ci_usage:
