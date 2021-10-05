@@ -17,7 +17,6 @@
 
 
 import logging
-import pytest
 
 from kqcircuits.pya_resolver import pya
 
@@ -28,7 +27,6 @@ log = logging.getLogger(__name__)
 
 # normal cases
 
-@pytest.mark.skip(reason="It does not work with KLayout 0.27.")
 def test_delete():
     load_libraries(path="elements")
     assert "Element Library" in pya.Library.library_names()

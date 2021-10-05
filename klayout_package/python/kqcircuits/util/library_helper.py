@@ -55,7 +55,7 @@ _excluded_module_names = (
 
 @traced
 @logged
-def load_libraries(flush=False, path=""):   # TODO `flush=True` does not work with KLayout 0.27
+def load_libraries(flush=False, path=""):
     """Load all KQCircuits libraries from the given path.
 
     Args:
