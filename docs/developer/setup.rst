@@ -49,8 +49,9 @@ are automatically installed in the default locations where KLayout looks for
 them. If you want to have more control over the installation process, see the
 next section.
 
-Open a command line / terminal (in Windows you must open it with
-administrator privileges) and ``cd`` to your KQCircuits folder. Then write::
+Open a command line / terminal and ``cd`` to your KQCircuits folder.
+**In Windows you must open the terminal with administrator privileges**.
+Then write::
 
     python3 setup_within_klayout.py
 
