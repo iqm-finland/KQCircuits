@@ -20,11 +20,12 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
-from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
 
@@ -89,8 +90,9 @@ class QualityFactor(Chip):
             _, cross_refpoints_abs = self.insert_cell(cell_cross, cross_trans)
 
             # Coupler
-            cplr = produce_library_capacitor(self, n_fingers[i], l_fingers[i], type_coupler[i],
-                                             a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
+            cplr_params = cap_params(n_fingers[i], l_fingers[i], type_coupler[i],
+                                          a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
+            cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             cplr_pos = cross_refpoints_abs["port_bottom"] - pya.DTrans.R90 * cplr_refpoints_rel["port_b"]
             cplr_trans = pya.DTrans(1, False, cplr_pos.x, cplr_pos.y)

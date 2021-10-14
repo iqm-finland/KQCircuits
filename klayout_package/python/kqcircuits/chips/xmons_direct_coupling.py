@@ -21,11 +21,12 @@ import math
 from kqcircuits.chips.chip import Chip
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.qubits.swissmon import Swissmon
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
@@ -55,7 +56,7 @@ class XMonsDirectCoupling(Chip):
         )
 
         # Finger cap
-        cplr_cell = produce_library_capacitor(self, 4, c_kappa_l_fingers, "interdigital")
+        cplr_cell = self.add_element(FingerCapacitorSquare, **cap_params(4, c_kappa_l_fingers, "interdigital"))
         cplr_ref_rel = self.get_refpoints(cplr_cell, pya.DTrans.R90)
         _, cplr_ref = self.insert_cell(
             cplr_cell, pya.DTrans(pl_cross_ref["port_bottom"]-cplr_ref_rel["port_b"])*pya.DTrans.R90)
@@ -211,7 +212,7 @@ class XMonsDirectCoupling(Chip):
         )
 
         # PL input cap
-        pl_in_cap_cell = produce_library_capacitor(self, 8, 55.4)  # 35 fF
+        pl_in_cap_cell = self.add_element(FingerCapacitorSquare, **cap_params(8, 55.4))  # 35 fF
         pl_in_cap_ref_rel = self.get_refpoints(pl_in_cap_cell)
         pl_in_cap_trans = pya.DTrans(
             pya.DPoint(self.refpoints["QB1_port_cplr1"].x - 300, height_rr_feedline) - pl_in_cap_ref_rel["port_b"])

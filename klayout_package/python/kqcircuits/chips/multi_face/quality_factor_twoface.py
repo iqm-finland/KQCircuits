@@ -17,13 +17,14 @@
 
 
 from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.elements.spiral_resonator_rectangle_multiface import SpiralResonatorRectangleMultiface
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 from kqcircuits.util.parameters import Param, pdt
 
@@ -93,9 +94,10 @@ class QualityFactorTwoface(MultiFace):
                                       face_ids=face_config, margin=self.margin)
 
         for i in range(resonators):
-            cplr = produce_library_capacitor(self, n_fingers[i], l_fingers[i], type_coupler[i],
-                                             face_ids=face_config, margin=self.margin,
-                                             a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
+            cplr_params = cap_params(
+                n_fingers[i], l_fingers[i], type_coupler[i],
+                face_ids=face_config, margin=self.margin, a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
+            cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
 
             # Every second resonator is on the same side. Define transformations here:

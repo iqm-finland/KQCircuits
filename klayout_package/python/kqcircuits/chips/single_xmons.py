@@ -22,13 +22,14 @@ from autologging import traced
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_squid_type
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.meander import Meander
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
 from kqcircuits.squids import squid_type_choices
-from kqcircuits.util.coupler_lib import produce_library_capacitor
+from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.parameters import Param, pdt
 
 
@@ -335,8 +336,9 @@ class SingleXmons(Chip):
             cross_refpoints_abs = self.get_refpoints(cell_cross, inst_crosses[i].dtrans)
 
             # Coupler
-            cplr = produce_library_capacitor(self, int(self.n_fingers[i]), float(self.l_fingers[i]),
-                                             self.type_coupler[i], n=self.n)
+            cplr_params = cap_params(int(self.n_fingers[i]), float(self.l_fingers[i]),
+                                          self.type_coupler[i], n=self.n)
+            cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             if i % 2 == 0:
                 cplr_pos = cross_refpoints_abs["port_bottom"] - pya.DTrans.R90 * cplr_refpoints_rel["port_b"]

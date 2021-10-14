@@ -16,20 +16,14 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
-from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
-
-
-def produce_library_capacitor(obj, fingers, length, coupler_type="interdigital", **kwargs):
-    """A utility function to easily produce typical FingerCapacitorSquare instances.
+def cap_params(fingers, length, coupler_type="interdigital", **kwargs):
+    """A utility function to easily produce typical FingerCapacitorSquare instance parameters.
 
     Args:
-        obj: the calling object, usually an Element subclass
         fingers: number of fingers
         length: length of fingers
         coupler_type: a string describing the capacitor type
         **kwargs: other optional parameters
-
     """
 
     defaults = {"finger_number": fingers,
@@ -40,14 +34,14 @@ def produce_library_capacitor(obj, fingers, length, coupler_type="interdigital",
                 "ground_padding": 10,
                }
 
+    params = {}
+
     if coupler_type == "gap":
         params = {"finger_length": 0,
                   "finger_gap_end": length,
                   "finger_gap_side": 0,
                   "finger_width": 10,
                  }
-    elif coupler_type == "interdigital":
-        params = {}
     elif coupler_type == "fc gap":
         params = {"finger_length": 0,
                   "finger_gap_end": length,
@@ -56,11 +50,5 @@ def produce_library_capacitor(obj, fingers, length, coupler_type="interdigital",
     elif coupler_type == "fc interdigital":
         params = {"ground_padding": 15,
                  }
-    else:
-        params = {"finger_gap_end": 3,
-                  "finger_gap_side": 3,
-                  "taper_length": (fingers * 20 - 5) / 2.,  # 45 degree taper
-                 }
-        return FingerCapacitorTaper.create(obj.layout, obj.LIBRARY_NAME, **{**defaults, **params, **kwargs})
 
-    return FingerCapacitorSquare.create(obj.layout, obj.LIBRARY_NAME, **{**defaults, **params, **kwargs})
+    return {**defaults, **params, **kwargs}
