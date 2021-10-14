@@ -58,7 +58,9 @@ parameters_qd = {
     "l_fingers": [19.9, 54.6, 6.7, 9.7, 22.8, 30.5, 26.1, 14.2, 18.2, 10.9, 19.8, 26.4, 34.2, 19.9, 25.3, 8., 15.8,
                   22.2],
     "n_fingers": [4, 2, 2, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4, 4, 2, 2, 4, 4],
-    "res_beg": ["galvanic"] * 18
+    "res_beg": ["galvanic"] * 18,
+    "res_a": [10] * 18,
+    "res_b": [6] * 18
 }
 
 parameters_qs = {
@@ -66,7 +68,9 @@ parameters_qs = {
     "type_coupler": ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"],
     "l_fingers": [19.9, 7.3, 15.2, 10.9, 18.5, 23.6],
     "n_fingers": [4, 4, 2, 4, 4, 4],
-    "res_beg": ["galvanic"] * 6
+    "res_beg": ["galvanic"] * 6,
+    "res_a": [10] * 6,
+    "res_b": [6] * 6
 }
 
 # We demonstrate how to add chips from different files to a mask
