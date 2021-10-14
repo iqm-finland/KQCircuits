@@ -221,7 +221,7 @@ class Simulation:
         insert_region(merged_region_from_layer(0, "airbridge_flyover"), 0, "simulation_airbridge_flyover")
         insert_region(merged_region_from_layer(0, "airbridge_pads"), 0, "simulation_airbridge_pads")
 
-    def produce_waveguide_to_port(self, location, towards, port_nr, side,
+    def produce_waveguide_to_port(self, location, towards, port_nr, side=None,
                                   use_internal_ports=None, waveguide_length=None,
                                   term1=0, turn_radius=None,
                                   a=None, b=None, over_etching=None,
@@ -303,6 +303,8 @@ class Simulation:
             ]
         else:
             corner_point = location + (waveguide_length + turn_radius) * direction
+            if side is None:
+                raise ValueError("Waveport side in the arguments of `produce_waveguide_to_ports` is not specified")
             port_edge_point = {
                 "left": pya.DPoint(self.box.left, corner_point.y),
                 "right": pya.DPoint(self.box.right, corner_point.y),
