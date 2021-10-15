@@ -299,3 +299,8 @@ kqc_library_names = (
     'Qubit Library',
     'Chip Library',
 )
+
+# The user may override KQC Element's default parameters
+default_parameter_values = {
+#    "FingerCapacitorSquare": {"finger_number": 6},
+}

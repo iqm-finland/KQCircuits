@@ -20,7 +20,7 @@ from inspect import isclass
 
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_layers, default_faces
+from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.util.library_helper import load_libraries, to_library_name
@@ -85,8 +85,11 @@ class Element(pya.PCellDeclarationHelper):
 
         # create KLayout's PCellParameterDeclaration objects
         self._param_value_map = {}
+        cls = type(self).__qualname__
         for name, p in type(self).get_schema().items():
             self._param_value_map[name] = len(self._param_decls)
+            if cls in default_parameter_values and name in default_parameter_values[cls]:
+                p.default = default_parameter_values[cls][name]
             self._add_parameter(name, p.data_type, p.description, default=p.default, **p.kwargs)
 
     @staticmethod
