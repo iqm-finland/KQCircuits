@@ -14,6 +14,7 @@ excluded_paths=( \
 "*.pip-cache*" \
 "*.git*" \
 "*.png" \
+"*.gif" \
 "*tmp" \
 "*pycache*" \
 "./grain.xml" \

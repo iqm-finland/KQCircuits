@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description/>
+ <version/>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>false</show-in-menu>
+ <group-name/>
+ <menu-path/>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text># This code is part of KQCircuits
+# Copyright (C) 2021 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.layout_to_code import convert_cells_to_code
+
+"""Macro for converting a layout into Python code.
+
+For each cell placed in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip's `produce_impl()`.
+PCell parameters are taken into account. Waveguide points can automatically be snapped to closest refpoints in the 
+generated code. See also the configuration options below.
+
+Usage:
+
+1. Place to the layout the chip that you want to add elements to.
+2. Convert the chip cell to static cell.
+3. Select the chip cell as top cell.
+4. Place any cells in the layout, or modify cells already existing under the chip cell.
+5. Select in GUI the cell instances that you want to export as code, or select nothing to export all instances in the 
+chip. 
+6. Run the macro. This prints out the Python code for creating the cell instances. 
+
+"""
+
+# Configuration options for this macro, change them as needed.
+
+# If true, then WaveguideCoplanar elements are printed as WaveguideComposite. (i.e. a list of Nodes instead of a DPath)
+print_waveguides_as_composite = False
+# If true, then unique instance names will be added for each printed element. This is required if you want to have
+# waveguides connect to refpoints of elements that were placed in GUI.
+add_instance_names = True
+# If a waveguide point is closer than refpoint_snap to a refpoint, the waveguide point will be that refpoint
+refpoint_snap = 50.0
+# If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with square side length
+# equal to `grid_snap`
+grid_snap = 1.0
+# If true, also the code for the chip class is generated (including `produce_impl()` function and import statements) so
+# that the printed code works as is. Otherwise only the code for inserted cells is printed, which must be copied to a
+# chip's `produce_impl()` function.
+include_chip_code = True
+
+top_cell = KLayoutView.get_active_cell()
+convert_cells_to_code(top_cell, print_waveguides_as_composite, add_instance_names, refpoint_snap, grid_snap,
+                      include_chip_code)
+
+</text>
+</klayout-macro>
