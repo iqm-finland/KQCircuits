@@ -21,14 +21,17 @@ import math
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
+from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+from kqcircuits.util.geometry_helper import vector_length_and_direction, get_angle
 
 
 class Meander(Element):
     """The PCell declaration for a meandering waveguide.
 
     Defined by two points, total length and number of meanders. Uses the same bending radius as the underling waveguide.
+    Equidistant airbridges can be placed in the meander using ``n_bridges`` parameter.
     """
 
     # TODO Remove coordinates from PCell parameters.
@@ -36,6 +39,7 @@ class Meander(Element):
     end = Param(pdt.TypeShape, "End", pya.DPoint(600, 0))
     length = Param(pdt.TypeDouble, "Length", 3000, unit="μm")
     meanders = Param(pdt.TypeInt, "Number of meanders (at least 1)", 4)
+    n_bridges = Param(pdt.TypeInt, "Number of bridges", 0)
 
     def coerce_parameters_impl(self):
         self.meanders = max(self.meanders, 1)
@@ -75,3 +79,58 @@ class Meander(Element):
         angle = 180 / math.pi * math.atan2(self.end.y - self.start.y, self.end.x - self.start.x)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(self.start))
         self.insert_cell(waveguide, transf)
+
+        if self.n_bridges > 0:
+            self._produce_bridges(points)
+
+    def _produce_bridges(self, wg_points):
+
+        def insert_bridge(position, angle):
+            self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, position))
+
+        bridge_separation = self.length/(self.n_bridges + 1)
+        curve_len = self.r*math.pi/2
+        dist_to_next = bridge_separation
+        n_inserted = 0
+
+        for i in range(1, len(wg_points)):
+
+            straight_len, straight_dir = vector_length_and_direction(wg_points[i] - wg_points[i - 1])
+            if i in (1, len(wg_points) - 1):  # only one curve for first and last segment
+                straight_len -= self.r
+            else:
+                straight_len -= 2*self.r
+
+            # bridges in the straight part of this segment
+            remaining_len = straight_len
+            prev_pos = self.start + wg_points[i - 1] + (self.r*straight_dir if i > 1 else pya.DVector(0, 0))
+            while dist_to_next < remaining_len and n_inserted < self.n_bridges:
+                pos = prev_pos + dist_to_next*straight_dir
+                insert_bridge(pos, get_angle(straight_dir))
+                n_inserted += 1
+                remaining_len -= dist_to_next
+                dist_to_next = bridge_separation
+                prev_pos = pos
+            dist_to_next -= remaining_len
+
+            # bridges in the curve at the end of this segment
+            remaining_len = curve_len
+            prev_angle = 0
+            while dist_to_next < remaining_len and n_inserted < self.n_bridges and i < len(wg_points) - 1:
+                v1, v2, angle1, angle2, corner_pos = \
+                    WaveguideCoplanar.get_corner_data(wg_points[i - 1], wg_points[i], wg_points[i + 1], self.r)
+                angle3 = prev_angle + dist_to_next/self.r
+                _, dir1 = vector_length_and_direction(v1)
+                _, dir2 = vector_length_and_direction(v2)
+                p1 = wg_points[i] - self.r*dir1
+                p2 = wg_points[i] + self.r*dir2
+                # interpolation along circular arc from p1 to p2 based on angle 3
+                pos = self.start + corner_pos + (p1 - corner_pos)*math.cos(angle3) + (p2 - corner_pos)*math.sin(angle3)
+                # linear interpolation between angle1 and angle2 based on angle 3
+                angle4 = angle1*(1 - 2*angle3/math.pi) + angle2*(2*angle3/math.pi)
+                insert_bridge(pos, math.degrees(angle4))
+                n_inserted += 1
+                remaining_len -= dist_to_next
+                dist_to_next = bridge_separation
+                prev_angle = angle3
+            dist_to_next -= remaining_len
