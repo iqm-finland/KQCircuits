@@ -56,7 +56,10 @@ def install_kqc_dependencies():
 
     # Install missing modules inside KLayout.
     from pip import __main__
-    main = __main__._main
+    if hasattr(__main__, "_main"):
+        main = __main__._main
+    else:
+        from pip._internal.cli.main import main
 
     ask = pya.MessageBox.warning("Install packages?", "Install missing packages using 'pip': " +
                                  ", ".join(missing_pkgs), pya.MessageBox.Yes + pya.MessageBox.No)
