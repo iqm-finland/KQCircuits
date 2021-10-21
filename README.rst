@@ -45,12 +45,11 @@ KQCircuits is a KLayout extension. KLayout can be used either using a graphical 
 a standalone python module. KQCircuits supports both modes of operation. For the first time users,
 the graphical user interface mode is recommended.
 
-Install and run KLayout once. Run ``python3 setup_within_klayout.py`` then KLayout will contain
-KQCircuits. **In Windows you must run the command with administrator privileges.** 
-You may have to write ``python`` or ``py`` instead of ``python3`` depending on your OS 
-and Python installation, just make sure that the command refers to Python 3. 
-For further details see the `getting started documentation
-<https://iqm-finland.github.io/KQCircuits/start/index.html>`__.
+Install KLayout and run ``python3 setup_within_klayout.py`` then klayout will contain KQCircuits.
+**In Windows you must run the command with administrator privileges.** You may have to write
+``python`` or ``py`` instead of ``python3`` depending on your OS and Python installation, just make
+sure that the command refers to Python 3. For further details see the `getting started
+documentation <https://iqm-finland.github.io/KQCircuits/start/index.html>`__.
 
 For stand-alone mode run ``python -m pip install -e "klayout_package/python[docs,tests]"``. Then scripts may be run and
 documentation can be built. For further details see the `documentation

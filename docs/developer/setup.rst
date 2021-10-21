@@ -12,11 +12,6 @@ Developer setup may be done independently from the GUI based installation of the
 package. But you should not do both without removing the other one. Otherwise there will be
 duplicate macros and possibly other problems.
 
-.. note::
-    You must open KLayout at least once before installing KQCircuits, because the KLayout python
-    folder ``~/.klayout/python`` is only created then. The documentation uses Linux paths unless
-    explicitly mentioned otherwise.
-
 Python
 ^^^^^^
 
@@ -73,6 +68,25 @@ libpython*.dll on Windows.
    not visible, running any macro gives an error, etc.), there might be some
    problem with the specific KLayout version/build you are using, see
    :ref:`installation_issues` section for possible solutions.
+
+Secondary install
+-----------------
+
+.. warning::
+     Don't do it, unless you really need multiple parallel environments.
+
+It is possible to work with several independent KQC instances simultaneously. You only need to check
+out KQCircuits under some different name::
+
+    git clone https://github.com/iqm-finland/KQCircuits KQC_2nd
+
+KLayout needs to know about this secondary environment, run it with ``startkl.py`` or by manualy
+setting the environment variable ``KLAYOUT_HOME``::
+
+    KLAYOUT_HOME=~/.klayout_alt/KQC_2nd klayout
+
+Remember to set up a new ``venv`` before attempting :ref:`standalone` in this directory. Otherwise
+your secondary environment may get mixed up with the primary one.
 
 Manual installation
 -------------------

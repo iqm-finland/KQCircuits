@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # This code is part of KQCircuits
 # Copyright (C) 2021 IQM Finland Oy
 #
@@ -15,28 +17,21 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
-# Makes a .png image of all PCells into the pcell_images directory.
+# Starts KLayout with KQCircuits configured in this directory. Force edit mode.
 
 import os
 import sys
 import subprocess
-from multiprocessing import Pool
-from kqcircuits.util.library_helper import _get_all_pcell_classes
-from kqcircuits.defaults import ROOT_PATH, PY_PATH
+from kqcircuits.defaults import ROOT_PATH
 
 
 sys.path.append(str(ROOT_PATH))
 from setup_helper import klayout_configdir
+
 configdir = klayout_configdir(ROOT_PATH)
 if not os.path.exists(f"{configdir}/python/kqcircuits"):
-    print("Documentation generation needs KLayout. Please run setup_within_klayout.py.")
+    print("Not configured? Please run setup_within_klayout.py first.")
     sys.exit(-1)
-
-DIR = ROOT_PATH.joinpath("docs/pcell_images")
-DIR.mkdir(exist_ok=True)
-
-script = PY_PATH.joinpath("scripts").joinpath("util").joinpath("pcell2png.py")
 
 if os.name == "nt":
     exe = os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
@@ -44,25 +39,4 @@ if os.name == "nt":
 else:
     exe = f'KLAYOUT_HOME={configdir} klayout'
 
-# TODO only calculate for changed files
-def to_png(pcell):
-    lib = pcell.__module__
-    cls = pcell.__name__
-    cmd = f'{exe} -z -nc -r {script} -rd lib_name={lib} -rd cls_name={cls} -rd dest_dir={DIR}'
-    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
-
-
-if __name__ == "__main__":
-
-    print("Creating PCell images...")
-    pcells = _get_all_pcell_classes()
-    pool = Pool(os.cpu_count())
-    err = pool.map(to_png, pcells)
-
-    ret = 0
-    for e in err:
-        if e:
-            print(e, file = sys.stderr)
-            ret = -1
-    print("Finished creating PCell images.")
-    exit(ret)
+subprocess.run(f'{exe} -e', shell=True, check=True)
