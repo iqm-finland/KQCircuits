@@ -14,13 +14,20 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+import os
+import string
+import subprocess
+import textwrap
+from inspect import isclass
+from multiprocessing.pool import ThreadPool
+from pathlib import Path
 
 from autologging import logged, traced
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.masks import mask_export
-from kqcircuits.defaults import default_bar_format
+from kqcircuits.defaults import default_bar_format, TMP_PATH, PY_PATH
+from kqcircuits.masks.mask_export import export_chip, export_mask_set, klayout_executable_command
 from kqcircuits.masks.mask_layout import MaskLayout
 
 
@@ -31,14 +38,15 @@ class MaskSet:
 
     A mask set consists of one or more MaskLayouts, each of which is for a certain face.
 
-    To create a mask, add mask layouts to the mask set using add_mask_layout() and set the self.chips_map_legend (or add
-    chips using add_chip()) to define the chips in these mask layouts. Then call build() to create the actual cells.
+    To create a mask, add mask layouts to the mask set using add_mask_layout() and add chips to these mask layouts using
+    add_chips() or add_chip(). These functions also export some files for each chip. Then call build() to create the
+    cell hierarchy of the entire mask, and finally export mask files by calling export().
 
     Example:
         mask = MaskSet(...)
         mask.add_mask_layout(...)
         mask.add_mask_layout(...)
-        mask.chips_map_legend = {...}
+        mask.add_chips(...)
         mask.build()
         mask.export(...)
 
@@ -102,26 +110,100 @@ class MaskSet:
         self.mask_layouts.append(mask_layout)
         return mask_layout
 
-    def add_chips(self, chips):
-        """Add list of chips with parameters to self.chips_map_legend
+    def add_chips(self, chips, threads=None):
+        """Adds a list of chips with parameters to self.chips_map_legend and exports the files for each chip.
 
         Args:
             chips: List of tuples that ``add_chip`` uses. Parameters are optional.
                 For example, ``(QualityFactor, "QDG", parameters)``.
+            threads: Number of parallel threads to use for generation. By default uses ``os.cpu_count()`` threads.
+                Uses subprocesses and consequently a lot of memory.
 
+        Warning:
+            It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.
+            The same applies for exporting large and complex geometry.
         """
-        for chip_class, variant_name, *params in tqdm(chips, desc='Building variants', bar_format=default_bar_format):
-            self.add_chip(chip_class, variant_name, **(params[0] if params else {}))
+        if threads is None:
+            threads = os.cpu_count()
+        if threads <= 1:
+            for chip_class, variant_name, *params in tqdm(chips, desc='Building variants',
+                                                          bar_format=default_bar_format):
+                self.add_chip(chip_class, variant_name, **(params[0] if params else {}))
+        else:
+            print(f"Building chip variants in parallel using {threads} threads...")
 
-    def add_chip(self, chip_class, variant_name, **kwargs):
-        """Adds a chip with the given name and parameters to self.chips_map_legend.
+            with open(PY_PATH / 'kqcircuits/util/create_chip_template.txt', 'r') as f:
+                template = string.Template(f.read())
+
+            def _subprocess_worker(args):
+                with subprocess.Popen(args) as proc:
+                    proc.wait()
+
+            tp = ThreadPool(threads)
+            file_names = []
+            for chip_class, variant_name, *params in chips:
+                # create the script for generating this chip with the correct parameters and exporting the chip files
+                params = params[0] if params else {}
+                create_element = textwrap.dedent(
+                    f"""
+                    from {chip_class.__module__} import {chip_class.__name__}
+                    cell = {chip_class.__name__}.create(layout,
+                        {('name_chip="' + variant_name + '",') if 'name_chip' not in params else ''}
+                        {('name_mask="' + self.name + '",') if 'name_mask' not in params else ''}
+                        {f'with_grid={self.with_grid},' if 'with_grid' not in params else ''}
+                        **{str(params)})
+                    """)
+                chip_path = TMP_PATH/f"{self.name}_v{self.version}"/"Chips"/f"{variant_name}"
+                chip_path.mkdir(parents=True, exist_ok=True)
+                script_name = str(chip_path / f"{variant_name}.py")
+                file_names.append((variant_name, str(chip_path / f"{variant_name}.oas"), script_name))
+
+                result = template.substitute(name_mask=f"{self.name}_v{self.version}", variant_name=variant_name,
+                                             create_element=create_element, chip_class_name=chip_class.__name__,
+                                             chip_params=params, export_drc=self.export_drc)
+                with open(script_name, "w") as f:
+                    f.write(result)
+
+                # launch klayout process that runs the created script
+                try:  # pylint: disable=consider-using-with
+                    tp.apply_async(_subprocess_worker,
+                                   ([klayout_executable_command(), "-e", "-z", "-nc", "-rm", script_name],)
+                                   )
+                except subprocess.CalledProcessError as e:
+                    self.__log.error(e.output)
+
+            # wait for processes to end
+            tp.close()
+            tp.join()
+
+            # import chip cells exported by the parallel processes into the mask
+            for variant_name, file_name, script_name in tqdm(file_names, desc='Building variants (parallel)',
+                                                             bar_format=default_bar_format):
+                self._load_chip_into_mask(file_name, variant_name)
+                # remove the script that was used to generate the chip
+                if os.path.exists(script_name):
+                    os.remove(script_name)
+
+    def add_chip(self, chip, variant_name, **kwargs):
+        """Adds a chip with the given name and parameters to self.chips_map_legend and exports chip files.
 
         Args:
-            chip_class: the chip type class
+            chip: the chip type class (for PCell chip), or a chip cell (for manually designed chip)
             variant_name: name for specific variant, the same as in the mask layout
             **kwargs: any parameters passed to the chip PCell
         """
-        self.chips_map_legend.update(self.variant_definition(chip_class, variant_name, **kwargs))
+
+        chip_path = Path(TMP_PATH/f"{self.name}_v{self.version}"/"Chips"/variant_name)
+        chip_path.mkdir(parents=True, exist_ok=True)
+
+        if isclass(chip):
+            cell = self.variant_definition(chip, variant_name, **kwargs)[variant_name]
+            export_chip(cell, variant_name, chip_path, self.layout, self.export_drc)
+            self.layout.delete_cell_rec(cell.cell_index())
+        else:
+            export_chip(chip, variant_name, chip_path, self.layout, self.export_drc)
+
+        self._load_chip_into_mask(str(chip_path / f"{variant_name}.oas"), variant_name)
 
     def variant_definition(self, chip_class, variant_name, **kwargs):
         """Returns chip variant definition with default mask specific parameters.
@@ -185,7 +267,8 @@ class MaskSet:
             view: KLayout view object
 
         """
-        mask_export.export(self, path, view, self.export_drc)
+        print("Exporting mask set...")
+        export_mask_set(self, path, view)
 
     @staticmethod
     def chips_map_from_box_map(box_map, mask_map):
@@ -213,3 +296,10 @@ class MaskSet:
                             chips_map[k*num_box_map_rows + i][l*num_box_map_rows + j] = slot
 
         return chips_map
+
+    def _load_chip_into_mask(self, file_name, variant_name):
+        """Loads a chip from file_name to self.layout and adds it into self.chips_map_legend["variant_name"]"""
+        load_opts = pya.LoadLayoutOptions()
+        load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
+        self.layout.read(file_name, load_opts)
+        self.chips_map_legend.update({variant_name: self.layout.top_cells()[-1]})

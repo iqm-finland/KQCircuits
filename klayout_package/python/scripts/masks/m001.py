@@ -97,9 +97,7 @@ if not 'imported' in globals() or not imported:
     imported = True
 
 # Chip from file added manually
-m001.chips_map_legend.update({
-    "QDD": qdd,
-})
+m001.add_chip(qdd, "QDD")
 
 m001.add_chips([
     (AirbridgeCrossings, "AB1", {'crossings': 1}),

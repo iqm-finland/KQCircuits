@@ -1,0 +1,42 @@
+# This code is part of KQCircuits
+# Copyright (C) 2021 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+"""Template for creating and exporting a chip during mask generation.
+
+This is used in MaskSet.add_chips() to create chips in parallel, see that function for more information.
+"""
+
+from pathlib import Path
+
+from kqcircuits.defaults import TMP_PATH
+from kqcircuits.masks.mask_export import export_chip
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util import macro_prepare
+
+layout, _, _ = macro_prepare.prep_empty_layout()
+top_cell = layout.create_cell("Top Cell")
+
+# cell definition and arbitrary code here
+${create_element}
+
+top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+
+# export chip files
+chip_path = Path(TMP_PATH / "${name_mask}" / "Chips" / "${variant_name}")
+export_chip(cell, "${variant_name}", chip_path, layout, ${export_drc})
+
+pya.Application.instance().exit(0)

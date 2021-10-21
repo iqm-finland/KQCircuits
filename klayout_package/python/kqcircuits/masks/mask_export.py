@@ -16,60 +16,89 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 """Functions for exporting mask sets."""
-
+import json
 import os
 import subprocess
+from importlib import import_module
 
 from autologging import logged, traced
-from tqdm import tqdm
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, default_bar_format, SCRIPTS_PATH
+    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.netlist_extraction import export_cell_netlist
 from kqcircuits.util.area import get_area_and_density
+from kqcircuits.util.count_instances import count_instances_in_cell
+from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
+from kqcircuits.util.netlist_extraction import export_cell_netlist
 
 
 @traced
 @logged
-def export(mask_set, path, view, export_drc):
+def export_mask_set(mask_set, path, view):
     """Exports the designs, bitmap and documentation for the mask_set."""
 
     mask_set_dir = _get_directory(path/str("{}_v{}".format(mask_set.name, mask_set.version)))
     export_bitmaps(mask_set, mask_set_dir, view)
     export_designs(mask_set, mask_set_dir)
     export_docs(mask_set, mask_set_dir)
-    if export_drc:
-        export_drc_reports(mask_set, mask_set_dir)
 
 
 @traced
 @logged
 def export_designs(mask_set, export_dir):
     """Exports .oas and .gds files of the mask_set."""
-    layout = mask_set.layout
-
     # export mask layouts
     for mask_layout in mask_set.mask_layouts:
         export_masks_of_face(export_dir, mask_layout, mask_set)
 
-    # export chips
-    for chip_name, cell in tqdm(mask_set.used_chips.items(), desc='Exporting chips', bar_format=default_bar_format):
-        export_chip(cell, chip_name, export_dir, layout, mask_set)
 
-
-def export_chip(cell, chip_name, export_dir, layout, mask_set):
+def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     """Exports a chip used in a maskset."""
-    chip_dir = _get_directory(export_dir / "Chips" / chip_name)
+
+    is_pcell = chip_cell.pcell_declaration() is not None
+
+    # save data that is only available in pcell, not static cell
+    if is_pcell:
+        chip_class = type(chip_cell.pcell_declaration())
+        chip_params = chip_cell.pcell_parameters_by_name()
+
+    # export .oas file with pcells (except chip cell itself will be static)
     # it seems like the full hierarchy of the chip is exported only if it is converted to static
     # TODO this seems like a bug - check and report
-    static_cell = layout.cell(layout.convert_cell_to_static(cell.cell_index()))
-    # export .oas file with all layers
-    path = chip_dir / "{}.oas".format(chip_name)
-    _export_cell(path, static_cell, "all")
+    static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
+    _export_cell(chip_dir/f"{chip_name}_with_pcells.oas", static_cell, "all")
+
+    # save the chip .oas file with all layers and only containing static cells
+    save_opts = pya.SaveLayoutOptions()
+    save_opts.format = "OASIS"
+    save_opts.write_context_info = False  # to save all cells as static cells
+    static_cell.write(str(chip_dir/f"{chip_name}.oas"), save_opts)
+
+    # export netlist
+    export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json")
+    # calculate flip-chip bump count
+    bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
+    # find layer areas and densities
+    layer_areas_and_densities = {}
+    for layer, area, density in zip(*get_area_and_density(static_cell)):
+        if area != 0.0:
+            layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
+
+    # save auxiliary chip data into json-file
+    chip_json = {
+        "Chip class module": chip_class.__module__ if is_pcell else None,
+        "Chip class name": chip_class.__name__ if is_pcell else None,
+        "Chip parameters": chip_params if is_pcell else None,
+        "Bump count": bump_count,
+        "Layer areas and densities": layer_areas_and_densities
+    }
+
+    with open(chip_dir/(chip_name + ".json"), "w") as f:
+        json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
+
     # export .gds files for EBL or laser writer
     for cluster_name, layer_cluster in chip_export_layer_clusters.items():
         # If the chip has no shapes in the main layers of the layer cluster, should not export the chip with
@@ -82,7 +111,7 @@ def export_chip(cell, chip_name, export_dir, layout, mask_set):
                 break
         if export_layer_cluster:
             # To transform the exported layer cluster chip correctly (e.g. mirroring for top chip),
-            # an instance of the static_cell is inserted to a temporary cell with the correct transformation.
+            # an instance of the cell is inserted to a temporary cell with the correct transformation.
             # Was not able to get this working by just using static_cell.transform_into().
             temporary_cell = layout.create_cell(chip_name)
             temporary_cell.insert(pya.DCellInstArray(static_cell.cell_index(), default_mask_parameters[
@@ -91,12 +120,13 @@ def export_chip(cell, chip_name, export_dir, layout, mask_set):
             path = chip_dir / "{} {}.gds".format(chip_name, cluster_name)
             _export_cell(path, temporary_cell, layers_to_export)
             temporary_cell.delete()
-    # remove static_cell only if a new cell was created
-    if cell.is_proxy():
-        mask_set.layout.prune_cell(static_cell.cell_index(), -1)
-    # export netlist
-    path = chip_dir / "{}-netlist.json".format(chip_name)
-    export_cell_netlist(cell, path)
+
+    # export drc report for the chip
+    if export_drc:
+        export_drc_report(chip_name, chip_dir)
+
+    # delete the static cell which was only needed for export
+    layout.delete_cell_rec(static_cell.cell_index())
 
 
 def export_masks_of_face(export_dir, mask_layout, mask_set):
@@ -181,9 +211,14 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
         f.write("## Chips\n")
 
         for name, cell in mask_set.used_chips.items():
-            f.write("### {} Chip\n".format(name))
 
             path = os.path.join("Chips", name, name)
+
+            with open(TMP_PATH / f"{mask_set.name}_v{mask_set.version}" / (path + ".json"), "r") as f2:
+                chip_json = json.load(f2)
+
+            f.write("### {} Chip\n".format(name))
+
             f.write(f"[{path}.oas]({path}.oas)\n\n")
             f.write(f"![{name} Chip Image]({path}.png)\n")
             f.write("\n")
@@ -191,12 +226,20 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
             f.write("### Chip Parameters\n")
             f.write("| **Parameter** | **Value** |\n")
             f.write("| :--- | :--- |\n")
-            params = cell.pcell_parameters_by_name()
-            params_schema = type(cell.pcell_declaration()).get_schema()
-            for param_name, param_declaration in params_schema.items():
-                f.write("| **{}** | {} |\n".format(
-                        param_declaration.description.replace("|", "&#124;"),
-                        str(params[param_name])))
+
+            cls_name = chip_json["Chip class name"]
+            if cls_name is not None:  # otherwise it is a manually designed chip without class name or pcell parameters
+                cls_mod = chip_json["Chip class module"]
+                params_input = chip_json["Chip parameters"]
+                cls = getattr(import_module(cls_mod), cls_name)
+                # get defaults and update ones with input
+                params = cls().pcell_params_by_name()
+                params.update(params_input)
+                params_schema = cls.get_schema()
+                for param_name, param_declaration in params_schema.items():
+                    f.write("| **{}** | {} |\n".format(
+                            param_declaration.description.replace("|", "&#124;"),
+                            str(params[param_name])))
             f.write("\n")
 
             f.write("### Other Chip Information\n")
@@ -212,18 +255,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
                 f.write("|\n")
 
             # flip-chip bump count
-            bump_count = 0
-            def count_bumps_in_inst(inst):
-                nonlocal bump_count
-                if isinstance(inst.pcell_declaration(), FlipChipConnectorDc):
-                    bump_count += 1
-                # cannot use just inst.cell due to klayout bug, see
-                # https://www.klayout.de/forum/discussion/1191
-                inst_cell = inst.layout().cell(inst.cell_index)
-                for child_inst in inst_cell.each_inst():
-                    count_bumps_in_inst(child_inst)
-            for inst in cell.each_inst():
-                count_bumps_in_inst(inst)
+            bump_count = chip_json["Bump count"]
             if bump_count > 0:
                 f.write(f"| **Total bump count** | {bump_count} |\n")
             f.write("\n")
@@ -232,9 +264,8 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
             f.write("#### Layer area and density\n")
             f.write("| **Layer** | **Total area (µm^2)** | **Density (%)** |\n")
             f.write("| :--- | :--- | :--- |\n")
-            for layer, area, density in zip(*get_area_and_density(cell)):
-                if area != 0.0:
-                    f.write(f"| {layer} | {area:.2f} | {density * 100:.2f} |\n")
+            for layer, area_and_density in chip_json["Layer areas and densities"].items():
+                f.write(f"| {layer} | {area_and_density['area']} | {area_and_density['density']} |\n")
             f.write("\n")
 
             f.write("___\n")
@@ -290,40 +321,28 @@ def export_bitmaps(mask_set, export_dir, view, spec_layers=mask_bitmap_export_la
     view.focus(mask_set.mask_layouts[0].top_cell)
 
 
-@traced
 @logged
-def export_drc_reports(mask_set, export_dir):
-    """Exports KLayout DRC report files for the mask_set."""
-
-    if os.name == "nt":
-        klayout_executable = os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
-    else:
-        klayout_executable = "klayout"
-
+def export_drc_report(name, path):
     drc_runset_path = os.path.join(SCRIPTS_PATH, "drc", default_drc_runset)
+    input_file = os.path.join(path, f"{name}.oas")
+    output_file = os.path.join(path, f"{name}_drc_report.lyrdb")
+    export_drc_report._log.info("Exporting DRC report to %s", output_file)
+    try:
+        subprocess.run([klayout_executable_command(), "-b",
+                        "-rm", drc_runset_path,
+                        "-rd", f"input={input_file}",
+                        "-rd", f"output={output_file}"
+                        ], check=True)
+    except subprocess.CalledProcessError as e:
+        export_drc_report._log.error(e.output)
 
-    def export_drc_report(name, subpath):
-        input_file = os.path.join(export_dir, subpath, f"{name}.oas")
-        output_file = os.path.join(export_dir, subpath, f"{name}_drc_report.lyrdb")
-        export_drc_reports._log.info("Exporting DRC report to %s", output_file)
-        try:
-            subprocess.run([klayout_executable, "-b",
-                            "-rm", drc_runset_path,
-                            "-rd", f"input={input_file}",
-                            "-rd", f"output={output_file}"
-                            ], check=True)
-        except subprocess.CalledProcessError as e:
-            export_drc_reports._log.error(e.output)
 
-    # drc report for each chip
-    for name in tqdm(mask_set.used_chips, desc='Exporting DRC reports for chips', bar_format=default_bar_format):
-        chip_path = os.path.join("Chips", name)
-        export_drc_report(name, chip_path)
-
-    # drc report for each mask_layout
-    # for mask_layout in mask_set.mask_layouts:
-    #     name = _get_mask_layout_full_name(mask_set, mask_layout)
-    #     export_drc_report(name, name)
+def klayout_executable_command():
+    """Returns the command (string) needed to run klayout executable in the current OS."""
+    if os.name == "nt":
+        return os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
+    else:
+        return "klayout"
 
 
 def _export_cell(path, cell=None, layers_to_export=None):
