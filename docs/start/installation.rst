@@ -41,7 +41,11 @@ usually works but the safest approach is to uninstall KQC and then install a new
 Release Notes
 -------------
 
-Version 3.3.0 needed manual install of ``tqdm``.
+Here we list particular quirks of specific KQCircuits Salt packages. For a full list of changes see
+the code repository.
 
-It is advisable to uninstall KQC before installing version 4.0.0, so that no unnecessary files are
-left behind.
+* Version 4.1.0 requires full reinstall of KQC. Qubits directory has moved, to remove the earlier
+  version we need to first remove KQC then install the new version.
+* Version 4.0.0 requires full reinstall of KQC. Several files have been relocated, without a full
+  reinstall multiple versions of the same file will be left behind.
+* Version 3.3.0 needs manual install of ``tqdm`` Python module.
