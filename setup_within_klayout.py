@@ -36,6 +36,7 @@ Usage:
 
 
 import os
+import sys
 
 
 def find_path_or_ask(path, message):
@@ -79,22 +80,41 @@ for target, name in link_map:
     os.symlink(link_target, link_name, target_is_directory=True)
     print("Created symlink \"{}\" to \"{}\"".format(link_name, link_target))
 
-print("Installing required packages")
-# install required packages
-if os.name == "nt":
+
+def get_klayout_packages_path(path_start):
     # KLayout python folder name changes when its python version is updated, try to make sure we find it
     python_versions = [(major, minor) for major in [3, 4] for minor in range(30)]
     for major, minor in python_versions:
-        klayout_packages_path = os.path.join(os.getenv("APPDATA"), "KLayout", "lib", f"python{major}.{minor}",
-                                             "site-packages")
-        if os.path.exists(klayout_packages_path):
+        path_start_2 = os.path.join(path_start, f"{major}.{minor}") if sys.platform == "darwin" else path_start
+        packages_path = os.path.join(path_start_2, "lib", f"python{major}.{minor}", "site-packages")
+        if os.path.exists(packages_path):
             break
+    return packages_path
+
+
+print("Installing required packages")
+# install required packages
+if os.name == "nt":  # Windows
+    klayout_packages_path = get_klayout_packages_path(os.path.join(os.getenv("APPDATA"), "KLayout"))
     klayout_packages_path = find_path_or_ask(klayout_packages_path, "Could not find path to KLayout site-packages "
                                                                     "directory. Please enter the path:")
     print("Required packages will be installed in \"{}\"".format(klayout_packages_path))
     os.system("pip install -r requirements_within_klayout_windows.txt --target={}".format(klayout_packages_path))
 elif os.name == "posix":
-    os.system("pip3 install -r requirements_within_klayout_unix.txt")
+    if sys.platform == "darwin":  # macOS
+        klayout_packages_path = get_klayout_packages_path(os.path.join(os.sep, "Applications", "klayout.app",
+                                                                       "Contents", "Frameworks", "Python.framework",
+                                                                       "Versions"))
+        # on macOS KLayout may use either its own site-packages or the system site-packages, depending on the build
+        if os.path.exists(klayout_packages_path):
+            print("Required packages will be installed in \"{}\"".format(klayout_packages_path))
+            os.system("pip3 install -r requirements_within_klayout_unix.txt --target={}".format(klayout_packages_path))
+        else:
+            print("Required packages will be installed in the system Python environment.")
+            os.system("pip3 install -r requirements_within_klayout_unix.txt")
+    else:  # Linux
+        print("Required packages will be installed in the system Python environment.")
+        os.system("pip3 install -r requirements_within_klayout_unix.txt")
 else:
     raise SystemError("Error: unsupported operating system")
 
