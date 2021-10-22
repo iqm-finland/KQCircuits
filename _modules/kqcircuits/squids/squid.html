@@ -215,7 +215,7 @@
     <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width [μm]&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Squid.create"><a class="viewcode-back" href="../../../api/kqcircuits.squids.squid.html#kqcircuits.squids.squid.Squid.create">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create cell for a squid in layout.</span>
 
 <span class="sd">        The squid cell is created either from a pcell class or a from a manual design file, depending on squid_type. If</span>
@@ -225,6 +225,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            layout: pya.Layout object where this cell is created</span>
+<span class="sd">            library: LIBRARY_NAME of the calling PCell instance</span>
 <span class="sd">            squid_type (str): name of the squid class or of the manually designed squid cell</span>
 <span class="sd">            **parameters: PCell parameters for the element as keyword arguments</span>
 
@@ -241,10 +242,11 @@
             <span class="k">if</span> <span class="n">squid_type</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>
                 <span class="c1"># if code-generated, create like a normal element</span>
                 <span class="n">pcell_class</span> <span class="o">=</span> <span class="n">squids_library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">squid_type</span><span class="p">)</span><span class="o">.</span><span class="vm">__class__</span>
-                <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">squid_type</span><span class="p">):</span>
                 <span class="c1"># if manually designed squid, load from squids.oas</span>
                 <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">squid_type</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
+
         <span class="c1"># fallback to NoSquid if there is no squid corresponding to squid_type</span>
         <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;NoSquid&quot;</span><span class="p">,</span> <span class="n">Squid</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span></div></div>
 

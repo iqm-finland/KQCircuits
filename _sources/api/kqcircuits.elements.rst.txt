@@ -7,7 +7,6 @@ kqcircuits.elements
    kqcircuits.elements.f2f_connectors
    kqcircuits.elements.fluxlines
    kqcircuits.elements.markers
-   kqcircuits.elements.qubits
 
 
 .. toctree::

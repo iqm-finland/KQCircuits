@@ -103,9 +103,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#placing-elements">Placing Elements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#modifying-waveguides">Modifying waveguides</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gui_workflow.html">Point-and-click workflow tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="python_workflow.html">Python workflow tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="macro_workflow.html">Macro development</a></li>
 <li class="toctree-l2"><a class="reference internal" href="export/index.html">Exports</a></li>
 <li class="toctree-l2"><a class="reference internal" href="xsection.html">Creating cross section images</a></li>
@@ -226,7 +228,7 @@ At this event, corresponding <strong>PCell</strong> instance is created or reuse
 </ul>
 </div>
 <div class="section" id="modifying-waveguides">
-<h2>Modifying waveguides<a class="headerlink" href="#modifying-waveguides" title="Permalink to this headline">¶</a></h2>
+<span id="id1"></span><h2>Modifying waveguides<a class="headerlink" href="#modifying-waveguides" title="Permalink to this headline">¶</a></h2>
 <p>Some PCell parameters are geometric objects. For example, <code class="docutils literal notranslate"><span class="pre">Coplanar</span> <span class="pre">Waveguide</span></code> has a “guide path” parameter. In the
 cell view window it is displayed as a black <cite>Path</cite> object. The geometric parameters can be changed using <cite>Partial</cite> tool
 in the toolbar.</p>
@@ -237,6 +239,27 @@ in the toolbar.</p>
 </ul>
 <p>PCell shape is updated after each change in the parameters.</p>
 <img alt="../_images/modifying_waveguide.gif" src="../_images/modifying_waveguide.gif" />
+</div>
+<div class="section" id="converting-elements-placed-in-gui-into-code">
+<h2>Converting elements placed in GUI into code<a class="headerlink" href="#converting-elements-placed-in-gui-into-code" title="Permalink to this headline">¶</a></h2>
+<p>KQCircuits includes a macro <code class="docutils literal notranslate"><span class="pre">export_cells_as_code.lym</span></code> that can be used to
+convert elements placed in GUI into code that can be used in chip PCells. For
+more information, see the docstring and comments in the macro. The following
+animation demonstrates how a chip is modified by placing elements in the GUI
+and how to use this macro to include those elements in PCell generation code:</p>
+<img alt="../_images/converting_gui_elements_to_code.gif" src="../_images/converting_gui_elements_to_code.gif" />
+<p>The macro has special handling for waveguides (of <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> type).
+The code generated for them automatically detects nearby reference points of
+other elements, and uses these instead of hardcoded points as the positions
+of the waveguide nodes. See the <a class="reference internal" href="#modifying-waveguides"><span class="std std-ref">Modifying waveguides</span></a> section above for
+instructions on how to modify <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> in GUI.</p>
+<p>In order to make waveguides connect “nicely” to ports of other elements, most
+ports in KQC elements have an additional “corner refpoint”. To connect a
+waveguide to port “a” of instance “x”, you  should generally place its first
+two points at <code class="docutils literal notranslate"><span class="pre">x_port_a</span></code> and <code class="docutils literal notranslate"><span class="pre">x_port_a_corner</span></code>. The corner point is not
+needed if the next point would anyway be in the direction of
+<code class="docutils literal notranslate"><span class="pre">x_port_a_corner</span></code>, since the purpose of the corner point is only to make
+the direction of the first waveguide segment aligned with the port.</p>
 </div>
 </div>
 

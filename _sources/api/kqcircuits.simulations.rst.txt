@@ -8,6 +8,7 @@ kqcircuits.simulations
 
 .. toctree::
 
+   kqcircuits.simulations.airbridges_sim
    kqcircuits.simulations.circular_capacitor_sim
    kqcircuits.simulations.empty_simulation
    kqcircuits.simulations.finger_capacitor_sim

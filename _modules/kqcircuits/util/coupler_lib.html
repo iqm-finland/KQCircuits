@@ -186,84 +186,42 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_taper</span> <span class="kn">import</span> <span class="n">FingerCapacitorTaper</span>
+<div class="viewcode-block" id="cap_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.cap_params">[docs]</a><span class="k">def</span> <span class="nf">cap_params</span><span class="p">(</span><span class="n">fingers</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A utility function to easily produce typical FingerCapacitorSquare instance parameters.</span>
 
-
-<div class="viewcode-block" id="produce_library_capacitor_typestring"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.produce_library_capacitor_typestring">[docs]</a><span class="k">def</span> <span class="nf">produce_library_capacitor_typestring</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">typestring</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">length</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Wrapper more compatible with the capacitor library v1</span>
-
-<span class="sd">    to be improved in future with new library implementation</span>
+<span class="sd">    Args:</span>
+<span class="sd">        fingers: number of fingers</span>
+<span class="sd">        length: length of fingers</span>
+<span class="sd">        coupler_type: a string describing the capacitor type</span>
+<span class="sd">        **kwargs: other optional parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">typestring</span> <span class="o">==</span> <span class="s2">&quot;8 fingers&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">typestring</span> <span class="o">==</span> <span class="s2">&quot;4 fingers&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">typestring</span> <span class="o">==</span> <span class="s2">&quot;2 fingers&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">typestring</span> <span class="o">==</span> <span class="s2">&quot;gap&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">produce_library_capacitor</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;gap&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unknown capacitor typestring&quot;</span><span class="p">)</span></div>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_number&quot;</span><span class="p">:</span> <span class="n">fingers</span><span class="p">,</span>
+                <span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
+                <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                <span class="s2">&quot;ground_padding&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+               <span class="p">}</span>
 
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="produce_library_capacitor"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.produce_library_capacitor">[docs]</a><span class="k">def</span> <span class="nf">produce_library_capacitor</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">fingers</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="c1"># Capacitor</span>
     <span class="k">if</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;gap&quot;</span><span class="p">:</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="n">FingerCapacitorSquare</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span>
-                                           <span class="n">finger_number</span><span class="o">=</span><span class="n">fingers</span><span class="p">,</span>
-                                           <span class="n">finger_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                           <span class="n">finger_gap_end</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-                                           <span class="n">finger_gap_side</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                           <span class="n">finger_width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                           <span class="n">ground_padding</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                           <span class="c1"># corner_r=0,</span>
-                                           <span class="o">**</span><span class="n">kwargs</span>
-                                           <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">:</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="n">FingerCapacitorSquare</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span>
-                                           <span class="n">finger_number</span><span class="o">=</span><span class="n">fingers</span><span class="p">,</span>
-                                           <span class="n">finger_length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-                                           <span class="n">finger_gap_end</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                           <span class="n">finger_gap_side</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                           <span class="n">finger_width</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                                           <span class="n">ground_padding</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                           <span class="o">**</span><span class="n">kwargs</span>
-                                           <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                 <span class="p">}</span>
     <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;fc gap&quot;</span><span class="p">:</span>
-        <span class="c1"># based on simulation parameters</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="n">FingerCapacitorSquare</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span>
-                                           <span class="n">finger_number</span><span class="o">=</span><span class="n">fingers</span><span class="p">,</span>
-                                           <span class="n">finger_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                           <span class="n">finger_gap_end</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-                                           <span class="n">finger_gap_side</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                           <span class="n">finger_width</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                                           <span class="n">ground_padding</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                                           <span class="o">**</span><span class="n">kwargs</span>
-                                           <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
+                  <span class="s2">&quot;ground_padding&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                 <span class="p">}</span>
     <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;fc interdigital&quot;</span><span class="p">:</span>
-        <span class="c1"># based on simulation parameters</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="n">FingerCapacitorSquare</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span>
-                                           <span class="n">finger_number</span><span class="o">=</span><span class="n">fingers</span><span class="p">,</span>
-                                           <span class="n">finger_length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-                                           <span class="n">finger_gap_end</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                           <span class="n">finger_gap_side</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                           <span class="n">finger_width</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                                           <span class="n">ground_padding</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                                           <span class="o">**</span><span class="n">kwargs</span>
-                                           <span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">cap</span> <span class="o">=</span> <span class="n">FingerCapacitorTaper</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span>
-                                          <span class="n">finger_number</span><span class="o">=</span><span class="n">fingers</span><span class="p">,</span>
-                                          <span class="n">finger_length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span>
-                                          <span class="n">finger_gap</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                          <span class="n">finger_width</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-                                          <span class="n">ground_padding</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                          <span class="n">taper_length</span><span class="o">=</span><span class="p">(</span><span class="n">fingers</span> <span class="o">*</span> <span class="mi">20</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>  <span class="c1"># 45 degree taper,</span>
-                                          <span class="o">**</span><span class="n">kwargs</span>
-                                          <span class="p">)</span>
-    <span class="k">return</span> <span class="n">cap</span></div>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ground_padding&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
+                 <span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">defaults</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span></div>
 </pre></div>
 
            </div>

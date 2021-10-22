@@ -1,0 +1,10 @@
+kqcircuits.util.count\_instances
+================================
+
+.. automodule:: kqcircuits.util.count_instances
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.count_instances
+.. image:: ../pcell_images/kqcircuits.util.count_instances.png

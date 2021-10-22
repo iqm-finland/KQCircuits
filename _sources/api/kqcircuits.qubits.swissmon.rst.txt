@@ -1,0 +1,10 @@
+kqcircuits.qubits.swissmon
+==========================
+
+.. automodule:: kqcircuits.qubits.swissmon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.qubits.swissmon
+.. image:: ../pcell_images/kqcircuits.qubits.swissmon.png

@@ -1,0 +1,10 @@
+kqcircuits.qubits.qubit
+=======================
+
+.. automodule:: kqcircuits.qubits.qubit
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.qubits.qubit
+.. image:: ../pcell_images/kqcircuits.qubits.qubit.png

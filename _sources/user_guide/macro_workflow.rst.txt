@@ -77,10 +77,6 @@ Reloading libraries
 - The libraries are automatically reloaded whenever you restart KLayout, so
   in that case there is no need to run the ``reload`` macro to see changes.
 
-- There may be problems with running the ``reload`` macro on some systems.
-  It can cause KLayout to crash or new cells to not work properly. If
-  this happens, you should re-launch the KLayout Editor.
-
 Examples
 --------
 

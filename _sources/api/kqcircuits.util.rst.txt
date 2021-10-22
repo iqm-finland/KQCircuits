@@ -5,6 +5,7 @@ kqcircuits.util
 .. toctree::
 
    kqcircuits.util.area
+   kqcircuits.util.count_instances
    kqcircuits.util.coupler_lib
    kqcircuits.util.deep_delete
    kqcircuits.util.dependencies
@@ -12,6 +13,7 @@ kqcircuits.util
    kqcircuits.util.geometry_helper
    kqcircuits.util.geometry_json_encoder
    kqcircuits.util.groundgrid
+   kqcircuits.util.layout_to_code
    kqcircuits.util.library_helper
    kqcircuits.util.log_router
    kqcircuits.util.macro_prepare

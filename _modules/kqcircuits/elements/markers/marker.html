@@ -199,11 +199,12 @@
     <span class="sd">&quot;&quot;&quot;Base Class for Markers.&quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="Marker.create"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker.create">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">marker_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">marker_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Marker cell in layout.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            layout: pya.Layout object where the cell is created</span>
+<span class="sd">            library: LIBRARY_NAME of the calling PCell instance</span>
 <span class="sd">            marker_type: (str): name of the Marker subclass</span>
 <span class="sd">            **parameters: PCell parameters as keyword arguments</span>
 
@@ -217,9 +218,9 @@
         <span class="n">library_layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)[</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">])</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">marker_type</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>
             <span class="n">pcell_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">marker_type</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">marker_type</span> <span class="o">!=</span> <span class="n">default_marker_type</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Marker</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">marker_type</span><span class="o">=</span><span class="n">default_marker_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Marker</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">marker_type</span><span class="o">=</span><span class="n">default_marker_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Marker subclass &quot;</span><span class="si">{</span><span class="n">marker_type</span><span class="si">}</span><span class="s1">&quot;!&#39;</span><span class="p">)</span></div></div>
 </pre></div>

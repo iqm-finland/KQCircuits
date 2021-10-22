@@ -107,7 +107,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.qubits.html">kqcircuits.elements.qubits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
@@ -133,6 +132,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
@@ -225,7 +225,8 @@
 <em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.meander.</code><code class="sig-name descname">Meander</code><a class="reference internal" href="../_modules/kqcircuits/elements/meander.html#Meander"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.meander.Meander" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for a meandering waveguide.</p>
-<p>Defined by two points, total length and number of meanders. Uses the same bending radius as the underling waveguide.</p>
+<p>Defined by two points, total length and number of meanders. Uses the same bending radius as the underling waveguide.
+Equidistant airbridges can be placed in the meander using <code class="docutils literal notranslate"><span class="pre">n_bridges</span></code> parameter.</p>
 <dl class="method">
 <dt id="kqcircuits.elements.meander.Meander.coerce_parameters_impl">
 <code class="sig-name descname">coerce_parameters_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/meander.html#Meander.coerce_parameters_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.meander.Meander.coerce_parameters_impl" title="Permalink to this definition">¶</a></dt>
@@ -259,6 +260,7 @@
 <li><p><strong>end</strong><em> (Shape)</em><span> - End</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">600,0</span></code></p></li>
 <li><p><strong>length</strong><em> (Double)</em><span> - Length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3000</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>meanders</strong><em> (Int)</em><span> - Number of meanders (at least 1)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
+<li><p><strong>n_bridges</strong><em> (Int)</em><span> - Number of bridges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.meander.png" src="../_images/kqcircuits.elements.meander.png" />
 </div>

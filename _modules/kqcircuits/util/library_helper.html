@@ -200,10 +200,9 @@
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">SRC_PATHS</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">SRC_PATHS</span><span class="p">,</span> <span class="n">kqc_library_names</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
@@ -211,7 +210,8 @@
 
 <span class="c1"># modules NOT to be included in the library, (python file names without extension)</span>
 <span class="n">_excluded_module_names</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;__init__&quot;</span><span class="p">,</span> <span class="s2">&quot;library_helper&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;__init__&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;library_helper&quot;</span><span class="p">,</span>
     <span class="s2">&quot;element&quot;</span><span class="p">,</span>
     <span class="s2">&quot;qubit&quot;</span><span class="p">,</span>
     <span class="s2">&quot;airbridge&quot;</span><span class="p">,</span>
@@ -223,10 +223,9 @@
     <span class="s2">&quot;junction_test_pads&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
-
 <div class="viewcode-block" id="load_libraries"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>   <span class="c1"># TODO `flush=True` does not work with KLayout 0.27</span>
+<span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load all KQCircuits libraries from the given path.</span>
 
 <span class="sd">    Args:</span>
@@ -268,7 +267,11 @@
                 <span class="n">_kqc_libraries</span><span class="p">[</span><span class="n">library_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">library</span><span class="p">,</span> <span class="n">library_path</span><span class="p">)</span>
             <span class="n">_register_pcell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">library_name</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">library_name</span><span class="p">,</span> <span class="p">(</span><span class="n">library</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># Libraries should be registered in dependency-order, otherwise reload will crash.</span>
+    <span class="k">for</span> <span class="n">library_name</span> <span class="ow">in</span> <span class="n">kqc_library_names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">library_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">library</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_kqc_libraries</span><span class="p">[</span><span class="n">library_name</span><span class="p">]</span>
         <span class="n">_load_manual_designs</span><span class="p">(</span><span class="n">library_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">library_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">library</span><span class="o">.</span><span class="n">library_names</span><span class="p">():</span>
             <span class="n">library</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">library_name</span><span class="p">)</span>  <span class="c1"># library must be registered only after all cells have been added to it</span>
@@ -279,7 +282,7 @@
 <div class="viewcode-block" id="delete_all_libraries"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_all_libraries">[docs]</a><span class="nd">@traced</span>
 <span class="k">def</span> <span class="nf">delete_all_libraries</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Delete all KQCircuits libraries from KLayout memory.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">kqc_library_names</span><span class="p">):</span>
         <span class="n">delete_library</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 
@@ -294,24 +297,20 @@
 <span class="sd">    Args:</span>
 <span class="sd">        name: name of the library</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
     <span class="n">library</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="o">.</span><span class="n">library_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">library</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># find any libraries which depend on this library, and delete them</span>
-        <span class="k">for</span> <span class="n">other_name</span> <span class="ow">in</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="o">.</span><span class="n">library_names</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">other_name</span> <span class="o">!=</span> <span class="n">name</span><span class="p">:</span>
-                <span class="n">other_library</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="o">.</span><span class="n">library_by_name</span><span class="p">(</span><span class="n">other_name</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">other_library</span><span class="p">:</span>
-                    <span class="n">dependencies</span> <span class="o">=</span> <span class="n">_get_library_dependencies</span><span class="p">(</span><span class="n">other_library</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
-                        <span class="n">delete_library</span><span class="p">(</span><span class="n">other_name</span><span class="p">)</span>
-        <span class="c1"># delete this library</span>
-        <span class="n">library</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="p">:</span>
-            <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">library</span><span class="o">.</span><span class="n">_destroyed</span><span class="p">():</span>
-            <span class="n">delete_library</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully deleted library &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">SystemError</span><span class="p">(</span><span class="s2">&quot;Failed to delete library &#39;[]&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
+    <span class="k">if</span> <span class="n">library</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># already deleted</span>
+        <span class="k">return</span>
+
+    <span class="c1"># delete this library</span>
+    <span class="n">library</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="p">:</span>
+        <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">library</span><span class="o">.</span><span class="n">_destroyed</span><span class="p">():</span>
+        <span class="n">delete_library</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully deleted library &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SystemError</span><span class="p">(</span><span class="s2">&quot;Failed to delete library &#39;[]&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="to_module_name"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">[docs]</a><span class="nd">@traced</span>
@@ -487,28 +486,6 @@
         <span class="k">return</span> <span class="n">value</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
-
-
-<span class="nd">@traced</span>
-<span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">_get_library_dependencies</span><span class="p">(</span><span class="n">library</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns a set of library names, which are dependencies of the library.</span>
-
-<span class="sd">    This checks every PCell class in the library for other PCell classes which are imported by it. Then the LIBRARY_NAME</span>
-<span class="sd">    of each of those PCell classes is added to the set of dependencies that is returned.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        library: pya.Library object whose dependencies are returned</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">library_dependencies</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">pcell_name</span> <span class="ow">in</span> <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>
-        <span class="n">pcell_class</span> <span class="o">=</span> <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">)</span><span class="o">.</span><span class="vm">__class__</span>
-        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">pcell_class</span><span class="o">.</span><span class="vm">__module__</span><span class="p">]):</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;LIBRARY_NAME&quot;</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">LIBRARY_NAME</span> <span class="o">!=</span> <span class="n">pcell_class</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">:</span>
-                    <span class="n">library_dependencies</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">library_dependencies</span>
-
 
 <span class="nd">@traced</span>
 <span class="k">def</span> <span class="nf">_is_valid_class_name</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

@@ -5,6 +5,7 @@ API documentation
    kqcircuits.chips
    kqcircuits.elements
    kqcircuits.masks
+   kqcircuits.qubits
    kqcircuits.simulations
    kqcircuits.squids
    kqcircuits.test_structures

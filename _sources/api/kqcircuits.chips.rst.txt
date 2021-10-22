@@ -16,6 +16,7 @@ kqcircuits.chips
    kqcircuits.chips.empty
    kqcircuits.chips.junction_test
    kqcircuits.chips.junction_test2
+   kqcircuits.chips.launchers
    kqcircuits.chips.lithography_test
    kqcircuits.chips.quality_factor
    kqcircuits.chips.sample_holder_test

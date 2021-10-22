@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul class="current">
@@ -231,7 +232,7 @@ in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
 
 <dl class="method">
 <dt id="kqcircuits.test_structures.junction_test_pads.JunctionTestPads.create">
-<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">junction_test_type=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/junction_test_pads.html#JunctionTestPads.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.create" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">library=None</em>, <em class="sig-param">junction_test_type=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/junction_test_pads.html#JunctionTestPads.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a JunctionTestPads cell in layout.</p>
 <p>If junction_test_type is unknown the default is returned.</p>
 <p>Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.</p>
@@ -239,6 +240,7 @@ in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
+<li><p><strong>library</strong> – LIBRARY_NAME of the calling PCell instance</p></li>
 <li><p><strong>junction_test_type</strong> (<em>str</em>) – name of the JunctionTestPads subclass</p></li>
 <li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
 </ul>

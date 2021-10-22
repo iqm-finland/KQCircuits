@@ -1,0 +1,10 @@
+kqcircuits.chips.launchers
+==========================
+
+.. automodule:: kqcircuits.chips.launchers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.launchers
+.. image:: ../pcell_images/kqcircuits.chips.launchers.png

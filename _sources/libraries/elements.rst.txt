@@ -174,7 +174,7 @@ Refpoints for 3 couplers, fluxline position and chargeline position.
 Length between the ports is from waveguide port to the rectangular part of the launcher pad.
 Length of the fingers is also used for the length of the launcher pad.
 
-.. kqc_elem_params:: kqcircuits.elements.qubits.swissmon
+.. kqc_elem_params:: kqcircuits.qubits.swissmon
 
 **Origin:** Center of the cross.
 

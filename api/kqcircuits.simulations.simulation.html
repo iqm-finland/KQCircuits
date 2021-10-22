@@ -104,8 +104,10 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
@@ -229,6 +231,11 @@ used as the top cell for the simulation. Otherwise, a new cell will be created. 
 </p>
 </dd>
 </dl>
+<dl class="attribute">
+<dt id="kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME">
+<code class="sig-name descname">LIBRARY_NAME</code><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="kqcircuits.simulations.simulation.Simulation.ports">
 <code class="sig-name descname">ports</code><em class="property">: List[Port]</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ports" title="Permalink to this definition">¶</a></dt>
@@ -382,7 +389,7 @@ parameters of <cite>self</cite> to the <cite>cls</cite> cell.</p></li>
 
 <dl class="method">
 <dt id="kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port">
-<code class="sig-name descname">produce_waveguide_to_port</code><span class="sig-paren">(</span><em class="sig-param">location</em>, <em class="sig-param">towards</em>, <em class="sig-param">port_nr</em>, <em class="sig-param">side</em>, <em class="sig-param">use_internal_ports=None</em>, <em class="sig-param">waveguide_length=None</em>, <em class="sig-param">term1=0</em>, <em class="sig-param">turn_radius=None</em>, <em class="sig-param">a=None</em>, <em class="sig-param">b=None</em>, <em class="sig-param">over_etching=None</em>, <em class="sig-param">airbridge=False</em>, <em class="sig-param">airbridge_a=None</em>, <em class="sig-param">airbridge_b=None</em>, <em class="sig-param">face=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_waveguide_to_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">produce_waveguide_to_port</code><span class="sig-paren">(</span><em class="sig-param">location</em>, <em class="sig-param">towards</em>, <em class="sig-param">port_nr</em>, <em class="sig-param">side=None</em>, <em class="sig-param">use_internal_ports=None</em>, <em class="sig-param">waveguide_length=None</em>, <em class="sig-param">term1=0</em>, <em class="sig-param">turn_radius=None</em>, <em class="sig-param">a=None</em>, <em class="sig-param">b=None</em>, <em class="sig-param">over_etching=None</em>, <em class="sig-param">airbridge=False</em>, <em class="sig-param">airbridge_a=None</em>, <em class="sig-param">airbridge_b=None</em>, <em class="sig-param">face=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_waveguide_to_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a waveguide connection from some <cite>location</cite> to a port, and add the corresponding port to
 <cite>simulation.ports</cite>.</p>
 <dl class="field-list simple">
@@ -470,7 +477,7 @@ This function must be used when initializing InternalPort.</p>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
-<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fcec9d6cb80&gt;}</span></code></p></li>
+<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f23729e4ca0&gt;}</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.simulations.simulation.png" src="../_images/kqcircuits.simulations.simulation.png" />
 </div>

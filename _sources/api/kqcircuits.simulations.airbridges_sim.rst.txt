@@ -1,0 +1,10 @@
+kqcircuits.simulations.airbridges\_sim
+======================================
+
+.. automodule:: kqcircuits.simulations.airbridges_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.airbridges_sim
+.. image:: ../pcell_images/kqcircuits.simulations.airbridges_sim.png

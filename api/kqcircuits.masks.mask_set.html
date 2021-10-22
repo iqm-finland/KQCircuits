@@ -44,7 +44,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations" href="kqcircuits.simulations.html" />
+    <link rel="next" title="kqcircuits.qubits" href="kqcircuits.qubits.html" />
     <link rel="prev" title="kqcircuits.masks.mask_layout" href="kqcircuits.masks.mask_layout.html" /> 
 </head>
 
@@ -110,6 +110,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
@@ -203,13 +204,14 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Class representing a set of masks for different chip faces.</p>
 <p>A mask set consists of one or more MaskLayouts, each of which is for a certain face.</p>
-<p>To create a mask, add mask layouts to the mask set using add_mask_layout() and set the self.chips_map_legend (or add
-chips using add_chip()) to define the chips in these mask layouts. Then call build() to create the actual cells.</p>
+<p>To create a mask, add mask layouts to the mask set using add_mask_layout() and add chips to these mask layouts using
+add_chips() or add_chip(). These functions also export some files for each chip. Then call build() to create the
+cell hierarchy of the entire mask, and finally export mask files by calling export().</p>
 <p class="rubric">Example</p>
 <p>mask = MaskSet(…)
 mask.add_mask_layout(…)
 mask.add_mask_layout(…)
-mask.chips_map_legend = {…}
+mask.add_chips(…)
 mask.build()
 mask.export(…)</p>
 <dl class="attribute">
@@ -287,24 +289,33 @@ mask.export(…)</p>
 
 <dl class="method">
 <dt id="kqcircuits.masks.mask_set.MaskSet.add_chips">
-<code class="sig-name descname">add_chips</code><span class="sig-paren">(</span><em class="sig-param">chips</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chips"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chips" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add list of chips with parameters to self.chips_map_legend</p>
+<code class="sig-name descname">add_chips</code><span class="sig-paren">(</span><em class="sig-param">chips</em>, <em class="sig-param">threads=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chips"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chips" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a list of chips with parameters to self.chips_map_legend and exports the files for each chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>chips</strong> – List of tuples that <code class="docutils literal notranslate"><span class="pre">add_chip</span></code> uses. Parameters are optional.
-For example, <code class="docutils literal notranslate"><span class="pre">(QualityFactor,</span> <span class="pre">&quot;QDG&quot;,</span> <span class="pre">parameters)</span></code>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chips</strong> – List of tuples that <code class="docutils literal notranslate"><span class="pre">add_chip</span></code> uses. Parameters are optional.
+For example, <code class="docutils literal notranslate"><span class="pre">(QualityFactor,</span> <span class="pre">&quot;QDG&quot;,</span> <span class="pre">parameters)</span></code>.</p></li>
+<li><p><strong>threads</strong> – Number of parallel threads to use for generation. By default uses <code class="docutils literal notranslate"><span class="pre">os.cpu_count()</span></code> threads.
+Uses subprocesses and consequently a lot of memory.</p></li>
+</ul>
 </dd>
 </dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.
+The same applies for exporting large and complex geometry.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="kqcircuits.masks.mask_set.MaskSet.add_chip">
-<code class="sig-name descname">add_chip</code><span class="sig-paren">(</span><em class="sig-param">chip_class</em>, <em class="sig-param">variant_name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds a chip with the given name and parameters to self.chips_map_legend.</p>
+<code class="sig-name descname">add_chip</code><span class="sig-paren">(</span><em class="sig-param">chip</em>, <em class="sig-param">variant_name</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a chip with the given name and parameters to self.chips_map_legend and exports chip files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>chip_class</strong> – the chip type class</p></li>
+<li><p><strong>chip</strong> – the chip type class (for PCell chip), or a chip cell (for manually designed chip)</p></li>
 <li><p><strong>variant_name</strong> – name for specific variant, the same as in the mask layout</p></li>
 <li><p><strong>**kwargs</strong> – any parameters passed to the chip PCell</p></li>
 </ul>
@@ -386,7 +397,7 @@ lists) where each element is a string identifying the chip type</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.simulations.html" class="btn btn-neutral float-right" title="kqcircuits.simulations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.qubits.html" class="btn btn-neutral float-right" title="kqcircuits.qubits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kqcircuits.masks.mask_layout.html" class="btn btn-neutral float-left" title="kqcircuits.masks.mask_layout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

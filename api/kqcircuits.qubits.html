@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.qubits &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.qubits &mdash; KQCircuits 4.0.9 documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.elements.qubits.qubit" href="kqcircuits.elements.qubits.qubit.html" />
-    <link rel="prev" title="kqcircuits.elements.markers.marker_standard" href="kqcircuits.elements.markers.marker_standard.html" /> 
+    <link rel="next" title="kqcircuits.qubits.qubit" href="kqcircuits.qubits.qubit.html" />
+    <link rel="prev" title="kqcircuits.masks.mask_set" href="kqcircuits.masks.mask_set.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,42 +102,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../libraries/index.html">Libraries</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.qubits</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.qubits.qubit.html">kqcircuits.elements.qubits.qubit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.qubits.swissmon.html">kqcircuits.elements.qubits.swissmon</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-kqcircuits.elements.qubits">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square_multiface.html">kqcircuits.elements.finger_capacitor_square_multiface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle.html">kqcircuits.elements.spiral_resonator_rectangle</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html">kqcircuits.elements.spiral_resonator_rectangle_multiface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html">kqcircuits.elements.waveguide_composite</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar.html">kqcircuits.elements.waveguide_coplanar</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_curved.html">kqcircuits.elements.waveguide_coplanar_curved</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kqcircuits.qubits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-kqcircuits.qubits">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a></li>
@@ -202,15 +174,13 @@
         
           <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
         
-          <li><a href="kqcircuits.elements.html">kqcircuits.elements</a> &raquo;</li>
-        
-      <li>kqcircuits.elements.qubits</li>
+      <li>kqcircuits.qubits</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/kqcircuits.elements.qubits.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/kqcircuits.qubits.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -223,16 +193,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="kqcircuits-elements-qubits">
-<h1>kqcircuits.elements.qubits<a class="headerlink" href="#kqcircuits-elements-qubits" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="kqcircuits-qubits">
+<h1>kqcircuits.qubits<a class="headerlink" href="#kqcircuits-qubits" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.elements.qubits.qubit.html">kqcircuits.elements.qubits.qubit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.elements.qubits.swissmon.html">kqcircuits.elements.qubits.swissmon</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
 </ul>
 </div>
-<div class="section" id="module-kqcircuits.elements.qubits">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.elements.qubits" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-kqcircuits.qubits">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.qubits" title="Permalink to this headline">¶</a></h2>
 <p>PCell declaration classes for qubits.</p>
 <p>The qubits contain a SQUID, which can either be code-generated or loaded from a manual design. The qubits can also have
 a fluxline.</p>
@@ -245,8 +215,8 @@ a fluxline.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.elements.qubits.qubit.html" class="btn btn-neutral float-right" title="kqcircuits.elements.qubits.qubit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kqcircuits.elements.markers.marker_standard.html" class="btn btn-neutral float-left" title="kqcircuits.elements.markers.marker_standard" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.qubits.qubit.html" class="btn btn-neutral float-right" title="kqcircuits.qubits.qubit" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.masks.mask_set.html" class="btn btn-neutral float-left" title="kqcircuits.masks.mask_set" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
