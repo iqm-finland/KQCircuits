@@ -259,7 +259,7 @@ class Chip(Element):
         elif sampleholder_type == "ARD24":
             return self.produce_n_launchers(24, "RF", 240, 144, 680, 1200, launcher_assignments, enabled)
         elif sampleholder_type == "RF80":
-            return self.produce_n_launchers(80, "RF", 160, 96, 520, 635, launcher_assignments, enabled)
+            return self.produce_n_launchers(80, "RF", 160, 96, 520, 685, launcher_assignments, enabled)
         elif sampleholder_type == "DC24":
             return self.produce_n_launchers(24, "DC", 500, 300, 680, 850, launcher_assignments, enabled)
 
