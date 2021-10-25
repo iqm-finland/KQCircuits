@@ -66,3 +66,5 @@ class AirbridgeRectangular(Airbridge):
             pya.DPoint(-w / 2, l / 2),
         ]
         self._produce_top_pads_and_bridge(pts)
+
+        super().produce_impl()

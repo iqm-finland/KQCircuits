@@ -81,10 +81,8 @@ class Airbridge(Element):
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(pya.DTrans.M0 * shape.sized(self.margin))
 
         # refpoints for connecting to waveguides
-        self.add_port("a", pya.DPoint(0, self.bridge_length / 2))
-        self.add_port("b", pya.DPoint(0, -self.bridge_length / 2))
-        # adds annotation based on refpoints calculated above
-        super().produce_impl()
+        self.add_port("a", pya.DPoint(0, self.bridge_length / 2), pya.DVector(0, 1))
+        self.add_port("b", pya.DPoint(0, -self.bridge_length / 2), pya.DVector(0, -1))
 
     def _produce_top_pads_and_bridge(self, pts):
         shape = pya.DPolygon(pts)

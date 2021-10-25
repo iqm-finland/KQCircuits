@@ -72,7 +72,7 @@ class WaveguideCoplanarTaper(Element):
         shape = pya.DPath(pts, ceil(self.a1 + 2 * self.b1))
         self.cell.shapes(self.get_layer("waveguide_length")).insert(shape)
         # refpoints for connecting to waveguides
-        self.add_port("a", pya.DPoint(0, 0))
-        self.add_port("b", pya.DPoint(self.taper_length, 0))
+        self.add_port("a", pya.DPoint(0, 0), pya.DVector(-1, 0))
+        self.add_port("b", pya.DPoint(self.taper_length, 0), pya.DVector(1, 0))
         # adds annotation based on refpoints calculated above
         super().produce_impl()
