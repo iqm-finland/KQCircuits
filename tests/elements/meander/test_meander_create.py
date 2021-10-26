@@ -21,7 +21,7 @@ from kqcircuits.util.geometry_helper import get_cell_path_length
 
 from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_layers, default_airbridge_type
 
 
 relative_length_tolerance = 1e-3
@@ -84,6 +84,44 @@ def test_continuity_long_meander():
                                            continuity_tolerance)
 
 
+def test_bridges_horizontal_meander():
+    layout = pya.Layout()
+    meander_cell = Meander.create(
+        layout,
+        start=pya.DPoint(0, 0),
+        end=pya.DPoint(1000, 0),
+        length=3000,
+        n_bridges=5
+    )
+    bridge_positions = [
+        pya.DPoint(273.244, 271.733),
+        pya.DPoint(301.582, -221.366),
+        pya.DPoint(500, 0),
+        pya.DPoint(698.418, 221.366),
+        pya.DPoint(726.756, -271.733),
+    ]
+    assert _bridges_at_correct_positions(layout, meander_cell, bridge_positions)
+
+
+def test_bridges_vertical_meander():
+    layout = pya.Layout()
+    meander_cell = Meander.create(
+        layout,
+        start=pya.DPoint(0, 0),
+        end=pya.DPoint(0, -1500),
+        length=4000,
+        n_bridges=5
+    )
+    bridge_positions = [
+        pya.DPoint(346.573, -390.567),
+        pya.DPoint(-179.794, -550),
+        pya.DPoint(0, -750),
+        pya.DPoint(179.794, -950),
+        pya.DPoint(-346.573, -1109.433),
+    ]
+    assert _bridges_at_correct_positions(layout, meander_cell, bridge_positions)
+
+
 def _get_meander_length_error(meander_length, num_meanders, end, r):
     """Returns the relative error of the meander length for a meander with the given parameters."""
     layout = pya.Layout()
@@ -97,3 +135,20 @@ def _get_meander_length_error(meander_length, num_meanders, end, r):
     true_length = get_cell_path_length(meander_cell, layout.layer(default_layers["waveguide_length"]))
     relative_error = abs(true_length - meander_length) / meander_length
     return relative_error
+
+
+def _bridges_at_correct_positions(layout, meander_cell, bridge_positions):
+    for inst in meander_cell.each_inst():
+        # workaround for getting the cell due to KLayout bug, see
+        # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
+        # TODO: replace by `inst_cell = inst.cell` once KLayout bug is fixed
+        inst_cell = layout.cell(inst.cell_index)
+        if inst_cell.name == default_airbridge_type:
+            correct_position = False
+            for bridge_pos in bridge_positions:
+                if (inst.dtrans.disp - bridge_pos).length() < 1e-3:
+                    correct_position = True
+                    break
+            if not correct_position:
+                return False
+    return True

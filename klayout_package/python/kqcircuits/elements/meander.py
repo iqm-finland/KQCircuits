@@ -81,12 +81,12 @@ class Meander(Element):
         self.insert_cell(waveguide, transf)
 
         if self.n_bridges > 0:
-            self._produce_bridges(points)
+            self._produce_bridges(points, transf)
 
-    def _produce_bridges(self, wg_points):
+    def _produce_bridges(self, wg_points, meander_trans):
 
         def insert_bridge(position, angle):
-            self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, position))
+            self.insert_cell(Airbridge, meander_trans*pya.DCplxTrans(1, angle, False, position))
 
         bridge_separation = self.length/(self.n_bridges + 1)
         curve_len = self.r*math.pi/2
@@ -103,7 +103,7 @@ class Meander(Element):
 
             # bridges in the straight part of this segment
             remaining_len = straight_len
-            prev_pos = self.start + wg_points[i - 1] + (self.r*straight_dir if i > 1 else pya.DVector(0, 0))
+            prev_pos = wg_points[i - 1] + (self.r*straight_dir if i > 1 else pya.DVector(0, 0))
             while dist_to_next < remaining_len and n_inserted < self.n_bridges:
                 pos = prev_pos + dist_to_next*straight_dir
                 insert_bridge(pos, get_angle(straight_dir))
@@ -125,7 +125,7 @@ class Meander(Element):
                 p1 = wg_points[i] - self.r*dir1
                 p2 = wg_points[i] + self.r*dir2
                 # interpolation along circular arc from p1 to p2 based on angle 3
-                pos = self.start + corner_pos + (p1 - corner_pos)*math.cos(angle3) + (p2 - corner_pos)*math.sin(angle3)
+                pos = corner_pos + (p1 - corner_pos)*math.cos(angle3) + (p2 - corner_pos)*math.sin(angle3)
                 # linear interpolation between angle1 and angle2 based on angle 3
                 angle4 = angle1*(1 - 2*angle3/math.pi) + angle2*(2*angle3/math.pi)
                 insert_bridge(pos, math.degrees(angle4))
