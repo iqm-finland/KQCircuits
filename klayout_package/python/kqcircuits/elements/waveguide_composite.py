@@ -27,7 +27,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import to_module_name
 from kqcircuits.util.geometry_helper import vector_length_and_direction, point_shift_along_vector, \
-    get_cell_path_length, get_angle
+    get_cell_path_length, get_angle, get_direction
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -50,6 +50,7 @@ class Node:
         inst_name: If an instance name is supplied, the element refpoints will be exposed with that name. Default None.
         align: Tuple with two refpoint names that correspond the input and output point of element, respectively
                Default value (None) uses ``('port_a', 'port_b')``
+        angle: Angle of waveguide direction in degrees
         **params: Other optional parameters for the inserted element
 
     Returns:
@@ -60,8 +61,9 @@ class Node:
     element: Element
     inst_name: str
     align: Tuple
+    angle: float
 
-    def __init__(self, position, element=None, inst_name=None, align=tuple(), **params):
+    def __init__(self, position, element=None, inst_name=None, align=tuple(), angle=None, **params):
         if isinstance(position, tuple):
             self.position = pya.DPoint(position[0], position[1])
         else:
@@ -69,6 +71,7 @@ class Node:
         self.element = element
         self.align = align
         self.inst_name = inst_name
+        self.angle = angle
         self.params = params
 
     def __str__(self):
@@ -87,6 +90,8 @@ class Node:
             magic_params['align'] = self.align
         if self.inst_name:
             magic_params['inst_name'] = self.inst_name
+        if self.angle is not None:
+            magic_params['angle'] = self.angle
 
         all_params = {**self.params, **magic_params}
         if all_params:
@@ -133,7 +138,7 @@ class Node:
             # TODO improve library_helper to get Element by name?
 
         # re-create DPoint from tuple
-        magic_params = ('align', 'inst_name')
+        magic_params = ('align', 'inst_name', 'angle')
         for pn, pv in params.items():
             if isinstance(pv, tuple) and pn not in magic_params:
                 params[pn] = pya.DPoint(pv[0], pv[1])
@@ -185,6 +190,7 @@ class WaveguideComposite(Element):
 
     nodes = Param(pdt.TypeString, "List of Nodes for the waveguide", "(0, 0, 'Airbridge'), (200, 0)")
     taper_length = Param(pdt.TypeDouble, "Taper length", 100, unit="μm")
+    tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
 
     @classmethod
     def create(cls, layout, library=None, **parameters):
@@ -216,7 +222,7 @@ class WaveguideComposite(Element):
 
         self._wg_start_idx = 0      # next waveguide starts here
         self._wg_start_pos = self._nodes[0].position
-        _, self._wg_start_dir = vector_length_and_direction(self._nodes[1].position - self._wg_start_pos)
+        self._wg_start_dir = self._node_entrance_direction(0)
 
         for i, node in enumerate(self._nodes):
             if node.element is None:
@@ -244,7 +250,17 @@ class WaveguideComposite(Element):
         if node.element is None:
             self._add_waveguide(i)
 
+        # Create airbridge on each node that has `ab_across=True` in params
+        for i, node in enumerate(self._nodes):
+            if "ab_across" in node.params and node.params["ab_across"]:
+                ab_len = node.params['bridge_length'] if "bridge_length" in node.params else None
+                self._ab_across(node.position - self._node_entrance_direction(i), node.position, 0, ab_len)
+
+        # Reference points
         self.refpoints.update(self._child_refpoints)
+        self.add_port("a", self._nodes[0].position, -self._node_entrance_direction(0))
+        self.add_port("b", self._wg_start_pos, self._wg_start_dir)
+
         super().produce_impl()
 
     def _nodes_from_string(self):
@@ -342,7 +358,8 @@ class WaveguideComposite(Element):
         """Place a cell and create the preceding waveguide.
 
         Normally the element is oriented from the previous node towards this one. Except the first
-        one, that goes from here towards the next.
+        one, that goes from here towards the next. The orientation can be also manually fixed by using
+        the node parameter `angle`.
 
         If the element has corner points corresponding to ``before`` and ``after`` (e.g. ``port_a_corner``), these are
         used to determine the entry and exit directions of the ports. If these points do not exist, the waveguides will
@@ -351,84 +368,144 @@ class WaveguideComposite(Element):
         before_corner = before + '_corner'
         after_corner = after + '_corner'
 
+        # Compute cell relative entrance direction
         rel_ref = self.get_refpoints(cell, rec_levels=0)
-        element_dir = rel_ref[after] - rel_ref[before]
-
-        node = self._nodes[ind]
-        if ind == 0:
-            waveguide_dir = self._nodes[ind+1].position - node.position
-            if after_corner in rel_ref:
-                element_dir = rel_ref[after_corner] - rel_ref[after]
+        if before_corner in rel_ref:
+            element_dir = rel_ref[before] - rel_ref[before_corner]
         else:
-            waveguide_dir = node.position - self._nodes[ind-1].position
-            if before_corner in rel_ref:
-                element_dir = rel_ref[before] - rel_ref[before_corner]
+            element_dir = rel_ref[after] - rel_ref[before]
 
-        trans = pya.DCplxTrans(1, get_angle(waveguide_dir) - get_angle(element_dir), False, node.position)
-
+        # Compute transformation for the cell
+        waveguide_dir = self._node_entrance_direction(ind)
+        trans = pya.DCplxTrans(1, get_angle(waveguide_dir) - get_angle(element_dir), False, self._nodes[ind].position)
         if ind in (0, len(self._nodes) - 1):
             trans *= pya.DTrans(-rel_ref[before if ind == 0 else after])
 
+        # Insert element cell with computed transformation
         _, ref = self.insert_cell(cell, trans)
         if inst_name is not None:
             for name, value in ref.items():
                 self._child_refpoints[f'{inst_name}_{name}'] = value
 
-        self._add_waveguide(ind, ref[before])
+        # Add waveguide from previous element until this element
+        self._add_waveguide(ind, ref[before], waveguide_dir)
+
+        # Keep track of current position, direction, and index for the future elements
         self._wg_start_pos = ref[after]
         if after_corner in ref:
             _, self._wg_start_dir = vector_length_and_direction(ref[after_corner] - ref[after])
-        # else:
-        #     _, self._wg_start_dir = vector_length_and_direction(ref[after] - ref[before])
         self._wg_start_idx = ind
 
-    def _add_waveguide(self, end_index, end_pos=None):
-        """Finish the WaveguideCoplanar ending here.
+    def _node_entrance_direction(self, ind):
+        """Returns element entrance direction at node index `ind`."""
+        fixed_angle = self._nodes[ind].angle
+        if fixed_angle is None:
+            prev = max(0, ind - 1)
+            return vector_length_and_direction(self._nodes[prev + 1].position - self._nodes[prev].position)[1]
+        return get_direction(fixed_angle)
+
+    def _add_waveguide(self, end_index, end_pos=None, end_dir=None):
+        """Creates waveguide from `self._wg_start_idx` until `end_index`.
 
         Args:
-            end_index: index of the last Node of the waveguide
-            end_pos: alternative endpoint of the waveguide
+            end_index: the last node index taken into account in the waveguide
+            end_pos: endpoint position of the waveguide (optional, overwrites `self._nodes[end_index].position`)
+            end_dir: endpoint direction of the waveguide (optional)
         """
 
+        def get_corner_lengths(segment_vector, dir_start=pya.DVector(), dir_end=pya.DVector()):
+            """Returns distances from segment end points to corner points depending on value of self.tight_routing.
+            Returns zero length, if the corner point is not necessary.
+
+            Args:
+                segment_vector (pya.DVector): vector from start point to end point
+                dir_start (pya.DVector): segment start direction as unit vector (or use zero vector if free direction)
+                dir_end (pya.DVector): segment end direction as unit vector (or use zero vector if free direction)
+
+            Returns:
+                tuple of lengths
+            """
+            if not self.tight_routing:
+                # Use corner points self.r away from end points.
+                _, d = vector_length_and_direction(segment_vector)
+                if self.r * abs(d.vprod(dir_start) / 2) < 0.001 and self.r * abs(d.vprod(dir_end) / 2) < 0.001:
+                    return 0.0, 0.0
+                _, d = vector_length_and_direction(segment_vector - self.r * dir_end)
+                if self.r * abs(d.vprod(dir_start) / 2) < 0.001:
+                    return 0.0, self.r
+                _, d = vector_length_and_direction(segment_vector - self.r * dir_start)
+                if self.r * abs(d.vprod(dir_end) / 2) < 0.001:
+                    return self.r, 0.0
+                return self.r, self.r
+
+            # Use optimal corner routing
+            s = segment_vector
+            for _ in range(100):  # iterate at most 100 times
+                _, d = vector_length_and_direction(s)
+                start_len = self.r * abs(d.vprod(dir_start) / (1.0 + d.sprod(dir_start)))
+                end_len = self.r * abs(d.vprod(dir_end) / (1.0 + d.sprod(dir_end)))
+
+                # check if converged
+                prev_s = s
+                s = segment_vector - start_len * dir_start - end_len * dir_end
+                if (s - prev_s).length() < 1e-5:
+                    return 0.0 if start_len < 0.001 else start_len, 0.0 if end_len < 0.001 else end_len
+
+            # Not converged to up here
+            self.raise_error_on_cell("Cannot find suitable routing using 'tight' corners.", self._wg_start_pos)
+            return 0.0, 0.0
+
+        # Check if segment has any points
         start_index = self._wg_start_idx
         if end_index <= start_index:
             return
+
+        # Create waveguide path and create airbridges determined by parameter `n_bridges`.
         points = [self._wg_start_pos]
+        for i in range(start_index, end_index):
+            node0 = self._nodes[i]
+            node1 = self._nodes[i + 1]
 
-        start_direction = self._wg_start_dir
-        _, direction_to_next = vector_length_and_direction(self._nodes[start_index + 1].position - self._wg_start_pos)
+            # Determine segment endpoint positions
+            pos0 = self._wg_start_pos if i == start_index else node0.position
+            dir0 = self._wg_start_dir if i == start_index else \
+                pya.DVector() if node0.angle is None else get_direction(node0.angle)
+            pos1 = end_pos if i + 1 == end_index and end_pos is not None else node1.position
+            dir1 = end_dir if i + 1 == end_index and end_dir is not None else \
+                pya.DVector() if node1.angle is None else get_direction(node1.angle)
 
-        if (start_direction - direction_to_next).length() > 0.001:
-            # Direction of next node doesn't align, insert an extra bend as close to the start as possible
-            points.append(points[0] + self.r*start_direction)
+            # Add corner points
+            len0, len1 = get_corner_lengths(pos1 - pos0, dir0, dir1)
+            if len0 > 0:
+                points.append(pos0 + len0 * dir0)
+            points.append(pos1 - len1 * dir1)
 
-        sn = self._nodes[start_index]
-        if not sn.element and "ab_across" in sn.params and sn.params["ab_across"]:
-            ab_len = sn.params['bridge_length'] if "bridge_length" in sn.params else None
-            self._ab_across(self._nodes[start_index+1].position, sn.position, 0, ab_len)
+            # Add airbridges on the straight segment
+            if "n_bridges" in node1.params and node1.params["n_bridges"] > 0:
+                ab_len = node1.params['bridge_length'] if "bridge_length" in node1.params else None
+                self._ab_across(points[-2], points[-1], node1.params["n_bridges"], ab_len)
 
-        for i in range(start_index + 1, end_index + 1):
-            node = self._nodes[i]
-            ab_len = node.params['bridge_length'] if "bridge_length" in node.params else None
-            points.append(end_pos if end_pos and i == end_index else node.position)
-            if "ab_across" in node.params and node.params["ab_across"]:
-                self._ab_across(points[-2], points[-1], 0, ab_len)
-            if "n_bridges" in node.params and node.params["n_bridges"] > 0:
-                self._ab_across(points[-2], points[-1], node.params["n_bridges"], ab_len)
+            # Add final point if it's not already added
+            if i + 1 == end_index and len1 > 0:
+                points.append(pos1)
 
+        # Create and insert waveguide cell
+        # Avoid termination if in the middle or if the ends are actual elements
         params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": pya.DPath(points, 1)}
-
-        # no termination if in the middle or if the ends are actual elements
         if start_index != 0 or self._nodes[start_index].element:
             params['term1'] = 0
         if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
             params['term2'] = 0
-
         wg = self.add_element(WaveguideCoplanar, **params)
         self.insert_cell(wg)
 
+        # Keep track of current position, direction, and index for the future elements
         self._wg_start_pos = points[-1]
-        _, self._wg_start_dir = vector_length_and_direction(points[-1] - points[-2])
+        if self._nodes[end_index].angle is None:
+            _, self._wg_start_dir = vector_length_and_direction(points[-1] - points[-2])
+        else:
+            self._wg_start_dir = get_direction(self._nodes[end_index].angle)
+        self._wg_start_idx = end_index
 
     def _ab_across(self, start, end, num, ab_len=None):
         """Creates ``num`` airbridge crossings equally distributed between ``start`` and ``end``.
