@@ -200,19 +200,23 @@ class MaskLayout:
         if (position - step_ver * 0.5 + step_hor * 0.5 - self.wafer_center).length() - self.wafer_rad < \
                 -self.edge_clearance:
             if slot in self.chips_map_legend.keys():
-                trans = pya.DTrans(position - self.chip_box_offset) * self.chip_trans
-                self.top_cell.insert(pya.DCellInstArray(self.chips_map_legend[slot].cell_index(), trans))
+                chip_cell = self.chips_map_legend[slot]
+                bounding_box = chip_cell.dbbox_per_layer(self.layout.layer(self._face()["base_metal_gap_wo_grid"]))
+                chip_size = bounding_box.width()
+                bbox_offset = self.chip_size - chip_size  # for chips that are smaller than self.chip_size
+                trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset) * self.chip_trans
+                self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
                 trans2 = pya.DTrans() if self.chip_trans.is_mirror() else self.chip_trans
                 produce_label(label_cell, pos_index_name, trans2*(position + pya.DVector(self.chip_size, 0)),
                               "bottomright", self.dice_width, self.text_margin,
                               [self._face()["base_metal_gap_wo_grid"], self._face()["base_metal_gap_for_EBL"]],
                               self._face()["ground_grid_avoidance"])
-                trans3 = trans*pya.DTrans(self.chip_box_offset)
-                chip_region = pya.Region(pya.Box(trans3 * pya.DBox(0, 0, self.chip_size, self.chip_size) * (
-                        1 / self.layout.dbu)))
+                chip_region = pya.Region(pya.Box(trans * bounding_box * (1 / self.layout.dbu)))
                 # add graphical representation
                 chip_name = self._get_chip_name(self.chips_map_legend[slot])
-                self._add_chip_graphical_representation_layer(chip_name, trans2 * position, pos_index_name)
+                self._add_chip_graphical_representation_layer(chip_name,
+                                                              trans2*(position + pya.DVector(bbox_offset, 0)),
+                                                              pos_index_name, chip_size)
                 return True, chip_region
         return False, chip_region
 
@@ -265,7 +269,7 @@ class MaskLayout:
                 return chip_name
         return ""
 
-    def _add_chip_graphical_representation_layer(self, chip_name, position, pos_index_name):
+    def _add_chip_graphical_representation_layer(self, chip_name, position, pos_index_name, chip_size):
         chip_name_text = self.layout.create_cell("TEXT", "Basic", {
             "layer": default_layers["mask_graphical_rep"],
             "text": chip_name,
@@ -276,10 +280,10 @@ class MaskLayout:
             "text": pos_index_name,
             "mag": 4000 * self.mask_text_scale,
         })
-        chip_name_trans = pya.DTrans(position + pya.DVector((self.chip_size - chip_name_text.dbbox().width()) / 2,
+        chip_name_trans = pya.DTrans(position + pya.DVector((chip_size - chip_name_text.dbbox().width()) / 2,
                                                             self.mask_text_scale * 750))
         self.top_cell.insert(pya.DCellInstArray(chip_name_text.cell_index(), chip_name_trans))
-        pos_index_trans = pya.DTrans(position + pya.DVector((self.chip_size - pos_index_name_text.dbbox().width()) / 2,
+        pos_index_trans = pya.DTrans(position + pya.DVector((chip_size - pos_index_name_text.dbbox().width()) / 2,
                                                             self.mask_text_scale * 6000))
         self.top_cell.insert(pya.DCellInstArray(pos_index_name_text.cell_index(), pos_index_trans))
 
