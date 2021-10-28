@@ -62,9 +62,9 @@ nodes = [
     Node((400, -200), a=12, b=6),                                       # Empty node does a taper if a and/or b is set.
     Node((300, -200), face_id="t"),                                     # Similary, face_id parameter inserts an "FC-bump".
     Node((200, -200)),                                                  # Elements take orientation from previous node, see next one.
-    Node((100, -300), FingerCapacitorSquare, finger_number=4),          # Other elements (with port_a/b) are also supported.
-    Node((0, -400), a=6, b=2),                                          # Elements have to be colinear if placed back-to-back!
-    Node((-100, -600)),                                                 # Be mindful of geometry, WaveguideCoplanar needs space...
+    Node((100, -250), FingerCapacitorSquare, finger_number=4),          # Other elements (with port_a/b) are also supported.
+    Node((0, -300), a=6, b=2),                                          # Elements have to be colinear if placed back-to-back!
+    Node((-100, -600)),                                                 # Be mindful of geometry: Try -500 here!
     Node((100, -500), FingerCapacitorTaper),                            # Arbitrary future elements also supported.
     Node((300, -400), n_bridges=1, bridge_length=100),                  # Note that all these are in top face.
     Node((400, -400), face_id="b", connector_type="Single"),            # Elements are positioned at the Nodes coordinates.
