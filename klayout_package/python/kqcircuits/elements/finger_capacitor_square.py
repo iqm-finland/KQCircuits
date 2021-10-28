@@ -29,8 +29,10 @@ class FingerCapacitorSquare(Element):
     the same length as the width of the ground gap around the coupler.
     """
 
-    a2 = Param(pdt.TypeDouble, "Width of center conductor on the other end", Element.a, unit="μm")
-    b2 = Param(pdt.TypeDouble, "Width of gap on the other end", Element.b, unit="μm")
+    a2 = Param(pdt.TypeDouble, "Width of center conductor on the other end", -1, unit="μm",
+               docstring="Non-physical value '-1' means that the default size 'a' is used.")
+    b2 = Param(pdt.TypeDouble, "Width of gap on the other end", -1, unit="μm",
+               docstring="Non-physical value '-1' means that the default size 'b' is used.")
     finger_number = Param(pdt.TypeInt, "Number of fingers", 5)
     finger_width = Param(pdt.TypeDouble, "Width of a finger", 5, unit="μm")
     finger_gap_side = Param(pdt.TypeDouble, "Gap between the fingers", 3, unit="μm")
@@ -46,7 +48,7 @@ class FingerCapacitorSquare(Element):
     def produce_impl(self):
         y_mid = self.finger_area_width() / 2
         y_left = self.a / 2
-        y_right = self.a2 / 2
+        y_right = (self.a if self.a2 < 0 else self.a2) / 2
         x_mid = self.finger_area_length() / 2
         x_left = x_mid + self.finger_width + (self.ground_padding if y_left > y_mid else 0.0)
         x_right = x_mid + self.finger_width + (self.ground_padding if y_right > y_mid else 0.0)
@@ -115,7 +117,7 @@ class FingerCapacitorSquare(Element):
         """Returns the ground region for the finger capacitor."""
         y_mid = self.finger_area_width() / 2 + self.ground_padding
         y_left = self.a / 2 + self.b
-        y_right = self.a2 / 2 + self.b2
+        y_right = (self.a if self.a2 < 0 else self.a2) / 2 + (self.b if self.b2 < 0 else self.b2)
         x_mid = self.finger_area_length() / 2 + self.finger_width
         x_left = x_mid + (self.ground_padding if y_left < y_mid else 0.0)
         x_right = x_mid + (self.ground_padding if y_right < y_mid else 0.0)
