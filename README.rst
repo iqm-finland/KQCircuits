@@ -52,7 +52,7 @@ and Python installation, just make sure that the command refers to Python 3.
 For further details see the `getting started documentation
 <https://iqm-finland.github.io/KQCircuits/start/index.html>`__.
 
-For stand-alone mode run ``python -m pip install -e klayout_package/python[docs,tests]``. Then scripts may be run and
+For stand-alone mode run ``python -m pip install -e "klayout_package/python[docs,tests]"``. Then scripts may be run and
 documentation can be built. For further details see the `documentation
 <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
 
