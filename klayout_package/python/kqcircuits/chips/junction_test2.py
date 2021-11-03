@@ -38,7 +38,8 @@ class JunctionTest2(Chip):
         right = self.box.right
         top = self.box.top
 
-        junction_test_side = self.add_element(JunctionTestPads,
+        junction_test_side = self.add_element(
+            JunctionTestPads,
             pad_width=self.pad_width,
             area_height=6000,
             area_width=1700,
@@ -46,8 +47,10 @@ class JunctionTest2(Chip):
             junction_type="both",
             squid_type=self.squid_type,
             pad_spacing=self.pad_spacing,
+            face_ids=self.face_ids,
         )
-        junction_test_center = self.add_element(JunctionTestPads,
+        junction_test_center = self.add_element(
+            JunctionTestPads,
             pad_width=self.pad_width,
             area_height=9400,
             area_width=6000,
@@ -55,6 +58,7 @@ class JunctionTest2(Chip):
             junction_type="both",
             squid_type=self.squid_type,
             pad_spacing=self.pad_spacing,
+            face_ids=self.face_ids,
         )
 
         self.insert_cell(junction_test_side, pya.DTrans(0, False, left + 300, top - 2000 - 6000), "testarray_1")
