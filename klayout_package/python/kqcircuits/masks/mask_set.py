@@ -239,19 +239,19 @@ class MaskSet:
             remove_guiding_shapes (Boolean): determines if the guiding shapes are removed
 
         """
-        # populate used_chips with chips which exist in some mask_layout
-        for chip_name, cell in self.chips_map_legend.items():
-            for mask_layout in self.mask_layouts:
-                if any(chip_name in row for row in mask_layout.chips_map):
-                    self.used_chips[chip_name] = cell
-                    break
-
         # build mask layouts
         for mask_layout in self.mask_layouts:
             # include face_id in mask_layout.name only for multi-face masks
             if len(self.mask_layouts) > 1:
                 mask_layout.name += mask_layout.face_id
             mask_layout.build(self.chips_map_legend)
+
+        # populate used_chips with chips which exist in some mask_layout
+        for chip_name, cell in self.chips_map_legend.items():
+            for mask_layout in self.mask_layouts:
+                if any(chip_name in row for row in mask_layout.chips_map):
+                    self.used_chips[chip_name] = cell
+                    break
 
         # remove the guiding shapes, like chip boxes and waveguide paths
         if remove_guiding_shapes and self.layout.is_valid_layer(self.layout.guiding_shape_layer()):
