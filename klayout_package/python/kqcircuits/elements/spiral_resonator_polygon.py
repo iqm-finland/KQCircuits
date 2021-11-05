@@ -299,7 +299,7 @@ class SpiralResonatorPolygon(Element):
             distance until the next airbridge should created
         """
         segment_len, segment_dir = vector_length_and_direction(points[end_point_idx] - points[end_point_idx - 1])
-        bridge_width = Airbridge.get_schema()["pad_width"].default
+        bridge_width = Airbridge.get_schema()["bridge_width"].default
         remaining_len = segment_len - bridge_width
         prev_pos = points[end_point_idx - 1]
         # ensure that the bridge will not be too close to the corner before

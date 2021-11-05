@@ -39,8 +39,6 @@ class AirbridgeCrossings(Chip):
         docstring="Number of pairs of airbridge crossings")
     b_number = Param(pdt.TypeInt, "Number of bridges", 5,
         docstring="Number of airbridges in one element of the mechanical test array")
-    bridge_width = Param(pdt.TypeDouble, "Crossing airbridge width", 20, unit="[μm]")
-    bridge_length = Param(pdt.TypeDouble, "Crossing airbridge length", 48, unit="[μm]")
 
     def build(self):
 
@@ -84,10 +82,7 @@ class AirbridgeCrossings(Chip):
             nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
         nodes.append(Node(launchers["WS"][0]))
-        waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes,
-                                       bridge_width_series=self.bridge_width,
-                                       bridge_length_series=self.bridge_length
-                                       )
+        waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes)
         self.insert_cell(waveguide_cell)
 
         # TL without crossings
@@ -102,10 +97,7 @@ class AirbridgeCrossings(Chip):
             nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step
         nodes.append(Node(launchers["ES"][0]))
-        waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes,
-                                       bridge_width_series=self.bridge_width,
-                                       bridge_length_series=self.bridge_length
-                                       )
+        waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes)
         self.insert_cell(waveguide_cell)
 
     def _produce_mechanical_test_array(self):
@@ -130,11 +122,9 @@ class AirbridgeCrossings(Chip):
         # v_step = pya.DVector((distance + width) * 2, 0)
 
         ab = self.add_element(Airbridge,
-            # pad_width=1.1 * width,
             # pad_length=1 * width,
             # bridge_length=length,
             # bridge_width=width,
-            # pad_extra=2
         )
         for i in range(number):
             # ab_trans = pya.DCplxTrans(1, 0, False, wg_start + v_step * (i + 0.5))

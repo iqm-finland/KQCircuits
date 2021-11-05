@@ -18,25 +18,28 @@
 
 from autologging import logged, traced
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import get_angle
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.library_helper import load_libraries
-from kqcircuits.defaults import default_airbridge_type
+from kqcircuits.defaults import default_airbridge_type, default_layers
 
-from kqcircuits.elements.element import Element
+from kqcircuits.elements.element import Element, get_refpoints
 
 
 @traced
 @logged
 class Airbridge(Element):
-    """Airbridge base class without actual produce function."""
+    """Airbridge base class without actual produce function.
+
+    All subclasses should have ports 'a' and 'b' at positions (0, bridge_length) and (0, -bridge_length).
+    """
 
     default_type = default_airbridge_type
     """This is the default shape if not specified otherwise by the user."""
 
-    pad_width = Param(pdt.TypeDouble, "Pad width", 20, unit="μm")
-    pad_length = Param(pdt.TypeDouble, "Pad length", 14, unit="μm")
-    pad_extra = Param(pdt.TypeDouble, "Bottom pad extra", 2, unit="μm")
-    bridge_length = Param(pdt.TypeDouble, "Bridge length (from pad to pad)", 48, unit="μm")
+    bridge_width = Param(pdt.TypeDouble, "Bridge width", 20, unit="μm")
+    pad_length = Param(pdt.TypeDouble, "Pad length", 18, unit="μm")
+    bridge_length = Param(pdt.TypeDouble, "Bridge length (from pad to pad)", 44, unit="μm")
 
     @classmethod
     def create(cls, layout, library=None, airbridge_type=None, **parameters):
@@ -65,7 +68,13 @@ class Airbridge(Element):
             pcell_class = type(library_layout.pcell_declaration(airbridge_type))
             return Element._create_cell(pcell_class, layout, library, **parameters)
         elif library_layout.cell(airbridge_type):              # manually designed, load from .oas
-            return layout.create_cell(airbridge_type, cls.LIBRARY_NAME)
+            cell = layout.create_cell(airbridge_type, cls.LIBRARY_NAME)
+            # transform cell to have 'port_a' at (0, l/2) and 'port_b' at (0, -l/2), where l is distance between ports
+            ref_points = get_refpoints(layout.layer(default_layers["refpoints"]), cell)
+            center = (ref_points['port_a'] + ref_points['port_b']) / 2
+            orientation = get_angle(ref_points['port_a'] - ref_points['port_b'])
+            cell.transform(pya.DCplxTrans(1.0, 90 - orientation, False, -center))
+            return cell
         else:                                               # fallback is the default
             return Airbridge.create(layout, library, airbridge_type=cls.default_type, **parameters)
 

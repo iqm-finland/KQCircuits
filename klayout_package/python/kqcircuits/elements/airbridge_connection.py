@@ -18,7 +18,6 @@
 
 from kqcircuits.elements.airbridges import airbridge_type_choices
 from kqcircuits.elements.airbridges.airbridge import Airbridge
-from kqcircuits.elements.airbridges.airbridge_rectangular import AirbridgeRectangular
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
@@ -27,73 +26,58 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @add_parameters_from(Airbridge)
-@add_parameters_from(AirbridgeRectangular, "bridge_width")
 @add_parameters_from(WaveguideCoplanarTaper)
 class AirbridgeConnection(Element):
     """The PCell declaration of an Airbridge with tapered waveguides in both ends."""
 
     with_side_airbridges = Param(pdt.TypeBoolean, "With airbridges on the sides", True)
     with_right_waveguide = Param(pdt.TypeBoolean, "With waveguide on right side", True)
-    waveguide_separation = Param(pdt.TypeDouble, "Distance between waveguide center conductors", 60)
     airbridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
     gap_between_bridges = Param(pdt.TypeDouble, "Inner distance between adjacent bridges", 20)
+    waveguide_extra = Param(pdt.TypeDouble, "Waveguide extra length below airbridge", 0)
 
     def build(self):
-        taper_l = self.add_element(WaveguideCoplanarTaper,
-            a2=self.bridge_width,
-            b2=self.bridge_width/self.a * self.b
-        )
-        taper_l_ref = self.get_refpoints(taper_l)
-        taper_end_v = pya.DVector(-self.bridge_length/2-2*self.pad_length, 0)
-        taper_l_inst, _ = self.insert_cell(taper_l, pya.DTrans(taper_end_v-taper_l_ref["port_b"].to_v()))
-        self.copy_port("a", taper_l_inst)
-
-        a = self.bridge_width
-        b = a/self.a * self.b
-        terminator_l = self.add_element(WaveguideCoplanar,
-            path=pya.DPath([
-                taper_end_v.to_p(),
-                pya.DPoint(-self.waveguide_separation/2, 0)
-            ], 10),
-            a=a,
-            b=b,
-            term1=0,
-            term2=b
-        )
-        self.insert_cell(terminator_l, pya.DTrans(0, 0))
-
+        # Add airbridges
         ab = self.add_element(Airbridge)
-        ab_inst, _ = self.insert_cell(ab, pya.DTrans.R90)
+        ab_inst, ab_ref = self.insert_cell(ab, pya.DTrans.R90)
         if self.with_side_airbridges:
             self.insert_cell(ab, pya.DTrans(1, False, 0,  self.bridge_width + self.gap_between_bridges))
             self.insert_cell(ab, pya.DTrans(1, False, 0, -self.bridge_width - self.gap_between_bridges))
 
-        if self.with_right_waveguide:
-            taper_r = self.add_element(WaveguideCoplanarTaper,
-                a1=self.bridge_width,
-                b1=self.bridge_width/self.a * self.b
-            )
-            taper_r_ref = self.get_refpoints(taper_r)
-            taper_end_v = pya.DVector(self.bridge_length/2+2*self.pad_length, 0)
-            taper_r_inst, _ = self.insert_cell(taper_r, pya.DTrans(taper_end_v-taper_r_ref["port_a"].to_v()))
+        # Add left waveguide
+        pad_a = self.bridge_width
+        pad_b = pad_a/self.a * self.b
+        wg_l_pos = ab_ref["port_a"] + pya.DPoint(self.waveguide_extra, 0)
+        taper_l_pos = ab_ref["port_a"] - pya.DVector(self.pad_length, 0)
+        terminator_l = self.add_element(WaveguideCoplanar,
+                                        path=pya.DPath([taper_l_pos, wg_l_pos], 10),
+                                        a=pad_a, b=pad_b,
+                                        term1=0, term2=pad_b)
+        self.insert_cell(terminator_l, pya.DTrans(0, 0))
 
+        taper_l = self.add_element(WaveguideCoplanarTaper, a2=pad_a, b2=pad_b)
+        taper_l_ref = self.get_refpoints(taper_l)
+        taper_l_inst, _ = self.insert_cell(taper_l, pya.DTrans(taper_l_pos-taper_l_ref["port_b"].to_v()))
+        self.copy_port("a", taper_l_inst)
+
+        # Optionally, add right waveguide
+        if self.with_right_waveguide:
+            wg_r_pos = ab_ref["port_b"] - pya.DPoint(self.waveguide_extra, 0)
+            taper_r_pos = ab_ref["port_b"] + pya.DVector(self.pad_length, 0)
             terminator_r = self.add_element(WaveguideCoplanar,
-                path=pya.DPath([
-                    pya.DPoint(self.waveguide_separation/2, 0),
-                    taper_end_v.to_p(),
-                ], 10),
-                a=a,
-                b=b,
-                term1=b,
-                term2=0
-            )
+                                            path=pya.DPath([wg_r_pos, taper_r_pos], 10),
+                                            a=pad_a, b=pad_b,
+                                            term1=pad_b, term2=0)
             self.insert_cell(terminator_r, pya.DTrans(0, 0))
+
+            taper_r = self.add_element(WaveguideCoplanarTaper, a1=pad_a, b1=pad_b)
+            taper_r_ref = self.get_refpoints(taper_r)
+            taper_r_inst, _ = self.insert_cell(taper_r, pya.DTrans(taper_r_pos-taper_r_ref["port_a"].to_v()))
             self.copy_port("b", taper_r_inst)
         else:
+            wg_r_pos = ab_ref["port_b"]
             self.copy_port("b", ab_inst)
 
-        path_airbridge = pya.DPath([pya.DPoint(-self.waveguide_separation/2, 0),
-                                    pya.DPoint(self.waveguide_separation/2, 0)], self.bridge_width)
+        # Add path
+        path_airbridge = pya.DPath([wg_l_pos, wg_r_pos], self.bridge_width)
         self.cell.shapes(self.get_layer("waveguide_length")).insert(path_airbridge)
-
-        # adds annotation based on refpoints calculated above

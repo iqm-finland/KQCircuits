@@ -14,8 +14,8 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
-
+from kqcircuits.elements.airbridges import airbridge_type_choices
+from kqcircuits.elements.element import get_refpoints
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -50,3 +50,34 @@ def test_wrong_type_override():
     layout = pya.Layout()
     cell = Airbridge.create(layout, airbridge_type="Airbridge NoSuchThing")
     assert cell.name == Airbridge.default_type
+
+def test_bridge_length_rectangular():
+    pad_1, pad_2 = _get_pad_boxes("Airbridge Rectangular", "b_airbridge_pads", bridge_length=101)
+    assert min(abs(pad_1.top - pad_2.bottom), abs(pad_2.top - pad_1.bottom)) == 101
+
+def test_pad_dimensions_rectangular():
+    pad_1, pad_2 = _get_pad_boxes("Airbridge Rectangular", "b_airbridge_pads",
+                                  bridge_width=19, pad_extra=1, pad_length=33)
+    assert pad_1.width() == 21
+    assert pad_2.width() == 21
+    assert pad_1.height() == 33
+    assert pad_2.height() == 33
+
+def _get_pad_boxes(airbridge_type, pad_layer, **params):
+    layout = pya.Layout()
+    cell = Airbridge.create(layout, airbridge_type=airbridge_type, **params)
+    shapes_iter = cell.begin_shapes_rec(layout.layer(default_layers[pad_layer]))
+    pad_1 = shapes_iter.shape().dbbox()
+    shapes_iter.next()
+    pad_2 = shapes_iter.shape().dbbox()
+    return pad_1, pad_2
+
+def test_reference_points():
+    for ab_type in airbridge_type_choices:
+        layout = pya.Layout()
+        cell = Airbridge.create(layout, airbridge_type=ab_type[1])
+        refp = get_refpoints(layout.layer(default_layers["refpoints"]), cell)
+        assert refp['port_a'].x == 0
+        assert refp['port_b'].x == 0
+        assert refp['port_a'].y > 0
+        assert refp['port_a'].y == -refp['port_b'].y

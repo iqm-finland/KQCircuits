@@ -36,11 +36,11 @@ class AirbridgeDC(TestStructure):
         cell_ab = self.add_element(Airbridge, airbridge_type="Airbridge Rectangular")
 
         ab_params = cell_ab.pcell_parameters_by_name()
-        ab_pad_width = ab_params["pad_length"]
-        ab_pad_length = ab_params["pad_length"]
-        bridge_length = ab_params["bridge_length"]
         bridge_width = ab_params["bridge_width"]
         ab_pad_extra = ab_params["pad_extra"]
+        ab_pad_width = ab_params["pad_length"] - 2 * ab_pad_extra
+        ab_pad_length = ab_params["pad_length"] - 2 * ab_pad_extra
+        bridge_length = ab_params["bridge_length"] + 2 * ab_pad_extra
 
         island_margin = 5  # how much an island extends beyond airbridge pads
         island_width = bridge_width + ab_pad_extra*2 + 2*island_margin

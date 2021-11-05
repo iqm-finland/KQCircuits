@@ -35,34 +35,25 @@ class AirbridgeRectangular(Airbridge):
     """
 
     default_type = "Airbridge Rectangular"
-
-    bridge_width = Param(pdt.TypeDouble, "Bridge width", 20, unit="μm")
+    pad_extra = Param(pdt.TypeDouble, "Bottom pad extra", 2, unit="μm")
 
     def build(self):
         # shorthand
-        (w, h, l, b, e) = (self.pad_width, self.pad_length, self.bridge_length, self.bridge_width, self.pad_extra)
+        (w, h, l, e) = (self.bridge_width, self.pad_length, self.bridge_length, self.pad_extra)
 
         pts = [
-            pya.DPoint(-self.pad_width / 2 - e, l / 2 - e),
-            pya.DPoint(-self.pad_width / 2 - e, h + l / 2 + e),
-            pya.DPoint(self.pad_width / 2 + e, h + l / 2 + e),
-            pya.DPoint(self.pad_width / 2 + e, l / 2 - e),
+            pya.DPoint(-w / 2 - e, l / 2),
+            pya.DPoint(-w / 2 - e, h + l / 2),
+            pya.DPoint(w / 2 + e, h + l / 2),
+            pya.DPoint(w / 2 + e, l / 2),
         ]
         self._produce_bottom_pads(pts)
 
         # top layer
         pts = [
-            pya.DPoint(-w / 2, h + l / 2),
-            pya.DPoint(w / 2, h + l / 2),
-            pya.DPoint(w / 2, l / 2),
-            pya.DPoint(b / 2, l / 2),
-            pya.DPoint(b / 2, -l / 2),
-            pya.DPoint(w / 2, -l / 2),
-            pya.DPoint(w / 2, -h - l / 2),
-            pya.DPoint(-w / 2, -h - l / 2),
-            pya.DPoint(-w / 2, -l / 2),
-            pya.DPoint(-b / 2, -l / 2),
-            pya.DPoint(-b / 2, l / 2),
-            pya.DPoint(-w / 2, l / 2),
+            pya.DPoint(-w / 2, h + l / 2 - e),
+            pya.DPoint(w / 2, h + l / 2 - e),
+            pya.DPoint(w / 2, -h - l / 2 + e),
+            pya.DPoint(-w / 2, -h - l / 2 + e),
         ]
         self._produce_top_pads_and_bridge(pts)

@@ -304,6 +304,7 @@ kqc_library_names = (
 
 # The user may override KQC Element's default parameters
 default_parameter_values = {
+    "AirbridgeConnection": {"bridge_length": 60, "pad_length": 22},
     "TsvTest": {"tsv_elliptical_width": 10},
 }
 
