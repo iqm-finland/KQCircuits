@@ -47,6 +47,9 @@ things should be taken into account when writing new elements:
     are automatically merged with its parent's parameters (see ``element.py``),
     so an instance will contain the parameters of all its ancestors in the
     inheritance hierarchy.
+    When building hierarchical elements the parameter values appropriate for a
+    sub-element are transparently passed to it from the caller with
+    ``add_element`` or ``insert_cell``.
 
 #.  The ``add_parameters_from`` decorator function adds some other class'
     parameters to the decorated class. They are like normal parameters to all

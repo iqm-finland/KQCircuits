@@ -118,7 +118,7 @@ class SpiralResonatorRectangle(Element):
         elif top < 2 * self.r:
             curve_angle = math.acos(1.0 - top / (2 * self.r))
             curve_x = 2 * self.r * math.sin(curve_angle)
-            curve_cell = self.add_element(WaveguideCoplanarCurved, Element, alpha=curve_angle)
+            curve_cell = self.add_element(WaveguideCoplanarCurved, alpha=curve_angle)
             self.insert_cell(curve_cell, res_trans * pya.DTrans(-1, False, pya.DPoint(0, self.r)))
             self.insert_cell(curve_cell, res_trans * pya.DTrans(1, False, pya.DPoint(curve_x, top - self.r)))
             current_len += 2 * curve_angle * self.r
@@ -126,7 +126,7 @@ class SpiralResonatorRectangle(Element):
             left = max(0, curve_x - self.r + self.x_spacing)
 
         else:
-            curve_cell = self.add_element(WaveguideCoplanarCurved, Element, alpha=math.pi / 2)
+            curve_cell = self.add_element(WaveguideCoplanarCurved, alpha=math.pi / 2)
             trans = pya.DTrans(-1, False, pya.DPoint(0, self.r))
             self.insert_cell(curve_cell, res_trans * trans)
             current_len += self.r * math.pi / 2
@@ -217,12 +217,12 @@ class SpiralResonatorRectangle(Element):
 
         # straight waveguide part
         if straight_len > numerical_inaccuracy:
-            subcell = self.add_element(WaveguideCoplanarStraight, Element, l=straight_len)
+            subcell = self.add_element(WaveguideCoplanarStraight, l=straight_len)
             trans = pya.DTrans(rotation, False, point1 + self.r * segment_dir)
             self.insert_cell(subcell, res_trans * trans)
         # curved waveguide part
         if curve_angle < -numerical_inaccuracy:
-            subcell = self.add_element(WaveguideCoplanarCurved, Element, alpha=curve_angle)
+            subcell = self.add_element(WaveguideCoplanarCurved, alpha=curve_angle)
             trans = res_trans * pya.DTrans(rotation + 1, False,
                                            point1 + (self.r + straight_len) * segment_dir + corner_offset)
             self.insert_cell(subcell, trans)

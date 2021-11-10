@@ -27,8 +27,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.squids import squid_type_choices
 from kqcircuits.squids.squid import Squid
 
-
-@add_parameters_from(Fluxline)
+@add_parameters_from(Fluxline, "fluxline_gap_width")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
 
@@ -66,8 +65,7 @@ class Qubit(Element):
             * ``refpoints_rel`` (Dictionary): relative refpoints for the squid
 
         """
-        cell = self.add_element(Squid, squid_type=self.squid_type, junction_width=self.junction_width,
-                                margin=self.margin, face_ids=self.face_ids, **parameters)
+        cell = self.add_element(Squid, squid_type=self.squid_type, **parameters)
         refpoints_rel = self.get_refpoints(cell)
 
         # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
@@ -91,9 +89,6 @@ class Qubit(Element):
         Creates the fluxline cell and inserts it as a subcell. The "flux" and "flux_corner" ports
         are made available for the qubit.
 
-        To pass a parameter for the fluxline either introduce a parameter of equal name in Qubit subclass or give it
-        as an argument for this function.
-
         Args:
             parameters: parameters for the fluxline to overwrite default and subclass parameters
 
@@ -103,23 +98,9 @@ class Qubit(Element):
 
         if self.fluxline_type == "none":
             return pya.Region([])
+        parameters = {"fluxline_type": self.fluxline_type, **parameters}
 
-        # Pass only fluxline parameters which differ from the class default value. This allows subclasses to override
-        # the default value
-        fluxline_parameters = {}
-        for key, param in type(self).get_schema().items():
-            if key.startswith('fluxline_'):
-                value = self.__getattribute__(key)
-                if value != param.default:
-                    fluxline_parameters[key] = value
-
-        cell = self.add_element(
-            Fluxline,
-            a=self.a,
-            b=self.b,
-            face_ids=self.face_ids,
-            **{**fluxline_parameters, **parameters},
-        )
+        cell = self.add_element(Fluxline, **parameters)
 
         refpoints_so_far = self.get_refpoints(self.cell)
         squid_edge = refpoints_so_far["origin_squid"]

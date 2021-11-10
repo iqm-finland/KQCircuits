@@ -50,7 +50,7 @@ class SampleHolderTest(Chip):
                 Node(self.refpoints[f'{i}_port_corner'] + pya.DVector(0, straight_distance)),
                 Node(self.refpoints[f'{j}_port_corner'] + pya.DVector(straight_distance, 0)),
                 Node(self.refpoints[f'{j}_port']),
-            ], a=self.a, b=self.b, r=self.r, n=self.n)
+            ])
             self.insert_cell(cell)
 
             self.__log.info("%s: Waveguide %d-%d length: %s", self.name_chip, i, j, cell.length())

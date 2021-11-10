@@ -126,21 +126,17 @@ class Element(pya.PCellDeclarationHelper):
         refp = get_refpoints(layout.layer(default_layers["refpoints"]), cell, refpoint_transform)
         return cell, refp
 
-    def add_element(self, cls, whitelist=None, **parameters):
+    def add_element(self, cls, **parameters):
         """Create a new cell for the given element in this layout.
 
         Args:
             cls: Element subclass to be created
-            whitelist: A classname. Its parameter names are used as a whitelist for passing
-                       parameters of `self` to the `cls` cell.
             **parameters: PCell parameters for the element as keyword arguments
 
         Returns:
            the created cell
         """
-        if whitelist is not None:
-            parameters = {**self.pcell_params_by_name(whitelist), **parameters}
-
+        parameters = self.pcell_params_by_name(cls, **parameters)
         return cls.create(self.layout, library=self.LIBRARY_NAME, **parameters)
 
     def insert_cell(self, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None, rec_levels=0,
@@ -170,6 +166,7 @@ class Element(pya.PCellDeclarationHelper):
             tuple of placed cell instance and reference points with the same transformation
         """
         if isclass(cell):
+            parameters = self.pcell_params_by_name(cell, **parameters)
             cell = cell.create(self.layout, library=self.LIBRARY_NAME, **parameters)
 
         if trans is None:
@@ -205,19 +202,24 @@ class Element(pya.PCellDeclarationHelper):
         """
         return default_faces[self.face_ids[face_index]]
 
-    def pcell_params_by_name(self, whitelist=None):
+    def pcell_params_by_name(self, whitelist=None, **parameters):
         """Give PCell parameters as a dictionary.
 
         Arguments:
             whitelist: A classname. Its parameter names are used for filtering.
+            **parameters: Optionally update with other keyword arguments
 
         Returns:
             A dictionary of all PCell parameter names and corresponding current values.
         """
         keys = type(self).get_schema().keys()
-        if whitelist is not None:
+
+        # filter keys by whitelist if not a base class
+        if whitelist is not None and Element.produce_impl != whitelist.produce_impl:
             keys = list(set(whitelist.get_schema().keys()) & set(keys))
-        return {k: self.__getattribute__(k) for k in keys}
+
+        p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}
+        return {**p, **parameters}
 
     def add_port(self, name, pos, direction=None):
         """ Add a port location to the list of reference points as well as ports layer for netlist extraction

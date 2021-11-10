@@ -66,7 +66,6 @@ class Shaping(Chip):
                 port_qubit_dr - pya.DVector(self.r, 0),
                 port_qubit_dr
             ], 1),
-            r=self.r,
             term2=self.b,
         )
 
@@ -79,7 +78,6 @@ class Shaping(Chip):
                 port_qubit_fl - pya.DVector(self.r, 0),
                 port_qubit_fl
             ], 1),
-            r=self.r
         )
 
         ####### Readout resonator with the purcell filter
@@ -93,8 +91,7 @@ class Shaping(Chip):
         # Waveguide t-cross used in multiple locations
         cross1 = self.add_element(WaveguideCoplanarTCross,
             length_extra_side=2 * self.a,
-            length_extra=50,
-            r=self.r)
+            length_extra=50)
         cross1_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
         cross1_length = cross1_refpoints_rel["port_right"].distance(cross1_refpoints_rel["port_left"])
 
@@ -107,7 +104,6 @@ class Shaping(Chip):
                 wg1_end + pya.DVector(0, -self.r),
                 wg1_end,
             ], 1),
-            r=self.r
         )
 
         waveguide_length = cross1_length + cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
@@ -122,7 +118,6 @@ class Shaping(Chip):
             end=meander2_end,
             length=segment_length_target_rr[1] - waveguide_length,
             meanders=2,
-            r=self.r
         )
 
         cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(2, False, 0, 0))
@@ -137,7 +132,6 @@ class Shaping(Chip):
                 port_abs_cross2["port_bottom"],
                 port_abs_cross2["port_bottom"] + pya.DVector(0, (segment_length_target_rr[2] - waveguide_length))
             ], 1),
-            r=self.r
         )
 
         # Capacitor J
@@ -159,7 +153,6 @@ class Shaping(Chip):
                 meander3_end + pya.DVector(self.r, 400),
                 meander3_end + pya.DVector(self.r, 400 + self.r),
             ], 1),
-            r=self.r
         )
         self.insert_cell(waveguide2)
 
@@ -170,7 +163,6 @@ class Shaping(Chip):
                          end=meander3_end,
                          length=segment_length_target_pr[0] - waveguide_length,
                          meanders=3,
-                         r=self.r
                          )
 
         # Last bit of the Purcell filter of RR
@@ -181,7 +173,6 @@ class Shaping(Chip):
                 port_abs_cross3["port_bottom"],
                 wg6_end
             ], 1),
-            r=self.r,
             term2=(40 if self.tunable else 0)
         )
 
@@ -199,7 +190,6 @@ class Shaping(Chip):
                     launchers["NE"][0] + pya.DVector(0, -self.r),
                     launchers["NE"][0] + pya.DVector(0, 0),
                 ], 1),
-                r=self.r
             )
 
         # Capacitor Kappa
@@ -218,7 +208,6 @@ class Shaping(Chip):
                 launchers["EN"][0] + pya.DVector(-self.r, 0),
                 launchers["EN"][0],
             ], 1),
-            r=self.r
         )
 
         # Capacitor for the driveline
@@ -236,7 +225,6 @@ class Shaping(Chip):
                 launchers["NW"][0] + pya.DVector(0, -self.r),
                 launchers["NW"][0] + pya.DVector(0, 0),
             ], 1),
-            r=self.r
         )
 
         ####### Shaping resonator with the purcell filter
@@ -256,7 +244,6 @@ class Shaping(Chip):
                 wg1_end + pya.DVector(0, +self.r),
                 wg1_end,
             ], 1),
-            r=self.r
         )
 
         waveguide_length = cross1_length + cross1_refpoints_rel["base"].distance(cross1_refpoints_rel["port_bottom"])
@@ -271,7 +258,6 @@ class Shaping(Chip):
             end=meander2_end,
             length=segment_length_target_rr[1] - waveguide_length,
             meanders=2,
-            r=self.r
         )
 
         cross2_refpoints_rel = self.get_refpoints(cross1, pya.DTrans(0, False, 0, 0))
@@ -286,7 +272,6 @@ class Shaping(Chip):
                 port_abs_cross2["port_bottom"],
                 port_abs_cross2["port_bottom"] + pya.DVector(0, -(segment_length_target_rr[2] - waveguide_length))
             ], 1),
-            r=self.r
         )
 
         # Capacitor J
@@ -308,7 +293,6 @@ class Shaping(Chip):
                 meander3_end + pya.DVector(self.r, -400),
                 meander3_end + pya.DVector(self.r, -400 - self.r),
             ], 1),
-            r=self.r
         )
 
         waveguide_length += waveguide2.length()
@@ -318,7 +302,6 @@ class Shaping(Chip):
                          end=meander3_end,
                          length=segment_length_target_pr[0] - waveguide_length,
                          meanders=3,
-                         r=self.r
                          )
 
         # Last bit of the Purcell filter of shaping resonator
@@ -329,7 +312,6 @@ class Shaping(Chip):
                 port_abs_cross3["port_bottom"],
                 wg6_end
             ], 1),
-            r=self.r,
             term2=(40 if self.tunable else 0)
         )
 
@@ -347,7 +329,6 @@ class Shaping(Chip):
                     launchers["SE"][0] + pya.DVector(0, self.r),
                     launchers["SE"][0] + pya.DVector(0, 0),
                 ], 1),
-                r=self.r
             )
 
         # Capacitor Kappa
@@ -366,7 +347,6 @@ class Shaping(Chip):
                 launchers["ES"][0] + pya.DVector(-self.r, 0),
                 launchers["ES"][0] + pya.DVector(0, 0),
             ], 1),
-            r=self.r
         )
 
         # Capacitor for the driveline
@@ -384,7 +364,6 @@ class Shaping(Chip):
                 launchers["SW"][0] + pya.DVector(0, self.r),
                 launchers["SW"][0] + pya.DVector(0, 0),
             ], 1),
-            r=self.r
         )
 
         # chip frame and possibly ground plane grid

@@ -67,14 +67,7 @@ class Meander(Element):
         points.append(pya.DPoint(l_direct - l_rest / 2, 0))
         points.append(pya.DPoint(l_direct, 0))
         # print(set(points))
-        waveguide = self.add_element(WaveguideCoplanar,
-            path=pya.DPath(points, 1.),
-            r=self.r,
-            face_ids=self.face_ids,
-            n=self.n,
-            a=self.a,
-            b=self.b
-        )
+        waveguide = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 1.))
 
         angle = 180 / math.pi * math.atan2(self.end.y - self.start.y, self.end.x - self.start.x)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(self.start))

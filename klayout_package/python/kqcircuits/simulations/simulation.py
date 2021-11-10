@@ -50,7 +50,7 @@ class Simulation:
 
     use_ports = Param(pdt.TypeBoolean, "Turn off to disable all ports (for debugging)", True)
     use_internal_ports = Param(pdt.TypeBoolean, "Use internal (lumped) ports. The alternative is wave ports.", True)
-    port_width = Param(pdt.TypeDouble, "Width (um) of wave ports", 400.0)
+    port_size = Param(pdt.TypeDouble, "Width (um) of wave ports", 400.0)
 
     box_height = Param(pdt.TypeDouble, "Height (um) of vacuum above chip in case of single chip.", 1000.0)
     substrate_height = Param(pdt.TypeDouble, "Height (um) of the bottom substrate.", 550.0)
@@ -160,6 +160,7 @@ class Simulation:
     get_refpoints = Element.get_refpoints
     add_element = Element.add_element
     get_layer = Element.get_layer
+    pcell_params_by_name = Element.pcell_params_by_name
 
     def create_simulation_layers(self):
         """Create the layers used for simulation export.

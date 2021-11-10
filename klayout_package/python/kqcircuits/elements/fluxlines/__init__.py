@@ -19,6 +19,7 @@
 """PCell classes for fluxlines."""
 
 fluxline_type_choices = [
+    ['none', 'none'],
     ['standard', 'Fluxline Standard'],
     ['straight', 'Fluxline Straight'],
 ]

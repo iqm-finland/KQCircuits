@@ -92,23 +92,23 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                 if (port.signal_location.x == simulation.box.left
                         or port.signal_location.x == simulation.box.right):
                     p_data['polygon'] = [
-                        [port.signal_location.x, port.signal_location.y - simulation.port_width / 2,
+                        [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
                          -simulation.substrate_height],
-                        [port.signal_location.x, port.signal_location.y + simulation.port_width / 2,
+                        [port.signal_location.x, port.signal_location.y + simulation.port_size / 2,
                          -simulation.substrate_height],
-                        [port.signal_location.x, port.signal_location.y + simulation.port_width / 2, port_top_height],
-                        [port.signal_location.x, port.signal_location.y - simulation.port_width / 2, port_top_height]
+                        [port.signal_location.x, port.signal_location.y + simulation.port_size / 2, port_top_height],
+                        [port.signal_location.x, port.signal_location.y - simulation.port_size / 2, port_top_height]
                     ]
 
                 elif (port.signal_location.y == simulation.box.top
                       or port.signal_location.y == simulation.box.bottom):
                     p_data['polygon'] = [
-                        [port.signal_location.x - simulation.port_width / 2, port.signal_location.y,
+                        [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
                          -simulation.substrate_height],
-                        [port.signal_location.x + simulation.port_width / 2, port.signal_location.y,
+                        [port.signal_location.x + simulation.port_size / 2, port.signal_location.y,
                          -simulation.substrate_height],
-                        [port.signal_location.x + simulation.port_width / 2, port.signal_location.y, port_top_height],
-                        [port.signal_location.x - simulation.port_width / 2, port.signal_location.y, port_top_height]
+                        [port.signal_location.x + simulation.port_size / 2, port.signal_location.y, port_top_height],
+                        [port.signal_location.x - simulation.port_size / 2, port.signal_location.y, port_top_height]
                     ]
 
                 else:

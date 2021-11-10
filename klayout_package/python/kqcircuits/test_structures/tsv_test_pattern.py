@@ -17,12 +17,13 @@
 
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
 
+@add_parameters_from(Tsv, "tsv_elliptical_width")
 class TsvTestPattern(TestStructure):
     """PCell declaration for TSV test structures which resembles a TSV fencing for a CPW transmission line.
 
@@ -35,12 +36,10 @@ class TsvTestPattern(TestStructure):
     ver_distance = Param(pdt.TypeDouble, "Vertical pitch on TSV", 500, unit="μm")
     tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 10, unit="μm")
     tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
-    tsv_ellipse_width = Param(pdt.TypeDouble, "Oval TSV width", 30, unit="μm")
     tsv_array_form = Param(pdt.TypeList, "TSV test layout", [2, 6, 6, 2, 6, 6, 2])
 
     def produce_impl(self):
-        tsv_unit = self.add_element(Tsv, tsv_diameter=self.tsv_diameter, tsv_type=self.tsv_type,
-                                    tsv_elliptical_width=self.tsv_ellipse_width)
+        tsv_unit = self.add_element(Tsv)
         for i, ind in enumerate(self.tsv_array_form):
             index_at_cpw_pos = int(ind) / 2
             for j in range(int(ind)):

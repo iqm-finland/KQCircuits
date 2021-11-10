@@ -137,8 +137,6 @@ class XMonsDirectCoupling(Chip):
             "arm_length": [arm_length] * 4,
             "corner_r": 2,
             "port_width": [10, 5, 10],
-            "fluxline_type": self.fluxline_type,
-            "squid_type": self.squid_type
         }
         arm_width_a = self.arm_width_a
         arm_width_b = self.arm_width_b

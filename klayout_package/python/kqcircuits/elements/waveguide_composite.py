@@ -20,6 +20,7 @@ import ast
 from importlib import import_module
 from typing import Tuple
 from math import pi, tan
+from autologging import logged
 
 from scipy.optimize import root_scalar
 
@@ -146,9 +147,10 @@ class Node:
         return cls(pya.DPoint(x, y), element, **params)
 
 
-@add_parameters_from(AirbridgeConnection)
+@add_parameters_from(AirbridgeConnection, "taper_length", "airbridge_type")
 @add_parameters_from(FlipChipConnectorRf)
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
+@logged
 class WaveguideComposite(Element):
     """A composite waveguide made of waveguides and other elements.
 
@@ -225,6 +227,8 @@ class WaveguideComposite(Element):
         self._wg_start_dir = self._node_entrance_direction(0)
 
         for i, node in enumerate(self._nodes):
+            self.__log.debug(f' Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},'
+                              ' {node.params}')
             if node.element is None:
                 if 'a' in node.params or 'b' in node.params:
                     self._add_taper(i)
@@ -349,7 +353,7 @@ class WaveguideComposite(Element):
         """Add any other simple Element, that has port_a and port_b."""
 
         node = self._nodes[ind]
-        params = {**self.pcell_params_by_name(Element), 'taper_length': self.taper_length, **node.params}
+        params = {**self.pcell_params_by_name(node.element), 'taper_length': self.taper_length, **node.params}
 
         cell = self.add_element(node.element, **params)
         self._insert_cell_and_waveguide(ind, cell, node.inst_name, *node.align)
@@ -515,7 +519,7 @@ class WaveguideComposite(Element):
         params = {'airbridge_type': self.airbridge_type}
         if ab_len:
             params['bridge_length'] = ab_len
-        ab_cell = self.add_element(Airbridge, Airbridge, **params)
+        ab_cell = self.add_element(Airbridge, **params)
         v_dir = end - start
         alpha = get_angle(v_dir)
 

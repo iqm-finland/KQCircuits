@@ -19,7 +19,6 @@
 from autologging import logged, traced
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 
 
@@ -27,8 +26,6 @@ from kqcircuits.elements.fluxlines.fluxline import Fluxline
 @logged
 class FluxlineStandard(Fluxline):
     """Fluxline variant "standard"."""
-    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
-    fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 
     def produce_impl(self):
         # shorthands

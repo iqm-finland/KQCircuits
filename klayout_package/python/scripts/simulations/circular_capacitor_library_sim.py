@@ -37,7 +37,7 @@ sim_parameters = {
     'use_internal_ports': True,
     'use_ports': True,
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
-    'port_width': 200,
+    'port_size': 200,
     'wafer_stack_type': 'planar',
     'corner_r': 2,
     'chip_distance': 8,

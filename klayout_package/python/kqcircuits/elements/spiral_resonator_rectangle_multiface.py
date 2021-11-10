@@ -18,7 +18,6 @@
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.elements.element import Element
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -81,7 +80,7 @@ class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
             return current_len, False, False
 
         # add connector cell and get connector length
-        connector_cell = self.add_element(FlipChipConnectorRf, Element)
+        connector_cell = self.add_element(FlipChipConnectorRf)
         cell_refs = self.get_refpoints(connector_cell)
         connector_len, _ = vector_length_and_direction(cell_refs["b_port"] - cell_refs["t_port"])
 
@@ -97,25 +96,25 @@ class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
                 face_0_len = dist1 - connector_len / 2
                 face_1_len = straight_len - dist1 - connector_len / 2
                 if face_0_len > numerical_inaccuracy:
-                    subcell = self.add_element(WaveguideCoplanarStraight, Element, l=face_0_len,
+                    subcell = self.add_element(WaveguideCoplanarStraight, l=face_0_len,
                                                face_ids=[self.face_ids[self.active_face_idx]])
                     trans = pya.DTrans(rotation, False, point1 + self.r * segment_dir)
                     self.insert_cell(subcell, res_trans*trans)
                 self.active_face_idx = 1
                 if face_1_len > numerical_inaccuracy:
-                    subcell = self.add_element(WaveguideCoplanarStraight, Element, l=face_1_len,
+                    subcell = self.add_element(WaveguideCoplanarStraight, l=face_1_len,
                                                face_ids=[self.face_ids[self.active_face_idx]])
                     trans = pya.DTrans(rotation, False, res_trans.inverted()*connector_ref["t_port"])
                     self.insert_cell(subcell, res_trans*trans)
             else:
-                subcell = self.add_element(WaveguideCoplanarStraight, Element, l=straight_len,
+                subcell = self.add_element(WaveguideCoplanarStraight, l=straight_len,
                                            face_ids=[self.face_ids[self.active_face_idx]])
                 trans = pya.DTrans(rotation, False, point1 + self.r * segment_dir)
                 self.insert_cell(subcell, res_trans*trans)
 
         # curved waveguide part
         if curve_angle < -numerical_inaccuracy:
-            subcell = self.add_element(WaveguideCoplanarCurved, Element, alpha=curve_angle,
+            subcell = self.add_element(WaveguideCoplanarCurved, alpha=curve_angle,
                                        face_ids=[self.face_ids[self.active_face_idx]])
             trans = res_trans*pya.DTrans(rotation + 1, False,
                                          point1 + (self.r + straight_len) * segment_dir + corner_offset)

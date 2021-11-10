@@ -34,7 +34,7 @@ sim_parameters = {
     'launchers': True,  # True includes bonding pads and tapers, false includes only waveguides
     'use_test_resonators': True,  # True makes XS1, false makes XS2
     'n': 16,  # Reduce number of point in waveguide corners
-    'port_width': 200
+    'port_size': 200
 }
 export_parameters = {
     'path': dir_path

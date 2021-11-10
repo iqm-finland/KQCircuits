@@ -302,5 +302,5 @@ kqc_library_names = (
 
 # The user may override KQC Element's default parameters
 default_parameter_values = {
-#    "FingerCapacitorSquare": {"finger_number": 6},
+    "TsvTest": {"tsv_elliptical_width": 10},
 }

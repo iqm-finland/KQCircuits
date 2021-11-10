@@ -39,7 +39,7 @@ class AirbridgeConnection(Element):
     gap_between_bridges = Param(pdt.TypeDouble, "Inner distance between adjacent bridges", 20)
 
     def produce_impl(self):
-        taper_l = self.add_element(WaveguideCoplanarTaper, WaveguideCoplanarTaper,
+        taper_l = self.add_element(WaveguideCoplanarTaper,
             a2=self.bridge_width,
             b2=self.bridge_width/self.a * self.b
         )
@@ -50,7 +50,6 @@ class AirbridgeConnection(Element):
         a = self.bridge_width
         b = a/self.a * self.b
         terminator_l = self.add_element(WaveguideCoplanar,
-            face_ids=self.face_ids,
             path=pya.DPath([
                 taper_end_v.to_p(),
                 pya.DPoint(-self.waveguide_separation/2, 0)
@@ -62,14 +61,14 @@ class AirbridgeConnection(Element):
         )
         self.insert_cell(terminator_l, pya.DTrans(0, 0))
 
-        ab = self.add_element(Airbridge, Airbridge, airbridge_type=self.airbridge_type)
+        ab = self.add_element(Airbridge)
         _, ab_ref_abs = self.insert_cell(ab, pya.DTrans.R90)
         if self.with_side_airbridges:
             self.insert_cell(ab, pya.DTrans(1, False, 0,  self.bridge_width + self.gap_between_bridges))
             self.insert_cell(ab, pya.DTrans(1, False, 0, -self.bridge_width - self.gap_between_bridges))
 
         if self.with_right_waveguide:
-            taper_r = self.add_element(WaveguideCoplanarTaper, WaveguideCoplanarTaper,
+            taper_r = self.add_element(WaveguideCoplanarTaper,
                 a1=self.bridge_width,
                 b1=self.bridge_width/self.a * self.b
             )
@@ -78,7 +77,6 @@ class AirbridgeConnection(Element):
             _, taper_r_ref_abs = self.insert_cell(taper_r, pya.DTrans(taper_end_v-taper_r_ref["port_a"].to_v()))
 
             terminator_r = self.add_element(WaveguideCoplanar,
-                face_ids=self.face_ids,
                 path=pya.DPath([
                     pya.DPoint(self.waveguide_separation/2, 0),
                     taper_end_v.to_p(),

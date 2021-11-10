@@ -79,7 +79,7 @@ class QualityFactor(Chip):
         v_res_step = (launchers["EN"][0] - launchers["WN"][0] - pya.DVector((self.r * 4 + marker_safety * 2), 0)) * \
                      (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross,
-            length_extra_side=2 * self.a, a=self.a, b=self.b, a2=self.a, b2=self.b)
+            length_extra_side=2 * self.a, a2=self.a, b2=self.b)
 
         # Airbridge crossing resonators
         cell_ab_crossing = self.add_element(Airbridge)

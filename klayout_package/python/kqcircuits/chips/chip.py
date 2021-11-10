@@ -201,10 +201,7 @@ class Chip(Element):
 
         This method is called in produce_impl(). Override this method to produce a different set of chip frames.
         """
-        b_frame_parameters = {
-            **self.pcell_params_by_name(whitelist=ChipFrame),
-            "use_face_prefix": False
-        }
+        b_frame_parameters = self.pcell_params_by_name(ChipFrame, use_face_prefix=False)
         self.produce_frame(b_frame_parameters)
 
     def produce_impl(self):
@@ -293,8 +290,7 @@ class Chip(Element):
             launcher_cell = self.add_element(LauncherDC, width=launcher_width)
         else:
             launcher_cell = self.add_element(Launcher, s=launcher_width, l=launcher_width,
-                                             a_launcher=launcher_width, b_launcher=launcher_gap,
-                                             a=self.a, b=self.b)
+                                             a_launcher=launcher_width, b_launcher=launcher_gap)
 
         pads_per_side = n
         if not isinstance(n, tuple):

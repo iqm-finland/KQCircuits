@@ -21,9 +21,10 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.chips.chip import Chip
 from kqcircuits.test_structures.tsv_test_pattern import TsvTestPattern
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
+@add_parameters_from(Tsv, "tsv_elliptical_width")
 class TsvTest(Chip):
     """Through silicon via test chip.
 
@@ -38,22 +39,15 @@ class TsvTest(Chip):
     ver_distance = Param(pdt.TypeDouble, "Vertical pitch on TSV", 500, unit="μm")
     tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 10, unit="μm")
     tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
-    tsv_ellipse_width = Param(pdt.TypeDouble, "Oval TSV width", 10, unit="μm")
 
     def produce_impl(self):
         # create cell pattern in the center
-        cell_pattern = self.add_element(TsvTestPattern, tsv_array_form=self.array_layout,
-                                        tsv_diameter=self.tsv_diameter,
-                                        cpw_distance=self.cpw_distance,
-                                        hor_distance=self.hor_distance,
-                                        ver_distance=self.ver_distance,
-                                        tsv_type=self.tsv_type,
-                                        tsv_ellipse_width=self.tsv_ellipse_width)
+        cell_pattern = self.add_element(TsvTestPattern, tsv_array_form=self.array_layout)
         self.insert_cell(cell_pattern, pya.DCplxTrans(1, 0, False, 5000, 5000))
 
         # metrology cell for crossectional analysis
         min_spacing = self.tsv_diameter if self.tsv_type == "circular" else max([self.tsv_diameter,
-                                                                                 self.tsv_ellipse_width])
+                                                                                 self.tsv_elliptical_width])
         self.create_xsection(position=pya.DPoint(1250, 1250), array_form=[10, 10],
                              pitch=self.metrology_pitch + min_spacing)
         self.create_xsection(position=pya.DPoint(1250, 8750), array_form=[8, 8],
@@ -63,8 +57,7 @@ class TsvTest(Chip):
         super().produce_impl()
 
     def create_xsection(self, position, array_form, pitch):
-        tsv_unit = self.add_element(Tsv, tsv_diameter=self.tsv_diameter, tsv_type=self.tsv_type,
-                                    tsv_elliptical_width=self.tsv_ellipse_width)
+        tsv_unit = self.add_element(Tsv)
 
         for i in range(array_form[0]):
             for j in range(array_form[1]):

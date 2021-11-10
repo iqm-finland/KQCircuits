@@ -35,5 +35,4 @@ class AirbridgesSim(Simulation):
                                                  point_shift_along_vector(pya.DPoint(100, 250), pya.DPoint(150, 250),
                                                                           (n+1) * bridge_spacing)))
         self.produce_waveguide_to_port(pya.DPoint(100, 250), pya.DPoint(150, 250), 1, use_internal_ports=True,
-                                       waveguide_length=line_length,
-                                       term1=6, a=self.a, b=self.b)
+                                       waveguide_length=line_length, term1=6)

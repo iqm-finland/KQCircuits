@@ -27,6 +27,7 @@ from kqcircuits.elements.fluxlines.fluxline import Fluxline
 @logged
 class FluxlineStraight(Fluxline):
     """Fluxline variant "straight vertical"."""
+    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 0, unit="μm", hidden=True)
     fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 3, unit="μm")
 
     def produce_impl(self):

@@ -102,7 +102,6 @@ class SingleXmons(Chip):
             path=pya.DPath(path, 1),
             r=turn_radius,
             term2=term2,
-            n=self.n,
         )
         self.insert_cell(waveguide)
         return waveguide
@@ -148,8 +147,6 @@ class SingleXmons(Chip):
             cpl_width=[60, 24, 60],
             cpl_gap=[110, 102, 110],
             cl_offset=[200, 200],
-            squid_type=self.squid_type,
-            n=self.n,
         )
         qubit_spacing_x = 1100  # shortest x-distance between qubit centers on different sides of the feedline
         qubit_spacing_y = 2600  # shortest y-distance between qubit centers on different sides of the feedline
@@ -209,7 +206,6 @@ class SingleXmons(Chip):
             length=meander_length,
             meanders=num_meanders,
             r=turn_radius,
-            n=self.n
         )
 
     def _produce_readout_resonators(self):
@@ -278,7 +274,6 @@ class SingleXmons(Chip):
             length=meander_length,
             meanders=num_meanders,
             r=turn_radius,
-            n=self.n,
         )
 
     def _produce_feedline(self, x_distance):
@@ -337,7 +332,7 @@ class SingleXmons(Chip):
 
             # Coupler
             cplr_params = cap_params(int(self.n_fingers[i]), float(self.l_fingers[i]),
-                                          self.type_coupler[i], n=self.n)
+                                          self.type_coupler[i])
             cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             if i % 2 == 0:

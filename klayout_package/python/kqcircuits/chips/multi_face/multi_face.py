@@ -46,11 +46,11 @@ class MultiFace(Chip):
 
     def produce_structures(self):
         # produce frame for face 0
-        bottom_frame_parameters = {
-            **self.pcell_params_by_name(whitelist=ChipFrame),
-            "face_ids": self.face_ids[0],
-            "use_face_prefix": True
-        }
+        bottom_frame_parameters = self.pcell_params_by_name(
+            ChipFrame,
+            face_ids=self.face_ids[0],
+            use_face_prefix=True
+        )
         self.produce_frame(bottom_frame_parameters)
 
         # produce frame for face 1
@@ -105,7 +105,7 @@ class MultiFace(Chip):
         placed) bumps.
         """
         self.__log.info('Starting ground bump generation')
-        bump = self.add_element(FlipChipConnectorDc, n=self.n)
+        bump = self.add_element(FlipChipConnectorDc)
 
         # Bump grid parameters
         existing_bump_avoidance_margin = 120  # Minimum distance allowed to existing bumps

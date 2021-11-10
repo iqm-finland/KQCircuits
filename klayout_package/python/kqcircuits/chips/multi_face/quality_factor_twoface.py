@@ -91,12 +91,12 @@ class QualityFactorTwoface(MultiFace):
                      (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross, length_extra_side=5 * self.a_capped,
                                       a=self.a_capped, b=self.b_capped, a2=self.a_capped, b2=self.b_capped,
-                                      face_ids=face_config, margin=self.margin)
+                                      face_ids=face_config)
 
         for i in range(resonators):
             cplr_params = cap_params(
                 n_fingers[i], l_fingers[i], type_coupler[i],
-                face_ids=face_config, margin=self.margin, a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
+                face_ids=face_config, a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
             cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
 
@@ -147,10 +147,8 @@ class QualityFactorTwoface(MultiFace):
                                                        length=res_lengths[i] - self.cap_res_distance,
                                                        a=res_a[i],
                                                        b=res_b[i],
-                                                       margin=self.margin,
                                                        connector_dist=connector_distances[i] - self.cap_res_distance,
                                                        face_ids=face_config,
-                                                       r=self.r
                                                        )
             else:
                 cell_res_even_width = self.add_element(SpiralResonatorRectangle,
@@ -161,9 +159,7 @@ class QualityFactorTwoface(MultiFace):
                                                        length=res_lengths[i] - self.cap_res_distance,
                                                        a=res_a[i],
                                                        b=res_b[i],
-                                                       margin=self.margin,
                                                        face_ids=face_config,
-                                                       r=self.r
                                                        )
             self.insert_cell(cell_res_even_width, pya.DTrans(pos_res_start) * rotation)
 
@@ -212,8 +208,8 @@ class QualityFactorTwoface(MultiFace):
                            Node((self.face1_box.p2.x, mid_y), a=self.a_capped, b=self.b_capped),
                            Node((right_connector, mid_y), face_id=face_config[0]),
                            Node(right_point)]
-        self.insert_cell(WaveguideComposite, nodes=nodes_left, margin=self.margin, a=self.a, b=self.b)
-        self.insert_cell(WaveguideComposite, nodes=nodes_right, margin=self.margin, a=self.a, b=self.b)
+        self.insert_cell(WaveguideComposite, nodes=nodes_left)
+        self.insert_cell(WaveguideComposite, nodes=nodes_right)
 
         # Top chip etching and ground grid avoidance
         if self.resonator_type == "etched" or self.resonator_type == "solid":

@@ -29,13 +29,8 @@ from kqcircuits.defaults import default_fluxline_type
 @logged
 class Fluxline(Element):
     """Base class for fluxline objects without actual produce function."""
-
-    # Parameters defined here will be inherited by Qubit, and are to be common for multiple fluxlines.  Subclasses of
-    # Fluxline should override the defaults (of any parameters they use) with a suitable default value for the
-    # particular design.The default value here should be a special "unphysical" value, e.g. 0, which indicates that the
-    # default of the particular Fluxline subclass should be used.
-    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 0, unit="μm")
-    fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 0, unit="μm")
+    fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
+    fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 
     @classmethod
     def create(cls, layout, library=None, fluxline_type=None, **parameters):

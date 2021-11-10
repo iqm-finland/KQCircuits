@@ -58,7 +58,6 @@ def _relative_length_error(target_len, point_a, point_a_corner, point_b, point_b
     chip = Chip()
     chip.layout = layout
     chip.cell = chip_cell
-    chip.r = 100
 
     inst = produce_fixed_length_bend(chip, target_len, point_a, point_a_corner, point_b,
                                                               point_b_corner, bridges)

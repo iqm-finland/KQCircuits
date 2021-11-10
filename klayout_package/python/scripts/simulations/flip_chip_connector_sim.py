@@ -40,7 +40,7 @@ sim_parameters = {
     'r': 10,
     'a': 10,
     'b': 10,
-    'port_width': 200,
+    'port_size': 200,
     'output_rotation': 180,
     'wafer_stack_type': "multiface"
 }

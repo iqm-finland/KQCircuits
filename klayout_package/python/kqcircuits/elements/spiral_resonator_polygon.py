@@ -229,7 +229,7 @@ class SpiralResonatorPolygon(Element):
         Args:
             points: List of DPoints created by function _produce_path_points
         """
-        tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
+        tmp_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0))
         length = tmp_cell.length()
 
         # handle correctly the last waveguide segment
@@ -242,7 +242,7 @@ class SpiralResonatorPolygon(Element):
             for i in range(1, len(points)):
                 dist_to_next_bridge = self._produce_airbridges_for_segment(points, i, dist_to_next_bridge)
 
-        wg_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0), term2=term2)
+        wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0), term2=term2)
         self.insert_cell(wg_cell)
 
     def _fix_waveguide_end(self, points, current_length):
@@ -270,11 +270,11 @@ class SpiralResonatorPolygon(Element):
                 points.pop()
                 points[-1] -= corner_cut_dist * vector_length_and_direction(points[-1] - points[-2])[1]
                 # calculate how long the new curve piece needs to be
-                tmp_cell = self.add_element(WaveguideCoplanar, SpiralResonatorPolygon, path=pya.DPath(points, 0))
+                tmp_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0))
                 curve_length = self.length - tmp_cell.length()
                 curve_alpha = curve_length / self.r
                 # add new curve piece at the waveguide end
-                curve_cell = self.add_element(WaveguideCoplanarCurved, SpiralResonatorPolygon, alpha=curve_alpha)
+                curve_cell = self.add_element(WaveguideCoplanarCurved, alpha=curve_alpha)
                 curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0,
                                              corner_pos)
                 self.insert_cell(curve_cell, curve_trans)
@@ -319,7 +319,7 @@ class SpiralResonatorPolygon(Element):
             if add_bridge:
                 pos = prev_pos + dist_to_next_bridge*segment_dir
                 angle = degrees(atan2(segment_dir.y, segment_dir.x))
-                self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos), face_ids=self.face_ids)
+                self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos))
                 remaining_len -= dist_to_next_bridge
                 dist_to_next_bridge = self.bridge_spacing
                 prev_pos = pos

@@ -76,14 +76,14 @@ class WaveguideCoplanar(Element):
 
             # Straight segment before corner
             if straight_length > self.corner_safety_overlap:
-                cell_straight = self.add_element(WaveguideCoplanarStraight, Element, l=straight_length)
+                cell_straight = self.add_element(WaveguideCoplanarStraight, l=straight_length)
                 start_point = points[i] + last_cut_dist / v1.length() * v1
                 transf = pya.DCplxTrans(1, math.degrees(alpha1), False, start_point)
                 self.insert_cell(cell_straight, transf)
 
             # Curved segment at the corner
             if 2 * cut_dist >= self.corner_safety_overlap:
-                cell_curved = self.add_element(WaveguideCoplanarCurved, Element, alpha=alpha, n=self.n)
+                cell_curved = self.add_element(WaveguideCoplanarCurved, alpha=alpha)
                 transf = pya.DCplxTrans(1, math.degrees(alpha1) + (90 if alpha < 0 else -90), False, corner_pos)
                 self.insert_cell(cell_curved, transf)
 
@@ -100,7 +100,7 @@ class WaveguideCoplanar(Element):
 
         # Straight segment at the end
         if straight_length > self.corner_safety_overlap:
-            subcell = self.add_element(WaveguideCoplanarStraight, Element, l=straight_length)
+            subcell = self.add_element(WaveguideCoplanarStraight, l=straight_length)
             start_point = points[-2] + last_cut_dist / v1.length() * v1
             transf = pya.DCplxTrans(1, math.degrees(math.atan2(v1.y, v1.x)), False, start_point)
             self.insert_cell(subcell, transf)

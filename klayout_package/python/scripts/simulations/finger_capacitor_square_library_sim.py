@@ -44,7 +44,7 @@ sim_parameters = {
     "finger_gap_end": 5,
     "finger_length": 20,
     "ground_padding": 10,
-    'port_width': 200,
+    'port_size': 200,
     'wafer_stack_type': "multiface",
     'corner_r': 2,
     'chip_distance': 8

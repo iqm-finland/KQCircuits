@@ -60,7 +60,7 @@ class CrossingTwoface(MultiFace):
                  Node(self.refpoints["SW_port"])
                  ]
 
-        self.insert_cell(WaveguideComposite, nodes=nodes, connector_type=self.connector_type, margin=self.margin)
+        self.insert_cell(WaveguideComposite, nodes=nodes)
 
         # Right transmission line
         nodes = [Node(self.refpoints["NE_port"]),
@@ -74,7 +74,7 @@ class CrossingTwoface(MultiFace):
                  Node(self.refpoints["SE_port"])
                  ]
 
-        self.insert_cell(WaveguideComposite, nodes=nodes, connector_type=self.connector_type, margin=self.margin)
+        self.insert_cell(WaveguideComposite, nodes=nodes)
 
         # Crossing transmission line
         nodes = [Node(self.refpoints["WN_port"]),
@@ -103,13 +103,7 @@ class CrossingTwoface(MultiFace):
         nodes.append(Node((self.face1_box.p1.x + 100, self.refpoints["WS_port"].y), a=self.a, b=self.b))
         nodes.append(Node(self.refpoints["WS_port_corner"]))
         nodes.append(Node(self.refpoints["WS_port"]))
-        self.insert_cell(WaveguideComposite,
-                         nodes=nodes,
-                         connector_type=self.connector_type,
-                         margin=self.margin,
-                         a=self.a,
-                         b=self.b
-                         )
+        self.insert_cell(WaveguideComposite, nodes=nodes)
 
         # cross_talk
         ref_x = right_tr_x + self.cross_talk_distance + wiggle
@@ -136,4 +130,4 @@ class CrossingTwoface(MultiFace):
                           a=self.a, b=self.b))
         nodes.append(Node(self.refpoints["ES_port_corner"]))
         nodes.append(Node(self.refpoints["ES_port"]))
-        self.insert_cell(WaveguideComposite, nodes=nodes, connector_type=self.connector_type, margin=self.margin)
+        self.insert_cell(WaveguideComposite, nodes=nodes)
