@@ -45,7 +45,8 @@ class AirbridgeConnection(Element):
         )
         taper_l_ref = self.get_refpoints(taper_l)
         taper_end_v = pya.DVector(-self.bridge_length/2-2*self.pad_length, 0)
-        _, taper_l_ref_abs = self.insert_cell(taper_l, pya.DTrans(taper_end_v-taper_l_ref["port_b"].to_v()))
+        taper_l_inst, _ = self.insert_cell(taper_l, pya.DTrans(taper_end_v-taper_l_ref["port_b"].to_v()))
+        self.copy_port("a", taper_l_inst)
 
         a = self.bridge_width
         b = a/self.a * self.b
@@ -62,7 +63,7 @@ class AirbridgeConnection(Element):
         self.insert_cell(terminator_l, pya.DTrans(0, 0))
 
         ab = self.add_element(Airbridge)
-        _, ab_ref_abs = self.insert_cell(ab, pya.DTrans.R90)
+        ab_inst, _ = self.insert_cell(ab, pya.DTrans.R90)
         if self.with_side_airbridges:
             self.insert_cell(ab, pya.DTrans(1, False, 0,  self.bridge_width + self.gap_between_bridges))
             self.insert_cell(ab, pya.DTrans(1, False, 0, -self.bridge_width - self.gap_between_bridges))
@@ -74,7 +75,7 @@ class AirbridgeConnection(Element):
             )
             taper_r_ref = self.get_refpoints(taper_r)
             taper_end_v = pya.DVector(self.bridge_length/2+2*self.pad_length, 0)
-            _, taper_r_ref_abs = self.insert_cell(taper_r, pya.DTrans(taper_end_v-taper_r_ref["port_a"].to_v()))
+            taper_r_inst, _ = self.insert_cell(taper_r, pya.DTrans(taper_end_v-taper_r_ref["port_a"].to_v()))
 
             terminator_r = self.add_element(WaveguideCoplanar,
                 path=pya.DPath([
@@ -87,12 +88,9 @@ class AirbridgeConnection(Element):
                 term2=0
             )
             self.insert_cell(terminator_r, pya.DTrans(0, 0))
-
-        self.add_port("a", taper_l_ref_abs["port_a"], taper_l_ref_abs["port_a_corner"] - taper_l_ref_abs["port_a"])
-        if self.with_right_waveguide:
-            self.add_port("b", taper_r_ref_abs["port_b"], taper_r_ref_abs["port_b_corner"] - taper_r_ref_abs["port_b"])
+            self.copy_port("b", taper_r_inst)
         else:
-            self.add_port("b", ab_ref_abs["port_b"], ab_ref_abs["port_b_corner"] - ab_ref_abs["port_b"])
+            self.copy_port("b", ab_inst)
 
         path_airbridge = pya.DPath([pya.DPoint(-self.waveguide_separation/2, 0),
                                     pya.DPoint(self.waveguide_separation/2, 0)], self.bridge_width)

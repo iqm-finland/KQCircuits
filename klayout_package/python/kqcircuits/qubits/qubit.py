@@ -27,6 +27,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.squids import squid_type_choices
 from kqcircuits.squids.squid import Squid
 
+
 @add_parameters_from(Fluxline, "fluxline_gap_width")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
@@ -114,8 +115,8 @@ class Qubit(Element):
         integer_transf = transf.to_itrans(self.layout.dbu)
         float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
 
-        _, fl_ref = self.insert_cell(cell, float_transf)
-        self.add_port("flux", fl_ref["port_flux"], fl_ref["port_flux_corner"] - fl_ref["port_flux"])
+        cell_inst, _ = self.insert_cell(cell, float_transf)
+        self.copy_port("flux", cell_inst)
 
         unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
         unetch_region.transform(integer_transf)

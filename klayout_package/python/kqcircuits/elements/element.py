@@ -221,7 +221,7 @@ class Element(pya.PCellDeclarationHelper):
         p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}
         return {**p, **parameters}
 
-    def add_port(self, name, pos, direction=None):
+    def add_port(self, name, pos, direction=None, face_id=0):
         """ Add a port location to the list of reference points as well as ports layer for netlist extraction
 
         Args:
@@ -231,14 +231,40 @@ class Element(pya.PCellDeclarationHelper):
             direction: direction of the signal going _to_ the port to determine the location of the "corner" reference
                 point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
                 added.
+            face_id: index of the face id, default=0
         """
         text = pya.DText(name, pos.x, pos.y)
-        self.cell.shapes(self.get_layer("ports")).insert(text)
+        self.cell.shapes(self.get_layer("ports", face_id)).insert(text)
 
         port_name = "port_"+name if name else "port"
         self.refpoints[port_name] = pos
         if direction:
             self.refpoints[port_name+"_corner"] = pos+direction/direction.length()*self.r
+
+    def copy_port(self, name, cell_inst, new_name = None):
+        """ Copy a port definition from a different cell and instance; typically used to expose a specific subcell port.
+
+        Args:
+            name: Name of the port as it was specified to ``add_port``
+            cell_inst: Instance of the cell, used to transform the port location correctly.
+            new_name: Optionally rename the port
+        """
+        copy_name = name if new_name is None else new_name
+        port_name = "port" if name == "" else f"port_{name}"
+        port_corner_name = f"{port_name}_corner"
+
+        # workaround for getting the cell due to KLayout bug, see
+        # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
+        # TODO: replace by `cell = cell_inst.cell` once KLayout bug is fixed (may be fixed in 0.27 but seems untested)
+        cell = self.layout.cell(cell_inst.cell_index)
+
+        cell_refpoints = self.get_refpoints(cell, cell_inst.dcplx_trans)
+        for i in range(len(self.face_ids)):
+            if "ports" in self.face(i):
+                if name in get_refpoints(self.get_layer("ports", i), cell, cell_inst.dcplx_trans):
+                    self.add_port(copy_name, cell_refpoints[port_name],
+                                  cell_refpoints[port_corner_name] - cell_refpoints[port_name], i)
+                    break
 
     @classmethod
     def get_schema(cls, noparents=False):
