@@ -146,6 +146,23 @@ class Node:
 
         return cls(pya.DPoint(x, y), element, **params)
 
+    @staticmethod
+    def nodes_from_string(nodes):
+        """Converts the human readable text representation of Nodes to an actual Node object list.
+
+        Needed for storage in KLayout parameters. The string has to conform to a specific format:
+        `(x, y, class_str, parameter_dict)`. For example `(0, 500, 'Airbridge', {'n_bridges': 2})`,
+        see also the `Node.__str__` method. Empty class_str or parameter_dict may be omitted.
+
+        Returns:
+            list of Node objects
+        """
+
+        nlas = ", ".join(nodes) if isinstance(nodes, list) else nodes
+        node_list = ast.literal_eval(nlas + ",")
+
+        return [Node.deserialize(node) for node in node_list]
+
 
 @add_parameters_from(AirbridgeConnection, "taper_length", "airbridge_type")
 @add_parameters_from(FlipChipConnectorRf)
@@ -216,7 +233,7 @@ class WaveguideComposite(Element):
         subclass. Elements are oriented collinear to the preceding Node and an automatic bend is
         inserted after if the next Node is not collinear.
         """
-        self._nodes = self._nodes_from_string()
+        self._nodes = Node.nodes_from_string(self.nodes)
         self._child_refpoints = {}
         if len(self._nodes) < 2:
             self.raise_error_on_cell("Need at least 2 Nodes for a WaveguideComposite.",
@@ -266,23 +283,6 @@ class WaveguideComposite(Element):
         self.add_port("b", self._wg_start_pos, self._wg_start_dir)
 
         super().produce_impl()
-
-    def _nodes_from_string(self):
-        """Converts the human readable text representation of Nodes to an actual Node object list.
-
-        Needed for storage in KLayout parameters. The string has to conform to a specific format:
-        `(x, y, class_str, parameter_dict)`. For example `(0, 500, 'Airbridge', {'n_bridges': 2})`,
-        see also the `Node.__str__` method. Empty class_str or parameter_dict may be omitted.
-
-        Returns:
-            list of Node objects
-        """
-
-        if isinstance(self.nodes, list):
-            self.nodes = ", ".join(self.nodes)
-        node_list = ast.literal_eval(self.nodes + ",")
-
-        return [Node.deserialize(node) for node in node_list]
 
     def _add_taper(self, ind):
         """Create a WaveguideCoplanarTaper and change default a/b."""
