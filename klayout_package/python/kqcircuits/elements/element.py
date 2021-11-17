@@ -85,11 +85,28 @@ class Element(pya.PCellDeclarationHelper):
 
         # create KLayout's PCellParameterDeclaration objects
         self._param_value_map = {}
-        cls = type(self).__qualname__
         for name, p in type(self).get_schema().items():
             self._param_value_map[name] = len(self._param_decls)
-            if cls in default_parameter_values and name in default_parameter_values[cls]:
-                p.default = default_parameter_values[cls][name]
+            # Override default value based on default_parameter_values if needed.
+            mro = type(self).__mro__
+            for i, cls in enumerate(mro):
+                cls_name = cls.__qualname__
+                if cls_name in default_parameter_values and name in default_parameter_values[cls_name]:
+                    # Ensure that the `cls` default overrides the value only if it is not overridden
+                    # by another class below `cls` in the hierarchy.
+                    override = True
+                    for cls2 in mro[:i]:
+                        if name in cls2.__dict__:
+                            override = False
+                            break
+                    if not override:
+                        break
+                    # We need to redefine the Param object, because multiple classes may refer to the same Param object
+                    # due to inheritance, so modifying the existing Param object could affect other classes.
+                    p = Param(p.data_type, p.description, default_parameter_values[cls_name][name], **p.kwargs)
+                    p.__set_name__(type(self), name)
+                    setattr(type(self), name, p)
+                    break
             self._add_parameter(name, p.data_type, p.description, default=p.default, **p.kwargs)
 
     @staticmethod
