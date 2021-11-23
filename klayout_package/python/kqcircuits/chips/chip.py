@@ -19,7 +19,7 @@
 import numpy
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_layers, default_squid_type
+from kqcircuits.defaults import default_layers, default_squid_type, default_marker_type
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
@@ -54,6 +54,8 @@ class Chip(Element):
     name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
     name_copy = Param(pdt.TypeString, "Name of the copy", None)
     dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100, hidden=True)
+    marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
+                        default=[default_marker_type] * 4)
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell

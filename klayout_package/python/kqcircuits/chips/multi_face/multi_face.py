@@ -23,7 +23,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.defaults import default_mask_parameters
+from kqcircuits.defaults import default_mask_parameters, default_marker_type
 
 
 @traced
@@ -43,13 +43,15 @@ class MultiFace(Chip):
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="[μm]")
     connector_type = Param(pdt.TypeString, "Connector type for CPW waveguides", "Coax",
                            choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
+    face1_marker_types = Param(pdt.TypeList, "Marker type for each top face corner, starting from lower right and "
+                                             "going anticlockwise", default=[default_marker_type] * 4)
 
     def produce_structures(self):
         # produce frame for face 0
         bottom_frame_parameters = self.pcell_params_by_name(
             ChipFrame,
             face_ids=self.face_ids[0],
-            use_face_prefix=True
+            use_face_prefix=True,
         )
         self.produce_frame(bottom_frame_parameters)
 
@@ -63,7 +65,8 @@ class MultiFace(Chip):
             "name_chip": self.name_chip,
             "name_mask": self.name_mask,
             "dice_width": default_mask_parameters[self.face_ids[1]]["dice_width"],
-            "text_margin": default_mask_parameters[self.face_ids[1]]["text_margin"]
+            "text_margin": default_mask_parameters[self.face_ids[1]]["text_margin"],
+            "marker_types": self.face1_marker_types
         }
         t_frame_trans = pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans.M90
         self.produce_frame(t_frame_parameters, t_frame_trans)
