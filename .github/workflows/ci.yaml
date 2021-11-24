@@ -140,8 +140,7 @@ jobs:
 
   pages:
     name: Deploy documentation
-    needs: [ test, test_non_linux, static_analysis, check_copyright_headers,
-             check_license, verify_documentation ]
+    needs: [ check_copyright_headers, check_license, verify_documentation ]
     runs-on: ubuntu-latest
     container: ghcr.io/iqm-finland/kqcircuits
     if: ${{ github.ref == 'refs/heads/main' }}
