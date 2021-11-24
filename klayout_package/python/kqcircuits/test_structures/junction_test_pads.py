@@ -21,7 +21,7 @@ import numpy
 from kqcircuits.defaults import default_squid_type
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
 from kqcircuits.squids import squid_type_choices
@@ -29,6 +29,7 @@ from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
 
 
+@add_parameters_from(Qubit, "junction_width")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
 
@@ -41,8 +42,10 @@ class JunctionTestPads(TestStructure):
     only_pads = Param(pdt.TypeBoolean, "Only produce pads, no junctions", False)
     pad_configuration = Param(pdt.TypeString, "Pad configuration", "2-port",
                               choices=[["2-port", "2-port"], ["4-port", "4-port"]])
-    junction_width = Param(pdt.TypeDouble, "Junction width for code generated squids", 0.02,
-                           docstring="Junction width (only used for code generated squids)")
+    junction_width_steps = Param(pdt.TypeList, "Automatically generate junction widths [start, step]", [0, 0],
+                                 unit="[μm, μm]")
+    junction_widths = Param(pdt.TypeList, "Optional junction widths for individual junctions", [],
+                            docstring="Override the junction widths with these values.")
 
     produce_squid = Qubit.produce_squid
 
@@ -85,6 +88,19 @@ class JunctionTestPads(TestStructure):
 
         super().produce_impl()
 
+    def _next_junction_width(self, idx):
+        """Get the next junction width
+
+        Try first the `junction_widths` list, if available, if not then generate it based on `start`
+        and `step`, unless `step` is 0, in this case just use the default `junction_width`.
+        """
+        start, step = [float(x) for x in self.junction_width_steps]
+        if idx < len(self.junction_widths) and self.junction_widths[idx] != '':
+            return float(self.junction_widths[idx])
+        elif step:
+            return start + idx * step
+        return self.junction_width
+
     def _produce_two_port_junction_tests(self):
 
         pads_region = pya.Region()
@@ -100,6 +116,7 @@ class JunctionTestPads(TestStructure):
                                       pad_step, dtype=numpy.double):
                     self.produce_pad(x - pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
                     self.produce_pad(x + pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
+                    self._next_width = self._next_junction_width(junction_idx)
                     self._produce_junctions(x, y, pads_region, arm_width)
                     self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x - pad_step * y_flip / 2, y)
                     self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x + pad_step * y_flip/ 2, y)
@@ -111,6 +128,7 @@ class JunctionTestPads(TestStructure):
                                       pad_step, dtype=numpy.double):
                     self.produce_pad(x, y - pad_step / 2, pads_region, self.pad_width, self.pad_width)
                     self.produce_pad(x, y + pad_step / 2, pads_region, self.pad_width, self.pad_width)
+                    self._next_width = self._next_junction_width(junction_idx)
                     self._produce_junctions(x, y, pads_region, arm_width)
                     self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x, y - pad_step / 2)
                     self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x, y + pad_step / 2)
@@ -144,6 +162,7 @@ class JunctionTestPads(TestStructure):
                                                  self.pad_spacing, True,
                                                  pya.DTrans(0 if self.junctions_horizontal else 1, False, x, y),
                                                  "probe_{}".format(junction_idx))
+                    self._next_width = self._next_junction_width(junction_idx)
                     self._produce_junctions(x, y, pads_region, 5)
 
                 junction_idx += 1
@@ -171,7 +190,7 @@ class JunctionTestPads(TestStructure):
         if self.junctions_horizontal:
             # squid
             trans = pya.DCplxTrans(x, y - junction_spacing)
-            region_unetch, squid_ref_rel = self.produce_squid(trans)
+            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width)
             pos_rel_squid_top = squid_ref_rel["port_common"]
             pads_region.insert(region_unetch)
             # arm below
@@ -189,7 +208,7 @@ class JunctionTestPads(TestStructure):
         else:
             # squid
             trans = pya.DCplxTrans(x - junction_spacing, y)
-            region_unetch, squid_ref_rel = self.produce_squid(trans)
+            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width)
             pos_rel_squid_top = squid_ref_rel["port_common"]
             pads_region.insert(region_unetch)
             # arm below

@@ -42,7 +42,8 @@ class Squid(Element):
     LIBRARY_DESCRIPTION = "Library for SQUIDs."
     LIBRARY_PATH = "squids"
 
-    junction_width = Param(pdt.TypeDouble, "Junction width [μm]", 0.02)
+    junction_width = Param(pdt.TypeDouble, "Junction width for code generated squids", 0.02, unit="[μm]",
+                           docstring="Junction width (only used for code generated squids)")
 
     @classmethod
     def create(cls, layout, library=None, squid_type=None, **parameters):
