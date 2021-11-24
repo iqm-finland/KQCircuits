@@ -367,3 +367,13 @@ class Simulation:
         """
         d = (self.over_etching / p1.distance(p2)) * (p2 - p1)
         return [p1 - d, p2 + d]
+
+    @staticmethod
+    def delete_instances(cell, name, index=(0,)):
+        """
+            Allows for deleting a sub-cell of the top 'cell' with a specific 'name'. The 'index' argument can be used to
+            access more than one sub-cell sharing the same 'name', but with different appended 'index' to the 'name'.
+        """
+        for i in index:
+            index_name = f'${i}' if i > 0 else ''
+            cell.layout().cell(f'{name}{index_name}').delete()
