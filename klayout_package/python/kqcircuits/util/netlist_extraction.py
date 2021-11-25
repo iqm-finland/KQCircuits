@@ -108,25 +108,39 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
 
     subcircuits_for_export = {}
     used_internal_cells = set()
+
+    # selects last cell in the layout, which will contain all instances of all cells with user properties
+    *_, last_cell = original_layout.each_cell()
+    original_instances = list(last_cell.each_inst())
+
     for subcircuit in circuit.each_subcircuit():
         internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
+        if cell_mapping.has_mapping(internal_cell.cell_index()):
+            original_cell_index = cell_mapping.cell_mapping(internal_cell.cell_index())
+            possible_instances = [i for i in original_instances if i.cell.cell_index() == original_cell_index]
+        else:
+            possible_instances = []
+
         used_internal_cells.add(internal_cell)
 
         if internal_cell.name.split('$')[0] == 'Waveguide Coplanar':
             location = subcircuit.circuit_ref().boundary.bbox().center()
         elif hasattr(subcircuit, "trans"):
             location = subcircuit.trans.disp
-        else: # sane defaults for klayout 0.26 as it does not have `subcircuit.trans`
+        else:  # sane defaults for klayout 0.26 as it does not have `subcircuit.trans`
             location = [0.0, 0.0]
+
+        correct_instance = [i for i in possible_instances if i.has_prop_id() and (i.dtrans.disp == location)]
 
         subcircuits_for_export[subcircuit.id()] = {
             "cell_name": internal_cell.name,
+            "instance_name": correct_instance[0].property('id') if correct_instance else None,
             "subcircuit_location": location,
         }
 
     circuits_for_export = {}
     for internal_cell in sorted(used_internal_cells, key=lambda cell: cell.name):
-        circuits_for_export[internal_cell.name] =  extract_circuits(cell_mapping, internal_cell, original_layout)
+        circuits_for_export[internal_cell.name] = extract_circuits(cell_mapping, internal_cell, original_layout)
 
     with open(str(filename), 'w') as fp:
         json.dump({"nets": nets_for_export, "subcircuits": subcircuits_for_export, "circuits": circuits_for_export}, fp,
