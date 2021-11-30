@@ -43,7 +43,8 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
-                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, export_processing=None):
+                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101,
+                      export_processing=None, ansys_project_template=None):
     """
     Export Ansys simulation into json and gds files.
 
@@ -64,6 +65,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         sweep_end: The highest frequency in the sweep.
         sweep_count: Number of frequencies in the sweep.
         export_processing: Optional export processing, given as list of strings
+        ansys_project_template: path to the simulation template
 
     Returns:
          Path to exported json file.
@@ -185,6 +187,10 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         },
         'export_processing': export_processing
     }
+
+    if ansys_project_template is not None:
+        ansys_data['ansys_project_template'] = ansys_project_template
+
     if simulation.wafer_stack_type == "multiface":
         ansys_data = {**ansys_data,
                       "substrate_height_top": simulation.substrate_height_top,
@@ -277,7 +283,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101,
                  exit_after_run=False, ansys_executable=r"%PROGRAMFILES%\AnsysEM\AnsysEM21.1\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
-                 use_rel_path=True, export_processing=None):
+                 use_rel_path=True, export_processing=None, ansys_project_template=None):
     """
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -305,6 +311,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         post_process_script: Name of post processing script file.
         use_rel_path: Determines if to use relative paths.
         export_processing: Optional export processing, given as list of strings
+        ansys_project_template: path to the simulation template
 
     Returns:
         Path to exported bat file.
@@ -321,7 +328,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                                 minimum_converged_passes=minimum_converged_passes,
                                                 sweep_enabled=sweep_enabled, sweep_start=sweep_start,
                                                 sweep_end=sweep_end, sweep_count=sweep_count,
-                                                export_processing=export_processing))
+                                                export_processing=export_processing,
+                                                ansys_project_template=ansys_project_template))
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
                             ansys_executable=ansys_executable, import_script_folder=import_script_folder,
                             import_script=import_script, post_process_script=post_process_script,

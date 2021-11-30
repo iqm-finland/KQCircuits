@@ -39,6 +39,7 @@ with open(jsonfile, 'r') as fjsonfile:
     data = json.load(fjsonfile)
 
 ansys_tool = data['ansys_tool'] if 'ansys_tool' in data else 'hfss'
+
 gds_file = data['gds_file']
 signal_layer = data['signal_layer']
 ground_layer = data['ground_layer']
@@ -51,6 +52,8 @@ wafer_stack_type = data['stack_type']
 vacuum_box_height = box_height
 layer_map_option = []
 entry_option = []
+use_ansys_project_template = 'ansys_project_template' in data \
+    and not data['ansys_project_template'] == ''
 
 if wafer_stack_type == "multiface":
     substrate_height_top = data['substrate_height_top']
@@ -314,29 +317,29 @@ if airbridge_flyover_objects:
 if ansys_tool == 'hfss':
     ports = sorted(data['ports'], key=lambda k: k['number'])
     for port in ports:
-        polyname = 'Port%d' % port['number']
-
-        # Create polygon spanning the two edges
-        create_polygon(oEditor, polyname,
-                       [list(p) for p in port['polygon']], units)
-
         is_wave_port = port['type'] == 'EdgePort'
+        if not is_wave_port or not use_ansys_project_template:
+            polyname = 'Port%d' % port['number']
 
-        oBoundarySetup.AutoIdentifyPorts(
-            ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
-            is_wave_port,
-            ["NAME:ReferenceConductors"] + ground_objects,
-            str(port['number']),
-            False)
+            # Create polygon spanning the two edges
+            create_polygon(oEditor, polyname,
+                           [list(p) for p in port['polygon']], units)
 
-        if ("deembed_len" in port) and (port["deembed_len"] is not None):
-            oBoundarySetup.EditWavePort(
+            oBoundarySetup.AutoIdentifyPorts(
+                ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
+                is_wave_port,
+                ["NAME:ReferenceConductors"] + ground_objects,
                 str(port['number']),
-                ["Name:%d" % port['number'],
-                 "DoDeembed:=", True,
-                 "DeembedDist:=", "%f%s" % (port["deembed_len"], units)
-                 ]
-            )
+                False)
+
+            if ("deembed_len" in port) and (port["deembed_len"] is not None):
+                oBoundarySetup.EditWavePort(
+                    str(port['number']),
+                    ["Name:%d" % port['number'],
+                     "DoDeembed:=", True,
+                     "DeembedDist:=", "%f%s" % (port["deembed_len"], units)
+                     ]
+                )
 
 elif ansys_tool == 'q3d':
     port_objects = []  # signal objects to be assigned as SignalNets
@@ -380,42 +383,40 @@ elif ansys_tool == 'q3d':
              ])
     oBoundarySetup.AutoIdentifyNets()  # Combine Nets by conductor connections. Order: GroundNet, SignalNet, FloatingNet
 
-# Create substrate and vacuum boxes
-import_bounding_box = oEditor.GetModelBoundingBox()
 
-create_box(
-    oEditor, "Box",
-    float(import_bounding_box[0]), float(import_bounding_box[1]), 0,
-    float(import_bounding_box[3]) - float(import_bounding_box[0]),
-    float(import_bounding_box[4]) - float(import_bounding_box[1]),
-    vacuum_box_height,
-    "vacuum",
-    units)
+if not use_ansys_project_template:
+    # Create substrate and vacuum boxes
+    import_bounding_box = oEditor.GetModelBoundingBox()
 
-create_box(
-    oEditor, "Substrate",
-    float(import_bounding_box[0]), float(import_bounding_box[1]), 0,
-    float(import_bounding_box[3]) - float(import_bounding_box[0]),
-    float(import_bounding_box[4]) - float(import_bounding_box[1]),
-    -substrate_height,
-    "si",
-    units)
-
-if wafer_stack_type == 'multiface':
     create_box(
-        oEditor, "Top_chip",
-        float(import_bounding_box[0]), float(import_bounding_box[1]), chip_distance,
+        oEditor, "Box",
+        float(import_bounding_box[0]), float(import_bounding_box[1]), 0,
         float(import_bounding_box[3]) - float(import_bounding_box[0]),
         float(import_bounding_box[4]) - float(import_bounding_box[1]),
-        substrate_height_top,
+        vacuum_box_height,
+        "vacuum",
+        units)
+
+    create_box(
+        oEditor, "Substrate",
+        float(import_bounding_box[0]), float(import_bounding_box[1]), 0,
+        float(import_bounding_box[3]) - float(import_bounding_box[0]),
+        float(import_bounding_box[4]) - float(import_bounding_box[1]),
+        -substrate_height,
         "si",
         units)
 
-# Fit window to objects
-oEditor.FitAll()
+    if wafer_stack_type == 'multiface':
+        create_box(
+            oEditor, "Top_chip",
+            float(import_bounding_box[0]), float(import_bounding_box[1]), chip_distance,
+            float(import_bounding_box[3]) - float(import_bounding_box[0]),
+            float(import_bounding_box[4]) - float(import_bounding_box[1]),
+            substrate_height_top,
+            "si",
+            units)
 
-# Insert analysis setup
-if 'analysis_setup' in data:
+    # Insert analysis setup
     setup = data['analysis_setup']
 
     if ansys_tool == 'hfss':
@@ -519,6 +520,35 @@ if 'analysis_setup' in data:
                                            "Solver Type:=", "Iterative"
                                        ]
                                    ])
+else:
+    scriptpath = os.path.dirname(__file__)
+    aedt_path = os.path.join(scriptpath, '../')
+    basename = os.path.splitext(os.path.basename(jsonfile))[0]
+    build_geom_name = basename + "_build_geometry"
+    template_path = data['ansys_project_template']
+    template_basename = os.path.splitext(os.path.basename(template_path))[0]
+
+    oProject = oDesktop.GetActiveProject()
+    oProject.SaveAs(os.path.join(aedt_path, build_geom_name + ".aedt"), True)
+
+    oDesign = oProject.GetActiveDesign()
+    oEditor = oDesign.SetActiveEditor("3D Modeler")
+    sheet_name_list = oEditor.GetObjectsInGroup('Sheets') + oEditor.GetObjectsInGroup('Solids')
+    oEditor.Copy(
+        [
+            "NAME:Selections",
+            "Selections:="		, ",".join(sheet_name_list)
+        ])
+
+    oDesktop.OpenProject(os.path.join(aedt_path, template_path))
+    oProject = oDesktop.SetActiveProject(template_basename)
+    oDesign = oProject.SetActiveDesign("HFSSDesign1")
+    oEditor = oDesign.SetActiveEditor("3D Modeler")
+    oEditor.Paste()
+    oDesktop.CloseProject(build_geom_name)
+
+# Fit window to objects
+oEditor.FitAll()
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "Import completed (%s)" % time.asctime(time.localtime()))
