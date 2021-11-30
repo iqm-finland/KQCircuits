@@ -41,6 +41,9 @@ class WaveguideCoplanarSplitter(Element):
         trace_shapes = []
         avoidance_shapes = []
 
+        # Tolerance to make sure that the trace shape is larger than the gap shape after integer conversion
+        rounding_tolerance = 10 * self.layout.dbu
+
         port_names = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
         for length_str, angle_str, port_name in zip(self.lengths, self.angles, port_names):
             angle_deg = float(angle_str)
@@ -56,7 +59,7 @@ class WaveguideCoplanarSplitter(Element):
 
             trace_shapes.append(self._get_port_shape(
                 angle_rad=angle_rad,
-                length=length,
+                length=length + rounding_tolerance,
                 width=self.a
             ).to_itype(self.layout.dbu))
 
