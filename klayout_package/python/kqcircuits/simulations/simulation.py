@@ -194,6 +194,7 @@ class Simulation:
         for face_id in [0, 1]:
             ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
             lithography_region = merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching)
+            tolerance=self.minimum_point_spacing / self.layout.dbu
 
             if lithography_region.is_empty():
                 sim_region = pya.Region()
@@ -210,8 +211,18 @@ class Simulation:
                 if self.use_ports:
                     for port in self.ports:
                         if port.face == face_id:
-                            location_itype = port.signal_location.to_itype(self.layout.dbu)
-                            ground_region -= ground_region.interacting(pya.Edge(location_itype, location_itype))
+                            if hasattr(port, 'ground_location'):
+                                v_unit = port.signal_location-port.ground_location
+                                v_unit = v_unit/v_unit.abs()
+                                signal_location = (port.signal_location+tolerance*v_unit).to_itype(self.layout.dbu)
+                                ground_region -= ground_region.interacting(pya.Edge(signal_location, signal_location))
+
+                                ground_location = (port.ground_location-tolerance*v_unit).to_itype(self.layout.dbu)
+                                ground_region += sim_region.interacting(pya.Edge(ground_location, ground_location))
+                            else:
+                                signal_location = port.signal_location.to_itype(self.layout.dbu)
+                                ground_region -= ground_region.interacting(pya.Edge(signal_location, signal_location))
+
                 ground_region.merge()
                 sim_region -= ground_region
 
