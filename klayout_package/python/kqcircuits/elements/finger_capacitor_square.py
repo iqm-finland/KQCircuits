@@ -41,6 +41,7 @@ class FingerCapacitorSquare(Element):
     ground_padding = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
     corner_r = Param(pdt.TypeDouble, "Corner radius", 2, unit="μm")
     fixed_length = Param(pdt.TypeDouble, "Fixed length of element, 0 for auto-length", 0, unit="μm")
+    ground_gap_ratio = Param(pdt.TypeDouble, "Ground connection width per gap ratio", 0, unit="μm")
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -102,7 +103,7 @@ class FingerCapacitorSquare(Element):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region)
 
         # protection
-        region_protection = region_ground.size(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)
+        region_protection = region_ground.size(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2).merged()
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(region_protection)
 
         # ports
@@ -114,7 +115,8 @@ class FingerCapacitorSquare(Element):
 
     def get_ground_region(self):
         """Returns the ground region for the finger capacitor."""
-        y_mid = self.finger_area_width() / 2 + self.ground_padding
+        finger_area_width = self.finger_area_width()
+        y_mid = finger_area_width / 2 + self.ground_padding
         y_left = self.a / 2 + self.b
         y_right = (self.a if self.a2 < 0 else self.a2) / 2 + (self.b if self.b2 < 0 else self.b2)
         x_mid = self.finger_area_length() / 2 + self.finger_width
@@ -137,6 +139,23 @@ class FingerCapacitorSquare(Element):
             pya.DPoint(x_right, -y_right),
             pya.DPoint(x_right, -y_mid),
         ]).to_itype(self.layout.dbu)])
+
+        if self.ground_gap_ratio > 0:
+            x_conn = self.ground_gap_ratio * self.finger_gap_end / 2
+            left_pts = []
+            right_pts = []
+            for i in range(self.finger_number):
+                sign = 2 * (i % 2) - 1
+                x = -sign * self.finger_length / 2
+                y0 = i * (self.finger_width + self.finger_gap_side) - (finger_area_width + self.finger_gap_side) / 2
+                y1 = y0 + self.finger_width + self.finger_gap_side
+                y_conn = sign * self.ground_gap_ratio * self.finger_gap_side / 2
+                left_pts += [pya.DPoint(x - x_conn, y0 - y_conn if i > 0 else -y_mid),
+                             pya.DPoint(x - x_conn, y1 + y_conn if i + 1 < self.finger_number else y_mid)]
+                right_pts += [pya.DPoint(x + x_conn, y0 + y_conn if i > 0 else -y_mid),
+                              pya.DPoint(x + x_conn, y1 - y_conn if i + 1 < self.finger_number else y_mid)]
+            region_ground -= pya.Region([pya.DPolygon(left_pts + right_pts[::-1]).to_itype(self.layout.dbu)])
+
         region_ground.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
         self.cut_region(region_ground, x_end, max(y_mid, y_left, y_right))
         self.add_waveguides(region_ground, x_end, y_left, y_right)
