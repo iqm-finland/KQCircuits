@@ -47,6 +47,7 @@ class Qubit(Element):
     corner_r = Param(pdt.TypeDouble, "Center island rounding radius", 5, unit="μm")
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_fluxline_type, choices=fluxline_type_choices)
+    mirror_squid =  Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)
 
     def produce_squid(self, transf, **parameters):
         """Produces the squid.
@@ -67,10 +68,11 @@ class Qubit(Element):
         """
         cell = self.add_element(Squid, squid_type=self.squid_type, **parameters)
         refpoints_rel = self.get_refpoints(cell)
+        squid_transf = transf * pya.DTrans.M90 if self.mirror_squid else transf
 
         # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
         # the cell, convert the integer transform back to float to keep cell and geometry consistent
-        integer_transf = transf.to_itrans(self.layout.dbu)
+        integer_transf = squid_transf.to_itrans(self.layout.dbu)
         float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
 
         self.insert_cell(cell, float_transf)

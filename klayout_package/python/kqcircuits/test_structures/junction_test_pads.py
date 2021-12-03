@@ -30,6 +30,7 @@ from kqcircuits.defaults import default_junction_test_pads_type
 
 
 @add_parameters_from(Qubit, "junction_width")
+@add_parameters_from(Qubit, "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
 
