@@ -40,7 +40,7 @@ class TsvTest(Chip):
     tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 10, unit="μm")
     tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
 
-    def produce_impl(self):
+    def build(self):
         # create cell pattern in the center
         cell_pattern = self.add_element(TsvTestPattern, tsv_array_form=self.array_layout)
         self.insert_cell(cell_pattern, pya.DCplxTrans(1, 0, False, 5000, 5000))
@@ -54,7 +54,7 @@ class TsvTest(Chip):
                              pitch=self.metrology_pitch + 2 * min_spacing)
         self.create_xsection(position=pya.DPoint(8750, 1250), array_form=[6, 6], pitch=self.metrology_pitch + 2.5 *
                                                                                        min_spacing)
-        super().produce_impl()
+        super().build()
 
     def create_xsection(self, position, array_form, pitch):
         tsv_unit = self.add_element(Tsv)

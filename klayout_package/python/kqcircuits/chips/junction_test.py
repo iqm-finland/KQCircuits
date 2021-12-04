@@ -30,7 +30,7 @@ class JunctionTest(Chip):
     edge_len = Param(pdt.TypeInt, "Length of square's one edge", 80)
     inter_space = Param(pdt.TypeInt, "Space in between the Squares", 20)
 
-    def produce_impl(self):
+    def build(self):
 
         # defining the parameters for local use
 
@@ -78,4 +78,4 @@ class JunctionTest(Chip):
         result = reg1 - reg2
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(result)
 
-        super().produce_impl()
+        super().build()

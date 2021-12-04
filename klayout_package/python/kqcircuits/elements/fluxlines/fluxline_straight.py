@@ -30,7 +30,7 @@ class FluxlineStraight(Fluxline):
     fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 0, unit="μm", hidden=True)
     fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 3, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
 
         b = self.fluxline_gap_width
         a = (self.a/self.b)*b  # fluxline center width

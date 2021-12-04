@@ -45,5 +45,3 @@ class FlipChipConnector(Element):
         bump_shape = circle_polygon(self.bump_diameter / 2, self.n)
         self.cell.shapes(self.get_layer("indium_bump", 0)).insert(bump_shape)  # bottom In bump
         self.cell.shapes(self.get_layer("indium_bump", 1)).insert(bump_shape)  # top In bump
-
-        super().produce_impl()

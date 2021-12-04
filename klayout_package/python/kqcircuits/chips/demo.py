@@ -39,7 +39,7 @@ class Demo(Chip):
     readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
     include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 
-    def produce_impl(self):
+    def build(self):
 
         launcher_assignments = {
             # N
@@ -69,7 +69,7 @@ class Demo(Chip):
         self.produce_probelines()
         self.produce_junction_tests()
 
-        super().produce_impl()
+        super().build()
 
     def produce_qubits(self):
         dist_x = 3220  # x-distance from chip edge

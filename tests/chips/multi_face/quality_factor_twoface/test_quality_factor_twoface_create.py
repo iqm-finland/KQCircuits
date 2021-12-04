@@ -16,12 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from tests.chips.chip_test_helpers import errors_test, base_refpoint_existence_test
+from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
 from kqcircuits.chips.multi_face.quality_factor_twoface import QualityFactorTwoface
 
 def test_errors(capfd):
     errors_test(capfd, QualityFactorTwoface)
 
-def test_base_refpoint_existence():
-    base_refpoint_existence_test(QualityFactorTwoface)
+def test_box_existence():
+    box_existence_test(QualityFactorTwoface)

@@ -113,7 +113,7 @@ class WaveguideCoplanar(Element):
         WaveguideCoplanar.produce_end_termination(self, points[-2], points[-1], self.term2)
         self.add_port("b", points[-1], points[-1] - points[-2])
 
-    def produce_impl(self):
+    def build(self):
         self.produce_waveguide()
 
     @staticmethod

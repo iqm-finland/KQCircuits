@@ -86,7 +86,6 @@ class JunctionTestPads(TestStructure):
         if self.pad_configuration == "4-port":
             self._produce_four_port_junction_tests()
 
-        super().produce_impl()
 
     def _next_junction_width(self, idx):
         """Get the next junction width

@@ -33,7 +33,7 @@ class JunctionTest2(Chip):
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="[μm]")
 
-    def produce_impl(self):
+    def build(self):
         left = self.box.left
         right = self.box.right
         top = self.box.top
@@ -55,4 +55,4 @@ class JunctionTest2(Chip):
         self.insert_cell(junction_test_side, pya.DTrans(0, False, right - 300 - 1700, top - 2000 - 6000), "testarray_2")
         self.insert_cell(junction_test_center, pya.DTrans(0, False, left + 2000, top - 300 - 9400), "testarray_3")
 
-        super().produce_impl()
+        super().build()

@@ -226,7 +226,7 @@ class WaveguideComposite(Element):
 
         return cell
 
-    def produce_impl(self):
+    def build(self):
         """Produce the composite waveguide.
 
         In practice this becomes an alternating chain of WaveguideCoplanar and some other Element
@@ -282,7 +282,6 @@ class WaveguideComposite(Element):
         self.add_port("a", self._nodes[0].position, -self._node_entrance_direction(0))
         self.add_port("b", self._wg_start_pos, self._wg_start_dir)
 
-        super().produce_impl()
 
     def _add_taper(self, ind):
         """Create a WaveguideCoplanarTaper and change default a/b."""

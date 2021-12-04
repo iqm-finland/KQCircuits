@@ -38,7 +38,7 @@ class AirbridgeConnection(Element):
     airbridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
     gap_between_bridges = Param(pdt.TypeDouble, "Inner distance between adjacent bridges", 20)
 
-    def produce_impl(self):
+    def build(self):
         taper_l = self.add_element(WaveguideCoplanarTaper,
             a2=self.bridge_width,
             b2=self.bridge_width/self.a * self.b
@@ -97,4 +97,3 @@ class AirbridgeConnection(Element):
         self.cell.shapes(self.get_layer("waveguide_length")).insert(path_airbridge)
 
         # adds annotation based on refpoints calculated above
-        super().produce_impl()

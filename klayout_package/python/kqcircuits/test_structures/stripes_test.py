@@ -34,7 +34,7 @@ class StripesTest(TestStructure):
     stripe_length = Param(pdt.TypeDouble, "Length of the stripes", 100, unit="μm")
     stripe_spacing = Param(pdt.TypeDouble, "Spacing between the stripes", 1, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
 
         layer_base_metal = self.get_layer("base_metal_gap_wo_grid")
 
@@ -54,5 +54,3 @@ class StripesTest(TestStructure):
         text_x = self.num_stripes*(width + self.stripe_spacing) + width
         text_y = self.stripe_length/2
         self.insert_cell(text_cell, pya.DTrans(text_x, text_y))
-
-        super().produce_impl()

@@ -42,7 +42,7 @@ class CircularCapacitor(Element):
     ground_gap = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
     fixed_length = Param(pdt.TypeDouble, "Fixed length of element, 0 for auto-length", 0, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
         y_left = self.a / 2
         y_right = self.a2 / 2
         x_end = self.r_outer + self.ground_gap
@@ -87,7 +87,6 @@ class CircularCapacitor(Element):
         self.add_port("b", pya.DPoint(x_port, 0), pya.DVector(1, 0))
 
         # adds annotation based on refpoints calculated above
-        super().produce_impl()
 
     def _get_outer_island(self, r_outer, outer_island_width, swept_angle):
         angle_rad = math.radians(swept_angle)

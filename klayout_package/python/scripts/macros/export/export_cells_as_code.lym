@@ -36,7 +36,7 @@ from kqcircuits.util.layout_to_code import convert_cells_to_code
 
 """Macro for converting a layout into Python code.
 
-For each cell placed in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip's `produce_impl()`.
+For each cell placed in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip's `build()`.
 PCell parameters are taken into account. Waveguide points can automatically be snapped to closest refpoints in the 
 generated code. See also the configuration options below.
 
@@ -64,9 +64,9 @@ refpoint_snap = 50.0
 # If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with square side length
 # equal to `grid_snap`
 grid_snap = 1.0
-# If true, also the code for the chip class is generated (including `produce_impl()` function and import statements) so
+# If true, also the code for the chip class is generated (including `build()` function and import statements) so
 # that the printed code works as is. Otherwise only the code for inserted cells is printed, which must be copied to a
-# chip's `produce_impl()` function.
+# chip's `build()` function.
 include_chip_code = True
 
 top_cell = KLayoutView.get_active_cell()

@@ -35,7 +35,7 @@ class DemoTwoface(MultiFace):
     readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
     include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 
-    def produce_impl(self):
+    def build(self):
 
         launcher_assignments = {
             # N
@@ -64,7 +64,7 @@ class DemoTwoface(MultiFace):
         self.produce_readout_structures()
         self.produce_probelines()
 
-        super().produce_impl()
+        super().build()
 
     def produce_qubits(self):
         dist_x = 2000  # distance from bottom chip edge

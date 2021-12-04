@@ -17,7 +17,7 @@
 
 
 import pytest
-from tests.chips.chip_test_helpers import errors_test, base_refpoint_existence_test
+from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 
@@ -28,5 +28,5 @@ def test_errors(capfd):
 
 
 @pytest.mark.slow
-def test_base_refpoint_existence():
-    base_refpoint_existence_test(AirbridgeCrossings)
+def test_box_existence():
+    box_existence_test(AirbridgeCrossings)

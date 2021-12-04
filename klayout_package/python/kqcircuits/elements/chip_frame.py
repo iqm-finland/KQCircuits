@@ -121,12 +121,11 @@ class ChipFrame(Element):
     marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
                        default=[default_marker_type]*4)
 
-    def produce_impl(self):
+    def build(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""
         self._produce_dicing_edge()
         self._produce_labels()
         self._produce_markers()
-        super().produce_impl()
 
     def _produce_labels(self):
         x_min, x_max, y_min, y_max = self._box_points()

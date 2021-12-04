@@ -38,7 +38,7 @@ class SampleHolderTest(Chip):
     launcher_gap = Param(pdt.TypeDouble, "Launcher gap", 96, unit="[μm]")
     launcher_indent = Param(pdt.TypeDouble, "Launcher indent from edge", 520, unit="[μm]")
 
-    def produce_impl(self):
+    def build(self):
         self.produce_n_launchers(self.n_launchers, "RF", self.launcher_width, self.launcher_gap, self.launcher_indent,
                                  self.launcher_pitch)
 
@@ -63,4 +63,4 @@ class SampleHolderTest(Chip):
                         range(4 * nr_pads_per_side, 3 * nr_pads_per_side, -1)):
             _produce_waveguide(i, j, 1200)
 
-        super().produce_impl()
+        super().build()

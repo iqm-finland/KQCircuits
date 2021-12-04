@@ -26,7 +26,7 @@ class LauncherDC(Element):
 
     width = Param(pdt.TypeDouble, "Pad width", 500, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
 
         extra_width = 100
 
@@ -43,5 +43,3 @@ class LauncherDC(Element):
 
         # add reference point
         self.add_port("", pya.DPoint(0, 0))
-
-        super().produce_impl()

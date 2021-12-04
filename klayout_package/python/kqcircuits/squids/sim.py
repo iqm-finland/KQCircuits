@@ -32,7 +32,7 @@ class Sim(Squid):
 
     """
 
-    def produce_impl(self):
+    def build(self):
 
         trans = pya.DTrans(0.0, 0.0)
         self._produce_ground_metal_shapes(trans)
@@ -42,7 +42,6 @@ class Sim(Squid):
         self.refpoints["port_squid_b"] = pya.DPoint(0, 12)
         self.refpoints["port_common"] = pya.DPoint(0, 33)
 
-        super().produce_impl()
 
     def _produce_ground_metal_shapes(self, trans):
         """Produces hardcoded shapes in metal gap and metal addition layers."""

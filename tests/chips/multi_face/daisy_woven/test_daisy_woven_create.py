@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from tests.chips.chip_test_helpers import errors_test, base_refpoint_existence_test
+from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
 from kqcircuits.chips.multi_face.daisy_woven import DaisyWoven
 
@@ -25,7 +25,7 @@ def test_errors(capfd):
     errors_test(capfd, DaisyWoven)
 
 
-def test_base_refpoint_existence():
-    base_refpoint_existence_test(DaisyWoven)
+def test_box_existence():
+    box_existence_test(DaisyWoven)
 
 

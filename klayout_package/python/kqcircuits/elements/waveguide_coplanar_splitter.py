@@ -35,7 +35,7 @@ class WaveguideCoplanarSplitter(Element):
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
     bridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
 
-    def produce_impl(self):
+    def build(self):
 
         gap_shapes = []
         trace_shapes = []
@@ -96,8 +96,6 @@ class WaveguideCoplanarSplitter(Element):
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(
             pya.Region(avoidance_shapes).merged()
         )
-
-        super().produce_impl()  # adds refpoints
 
     def _get_port_shape(self, angle_rad, length, width):
         # Generate a shape consisting of a rectangle (length, width) starting at (0, 0), with a round cap at the origin

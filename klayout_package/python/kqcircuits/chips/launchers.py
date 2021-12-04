@@ -26,6 +26,6 @@ class Launchers(Chip):
     sampleholder_type = Param(pdt.TypeString, "Type of the launchers", "SMA8",
                               choices=[["SMA8", "SMA8"], ["ARD24", "ARD24"], ["RF80", "RF80"], ["DC24", "DC24"]])
 
-    def produce_impl(self):
+    def build(self):
         self.produce_launchers(self.sampleholder_type)
-        super().produce_impl()
+        super().build()

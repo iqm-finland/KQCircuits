@@ -38,7 +38,7 @@ class FingerCapacitorTaper(Element):
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
 
-    def produce_impl(self):
+    def build(self):
         # shorthand
         n = self.finger_number
         w = self.finger_width
@@ -110,4 +110,3 @@ class FingerCapacitorTaper(Element):
         self.add_port("b", port_b, pya.DVector(1, 0))
 
         # adds annotation based on refpoints calculated above
-        super().produce_impl()

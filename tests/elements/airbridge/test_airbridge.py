@@ -52,7 +52,7 @@ def test_transformation_from_shape_impl(instance):
     assert trans.disp.y == 0
 
 
-def test_produce_impl():
+def test_build():
     layout = pya.Layout()
     pcell = Airbridge.create(layout, r=123, airbridge_type="Airbridge Rectangular")
     parameters = pcell.pcell_parameters_by_name()

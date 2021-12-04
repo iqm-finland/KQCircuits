@@ -28,7 +28,7 @@ class AirbridgeDcTest(Chip):
     n_step = Param(pdt.TypeInt, "Increment step for number of airbridges", 1)
     test_width = Param(pdt.TypeDouble, "Width of a single test", 2000, unit="[μm]")
 
-    def produce_impl(self):
+    def build(self):
 
         d1 = self.dice_width + self.dice_grid_margin  # smaller distance of test area from chip edge
         d2 = 2000  # larger distance of test area from chip edge
@@ -42,7 +42,7 @@ class AirbridgeDcTest(Chip):
         n_ab, test_id = self._produce_tests_within_box(pya.DBox(d1, d2, chip_size - d1, chip_size - d2), n_ab, test_id)
         n_ab, test_id = self._produce_tests_within_box(pya.DBox(d2, d1, chip_size - d2, d2), n_ab, test_id)
 
-        super().produce_impl()
+        super().build()
 
     def _produce_tests_within_box(self, box, n_ab, test_id):
 

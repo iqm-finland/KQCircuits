@@ -42,7 +42,7 @@ class Swissmon(Qubit):
     port_width = Param(pdt.TypeList, "Port width (um, WNE)", [10, 10, 10])
     cl_offset = Param(pdt.TypeList, "Chargeline offset (um, um)", [200, 200])
 
-    def produce_impl(self):
+    def build(self):
         self._produce_cross_and_squid()
 
         self._produce_chargeline()  # refpoint only ATM
@@ -53,7 +53,6 @@ class Swissmon(Qubit):
             self._produce_coupler(i)
 
         # adds annotation based on refpoints calculated above
-        super().produce_impl()
 
     def _produce_chargeline(self):
         # shorthands

@@ -42,9 +42,9 @@ class SpiralResonatorRectangleMultiface(SpiralResonatorRectangle):
 
     connector_dist = Param(pdt.TypeDouble, "Distance of face to face connector from input", 0)
 
-    def produce_impl(self):
+    def build(self):
         self.active_face_idx = 0  # used in add_segment() to control in which face the waveguide is created
-        super().produce_impl()  # the add_segment() method overridden in this class is called in super().produce_impl()
+        super().build()
 
     def add_segment(self, point1, point2, current_len, rotation, res_trans, space):
         """Inserts waveguides for a segment between point1 and point2.

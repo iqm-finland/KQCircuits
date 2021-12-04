@@ -29,7 +29,7 @@ class AirbridgeDC(TestStructure):
     pad_height = Param(pdt.TypeDouble, "Pad height", 500, unit="μm")
     width = Param(pdt.TypeDouble, "Total width", 2000, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
 
         # create airbridges and islands through which they are connected
 
@@ -140,5 +140,3 @@ class AirbridgeDC(TestStructure):
         metal_region = islands_region + pads_region
         self.produce_etched_region(metal_region, pya.DPoint(0, 0), 2*pad_width + pad_spacing_x + 2*gap_extra,
                                    2*self.pad_height + pad_spacing_y + 2*gap_extra)
-
-        super().produce_impl()

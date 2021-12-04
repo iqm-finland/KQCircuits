@@ -26,7 +26,7 @@ class WaveguideCoplanarStraight(Element):
 
     l = Param(pdt.TypeDouble, "Length", 30)
 
-    def produce_impl(self):
+    def build(self):
         # Refpoint in the first end
         # Left gap
         pts = [

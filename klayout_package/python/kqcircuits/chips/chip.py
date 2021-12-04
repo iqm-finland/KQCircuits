@@ -150,7 +150,7 @@ class Chip(Element):
     def produce_ground_grid(self):
         """Produces ground grid on the face of the element.
 
-        This method is called in produce_impl(). Override this method to produce a different set of chip frames.
+        This method is called in build(). Override this method to produce a different set of chip frames.
         """
         self.produce_ground_on_face_grid(self.box, 0)
 
@@ -184,7 +184,7 @@ class Chip(Element):
           Shapes in "base_metal_gap" layer must be created by combining the "base_metal_gap_wo_grid" and
           "ground_grid" layers even if no grid is generated
 
-          This method is called in produce_impl(). Override this method to produce a different set of chip frames.
+          This method is called in build(). Override this method to produce a different set of chip frames.
           """
 
         merge_layers(self.layout, [self.cell], face["base_metal_gap_wo_grid"], face["ground_grid"],
@@ -201,18 +201,17 @@ class Chip(Element):
     def produce_structures(self):
         """Produces chip frame and possibly other structures before the ground grid.
 
-        This method is called in produce_impl(). Override this method to produce a different set of chip frames.
+        This method is called in build(). Override this method to produce a different set of chip frames.
         """
         b_frame_parameters = self.pcell_params_by_name(ChipFrame, use_face_prefix=False)
         self.produce_frame(b_frame_parameters)
 
-    def produce_impl(self):
+    def build(self):
         self.produce_structures()
         if self.with_grid:
             self.produce_ground_grid()
         self.merge_layout_layers()
         self._produce_instance_name_labels()
-        super().produce_impl()
 
     def _produce_instance_name_labels(self):
 

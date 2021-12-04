@@ -35,7 +35,7 @@ class WaveguideCoplanarTCross(Element):
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
     bridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
 
-    def produce_impl(self):
+    def build(self):
         # Origin: Crossing of centers of the center conductors
         # Direction: Ports from left, right and bottom
         # Top gap
@@ -117,5 +117,3 @@ class WaveguideCoplanarTCross(Element):
         self.cell.shapes(self.get_layer("waveguide_length")).insert(
             pya.DPath([self.refpoints["port_bottom"], self.refpoints["base"]], self.a)
         )
-
-        super().produce_impl()  # adds refpoints

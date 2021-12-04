@@ -54,7 +54,7 @@ class SpiralResonatorRectangle(Element):
     bridges_right = Param(pdt.TypeBoolean, "Crossing airbridges right", False)
     bridges_top = Param(pdt.TypeBoolean, "Crossing airbridges top", False)
 
-    def produce_impl(self):
+    def build(self):
         can_create_resonator = False
         if self.auto_spacing:
             left, bottom, right, top, _ = self.get_spiral_dimensions()
@@ -175,7 +175,6 @@ class SpiralResonatorRectangle(Element):
         self.produce_crossing_airbridges(guide_points, 1, res_trans)
 
         self.add_port("in", pya.DPoint(0, 0), pya.DVector(-1, 0))
-        super().produce_impl()
         return True
 
     def add_segment(self, point1, point2, current_len, rotation, res_trans, space):

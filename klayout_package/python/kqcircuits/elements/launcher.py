@@ -33,7 +33,7 @@ class Launcher(Element):
     a_launcher = Param(pdt.TypeDouble, "Outer trace width", 240, unit="μm")
     b_launcher = Param(pdt.TypeDouble, "Outer gap width", 144, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
         # optical layer
 
         # shape for the inner conductor
@@ -74,5 +74,3 @@ class Launcher(Element):
 
         # add reference point
         self.add_port("", pya.DPoint(0, 0), pya.DVector(-1, 0))
-
-        super().produce_impl()

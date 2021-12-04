@@ -39,10 +39,10 @@ class CrossingTwoface(MultiFace):
     meander_face = Param(pdt.TypeString, "Meander face on right side", "single",
                          choices=[["Single", "Single"], ["Two Face", "Two Face"]])
 
-    def produce_impl(self):
+    def build(self):
         launchers = self.produce_launchers("SMA8")
         self._produce_transmission_lines(launchers)
-        super().produce_impl()
+        super().build()
 
     def _produce_transmission_lines(self, launchers):
         distance = 700

@@ -52,7 +52,7 @@ class Meander(Element):
         self.start = points[0]
         self.end = points[-1]
 
-    def produce_impl(self):
+    def build(self):
         points = [pya.DPoint(0, 0)]
         l_direct = self.start.distance(self.end)
         l_rest = l_direct - self.meanders * 2 * self.r

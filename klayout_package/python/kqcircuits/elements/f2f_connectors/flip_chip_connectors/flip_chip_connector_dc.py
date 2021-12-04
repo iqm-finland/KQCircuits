@@ -24,6 +24,5 @@ from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector
 class FlipChipConnectorDc(FlipChipConnector):
     """PCell declaration for an inter-chip dc connector."""
 
-    def produce_impl(self):
+    def build(self):
         self.create_bump_connector()
-        super().produce_impl()

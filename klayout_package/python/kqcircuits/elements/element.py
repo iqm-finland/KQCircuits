@@ -75,9 +75,6 @@ class Element(pya.PCellDeclarationHelper):
     margin = Param(pdt.TypeDouble, "Margin of the protection layer", 5, unit="μm")
     face_ids = Param(pdt.TypeList, "Chip face IDs, list of b | t | c", ["b", "t", "c"])
     display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
-    # Initializing it in the constructor of PCellDeclarationHelper child has no effect so it has to
-    # be a PCell parameter here.
-    refpoints = Param(pdt.TypeNone, "Reference points", {"base": pya.DVector(0, 0)}, hidden=True)
 
     def __init__(self):
         ""
@@ -232,7 +229,7 @@ class Element(pya.PCellDeclarationHelper):
         keys = type(self).get_schema().keys()
 
         # filter keys by whitelist if not a base class
-        if whitelist is not None and Element.produce_impl != whitelist.produce_impl:
+        if whitelist is not None and Element.build != whitelist.build:
             keys = list(set(whitelist.get_schema().keys()) & set(keys))
 
         p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}
@@ -302,9 +299,19 @@ class Element(pya.PCellDeclarationHelper):
 
         Adds all refpoints to user properties and draws their names to the annotation layer.
         """
+        self.refpoints = {}
+
+        # Put general "infrastructure actions" here, before build()
+        self.refpoints["base"] = pya.DPoint(0, 0)
+
+        self.build()
+
         for name, refpoint in self.refpoints.items():
             text = pya.DText(name, refpoint.x, refpoint.y)
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
+
+    def build(self):
+        """Child classes re-define this method to build the PCell."""
 
     def display_text_impl(self):
         if self.display_name:

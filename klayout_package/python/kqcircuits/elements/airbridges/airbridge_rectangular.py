@@ -38,7 +38,7 @@ class AirbridgeRectangular(Airbridge):
 
     bridge_width = Param(pdt.TypeDouble, "Bridge width", 20, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
         # shorthand
         (w, h, l, b, e) = (self.pad_width, self.pad_length, self.bridge_length, self.bridge_width, self.pad_extra)
 
@@ -66,5 +66,3 @@ class AirbridgeRectangular(Airbridge):
             pya.DPoint(-w / 2, l / 2),
         ]
         self._produce_top_pads_and_bridge(pts)
-
-        super().produce_impl()

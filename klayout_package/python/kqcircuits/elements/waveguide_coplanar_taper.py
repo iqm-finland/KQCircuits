@@ -35,7 +35,7 @@ class WaveguideCoplanarTaper(Element):
     b2 = Param(pdt.TypeDouble, "Width of right waveguide gap", Element.b * 2, unit="μm")
     m2 = Param(pdt.TypeDouble, "Margin of right waveguide protection layer", 5 * 2, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
         #
         # gap 1
         pts = [
@@ -75,4 +75,3 @@ class WaveguideCoplanarTaper(Element):
         self.add_port("a", pya.DPoint(0, 0), pya.DVector(-1, 0))
         self.add_port("b", pya.DPoint(self.taper_length, 0), pya.DVector(1, 0))
         # adds annotation based on refpoints calculated above
-        super().produce_impl()

@@ -48,7 +48,7 @@ class QualityFactor(Chip):
                   docstring="Width of the gap in the resonators [μm]")
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
 
-    def produce_impl(self):
+    def build(self):
         # Interpretation of parameter lists
         res_lengths = [float(foo) for foo in self.res_lengths]
         res_a = [float(foo) for foo in self.res_a]
@@ -147,4 +147,4 @@ class QualityFactor(Chip):
         }})
 
         # Basis chip with possibly ground plane grid
-        super().produce_impl()
+        super().build()

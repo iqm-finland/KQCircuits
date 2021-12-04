@@ -28,7 +28,7 @@ class LithographyTestTwoface(MultiFace):
     """
     create_pattern = LithographyTest.create_pattern
 
-    def produce_impl(self):
+    def build(self):
         cell_horizontal_1, cell_vertical_1, cell_diagonal_1 = self.create_pattern(num_stripes=20, length=100,
                                                                                   min_width=1,
                                                                                   max_width=15, step=1, spacing=1,
@@ -66,4 +66,4 @@ class LithographyTestTwoface(MultiFace):
         self.insert_cell(cell_diagonal_3, pya.DCplxTrans(1, 0, False, 7500, 1800) * pya.DCplxTrans.M90)
         self.insert_cell(cell_diagonal_4, pya.DCplxTrans(1, 0, False, 6200, 1800) * pya.DCplxTrans.M90)
 
-        super().produce_impl()
+        super().build()

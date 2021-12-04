@@ -35,7 +35,7 @@ class Shaping(Chip):
 
     tunable = Param(pdt.TypeBoolean, "Tunable", False)
 
-    def produce_impl(self):
+    def build(self):
 
         # Launcher
         launchers = self.produce_launchers("SMA8")
@@ -367,4 +367,4 @@ class Shaping(Chip):
         )
 
         # chip frame and possibly ground plane grid
-        super().produce_impl()
+        super().build()

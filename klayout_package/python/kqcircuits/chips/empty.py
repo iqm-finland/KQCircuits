@@ -23,7 +23,7 @@ from kqcircuits.pya_resolver import pya
 class Empty(Chip):
     """Chip with almost all ground metal removed, used for EBL tests."""
 
-    def produce_impl(self):
+    def build(self):
 
         d1 = self.dice_width + self.dice_grid_margin
         d2 = 2000
@@ -46,4 +46,4 @@ class Empty(Chip):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(empty_area)
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(empty_area)
 
-        super().produce_impl()
+        super().build()

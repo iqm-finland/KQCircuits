@@ -60,7 +60,7 @@ class SpiralResonatorPolygon(Element):
     bridges = Param(pdt.TypeBoolean, "Airbridges", False)
     bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 300, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
 
         if self.auto_spacing:
             self._produce_resonator_automatic_spacing()
@@ -70,7 +70,6 @@ class SpiralResonatorPolygon(Element):
         input_path = list(self.input_path.each_point())
         self.add_port("a", input_path[0], input_path[0] - input_path[1])
 
-        super().produce_impl()
 
     def _produce_resonator_automatic_spacing(self):
         """Produces polygon spiral resonator with automatically determined waveguide spacing.

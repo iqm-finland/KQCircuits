@@ -45,7 +45,7 @@ class FingerCapacitorSquare(Element):
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
 
-    def produce_impl(self):
+    def build(self):
         y_mid = self.finger_area_width() / 2
         y_left = self.a / 2
         y_right = (self.a if self.a2 < 0 else self.a2) / 2
@@ -111,7 +111,6 @@ class FingerCapacitorSquare(Element):
         self.add_port("b", pya.DPoint(x_port, 0), pya.DVector(1, 0))
 
         # adds annotation based on refpoints calculated above
-        super().produce_impl()
 
     def get_ground_region(self):
         """Returns the ground region for the finger capacitor."""

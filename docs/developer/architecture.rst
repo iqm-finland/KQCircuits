@@ -33,11 +33,11 @@ things should be taken into account when writing new elements:
     level PCell or when not calling from another PCell.
 
 #.  When a new PCell instance is created, or when the parameters are changed in
-    KLayout GUI, the ``produce_impl`` method of the PCell is called. This
-    method is where you "build" the PCell. When ``produce_impl`` is called, the
-    instance variables of the PCell are set to new values based on the given
-    parameters. The PCell instance is then created or updated based on these
-    new parameter values.
+    KLayout GUI, the ``produce_impl`` method of the PCell is called. For KQC 
+    elements ``produce_impl`` calls the ``build`` method, which is where you 
+    "build" the element. When ``produce_impl`` is called, the instance variables 
+    of the PCell are set to new values based on the given parameters. The PCell 
+    instance is then created or updated based on these new parameter values.
 
 #.  The PCell parameters for KQCircuits elements are plain class attributes
     defined with the help of ``Param`` descriptor class. These can be used like

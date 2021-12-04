@@ -53,7 +53,7 @@ class MaskMarkerFc(Element):
 
         return cross
 
-    def produce_impl(self):
+    def build(self):
 
         arrow = pya.DPolygon([
             pya.DPoint(0, 0),

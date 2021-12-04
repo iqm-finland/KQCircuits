@@ -46,7 +46,7 @@ class FlipChipConnectorRf(FlipChipConnector):
     connector_a = Param(pdt.TypeDouble, "Conductor width at the connector area", 40, unit="μm")
     connector_b = Param(pdt.TypeDouble, "Gap width at the connector area", 40, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
         # Flip-chip bump
         bump = self.add_element(FlipChipConnectorDc)
         self.insert_cell(bump)
@@ -77,5 +77,3 @@ class FlipChipConnectorRf(FlipChipConnector):
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(-dist, dist)))
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(dist, -dist)))
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(-dist, -dist)))
-
-        super().produce_impl()

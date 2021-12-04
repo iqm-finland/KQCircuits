@@ -27,9 +27,8 @@ class JunctionTestPadsSimple(JunctionTestPads):
     Optionally, it is possible to produce only pads without any SQUIDs.
     """
 
-    def produce_impl(self):
+    def build(self):
 
         self.junction_spacing = 0
         self.extra_arm_length = 0
-
         super()._produce_impl()

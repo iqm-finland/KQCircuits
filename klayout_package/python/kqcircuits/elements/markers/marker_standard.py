@@ -27,7 +27,7 @@ class MarkerStandard(Marker):
     diagonal_squares = Param(pdt.TypeInt, "Number of diagonal squares in the marker", 10)
     window = Param(pdt.TypeBoolean, "Window in airbridge flyover and UBM layer", False)
 
-    def produce_impl(self):
+    def build(self):
         self.produce_geometry()
 
     def produce_geometry(self, extra_layer=None):

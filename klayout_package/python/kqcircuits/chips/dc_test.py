@@ -22,8 +22,7 @@ from kqcircuits.chips.chip import Chip
 class DcTest(Chip):
     """Chip with launchers for DC sample holder."""
 
-    def produce_impl(self):
+    def build(self):
 
         self.produce_launchers("DC24")
-
-        super().produce_impl()
+        super().build()

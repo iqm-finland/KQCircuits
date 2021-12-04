@@ -87,4 +87,3 @@ class Fluxline(Element):
         """
         self.refpoints["origin_fluxline"] = pya.DPoint(0, 0)
         self.add_port("flux", port_ref, pya.DVector(0, -1))
-        super().produce_impl()

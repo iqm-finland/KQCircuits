@@ -26,14 +26,14 @@ from kqcircuits.pya_resolver import pya
 
     Typical usage example:
 
-        from tests.chips.chip_base_tests import errors_test, base_refpoint_existence_test
+        from tests.chips.chip_base_tests import errors_test, box_existence_test
         from kqcircuits.chips.single_xmons import SingleXmons
 
         def test_errors(capfd):
             errors_test(capfd, SingleXmons)
 
-        def test_base_refpoint_existence():
-            base_refpoint_existence_test(SingleXmons)
+        def test_box_existence():
+            box_existence_test(SingleXmons)
 
 """
 
@@ -52,8 +52,8 @@ def errors_test(capfd, cls):
     assert err == "", err
 
 
-def base_refpoint_existence_test(cls):
+def box_existence_test(cls):
     layout = pya.Layout()
     cell = cls.create(layout)
     parameters = cell.pcell_parameters_by_name()
-    assert "base" in parameters["refpoints"]
+    assert type(parameters["box"]) is pya.DBox

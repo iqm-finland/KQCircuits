@@ -89,7 +89,7 @@ class Simulation:
                 used as the top cell for the simulation. Otherwise, a new cell will be created. See
                 `Simulation.from_cell` for creating simulations from existing cells.
         """
-        super().__init__()
+        self.refpoints = {}
         if layout is None or not isinstance(layout, pya.Layout):
             error_text = "Cannot create simulation with invalid or nil layout."
             error = ValueError(error_text)

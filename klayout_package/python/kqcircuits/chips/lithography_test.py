@@ -29,7 +29,7 @@ class LithographyTest(Chip):
     Consists of StripesTest cells with different parameters.
     """
 
-    def produce_impl(self):
+    def build(self):
         cell_horizontal_1, cell_vertical_1, cell_diagonal_1 = self.create_pattern(num_stripes=20, length=100,
                                                                                   min_width=1,
                                                                                   max_width=15, step=1, spacing=1,
@@ -51,7 +51,7 @@ class LithographyTest(Chip):
         self.insert_cell(cell_diagonal_2, pya.DCplxTrans(1, 0, False, 3100, 1500))
         self.insert_cell(cell_diagonal_2, pya.DCplxTrans(1, 0, False, 6100, 1500))
 
-        super().produce_impl()
+        super().build()
 
     def create_pattern(self, num_stripes, length, min_width, max_width, step, spacing, face_id):
         first_stripes_width = 2 * num_stripes * min_width

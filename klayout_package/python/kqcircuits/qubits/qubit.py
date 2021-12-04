@@ -104,10 +104,9 @@ class Qubit(Element):
 
         refpoints_so_far = self.get_refpoints(self.cell)
         squid_edge = refpoints_so_far["origin_squid"]
-        base = self.refpoints["base"]  # superclass has not yet implemented this point
         a = (squid_edge - refpoints_so_far['port_common'])
         rotation = math.atan2(a.y, a.x) / math.pi * 180 + 90
-        transf = pya.DCplxTrans(1, rotation, False, squid_edge-base)
+        transf = pya.DCplxTrans(1, rotation, False, squid_edge - self.refpoints["base"])
 
         # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
         # the cell, convert the integer transform back to float to keep cell and geometry consistent

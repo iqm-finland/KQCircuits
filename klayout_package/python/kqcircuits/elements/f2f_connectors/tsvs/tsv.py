@@ -37,9 +37,8 @@ class Tsv(Element):
     tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
     tsv_elliptical_width = Param(pdt.TypeDouble, "Oval TSV width", 30, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
         self.create_tsv_connector()
-        super().produce_impl()
 
     def create_tsv_connector(self):
         # shorthand
@@ -78,4 +77,3 @@ class Tsv(Element):
         self.cell.shapes(self.get_layer("ground_grid_avoidance", 2)).insert(shape)
 
         self.cell.shapes(self.get_layer("through_silicon_via")).insert(pya.DPolygon(tsv_pts))  # TSV only on b face
-        super().produce_impl()

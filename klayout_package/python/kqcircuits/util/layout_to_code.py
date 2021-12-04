@@ -32,7 +32,7 @@ def convert_cells_to_code(chip_cell, print_waveguides_as_composite=False, add_in
     """Prints out the Python code required to create the cells in chip_cell.
 
     For each instance that is selected in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip's
-    `produce_impl()`. If no instances are selected, then it will do the same for all instances that are one level below
+    `build()`. If no instances are selected, then it will do the same for all instances that are one level below
     the chip cell in the cell hierarchy. PCell parameters are taken into account. Waveguide points can automatically be
     snapped to closest refpoints in the generated code.
 
@@ -45,9 +45,9 @@ def convert_cells_to_code(chip_cell, print_waveguides_as_composite=False, add_in
             at that refpoint.
         grid_snap: If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with
             square side length equal to `grid_snap`
-        include_chip_code: If true, also the code for the chip class is generated (including `produce_impl()` function
+        include_chip_code: If true, also the code for the chip class is generated (including `build()` function
             and import statements) so that the printed code works as is. Otherwise only the code for inserted cells are
-            printed, which must be copied to a chip's `produce_impl()` function.
+            printed, which must be copied to a chip's `build()` function.
     """
 
     layout = chip_cell.layout()
@@ -168,7 +168,7 @@ def convert_cells_to_code(chip_cell, print_waveguides_as_composite=False, add_in
     
             class NewChip(Chip):
             
-                def produce_impl(self):\n\n""")
+                def build(self):\n\n""")
 
     # Print the Python code for creating each instance
     instances_code = ""
@@ -209,7 +209,6 @@ def convert_cells_to_code(chip_cell, print_waveguides_as_composite=False, add_in
 
     if include_chip_code:
         generated_code += textwrap.indent(instances_code, "        ")
-        generated_code += "\n        super().produce_impl()"
     else:
         generated_code = instances_code
 

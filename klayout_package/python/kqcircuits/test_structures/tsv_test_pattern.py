@@ -38,7 +38,7 @@ class TsvTestPattern(TestStructure):
     tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
     tsv_array_form = Param(pdt.TypeList, "TSV test layout", [2, 6, 6, 2, 6, 6, 2])
 
-    def produce_impl(self):
+    def build(self):
         tsv_unit = self.add_element(Tsv)
         for i, ind in enumerate(self.tsv_array_form):
             index_at_cpw_pos = int(ind) / 2
@@ -50,5 +50,3 @@ class TsvTestPattern(TestStructure):
                 x_pos = (i - (len(self.tsv_array_form) - 1) / 2) * self.ver_distance
                 trans = pya.DTrans(x_pos, y_pos)
                 self.insert_cell(tsv_unit, trans)
-
-        super().produce_impl()

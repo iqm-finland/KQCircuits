@@ -31,7 +31,7 @@ class FingerCapacitorSquareMultiface(FingerCapacitorSquare):
 
     margin_other_face = Param(pdt.TypeDouble, "Margin for the opening on the other face", 20, unit="μm")
 
-    def produce_impl(self):
+    def build(self):
 
         region_ground = self.get_ground_region()
         region_gap = pya.Region(region_ground.bbox()).size(self.margin_other_face/self.layout.dbu,
@@ -41,4 +41,4 @@ class FingerCapacitorSquareMultiface(FingerCapacitorSquare):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", 1)).insert(region_gap)
         self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(region_protection)
 
-        super().produce_impl()
+        super().build()

@@ -187,7 +187,7 @@ class XMonsDirectCoupling(Chip):
                          rec_levels=None
                          )
 
-    def produce_impl(self):
+    def build(self):
 
         self.produce_launchers("SMA8")
         self.produce_junction_tests(squid_type=self.squid_type)
@@ -281,4 +281,4 @@ class XMonsDirectCoupling(Chip):
             Node(self.refpoints["QB3_port_flux"])
         ])
 
-        super().produce_impl()
+        super().build()

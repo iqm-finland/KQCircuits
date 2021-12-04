@@ -35,7 +35,7 @@ class Simple(Chip):
 
     name_chip = Param(pdt.TypeString, "Name of the chip", "Simple")
 
-    def produce_impl(self):
+    def build(self):
 
         # Launcher
         launchers = self.produce_launchers("SMA8", enabled=["WN", "EN", "SE"])
@@ -65,4 +65,4 @@ class Simple(Chip):
         self.insert_cell(WaveguideCoplanar, path=pya.DPath([refs["C2_port_b"], launchers["SE"][0]], 1))
 
         # chip frame and possibly ground plane grid
-        super().produce_impl()
+        super().build()

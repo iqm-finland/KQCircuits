@@ -67,7 +67,7 @@ class SingleXmons(Chip):
                          ["interdigital", "interdigital", "interdigital", "gap"])
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
 
-    def produce_impl(self):
+    def build(self):
         """Produces a SingleXmons PCell."""
 
         self.produce_junction_tests(self.squid_type)
@@ -82,7 +82,7 @@ class SingleXmons(Chip):
 
         self._produce_readout_resonators()
         self._produce_chargelines()
-        super().produce_impl()
+        super().build()
 
     def _produce_waveguide(self, path, term2=0, turn_radius=None):
         """Produces a coplanar waveguide that follows the given path.

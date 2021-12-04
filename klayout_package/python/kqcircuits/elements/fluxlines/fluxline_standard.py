@@ -27,7 +27,7 @@ from kqcircuits.elements.fluxlines.fluxline import Fluxline
 class FluxlineStandard(Fluxline):
     """Fluxline variant "standard"."""
 
-    def produce_impl(self):
+    def build(self):
         # shorthands
         a = self.a  # waveguide center width
         b = self.b  # waveguide gap width

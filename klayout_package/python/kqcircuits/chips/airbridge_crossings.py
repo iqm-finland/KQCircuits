@@ -42,12 +42,12 @@ class AirbridgeCrossings(Chip):
     bridge_width = Param(pdt.TypeDouble, "Crossing airbridge width", 20, unit="[μm]")
     bridge_length = Param(pdt.TypeDouble, "Crossing airbridge length", 48, unit="[μm]")
 
-    def produce_impl(self):
+    def build(self):
 
         launchers = self.produce_launchers("SMA8")
         self._produce_transmission_lines(launchers)
         self._produce_mechanical_test_array()
-        super().produce_impl()
+        super().build()
 
     def _produce_transmission_lines(self, launchers):
 

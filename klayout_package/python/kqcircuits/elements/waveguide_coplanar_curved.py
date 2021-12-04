@@ -71,7 +71,7 @@ class WaveguideCoplanarCurved(Element):
         # Update length
         self.length = self.r * abs(self.alpha)
 
-    def produce_impl(self):
+    def build(self):
 
         left_inner_arc, left_outer_arc, right_inner_arc, right_outer_arc, left_protection_arc, right_protection_arc, \
             annotation_arc = WaveguideCoplanarCurved.create_curve_arcs(self, self.alpha)

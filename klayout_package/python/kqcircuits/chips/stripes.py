@@ -31,7 +31,7 @@ class Stripes(Chip):
     inter_space = Param(pdt.TypeInt, "Space in between the Squares", 20)
     axis = Param(pdt.TypeString, "The axis of the stripes", "Vertical")
 
-    def produce_impl(self):
+    def build(self):
 
         # defining the dimensions for creating the polygonal area of test
         left = self.box.left
@@ -129,4 +129,4 @@ class Stripes(Chip):
         result = reg1 - reg2
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(result)
 
-        super().produce_impl()
+        super().build()

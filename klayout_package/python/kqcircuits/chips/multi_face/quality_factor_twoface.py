@@ -60,11 +60,11 @@ class QualityFactorTwoface(MultiFace):
     cap_res_distance = Param(pdt.TypeDouble, "Distance between spiral resonator and capacitor", 200)
     waveguide_indentation = Param(pdt.TypeDouble, "Waveguide indentation from top chip edge", 500)
 
-    def produce_impl(self):
+    def build(self):
         self._produce_resonators()
 
         # Basis chip with possibly ground plane grid
-        super().produce_impl()
+        super().build()
 
     def _produce_resonators(self):
         # Interpretation of parameter lists

@@ -15,8 +15,8 @@ ignored-modules=pya,klayout.db
 [MESSAGES CONTROL]
 disable=
     arguments-differ,
-    attribute-defined-outside-init,  # for pcells attributes have to be defined
-                                     # in produce_impl() instead of __init__()
+    attribute-defined-outside-init,  # PCell attributes are not in __init__()
+                                     # but defined with the Param descriptor class
     disallowed-name,
     duplicate-code,
     fixme,
