@@ -49,13 +49,5 @@ def cap_params(fingers, length, coupler_type="interdigital", **kwargs):
                   "finger_width": 20,
                   "ground_gap_ratio": 1/3
                   }
-    elif coupler_type == "fc gap":
-        params = {"finger_length": 0,
-                  "finger_gap_end": length,
-                  "ground_padding": 15,
-                 }
-    elif coupler_type == "fc interdigital":
-        params = {"ground_padding": 15,
-                 }
 
     return {**defaults, **params, **kwargs}
