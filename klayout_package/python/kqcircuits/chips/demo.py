@@ -156,7 +156,6 @@ class Demo(Chip):
             start=meander_start,
             end=meander_end,
             length=float(self.readout_res_lengths[qubit_nr - 1]) - length_nonmeander,
-            meanders=4
         )
 
         # capacitor and tcross waveguide connecting resonator to probeline
