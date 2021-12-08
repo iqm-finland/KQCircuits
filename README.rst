@@ -80,6 +80,12 @@ Individual Contributor License Agreement by filling `a form at IQM website
 <https://iqm-finland.github.io/KQCircuits/contributing.html>`__ in the
 documentation.
 
+Citation
+--------
+Please see the
+`documentation <https://iqm-finland.github.io/KQCircuits/citing.html>`__
+for instructions on how to cite KQCircuits in your projects and publications.
+
 Copyright
 ---------
 
