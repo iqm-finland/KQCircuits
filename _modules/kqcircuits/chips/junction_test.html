@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.junction_test &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.junction_test &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -200,7 +200,7 @@
     <span class="n">edge_len</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Length of square&#39;s one edge&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
     <span class="n">inter_space</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Space in between the Squares&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 
-<div class="viewcode-block" id="JunctionTest.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.junction_test.html#kqcircuits.chips.junction_test.JunctionTest.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="JunctionTest.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.junction_test.html#kqcircuits.chips.junction_test.JunctionTest.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># defining the parameters for local use</span>
 
@@ -248,7 +248,7 @@
         <span class="n">result</span> <span class="o">=</span> <span class="n">reg1</span> <span class="o">-</span> <span class="n">reg2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

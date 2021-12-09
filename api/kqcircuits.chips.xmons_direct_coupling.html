@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.xmons_direct_coupling &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.xmons_direct_coupling &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -242,10 +242,9 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/xmons_direct_coupling.html#XMonsDirectCoupling.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.produce_impl" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method builds the PCell.</p>
-<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+<dt id="kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/xmons_direct_coupling.html#XMonsDirectCoupling.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 </dd></dl>
@@ -257,7 +256,7 @@
 <li><p><strong>arm_width_b</strong><em> (Double)</em><span> - Qubit 2 arm width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">24</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>rr_cpl_width</strong><em> (List)</em><span> - RR to QB coupler width (um for each RR)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">QCD1</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'QCD1',</span> <span class="pre">'QCD2',</span> <span class="pre">'QCD3',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
-<li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Fluxline</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>
+<li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Fluxline</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['none',</span> <span class="pre">'Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.xmons_direct_coupling.png" src="../_images/kqcircuits.chips.xmons_direct_coupling.png" />
 </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.xmons_direct_coupling &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.xmons_direct_coupling &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -307,8 +307,6 @@
             <span class="s2">&quot;arm_length&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">arm_length</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
             <span class="s2">&quot;corner_r&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
             <span class="s2">&quot;port_width&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
-            <span class="s2">&quot;fluxline_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span><span class="p">,</span>
-            <span class="s2">&quot;squid_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span>
         <span class="p">}</span>
         <span class="n">arm_width_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_width_a</span>
         <span class="n">arm_width_b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_width_b</span>
@@ -359,7 +357,7 @@
                          <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span>
                          <span class="p">)</span></div>
 
-<div class="viewcode-block" id="XMonsDirectCoupling.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="XMonsDirectCoupling.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;SMA8&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_junction_tests</span><span class="p">(</span><span class="n">squid_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span><span class="p">)</span>
@@ -453,7 +451,7 @@
             <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB3_port_flux&quot;</span><span class="p">])</span>
         <span class="p">])</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

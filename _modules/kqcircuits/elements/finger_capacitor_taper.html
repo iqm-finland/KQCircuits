@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.finger_capacitor_taper &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.finger_capacitor_taper &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -208,7 +208,7 @@
 <div class="viewcode-block" id="FingerCapacitorTaper.can_create_from_shape_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.finger_capacitor_taper.html#kqcircuits.elements.finger_capacitor_taper.FingerCapacitorTaper.can_create_from_shape_impl">[docs]</a>    <span class="k">def</span> <span class="nf">can_create_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">is_path</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="FingerCapacitorTaper.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.finger_capacitor_taper.html#kqcircuits.elements.finger_capacitor_taper.FingerCapacitorTaper.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FingerCapacitorTaper.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.finger_capacitor_taper.html#kqcircuits.elements.finger_capacitor_taper.FingerCapacitorTaper.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthand</span>
         <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_width</span>
@@ -277,10 +277,9 @@
         <span class="n">port_a</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="n">g</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">port_a</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">port_b</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">((</span><span class="n">l</span> <span class="o">+</span> <span class="n">g</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">port_b</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">port_b</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span></div></div>
 
         <span class="c1"># adds annotation based on refpoints calculated above</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>

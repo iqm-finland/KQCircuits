@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -237,7 +237,7 @@ launchers to the connectors.</p>
 <dt id="kqcircuits.chips.multi_face.multi_face.MultiFace.produce_structures">
 <code class="sig-name descname">produce_structures</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.produce_structures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_structures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces chip frame and possibly other structures before the ground grid.</p>
-<p>This method is called in produce_impl(). Override this method to produce a different set of chip frames.</p>
+<p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="method">
@@ -289,6 +289,7 @@ string or unknown name</p>
 <li><p><strong>a_capped</strong><em> (Double)</em><span> - Width of center conductor in the capped region [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>b_capped</strong><em> (Double)</em><span> - Width of gap in the capped region </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type for CPW waveguides</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+<li><p><strong>face1_marker_types</strong><em> (List)</em><span> - Marker type for each top face corner, starting from lower right and going anticlockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.multi_face.multi_face.png" src="../_images/kqcircuits.chips.multi_face.multi_face.png" />
 </div>

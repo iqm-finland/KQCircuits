@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -207,9 +207,8 @@
     <span class="n">tsv_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;TSV type&quot;</span><span class="p">,</span> <span class="s2">&quot;circular&quot;</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;circular&quot;</span><span class="p">,</span> <span class="s2">&quot;circular&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;oval&quot;</span><span class="p">,</span> <span class="s2">&quot;oval&quot;</span><span class="p">]])</span>
     <span class="n">tsv_elliptical_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Oval TSV width&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Tsv.produce_impl"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">create_tsv_connector</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
+<div class="viewcode-block" id="Tsv.build"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_tsv_connector</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Tsv.create_tsv_connector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.create_tsv_connector">[docs]</a>    <span class="k">def</span> <span class="nf">create_tsv_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthand</span>
@@ -247,8 +246,7 @@
         <span class="c1"># ground avoidance layer c face</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;through_silicon_via&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">tsv_pts</span><span class="p">))</span>  <span class="c1"># TSV only on b face</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;through_silicon_via&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">tsv_pts</span><span class="p">))</span>  <span class="c1"># TSV only on b face</span></div></div>
 </pre></div>
 
            </div>

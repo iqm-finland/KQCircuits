@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -193,7 +193,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc</span> <span class="kn">import</span> <span class="n">FlipChipConnectorDc</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_mask_parameters</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span>
 
 
 <div class="viewcode-block" id="MultiFace"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace">[docs]</a><span class="nd">@traced</span>
@@ -213,14 +213,16 @@
     <span class="n">b_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of gap in the capped region &quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">connector_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Connector type for CPW waveguides&quot;</span><span class="p">,</span> <span class="s2">&quot;Coax&quot;</span><span class="p">,</span>
                            <span class="n">choices</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;Single&quot;</span><span class="p">,</span> <span class="s2">&quot;Single&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;GSG&quot;</span><span class="p">,</span> <span class="s2">&quot;GSG&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Coax&quot;</span><span class="p">,</span> <span class="s2">&quot;Coax&quot;</span><span class="p">]])</span>
+    <span class="n">face1_marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each top face corner, starting from lower right and &quot;</span>
+                                             <span class="s2">&quot;going anticlockwise&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MultiFace.produce_structures"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.produce_structures">[docs]</a>    <span class="k">def</span> <span class="nf">produce_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># produce frame for face 0</span>
-        <span class="n">bottom_frame_parameters</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">whitelist</span><span class="o">=</span><span class="n">ChipFrame</span><span class="p">),</span>
-            <span class="s2">&quot;face_ids&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="s2">&quot;use_face_prefix&quot;</span><span class="p">:</span> <span class="kc">True</span>
-        <span class="p">}</span>
+        <span class="n">bottom_frame_parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span>
+            <span class="n">ChipFrame</span><span class="p">,</span>
+            <span class="n">face_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">use_face_prefix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_frame</span><span class="p">(</span><span class="n">bottom_frame_parameters</span><span class="p">)</span>
 
         <span class="c1"># produce frame for face 1</span>
@@ -233,7 +235,8 @@
             <span class="s2">&quot;name_chip&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_chip</span><span class="p">,</span>
             <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_mask</span><span class="p">,</span>
             <span class="s2">&quot;dice_width&quot;</span><span class="p">:</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;dice_width&quot;</span><span class="p">],</span>
-            <span class="s2">&quot;text_margin&quot;</span><span class="p">:</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;text_margin&quot;</span><span class="p">]</span>
+            <span class="s2">&quot;text_margin&quot;</span><span class="p">:</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;text_margin&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;marker_types&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face1_marker_types</span>
         <span class="p">}</span>
         <span class="n">t_frame_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">M90</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_frame</span><span class="p">(</span><span class="n">t_frame_parameters</span><span class="p">,</span> <span class="n">t_frame_trans</span><span class="p">)</span>
@@ -275,7 +278,7 @@
 <span class="sd">        placed) bumps.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting ground bump generation&#39;</span><span class="p">)</span>
-        <span class="n">bump</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FlipChipConnectorDc</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">bump</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FlipChipConnectorDc</span><span class="p">)</span>
 
         <span class="c1"># Bump grid parameters</span>
         <span class="n">existing_bump_avoidance_margin</span> <span class="o">=</span> <span class="mi">120</span>  <span class="c1"># Minimum distance allowed to existing bumps</span>

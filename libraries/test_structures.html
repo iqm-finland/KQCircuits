@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Test structures &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>Test structures &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -207,7 +207,10 @@
 <li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>only_pads</strong><em> (Boolean)</em><span> - Only produce pads, no junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>pad_configuration</strong><em> (String)</em><span> - Pad configuration</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2-port</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['2-port',</span> <span class="pre">'4-port']</span></code></p></li>
-<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code></p></li>
+<li><p><strong>junction_width_steps</strong><em> (List)</em><span> - Automatically generate junction widths [start, step]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm,</span> <span class="pre">μm]</span></code></p></li>
+<li><p><strong>junction_widths</strong><em> (List)</em><span> - Override the junction widths with these values.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
+<li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="tsvtestpattern">
@@ -219,8 +222,8 @@
 <li><p><strong>ver_distance</strong><em> (Double)</em><span> - Vertical pitch on TSV</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_diameter</strong><em> (Double)</em><span> - TSV diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_type</strong><em> (String)</em><span> - TSV type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">circular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['circular',</span> <span class="pre">'oval']</span></code></p></li>
-<li><p><strong>tsv_ellipse_width</strong><em> (Double)</em><span> - Oval TSV width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_array_form</strong><em> (List)</em><span> - TSV test layout</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">6,</span> <span class="pre">6,</span> <span class="pre">2,</span> <span class="pre">6,</span> <span class="pre">6,</span> <span class="pre">2]</span></code></p></li>
+<li><p><strong>tsv_elliptical_width</strong><em> (Double)</em><span> - Oval TSV width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="stripestest">

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.test_structures.airbridge_dc &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.test_structures.airbridge_dc &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -199,7 +199,7 @@
     <span class="n">pad_height</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad height&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Total width&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AirbridgeDC.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AirbridgeDC.build"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># create airbridges and islands through which they are connected</span>
 
@@ -309,9 +309,7 @@
         <span class="c1"># combine pads and islands and create the metal gap region based on them</span>
         <span class="n">metal_region</span> <span class="o">=</span> <span class="n">islands_region</span> <span class="o">+</span> <span class="n">pads_region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_etched_region</span><span class="p">(</span><span class="n">metal_region</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="o">*</span><span class="n">pad_width</span> <span class="o">+</span> <span class="n">pad_spacing_x</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">gap_extra</span><span class="p">,</span>
-                                   <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span> <span class="o">+</span> <span class="n">pad_spacing_y</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">gap_extra</span><span class="p">)</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+                                   <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_height</span> <span class="o">+</span> <span class="n">pad_spacing_y</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">gap_extra</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

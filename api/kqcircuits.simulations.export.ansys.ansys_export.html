@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -232,7 +232,7 @@
 
 <dl class="function">
 <dt id="kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.ansys.ansys_export.</code><code class="sig-name descname">export_ansys_json</code><span class="sig-paren">(</span><em class="sig-param">simulation: kqcircuits.simulations.simulation.Simulation</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">ansys_tool='hfss'</em>, <em class="sig-param">frequency_units='GHz'</em>, <em class="sig-param">frequency=5</em>, <em class="sig-param">max_delta_s=0.1</em>, <em class="sig-param">percent_error=1</em>, <em class="sig-param">percent_refinement=30</em>, <em class="sig-param">maximum_passes=12</em>, <em class="sig-param">minimum_passes=1</em>, <em class="sig-param">minimum_converged_passes=1</em>, <em class="sig-param">sweep_enabled=True</em>, <em class="sig-param">sweep_start=0</em>, <em class="sig-param">sweep_end=10</em>, <em class="sig-param">sweep_count=101</em>, <em class="sig-param">export_processing=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/ansys/ansys_export.html#export_ansys_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kqcircuits.simulations.export.ansys.ansys_export.</code><code class="sig-name descname">export_ansys_json</code><span class="sig-paren">(</span><em class="sig-param">simulation: kqcircuits.simulations.simulation.Simulation</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">ansys_tool='hfss'</em>, <em class="sig-param">frequency_units='GHz'</em>, <em class="sig-param">frequency=5</em>, <em class="sig-param">max_delta_s=0.1</em>, <em class="sig-param">percent_error=1</em>, <em class="sig-param">percent_refinement=30</em>, <em class="sig-param">maximum_passes=12</em>, <em class="sig-param">minimum_passes=1</em>, <em class="sig-param">minimum_converged_passes=1</em>, <em class="sig-param">sweep_enabled=True</em>, <em class="sig-param">sweep_start=0</em>, <em class="sig-param">sweep_end=10</em>, <em class="sig-param">sweep_count=101</em>, <em class="sig-param">export_processing=None</em>, <em class="sig-param">ansys_project_template=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/ansys/ansys_export.html#export_ansys_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Ansys simulation into json and gds files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -253,6 +253,7 @@
 <li><p><strong>sweep_end</strong> – The highest frequency in the sweep.</p></li>
 <li><p><strong>sweep_count</strong> – Number of frequencies in the sweep.</p></li>
 <li><p><strong>export_processing</strong> – Optional export processing, given as list of strings</p></li>
+<li><p><strong>ansys_project_template</strong> – path to the simulation template</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -287,7 +288,7 @@
 
 <dl class="function">
 <dt id="kqcircuits.simulations.export.ansys.ansys_export.export_ansys">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.ansys.ansys_export.</code><code class="sig-name descname">export_ansys</code><span class="sig-paren">(</span><em class="sig-param">simulations</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">ansys_tool='hfss'</em>, <em class="sig-param">import_script_folder='scripts'</em>, <em class="sig-param">file_prefix='simulation'</em>, <em class="sig-param">frequency_units='GHz'</em>, <em class="sig-param">frequency=5</em>, <em class="sig-param">max_delta_s=0.1</em>, <em class="sig-param">percent_error=1</em>, <em class="sig-param">percent_refinement=30</em>, <em class="sig-param">maximum_passes=12</em>, <em class="sig-param">minimum_passes=1</em>, <em class="sig-param">minimum_converged_passes=1</em>, <em class="sig-param">sweep_enabled=True</em>, <em class="sig-param">sweep_start=0</em>, <em class="sig-param">sweep_end=10</em>, <em class="sig-param">sweep_count=101</em>, <em class="sig-param">exit_after_run=False</em>, <em class="sig-param">ansys_executable='%PROGRAMFILES%\\AnsysEM\\AnsysEM21.1\\Win64\\ansysedt.exe'</em>, <em class="sig-param">import_script='import_and_simulate.py'</em>, <em class="sig-param">post_process_script='export_batch_results.py'</em>, <em class="sig-param">use_rel_path=True</em>, <em class="sig-param">export_processing=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/ansys/ansys_export.html#export_ansys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kqcircuits.simulations.export.ansys.ansys_export.</code><code class="sig-name descname">export_ansys</code><span class="sig-paren">(</span><em class="sig-param">simulations</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">ansys_tool='hfss'</em>, <em class="sig-param">import_script_folder='scripts'</em>, <em class="sig-param">file_prefix='simulation'</em>, <em class="sig-param">frequency_units='GHz'</em>, <em class="sig-param">frequency=5</em>, <em class="sig-param">max_delta_s=0.1</em>, <em class="sig-param">percent_error=1</em>, <em class="sig-param">percent_refinement=30</em>, <em class="sig-param">maximum_passes=12</em>, <em class="sig-param">minimum_passes=1</em>, <em class="sig-param">minimum_converged_passes=1</em>, <em class="sig-param">sweep_enabled=True</em>, <em class="sig-param">sweep_start=0</em>, <em class="sig-param">sweep_end=10</em>, <em class="sig-param">sweep_count=101</em>, <em class="sig-param">exit_after_run=False</em>, <em class="sig-param">ansys_executable='%PROGRAMFILES%\\AnsysEM\\AnsysEM21.1\\Win64\\ansysedt.exe'</em>, <em class="sig-param">import_script='import_and_simulate.py'</em>, <em class="sig-param">post_process_script='export_batch_results.py'</em>, <em class="sig-param">use_rel_path=True</em>, <em class="sig-param">export_processing=None</em>, <em class="sig-param">ansys_project_template=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/ansys/ansys_export.html#export_ansys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -315,6 +316,7 @@
 <li><p><strong>post_process_script</strong> – Name of post processing script file.</p></li>
 <li><p><strong>use_rel_path</strong> – Determines if to use relative paths.</p></li>
 <li><p><strong>export_processing</strong> – Optional export processing, given as list of strings</p></li>
+<li><p><strong>ansys_project_template</strong> – path to the simulation template</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

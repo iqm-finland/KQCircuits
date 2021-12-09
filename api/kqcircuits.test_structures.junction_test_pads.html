@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.test_structures.junction_test_pads &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.test_structures.junction_test_pads &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -263,7 +263,10 @@ in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
 <li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>only_pads</strong><em> (Boolean)</em><span> - Only produce pads, no junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>pad_configuration</strong><em> (String)</em><span> - Pad configuration</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2-port</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['2-port',</span> <span class="pre">'4-port']</span></code></p></li>
-<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code></p></li>
+<li><p><strong>junction_width_steps</strong><em> (List)</em><span> - Automatically generate junction widths [start, step]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm,</span> <span class="pre">μm]</span></code></p></li>
+<li><p><strong>junction_widths</strong><em> (List)</em><span> - Override the junction widths with these values.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
+<li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.test_structures.junction_test_pads.png" src="../_images/kqcircuits.test_structures.junction_test_pads.png" />
 </div>

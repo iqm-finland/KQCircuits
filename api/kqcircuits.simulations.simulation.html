@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -331,14 +331,12 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 
 <dl class="method">
 <dt id="kqcircuits.simulations.simulation.Simulation.add_element">
-<code class="sig-name descname">add_element</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">whitelist=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.add_element" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_element</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.add_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new cell for the given element in this layout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cls</strong> – Element subclass to be created</p></li>
-<li><p><strong>whitelist</strong> – A classname. Its parameter names are used as a whitelist for passing
-parameters of <cite>self</cite> to the <cite>cls</cite> cell.</p></li>
 <li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
 </ul>
 </dd>
@@ -358,6 +356,23 @@ parameters of <cite>self</cite> to the <cite>cls</cite> cell.</p></li>
 <li><p><strong>layer_name</strong> – layer name text</p></li>
 <li><p><strong>face_id</strong> – index of the face id, default=0</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.simulations.simulation.Simulation.pcell_params_by_name">
+<code class="sig-name descname">pcell_params_by_name</code><span class="sig-paren">(</span><em class="sig-param">whitelist=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.pcell_params_by_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give PCell parameters as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>whitelist</strong> – A classname. Its parameter names are used for filtering.</p></li>
+<li><p><strong>**parameters</strong> – Optionally update with other keyword arguments</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A dictionary of all PCell parameter names and corresponding current values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -450,6 +465,13 @@ This function must be used when initializing InternalPort.</p>
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="kqcircuits.simulations.simulation.Simulation.delete_instances">
+<em class="property">static </em><code class="sig-name descname">delete_instances</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">name</em>, <em class="sig-param">index=(0</em>, <em class="sig-param">)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.delete_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.delete_instances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows for deleting a sub-cell of the top ‘cell’ with a specific ‘name’. The ‘index’ argument can be used to
+access more than one sub-cell sharing the same ‘name’, but with different appended ‘index’ to the ‘name’.</p>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
@@ -458,7 +480,7 @@ This function must be used when initializing InternalPort.</p>
 <li><p><strong>name</strong><em> (String)</em><span> - Name of the simulation</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></p></li>
 <li><p><strong>use_ports</strong><em> (Boolean)</em><span> - Turn off to disable all ports (for debugging)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>use_internal_ports</strong><em> (Boolean)</em><span> - Use internal (lumped) ports. The alternative is wave ports.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>port_width</strong><em> (Double)</em><span> - Width (um) of wave ports</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400.0</span></code></p></li>
+<li><p><strong>port_size</strong><em> (Double)</em><span> - Width (um) of wave ports</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400.0</span></code></p></li>
 <li><p><strong>box_height</strong><em> (Double)</em><span> - Height (um) of vacuum above chip in case of single chip.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000.0</span></code></p></li>
 <li><p><strong>substrate_height</strong><em> (Double)</em><span> - Height (um) of the bottom substrate.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550.0</span></code></p></li>
 <li><p><strong>permittivity</strong><em> (Double)</em><span> - Permittivity of the substrates.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">11.45</span></code></p></li>
@@ -477,7 +499,6 @@ This function must be used when initializing InternalPort.</p>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
-<li><p><strong>refpoints</strong><em> (None)</em><span> - Reference points</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'base':</span> <span class="pre">&lt;klayout.dbcore.DVector</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f23729e4ca0&gt;}</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.simulations.simulation.png" src="../_images/kqcircuits.simulations.simulation.png" />
 </div>

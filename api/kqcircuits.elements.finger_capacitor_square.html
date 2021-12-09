@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.finger_capacitor_square &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.finger_capacitor_square &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -234,10 +234,9 @@ the same length as the width of the ground gap around the coupler.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/finger_capacitor_square.html#FingerCapacitorSquare.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.produce_impl" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method builds the PCell.</p>
-<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+<dt id="kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/finger_capacitor_square.html#FingerCapacitorSquare.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.finger_capacitor_square.FingerCapacitorSquare.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 <dl class="method">
@@ -270,8 +269,8 @@ the same length as the width of the ground gap around the coupler.</p>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>a2</strong><em> (Double)</em><span> - Width of center conductor on the other end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b2</strong><em> (Double)</em><span> - Width of gap on the other end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘a’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘b’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>finger_number</strong><em> (Int)</em><span> - Number of fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
 <li><p><strong>finger_width</strong><em> (Double)</em><span> - Width of a finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>finger_gap_side</strong><em> (Double)</em><span> - Gap between the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
@@ -280,6 +279,7 @@ the same length as the width of the ground gap around the coupler.</p>
 <li><p><strong>ground_padding</strong><em> (Double)</em><span> - Ground plane padding</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>corner_r</strong><em> (Double)</em><span> - Corner radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>fixed_length</strong><em> (Double)</em><span> - Fixed length of element, 0 for auto-length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>ground_gap_ratio</strong><em> (Double)</em><span> - Ground connection width per gap ratio</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.finger_capacitor_square.png" src="../_images/kqcircuits.elements.finger_capacitor_square.png" />
 </div>

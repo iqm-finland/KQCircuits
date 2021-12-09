@@ -40,7 +40,7 @@ The previous command installs only the packages which are always required
 when using KQC. Other packages may be required for specific purposes, and
 these can be installed by using instead a command like::
 
-    python -m pip install -e klayout_package/python[docs,tests,gds_export,png_export]
+    python -m pip install -e "klayout_package/python[docs,tests,gds_export,png_export]"
 
 You can choose for which purposes you want to install the requirements by
 modifying the text in the square brackets. Note that there should not be any

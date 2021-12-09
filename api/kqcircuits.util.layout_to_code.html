@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -218,7 +218,7 @@
 <code class="sig-prename descclassname">kqcircuits.util.layout_to_code.</code><code class="sig-name descname">convert_cells_to_code</code><span class="sig-paren">(</span><em class="sig-param">chip_cell</em>, <em class="sig-param">print_waveguides_as_composite=False</em>, <em class="sig-param">add_instance_names=True</em>, <em class="sig-param">refpoint_snap=50.0</em>, <em class="sig-param">grid_snap=1.0</em>, <em class="sig-param">include_chip_code=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints out the Python code required to create the cells in chip_cell.</p>
 <p>For each instance that is selected in GUI, prints out an <cite>insert_cell()</cite> command that can be copy pasted to a chip’s
-<cite>produce_impl()</cite>. If no instances are selected, then it will do the same for all instances that are one level below
+<cite>build()</cite>. If no instances are selected, then it will do the same for all instances that are one level below
 the chip cell in the cell hierarchy. PCell parameters are taken into account. Waveguide points can automatically be
 snapped to closest refpoints in the generated code.</p>
 <dl class="field-list simple">
@@ -232,9 +232,9 @@ if you want to have waveguides connect to refpoints of elements that were placed
 at that refpoint.</p></li>
 <li><p><strong>grid_snap</strong> – If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with
 square side length equal to <cite>grid_snap</cite></p></li>
-<li><p><strong>include_chip_code</strong> – If true, also the code for the chip class is generated (including <cite>produce_impl()</cite> function
+<li><p><strong>include_chip_code</strong> – If true, also the code for the chip class is generated (including <cite>build()</cite> function
 and import statements) so that the printed code works as is. Otherwise only the code for inserted cells are
-printed, which must be copied to a chip’s <cite>produce_impl()</cite> function.</p></li>
+printed, which must be copied to a chip’s <cite>build()</cite> function.</p></li>
 </ul>
 </dd>
 </dl>

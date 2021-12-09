@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -236,45 +236,18 @@
 <p>PCell declaration for an inter-chip rf connector.</p>
 <p>Flip chip connector with two coplanar waveguide connections and different ground bump configurations.
 The input port is on the first face and on the left. The output port is on the second face and rotated as chosen.</p>
-<dl class="attribute">
-<dt>
-<code class="sig-name descname">connector_type choices</code></dt>
-<dd><ul class="simple">
+<dl class="simple">
+<dt>About connector_type choices:</dt><dd><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">single</span></code>: the bump connects the two sides</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">GSG</span></code>: ground-signal-ground indium bumps</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Coax</span></code>: signal transmitting bump is surrounded by four ground bumps</p></li>
 </ul>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.inter_bump_distance">
-<code class="sig-name descname">inter_bump_distance</code><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.inter_bump_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>distance between ground bumps</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.output_rotation">
-<code class="sig-name descname">output_rotation</code><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.output_rotation" title="Permalink to this definition">¶</a></dt>
-<dd><p>rotation of the output port w.r.t. the input port</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.a2">
-<code class="sig-name descname">a2</code><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.a2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace width of the centre conductor, 0 for automatic a/b ratio</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.b2">
-<code class="sig-name descname">b2</code><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.b2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gap width of the centre conductor, 0 for automatic a/b ratio</p>
-</dd></dl>
-
+</dd>
+</dl>
 <dl class="method">
-<dt id="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/flip_chip_connectors/flip_chip_connector_rf.html#FlipChipConnectorRf.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.produce_impl" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method builds the PCell.</p>
-<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+<dt id="kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/flip_chip_connectors/flip_chip_connector_rf.html#FlipChipConnectorRf.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.FlipChipConnectorRf.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 </dd></dl>
@@ -284,8 +257,8 @@ The input port is on the first face and on the left. The output port is on the s
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
 <li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>output_rotation</strong><em> (Double)</em><span> - Rotation of output port w.r.t. input port</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
-<li><p><strong>a2</strong><em> (Double)</em><span> - Width of flip-chip center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b2</strong><em> (Double)</em><span> - Width of flip-chip center gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>connector_a</strong><em> (Double)</em><span> - Conductor width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>connector_b</strong><em> (Double)</em><span> - Gap width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.png" src="../_images/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf.png" />
 </div>

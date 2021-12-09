@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.fluxlines.fluxline_standard &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.fluxlines.fluxline_standard &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -189,7 +189,6 @@
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines.fluxline</span> <span class="kn">import</span> <span class="n">Fluxline</span>
 
 
@@ -197,10 +196,8 @@
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">FluxlineStandard</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fluxline variant &quot;standard&quot;.&quot;&quot;&quot;</span>
-    <span class="n">fluxline_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline width&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">fluxline_gap_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline gap width&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FluxlineStandard.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_standard.html#kqcircuits.elements.fluxlines.fluxline_standard.FluxlineStandard.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FluxlineStandard.build"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_standard.html#kqcircuits.elements.fluxlines.fluxline_standard.FluxlineStandard.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthands</span>
         <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span>  <span class="c1"># waveguide center width</span>
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span>  <span class="c1"># waveguide gap width</span>

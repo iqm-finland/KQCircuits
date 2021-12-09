@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.fluxlines.fluxline_straight &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.fluxlines.fluxline_straight &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -197,9 +197,10 @@
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">FluxlineStraight</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Fluxline variant &quot;straight vertical&quot;.&quot;&quot;&quot;</span>
+    <span class="n">fluxline_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline width&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">fluxline_gap_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline gap width&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FluxlineStraight.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_straight.html#kqcircuits.elements.fluxlines.fluxline_straight.FluxlineStraight.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FluxlineStraight.build"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline_straight.html#kqcircuits.elements.fluxlines.fluxline_straight.FluxlineStraight.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_gap_width</span>
         <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">b</span>  <span class="c1"># fluxline center width</span>

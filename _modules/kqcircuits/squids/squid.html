@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.squids.squid &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.squids.squid &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -212,7 +212,8 @@
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Library for SQUIDs.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;squids&quot;</span>
 
-    <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width [μm]&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>
+    <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width for code generated squids&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Junction width (only used for code generated squids)&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Squid.create"><a class="viewcode-back" href="../../../api/kqcircuits.squids.squid.html#kqcircuits.squids.squid.Squid.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>

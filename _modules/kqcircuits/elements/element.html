@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -245,9 +245,6 @@
     <span class="n">margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Margin of the protection layer&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">face_ids</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Chip face IDs, list of b | t | c&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">])</span>
     <span class="n">display_name</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name displayed in GUI (empty for default)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-    <span class="c1"># Initializing it in the constructor of PCellDeclarationHelper child has no effect so it has to</span>
-    <span class="c1"># be a PCell parameter here.</span>
-    <span class="n">refpoints</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeNone</span><span class="p">,</span> <span class="s2">&quot;Reference points&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;base&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)},</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="s2">&quot;&quot;</span>
@@ -255,11 +252,28 @@
 
         <span class="c1"># create KLayout&#39;s PCellParameterDeclaration objects</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_value_map</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_param_value_map</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_decls</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">default_parameter_values</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">default_parameter_values</span><span class="p">[</span><span class="bp">cls</span><span class="p">]:</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default_parameter_values</span><span class="p">[</span><span class="bp">cls</span><span class="p">][</span><span class="n">name</span><span class="p">]</span>
+            <span class="c1"># Override default value based on default_parameter_values if needed.</span>
+            <span class="n">mro</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__mro__</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mro</span><span class="p">):</span>
+                <span class="n">cls_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__qualname__</span>
+                <span class="k">if</span> <span class="n">cls_name</span> <span class="ow">in</span> <span class="n">default_parameter_values</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">default_parameter_values</span><span class="p">[</span><span class="n">cls_name</span><span class="p">]:</span>
+                    <span class="c1"># Ensure that the `cls` default overrides the value only if it is not overridden</span>
+                    <span class="c1"># by another class below `cls` in the hierarchy.</span>
+                    <span class="n">override</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">for</span> <span class="n">cls2</span> <span class="ow">in</span> <span class="n">mro</span><span class="p">[:</span><span class="n">i</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cls2</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+                            <span class="n">override</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">break</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">override</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="c1"># We need to redefine the Param object, because multiple classes may refer to the same Param object</span>
+                    <span class="c1"># due to inheritance, so modifying the existing Param object could affect other classes.</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">default_parameter_values</span><span class="p">[</span><span class="n">cls_name</span><span class="p">][</span><span class="n">name</span><span class="p">],</span> <span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">name</span><span class="p">)</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                    <span class="k">break</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_parameter</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">p</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Element.create_cell_from_shape"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_cell_from_shape">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -296,21 +310,17 @@
         <span class="n">refp</span> <span class="o">=</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;refpoints&quot;</span><span class="p">]),</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refp</span></div>
 
-<div class="viewcode-block" id="Element.add_element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_element">[docs]</a>    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">whitelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+<div class="viewcode-block" id="Element.add_element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_element">[docs]</a>    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new cell for the given element in this layout.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            cls: Element subclass to be created</span>
-<span class="sd">            whitelist: A classname. Its parameter names are used as a whitelist for passing</span>
-<span class="sd">                       parameters of `self` to the `cls` cell.</span>
 <span class="sd">            **parameters: PCell parameters for the element as keyword arguments</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">           the created cell</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">whitelist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">whitelist</span><span class="p">),</span> <span class="o">**</span><span class="n">parameters</span><span class="p">}</span>
-
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Element.insert_cell"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.insert_cell">[docs]</a>    <span class="k">def</span> <span class="nf">insert_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label_trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rec_levels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
@@ -340,6 +350,7 @@
 <span class="sd">            tuple of placed cell instance and reference points with the same transformation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">trans</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -375,21 +386,26 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_index</span><span class="p">]]</span></div>
 
-<div class="viewcode-block" id="Element.pcell_params_by_name"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">whitelist</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Element.pcell_params_by_name"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">whitelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Give PCell parameters as a dictionary.</span>
 
 <span class="sd">        Arguments:</span>
 <span class="sd">            whitelist: A classname. Its parameter names are used for filtering.</span>
+<span class="sd">            **parameters: Optionally update with other keyword arguments</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A dictionary of all PCell parameter names and corresponding current values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">whitelist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">whitelist</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="Element.add_port"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_port">[docs]</a>    <span class="k">def</span> <span class="nf">add_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># filter keys by whitelist if not a base class</span>
+        <span class="k">if</span> <span class="n">whitelist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Element</span><span class="o">.</span><span class="n">build</span> <span class="o">!=</span> <span class="n">whitelist</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">whitelist</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;refpoints&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Element.add_port"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_port">[docs]</a>    <span class="k">def</span> <span class="nf">add_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Add a port location to the list of reference points as well as ports layer for netlist extraction</span>
 
 <span class="sd">        Args:</span>
@@ -399,14 +415,40 @@
 <span class="sd">            direction: direction of the signal going _to_ the port to determine the location of the &quot;corner&quot; reference</span>
 <span class="sd">                point which is used for waveguide direction. If evaluates to False as is the default, no corner point is</span>
 <span class="sd">                added.</span>
+<span class="sd">            face_id: index of the face id, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ports&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ports&quot;</span><span class="p">,</span> <span class="n">face_id</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
         <span class="n">port_name</span> <span class="o">=</span> <span class="s2">&quot;port_&quot;</span><span class="o">+</span><span class="n">name</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s2">&quot;port&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">port_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
         <span class="k">if</span> <span class="n">direction</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="n">port_name</span><span class="o">+</span><span class="s2">&quot;_corner&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span><span class="o">+</span><span class="n">direction</span><span class="o">/</span><span class="n">direction</span><span class="o">.</span><span class="n">length</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span></div>
+
+<div class="viewcode-block" id="Element.copy_port"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.copy_port">[docs]</a>    <span class="k">def</span> <span class="nf">copy_port</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">new_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Copy a port definition from a different cell and instance; typically used to expose a specific subcell port.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: Name of the port as it was specified to ``add_port``</span>
+<span class="sd">            cell_inst: Instance of the cell, used to transform the port location correctly.</span>
+<span class="sd">            new_name: Optionally rename the port</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">copy_name</span> <span class="o">=</span> <span class="n">name</span> <span class="k">if</span> <span class="n">new_name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">new_name</span>
+        <span class="n">port_name</span> <span class="o">=</span> <span class="s2">&quot;port&quot;</span> <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;port_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">port_corner_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">port_name</span><span class="si">}</span><span class="s2">_corner&quot;</span>
+
+        <span class="c1"># workaround for getting the cell due to KLayout bug, see</span>
+        <span class="c1"># https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference</span>
+        <span class="c1"># TODO: replace by `cell = cell_inst.cell` once KLayout bug is fixed (may be fixed in 0.27 but seems untested)</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">cell_inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
+
+        <span class="n">cell_refpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">cell_inst</span><span class="o">.</span><span class="n">dcplx_trans</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="s2">&quot;ports&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ports&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">),</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_inst</span><span class="o">.</span><span class="n">dcplx_trans</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="n">copy_name</span><span class="p">,</span> <span class="n">cell_refpoints</span><span class="p">[</span><span class="n">port_name</span><span class="p">],</span>
+                                  <span class="n">cell_refpoints</span><span class="p">[</span><span class="n">port_corner_name</span><span class="p">]</span> <span class="o">-</span> <span class="n">cell_refpoints</span><span class="p">[</span><span class="n">port_name</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span></div>
 
 <div class="viewcode-block" id="Element.get_schema"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_schema">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_schema</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">noparents</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -427,9 +469,19 @@
 
 <span class="sd">        Adds all refpoints to user properties and draws their names to the annotation layer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Put general &quot;infrastructure actions&quot; here, before build()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">refpoint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">text</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DText</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;refpoints&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Element.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Child classes re-define this method to build the PCell.&quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="Element.display_text_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.display_text_impl">[docs]</a>    <span class="k">def</span> <span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">:</span>

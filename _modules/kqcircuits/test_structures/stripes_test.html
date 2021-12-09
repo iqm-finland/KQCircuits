@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.test_structures.stripes_test &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.test_structures.stripes_test &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -204,7 +204,7 @@
     <span class="n">stripe_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Length of the stripes&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">stripe_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Spacing between the stripes&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="StripesTest.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.stripes_test.html#kqcircuits.test_structures.stripes_test.StripesTest.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="StripesTest.build"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.stripes_test.html#kqcircuits.test_structures.stripes_test.StripesTest.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">layer_base_metal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">)</span>
 
@@ -223,9 +223,7 @@
         <span class="p">})</span>
         <span class="n">text_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_stripes</span><span class="o">*</span><span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">stripe_spacing</span><span class="p">)</span> <span class="o">+</span> <span class="n">width</span>
         <span class="n">text_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stripe_length</span><span class="o">/</span><span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">text_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">text_x</span><span class="p">,</span> <span class="n">text_y</span><span class="p">))</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">text_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">text_x</span><span class="p">,</span> <span class="n">text_y</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>

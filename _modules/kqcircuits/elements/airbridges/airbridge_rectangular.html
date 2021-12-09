@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.airbridges.airbridge_rectangular &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.airbridges.airbridge_rectangular &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -208,7 +208,7 @@
 
     <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AirbridgeRectangular.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AirbridgeRectangular.build"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># shorthand</span>
         <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_extra</span><span class="p">)</span>
 

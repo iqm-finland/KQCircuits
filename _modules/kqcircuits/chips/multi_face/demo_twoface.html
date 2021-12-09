@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.demo_twoface &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.multi_face.demo_twoface &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -205,7 +205,7 @@
     <span class="n">readout_res_lengths</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Readout resonator lengths&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">5000</span><span class="p">,</span> <span class="mi">5100</span><span class="p">,</span> <span class="mi">5200</span><span class="p">,</span> <span class="mi">5300</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">include_couplers</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Include couplers between qubits&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DemoTwoface.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.demo_twoface.html#kqcircuits.chips.multi_face.demo_twoface.DemoTwoface.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DemoTwoface.build"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.demo_twoface.html#kqcircuits.chips.multi_face.demo_twoface.DemoTwoface.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">launcher_assignments</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># N</span>
@@ -234,7 +234,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_readout_structures</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_probelines</span><span class="p">()</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DemoTwoface.produce_qubits"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.demo_twoface.html#kqcircuits.chips.multi_face.demo_twoface.DemoTwoface.produce_qubits">[docs]</a>    <span class="k">def</span> <span class="nf">produce_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dist_x</span> <span class="o">=</span> <span class="mi">2000</span>  <span class="c1"># distance from bottom chip edge</span>

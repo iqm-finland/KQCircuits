@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -202,7 +202,7 @@
     <span class="sd">&quot;&quot;&quot;Prints out the Python code required to create the cells in chip_cell.</span>
 
 <span class="sd">    For each instance that is selected in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip&#39;s</span>
-<span class="sd">    `produce_impl()`. If no instances are selected, then it will do the same for all instances that are one level below</span>
+<span class="sd">    `build()`. If no instances are selected, then it will do the same for all instances that are one level below</span>
 <span class="sd">    the chip cell in the cell hierarchy. PCell parameters are taken into account. Waveguide points can automatically be</span>
 <span class="sd">    snapped to closest refpoints in the generated code.</span>
 
@@ -215,9 +215,9 @@
 <span class="sd">            at that refpoint.</span>
 <span class="sd">        grid_snap: If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with</span>
 <span class="sd">            square side length equal to `grid_snap`</span>
-<span class="sd">        include_chip_code: If true, also the code for the chip class is generated (including `produce_impl()` function</span>
+<span class="sd">        include_chip_code: If true, also the code for the chip class is generated (including `build()` function</span>
 <span class="sd">            and import statements) so that the printed code works as is. Otherwise only the code for inserted cells are</span>
-<span class="sd">            printed, which must be copied to a chip&#39;s `produce_impl()` function.</span>
+<span class="sd">            printed, which must be copied to a chip&#39;s `build()` function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">layout</span> <span class="o">=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
@@ -338,7 +338,7 @@
 <span class="s2">    </span>
 <span class="s2">            class NewChip(Chip):</span>
 <span class="s2">            </span>
-<span class="s2">                def produce_impl(self):</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="s2">                def build(self):</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="c1"># Print the Python code for creating each instance</span>
     <span class="n">instances_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -379,7 +379,6 @@
 
     <span class="k">if</span> <span class="n">include_chip_code</span><span class="p">:</span>
         <span class="n">generated_code</span> <span class="o">+=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">indent</span><span class="p">(</span><span class="n">instances_code</span><span class="p">,</span> <span class="s2">&quot;        &quot;</span><span class="p">)</span>
-        <span class="n">generated_code</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">        super().produce_impl()&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">generated_code</span> <span class="o">=</span> <span class="n">instances_code</span>
 

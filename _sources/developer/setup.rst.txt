@@ -66,6 +66,12 @@ Note, that KLayout will run macros with it's own Python version, ignoring
 virtualenv settings. KLayout is linked together with libpython*.so on Linux and
 libpython*.dll on Windows.
 
+.. note::
+   If KQCircuits is not working properly after installation (KQC libraries
+   not visible, running any macro gives an error, etc.), there might be some
+   problem with the specific KLayout version/build you are using, see
+   :ref:`installation_issues` section for possible solutions.
+
 Manual installation
 -------------------
 

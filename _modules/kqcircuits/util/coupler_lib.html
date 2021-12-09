@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -212,14 +212,13 @@
                   <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                   <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
                  <span class="p">}</span>
-    <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;fc gap&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;ground gap&quot;</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                   <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
-                  <span class="s2">&quot;ground_padding&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-                 <span class="p">}</span>
-    <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;fc interdigital&quot;</span><span class="p">:</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ground_padding&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
-                 <span class="p">}</span>
+                  <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">50</span> <span class="o">-</span> <span class="n">length</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+                  <span class="s2">&quot;ground_gap_ratio&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
+                  <span class="p">}</span>
 
     <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">defaults</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span></div>
 </pre></div>

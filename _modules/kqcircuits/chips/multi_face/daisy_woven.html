@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.daisy_woven &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.multi_face.daisy_woven &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -204,9 +204,9 @@
 
     <span class="n">name_chip</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the chip&quot;</span><span class="p">,</span> <span class="s2">&quot;DC&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DaisyWoven.produce_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.daisy_woven.html#kqcircuits.chips.multi_face.daisy_woven.DaisyWoven.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DaisyWoven.build"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.daisy_woven.html#kqcircuits.chips.multi_face.daisy_woven.DaisyWoven.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_daisy_face</span><span class="p">(</span><span class="s2">&quot;Daisy_woven&quot;</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_produce_daisy_face</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell_name</span><span class="p">):</span>
         <span class="c1"># first create chip frame to change polarity of manual drawing</span>

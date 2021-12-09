@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -287,7 +287,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <dt id="kqcircuits.chips.chip.Chip.produce_ground_grid">
 <code class="sig-name descname">produce_ground_grid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_ground_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_ground_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces ground grid on the face of the element.</p>
-<p>This method is called in produce_impl(). Override this method to produce a different set of chip frames.</p>
+<p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="method">
@@ -323,7 +323,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <code class="sig-name descname">merge_layout_layers_on_face</code><span class="sig-paren">(</span><em class="sig-param">face</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers_on_face"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers_on_face" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shapes in “base_metal_gap” layer must be created by combining the “base_metal_gap_wo_grid” and
 “ground_grid” layers even if no grid is generated</p>
-<p>This method is called in produce_impl(). Override this method to produce a different set of chip frames.</p>
+<p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="method">
@@ -337,14 +337,13 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <dt id="kqcircuits.chips.chip.Chip.produce_structures">
 <code class="sig-name descname">produce_structures</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_structures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_structures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces chip frame and possibly other structures before the ground grid.</p>
-<p>This method is called in produce_impl(). Override this method to produce a different set of chip frames.</p>
+<p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="kqcircuits.chips.chip.Chip.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_impl" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method builds the PCell.</p>
-<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+<dt id="kqcircuits.chips.chip.Chip.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 <dl class="method">
@@ -404,6 +403,7 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">CTest</span></code></p></li>
 <li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin between dicing edge and ground grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, starting from lower left and going clockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.chip.png" src="../_images/kqcircuits.chips.chip.png" />
 </div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.util.netlist_extraction &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -278,25 +278,39 @@
 
     <span class="n">subcircuits_for_export</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">used_internal_cells</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="c1"># selects last cell in the layout, which will contain all instances of all cells with user properties</span>
+    <span class="o">*</span><span class="n">_</span><span class="p">,</span> <span class="n">last_cell</span> <span class="o">=</span> <span class="n">original_layout</span><span class="o">.</span><span class="n">each_cell</span><span class="p">()</span>
+    <span class="n">original_instances</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">last_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">())</span>
+
     <span class="k">for</span> <span class="n">subcircuit</span> <span class="ow">in</span> <span class="n">circuit</span><span class="o">.</span><span class="n">each_subcircuit</span><span class="p">():</span>
         <span class="n">internal_cell</span> <span class="o">=</span> <span class="n">internal_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">subcircuit</span><span class="o">.</span><span class="n">circuit_ref</span><span class="p">()</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">has_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()):</span>
+            <span class="n">original_cell_index</span> <span class="o">=</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">cell_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
+            <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">original_instances</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">==</span> <span class="n">original_cell_index</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="n">used_internal_cells</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">internal_cell</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Waveguide Coplanar&#39;</span><span class="p">:</span>
             <span class="n">location</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">circuit_ref</span><span class="p">()</span><span class="o">.</span><span class="n">boundary</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">subcircuit</span><span class="p">,</span> <span class="s2">&quot;trans&quot;</span><span class="p">):</span>
             <span class="n">location</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="o">.</span><span class="n">trans</span><span class="o">.</span><span class="n">disp</span>
-        <span class="k">else</span><span class="p">:</span> <span class="c1"># sane defaults for klayout 0.26 as it does not have `subcircuit.trans`</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># sane defaults for klayout 0.26 as it does not have `subcircuit.trans`</span>
             <span class="n">location</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+
+        <span class="n">correct_instance</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">possible_instances</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">has_prop_id</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">disp</span> <span class="o">==</span> <span class="n">location</span><span class="p">)]</span>
 
         <span class="n">subcircuits_for_export</span><span class="p">[</span><span class="n">subcircuit</span><span class="o">.</span><span class="n">id</span><span class="p">()]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;cell_name&quot;</span><span class="p">:</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;instance_name&quot;</span><span class="p">:</span> <span class="n">correct_instance</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">correct_instance</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="s2">&quot;subcircuit_location&quot;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="n">circuits_for_export</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">internal_cell</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">used_internal_cells</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">cell</span><span class="p">:</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
-        <span class="n">circuits_for_export</span><span class="p">[</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span>  <span class="n">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">)</span>
+        <span class="n">circuits_for_export</span><span class="p">[</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">&quot;nets&quot;</span><span class="p">:</span> <span class="n">nets_for_export</span><span class="p">,</span> <span class="s2">&quot;subcircuits&quot;</span><span class="p">:</span> <span class="n">subcircuits_for_export</span><span class="p">,</span> <span class="s2">&quot;circuits&quot;</span><span class="p">:</span> <span class="n">circuits_for_export</span><span class="p">},</span> <span class="n">fp</span><span class="p">,</span>

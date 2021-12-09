@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.tsv_test &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.tsv_test &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -221,10 +221,9 @@
 <p>Through silicon via test chip.</p>
 <p>Consists of arrays of TSVs and metrology segment for crossectional analysis.</p>
 <dl class="method">
-<dt id="kqcircuits.chips.tsv_test.TsvTest.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/tsv_test.html#TsvTest.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.tsv_test.TsvTest.produce_impl" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method builds the PCell.</p>
-<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+<dt id="kqcircuits.chips.tsv_test.TsvTest.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/tsv_test.html#TsvTest.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.tsv_test.TsvTest.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 <dl class="method">
@@ -243,7 +242,7 @@
 <li><p><strong>ver_distance</strong><em> (Double)</em><span> - Vertical pitch on TSV</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_diameter</strong><em> (Double)</em><span> - TSV diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_type</strong><em> (String)</em><span> - TSV type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">circular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['circular',</span> <span class="pre">'oval']</span></code></p></li>
-<li><p><strong>tsv_ellipse_width</strong><em> (Double)</em><span> - Oval TSV width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>tsv_elliptical_width</strong><em> (Double)</em><span> - Oval TSV width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.tsv_test.png" src="../_images/kqcircuits.chips.tsv_test.png" />
 </div>

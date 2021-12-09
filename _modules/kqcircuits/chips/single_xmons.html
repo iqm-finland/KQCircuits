@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.single_xmons &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.chips.single_xmons &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -237,7 +237,7 @@
                          <span class="p">[</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="s2">&quot;gap&quot;</span><span class="p">])</span>
     <span class="n">squid_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;SQUID Type&quot;</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">squid_type_choices</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SingleXmons.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.single_xmons.html#kqcircuits.chips.single_xmons.SingleXmons.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleXmons.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.single_xmons.html#kqcircuits.chips.single_xmons.SingleXmons.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces a SingleXmons PCell.&quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_junction_tests</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span><span class="p">)</span>
@@ -252,7 +252,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_readout_resonators</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_chargelines</span><span class="p">()</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_produce_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">term2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">turn_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces a coplanar waveguide that follows the given path.</span>
@@ -272,7 +272,6 @@
             <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
             <span class="n">r</span><span class="o">=</span><span class="n">turn_radius</span><span class="p">,</span>
             <span class="n">term2</span><span class="o">=</span><span class="n">term2</span><span class="p">,</span>
-            <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">waveguide</span>
@@ -318,8 +317,6 @@
             <span class="n">cpl_width</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>
             <span class="n">cpl_gap</span><span class="o">=</span><span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">110</span><span class="p">],</span>
             <span class="n">cl_offset</span><span class="o">=</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
-            <span class="n">squid_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span><span class="p">,</span>
-            <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">qubit_spacing_x</span> <span class="o">=</span> <span class="mi">1100</span>  <span class="c1"># shortest x-distance between qubit centers on different sides of the feedline</span>
         <span class="n">qubit_spacing_y</span> <span class="o">=</span> <span class="mi">2600</span>  <span class="c1"># shortest y-distance between qubit centers on different sides of the feedline</span>
@@ -379,7 +376,6 @@
             <span class="n">length</span><span class="o">=</span><span class="n">meander_length</span><span class="p">,</span>
             <span class="n">meanders</span><span class="o">=</span><span class="n">num_meanders</span><span class="p">,</span>
             <span class="n">r</span><span class="o">=</span><span class="n">turn_radius</span><span class="p">,</span>
-            <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_readout_resonators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -448,7 +444,6 @@
             <span class="n">length</span><span class="o">=</span><span class="n">meander_length</span><span class="p">,</span>
             <span class="n">meanders</span><span class="o">=</span><span class="n">num_meanders</span><span class="p">,</span>
             <span class="n">r</span><span class="o">=</span><span class="n">turn_radius</span><span class="p">,</span>
-            <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_feedline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_distance</span><span class="p">):</span>
@@ -507,7 +502,7 @@
 
             <span class="c1"># Coupler</span>
             <span class="n">cplr_params</span> <span class="o">=</span> <span class="n">cap_params</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_fingers</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_fingers</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">type_coupler</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">type_coupler</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
             <span class="n">cplr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="o">**</span><span class="n">cplr_params</span><span class="p">)</span>
             <span class="n">cplr_refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cplr</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>

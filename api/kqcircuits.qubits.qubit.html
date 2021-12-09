@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -253,8 +253,6 @@ in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
 <dd><p>Produces the fluxline.</p>
 <p>Creates the fluxline cell and inserts it as a subcell. The “flux” and “flux_corner” ports
 are made available for the qubit.</p>
-<p>To pass a parameter for the fluxline either introduce a parameter of equal name in Qubit subclass or give it
-as an argument for this function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>parameters</strong> – parameters for the fluxline to overwrite default and subclass parameters</p>
@@ -271,10 +269,10 @@ as an argument for this function.</p>
 <ul class="simple">
 <li><p><strong>corner_r</strong><em> (Double)</em><span> - Center island rounding radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">QCD1</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'QCD1',</span> <span class="pre">'QCD2',</span> <span class="pre">'QCD3',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
-<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code></p></li>
-<li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Fluxline</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>
-<li><p><strong>fluxline_width</strong><em> (Double)</em><span> - Fluxline width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>fluxline_gap_width</strong><em> (Double)</em><span> - Fluxline gap width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Fluxline</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['none',</span> <span class="pre">'Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>
+<li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>fluxline_gap_width</strong><em> (Double)</em><span> - Fluxline gap width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.qubits.qubit.png" src="../_images/kqcircuits.qubits.qubit.png" />
 </div>

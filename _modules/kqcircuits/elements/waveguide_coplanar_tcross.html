@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_coplanar_tcross &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar_tcross &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -205,7 +205,7 @@
     <span class="n">bridge_distance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridges distance from centre&quot;</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
     <span class="n">bridge_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Airbridge type&quot;</span><span class="p">,</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">airbridge_type_choices</span><span class="p">)</span>
 
-<div class="viewcode-block" id="WaveguideCoplanarTCross.produce_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_tcross.html#kqcircuits.elements.waveguide_coplanar_tcross.WaveguideCoplanarTCross.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveguideCoplanarTCross.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_tcross.html#kqcircuits.elements.waveguide_coplanar_tcross.WaveguideCoplanarTCross.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Origin: Crossing of centers of the center conductors</span>
         <span class="c1"># Direction: Ports from left, right and bottom</span>
         <span class="c1"># Top gap</span>
@@ -286,9 +286,7 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;port_bottom&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
-        <span class="p">)</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">produce_impl</span><span class="p">()</span>  <span class="c1"># adds refpoints</span></div></div>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

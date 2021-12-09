@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Architecture &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>Architecture &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -214,11 +214,11 @@ these wrappers (or if a new PCell is added to a layout in KLayout GUI).</p></li>
 <code class="docutils literal notranslate"><span class="pre">create</span></code> method is a <code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> that is useful when adding a top
 level PCell or when not calling from another PCell.</p></li>
 <li><p>When a new PCell instance is created, or when the parameters are changed in
-KLayout GUI, the <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> method of the PCell is called. This
-method is where you “build” the PCell. When <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> is called, the
-instance variables of the PCell are set to new values based on the given
-parameters. The PCell instance is then created or updated based on these
-new parameter values.</p></li>
+KLayout GUI, the <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> method of the PCell is called. For KQC
+elements <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> calls the <code class="docutils literal notranslate"><span class="pre">build</span></code> method, which is where you
+“build” the element. When <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> is called, the instance variables
+of the PCell are set to new values based on the given parameters. The PCell
+instance is then created or updated based on these new parameter values.</p></li>
 <li><p>The PCell parameters for KQCircuits elements are plain class attributes
 defined with the help of <code class="docutils literal notranslate"><span class="pre">Param</span></code> descriptor class. These can be used like
 normal instance variables.
@@ -226,7 +226,10 @@ The values of these parameters can be set from the KLayout GUI, or in the
 <code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">add_element</span></code> methods in code.  The parameters of a class
 are automatically merged with its parent’s parameters (see <code class="docutils literal notranslate"><span class="pre">element.py</span></code>),
 so an instance will contain the parameters of all its ancestors in the
-inheritance hierarchy.</p></li>
+inheritance hierarchy.
+When building hierarchical elements the parameter values appropriate for a
+sub-element are transparently passed to it from the caller with
+<code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code>.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> decorator function adds some other class’
 parameters to the decorated class. They are like normal parameters to all
 intents and purposes and can be overridden by the class parameters. Note

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.0.9 documentation</title>
+  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.1.6 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.0.9
+                4.1.6
               </div>
             
           
@@ -222,7 +222,7 @@
 <span id="kqcircuits-elements-waveguide-composite"></span><h1>kqcircuits.elements.waveguide_composite<a class="headerlink" href="#module-kqcircuits.elements.waveguide_composite" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="kqcircuits.elements.waveguide_composite.Node">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.waveguide_composite.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param">position</em>, <em class="sig-param">element=None</em>, <em class="sig-param">inst_name=None</em>, <em class="sig-param">align=()</em>, <em class="sig-param">**params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.waveguide_composite.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param">position</em>, <em class="sig-param">element=None</em>, <em class="sig-param">inst_name=None</em>, <em class="sig-param">align=()</em>, <em class="sig-param">angle=None</em>, <em class="sig-param">**params</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Specifies a single node of a composite waveguide.</p>
 <p>Node is as a <code class="docutils literal notranslate"><span class="pre">position</span></code> and optionally other parameters. The <code class="docutils literal notranslate"><span class="pre">element</span></code> argument sets an Element
@@ -236,6 +236,7 @@ port_a and port_b is supported.</p>
 <li><p><strong>inst_name</strong> – If an instance name is supplied, the element refpoints will be exposed with that name. Default None.</p></li>
 <li><p><strong>align</strong> – Tuple with two refpoint names that correspond the input and output point of element, respectively
 Default value (None) uses <code class="docutils literal notranslate"><span class="pre">('port_a',</span> <span class="pre">'port_b')</span></code></p></li>
+<li><p><strong>angle</strong> – Angle of waveguide direction in degrees</p></li>
 <li><p><strong>**params</strong> – Other optional parameters for the inserted element</p></li>
 </ul>
 </dd>
@@ -263,6 +264,11 @@ Default value (None) uses <code class="docutils literal notranslate"><span class
 <code class="sig-name descname">inst_name</code><em class="property">: str</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.inst_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="kqcircuits.elements.waveguide_composite.Node.angle">
+<code class="sig-name descname">angle</code><em class="property">: float</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.angle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="kqcircuits.elements.waveguide_composite.Node.deserialize">
 <em class="property">classmethod </em><code class="sig-name descname">deserialize</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node.deserialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.deserialize" title="Permalink to this definition">¶</a></dt>
@@ -275,6 +281,20 @@ node coordinates. The string <code class="docutils literal notranslate"><span cl
 </dd>
 </dl>
 <p>Returns: a Node</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.elements.waveguide_composite.Node.nodes_from_string">
+<em class="property">static </em><code class="sig-name descname">nodes_from_string</code><span class="sig-paren">(</span><em class="sig-param">nodes</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#Node.nodes_from_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.Node.nodes_from_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the human readable text representation of Nodes to an actual Node object list.</p>
+<p>Needed for storage in KLayout parameters. The string has to conform to a specific format:
+<cite>(x, y, class_str, parameter_dict)</cite>. For example <cite>(0, 500, ‘Airbridge’, {‘n_bridges’: 2})</cite>,
+see also the <cite>Node.__str__</cite> method. Empty class_str or parameter_dict may be omitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of Node objects</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -326,8 +346,8 @@ flip chip, taper or any custom element.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce the composite waveguide.</p>
 <p>In practice this becomes an alternating chain of WaveguideCoplanar and some other Element
 subclass. Elements are oriented collinear to the preceding Node and an automatic bend is
@@ -365,27 +385,15 @@ inserted after if the next Node is not collinear.</p>
 <ul class="simple">
 <li><p><strong>nodes</strong><em> (String)</em><span> - List of Nodes for the waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">'Airbridge'),</span> <span class="pre">(200,</span> <span class="pre">0)</span></code></p></li>
 <li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>tight_routing</strong><em> (Boolean)</em><span> - Tight routing for corners</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
 <li><p><strong>inter_bump_distance</strong><em> (Double)</em><span> - Distance between In bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>output_rotation</strong><em> (Double)</em><span> - Rotation of output port w.r.t. input port</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
-<li><p><strong>a2</strong><em> (Double)</em><span> - Width of flip-chip center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b2</strong><em> (Double)</em><span> - Width of flip-chip center gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>with_side_airbridges</strong><em> (Boolean)</em><span> - With airbridges on the sides</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>with_right_waveguide</strong><em> (Boolean)</em><span> - With waveguide on right side</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>waveguide_separation</strong><em> (Double)</em><span> - Distance between waveguide center conductors</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">60</span></code></p></li>
+<li><p><strong>connector_a</strong><em> (Double)</em><span> - Conductor width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>connector_b</strong><em> (Double)</em><span> - Gap width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular']</span></code></p></li>
-<li><p><strong>gap_between_bridges</strong><em> (Double)</em><span> - Inner distance between adjacent bridges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code></p></li>
-<li><p><strong>a1</strong><em> (Double)</em><span> - Width of left waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b1</strong><em> (Double)</em><span> - Width of left waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>m1</strong><em> (Double)</em><span> - Margin of left waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>m2</strong><em> (Double)</em><span> - Margin of right waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>bridge_width</strong><em> (Double)</em><span> - Bridge width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>pad_length</strong><em> (Double)</em><span> - Pad length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">14</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>pad_extra</strong><em> (Double)</em><span> - Bottom pad extra</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>bridge_length</strong><em> (Double)</em><span> - Bridge length (from pad to pad)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.waveguide_composite.png" src="../_images/kqcircuits.elements.waveguide_composite.png" />
 </div>
