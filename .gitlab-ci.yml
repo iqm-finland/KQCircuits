@@ -55,8 +55,13 @@ verify_documentation:
 
 check_confidential_strings:
   stage: test
+  variables:
+    GIT_DEPTH: 0
+    GIT_STRATEGY: clone
   script:
-    - bash ci/check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
+    - >
+      bash ci/check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
+      "remotes/origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" "remotes/origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
   only:
     refs:
       - merge_requests
