@@ -16,64 +16,40 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import math
-
-import numpy as np
 from autologging import logged, traced
 
+from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.defaults import default_tsv_type
 
 
 @traced
 @logged
 class Tsv(Element):
-    """Connector between faces of two sides of a substrate..
-    Origin is at the geometric center.
-    """
+    """Base Class for TSVs."""
 
-    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 25, unit="μm")
-    tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
-    tsv_elliptical_width = Param(pdt.TypeDouble, "Oval TSV width", 30, unit="μm")
+    @classmethod
+    def create(cls, layout, library=None, tsv_type=None, **parameters):
+        """Create a TSV cell in layout.
 
-    def build(self):
-        self.create_tsv_connector()
+        Args:
+            layout: pya.Layout object where the cell is created
+            library: LIBRARY_NAME of the calling PCell instance
+            tsv_type: (str): name of the TSV subclass
+            **parameters: PCell parameters as keyword arguments
 
-    def create_tsv_connector(self):
-        # shorthand
-        r = self.tsv_diameter / 2
-        w = self.tsv_elliptical_width / 2
-        m = self.margin
+        Returns:
+            the created TSV cell
+        """
 
-        if self.tsv_type == "circular":
-            # Protection layer
-            tsv_pts_avoidance = [pya.DPoint(math.cos(a) * (r + m),
-                                            math.sin(a) * (r + m)) for a in (x/32*math.pi for x in range(0, 65))]
-            # TSV geometry
-            tsv_pts = [pya.DPoint(math.cos(a) * r,
-                                  math.sin(a) * r) for a in (x/32*math.pi for x in range(0, 65))]
+        if tsv_type is None:
+            tsv_type = to_library_name(cls.__name__)
 
-        elif self.tsv_type == "oval":
-            # parametric representation is taken from https://en.wikipedia.org/wiki/Superellipse
-            p1 = 6
-            p2 = 2
-            # Protection layer
-            tsv_pts_avoidance = [pya.DPoint(
-                np.abs(math.cos(a)) ** (2 / p1) * (w + m) * np.sign(math.cos(a)),
-                np.abs(math.sin(a)) ** (2 / p2) * (r + m) * np.sign(math.sin(a))) for a in
-                                 (x/32*math.pi for x in range(0, 65))]
-
-            tsv_pts = [
-                pya.DPoint(np.abs(math.cos(a)) ** (2 / p1) * w * np.sign(math.cos(a)),
-                           np.abs(math.sin(a)) ** (2 / p2) * r * np.sign(math.sin(a))) for
-                a in (x/32*math.pi for x in range(0, 65))]
-
-        shape = pya.DPolygon(tsv_pts_avoidance)
-        # ground avoidance layer b face
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
-
-        # ground avoidance layer c face
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", 2)).insert(shape)
-
-        self.cell.shapes(self.get_layer("through_silicon_via")).insert(pya.DPolygon(tsv_pts))  # TSV only on b face
+        library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
+        if tsv_type in library_layout.pcell_names():
+            pcell_class = type(library_layout.pcell_declaration(tsv_type))
+            return Element._create_cell(pcell_class, layout, library, **parameters)
+        elif tsv_type != default_tsv_type:
+            return Tsv.create(layout, library, tsv_type=default_tsv_type, **parameters)
+        else:
+            raise ValueError(f'Unknown TSV subclass "{tsv_type}"!')

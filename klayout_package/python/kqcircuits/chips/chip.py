@@ -19,7 +19,7 @@
 import numpy
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_layers, default_squid_type, default_marker_type
+from kqcircuits.defaults import default_layers, default_squid_type, default_tsv_parameters, default_marker_type
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
@@ -30,6 +30,7 @@ from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.merge import merge_layers
 from kqcircuits.util.groundgrid import make_grid
+from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
 
 @traced
@@ -56,6 +57,18 @@ class Chip(Element):
     dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100, hidden=True)
     marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
                         default=[default_marker_type] * 4)
+    # Tsv grid parameters
+    with_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs", False)
+    tsv_grid_spacing = Param(pdt.TypeDouble,"TSV grid distance (center to center)",
+                               default_tsv_parameters['tsv_grid_spacing'], unit="[μm]")
+    tsv_edge_to_tsv_edge_separation = \
+        Param(pdt.TypeDouble, "Ground TSV clearance to manually placed TSVs (edge to edge)",
+                               default_tsv_parameters['tsv_edge_to_tsv_edge_separation'], unit="[μm]")
+    tsv_edge_to_nearest_element = Param(
+        pdt.TypeDouble, "Ground TSV clearance to other elements (edge to edge)",
+        default_tsv_parameters['tsv_edge_to_nearest_element'], unit="[μm]")
+    edge_from_tsv = Param(pdt.TypeDouble, "Ground TSV center clearance to chip edge",
+                          default_tsv_parameters['edge_from_tsv'], unit="[μm]")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
@@ -205,6 +218,8 @@ class Chip(Element):
         """
         b_frame_parameters = self.pcell_params_by_name(ChipFrame, use_face_prefix=False)
         self.produce_frame(b_frame_parameters)
+        if self.with_gnd_tsvs:
+            self._produce_ground_tsvs(face_id=0)
 
     def build(self):
         self.produce_structures()
@@ -333,3 +348,90 @@ class Chip(Element):
                 self.add_port(name, launcher_refpoints["port"])
 
         return launchers
+
+    def make_grid_locations(self, box, delta_x=100, delta_y=100):  # pylint: disable=no-self-use
+        """
+        Define the locations for a grid. This method returns the full grid.
+
+        Args:
+            box: DBox specifying a region for a grid
+            delta_x: Int or float specifying the grid separation along the x dimension
+            delta_y: Int or float specifying the grid separation along the y dimension
+
+        Returns: list of DPoint coordinates for the grid.
+        """
+
+        # array size for bump creation
+        n = int((box.p2 - box.p1).x / delta_x/2 )*2 # force even number
+        m = int((box.p2 - box.p1).y / delta_y/2 )*2 # force even number
+
+        locations = []
+        for i in numpy.linspace(-n/2,n/2, n+1):
+            for j in numpy.linspace(-m/2,m/2, m+1):
+                locations.append(box.center() + pya.DPoint(i * delta_x, j * delta_y))
+        return locations
+
+    def get_ground_tsv_locations(self, tsv_box):
+        """
+        Define the locations for a grid. This method returns the full grid.
+
+        Args:
+            box: DBox specifying the region that should be filled with TSVs
+
+        Returns: list of DPoint coordinates where a ground bump can be placed
+        """
+        return self.make_grid_locations(tsv_box, delta_x=self.tsv_grid_spacing, delta_y=self.tsv_grid_spacing)
+
+    def _produce_ground_tsvs(self,
+                             face_id =0,
+                             tsv_box =  None):
+        """Produces ground TSVs between bottom and top face.
+
+         The TSVs avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
+         placed) TSVs.
+         """
+        self.__log.info(f'Starting ground TSV generation on face { self.face_ids[face_id] }')
+        tsv = self.add_element(Tsv, n=self.n, face_ids = [self.face_ids[face_id]])
+
+        if tsv_box is None:
+            tsv_box = self.box.enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
+
+        def region_from_layer(layer_name):
+            return pya.Region(self.cell.begin_shapes_rec(self.get_layer(layer_name, face_id))).merged()
+
+        avoidance_region = (region_from_layer("ground_grid_avoidance") +
+                            region_from_layer("through_silicon_via_avoidance")).merged()
+        avoidance_existing_tsv_region = region_from_layer("through_silicon_via")
+        existing_tsv_count = avoidance_existing_tsv_region.count()
+        avoidance_to_element_region = (region_from_layer("base_metal_gap_wo_grid")
+                                       + region_from_layer("indium_bump")).merged()
+
+        locations = self.get_ground_tsv_locations(tsv_box)
+        locations_itype = [pya.Vector(pos.to_itype(self.layout.dbu)) for pos in locations]
+
+        # Determine the shape of the tsv from its through_silicon_via layer. Assumes that when merged the tsv
+        # contains only one polygon.
+        tsv_size_polygon = next(pya.Region(tsv.begin_shapes_rec(self.get_layer("through_silicon_via", face_id)))
+                                .merged().each())
+
+        def filter_locations(filter_region, separation, input_locations):
+            sized_tsv = tsv_size_polygon.sized(separation / self.layout.dbu)
+            test_region = pya.Region([sized_tsv.moved(pos) for pos in input_locations])
+            test_region.merged_semantics = False
+            pass_region = test_region.outside(filter_region)
+            output_locations = [p.bbox().center() for p in pass_region]
+            return output_locations
+
+        locations_itype = filter_locations(avoidance_region, 0, locations_itype)
+        locations_itype = filter_locations(avoidance_existing_tsv_region,
+                                           self.tsv_edge_to_tsv_edge_separation, locations_itype)
+        locations_itype = filter_locations(avoidance_to_element_region,
+                                           self.tsv_edge_to_nearest_element, locations_itype)
+
+        tsv_locations = [pos.to_dtype(self.layout.dbu) for pos in locations_itype]
+
+        for location in tsv_locations:
+            self.insert_cell(tsv, pya.DTrans(location))
+
+        self.__log.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} ground TSVs, '
+                        + f'totalling {existing_tsv_count + len(tsv_locations)} TSVs.')

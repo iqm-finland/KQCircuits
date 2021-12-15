@@ -96,6 +96,7 @@ _common_b_t_layers = {
     "underbump_metallization": (32, 4),  # flip-chip bonding
     "indium_bump": (33, 4),  # flip-chip bonding
     "through_silicon_via": (34, 4),  # TSV
+    "through_silicon_via_avoidance": (35, 4),  # TSV
 
     # Netlist
     "ports": (39, 0),  # Considered conductive in the netlist extraction
@@ -270,6 +271,7 @@ default_airbridge_type = "Airbridge Rectangular"
 default_fluxline_type = "Fluxline Standard"
 default_marker_type = "Marker Standard"
 default_junction_test_pads_type = "Junction Test Pads Simple"
+default_tsv_type = "Tsv Standard"
 
 default_drc_runset = "example.drc"
 
@@ -303,4 +305,21 @@ kqc_library_names = (
 # The user may override KQC Element's default parameters
 default_parameter_values = {
     "TsvTest": {"tsv_elliptical_width": 10},
+}
+
+default_tsv_parameters = {
+    "tsv_edge_to_nearest_element": 100,
+    "tsv_diameter": 25,
+    "tsv_grid_spacing": 300,
+    "tsv_edge_to_tsv_edge_separation": 250,
+    "edge_from_tsv": 550,
+    "tsv_elliptical_width":30,
+}
+
+default_bump_parameters = {
+    "bump_diameter": 25,
+    "under_bump_diameter": 40,
+    "bump_grid_spacing": 120,
+    "bump_edge_to_bump_edge_separation": 95,
+    "edge_from_bump": 550,
 }

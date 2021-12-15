@@ -51,6 +51,7 @@ _excluded_module_names = (
     "fluxline",
     "marker",
     "junction_test_pads",
+    "tsv",
 )
 
 @traced

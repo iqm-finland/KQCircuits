@@ -23,7 +23,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.defaults import default_mask_parameters, default_marker_type
+from kqcircuits.defaults import default_mask_parameters, default_bump_parameters, default_marker_type
 
 
 @traced
@@ -36,13 +36,22 @@ class MultiFace(Chip):
     launchers to the connectors.
     """
 
-    face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
-    with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
     a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="[μm]",
                      docstring="Width of center conductor in the capped region [μm]")
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="[μm]")
     connector_type = Param(pdt.TypeString, "Connector type for CPW waveguides", "Coax",
                            choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
+    face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
+    with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs on the top face", False)
+    with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
+    bump_grid_spacing = Param(
+        pdt.TypeDouble, "Bump grid distance (center to center)",
+        default_bump_parameters['bump_grid_spacing'], unit="[μm]")
+    bump_edge_to_bump_edge_separation = Param(
+        pdt.TypeDouble, "In bump clearance to manually placed Bumps (edge to edge)",
+        default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="[μm]")
+    edge_from_bump = Param(pdt.TypeDouble, "Spacing between bump and chip edge",
+                          default_bump_parameters['edge_from_bump'], unit="[μm]")
     face1_marker_types = Param(pdt.TypeList, "Marker type for each top face corner, starting from lower right and "
                                              "going anticlockwise", default=[default_marker_type] * 4)
 
@@ -72,34 +81,26 @@ class MultiFace(Chip):
         self.produce_frame(t_frame_parameters, t_frame_trans)
 
         self.produce_default_connectors_and_launchers()
+
+        if self.with_gnd_tsvs:
+            self._produce_ground_tsvs(face_id=0)
+        if self.with_face1_gnd_tsvs:
+            tsv_box = self.face1_box.enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
+            self._produce_ground_tsvs(face_id=1, tsv_box=tsv_box)
+
         if self.with_gnd_bumps:
             self._produce_ground_bumps()
 
-    def get_ground_bump_locations(self, box):  # pylint: disable=no-self-use
+    def get_ground_bump_locations(self, bump_box):
         """
-        Define the locations for ground bumps. This method returns the full bump grid, but the chip will only
-        place bumps on locations that do not interfere with the ground grid avoidance or manually placed bumps.
-
-        This method can be overridden by subclasses to use define a different ground bump grid.
+        Define the locations for a grid. This method returns the full grid.
 
         Args:
             box: DBox specifying the region that should be filled with ground bumps
 
         Returns: list of DPoint coordinates where a ground bump can be placed
         """
-        # Bump grid parameters
-        delta_x = 100  # Horizontal bump grid spacing
-        delta_y = 100  # Vertical bump grid spacing
-
-        # array size for bump creation
-        n = (box.p2 - box.p1).x / delta_x
-        m = (box.p2 - box.p1).y / delta_y
-
-        locations = []
-        for i in range(int(n)):
-            for j in range(int(m)):
-                locations.append(box.p1 + pya.DPoint(i * delta_x, j * delta_y))
-        return locations
+        return self.make_grid_locations(bump_box, delta_x=self.bump_grid_spacing, delta_y=self.bump_grid_spacing)
 
     def _produce_ground_bumps(self):
         """Produces ground bumps between bottom and top face.
@@ -110,11 +111,7 @@ class MultiFace(Chip):
         self.__log.info('Starting ground bump generation')
         bump = self.add_element(FlipChipConnectorDc)
 
-        # Bump grid parameters
-        existing_bump_avoidance_margin = 120  # Minimum distance allowed to existing bumps
-        edge_from_bump = 750  # Spacing between bump and chip edge
-
-        bump_box = self.face1_box.enlarged(pya.DVector(-edge_from_bump, -edge_from_bump))
+        bump_box = self.face1_box.enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
 
         avoidance_layer_bottom = pya.Region(
             self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 0))).merged()
@@ -123,8 +120,18 @@ class MultiFace(Chip):
         existing_bumps = pya.Region(
             self.cell.begin_shapes_rec(self.get_layer("indium_bump"))).merged()
         existing_bump_count = existing_bumps.count()
-        avoidance_existing_bumps = existing_bumps.sized((existing_bump_avoidance_margin / 2) / self.layout.dbu)
-        avoidance_region = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps).merged()
+        avoidance_existing_bumps = existing_bumps.sized(self.bump_edge_to_bump_edge_separation
+                                                        / self.layout.dbu)
+
+        existing_tsvs_bottom = pya.Region(
+            self.cell.begin_shapes_rec(self.get_layer("through_silicon_via",0))).merged()
+        avoidance_existing_tsvs_bottom = existing_tsvs_bottom.\
+            sized((self.tsv_edge_to_nearest_element) / self.layout.dbu)
+        existing_tsvs_top = pya.Region(
+            self.cell.begin_shapes_rec(self.get_layer("through_silicon_via",1))).merged()
+        avoidance_existing_tsvs_top = existing_tsvs_top.sized(self.tsv_edge_to_nearest_element / self.layout.dbu)
+        avoidance_region = (avoidance_layer_bottom + avoidance_layer_top + avoidance_existing_bumps +
+                            avoidance_existing_tsvs_bottom + avoidance_existing_tsvs_top).merged()
 
         locations = self.get_ground_bump_locations(bump_box)
 

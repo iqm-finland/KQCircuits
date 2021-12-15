@@ -14,3 +14,11 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+
+"""PCell classes for TSVs."""
+
+tsv_type_choices = [
+    ['standard', 'Tsv Standard'],
+    ['ellipse', 'Tsv Ellipse'],
+]
