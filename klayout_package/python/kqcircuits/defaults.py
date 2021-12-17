@@ -230,7 +230,7 @@ chip_export_layer_clusters = {
 default_mask_parameters = {
     "b": {
         "wafer_rad": 76200,
-        "wafer_center_offset": pya.DVector(-1200, 1200),
+        "chips_map_offset": pya.DVector(-1200, 1200),
         "chip_size": 10000,
         "chip_box_offset": pya.DVector(0, 0),
         "chip_trans": pya.DTrans(),
@@ -238,11 +238,11 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 1.0,
         "mask_marker_offset": 50000,
-        "mask_name_offset": 0.6e4,
+        "mask_name_offset": 7200,
     },
     "t": {
         "wafer_rad": 76200,
-        "wafer_center_offset": pya.DVector(-2700, 2700),
+        "chips_map_offset": pya.DVector(-2700, 2700),
         "chip_size": 7000,
         "chip_box_offset": pya.DVector(1500, 1500),
         "chip_trans": pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans().M90,
@@ -250,11 +250,11 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 0.7,
         "mask_marker_offset": 50000,
-        "mask_name_offset": 0.38e4,
+        "mask_name_offset": 6500,
     },
     "c": {
         "wafer_rad": 76200,
-        "wafer_center_offset": pya.DVector(-2700, 2700),
+        "chips_map_offset": pya.DVector(-2700, 2700),
         "chip_size": 7000,
         "chip_box_offset": pya.DVector(1500, 1500),
         "chip_trans": pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans().M90,
@@ -262,7 +262,7 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 0.7,
         "mask_marker_offset": 50000,
-        "mask_name_offset": 0.38e4,
+        "mask_name_offset": 6500,
     }
 }
 

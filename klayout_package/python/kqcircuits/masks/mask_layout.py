@@ -48,6 +48,7 @@ class MaskLayout:
         chips_map_legend: Dictionary where keys are chip names, values are chip cells
         wafer_rad: Wafer radius
         wafer_center: Wafer center as a pya.DVector
+        chips_map_offset: Offset to make chips_map centered on wafer
         wafer_top_flat_length: length of flat edge at the top of the wafer
         wafer_bottom_flat_length: length of flat edge at the bottom of the wafer
         dice_width: Dicing width for this mask layout
@@ -80,9 +81,9 @@ class MaskLayout:
         self.covered_region_excluded_layers = kwargs.get("covered_region_excluded_layers",
                                                         default_covered_region_excluded_layers)
         self.wafer_rad = kwargs.get("wafer_rad", default_mask_parameters[self.face_id]["wafer_rad"])
-        self.wafer_center = (pya.DVector(self.wafer_rad, -self.wafer_rad) +
-                             kwargs.get("wafer_center_offset",
-                                        default_mask_parameters[self.face_id]["wafer_center_offset"]))
+        self.wafer_center = (pya.DVector(0, 0))
+        self.chips_map_offset = kwargs.get("chips_map_offset",
+                                              default_mask_parameters[self.face_id]["chips_map_offset"])
         self.wafer_top_flat_length = kwargs.get("wafer_top_flat_length", 0)
         self.wafer_bottom_flat_length = kwargs.get("wafer_bottom_flat_length", 0)
         self.dice_width = kwargs.get("dice_width", default_mask_parameters[self.face_id]["dice_width"])
@@ -197,6 +198,7 @@ class MaskLayout:
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""
         # center of the chip at distance self.chip_size from the mask edge
         chip_region = pya.Region()
+        position += pya.DVector(-self.wafer_rad, self.wafer_rad) - self.chips_map_offset
         if (position - step_ver * 0.5 + step_hor * 0.5 - self.wafer_center).length() - self.wafer_rad < \
                 -self.edge_clearance:
             if slot in self.chips_map_legend.keys():
@@ -297,6 +299,7 @@ class MaskLayout:
         })
         cell_mask_name_h = cell_mask_name.dbbox().height()
         cell_mask_name_w = cell_mask_name.dbbox().width()
-        trans = pya.DTrans(self.wafer_center.x - cell_mask_name_w / 2, -self.mask_name_offset - cell_mask_name_h / 2)
+        trans = pya.DTrans(self.wafer_center.x - cell_mask_name_w / 2,
+                           self.wafer_rad - self.mask_name_offset - cell_mask_name_h / 2)
         inst = cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), trans))
         return inst
