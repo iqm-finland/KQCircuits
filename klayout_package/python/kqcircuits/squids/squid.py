@@ -19,8 +19,6 @@
 from autologging import logged, traced
 
 from kqcircuits.elements.element import Element
-from kqcircuits.pya_resolver import pya
-from kqcircuits.squids import squid_type_choices
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.util.parameters import Param, pdt
 
@@ -80,61 +78,3 @@ class Squid(Element):
 
         # fallback to NoSquid if there is no squid corresponding to squid_type
         return layout.create_cell("NoSquid", Squid.LIBRARY_NAME)
-
-
-@traced
-@logged
-def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
-    """Replaces squids by code generated squids with the given parameter sweep.
-
-    All squids below top_cell in the cell hierarchy are removed. The number of code
-    generated squids may be limited by the value of parameter_end.
-
-    Args:
-        cell (Cell): The cell where the squids to be replaced are
-        squid_type: class name of the code generated squid that replaces the other squids
-        parameter_name (str): Name of the parameter to be swept
-        parameter_start: Start value of the parameter
-        parameter_step: Parameter value increment step
-        parameter_end: End value of the parameter. If None, there is no limit for the parameter value, so that all
-            squids are replaced
-
-    """
-    layout = cell.layout()
-    parameter_value = parameter_start
-    squid_types = [choice[1] for choice in squid_type_choices]
-
-    old_squids = []  # list of tuples (squid instance, squid dtrans with respect to cell, old name)
-
-    def recursive_replace_squids(top_cell_inst, combined_dtrans):
-        """Appends to old_squids all squids in top_cell_inst or any instance below it in hierarchy."""
-        # cannot use just top_cell_inst.cell due to klayout bug, see
-        # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
-        top_cell = layout.cell(top_cell_inst.cell_index)
-        for subcell_inst in top_cell.each_inst():
-            subcell_name = subcell_inst.cell.name
-            if subcell_name in squid_types:
-                old_squids.append((subcell_inst, combined_dtrans*subcell_inst.dtrans, subcell_name))
-            else:
-                recursive_replace_squids(subcell_inst, combined_dtrans*subcell_inst.dtrans)
-
-    for inst in cell.each_inst():
-        if inst.cell.name in squid_types:
-            old_squids.append((inst, inst.dtrans, inst.cell.name))
-        recursive_replace_squids(inst, inst.dtrans)
-
-    # sort left-to-right and bottom-to-top
-    old_squids.sort(key=lambda squid: (squid[1].disp.x, squid[1].disp.y))
-
-    for (inst, dtrans, name) in old_squids:
-        if (parameter_end is None) or (parameter_value <= parameter_end):
-            # create new squid at old squid's position
-            parameters = {parameter_name: parameter_value}
-            squid_cell = Squid.create(layout, squid_type=squid_type, face_ids=inst.pcell_parameter("face_ids"),
-                                      **parameters)
-            cell.insert(pya.DCellInstArray(squid_cell.cell_index(), dtrans))
-            replace_squids._log.info("Replaced squid \"{}\" with dtrans={} by a squid \"{}\" with {}={}."
-                                     .format(name, dtrans, squid_type, parameter_name, parameter_value))
-            parameter_value += parameter_step
-        # delete old squid
-        inst.delete()
