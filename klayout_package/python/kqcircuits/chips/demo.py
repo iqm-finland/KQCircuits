@@ -17,7 +17,7 @@
 
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
@@ -32,10 +32,10 @@ from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 
 
+@add_parameters_from(Chip, name_chip="Demo")
 class Demo(Chip):
     """Demonstration chip with a four qubits, four readout resonators, two probe lines, charge- and fluxlines."""
 
-    name_chip = Param(pdt.TypeString, "Name of the chip", "Demo")
     readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
     include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 

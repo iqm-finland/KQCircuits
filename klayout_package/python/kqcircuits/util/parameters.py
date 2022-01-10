@@ -19,24 +19,27 @@
 from kqcircuits.pya_resolver import pya
 
 
-def add_parameters_from(cls, *args):
+def add_parameters_from(cls, *param_names, **param_with_default_value):
     """Decorator function to add parameters to the decorated class.
 
-    If `args` is empty it takes all parameters of `cls`, otherwise only takes parameters mentioned
-    in `args`. Only add parameters that are not already class attributes.
+    If both `param_names` and `param_with_default_value` is empty it takes all parameters of `cls`,
+    otherwise only takes parameters mentioned in `param_names` and `param_with_default_value`.
 
     Args:
         cls: the class to take parameters from
-        args: is an optional list of parameter names to take
+        param_names: is an optional list of parameter names to take
+        param_with_default_value: is an optional list of parameter names and new default values
     """
-
-    cp = {n: p for n, p in cls.get_schema(noparents=True).items() if not args or n in args}
+    pl = list(param_names) + list(param_with_default_value.keys())
+    cp = {n: p for n, p in cls.get_schema(noparents=True).items() if not pl or n in pl}
 
     def _decorate(obj):
-        for name, param in cp.items():
-            if not hasattr(obj, name):
-                setattr(obj, name, param)
-                param.__set_name__(obj, name)
+        for name, p in cp.items():
+            if name in param_with_default_value and param_with_default_value[name] != p.default:
+                # Redefine the Param object because multiple elements may refer to it
+                p = Param(p.data_type, p.description, param_with_default_value[name], **p.kwargs)
+            setattr(obj, name, p)
+            p.__set_name__(obj, name)
         return obj
 
     return _decorate

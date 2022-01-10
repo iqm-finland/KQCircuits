@@ -170,7 +170,7 @@ class Node:
         return [Node.deserialize(node) for node in node_list]
 
 
-@add_parameters_from(AirbridgeConnection, "taper_length", "airbridge_type")
+@add_parameters_from(AirbridgeConnection, "airbridge_type")
 @add_parameters_from(FlipChipConnectorRf)
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
 @logged
@@ -255,7 +255,7 @@ class WaveguideComposite(Element):
 
         for i, node in enumerate(self._nodes):
             self.__log.debug(f' Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},'
-                              ' {node.params}')
+                             f' {node.params}')
             if node.element is None:
                 if 'a' in node.params or 'b' in node.params:
                     self._add_taper(i)

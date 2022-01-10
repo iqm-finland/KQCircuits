@@ -28,34 +28,69 @@ things should be taken into account when writing new elements:
     ``parameter_helper.py``. The C++-object is created properly only if you use
     these wrappers (or if a new PCell is added to a layout in KLayout GUI).
 
-#.  In code ``add_element`` is the preferred method of adding a new (sub)cell. The
-    ``create`` method is a ``@classmethod`` that is useful when adding a top
-    level PCell or when not calling from another PCell.
+#.  In code ``add_element`` or ``insert_cell`` is the preferred method of adding
+    a new (sub)cell. The ``create`` method is a ``@classmethod`` that is useful
+    when adding a top level PCell or when not calling from another PCell.
 
 #.  When a new PCell instance is created, or when the parameters are changed in
-    KLayout GUI, the ``produce_impl`` method of the PCell is called. For KQC 
-    elements ``produce_impl`` calls the ``build`` method, which is where you 
-    "build" the element. When ``produce_impl`` is called, the instance variables 
-    of the PCell are set to new values based on the given parameters. The PCell 
+    KLayout GUI, the ``produce_impl`` method of the PCell is called. For KQC
+    elements ``produce_impl`` calls the ``build`` method, which is where you
+    "build" the element. When ``produce_impl`` is called, the instance variables
+    of the PCell are set to new values based on the given parameters. The PCell
     instance is then created or updated based on these new parameter values.
 
-#.  The PCell parameters for KQCircuits elements are plain class attributes
-    defined with the help of ``Param`` descriptor class. These can be used like
-    normal instance variables.
-    The values of these parameters can be set from the KLayout GUI, or in the
-    ``create`` or ``add_element`` methods in code.  The parameters of a class
-    are automatically merged with its parent's parameters (see ``element.py``),
-    so an instance will contain the parameters of all its ancestors in the
-    inheritance hierarchy.
-    When building hierarchical elements the parameter values appropriate for a
-    sub-element are transparently passed to it from the caller with
-    ``add_element`` or ``insert_cell``.
+PCell parameters
+^^^^^^^^^^^^^^^^
 
-#.  The ``add_parameters_from`` decorator function adds some other class'
-    parameters to the decorated class. They are like normal parameters to all
-    intents and purposes and can be overridden by the class parameters. Note
-    that these parameters will be inherited by descendants of the decorated
-    class.
+The PCell parameters for KQCircuits elements are plain class attributes defined
+with the ``Param`` descriptor class. These can be used like normal instance
+variables. The values of these parameters can be set from the KLayout GUI, or in
+the ``create`` or ``add_element`` methods in code.  The parameters of a class
+are automatically merged with its parent's parameters (see ``element.py``), so
+an instance will contain the parameters of all its ancestors in the inheritance
+hierarchy. When building hierarchical elements the parameter values appropriate
+for a sub-element are transparently passed to it from the caller with
+``add_element`` or ``insert_cell``.
+
+It is possible to change inherited parameters default values in a per class
+basis using the ``default_parameter_values`` section of the ``defaults.py``
+configuration file. Technically this creates a copy of the Param object with
+different default value.
+
+The ``add_parameters_from`` decorator function adds some other class'
+parameter(s) to the decorated class so there is no need to re-define the same
+parameter in multiple places. They are like normal parameters to all intents and
+purposes. Note that these parameters will be inherited by descendants of the
+decorated class. Technically these are like references to the same Param object.
+
+With ``add_parameters_from`` it is also possible to add some other class'
+parameter with a changed default value. This is practically identical to setting
+a default value for the decorated class using ``default_parameter_values`` in
+the configuration file.
+
+Examples::
+
+    # Get all parameters form 'OtherClass'
+    @add_parameters_from(OtherClass)
+    class MyClass():
+
+    # Get only some parameters form 'OtherClass'
+    @add_parameters_from(OtherClass, "param_a", "param_b")
+    class MyClass():
+
+    # Also change the default value of some borrowed parameters
+    @add_parameters_from(OtherClass, "param_a", "param_b", param_c=42, param_d=43)
+    class MyClass():
+
+    # Get all parameters form 'OtherClass' but override one
+    @add_parameters_from(OtherClass, param_b=41)
+    @add_parameters_from(OtherClass)
+    class MyClass():
+
+Note that decorators are applied in "reverse-order", i.e. first the class is
+defined and then from bottom-up the decorators are called. This is also the
+reason why decorators may override Param definitions in the class' body but not
+the other way around.
 
 Libraries
 ^^^^^^^^^
