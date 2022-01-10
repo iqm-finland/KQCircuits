@@ -162,7 +162,7 @@ def test_length(nodes1):
     assert abs(l2 - l3)/l2 < 1e-12
 
 
-relative_length_tolerance = 1e-4
+relative_length_tolerance = 1e-3
 
 
 def test_length_one_series_airbridge():
@@ -175,6 +175,59 @@ def test_length_one_series_airbridge():
     wg = WaveguideComposite.create(layout, nodes=nodes)
 
     true_length = wg.length()
+    relative_length_error = abs(true_length - length) / length
+
+    assert relative_length_error < relative_length_tolerance
+
+
+def test_length_before_straight():
+    layout = pya.Layout()
+    length = 2500
+    nodes = [
+        Node((0, 0)),
+        Node((0, 1000), length_before=length)
+    ]
+    wg = WaveguideComposite.create(layout, nodes=nodes)
+
+    true_length = wg.length()
+    relative_length_error = abs(true_length - length) / length
+
+    assert relative_length_error < relative_length_tolerance
+
+
+def test_length_before_diagonal():
+    layout = pya.Layout()
+    straight_len = 200
+    length = 3500  # long enough to have 90 degree turns
+    nodes = [
+        Node((0, 0)),
+        Node((straight_len, 0), angle=0),
+        Node((1500, 1000), length_before=length, angle=0),
+        Node((1500 + straight_len, 1000))
+    ]
+    wg = WaveguideComposite.create(layout, nodes=nodes)
+
+    total_length = wg.length()
+    true_length = total_length - 2*straight_len
+    relative_length_error = abs(true_length - length) / length
+
+    assert relative_length_error < relative_length_tolerance
+
+
+def test_length_before_diagonal_non_90_deg_turns():
+    layout = pya.Layout()
+    straight_len = 200
+    length = 2000
+    nodes = [
+        Node((0, 0)),
+        Node((straight_len, 0), angle=0),
+        Node((1500, 1300), length_before=length, angle=0),
+        Node((1500 + straight_len, 1300))
+    ]
+    wg = WaveguideComposite.create(layout, nodes=nodes)
+
+    total_length = wg.length()
+    true_length = total_length - 2*straight_len
     relative_length_error = abs(true_length - length) / length
 
     assert relative_length_error < relative_length_tolerance

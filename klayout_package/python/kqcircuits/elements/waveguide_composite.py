@@ -33,6 +33,7 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
+from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
@@ -52,6 +53,7 @@ class Node:
         align: Tuple with two refpoint names that correspond the input and output point of element, respectively
                Default value (None) uses ``('port_a', 'port_b')``
         angle: Angle of waveguide direction in degrees
+        length_before: Length of the waveguide segment before this node
         **params: Other optional parameters for the inserted element
 
     Returns:
@@ -63,8 +65,9 @@ class Node:
     inst_name: str
     align: Tuple
     angle: float
+    length_before: float
 
-    def __init__(self, position, element=None, inst_name=None, align=tuple(), angle=None, **params):
+    def __init__(self, position, element=None, inst_name=None, align=tuple(), angle=None, length_before=None, **params):
         if isinstance(position, tuple):
             self.position = pya.DPoint(position[0], position[1])
         else:
@@ -73,6 +76,7 @@ class Node:
         self.align = align
         self.inst_name = inst_name
         self.angle = angle
+        self.length_before = length_before
         self.params = params
 
     def __str__(self):
@@ -93,6 +97,8 @@ class Node:
             magic_params['inst_name'] = self.inst_name
         if self.angle is not None:
             magic_params['angle'] = self.angle
+        if self.length_before is not None:
+            magic_params['length_before'] = self.length_before
 
         all_params = {**self.params, **magic_params}
         if all_params:
@@ -195,6 +201,10 @@ class WaveguideComposite(Element):
 
     The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``
     parameter puts N airbridges evenly distributed across the preceding edge.
+
+    The ``length_before`` parameter of a node can be specified to automatically set the length of
+    the waveguide between that node and the previous one. It will in fact create a Meander element
+    instead of a normal waveguide between those nodes to achieve the correct length.
 
     A notable implementation detail is that every Airbridge (sub)class is done as AirbridgeConnection.
     This way a waveguide taper is automatically inserted before and after the airbridge so the user
@@ -407,6 +417,20 @@ class WaveguideComposite(Element):
             return vector_length_and_direction(self._nodes[prev + 1].position - self._nodes[prev].position)[1]
         return get_direction(fixed_angle)
 
+    def _insert_wg_cell(self, points, start_index, end_index):
+        """Create and insert waveguide cell.
+        Avoid termination if in the middle or if the ends are actual elements.
+        """
+        if len(points) < 2:
+            return
+        params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": pya.DPath(points, 1)}
+        if start_index != 0 or self._nodes[start_index].element:
+            params['term1'] = 0
+        if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
+            params['term2'] = 0
+        wg_cell = self.add_element(WaveguideCoplanar, **params)
+        self.insert_cell(wg_cell)
+
     def _add_waveguide(self, end_index, end_pos=None, end_dir=None):
         """Creates waveguide from `self._wg_start_idx` until `end_index`.
 
@@ -463,8 +487,18 @@ class WaveguideComposite(Element):
         if end_index <= start_index:
             return
 
+        def curve_length_and_end_points(pnts, p):
+            """Returns curve length, curve start point, and curve end point, for given point pnts[p] in list pnts."""
+            if p == 0 or p + 1 >= len(pnts):
+                return 0.0, pnts[p], pnts[p]
+            v1, v2, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(pnts[p-1], pnts[p], pnts[p+1], self.r)
+            abs_turn = pi - abs(pi - abs(alpha2 - alpha1))
+            cut_dist = self.r * tan(abs_turn / 2)
+            return self.r * abs_turn, pnts[p] + (-cut_dist / v1.length()) * v1, pnts[p] + (cut_dist / v2.length()) * v2
+
         # Create waveguide path and create airbridges determined by parameter `n_bridges`.
         points = [self._wg_start_pos]
+        straights = {}
         for i in range(start_index, end_index):
             node0 = self._nodes[i]
             node1 = self._nodes[i + 1]
@@ -481,26 +515,48 @@ class WaveguideComposite(Element):
             len0, len1 = get_corner_lengths(pos1 - pos0, dir0, dir1)
             if len0 > 0:
                 points.append(pos0 + len0 * dir0)
-            points.append(pos1 - len1 * dir1)
-
-            # Add airbridges on the straight segment
-            if "n_bridges" in node1.params and node1.params["n_bridges"] > 0:
-                ab_len = node1.params['bridge_length'] if "bridge_length" in node1.params else None
-                self._ab_across(points[-2], points[-1], node1.params["n_bridges"], ab_len)
+            straights[i + 1] = len(points)
+            points.append(pos1 + (-len1) * dir1)
 
             # Add final point if it's not already added
             if i + 1 == end_index and len1 > 0:
                 points.append(pos1)
 
-        # Create and insert waveguide cell
-        # Avoid termination if in the middle or if the ends are actual elements
-        params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": pya.DPath(points, 1)}
-        if start_index != 0 or self._nodes[start_index].element:
-            params['term1'] = 0
-        if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
-            params['term2'] = 0
-        wg = self.add_element(WaveguideCoplanar, **params)
-        self.insert_cell(wg)
+        # Create and insert waveguide cell from points
+        # Possibly insert meanders or airbridges on straights
+        # Inserting meanders requires splitting of waveguide
+        p0 = 0
+        n0 = start_index
+        point0 = []
+        for n1, p1 in straights.items():
+            node1 = self._nodes[n1]
+            if node1.length_before is not None:
+                start_len, turn_start, meander_start = curve_length_and_end_points(points, p1-1)
+                end_len, meander_end, turn_end = curve_length_and_end_points(points, p1)
+                meander_len = node1.length_before
+                if n1 == end_index:
+                    meander_len -= end_len + (points[-1] - turn_end).length()
+                elif node1.angle is None:
+                    meander_len -= end_len / 2
+                else:
+                    meander_len -= end_len + (node1.position - turn_end).length()
+                if n1 - 1 == start_index:
+                    meander_len -= start_len + (points[0] - turn_start).length()
+                elif self._nodes[n1-1].angle is None:
+                    meander_len -= start_len / 2
+                else:
+                    meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
+
+                self.insert_cell(Meander, start=meander_start, end=meander_end, length=meander_len, **node1.params)
+                wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])
+                self._insert_wg_cell(wg_points, n0, n1)
+                n0 = n1
+                p0 = p1
+                point0 = [] if end_len < 1e-4 else [meander_end]
+            elif "n_bridges" in node1.params and node1.params["n_bridges"] > 0:
+                ab_len = node1.params['bridge_length'] if "bridge_length" in node1.params else None
+                self._ab_across(points[p1-1], points[p1], node1.params["n_bridges"], ab_len)
+        self._insert_wg_cell(point0 + points[p0:], n0, end_index)
 
         # Keep track of current position, direction, and index for the future elements
         self._wg_start_pos = points[-1]

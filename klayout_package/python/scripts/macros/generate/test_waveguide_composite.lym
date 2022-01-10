@@ -98,6 +98,18 @@ nodes = [
 wg = WaveguideComposite.create(layout, nodes=nodes)
 top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
 
+nodes = [
+    Node(pya.DPoint(0, -1400)),
+    Node(pya.DPoint(700, -1400), length_before=2000),               # Specify waveguide length between this and previous node
+    Node(pya.DPoint(800, -1400), FingerCapacitorSquare),
+    Node(pya.DPoint(1300, -900), length_before=1500, n_bridges=5),  # Airbridges can also be added when length_before is used
+    Node(pya.DPoint(1300, -800)),
+    Node(pya.DPoint(500, -600), FingerCapacitorSquare, length_before=1000, n_bridges=4),  # Works also when ending at an element
+]
+
+wg = WaveguideComposite.create(layout, nodes=nodes, r=50)
+top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+
 
 # Show all hierarchy levels and zoom to fit window
 layout_view.max_hier()
