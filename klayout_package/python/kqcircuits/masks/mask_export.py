@@ -159,7 +159,7 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
     layout = mask_layout.top_cell.layout()
     layer_info = resolve_default_layer_info(layer_name, mask_layout.face_id)
     layers_to_export = {layer_info.name: layout.layer(layer_info)}
-    path = export_dir / "{}_v{} {}.oas".format(mask_set.name, mask_set.version, layer_info.name)
+    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f" {layer_info.name}.oas")
     _export_cell(path, mask_layout.top_cell, layers_to_export)
 
 
@@ -176,9 +176,8 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
         for mask_layout in mask_set.mask_layouts:
 
             f.write("## Mask Layout {}:\n".format(mask_layout.face_id + mask_layout.extra_id))
-            mask_layout_str = mask_set.name + "_v" + str(mask_set.version)
-            f.write("![alt text]({})\n".format(mask_layout_str + "%20" + mask_layout.face_id + mask_layout.extra_id
-                                               + "/" + mask_layout_str + "%20mask_graphical_rep" + ".png"))
+            mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout).replace(" ", "%20")
+            f.write(f"![alt text]({mask_layout_str}/{mask_layout_str}%20mask_graphical_rep.png)\n")
 
             f.write("### Number of Chips in Mask Layout {}\n".format(mask_layout.face_id + mask_layout.extra_id))
 
@@ -307,10 +306,9 @@ def export_bitmaps(mask_set, export_dir, view, spec_layers=mask_bitmap_export_la
     for mask_layout in mask_set.mask_layouts:
         mask_layout_dir_name = _get_mask_layout_full_name(mask_set, mask_layout)
         mask_layout_dir = _get_directory(export_dir/str(mask_layout_dir_name))
-        filename = "{}_v{}".format(mask_set.name, mask_set.version)
+        filename = _get_mask_layout_full_name(mask_set, mask_layout)
         view.focus(mask_layout.top_cell)
-        view.export_all_layers_bitmap(mask_layout_dir, mask_layout.top_cell, filename=filename,
-                                      face_id=mask_layout.face_id)
+        view.export_all_layers_bitmap(mask_layout_dir, mask_layout.top_cell, filename=filename)
         view.export_layers_bitmaps(mask_layout_dir, mask_layout.top_cell, filename=filename,
                                    layers_set=spec_layers, face_id=mask_layout.face_id)
     # export bitmaps for chips

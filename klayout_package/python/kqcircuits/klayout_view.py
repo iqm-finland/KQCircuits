@@ -107,12 +107,12 @@ class KLayoutView():
             filename = cell.name
         for layer_name in layers_set:
             layer_info = resolve_default_layer_info(layer_name, face_id)
-            self._export_bitmap(path, cell, filename=filename, layers_set=[layer_info], face_id=face_id)
+            self._export_bitmap(path, cell, filename=filename, layers_set=[layer_info])
 
-    def export_all_layers_bitmap(self, path, cell, filename="", face_id=None):
+    def export_all_layers_bitmap(self, path, cell, filename=""):
         if filename == "":
             filename = cell.name
-        self._export_bitmap(path, cell, filename=filename, layers_set='all', face_id=face_id)
+        self._export_bitmap(path, cell, filename=filename, layers_set='all')
 
     def export_pcell_png(self, path, cell, filename, max_size=default_png_dimensions[0]):
         """Exports pcell to .png file no bigger than max_size at either dimension."""
@@ -130,7 +130,7 @@ class KLayoutView():
     # ********************************************************************************
 
     def _export_bitmap(self, path, cell=None, filename="", layers_set=mask_bitmap_export_layers,
-                       z_box=pya.DBox(0, 0, 0, 0), face_id=None, pngsize=default_png_dimensions):
+                       z_box=pya.DBox(0, 0, 0, 0), pngsize=default_png_dimensions):
         # pylint: disable=dangerous-default-value
         if cell is None:
             self.__log.warning("Cannot export bitmap of unspecified cell. Defaulting to active cell in view.")
@@ -152,7 +152,7 @@ class KLayoutView():
         if len(layers_set) == 1:
             layer_str = " " + layers_set[0].name
         else:
-            layer_str = " " + face_id if face_id else ""
+            layer_str = ""
         cell_png_name = path / "{}{}.png".format(filename, layer_str)
 
         # first make all layers visible, then take a screenshot
