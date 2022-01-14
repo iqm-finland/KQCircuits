@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Chips &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>Chips &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -233,6 +229,11 @@ corners.</p>
 <li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin between dicing edge and ground grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, starting from lower left and going clockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
+<li><p><strong>with_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>tsv_grid_spacing</strong><em> (Double)</em><span> - TSV grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>tsv_edge_to_tsv_edge_separation</strong><em> (Double)</em><span> - Ground TSV clearance to manually placed TSVs (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">250</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>tsv_edge_to_nearest_element</strong><em> (Double)</em><span> - Ground TSV clearance to other elements (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>edge_from_tsv</strong><em> (Double)</em><span> - Ground TSV center clearance to chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 </ul>
 <p><strong>Origin:</strong> Center of the cross.</p>
 <img alt="chipbase" src="../_images/chipbase.png" />
@@ -289,11 +290,15 @@ launchers in “b”-face, connectors between “b” and “t” faces, and def
 the connectors.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>face1_box</strong><em> (Shape)</em><span> - Border of Face 1</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(1500,1500;8500,8500)</span></code></p></li>
-<li><p><strong>with_gnd_bumps</strong><em> (Boolean)</em><span> - Make ground bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>a_capped</strong><em> (Double)</em><span> - Width of center conductor in the capped region [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>b_capped</strong><em> (Double)</em><span> - Width of gap in the capped region </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type for CPW waveguides</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+<li><p><strong>face1_box</strong><em> (Shape)</em><span> - Border of Face 1</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(1500,1500;8500,8500)</span></code></p></li>
+<li><p><strong>with_face1_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs on the top face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>with_gnd_bumps</strong><em> (Boolean)</em><span> - Make ground bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bump_grid_spacing</strong><em> (Double)</em><span> - Bump grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">120</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>bump_edge_to_bump_edge_separation</strong><em> (Double)</em><span> - In bump clearance to manually placed Bumps (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">95</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>edge_from_bump</strong><em> (Double)</em><span> - Spacing between bump and chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>face1_marker_types</strong><em> (List)</em><span> - Marker type for each top face corner, starting from lower right and going anticlockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 </ul>
 </div>

@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.util.replace_squids &mdash; KQCircuits  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/logo.svg"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.util.replace_squids</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.util.replace_squids</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Functions to replace SQUIDs in existing design files.</span>
+
+<span class="sd">    Typical usage in a macro::</span>
+
+<span class="sd">            top_cell = KLayoutView.get_active_cell()</span>
+<span class="sd">            replace_squids(top_cell, &quot;MySQUID&quot;, &quot;junction_width&quot;, 0.5, 0.1)  # a parameter sweep</span>
+<span class="sd">            replace_squid(top_cell, &quot;QB_2&quot;, &quot;MySQUID&quot;, mirror=True)          # replace an individual SQUID</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
+
+
+<div class="viewcode-block" id="replace_squids"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squids">[docs]</a><span class="nd">@traced</span>
+<span class="nd">@logged</span>
+<span class="k">def</span> <span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Replaces squids by code generated squids with the given parameter sweep.</span>
+
+<span class="sd">    All squids below top_cell in the cell hierarchy are removed. The number of code</span>
+<span class="sd">    generated squids may be limited by the value of parameter_end.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cell (Cell): The cell where the squids to be replaced are</span>
+<span class="sd">        squid_type: class name of the code generated squid that replaces the other squids</span>
+<span class="sd">        parameter_name (str): Name of the parameter to be swept</span>
+<span class="sd">        parameter_start: Start value of the parameter</span>
+<span class="sd">        parameter_step: Parameter value increment step</span>
+<span class="sd">        parameter_end: End value of the parameter. If None, there is no limit for the parameter value, so that all</span>
+<span class="sd">            squids are replaced</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+    <span class="n">parameter_value</span> <span class="o">=</span> <span class="n">parameter_start</span>
+    <span class="n">squid_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">choice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">squid_type_choices</span><span class="p">]</span>
+
+    <span class="n">old_squids</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of tuples (squid instance, squid dtrans with respect to cell, old name)</span>
+
+    <span class="k">def</span> <span class="nf">recursive_replace_squids</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Appends to old_squids all squids in top_cell_inst or any instance below it in hierarchy.&quot;&quot;&quot;</span>
+        <span class="c1"># cannot use just top_cell_inst.cell due to klayout bug, see</span>
+        <span class="c1"># https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference</span>
+        <span class="n">top_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">subcell_inst</span> <span class="ow">in</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+            <span class="n">subcell_name</span> <span class="o">=</span> <span class="n">subcell_inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="n">subcell_name</span> <span class="ow">in</span> <span class="n">squid_types</span><span class="p">:</span>
+                <span class="n">old_squids</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">subcell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="o">*</span><span class="n">subcell_inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">,</span> <span class="n">subcell_name</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">recursive_replace_squids</span><span class="p">(</span><span class="n">subcell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="o">*</span><span class="n">subcell_inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">squid_types</span><span class="p">:</span>
+            <span class="n">old_squids</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">inst</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">recursive_replace_squids</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">)</span>
+
+    <span class="c1"># sort left-to-right and bottom-to-top</span>
+    <span class="n">old_squids</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">squid</span><span class="p">:</span> <span class="p">(</span><span class="n">squid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">squid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">disp</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">in</span> <span class="n">old_squids</span><span class="p">:</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">parameter_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">parameter_value</span> <span class="o">&lt;=</span> <span class="n">parameter_end</span><span class="p">):</span>
+            <span class="c1"># create new squid at old squid&#39;s position</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">parameter_name</span><span class="p">:</span> <span class="n">parameter_value</span><span class="p">}</span>
+            <span class="n">squid_cell</span> <span class="o">=</span> <span class="n">Squid</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">squid_type</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span>
+                                      <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">squid_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">dtrans</span><span class="p">))</span>
+            <span class="n">replace_squids</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Replaced squid </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with dtrans=</span><span class="si">{}</span><span class="s2"> by a squid </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with </span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">.&quot;</span>
+                                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_value</span><span class="p">))</span>
+            <span class="n">parameter_value</span> <span class="o">+=</span> <span class="n">parameter_step</span>
+        <span class="c1"># delete old squid</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="replace_squid"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squid">[docs]</a><span class="nd">@logged</span>
+<span class="k">def</span> <span class="nf">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squid_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Replaces a SQUID by the requested alternative in the named instance.</span>
+
+<span class="sd">    Replaces the SQUID(s) in the sub-element(s) named ``inst_name`` with other SQUID(s) of</span>
+<span class="sd">    ``squid_type``. The necessary SQUID parameters are specified in ``params``. If ``inst_name`` is</span>
+<span class="sd">    a Test Structure then ``squid_index`` specifies which SQUID to change.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        top_cell: The top cell with SQUIDs to be replaced</span>
+<span class="sd">        inst_name: Instance name of PCell containing the SQUID to be replaced</span>
+<span class="sd">        squid_type: Name of SQUID Class or .gds/.oas file</span>
+<span class="sd">        mirror: Mirror the SQUID along its vertical axis</span>
+<span class="sd">        squid_index: Index of the SQUID to be replaced within a Test Structure</span>
+<span class="sd">        **params: Extra parameters for the new SQUID</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">find_cells_with_squids</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the container cells in `chip` called `inst_name`&quot;&quot;&quot;</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">chip</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">inst_name</span><span class="p">:</span>
+                <span class="n">cells</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(),</span> <span class="n">Chip</span><span class="p">):</span>  <span class="c1"># recursively look for more chips</span>
+                <span class="n">cells</span> <span class="o">+=</span> <span class="n">find_cells_with_squids</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cells</span>
+
+    <span class="n">cells</span> <span class="o">=</span> <span class="n">find_cells_with_squids</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cells</span><span class="p">:</span>
+        <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find anything named &#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s2">&#39;!&quot;</span><span class="p">)</span>
+
+    <span class="n">layout</span> <span class="o">=</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+    <span class="n">file_cell</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">squid_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.oas&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">squid_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gds&quot;</span><span class="p">):</span>  <span class="c1"># try to load from file</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">squid_type</span><span class="p">):</span>
+            <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No file found at &#39;</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">squid_type</span><span class="p">)</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
+        <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">squid_type</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
+        <span class="n">file_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">file_cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SQUID Library.</span><span class="si">{</span><span class="n">file_cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
+        <span class="n">orig_trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
+        <span class="n">ccell</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ccell</span><span class="o">.</span><span class="n">is_pcell_variant</span><span class="p">():</span>  <span class="c1"># make copy if used elsewhere</span>
+            <span class="n">dup</span> <span class="o">=</span> <span class="n">ccell</span><span class="o">.</span><span class="n">dup</span><span class="p">()</span>
+            <span class="n">dup</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">))</span>
+            <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+            <span class="n">chip</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">dup</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">orig_trans</span><span class="p">),</span> <span class="n">dup</span><span class="o">.</span><span class="n">prop_id</span><span class="p">)</span>
+            <span class="n">ccell</span> <span class="o">=</span> <span class="n">dup</span>
+
+        <span class="n">squids</span> <span class="o">=</span> <span class="p">[</span><span class="n">sq</span> <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="n">ccell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">()</span> <span class="k">if</span> <span class="n">sq</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">qname</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;SQUID Library&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">squids</span> <span class="ow">or</span> <span class="n">squid_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">squids</span><span class="p">)</span> <span class="ow">or</span> <span class="n">squid_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No SQUID found in &#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s2">&#39; or squid_index=</span><span class="si">{</span><span class="n">squid_index</span><span class="si">}</span><span class="s2"> is out of range!&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">old_squid</span> <span class="o">=</span> <span class="n">squids</span><span class="p">[</span><span class="n">squid_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">is_pcell</span><span class="p">():</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;face_ids&quot;</span><span class="p">:</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">params</span><span class="p">}</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">dcplx_trans</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="o">.</span><span class="n">M90</span> <span class="k">if</span> <span class="n">mirror</span> <span class="k">else</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">dcplx_trans</span>
+        <span class="n">squid_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">orig_trans</span> <span class="o">*</span> <span class="n">trans</span><span class="p">)</span><span class="o">.</span><span class="n">disp</span>
+        <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replaced SQUID of &#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s2">&#39; with </span><span class="si">{</span><span class="n">squid_type</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">squid_pos</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">old_squid</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">file_cell</span><span class="p">:</span>
+            <span class="n">ccell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">file_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">trans</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_squid</span> <span class="o">=</span> <span class="n">Squid</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">squid_type</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">ccell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">new_squid</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">trans</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="convert_cells_to_static"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.convert_cells_to_static">[docs]</a><span class="k">def</span> <span class="nf">convert_cells_to_static</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts all cells in the layout to static. &quot;&quot;&quot;</span>
+
+    <span class="n">converted_cells</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># convert the cells to static</span>
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">each_cell</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">cell</span><span class="o">.</span><span class="n">is_library_cell</span><span class="p">():</span>
+            <span class="n">cell_idx</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span>
+            <span class="n">new_cell_idx</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">convert_cell_to_static</span><span class="p">(</span><span class="n">cell_idx</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">new_cell_idx</span> <span class="o">!=</span> <span class="n">cell_idx</span><span class="p">:</span>
+                <span class="n">converted_cells</span><span class="p">[</span><span class="n">cell_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_cell_idx</span>
+
+    <span class="c1"># translate the instances</span>
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">each_cell</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span> <span class="ow">in</span> <span class="n">converted_cells</span><span class="p">:</span>
+                <span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span> <span class="o">=</span> <span class="n">converted_cells</span><span class="p">[</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">]</span>
+
+    <span class="c1"># delete the PCells</span>
+    <span class="k">for</span> <span class="n">cell_idx</span> <span class="ow">in</span> <span class="n">converted_cells</span><span class="p">:</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">delete_cell</span><span class="p">(</span><span class="n">cell_idx</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019-2021, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

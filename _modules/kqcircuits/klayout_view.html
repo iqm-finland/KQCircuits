@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.klayout_view &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.klayout_view &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -277,12 +273,12 @@
             <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
         <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers_set</span><span class="p">:</span>
             <span class="n">layer_info</span> <span class="o">=</span> <span class="n">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="p">[</span><span class="n">layer_info</span><span class="p">],</span> <span class="n">face_id</span><span class="o">=</span><span class="n">face_id</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="p">[</span><span class="n">layer_info</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="KLayoutView.export_all_layers_bitmap"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">[docs]</a>    <span class="k">def</span> <span class="nf">export_all_layers_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="KLayoutView.export_all_layers_bitmap"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">[docs]</a>    <span class="k">def</span> <span class="nf">export_all_layers_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">face_id</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="KLayoutView.export_pcell_png"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_pcell_png">[docs]</a>    <span class="k">def</span> <span class="nf">export_pcell_png</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Exports pcell to .png file no bigger than max_size at either dimension.&quot;&quot;&quot;</span>
@@ -300,7 +296,7 @@
     <span class="c1"># ********************************************************************************</span>
 
     <span class="k">def</span> <span class="nf">_export_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">,</span>
-                       <span class="n">z_box</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pngsize</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">):</span>
+                       <span class="n">z_box</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pngsize</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">):</span>
         <span class="c1"># pylint: disable=dangerous-default-value</span>
         <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot export bitmap of unspecified cell. Defaulting to active cell in view.&quot;</span><span class="p">)</span>
@@ -322,7 +318,7 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers_set</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">layers_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">face_id</span> <span class="k">if</span> <span class="n">face_id</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">cell_png_name</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">layer_str</span><span class="p">)</span>
 
         <span class="c1"># first make all layers visible, then take a screenshot</span>

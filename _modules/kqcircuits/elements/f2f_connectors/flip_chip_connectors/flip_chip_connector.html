@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -189,6 +185,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bump_parameters</span>
 
 
 <div class="viewcode-block" id="FlipChipConnector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector">[docs]</a><span class="nd">@traced</span>
@@ -200,8 +197,9 @@
 <span class="sd">    Origin is at the geometric center.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ubm_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Under-bump metalization diameter&quot;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">bump_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bump diameter&quot;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">ubm_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Under-bump metalization diameter&quot;</span><span class="p">,</span>
+                         <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;under_bump_diameter&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">bump_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bump diameter&quot;</span><span class="p">,</span> <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_diameter&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FlipChipConnector.create_bump_connector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector.create_bump_connector">[docs]</a>    <span class="k">def</span> <span class="nf">create_bump_connector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ubm_shape</span> <span class="o">=</span> <span class="n">circle_polygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ubm_diameter</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>

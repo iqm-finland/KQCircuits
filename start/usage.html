@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Usage &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>Usage &mdash; KQCircuits  documentation</title>
   
 
   
@@ -68,10 +68,6 @@
           
             
             
-              <div class="version">
-                4.1.6
-              </div>
-            
           
 
           
@@ -97,7 +93,10 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Getting Started</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-or-creating-elements-or-chips">Modifying or Creating Elements or Chips</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
@@ -196,6 +195,34 @@ If KQC was installed successfully, you should then see KQC libraries such as
 elements can then be dragged and dropped from there to the layout.
 The parameters of an element in the layout can be changed by double-clicking
 it. For more detailed instructions, see the <a class="reference internal" href="../user_guide/index.html#user-guide"><span class="std std-ref">User Guide</span></a>.</p>
+<div class="section" id="modifying-or-creating-elements-or-chips">
+<h2>Modifying or Creating Elements or Chips<a class="headerlink" href="#modifying-or-creating-elements-or-chips" title="Permalink to this headline">¶</a></h2>
+<p>KLayout Salt packages are read-only. The user may open a chosen chip (say, <code class="docutils literal notranslate"><span class="pre">[Package</span>
+<span class="pre">KQCircuits]/kqcircuits/chips/simple</span></code>) with the embedded macro editor (<code class="docutils literal notranslate"><span class="pre">F5</span></code>) but it can not be
+directly changed here. Of course, external code editors may be used to change these files or their
+copies. On the downside, package upgrades may override these changes.</p>
+<p>An other option is to copy (drag-and-drop) the Simple chip to the <code class="docutils literal notranslate"><span class="pre">[Local]</span></code> folder with the
+embedded macro editor. This copy may be freely changed with the macro editor. First suggested change
+would be to rename the chip. This is still not part of KQC. To
+make it visible in KLayout we need to create a <em>symbolic link</em> to it from the designated chip folder
+in <code class="docutils literal notranslate"><span class="pre">[Package</span> <span class="pre">KQCircuits]/kqcircuits/chips/</span></code>. Finally, KLayout should re-read the now update KQC
+library, this may be achieved by restarting or with the <code class="docutils literal notranslate"><span class="pre">Edit</span> <span class="pre">-&gt;</span> <span class="pre">KQCircuits</span> <span class="pre">Library</span> <span class="pre">-&gt;</span> <span class="pre">Reload</span>
+<span class="pre">libraries</span></code> menu entry.</p>
+<p>It may take a bit of effort to find where these folders are in a particular OS, in Linux:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd $HOME/.klayout/salt/KQCircuits/python/kqcircuits/chips
+ln -s $HOME/.klayout/pymacros/simple.py simpler.py
+</pre></div>
+</div>
+<p>or in Windows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOME</span><span class="o">%/</span><span class="n">KLayout</span><span class="o">/</span><span class="n">salt</span><span class="o">/</span><span class="n">KQCircuits</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">kqcircuits</span><span class="o">/</span><span class="n">chips</span>
+<span class="n">mklink</span> <span class="n">simpler</span><span class="o">.</span><span class="n">py</span> <span class="s2">&quot;%HOME%/KLayout/pymacros/simple.py&quot;</span>
+</pre></div>
+</div>
+<p>Naturally, the same approach would work to copy/create other elements, qubits etc. Creating macros or
+masks is even easier, no need to fumble with external editors or symlinks the default <code class="docutils literal notranslate"><span class="pre">[Local]</span></code>
+folder may be directly used to run the copied and modified macro or mask generation script. But for
+serious development work we suggest following the <a class="reference internal" href="../developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a>.</p>
+</div>
 </div>
 
 

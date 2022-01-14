@@ -21,6 +21,7 @@ kqcircuits.util
    kqcircuits.util.netlist_extraction
    kqcircuits.util.parameter_helper
    kqcircuits.util.parameters
+   kqcircuits.util.replace_squids
    kqcircuits.util.symmetric_polygons
 
 Module contents

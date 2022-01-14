@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -193,7 +189,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc</span> <span class="kn">import</span> <span class="n">FlipChipConnectorDc</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_bump_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span>
 
 
 <div class="viewcode-block" id="MultiFace"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace">[docs]</a><span class="nd">@traced</span>
@@ -206,13 +202,22 @@
 <span class="sd">    launchers to the connectors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">face1_box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border of Face 1&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">8500</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)))</span>
-    <span class="n">with_gnd_bumps</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground bumps&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">a_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Capped center conductor width&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
                      <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Width of center conductor in the capped region [μm]&quot;</span><span class="p">)</span>
     <span class="n">b_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of gap in the capped region &quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">connector_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Connector type for CPW waveguides&quot;</span><span class="p">,</span> <span class="s2">&quot;Coax&quot;</span><span class="p">,</span>
                            <span class="n">choices</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;Single&quot;</span><span class="p">,</span> <span class="s2">&quot;Single&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;GSG&quot;</span><span class="p">,</span> <span class="s2">&quot;GSG&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Coax&quot;</span><span class="p">,</span> <span class="s2">&quot;Coax&quot;</span><span class="p">]])</span>
+    <span class="n">face1_box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border of Face 1&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">8500</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)))</span>
+    <span class="n">with_face1_gnd_tsvs</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground TSVs on the top face&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">with_gnd_bumps</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground bumps&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">bump_grid_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bump grid distance (center to center)&quot;</span><span class="p">,</span>
+        <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_grid_spacing&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">bump_edge_to_bump_edge_separation</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;In bump clearance to manually placed Bumps (edge to edge)&quot;</span><span class="p">,</span>
+        <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_edge_to_bump_edge_separation&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">edge_from_bump</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Spacing between bump and chip edge&quot;</span><span class="p">,</span>
+                          <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;edge_from_bump&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">face1_marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each top face corner, starting from lower right and &quot;</span>
                                              <span class="s2">&quot;going anticlockwise&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
 
@@ -242,34 +247,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_frame</span><span class="p">(</span><span class="n">t_frame_parameters</span><span class="p">,</span> <span class="n">t_frame_trans</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_default_connectors_and_launchers</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_tsvs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_face1_gnd_tsvs</span><span class="p">:</span>
+            <span class="n">tsv_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face1_box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_tsv</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">face_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tsv_box</span><span class="o">=</span><span class="n">tsv_box</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_bumps</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_bumps</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="MultiFace.get_ground_bump_locations"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_ground_bump_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
+<div class="viewcode-block" id="MultiFace.get_ground_bump_locations"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations">[docs]</a>    <span class="k">def</span> <span class="nf">get_ground_bump_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bump_box</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Define the locations for ground bumps. This method returns the full bump grid, but the chip will only</span>
-<span class="sd">        place bumps on locations that do not interfere with the ground grid avoidance or manually placed bumps.</span>
-
-<span class="sd">        This method can be overridden by subclasses to use define a different ground bump grid.</span>
+<span class="sd">        Define the locations for a grid. This method returns the full grid.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            box: DBox specifying the region that should be filled with ground bumps</span>
 
 <span class="sd">        Returns: list of DPoint coordinates where a ground bump can be placed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Bump grid parameters</span>
-        <span class="n">delta_x</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Horizontal bump grid spacing</span>
-        <span class="n">delta_y</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c1"># Vertical bump grid spacing</span>
-
-        <span class="c1"># array size for bump creation</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span> <span class="o">-</span> <span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="p">)</span><span class="o">.</span><span class="n">x</span> <span class="o">/</span> <span class="n">delta_x</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span> <span class="o">-</span> <span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="p">)</span><span class="o">.</span><span class="n">y</span> <span class="o">/</span> <span class="n">delta_y</span>
-
-        <span class="n">locations</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">m</span><span class="p">)):</span>
-                <span class="n">locations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">i</span> <span class="o">*</span> <span class="n">delta_x</span><span class="p">,</span> <span class="n">j</span> <span class="o">*</span> <span class="n">delta_y</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">locations</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_grid_locations</span><span class="p">(</span><span class="n">bump_box</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bump_grid_spacing</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bump_grid_spacing</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_produce_ground_bumps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces ground bumps between bottom and top face.</span>
@@ -280,11 +277,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Starting ground bump generation&#39;</span><span class="p">)</span>
         <span class="n">bump</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FlipChipConnectorDc</span><span class="p">)</span>
 
-        <span class="c1"># Bump grid parameters</span>
-        <span class="n">existing_bump_avoidance_margin</span> <span class="o">=</span> <span class="mi">120</span>  <span class="c1"># Minimum distance allowed to existing bumps</span>
-        <span class="n">edge_from_bump</span> <span class="o">=</span> <span class="mi">750</span>  <span class="c1"># Spacing between bump and chip edge</span>
-
-        <span class="n">bump_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face1_box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="n">edge_from_bump</span><span class="p">,</span> <span class="o">-</span><span class="n">edge_from_bump</span><span class="p">))</span>
+        <span class="n">bump_box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face1_box</span><span class="o">.</span><span class="n">enlarged</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_bump</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_from_bump</span><span class="p">))</span>
 
         <span class="n">avoidance_layer_bottom</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
@@ -293,8 +286,18 @@
         <span class="n">existing_bumps</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;indium_bump&quot;</span><span class="p">)))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
         <span class="n">existing_bump_count</span> <span class="o">=</span> <span class="n">existing_bumps</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-        <span class="n">avoidance_existing_bumps</span> <span class="o">=</span> <span class="n">existing_bumps</span><span class="o">.</span><span class="n">sized</span><span class="p">((</span><span class="n">existing_bump_avoidance_margin</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-        <span class="n">avoidance_region</span> <span class="o">=</span> <span class="p">(</span><span class="n">avoidance_layer_bottom</span> <span class="o">+</span> <span class="n">avoidance_layer_top</span> <span class="o">+</span> <span class="n">avoidance_existing_bumps</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="n">avoidance_existing_bumps</span> <span class="o">=</span> <span class="n">existing_bumps</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bump_edge_to_bump_edge_separation</span>
+                                                        <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+
+        <span class="n">existing_tsvs_bottom</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;through_silicon_via&quot;</span><span class="p">,</span><span class="mi">0</span><span class="p">)))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="n">avoidance_existing_tsvs_bottom</span> <span class="o">=</span> <span class="n">existing_tsvs_bottom</span><span class="o">.</span>\
+            <span class="n">sized</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_nearest_element</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="n">existing_tsvs_top</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;through_silicon_via&quot;</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="n">avoidance_existing_tsvs_top</span> <span class="o">=</span> <span class="n">existing_tsvs_top</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tsv_edge_to_nearest_element</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="n">avoidance_region</span> <span class="o">=</span> <span class="p">(</span><span class="n">avoidance_layer_bottom</span> <span class="o">+</span> <span class="n">avoidance_layer_top</span> <span class="o">+</span> <span class="n">avoidance_existing_bumps</span> <span class="o">+</span>
+                            <span class="n">avoidance_existing_tsvs_bottom</span> <span class="o">+</span> <span class="n">avoidance_existing_tsvs_top</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
 
         <span class="n">locations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ground_bump_locations</span><span class="p">(</span><span class="n">bump_box</span><span class="p">)</span>
 

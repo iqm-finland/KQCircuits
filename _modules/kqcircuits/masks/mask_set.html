@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.masks.mask_set &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -419,7 +415,9 @@
         <span class="c1"># populate used_chips with chips which exist in some mask_layout</span>
         <span class="k">for</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">chip_name</span> <span class="ow">in</span> <span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">chips_map</span><span class="p">):</span>
+                <span class="c1"># pylint: disable=use-a-generator</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">chip_name</span> <span class="ow">in</span> <span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">chips_map</span><span class="p">]):</span>
+                <span class="c1"># pylint: enable=use-a-generator</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span><span class="p">[</span><span class="n">chip_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell</span>
                     <span class="k">break</span>
 

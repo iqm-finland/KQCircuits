@@ -1,0 +1,10 @@
+kqcircuits.util.replace\_squids
+===============================
+
+.. automodule:: kqcircuits.util.replace_squids
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.replace_squids
+.. image:: ../pcell_images/kqcircuits.util.replace_squids.png

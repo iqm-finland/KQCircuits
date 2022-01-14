@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -218,6 +214,7 @@
 <span class="sd">        chips_map_legend: Dictionary where keys are chip names, values are chip cells</span>
 <span class="sd">        wafer_rad: Wafer radius</span>
 <span class="sd">        wafer_center: Wafer center as a pya.DVector</span>
+<span class="sd">        chips_map_offset: Offset to make chips_map centered on wafer</span>
 <span class="sd">        wafer_top_flat_length: length of flat edge at the top of the wafer</span>
 <span class="sd">        wafer_bottom_flat_length: length of flat edge at the bottom of the wafer</span>
 <span class="sd">        dice_width: Dicing width for this mask layout</span>
@@ -250,9 +247,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">covered_region_excluded_layers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;covered_region_excluded_layers&quot;</span><span class="p">,</span>
                                                         <span class="n">default_covered_region_excluded_layers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_rad&quot;</span><span class="p">,</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;wafer_rad&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">wafer_center</span> <span class="o">=</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">)</span> <span class="o">+</span>
-                             <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_center_offset&quot;</span><span class="p">,</span>
-                                        <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;wafer_center_offset&quot;</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wafer_center</span> <span class="o">=</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;chips_map_offset&quot;</span><span class="p">,</span>
+                                              <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;chips_map_offset&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wafer_top_flat_length</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_top_flat_length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wafer_bottom_flat_length</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;wafer_bottom_flat_length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dice_width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dice_width&quot;</span><span class="p">,</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span><span class="s2">&quot;dice_width&quot;</span><span class="p">])</span>
@@ -367,6 +364,7 @@
         <span class="sd">&quot;&quot;&quot;Returns a tuple (Boolean telling if the chip was added, Region which the chip covers).&quot;&quot;&quot;</span>
         <span class="c1"># center of the chip at distance self.chip_size from the mask edge</span>
         <span class="n">chip_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="n">position</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_offset</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">step_ver</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">step_hor</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">wafer_center</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span> <span class="o">&lt;</span> \
                 <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">edge_clearance</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">slot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -467,7 +465,8 @@
         <span class="p">})</span>
         <span class="n">cell_mask_name_h</span> <span class="o">=</span> <span class="n">cell_mask_name</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
         <span class="n">cell_mask_name_w</span> <span class="o">=</span> <span class="n">cell_mask_name</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
-        <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">cell_mask_name_w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">mask_name_offset</span> <span class="o">-</span> <span class="n">cell_mask_name_h</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wafer_center</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">cell_mask_name_w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">wafer_rad</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_name_offset</span> <span class="o">-</span> <span class="n">cell_mask_name_h</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">inst</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">cell_mask_name</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">trans</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">inst</span></div>
 </pre></div>

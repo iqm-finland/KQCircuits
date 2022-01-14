@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -392,6 +388,34 @@ override this. If neither argument is defined then all pads are enabled with def
 </dl>
 </dd></dl>
 
+<dl class="method">
+<dt id="kqcircuits.chips.chip.Chip.make_grid_locations">
+<code class="sig-name descname">make_grid_locations</code><span class="sig-paren">(</span><em class="sig-param">box</em>, <em class="sig-param">delta_x=100</em>, <em class="sig-param">delta_y=100</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.make_grid_locations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.make_grid_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the locations for a grid. This method returns the full grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>box</strong> – DBox specifying a region for a grid</p></li>
+<li><p><strong>delta_x</strong> – Int or float specifying the grid separation along the x dimension</p></li>
+<li><p><strong>delta_y</strong> – Int or float specifying the grid separation along the y dimension</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: list of DPoint coordinates for the grid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.chips.chip.Chip.get_ground_tsv_locations">
+<code class="sig-name descname">get_ground_tsv_locations</code><span class="sig-paren">(</span><em class="sig-param">tsv_box</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.get_ground_tsv_locations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.get_ground_tsv_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the locations for a grid. This method returns the full grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>box</strong> – DBox specifying the region that should be filled with TSVs</p>
+</dd>
+</dl>
+<p>Returns: list of DPoint coordinates where a ground bump can be placed</p>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
@@ -404,6 +428,11 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin between dicing edge and ground grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, starting from lower left and going clockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
+<li><p><strong>with_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>tsv_grid_spacing</strong><em> (Double)</em><span> - TSV grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>tsv_edge_to_tsv_edge_separation</strong><em> (Double)</em><span> - Ground TSV clearance to manually placed TSVs (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">250</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>tsv_edge_to_nearest_element</strong><em> (Double)</em><span> - Ground TSV clearance to other elements (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>edge_from_tsv</strong><em> (Double)</em><span> - Ground TSV center clearance to chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.chip.png" src="../_images/kqcircuits.chips.chip.png" />
 </div>

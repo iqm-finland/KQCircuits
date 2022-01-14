@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.squids.squid &mdash; KQCircuits 4.1.6 documentation</title>
+  <title>kqcircuits.squids.squid &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.1.6
-              </div>
             
           
 
@@ -245,27 +241,6 @@ squid_type does not correspond to any squid, an empty “NoSquid” squid is ret
 </dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="function">
-<dt id="kqcircuits.squids.squid.replace_squids">
-<code class="sig-prename descclassname">kqcircuits.squids.squid.</code><code class="sig-name descname">replace_squids</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">squid_type</em>, <em class="sig-param">parameter_name</em>, <em class="sig-param">parameter_start</em>, <em class="sig-param">parameter_step</em>, <em class="sig-param">parameter_end=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/squids/squid.html#replace_squids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.squids.squid.replace_squids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Replaces squids by code generated squids with the given parameter sweep.</p>
-<p>All squids below top_cell in the cell hierarchy are removed. The number of code
-generated squids may be limited by the value of parameter_end.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>cell</strong> (<em>Cell</em>) – The cell where the squids to be replaced are</p></li>
-<li><p><strong>squid_type</strong> – class name of the code generated squid that replaces the other squids</p></li>
-<li><p><strong>parameter_name</strong> (<em>str</em>) – Name of the parameter to be swept</p></li>
-<li><p><strong>parameter_start</strong> – Start value of the parameter</p></li>
-<li><p><strong>parameter_step</strong> – Parameter value increment step</p></li>
-<li><p><strong>parameter_end</strong> – End value of the parameter. If None, there is no limit for the parameter value, so that all
-squids are replaced</p></li>
-</ul>
-</dd>
-</dl>
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>

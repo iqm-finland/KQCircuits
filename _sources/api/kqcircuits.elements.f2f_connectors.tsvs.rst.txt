@@ -5,6 +5,8 @@ kqcircuits.elements.f2f\_connectors.tsvs
 .. toctree::
 
    kqcircuits.elements.f2f_connectors.tsvs.tsv
+   kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse
+   kqcircuits.elements.f2f_connectors.tsvs.tsv_standard
 
 Module contents
 ---------------
