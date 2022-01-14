@@ -51,10 +51,10 @@ jobs:
           ln -s -f /usr/local/bin/python3.7 /usr/local/bin/python
         if: ${{ matrix.os == 'macos-latest' }}
       - name: Init KQCircuits
-        run: pip3 install -e "klayout_package/python[docs,tests]"
+        run: pip3 install -e "klayout_package/python[docs,tests]" --only-binary=klayout
         continue-on-error: true
       - name: Select KLayout version
-        run: pip3 install --force-reinstall "klayout<=${{ matrix.klayout_version }}"
+        run: pip3 install --force-reinstall --only-binary=klayout "klayout<=${{matrix.klayout_version }}"
       - name: Run tests
         run: tox -e matrix
       - name: Upload test results
