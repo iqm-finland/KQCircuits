@@ -167,3 +167,11 @@ html_static_path = ['_static']
 html_css_files = [
     'css/custom.css'
 ]
+
+# A string of reStructuredText that will be included at the end of every source file that is read.
+# This is a possible place to add substitutions that should be available in every file
+rst_epilog = """
+.. |GIT_CLONE_URL| replace:: {url}
+""".format(
+    url=os.environ.get('DOCS_GIT_CLONE_URL', 'https://github.com/iqm-finland/KQCircuits'),  # picks default if no ENV
+)

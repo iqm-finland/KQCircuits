@@ -97,7 +97,7 @@ pages:
     - Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
     - cd docs
     - make html SPHINXOPTS="-W --keep-going"
-    - find _build/html -name "*.html" -exec sed -i 's#github.com/iqm-finland/KQCircuits#$KQC_REPOSITORY_STRING#g' {} +
+    - find _build/html -name "*.html" -exec sed -i "s#github.com/iqm-finland/KQCircuits#$KQC_REPOSITORY_STRING#g" {} +
     - mv _build/html ../public
   artifacts:
     paths:
