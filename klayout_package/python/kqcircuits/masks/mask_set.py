@@ -14,6 +14,7 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+import copy
 import os
 import string
 import subprocess
@@ -80,7 +81,6 @@ class MaskSet:
         self.mask_layouts = []
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
-        self._mask_layouts_per_face = {}  # dict of {face_id: number of mask layouts}
 
     def add_mask_layout(self, chips_map, face_id="b", mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -94,14 +94,6 @@ class MaskSet:
         Returns:
             the created mask layout
         """
-
-        # add extra_id to distinguish mask layouts in the same face
-        if face_id in self._mask_layouts_per_face:
-            self._mask_layouts_per_face[face_id] += 1
-            kwargs["extra_id"] = str(self._mask_layouts_per_face[face_id])
-        else:
-            self._mask_layouts_per_face[face_id] = 1
-
         if ("mask_export_layers" not in kwargs) and self.mask_export_layers:
             kwargs["mask_export_layers"] = self.mask_export_layers
 
@@ -239,12 +231,44 @@ class MaskSet:
             remove_guiding_shapes (Boolean): determines if the guiding shapes are removed
 
         """
-        # build mask layouts
+        # build mask layouts (without chip copy labels)
         for mask_layout in self.mask_layouts:
             # include face_id in mask_layout.name only for multi-face masks
             if len(self.mask_layouts) > 1:
                 mask_layout.name += mask_layout.face_id
             mask_layout.build(self.chips_map_legend)
+
+        # Insert submask cells to different cell instances, so that these cells can have different chip labels even if
+        # the original submask cells are identical. Also copy the MaskLayout objects of identical submasks into separate
+        # MaskLayout objects with different `extra_id` so that mask export can use that information.
+        mask_layouts_to_remove = set()
+        submask_layouts = []
+        for mask_layout in self.mask_layouts:
+            for i, (sm_layout, sm_pos) in enumerate(mask_layout.submasks):
+                new_sm_layout = copy.copy(sm_layout)
+                new_sm_layout.extra_id = f" s{i+1}"
+                old_top_cell = new_sm_layout.top_cell
+                new_sm_layout.top_cell = self.layout.create_cell(f"{new_sm_layout.name}{new_sm_layout.extra_id}")
+                new_sm_layout.top_cell.insert(pya.DCellInstArray(old_top_cell.cell_index(), pya.DTrans()))
+                mask_layout.top_cell.insert(
+                    pya.DCellInstArray(new_sm_layout.top_cell.cell_index(),
+                                       pya.DTrans(sm_pos - sm_layout.wafer_center + mask_layout.wafer_center))
+                )
+                mask_layout.submasks[i] = (new_sm_layout, sm_pos)
+                submask_layouts.append(new_sm_layout)
+                mask_layouts_to_remove.add(sm_layout)
+        self.mask_layouts = submask_layouts + [ml for ml in self.mask_layouts if ml not in mask_layouts_to_remove]
+
+        # add chip copy labels for every mask layout
+        for mask_layout in tqdm(self.mask_layouts, desc='Adding chip copy labels', bar_format=default_bar_format):
+
+            labels_cell = mask_layout.layout.create_cell("ChipLabels")
+            mask_layout.top_cell.insert(pya.DCellInstArray(labels_cell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
+
+            if mask_layout not in submask_layouts:
+                mask_layout.insert_chip_copy_labels(labels_cell)
+                # remove "$1" or similar unnecessary postfix from cell name
+                mask_layout.top_cell.name = f"{mask_layout.name}"
 
         # populate used_chips with chips which exist in some mask_layout
         for chip_name, cell in self.chips_map_legend.items():
@@ -258,6 +282,12 @@ class MaskSet:
         # remove the guiding shapes, like chip boxes and waveguide paths
         if remove_guiding_shapes and self.layout.is_valid_layer(self.layout.guiding_shape_layer()):
             self.layout.delete_layer(self.layout.guiding_shape_layer())
+
+        # remove any unnecessary top-level cells
+        mask_layout_top_cells = [ml.top_cell for ml in self.mask_layouts]
+        for cell in self.layout.top_cells():
+            if cell not in mask_layout_top_cells + list(self.used_chips.values()):
+                cell.prune_cell()
 
     def export(self, path, view):
         """Exports designs, bitmaps and documentation of this mask set.
