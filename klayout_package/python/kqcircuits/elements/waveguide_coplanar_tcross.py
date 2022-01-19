@@ -94,10 +94,14 @@ class WaveguideCoplanarTCross(Element):
         # Protection layer
         m = self.margin
         pts = [
-            pya.DPoint(port_l_location_x - m, a / 2 + b + m),
-            pya.DPoint(port_r_location_x + m, a / 2 + b + m),
-            pya.DPoint(port_r_location_x + m, port_bottom_location_y - m),
-            pya.DPoint(port_l_location_x - m, port_bottom_location_y - m),
+            pya.DPoint(port_l_location_x - m, a/2 + b + m),
+            pya.DPoint(port_r_location_x + m, a/2 + b + m),
+            pya.DPoint(port_r_location_x + m, -a/2 - b - m),
+            pya.DPoint(a/2 + b + m, -a/2 - b - m),
+            pya.DPoint(a/2 + b + m, port_bottom_location_y - m),
+            pya.DPoint(-a/2 - b - m, port_bottom_location_y - m),
+            pya.DPoint(-a/2 - b - m, -a/2 - b - m),
+            pya.DPoint(port_l_location_x - m, -a/2 - b - m),
         ]
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
