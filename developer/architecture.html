@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Architecture &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>Architecture &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="docker_image.html">Docker image</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Architecture</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#elements">Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pcell-parameters">PCell parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#libraries">Libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pya-resolver">pya resolver</a></li>
 </ul>
@@ -210,32 +211,64 @@ element, which are wrappers for KLayout’s <code class="docutils literal notran
 wrappers are used to validate the parameters using the <code class="docutils literal notranslate"><span class="pre">Validator</span></code> in
 <code class="docutils literal notranslate"><span class="pre">parameter_helper.py</span></code>. The C++-object is created properly only if you use
 these wrappers (or if a new PCell is added to a layout in KLayout GUI).</p></li>
-<li><p>In code <code class="docutils literal notranslate"><span class="pre">add_element</span></code> is the preferred method of adding a new (sub)cell. The
-<code class="docutils literal notranslate"><span class="pre">create</span></code> method is a <code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> that is useful when adding a top
-level PCell or when not calling from another PCell.</p></li>
+<li><p>In code <code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code> is the preferred method of adding
+a new (sub)cell. The <code class="docutils literal notranslate"><span class="pre">create</span></code> method is a <code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> that is useful
+when adding a top level PCell or when not calling from another PCell.</p></li>
 <li><p>When a new PCell instance is created, or when the parameters are changed in
 KLayout GUI, the <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> method of the PCell is called. For KQC
 elements <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> calls the <code class="docutils literal notranslate"><span class="pre">build</span></code> method, which is where you
 “build” the element. When <code class="docutils literal notranslate"><span class="pre">produce_impl</span></code> is called, the instance variables
 of the PCell are set to new values based on the given parameters. The PCell
 instance is then created or updated based on these new parameter values.</p></li>
-<li><p>The PCell parameters for KQCircuits elements are plain class attributes
-defined with the help of <code class="docutils literal notranslate"><span class="pre">Param</span></code> descriptor class. These can be used like
-normal instance variables.
-The values of these parameters can be set from the KLayout GUI, or in the
-<code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">add_element</span></code> methods in code.  The parameters of a class
-are automatically merged with its parent’s parameters (see <code class="docutils literal notranslate"><span class="pre">element.py</span></code>),
-so an instance will contain the parameters of all its ancestors in the
-inheritance hierarchy.
-When building hierarchical elements the parameter values appropriate for a
-sub-element are transparently passed to it from the caller with
-<code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code>.</p></li>
-<li><p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> decorator function adds some other class’
-parameters to the decorated class. They are like normal parameters to all
-intents and purposes and can be overridden by the class parameters. Note
-that these parameters will be inherited by descendants of the decorated
-class.</p></li>
 </ol>
+</div>
+<div class="section" id="pcell-parameters">
+<h2>PCell parameters<a class="headerlink" href="#pcell-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The PCell parameters for KQCircuits elements are plain class attributes defined
+with the <code class="docutils literal notranslate"><span class="pre">Param</span></code> descriptor class. These can be used like normal instance
+variables. The values of these parameters can be set from the KLayout GUI, or in
+the <code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">add_element</span></code> methods in code.  The parameters of a class
+are automatically merged with its parent’s parameters (see <code class="docutils literal notranslate"><span class="pre">element.py</span></code>), so
+an instance will contain the parameters of all its ancestors in the inheritance
+hierarchy. When building hierarchical elements the parameter values appropriate
+for a sub-element are transparently passed to it from the caller with
+<code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code>.</p>
+<p>It is possible to change inherited parameters default values in a per class
+basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <code class="docutils literal notranslate"><span class="pre">defaults.py</span></code>
+configuration file. Technically this creates a copy of the Param object with
+different default value.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> decorator function adds some other class’
+parameter(s) to the decorated class so there is no need to re-define the same
+parameter in multiple places. They are like normal parameters to all intents and
+purposes. Note that these parameters will be inherited by descendants of the
+decorated class. Technically these are like references to the same Param object.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> it is also possible to add some other class’
+parameter with a changed default value. This is practically identical to setting
+a default value for the decorated class using <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> in
+the configuration file.</p>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all parameters form &#39;OtherClass&#39;</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+
+<span class="c1"># Get only some parameters form &#39;OtherClass&#39;</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="s2">&quot;param_b&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+
+<span class="c1"># Also change the default value of some borrowed parameters</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="s2">&quot;param_b&quot;</span><span class="p">,</span> <span class="n">param_c</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">param_d</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+
+<span class="c1"># Get all parameters form &#39;OtherClass&#39; but override one</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="n">param_b</span><span class="o">=</span><span class="mi">41</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+</pre></div>
+</div>
+<p>Note that decorators are applied in “reverse-order”, i.e. first the class is
+defined and then from bottom-up the decorators are called. This is also the
+reason why decorators may override Param definitions in the class’ body but not
+the other way around.</p>
 </div>
 <div class="section" id="libraries">
 <h2>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h2>

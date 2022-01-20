@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.airbridge_crossings &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>kqcircuits.chips.airbridge_crossings &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -209,8 +209,6 @@
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Number of pairs of airbridge crossings&quot;</span><span class="p">)</span>
     <span class="n">b_number</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of bridges&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span>
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Number of airbridges in one element of the mechanical test array&quot;</span><span class="p">)</span>
-    <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Crossing airbridge width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
-    <span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Crossing airbridge length&quot;</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AirbridgeCrossings.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.airbridge_crossings.html#kqcircuits.chips.airbridge_crossings.AirbridgeCrossings.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -254,10 +252,7 @@
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">-</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
             <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
         <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="n">waveguide_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
-                                       <span class="n">bridge_width_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span><span class="p">,</span>
-                                       <span class="n">bridge_length_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_length</span>
-                                       <span class="p">)</span>
+        <span class="n">waveguide_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide_cell</span><span class="p">)</span>
 
         <span class="c1"># TL without crossings</span>
@@ -272,10 +267,7 @@
             <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">((</span><span class="n">ref_x</span> <span class="o">+</span> <span class="n">wiggle</span><span class="p">,</span> <span class="n">last_y</span><span class="p">)))</span>
             <span class="n">last_y</span> <span class="o">-=</span> <span class="n">step</span>
         <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Node</span><span class="p">(</span><span class="n">launchers</span><span class="p">[</span><span class="s2">&quot;ES&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]))</span>
-        <span class="n">waveguide_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span>
-                                       <span class="n">bridge_width_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_width</span><span class="p">,</span>
-                                       <span class="n">bridge_length_series</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bridge_length</span>
-                                       <span class="p">)</span>
+        <span class="n">waveguide_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">nodes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide_cell</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_mechanical_test_array</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -300,11 +292,9 @@
         <span class="c1"># v_step = pya.DVector((distance + width) * 2, 0)</span>
 
         <span class="n">ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span>
-            <span class="c1"># pad_width=1.1 * width,</span>
             <span class="c1"># pad_length=1 * width,</span>
             <span class="c1"># bridge_length=length,</span>
             <span class="c1"># bridge_width=width,</span>
-            <span class="c1"># pad_extra=2</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
             <span class="c1"># ab_trans = pya.DCplxTrans(1, 0, False, wg_start + v_step * (i + 0.5))</span>

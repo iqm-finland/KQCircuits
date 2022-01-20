@@ -32,9 +32,11 @@ Successfully tested versions:
 Sources
 -------
 
-Get KQCircuits' sources with::
+Get KQCircuits' sources with:
 
-    git clone https://github.com/iqm-finland/KQCircuits
+.. parsed-literal::
+
+    git clone |GIT_CLONE_URL|
 
 Alternatively, you may re-use the Salt package itself for quick tests, it is under the
 ``.klayout/salt/KQCircuits`` directory. In this case creating symbolic links or installing some

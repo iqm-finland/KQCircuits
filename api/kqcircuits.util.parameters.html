@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -216,15 +216,16 @@
 <span id="kqcircuits-util-parameters"></span><h1>kqcircuits.util.parameters<a class="headerlink" href="#module-kqcircuits.util.parameters" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="kqcircuits.util.parameters.add_parameters_from">
-<code class="sig-prename descclassname">kqcircuits.util.parameters.</code><code class="sig-name descname">add_parameters_from</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameters_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameters_from" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kqcircuits.util.parameters.</code><code class="sig-name descname">add_parameters_from</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">*param_names</em>, <em class="sig-param">**param_with_default_value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameters_from"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameters_from" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator function to add parameters to the decorated class.</p>
-<p>If <cite>args</cite> is empty it takes all parameters of <cite>cls</cite>, otherwise only takes parameters mentioned
-in <cite>args</cite>. Only add parameters that are not already class attributes.</p>
+<p>If both <cite>param_names</cite> and <cite>param_with_default_value</cite> is empty it takes all parameters of <cite>cls</cite>,
+otherwise only takes parameters mentioned in <cite>param_names</cite> and <cite>param_with_default_value</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cls</strong> – the class to take parameters from</p></li>
-<li><p><strong>args</strong> – is an optional list of parameter names to take</p></li>
+<li><p><strong>param_names</strong> – is an optional list of parameter names to take</p></li>
+<li><p><strong>param_with_default_value</strong> – is an optional list of parameter names and new default values</p></li>
 </ul>
 </dd>
 </dl>

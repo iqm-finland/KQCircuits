@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -469,7 +469,7 @@
 <span class="sd">            distance until the next airbridge should created</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">segment_len</span><span class="p">,</span> <span class="n">segment_dir</span> <span class="o">=</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
-        <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;pad_width&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
+        <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()[</span><span class="s2">&quot;bridge_width&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
         <span class="n">remaining_len</span> <span class="o">=</span> <span class="n">segment_len</span> <span class="o">-</span> <span class="n">bridge_width</span>
         <span class="n">prev_pos</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">end_point_idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="c1"># ensure that the bridge will not be too close to the corner before</span>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Chips &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>Chips &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -205,8 +205,6 @@
 <ul class="simple">
 <li><p><strong>crossings</strong><em> (Int)</em><span> - Number of pairs of airbridge crossings</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
 <li><p><strong>b_number</strong><em> (Int)</em><span> - Number of airbridges in one element of the mechanical test array</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
-<li><p><strong>bridge_width</strong><em> (Double)</em><span> - Crossing airbridge width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>bridge_length</strong><em> (Double)</em><span> - Crossing airbridge length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="airbridgedctest">
@@ -254,9 +252,9 @@ corners.</p>
 <h2>Demo<a class="headerlink" href="#demo" title="Permalink to this headline">¶</a></h2>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Demo</span></code></p></li>
 <li><p><strong>readout_res_lengths</strong><em> (List)</em><span> - Readout resonator lengths</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[5000,</span> <span class="pre">5100,</span> <span class="pre">5200,</span> <span class="pre">5300]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>include_couplers</strong><em> (Boolean)</em><span> - Include couplers between qubits</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Demo</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="empty">
@@ -280,6 +278,7 @@ corners.</p>
 <li><p><strong>junctions_horizontal</strong><em> (Boolean)</em><span> - Horizontal (True) or vertical (False) junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">QCD1</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'QCD1',</span> <span class="pre">'QCD2',</span> <span class="pre">'QCD3',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
 <li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, starting from lower left and going clockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="lithographytest">
@@ -355,6 +354,9 @@ represents non-crossing transmission lines.</p>
 <li><p><strong>res_a</strong><em> (List)</em><span> - Width of the center conductor in the resonators [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[5,</span> <span class="pre">10,</span> <span class="pre">20,</span> <span class="pre">5,</span> <span class="pre">10,</span> <span class="pre">20]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>res_b</strong><em> (List)</em><span> - Width of the gap in the resonators [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[3,</span> <span class="pre">6,</span> <span class="pre">12,</span> <span class="pre">3,</span> <span class="pre">6,</span> <span class="pre">12]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>tl_airbridges</strong><em> (Boolean)</em><span> - Airbridges on transmission line</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>launcher_top_dist</strong><em> (Double)</em><span> - Launcher distance from top</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2800</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>marker_safety</strong><em> (Double)</em><span> - Distance between launcher and first curve</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>max_res_len</strong><em> (Double)</em><span> - Resonators exceeding this length become meandering</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1e+30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="shaping">

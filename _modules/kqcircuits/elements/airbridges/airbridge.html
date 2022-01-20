@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.airbridges.airbridge &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>kqcircuits.elements.airbridges.airbridge &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -188,25 +188,28 @@
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_angle</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_airbridge_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_airbridge_type</span><span class="p">,</span> <span class="n">default_layers</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span>
 
 
 <div class="viewcode-block" id="Airbridge"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">Airbridge</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Airbridge base class without actual produce function.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Airbridge base class without actual produce function.</span>
+
+<span class="sd">    All subclasses should have ports &#39;a&#39; and &#39;b&#39; at positions (0, bridge_length) and (0, -bridge_length).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">default_type</span> <span class="o">=</span> <span class="n">default_airbridge_type</span>
     <span class="sd">&quot;&quot;&quot;This is the default shape if not specified otherwise by the user.&quot;&quot;&quot;</span>
 
-    <span class="n">pad_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">pad_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad length&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">pad_extra</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bottom pad extra&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge length (from pad to pad)&quot;</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">bridge_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge width&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">pad_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad length&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge length (from pad to pad)&quot;</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Airbridge.create"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
@@ -235,7 +238,13 @@
             <span class="n">pcell_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">airbridge_type</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">airbridge_type</span><span class="p">):</span>              <span class="c1"># manually designed, load from .oas</span>
-            <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">airbridge_type</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">airbridge_type</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
+            <span class="c1"># transform cell to have &#39;port_a&#39; at (0, l/2) and &#39;port_b&#39; at (0, -l/2), where l is distance between ports</span>
+            <span class="n">ref_points</span> <span class="o">=</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;refpoints&quot;</span><span class="p">]),</span> <span class="n">cell</span><span class="p">)</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">ref_points</span><span class="p">[</span><span class="s1">&#39;port_a&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ref_points</span><span class="p">[</span><span class="s1">&#39;port_b&#39;</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">orientation</span> <span class="o">=</span> <span class="n">get_angle</span><span class="p">(</span><span class="n">ref_points</span><span class="p">[</span><span class="s1">&#39;port_a&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref_points</span><span class="p">[</span><span class="s1">&#39;port_b&#39;</span><span class="p">])</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mi">90</span> <span class="o">-</span> <span class="n">orientation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">-</span><span class="n">center</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">cell</span>
         <span class="k">else</span><span class="p">:</span>                                               <span class="c1"># fallback is the default</span>
             <span class="k">return</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">airbridge_type</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
 

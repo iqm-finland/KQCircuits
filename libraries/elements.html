@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Elements &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>Elements &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -211,10 +211,9 @@ Bottom parts of pads in bottom layer, bridge and top parts of pads in top layer.
 Refpoints “port_a” and “port_b” at top pad points closest to origin.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>pad_length</strong><em> (Double)</em><span> - Pad length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">14</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>pad_extra</strong><em> (Double)</em><span> - Bottom pad extra</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>bridge_length</strong><em> (Double)</em><span> - Bridge length (from pad to pad)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridge_width</strong><em> (Double)</em><span> - Bridge width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pad_length</strong><em> (Double)</em><span> - Pad length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">18</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bridge_length</strong><em> (Double)</em><span> - Bridge length (from pad to pad)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">44</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <p><strong>Origin:</strong> Center</p>
 <img alt="airbridge" src="../_images/airbridge_normal.png" />
@@ -367,7 +366,7 @@ segment is a meander.</p>
 <li><p><strong>start</strong><em> (Shape)</em><span> - Start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-600,0</span></code></p></li>
 <li><p><strong>end</strong><em> (Shape)</em><span> - End</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">600,0</span></code></p></li>
 <li><p><strong>length</strong><em> (Double)</em><span> - Length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3000</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>meanders</strong><em> (Int)</em><span> - Number of meanders (at least 1)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
+<li><p><strong>meanders</strong><em> (Int)</em><span> - Number of meanders (non-positive means automatic)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
 <li><p><strong>n_bridges</strong><em> (Int)</em><span> - Number of bridges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
 </ul>
 <p><strong>Origin:</strong> absolute position of <code class="docutils literal notranslate"><span class="pre">start</span></code></p>

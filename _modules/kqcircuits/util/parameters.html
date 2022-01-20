@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -189,24 +189,27 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="add_parameters_from"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameters_from">[docs]</a><span class="k">def</span> <span class="nf">add_parameters_from</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="add_parameters_from"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameters_from">[docs]</a><span class="k">def</span> <span class="nf">add_parameters_from</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">param_names</span><span class="p">,</span> <span class="o">**</span><span class="n">param_with_default_value</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator function to add parameters to the decorated class.</span>
 
-<span class="sd">    If `args` is empty it takes all parameters of `cls`, otherwise only takes parameters mentioned</span>
-<span class="sd">    in `args`. Only add parameters that are not already class attributes.</span>
+<span class="sd">    If both `param_names` and `param_with_default_value` is empty it takes all parameters of `cls`,</span>
+<span class="sd">    otherwise only takes parameters mentioned in `param_names` and `param_with_default_value`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cls: the class to take parameters from</span>
-<span class="sd">        args: is an optional list of parameter names to take</span>
+<span class="sd">        param_names: is an optional list of parameter names to take</span>
+<span class="sd">        param_with_default_value: is an optional list of parameter names and new default values</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">cp</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">noparents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span> <span class="ow">or</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">args</span><span class="p">}</span>
+    <span class="n">pl</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">param_with_default_value</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">cp</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">(</span><span class="n">noparents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pl</span> <span class="ow">or</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">pl</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">_decorate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">cp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-                <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
-                <span class="n">param</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_with_default_value</span> <span class="ow">and</span> <span class="n">param_with_default_value</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">!=</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+                <span class="c1"># Redefine the Param object because multiple elements may refer to it</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="n">param_with_default_value</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">obj</span>
 
     <span class="k">return</span> <span class="n">_decorate</span></div>

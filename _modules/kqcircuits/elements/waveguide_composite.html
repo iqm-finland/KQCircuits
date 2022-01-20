@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.2.0 documentation</title>
+  <title>kqcircuits.elements.waveguide_composite &mdash; KQCircuits 4.2.3 documentation</title>
   
 
   
@@ -67,7 +67,7 @@
             
             
               <div class="version">
-                4.2.0
+                4.2.3
               </div>
             
           
@@ -203,6 +203,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridge_connection</span> <span class="kn">import</span> <span class="n">AirbridgeConnection</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_taper</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTaper</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf</span> <span class="kn">import</span> <span class="n">FlipChipConnectorRf</span>
@@ -222,6 +223,8 @@
 <span class="sd">        align: Tuple with two refpoint names that correspond the input and output point of element, respectively</span>
 <span class="sd">               Default value (None) uses ``(&#39;port_a&#39;, &#39;port_b&#39;)``</span>
 <span class="sd">        angle: Angle of waveguide direction in degrees</span>
+<span class="sd">        length_before: Length of the waveguide segment before this node</span>
+<span class="sd">        length_increment: Waveguide length increment produced by meander before this node</span>
 <span class="sd">        **params: Other optional parameters for the inserted element</span>
 
 <span class="sd">    Returns:</span>
@@ -233,8 +236,11 @@
     <span class="n">inst_name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">align</span><span class="p">:</span> <span class="n">Tuple</span>
     <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">length_before</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">length_increment</span><span class="p">:</span> <span class="nb">float</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(),</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(),</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">length_before</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">length_increment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">position</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">position</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
@@ -243,6 +249,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">align</span> <span class="o">=</span> <span class="n">align</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inst_name</span> <span class="o">=</span> <span class="n">inst_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="o">=</span> <span class="n">angle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length_before</span> <span class="o">=</span> <span class="n">length_before</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length_increment</span> <span class="o">=</span> <span class="n">length_increment</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -263,6 +271,10 @@
             <span class="n">magic_params</span><span class="p">[</span><span class="s1">&#39;inst_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inst_name</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">magic_params</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angle</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">magic_params</span><span class="p">[</span><span class="s1">&#39;length_before&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_before</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_increment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">magic_params</span><span class="p">[</span><span class="s1">&#39;length_increment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_increment</span>
 
         <span class="n">all_params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">magic_params</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">all_params</span><span class="p">:</span>
@@ -334,7 +346,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">Node</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">node_list</span><span class="p">]</span></div></div>
 
 
-<div class="viewcode-block" id="WaveguideComposite"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">AirbridgeConnection</span><span class="p">,</span> <span class="s2">&quot;taper_length&quot;</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="WaveguideComposite"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">AirbridgeConnection</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="s2">&quot;term1&quot;</span><span class="p">,</span> <span class="s2">&quot;term2&quot;</span><span class="p">)</span>
 <span class="nd">@logged</span>
@@ -365,6 +377,11 @@
 
 <span class="sd">    The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``</span>
 <span class="sd">    parameter puts N airbridges evenly distributed across the preceding edge.</span>
+
+<span class="sd">    The ``length_before`` parameter of a node can be specified to automatically set the length of</span>
+<span class="sd">    the waveguide between that node and the previous one. It will in fact create a Meander element</span>
+<span class="sd">    instead of a normal waveguide between those nodes to achieve the correct length. Alternative parameter</span>
+<span class="sd">    ``length_increment`` sets the waveguide length increment compared to normal waveguide.</span>
 
 <span class="sd">    A notable implementation detail is that every Airbridge (sub)class is done as AirbridgeConnection.</span>
 <span class="sd">    This way a waveguide taper is automatically inserted before and after the airbridge so the user</span>
@@ -415,7 +432,7 @@
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Node #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">: (</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">), </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">,&#39;</span>
-                              <span class="s1">&#39; </span><span class="si">{node.params}</span><span class="s1">&#39;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s1">&#39;a&#39;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span> <span class="ow">or</span> <span class="s1">&#39;b&#39;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_add_taper</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -577,6 +594,20 @@
             <span class="k">return</span> <span class="n">vector_length_and_direction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">prev</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">prev</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">get_direction</span><span class="p">(</span><span class="n">fixed_angle</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_insert_wg_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create and insert waveguide cell.</span>
+<span class="sd">        Avoid termination if in the middle or if the ends are actual elements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">),</span> <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+        <span class="k">if</span> <span class="n">start_index</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">start_index</span><span class="p">]</span><span class="o">.</span><span class="n">element</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;term1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">end_index</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">end_index</span><span class="p">]</span><span class="o">.</span><span class="n">element</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;term2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">wg_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg_cell</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_add_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_index</span><span class="p">,</span> <span class="n">end_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates waveguide from `self._wg_start_idx` until `end_index`.</span>
 
@@ -633,8 +664,18 @@
         <span class="k">if</span> <span class="n">end_index</span> <span class="o">&lt;=</span> <span class="n">start_index</span><span class="p">:</span>
             <span class="k">return</span>
 
+        <span class="k">def</span> <span class="nf">curve_length_and_end_points</span><span class="p">(</span><span class="n">pnts</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Returns curve length, curve start point, and curve end point, for given point pnts[p] in list pnts.&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pnts</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanar</span><span class="o">.</span><span class="n">get_corner_data</span><span class="p">(</span><span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">abs_turn</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="nb">abs</span><span class="p">(</span><span class="n">alpha2</span> <span class="o">-</span> <span class="n">alpha1</span><span class="p">))</span>
+            <span class="n">cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">tan</span><span class="p">(</span><span class="n">abs_turn</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">abs_turn</span><span class="p">,</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">cut_dist</span> <span class="o">/</span> <span class="n">v1</span><span class="o">.</span><span class="n">length</span><span class="p">())</span> <span class="o">*</span> <span class="n">v1</span><span class="p">,</span> <span class="n">pnts</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">cut_dist</span> <span class="o">/</span> <span class="n">v2</span><span class="o">.</span><span class="n">length</span><span class="p">())</span> <span class="o">*</span> <span class="n">v2</span>
+
         <span class="c1"># Create waveguide path and create airbridges determined by parameter `n_bridges`.</span>
         <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span><span class="p">]</span>
+        <span class="n">straights</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start_index</span><span class="p">,</span> <span class="n">end_index</span><span class="p">):</span>
             <span class="n">node0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="n">node1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
@@ -651,26 +692,51 @@
             <span class="n">len0</span><span class="p">,</span> <span class="n">len1</span> <span class="o">=</span> <span class="n">get_corner_lengths</span><span class="p">(</span><span class="n">pos1</span> <span class="o">-</span> <span class="n">pos0</span><span class="p">,</span> <span class="n">dir0</span><span class="p">,</span> <span class="n">dir1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">len0</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos0</span> <span class="o">+</span> <span class="n">len0</span> <span class="o">*</span> <span class="n">dir0</span><span class="p">)</span>
-            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos1</span> <span class="o">-</span> <span class="n">len1</span> <span class="o">*</span> <span class="n">dir1</span><span class="p">)</span>
-
-            <span class="c1"># Add airbridges on the straight segment</span>
-            <span class="k">if</span> <span class="s2">&quot;n_bridges&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="ow">and</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">ab_len</span> <span class="o">=</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;bridge_length&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;bridge_length&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="k">else</span> <span class="kc">None</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ab_across</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">],</span> <span class="n">ab_len</span><span class="p">)</span>
+            <span class="n">straights</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos1</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="n">len1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dir1</span><span class="p">)</span>
 
             <span class="c1"># Add final point if it&#39;s not already added</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">end_index</span> <span class="ow">and</span> <span class="n">len1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pos1</span><span class="p">)</span>
 
-        <span class="c1"># Create and insert waveguide cell</span>
-        <span class="c1"># Avoid termination if in the middle or if the ends are actual elements</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">),</span> <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
-        <span class="k">if</span> <span class="n">start_index</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">start_index</span><span class="p">]</span><span class="o">.</span><span class="n">element</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;term1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">end_index</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">end_index</span><span class="p">]</span><span class="o">.</span><span class="n">element</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;term2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">wg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg</span><span class="p">)</span>
+        <span class="c1"># Create and insert waveguide cell from points</span>
+        <span class="c1"># Possibly insert meanders or airbridges on straights</span>
+        <span class="c1"># Inserting meanders requires splitting of waveguide</span>
+        <span class="n">p0</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n0</span> <span class="o">=</span> <span class="n">start_index</span>
+        <span class="n">point0</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">n1</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="n">straights</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">node1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">node1</span><span class="o">.</span><span class="n">length_before</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">node1</span><span class="o">.</span><span class="n">length_increment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">start_len</span><span class="p">,</span> <span class="n">turn_start</span><span class="p">,</span> <span class="n">meander_start</span> <span class="o">=</span> <span class="n">curve_length_and_end_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">p1</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">end_len</span><span class="p">,</span> <span class="n">meander_end</span><span class="p">,</span> <span class="n">turn_end</span> <span class="o">=</span> <span class="n">curve_length_and_end_points</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">node1</span><span class="o">.</span><span class="n">length_increment</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">meander_len</span> <span class="o">=</span> <span class="p">(</span><span class="n">meander_end</span> <span class="o">-</span> <span class="n">meander_start</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">+</span> <span class="n">node1</span><span class="o">.</span><span class="n">length_increment</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">meander_len</span> <span class="o">=</span> <span class="n">node1</span><span class="o">.</span><span class="n">length_before</span>
+                    <span class="k">if</span> <span class="n">n1</span> <span class="o">==</span> <span class="n">end_index</span><span class="p">:</span>
+                        <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">end_len</span> <span class="o">+</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">turn_end</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">node1</span><span class="o">.</span><span class="n">angle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">end_len</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">end_len</span> <span class="o">+</span> <span class="p">(</span><span class="n">node1</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">turn_end</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">n1</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">start_index</span><span class="p">:</span>
+                        <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">start_len</span> <span class="o">+</span> <span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">turn_start</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">n1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">angle</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">start_len</span> <span class="o">/</span> <span class="mi">2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">start_len</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">n1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">turn_start</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">meander_start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">meander_end</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">meander_len</span><span class="p">,</span> <span class="o">**</span><span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+                <span class="n">wg_points</span> <span class="o">=</span> <span class="n">point0</span> <span class="o">+</span> <span class="n">points</span><span class="p">[</span><span class="n">p0</span><span class="p">:</span><span class="n">p1</span><span class="p">]</span> <span class="o">+</span> <span class="p">([]</span> <span class="k">if</span> <span class="n">start_len</span> <span class="o">&lt;</span> <span class="mf">1e-4</span> <span class="k">else</span> <span class="p">[</span><span class="n">meander_start</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_insert_wg_cell</span><span class="p">(</span><span class="n">wg_points</span><span class="p">,</span> <span class="n">n0</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
+                <span class="n">n0</span> <span class="o">=</span> <span class="n">n1</span>
+                <span class="n">p0</span> <span class="o">=</span> <span class="n">p1</span>
+                <span class="n">point0</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">end_len</span> <span class="o">&lt;</span> <span class="mf">1e-4</span> <span class="k">else</span> <span class="p">[</span><span class="n">meander_end</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="s2">&quot;n_bridges&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="ow">and</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">ab_len</span> <span class="o">=</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;bridge_length&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;bridge_length&quot;</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ab_across</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">p1</span><span class="p">],</span> <span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_bridges&quot;</span><span class="p">],</span> <span class="n">ab_len</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_wg_cell</span><span class="p">(</span><span class="n">point0</span> <span class="o">+</span> <span class="n">points</span><span class="p">[</span><span class="n">p0</span><span class="p">:],</span> <span class="n">n0</span><span class="p">,</span> <span class="n">end_index</span><span class="p">)</span>
 
         <span class="c1"># Keep track of current position, direction, and index for the future elements</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
