@@ -310,11 +310,11 @@ default_parameter_values = {
 
 default_tsv_parameters = {
     "tsv_edge_to_nearest_element": 100,
-    "tsv_diameter": 25,
+    "tsv_diameter": 100,
     "tsv_grid_spacing": 300,
     "tsv_edge_to_tsv_edge_separation": 250,
     "edge_from_tsv": 550,
-    "tsv_elliptical_width":30,
+    "tsv_elliptical_width": 30,
 }
 
 default_bump_parameters = {
