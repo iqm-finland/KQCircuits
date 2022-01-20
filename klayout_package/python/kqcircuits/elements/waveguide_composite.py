@@ -54,6 +54,7 @@ class Node:
                Default value (None) uses ``('port_a', 'port_b')``
         angle: Angle of waveguide direction in degrees
         length_before: Length of the waveguide segment before this node
+        length_increment: Waveguide length increment produced by meander before this node
         **params: Other optional parameters for the inserted element
 
     Returns:
@@ -66,8 +67,10 @@ class Node:
     align: Tuple
     angle: float
     length_before: float
+    length_increment: float
 
-    def __init__(self, position, element=None, inst_name=None, align=tuple(), angle=None, length_before=None, **params):
+    def __init__(self, position, element=None, inst_name=None, align=tuple(), angle=None, length_before=None,
+                 length_increment=None, **params):
         if isinstance(position, tuple):
             self.position = pya.DPoint(position[0], position[1])
         else:
@@ -77,6 +80,7 @@ class Node:
         self.inst_name = inst_name
         self.angle = angle
         self.length_before = length_before
+        self.length_increment = length_increment
         self.params = params
 
     def __str__(self):
@@ -99,6 +103,8 @@ class Node:
             magic_params['angle'] = self.angle
         if self.length_before is not None:
             magic_params['length_before'] = self.length_before
+        if self.length_increment is not None:
+            magic_params['length_increment'] = self.length_increment
 
         all_params = {**self.params, **magic_params}
         if all_params:
@@ -204,7 +210,8 @@ class WaveguideComposite(Element):
 
     The ``length_before`` parameter of a node can be specified to automatically set the length of
     the waveguide between that node and the previous one. It will in fact create a Meander element
-    instead of a normal waveguide between those nodes to achieve the correct length.
+    instead of a normal waveguide between those nodes to achieve the correct length. Alternative parameter
+    ``length_increment`` sets the waveguide length increment compared to normal waveguide.
 
     A notable implementation detail is that every Airbridge (sub)class is done as AirbridgeConnection.
     This way a waveguide taper is automatically inserted before and after the airbridge so the user
@@ -530,22 +537,25 @@ class WaveguideComposite(Element):
         point0 = []
         for n1, p1 in straights.items():
             node1 = self._nodes[n1]
-            if node1.length_before is not None:
+            if node1.length_before is not None or node1.length_increment is not None:
                 start_len, turn_start, meander_start = curve_length_and_end_points(points, p1-1)
                 end_len, meander_end, turn_end = curve_length_and_end_points(points, p1)
-                meander_len = node1.length_before
-                if n1 == end_index:
-                    meander_len -= end_len + (points[-1] - turn_end).length()
-                elif node1.angle is None:
-                    meander_len -= end_len / 2
+                if node1.length_increment is not None:
+                    meander_len = (meander_end - meander_start).length() + node1.length_increment
                 else:
-                    meander_len -= end_len + (node1.position - turn_end).length()
-                if n1 - 1 == start_index:
-                    meander_len -= start_len + (points[0] - turn_start).length()
-                elif self._nodes[n1-1].angle is None:
-                    meander_len -= start_len / 2
-                else:
-                    meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
+                    meander_len = node1.length_before
+                    if n1 == end_index:
+                        meander_len -= end_len + (points[-1] - turn_end).length()
+                    elif node1.angle is None:
+                        meander_len -= end_len / 2
+                    else:
+                        meander_len -= end_len + (node1.position - turn_end).length()
+                    if n1 - 1 == start_index:
+                        meander_len -= start_len + (points[0] - turn_start).length()
+                    elif self._nodes[n1-1].angle is None:
+                        meander_len -= start_len / 2
+                    else:
+                        meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
 
                 self.insert_cell(Meander, start=meander_start, end=meander_end, length=meander_len, **node1.params)
                 wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])

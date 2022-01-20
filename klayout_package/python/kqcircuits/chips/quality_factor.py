@@ -47,6 +47,10 @@ class QualityFactor(Chip):
     res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="[μm]",
                   docstring="Width of the gap in the resonators [μm]")
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
+    launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="[μm]")
+    marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="[μm]")
+    max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="[μm]",
+                        docstring="Resonators exceeding this length become meandering")
 
     def build(self):
         # Interpretation of parameter lists
@@ -61,23 +65,23 @@ class QualityFactor(Chip):
         res_beg = self.res_beg
 
         # center the resonators in the chip regardless of size
-        max_res_len = max(res_lengths)
+        max_res_len = min(max(res_lengths), self.max_res_len)
         chip_side = self.box.p2.y - self.box.p1.y
         wg_top_y = (chip_side + max_res_len) / 2
 
-        # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from the corners
-        launchers = self.produce_n_launchers((0, 2, 0, 2), "RF", 300, 180, 800, chip_side - 5600, {4: "WN", 1: "EN"})
+        # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from top
+        launchers = self.produce_n_launchers((0, 2, 0, 2), "RF", 300, 180, 800, chip_side - 2 * self.launcher_top_dist,
+                                             {4: "WN", 1: "EN"})
 
-        marker_safety = 1.0e3  # depends on the marker size
         points_fl = [launchers["WN"][0],
-                     launchers["WN"][0] + pya.DVector(self.r + marker_safety, 0),
-                     pya.DPoint(launchers["WN"][0].x + self.r * 2 + marker_safety, wg_top_y)
+                     launchers["WN"][0] + pya.DVector(self.r + self.marker_safety, 0),
+                     pya.DPoint(launchers["WN"][0].x + self.r * 2 + self.marker_safety, wg_top_y)
                      ]
         tl_start = points_fl[-1]
 
         resonators = len(self.res_lengths)
-        v_res_step = (launchers["EN"][0] - launchers["WN"][0] - pya.DVector((self.r * 4 + marker_safety * 2), 0)) * \
-                     (1. / resonators)
+        v_res_step = (launchers["EN"][0] - launchers["WN"][0] -
+                      pya.DVector(self.r * 4 + self.marker_safety * 2, 0)) * (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross,
             length_extra_side=2 * self.a, a2=self.a, b2=self.b)
 
@@ -99,7 +103,7 @@ class QualityFactor(Chip):
             self.insert_cell(cplr, cplr_trans)
 
             pos_res_start = cplr_pos + pya.DTrans.R90 * cplr_refpoints_rel["port_a"]
-            pos_res_end = pos_res_start + pya.DVector(0, -res_lengths[i])
+            pos_res_end = pos_res_start + pya.DVector(0, -min(res_lengths[i], self.max_res_len))
 
             # create resonator using WaveguideComposite
             if res_beg[i] == "airbridge":
@@ -107,11 +111,12 @@ class QualityFactor(Chip):
             else:
                 node_beg = Node(pos_res_start)
 
+            length_increment = res_lengths[i] - self.max_res_len if res_lengths[i] > self.max_res_len else None
             if res_term[i] == "airbridge":
-                node_end = Node(pos_res_end, AirbridgeConnection,
-                                with_side_airbridges=False, with_right_waveguide=False, n_bridges=n_ab[i])
+                node_end = Node(pos_res_end, AirbridgeConnection, with_side_airbridges=False,
+                                with_right_waveguide=False, n_bridges=n_ab[i], length_increment=length_increment)
             else:
-                node_end = Node(pos_res_end, n_bridges=n_ab[i])
+                node_end = Node(pos_res_end, n_bridges=n_ab[i], length_increment=length_increment)
 
             wg = self.add_element(WaveguideComposite, nodes=[node_beg, node_end], a=res_a[i], b=res_b[i])
             self.insert_cell(wg)
@@ -139,8 +144,8 @@ class QualityFactor(Chip):
         # Last feedline
         self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
             "path": pya.DPath(points_fl + [
-                pya.DPoint(launchers["EN"][0].x - self.r * 2 - marker_safety, wg_top_y),
-                launchers["EN"][0] + pya.DVector(-self.r - marker_safety, 0),
+                pya.DPoint(launchers["EN"][0].x - self.r * 2 - self.marker_safety, wg_top_y),
+                launchers["EN"][0] + pya.DVector(-self.r - self.marker_safety, 0),
                 launchers["EN"][0]
             ], 1),
             "term2": 0
