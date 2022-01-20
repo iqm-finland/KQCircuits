@@ -269,7 +269,7 @@
    <xfill>false</xfill>
    <animation>0</animation>
    <name/>
-   <source>b_through_silicon_via_avoidance 35/4@1</source>
+   <source>'b through silicon via avoidance' 35/4@1</source>
   </group-members>
  </properties>
  <properties>
@@ -541,7 +541,7 @@
    <xfill>false</xfill>
    <animation>0</animation>
    <name/>
-   <source>t_through_silicon_via_avoidance 65/4@1</source>
+   <source>'t through silicon via avoidance' 65/4@1</source>
   </group-members>
  </properties>
  <properties>
