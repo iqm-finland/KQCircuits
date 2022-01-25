@@ -127,17 +127,19 @@ class Element(pya.PCellDeclarationHelper):
         return cell
 
     @classmethod
-    def create_with_refpoints(cls, layout, library=None, refpoint_transform=pya.DTrans(), **parameters):
+    def create_with_refpoints(cls, layout, library=None, refpoint_transform=pya.DTrans(), rec_levels=None,
+                              **parameters):
         """Convenience function to create cell and return refpoints too.
 
         Args:
             layout: pya.Layout object where this cell is created
             library: LIBRARY_NAME of the calling PCell instance
             refpoint_transform: transform for converting refpoints into target coordinate system
+            rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.
             **parameters: PCell parameters for the element, as keyword argument
         """
         cell = cls.create(layout, library, **parameters)
-        refp = get_refpoints(layout.layer(default_layers["refpoints"]), cell, refpoint_transform)
+        refp = get_refpoints(layout.layer(default_layers["refpoints"]), cell, refpoint_transform, rec_levels)
         return cell, refp
 
     def add_element(self, cls, **parameters):

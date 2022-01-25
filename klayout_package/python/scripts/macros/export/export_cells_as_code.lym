@@ -36,18 +36,20 @@ from kqcircuits.util.layout_to_code import convert_cells_to_code
 
 """Macro for converting a layout into Python code.
 
-For each cell placed in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip's `build()`.
-PCell parameters are taken into account. Waveguide points can automatically be snapped to closest refpoints in the 
+For each cell placed in GUI, prints out `insert_cell()` or `create()` commands that can be copy pasted to a chip's `build()` method
+or to a macro, respectively. PCell parameters are taken into account. Waveguide points can automatically be snapped to closest refpoints in the
 generated code. See also the configuration options below.
 
 Usage:
 
+(Steps 1-3 are needed only if you want to add the cells to a Chip instead of a macro.)
+
 1. Place to the layout the chip that you want to add elements to.
 2. Convert the chip cell to static cell.
 3. Select the chip cell as top cell.
-4. Place any cells in the layout, or modify cells already existing under the chip cell.
-5. Select in GUI the cell instances that you want to export as code, or select nothing to export all instances in the 
-chip. 
+
+4. Place any cells in the layout, or modify cells already existing under the top cell.
+5. Select in GUI the cell instances that you want to export as code, or select nothing to export all instances under the top cell.
 6. Run the macro. This prints out the Python code for creating the cell instances. 
 
 """
@@ -64,14 +66,22 @@ refpoint_snap = 50.0
 # If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with square side length
 # equal to `grid_snap`
 grid_snap = 1.0
-# If true, also the code for the chip class is generated (including `build()` function and import statements) so
-# that the printed code works as is. Otherwise only the code for inserted cells is printed, which must be copied to a
-# chip's `build()` function.
-include_chip_code = True
+# Determines the format of the code for placing cells and if some extra code is printed. Has the following options:
+#
+#   "insert_cell": only insert_cell() calls which can be copied to existing chip's/element's build method
+#   "insert_cell+chip": same as previous, but prints also the chip code, can copy to empty file to create new chip
+#   "create": only create() and cell.insert() calls which can be copied to an existing macro with layout and top_cell
+#   "create+macro": same as previous, but includes initial lines for macro, can copy to empty file to create new macro
+output_format = "create+macro"
+# If true, then import statements for all used elements are included in the generated code
+include_imports = True
+# If true, then create_with_refpoints() is used instead of create(). Only used when output_format is "create" or
+# "create+macro". Required if you want to use refpoints as waveguide points.
+use_create_with_refpoints = True
 
 top_cell = KLayoutView.get_active_cell()
 convert_cells_to_code(top_cell, print_waveguides_as_composite, add_instance_names, refpoint_snap, grid_snap,
-                      include_chip_code)
+                      output_format, include_imports, use_create_with_refpoints)
 
 </text>
 </klayout-macro>
