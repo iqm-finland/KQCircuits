@@ -27,7 +27,7 @@ from kqcircuits.defaults import default_brand, default_marker_type
 
 
 @traced
-def produce_label(cell, label, location, origin, dice_width, margin, layers, layer_protection):
+def produce_label(cell, label, location, origin, dice_width, margin, layers, layer_protection, size=350):
     """Produces a Text PCell accounting for desired relative position of the text respect to the given location
     and the spacing.
 
@@ -40,6 +40,7 @@ def produce_label(cell, label, location, origin, dice_width, margin, layers, lay
         margin: margin of the ground grid avoidance layer around the text
         layers: list of layers where the label text is added
         layer_protection: layer where a box around the label text is added
+        size: Character height in um, default 350
 
     Effect:
         Shapes added to the corresponding layers
@@ -60,7 +61,7 @@ def produce_label(cell, label, location, origin, dice_width, margin, layers, lay
         subcells.append(layout.create_cell("TEXT", "Basic", {
             "layer": layer,
             "text": label,
-            "mag": 500.0
+            "mag": size/350*500,
         }))
 
     # relative placement with margin
@@ -142,7 +143,8 @@ class ChipFrame(Element):
     def _produce_label(self, label, location, origin):
         """Produces Text PCells with text `label` with `origin` of the text at `location`.
 
-        Wrapper for the stand alone function `produce_label`
+        Wrapper for the stand alone function `produce_label`.
+        Text size scales with chip dimension for chips smaller than 7 mm.
 
         Args:
             label: the produced text
@@ -152,9 +154,10 @@ class ChipFrame(Element):
         Effect:
             label PCells added to the layout into the parent PCell
         """
+        size = 350 * min(1, self.box.width() / 7000, self.box.height() / 7000)
         produce_label(self.cell, label, location, origin, self.dice_width, self.text_margin,
                       [self.face()["base_metal_gap_wo_grid"], self.face()["base_metal_gap_for_EBL"]],
-                      self.face()["ground_grid_avoidance"])
+                      self.face()["ground_grid_avoidance"], size)
 
     def _produce_markers(self):
         x_min, x_max, y_min, y_max = self._box_points()
