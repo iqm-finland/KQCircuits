@@ -79,7 +79,8 @@ class QualityFactor(Chip):
 
         # Define start and end of feedline
         points_fl = [launchers["WN"][0]]
-        if not self.resonators_both_sides:
+        if abs(launchers["WN"][0].y - wg_top_y) > 1:
+            # Bend in the feedline needed
             points_fl += [
                 launchers["WN"][0] + pya.DVector(self.r + self.marker_safety, 0),
                 pya.DPoint(launchers["WN"][0].x + self.r * 2 + self.marker_safety, wg_top_y)
