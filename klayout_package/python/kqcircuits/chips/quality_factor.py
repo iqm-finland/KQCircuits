@@ -20,7 +20,6 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -58,7 +57,7 @@ class QualityFactor(Chip):
         res_lengths = [float(foo) for foo in self.res_lengths]
         res_a = [float(foo) for foo in self.res_a]
         res_b = [float(foo) for foo in self.res_b]
-        n_fingers = [int(foo) for foo in self.n_fingers]
+        n_fingers = [float(foo) for foo in self.n_fingers]
         type_coupler = self.type_coupler
         n_ab = [int(foo) for foo in self.n_ab]
         l_fingers = [float(foo) for foo in self.l_fingers]
@@ -119,11 +118,11 @@ class QualityFactor(Chip):
 
             # Coupler
             _, cplr_refpoints_abs = self.insert_cell(
-                FingerCapacitorSquare,
                 trans=pya.DTrans.R270 if resonator_up else pya.DTrans.R90,
                 align="port_b",
                 align_to=cross_refpoints_abs["port_bottom"],
-                **cap_params(n_fingers[i], l_fingers[i], type_coupler[i], a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
+                **cap_params(n_fingers[i], l_fingers[i], type_coupler[i], element_key='cell',
+                             a=res_a[i], b=res_b[i], a2=self.a, b2=self.b)
             )
 
             pos_res_start = cplr_refpoints_abs["port_a"]

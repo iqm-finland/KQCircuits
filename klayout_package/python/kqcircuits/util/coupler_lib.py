@@ -14,19 +14,33 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 
 
-def cap_params(fingers, length, coupler_type="interdigital", **kwargs):
-    """A utility function to easily produce typical FingerCapacitorSquare instance parameters.
+def cap_params(fingers, length, coupler_type="interdigital", element_key='cls', **kwargs):
+    """A utility function to easily produce typical finger capacitor instance parameters.
 
     Args:
         fingers: number of fingers
-        length: length of fingers
+        length: length of fingers in FingerCapacitorSquare
         coupler_type: a string describing the capacitor type
+        element_key: dictionary key in which coupler Element is returned
         **kwargs: other optional parameters
-    """
 
-    defaults = {"finger_number": fingers,
+    Returns:
+        dictionary of coupler parameters
+    """
+    if coupler_type == 'smooth':
+        return {element_key: SmoothCapacitor,
+                'finger_number': fingers,
+                "finger_width": 10,
+                "ground_gap": 10,
+                "gap": 5,
+                **kwargs}
+
+    defaults = {element_key: FingerCapacitorSquare,
+                "finger_number": int(fingers),
                 "finger_length": length,
                 "finger_gap_end": 5,
                 "finger_gap_side": 5,

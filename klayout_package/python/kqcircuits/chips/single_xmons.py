@@ -22,7 +22,6 @@ from autologging import traced
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_squid_type
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.meander import Meander
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -331,9 +330,8 @@ class SingleXmons(Chip):
             cross_refpoints_abs = self.get_refpoints(cell_cross, inst_crosses[i].dtrans)
 
             # Coupler
-            cplr_params = cap_params(int(self.n_fingers[i]), float(self.l_fingers[i]),
-                                          self.type_coupler[i])
-            cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
+            cplr_params = cap_params(float(self.n_fingers[i]), float(self.l_fingers[i]), self.type_coupler[i])
+            cplr = self.add_element(**cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
             if i % 2 == 0:
                 cplr_pos = cross_refpoints_abs["port_bottom"] - pya.DTrans.R90 * cplr_refpoints_rel["port_b"]

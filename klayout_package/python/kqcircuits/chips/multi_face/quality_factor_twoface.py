@@ -17,7 +17,6 @@
 
 
 from kqcircuits.chips.multi_face.multi_face import MultiFace
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
 from kqcircuits.elements.spiral_resonator_rectangle_multiface import SpiralResonatorRectangleMultiface
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
@@ -71,7 +70,7 @@ class QualityFactorTwoface(MultiFace):
         res_lengths = [float(foo) for foo in self.res_lengths]
         res_a = [float(foo) for foo in self.res_a]
         res_b = [float(foo) for foo in self.res_b]
-        n_fingers = [int(foo) for foo in self.n_fingers]
+        n_fingers = [float(foo) for foo in self.n_fingers]
         type_coupler = self.type_coupler
         l_fingers = [float(foo) for foo in self.l_fingers]
         connector_distances = [float(foo) for foo in self.connector_distances]
@@ -97,7 +96,7 @@ class QualityFactorTwoface(MultiFace):
             cplr_params = cap_params(
                 n_fingers[i], l_fingers[i], type_coupler[i],
                 face_ids=face_config, a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
-            cplr = self.add_element(FingerCapacitorSquare, **cplr_params)
+            cplr = self.add_element(**cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
 
             # Every second resonator is on the same side. Define transformations here:
