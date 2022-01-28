@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Developer Setup &mdash; KQCircuits 4.2.3 documentation</title>
+  <title>Developer Setup &mdash; KQCircuits 4.2.4 documentation</title>
   
 
   
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                4.2.3
+                4.2.4
               </div>
             
           
@@ -106,6 +106,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#linux-or-macos">Linux or MacOS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
@@ -204,12 +205,6 @@
 <p>Developer setup may be done independently from the GUI based installation of the KQCircuits Salt
 package. But you should not do both without removing the other one. Otherwise there will be
 duplicate macros and possibly other problems.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You must open KLayout at least once before installing KQCircuits, because the KLayout python
-folder <code class="docutils literal notranslate"><span class="pre">~/.klayout/python</span></code> is only created then. The documentation uses Linux paths unless
-explicitly mentioned otherwise.</p>
-</div>
 <div class="section" id="python">
 <h3>Python<a class="headerlink" href="#python" title="Permalink to this headline">¶</a></h3>
 <p>KQCircuits installation requires Python 3, which should be already installed on Linux. On Windows
@@ -258,6 +253,25 @@ not visible, running any macro gives an error, etc.), there might be some
 problem with the specific KLayout version/build you are using, see
 <a class="reference internal" href="../start/installation.html#installation-issues"><span class="std std-ref">Known installation issues</span></a> section for possible solutions.</p>
 </div>
+</div>
+<div class="section" id="secondary-install">
+<h2>Secondary install<a class="headerlink" href="#secondary-install" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Don’t do it, unless you really need multiple parallel environments.</p>
+</div>
+<p>It is possible to work with several independent KQC instances simultaneously. You only need to check
+out KQCircuits under some different name:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">iqm</span><span class="o">-</span><span class="n">finland</span><span class="o">/</span><span class="n">KQCircuits</span> <span class="n">KQC_2nd</span>
+</pre></div>
+</div>
+<p>KLayout needs to know about this secondary environment, run it with <code class="docutils literal notranslate"><span class="pre">startkl.py</span></code> or by manualy
+setting the environment variable <code class="docutils literal notranslate"><span class="pre">KLAYOUT_HOME</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">KLAYOUT_HOME</span><span class="o">=~/.</span><span class="n">klayout_alt</span><span class="o">/</span><span class="n">KQC_2nd</span> <span class="n">klayout</span>
+</pre></div>
+</div>
+<p>Remember to set up a new <code class="docutils literal notranslate"><span class="pre">venv</span></code> before attempting <a class="reference internal" href="standalone.html#standalone"><span class="std std-ref">KLayout Standalone Usage</span></a> in this directory. Otherwise
+your secondary environment may get mixed up with the primary one.</p>
 </div>
 <div class="section" id="manual-installation">
 <h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline">¶</a></h2>
