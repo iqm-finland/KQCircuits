@@ -26,6 +26,13 @@ from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_export import export_chip
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util import macro_prepare
+import logging
+from kqcircuits.util.log_router import route_log
+
+
+logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
+chip_path = Path(TMP_PATH / "${name_mask}" / "Chips" / "${variant_name}")
+route_log(filename=chip_path/"${variant_name}.log")
 
 layout, _, _ = macro_prepare.prep_empty_layout()
 top_cell = layout.create_cell("Top Cell")
@@ -36,7 +43,6 @@ ${create_element}
 top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
 
 # export chip files
-chip_path = Path(TMP_PATH / "${name_mask}" / "Chips" / "${variant_name}")
 export_chip(cell, "${variant_name}", chip_path, layout, ${export_drc})
 
 pya.Application.instance().exit(0)

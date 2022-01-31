@@ -23,7 +23,8 @@ import importlib
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util import macro_prepare
-from kqcircuits.util.log_router import route_log_to_stdout
+from kqcircuits.util.log_router import route_log
+from kqcircuits.defaults import TMP_PATH
 
 # Script to create a KQCircuits element in KLayout by specifying the path to the module file containing the element.
 # This script can be used to integrate with external editors.
@@ -49,7 +50,7 @@ from kqcircuits.util.log_router import route_log_to_stdout
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-route_log_to_stdout(lowest_visible_level="INFO")
+route_log(lowest_visible_level="INFO", filename=f"{TMP_PATH}/kqc.log")
 
 logging.info(f"Element path: {element_path}")
 

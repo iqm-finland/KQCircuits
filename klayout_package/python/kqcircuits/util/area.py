@@ -33,7 +33,7 @@ class AreaReceiver(pya.TileOutputReceiver):
     def put(self, ix, iy, tile, obj, dbu, clip):
         """ Function called by :class:`TilingProcessor` on output """
         #pylint: disable=unused-argument
-        self.__log.info(f"Area for tile {ix},{iy}: {obj} ({dbu})")
+        self.__log.debug(f"Area for tile {ix},{iy}: {obj} ({dbu})")
         self.area = obj * (dbu * dbu)  # report as um^2
 
 

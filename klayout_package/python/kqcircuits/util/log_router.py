@@ -20,15 +20,17 @@ import logging
 import sys
 
 
-def route_log_to_stdout(lowest_visible_level="INFO", remove_old_handlers=True):
-    """Routes the log output to stdout
+def route_log(lowest_visible_level="INFO", remove_old_handlers=True, filename=""):
+    """Routes the log output to stdout and to an optional file
 
-    Enables monitoring the log in KLayout console. Optionally removes old handlers from root logger to avoid output to
-    other places than defined here.
+    Enables monitoring the log in KLayout console. If requested it also appends logs to the
+    specified file. By default removes old handlers from root logger to avoid output to other places
+    than defined here.
 
     Arguments:
         lowest_visible_level (String): one of DEBUG, INFO, WARNING, ERROR, CRITICAL
         remove_old_handlers (Boolean): determines if old handlers are removed from the root logger
+        filename: name of the file to append logs to
     """
 
     root_logger = logging.getLogger()
@@ -49,3 +51,9 @@ def route_log_to_stdout(lowest_visible_level="INFO", remove_old_handlers=True):
     handler.setLevel(lowest_visible_level)
 
     root_logger.addHandler(handler)
+
+    if filename:
+        fh = logging.FileHandler(filename)
+        fh.setFormatter(formatter)
+        fh.setLevel(lowest_visible_level)
+        root_logger.addHandler(fh)
