@@ -68,7 +68,8 @@ module = importlib.import_module(module_path)
 logging.info(f"Loaded module {str(module)}")
 
 # Find classes that are in this actual module (rather than imported from somewhere else)
-classes_in_module = [m for m in vars(module).values() if hasattr(m, '__module__') and m.__module__ == module_path]
+classes_in_module = [m for m in vars(module).values() if
+                     hasattr(m, '__module__') and m.__module__ == module_path and hasattr(m, '__mro__')]
 element_classes = [m for m in classes_in_module if 'Element' in [s.__name__ for s in m.__mro__]]
 
 logging.info(f"Found classes {str(element_classes)}")
