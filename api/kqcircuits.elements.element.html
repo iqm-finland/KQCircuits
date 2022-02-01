@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits  documentation</title>
   
 
   
@@ -68,10 +68,6 @@
           
             
             
-              <div class="version">
-                4.2.4
-              </div>
-            
           
 
           
@@ -118,6 +114,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle.html">kqcircuits.elements.spiral_resonator_rectangle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_rectangle_multiface.html">kqcircuits.elements.spiral_resonator_rectangle_multiface</a></li>
@@ -283,7 +280,7 @@ Elements have ports.</p>
 
 <dl class="method">
 <dt id="kqcircuits.elements.element.Element.create_with_refpoints">
-<em class="property">classmethod </em><code class="sig-name descname">create_with_refpoints</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">library=None</em>, <em class="sig-param">refpoint_transform=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_with_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_with_refpoints" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">create_with_refpoints</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">library=None</em>, <em class="sig-param">refpoint_transform=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_with_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_with_refpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to create cell and return refpoints too.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -291,6 +288,7 @@ Elements have ports.</p>
 <li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
 <li><p><strong>library</strong> – LIBRARY_NAME of the calling PCell instance</p></li>
 <li><p><strong>refpoint_transform</strong> – transform for converting refpoints into target coordinate system</p></li>
+<li><p><strong>rec_levels</strong> – recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</p></li>
 <li><p><strong>**parameters</strong> – PCell parameters for the element, as keyword argument</p></li>
 </ul>
 </dd>

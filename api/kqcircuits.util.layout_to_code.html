@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.4
-              </div>
             
           
 
@@ -216,8 +212,8 @@
 <span id="kqcircuits-util-layout-to-code"></span><h1>kqcircuits.util.layout_to_code<a class="headerlink" href="#module-kqcircuits.util.layout_to_code" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="kqcircuits.util.layout_to_code.convert_cells_to_code">
-<code class="sig-prename descclassname">kqcircuits.util.layout_to_code.</code><code class="sig-name descname">convert_cells_to_code</code><span class="sig-paren">(</span><em class="sig-param">chip_cell</em>, <em class="sig-param">print_waveguides_as_composite=False</em>, <em class="sig-param">add_instance_names=True</em>, <em class="sig-param">refpoint_snap=50.0</em>, <em class="sig-param">grid_snap=1.0</em>, <em class="sig-param">include_chip_code=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints out the Python code required to create the cells in chip_cell.</p>
+<code class="sig-prename descclassname">kqcircuits.util.layout_to_code.</code><code class="sig-name descname">convert_cells_to_code</code><span class="sig-paren">(</span><em class="sig-param">top_cell</em>, <em class="sig-param">print_waveguides_as_composite=False</em>, <em class="sig-param">add_instance_names=True</em>, <em class="sig-param">refpoint_snap=50.0</em>, <em class="sig-param">grid_snap=1.0</em>, <em class="sig-param">output_format='insert_cell+chip'</em>, <em class="sig-param">include_imports=True</em>, <em class="sig-param">use_create_with_refpoints=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out the Python code required to create the cells in top_cell.</p>
 <p>For each instance that is selected in GUI, prints out an <cite>insert_cell()</cite> command that can be copy pasted to a chip’s
 <cite>build()</cite>. If no instances are selected, then it will do the same for all instances that are one level below
 the chip cell in the cell hierarchy. PCell parameters are taken into account. Waveguide points can automatically be
@@ -225,7 +221,7 @@ snapped to closest refpoints in the generated code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>chip_cell</strong> – cell whose child cells will be printed as code</p></li>
+<li><p><strong>top_cell</strong> – cell whose child cells will be printed as code</p></li>
 <li><p><strong>print_waveguides_as_composite</strong> – If true, then WaveguideCoplanar elements are printed as WaveguideComposite.</p></li>
 <li><p><strong>add_instance_names</strong> – If true, then unique instance names will be added for each printed element. This is required
 if you want to have waveguides connect to refpoints of elements that were placed in GUI.</p></li>
@@ -233,9 +229,21 @@ if you want to have waveguides connect to refpoints of elements that were placed
 at that refpoint.</p></li>
 <li><p><strong>grid_snap</strong> – If a waveguide point was not close enough to a refpoint, it will be snapped to a square grid with
 square side length equal to <cite>grid_snap</cite></p></li>
-<li><p><strong>include_chip_code</strong> – If true, also the code for the chip class is generated (including <cite>build()</cite> function
-and import statements) so that the printed code works as is. Otherwise only the code for inserted cells are
-printed, which must be copied to a chip’s <cite>build()</cite> function.</p></li>
+<li><p><strong>output_format</strong> – <p>Determines the format of the code for placing cells and if some extra code is printed. Has the
+following options:</p>
+<ul>
+<li><p>”insert_cell”: only insert_cell() calls which can be copied to existing chip’s/element’s build method</p></li>
+<li><p>”insert_cell+chip”: same as previous, but prints also the chip code, can copy to empty file to create
+new chip</p></li>
+<li><p>”create”: only create() and cell.insert() calls which can be copied to an existing macro with layout
+and top_cell</p></li>
+<li><p>”create+macro”: same as previous, but includes initial lines for macro, can copy to empty file to
+create new macro</p></li>
+</ul>
+</p></li>
+<li><p><strong>include_imports</strong> – If true, then import statements for all used elements are included in the generated code</p></li>
+<li><p><strong>use_create_with_refpoints</strong> – If true, then create_with_refpoints() is used instead of create(). Only used when
+output_format is “create” or “create+macro”. Required if you want to use refpoints as waveguide points.</p></li>
 </ul>
 </dd>
 </dl>

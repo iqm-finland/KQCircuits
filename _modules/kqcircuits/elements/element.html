@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.4
-              </div>
             
           
 
@@ -297,17 +293,19 @@
         <span class="k">return</span> <span class="n">cell</span></div>
 
 <div class="viewcode-block" id="Element.create_with_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_with_refpoints">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">create_with_refpoints</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">create_with_refpoints</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convenience function to create cell and return refpoints too.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            layout: pya.Layout object where this cell is created</span>
 <span class="sd">            library: LIBRARY_NAME of the calling PCell instance</span>
 <span class="sd">            refpoint_transform: transform for converting refpoints into target coordinate system</span>
+<span class="sd">            rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</span>
 <span class="sd">            **parameters: PCell parameters for the element, as keyword argument</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
-        <span class="n">refp</span> <span class="o">=</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;refpoints&quot;</span><span class="p">]),</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="p">)</span>
+        <span class="n">refp</span> <span class="o">=</span> <span class="n">get_refpoints</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;refpoints&quot;</span><span class="p">]),</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cell</span><span class="p">,</span> <span class="n">refp</span></div>
 
 <div class="viewcode-block" id="Element.add_element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.add_element">[docs]</a>    <span class="k">def</span> <span class="nf">add_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>

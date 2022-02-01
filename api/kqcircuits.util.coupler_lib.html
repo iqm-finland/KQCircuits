@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.4
-              </div>
             
           
 
@@ -216,16 +212,20 @@
 <span id="kqcircuits-util-coupler-lib"></span><h1>kqcircuits.util.coupler_lib<a class="headerlink" href="#module-kqcircuits.util.coupler_lib" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="kqcircuits.util.coupler_lib.cap_params">
-<code class="sig-prename descclassname">kqcircuits.util.coupler_lib.</code><code class="sig-name descname">cap_params</code><span class="sig-paren">(</span><em class="sig-param">fingers</em>, <em class="sig-param">length</em>, <em class="sig-param">coupler_type='interdigital'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/coupler_lib.html#cap_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.coupler_lib.cap_params" title="Permalink to this definition">¶</a></dt>
-<dd><p>A utility function to easily produce typical FingerCapacitorSquare instance parameters.</p>
+<code class="sig-prename descclassname">kqcircuits.util.coupler_lib.</code><code class="sig-name descname">cap_params</code><span class="sig-paren">(</span><em class="sig-param">fingers</em>, <em class="sig-param">length</em>, <em class="sig-param">coupler_type='interdigital'</em>, <em class="sig-param">element_key='cls'</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/coupler_lib.html#cap_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.coupler_lib.cap_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>A utility function to easily produce typical finger capacitor instance parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>fingers</strong> – number of fingers</p></li>
-<li><p><strong>length</strong> – length of fingers</p></li>
+<li><p><strong>length</strong> – length of fingers in FingerCapacitorSquare</p></li>
 <li><p><strong>coupler_type</strong> – a string describing the capacitor type</p></li>
+<li><p><strong>element_key</strong> – dictionary key in which coupler Element is returned</p></li>
 <li><p><strong>**kwargs</strong> – other optional parameters</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of coupler parameters</p>
 </dd>
 </dl>
 </dd></dl>

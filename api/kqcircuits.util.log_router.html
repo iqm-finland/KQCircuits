@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.log_router &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.util.log_router &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.4
-              </div>
             
           
 
@@ -215,16 +211,18 @@
   <div class="section" id="module-kqcircuits.util.log_router">
 <span id="kqcircuits-util-log-router"></span><h1>kqcircuits.util.log_router<a class="headerlink" href="#module-kqcircuits.util.log_router" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="kqcircuits.util.log_router.route_log_to_stdout">
-<code class="sig-prename descclassname">kqcircuits.util.log_router.</code><code class="sig-name descname">route_log_to_stdout</code><span class="sig-paren">(</span><em class="sig-param">lowest_visible_level='INFO'</em>, <em class="sig-param">remove_old_handlers=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/log_router.html#route_log_to_stdout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.log_router.route_log_to_stdout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routes the log output to stdout</p>
-<p>Enables monitoring the log in KLayout console. Optionally removes old handlers from root logger to avoid output to
-other places than defined here.</p>
+<dt id="kqcircuits.util.log_router.route_log">
+<code class="sig-prename descclassname">kqcircuits.util.log_router.</code><code class="sig-name descname">route_log</code><span class="sig-paren">(</span><em class="sig-param">lowest_visible_level='INFO'</em>, <em class="sig-param">remove_old_handlers=True</em>, <em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/log_router.html#route_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.log_router.route_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routes the log output to stdout and to an optional file</p>
+<p>Enables monitoring the log in KLayout console. If requested it also appends logs to the
+specified file. By default removes old handlers from root logger to avoid output to other places
+than defined here.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lowest_visible_level</strong> (<em>String</em>) – one of DEBUG, INFO, WARNING, ERROR, CRITICAL</p></li>
 <li><p><strong>remove_old_handlers</strong> (<em>Boolean</em>) – determines if old handlers are removed from the root logger</p></li>
+<li><p><strong>filename</strong> – name of the file to append logs to</p></li>
 </ul>
 </dd>
 </dl>

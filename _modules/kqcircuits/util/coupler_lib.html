@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.4
-              </div>
             
           
 
@@ -184,19 +180,33 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.smooth_capacitor</span> <span class="kn">import</span> <span class="n">SmoothCapacitor</span>
 
 
-<div class="viewcode-block" id="cap_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.cap_params">[docs]</a><span class="k">def</span> <span class="nf">cap_params</span><span class="p">(</span><span class="n">fingers</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A utility function to easily produce typical FingerCapacitorSquare instance parameters.</span>
+<div class="viewcode-block" id="cap_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.cap_params">[docs]</a><span class="k">def</span> <span class="nf">cap_params</span><span class="p">(</span><span class="n">fingers</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="n">element_key</span><span class="o">=</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A utility function to easily produce typical finger capacitor instance parameters.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fingers: number of fingers</span>
-<span class="sd">        length: length of fingers</span>
+<span class="sd">        length: length of fingers in FingerCapacitorSquare</span>
 <span class="sd">        coupler_type: a string describing the capacitor type</span>
+<span class="sd">        element_key: dictionary key in which coupler Element is returned</span>
 <span class="sd">        **kwargs: other optional parameters</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_number&quot;</span><span class="p">:</span> <span class="n">fingers</span><span class="p">,</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dictionary of coupler parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s1">&#39;smooth&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">element_key</span><span class="p">:</span> <span class="n">SmoothCapacitor</span><span class="p">,</span>
+                <span class="s1">&#39;finger_number&#39;</span><span class="p">:</span> <span class="n">fingers</span><span class="p">,</span>
+                <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                <span class="s2">&quot;ground_gap&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                <span class="s2">&quot;gap&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
+
+    <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">element_key</span><span class="p">:</span> <span class="n">FingerCapacitorSquare</span><span class="p">,</span>
+                <span class="s2">&quot;finger_number&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">fingers</span><span class="p">),</span>
                 <span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
                 <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
                 <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>

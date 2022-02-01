@@ -1,0 +1,10 @@
+kqcircuits.elements.smooth\_capacitor
+=====================================
+
+.. automodule:: kqcircuits.elements.smooth_capacitor
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.smooth_capacitor
+.. image:: ../pcell_images/kqcircuits.elements.smooth_capacitor.png

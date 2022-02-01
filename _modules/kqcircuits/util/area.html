@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.area &mdash; KQCircuits 4.2.4 documentation</title>
+  <title>kqcircuits.util.area &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.4
-              </div>
             
           
 
@@ -203,7 +199,7 @@
 <div class="viewcode-block" id="AreaReceiver.put"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.AreaReceiver.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">tile</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">clip</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Function called by :class:`TilingProcessor` on output &quot;&quot;&quot;</span>
         <span class="c1">#pylint: disable=unused-argument</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Area for tile </span><span class="si">{</span><span class="n">ix</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">iy</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dbu</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Area for tile </span><span class="si">{</span><span class="n">ix</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">iy</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dbu</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">*</span> <span class="p">(</span><span class="n">dbu</span> <span class="o">*</span> <span class="n">dbu</span><span class="p">)</span>  <span class="c1"># report as um^2</span></div></div>
 
 
