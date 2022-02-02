@@ -110,11 +110,12 @@ def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, 
     def find_cells_with_squids(chip, inst_name):
         """Returns the container cells in `chip` called `inst_name`"""
         cells = []
+        layout = chip.layout()
         for inst in chip.each_inst():
             if inst.property("id") == inst_name:
                 cells.append((chip, inst))
             elif isinstance(inst.pcell_declaration(), Chip):  # recursively look for more chips
-                cells += find_cells_with_squids(inst.cell, inst_name)
+                cells += find_cells_with_squids(layout.cell(inst.cell_index), inst_name)
         return cells
 
     cells = find_cells_with_squids(top_cell, inst_name)
@@ -145,6 +146,7 @@ def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, 
             ccell = dup
 
         squids = [sq for sq in ccell.each_inst() if sq.cell.qname().find("SQUID Library") != -1]
+        squids.sort(key=lambda q: q.property("squid_index"))
         if not squids or squid_index >= len(squids) or squid_index < 0:
             replace_squid._log.warn(f"No SQUID found in '{inst_name}' or squid_index={squid_index} is out of range!")
             continue
@@ -156,10 +158,11 @@ def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, 
         replace_squid._log.info(f"Replaced SQUID of '{inst_name}' with {squid_type} at {squid_pos}.")
         old_squid.delete()
         if file_cell:
-            ccell.insert(pya.DCellInstArray(file_cell.cell_index(), trans))
+            new_squid = ccell.insert(pya.DCellInstArray(file_cell.cell_index(), trans))
         else:
             new_squid = Squid.create(layout, squid_type=squid_type, **params)
-            ccell.insert(pya.DCellInstArray(new_squid.cell_index(), trans))
+            new_squid = ccell.insert(pya.DCellInstArray(new_squid.cell_index(), trans))
+        new_squid.set_property("squid_index", squid_index)
 
 def convert_cells_to_static(layout):
     """Converts all cells in the layout to static. """

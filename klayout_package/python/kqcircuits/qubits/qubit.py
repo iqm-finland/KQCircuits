@@ -75,7 +75,9 @@ class Qubit(Element):
         integer_transf = squid_transf.to_itrans(self.layout.dbu)
         float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
 
-        self.insert_cell(cell, float_transf)
+        inst, _ = self.insert_cell(cell, float_transf)
+        if "squid_index" in parameters:
+            inst.set_property("squid_index", int(parameters.pop('squid_index')))
         squid_unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
         squid_unetch_region.transform(integer_transf)
         # add parts of qubit to the layer needed for EBL

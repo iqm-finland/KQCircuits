@@ -117,7 +117,7 @@ class JunctionTestPads(TestStructure):
                     self.produce_pad(x - pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
                     self.produce_pad(x + pad_step / 2, y, pads_region, self.pad_width, self.pad_width)
                     self._next_width = self._next_junction_width(junction_idx)
-                    self._produce_junctions(x, y, pads_region, arm_width)
+                    self._produce_junctions(x, y, pads_region, arm_width, junction_idx)
                     self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x - pad_step * y_flip / 2, y)
                     self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x + pad_step * y_flip/ 2, y)
                     junction_idx += 1
@@ -129,7 +129,7 @@ class JunctionTestPads(TestStructure):
                     self.produce_pad(x, y - pad_step / 2, pads_region, self.pad_width, self.pad_width)
                     self.produce_pad(x, y + pad_step / 2, pads_region, self.pad_width, self.pad_width)
                     self._next_width = self._next_junction_width(junction_idx)
-                    self._produce_junctions(x, y, pads_region, arm_width)
+                    self._produce_junctions(x, y, pads_region, arm_width, junction_idx)
                     self.refpoints["probe_{}_l".format(junction_idx)] = pya.DPoint(x, y - pad_step / 2)
                     self.refpoints["probe_{}_r".format(junction_idx)] = pya.DPoint(x, y + pad_step / 2)
                     junction_idx += 1
@@ -137,10 +137,10 @@ class JunctionTestPads(TestStructure):
         self.produce_etched_region(pads_region, pya.DPoint(self.area_width / 2, self.area_height / 2), self.area_width,
                                    self.area_height)
 
-    def _produce_junctions(self, x, y, pads_region, arm_width):
+    def _produce_junctions(self, x, y, pads_region, arm_width, index):
 
         if not self.only_pads:
-            self._produce_squid_and_arms(x, y, pads_region, arm_width)
+            self._produce_squid_and_arms(x, y, pads_region, arm_width, index)
 
     def _produce_four_port_junction_tests(self):
 
@@ -163,14 +163,14 @@ class JunctionTestPads(TestStructure):
                                                  pya.DTrans(0 if self.junctions_horizontal else 1, False, x, y),
                                                  "probe_{}".format(junction_idx))
                     self._next_width = self._next_junction_width(junction_idx)
-                    self._produce_junctions(x, y, pads_region, 5)
+                    self._produce_junctions(x, y, pads_region, 5, junction_idx)
 
                 junction_idx += 1
 
         self.produce_etched_region(pads_region, pya.DPoint(self.area_width / 2, self.area_height / 2), self.area_width,
                                    self.area_height)
 
-    def _produce_squid_and_arms(self, x, y, pads_region, arm_width):
+    def _produce_squid_and_arms(self, x, y, pads_region, arm_width, index):
         """Produces a squid and arms for connecting it to pads.
 
         The squid is inserted as a subcell. The arm shapes are inserted to pads_region, and their shape depends on
@@ -190,7 +190,7 @@ class JunctionTestPads(TestStructure):
         if self.junctions_horizontal:
             # squid
             trans = pya.DCplxTrans(x, y - junction_spacing)
-            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width)
+            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width, squid_index=index)
             pos_rel_squid_top = squid_ref_rel["port_common"]
             pads_region.insert(region_unetch)
             # arm below
@@ -208,7 +208,7 @@ class JunctionTestPads(TestStructure):
         else:
             # squid
             trans = pya.DCplxTrans(x - junction_spacing, y)
-            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width)
+            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width, squid_index=index)
             pos_rel_squid_top = squid_ref_rel["port_common"]
             pads_region.insert(region_unetch)
             # arm below
