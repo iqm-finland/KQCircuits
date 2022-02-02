@@ -16,14 +16,15 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from math import pi, tan, degrees, atan2
+from math import pi, tan, degrees, atan2, sqrt
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
+from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.geometry_helper import vector_length_and_direction, is_clockwise
+from kqcircuits.util.geometry_helper import vector_length_and_direction, is_clockwise, get_angle
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
@@ -47,8 +48,12 @@ class SpiralResonatorPolygon(Element):
     The spacing between waveguides in the spiral can either be chosen manually or automatically. The automatic spacing
     attempts to find the largest possible spacing.
 
-    Airbridges can optionally be placed with a given spacing along the resonator waveguide.
+    Airbridges can optionally be placed with a given spacing along the resonator waveguide by setting non-zero value to
+    `bridge_spacing`. Alternatively, one can independently set number of airbridges on each straight segment of spiral
+    polygon by using parameter `n_bridges_pattern`.
 
+    Non-negative value to `connector_dist` inserts face-to-face connector to spiral resonator so that the beginning and
+    the end of resonator will be on different faces.
     """
 
     length = Param(pdt.TypeDouble, "Resonator length", 5000, unit="μm")
@@ -56,9 +61,11 @@ class SpiralResonatorPolygon(Element):
     poly_path = Param(pdt.TypeShape, "Polygon path",
                       pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(0, -800)], 10))
     auto_spacing = Param(pdt.TypeBoolean, "Use automatic spacing", True)
-    manual_spacing = Param(pdt.TypeDouble, "Manual spacing between waveguide centers", 300, unit="μm")
-    bridges = Param(pdt.TypeBoolean, "Airbridges", False)
-    bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 300, unit="μm")
+    manual_spacing = Param(pdt.TypeList, "Manual spacing pattern", [300], unit="μm")
+    bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 0, unit="μm")
+    n_bridges_pattern = Param(pdt.TypeList, "Pattern for number of airbridges on edges", [0])
+    connector_dist = Param(pdt.TypeDouble, "Face to face connector distance from beginning", -1, unit="µm",
+                           docstring="Negative value means single face resonator without connector.")
 
     def build(self):
 
@@ -67,19 +74,24 @@ class SpiralResonatorPolygon(Element):
         else:
             self._produce_resonator_manual_spacing()
 
-        input_path = list(self.input_path.each_point())
-        self.add_port("a", input_path[0], input_path[0] - input_path[1])
-
-
     def _produce_resonator_automatic_spacing(self):
         """Produces polygon spiral resonator with automatically determined waveguide spacing.
 
         This creates resonators with different spacing, until it finds the largest spacing that can be used to create
         a valid resonator. Only the final resonator with optimal spacing is inserted to `self.cell` in the end.
         """
+        def polygon_min_diameter(path):
+            p = list(path.each_point())
+            n = len(p)
+            diams = []
+            for i in range(n):
+                _, v = vector_length_and_direction(p[(i + 1) % n] - p[i])
+                diams.append(max([abs(v.vprod(p[j % n] - p[i])) for j in range(i+2, i+n)]))
+            return min(diams)
+
         # find optimal spacing using bisection method
-        min_spacing, max_spacing = 0, self.length
-        optimal_points = self._produce_path_points(min_spacing)
+        min_spacing, max_spacing = 0, polygon_min_diameter(self.poly_path) / 2
+        optimal_points = self._produce_path_points([min_spacing])
         if optimal_points is None:
             self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the turn "
                                      "radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
@@ -87,24 +99,27 @@ class SpiralResonatorPolygon(Element):
         spacing_tolerance = 0.001
         while max_spacing - min_spacing > spacing_tolerance:
             spacing = (min_spacing + max_spacing) / 2
-            points = self._produce_path_points(spacing)
+            points = self._produce_path_points([spacing])
             if points is not None:
                 optimal_points = points
                 min_spacing = spacing
             else:
                 max_spacing = spacing
         self._produce_resonator(optimal_points)
+        self.add_port("a", optimal_points[0], optimal_points[0] - optimal_points[1])
 
     def _produce_resonator_manual_spacing(self):
         """Produces polygon spiral resonator with spacing defined by `self.manual_spacing`.
 
         If the resonator cannot be created with the chosen spacing, it will instead raise a ValueError.
         """
-        points = self._produce_path_points(self.manual_spacing)
+        sp = [float(s) for s in self.manual_spacing] if isinstance(self.manual_spacing, list) else [self.manual_spacing]
+        points = self._produce_path_points(sp)
         if points is None:
             self.raise_error_on_cell("Cannot create a resonator with the given parameters. Try decreasing the spacings "
                                      "or the turn radius.", (self.input_path.bbox() + self.poly_path.bbox()).center())
         self._produce_resonator(points)
+        self.add_port("a", points[0], points[0] - points[1])
 
     def _produce_path_points(self, spacing):
         """Creates resonator path points with the given spacing.
@@ -147,23 +162,19 @@ class SpiralResonatorPolygon(Element):
 
             # if the previous segment is not long enough for the curves at each end, resonator cannot be created
             if len(pts) > 3:
-                corner_cut_dist += self._corner_cut_distance(pts[-4], pts[-3], pts[-2])
+                corner_cut_dist += self._corner_cut_distance(pts[-4], pts[-3], pts[-2])[0]
             if (pts[-2] - pts[-3]).length() < corner_cut_dist - 1e-13:
                 return None
 
             return updated_length
 
         # segments based on input_path points
-        input_path_points_iter = self.input_path.each_point()
+        input_points = list(self.input_path.each_point())
         length = 0.0
-        points = [next(input_path_points_iter)]
-        while True:
-            try:
-                points.append(next(input_path_points_iter))
-            except StopIteration:
-                break
-
-            # Update length after adding the last point
+        points = []
+        for ip in input_points:
+            # Update length after adding a point
+            points.append(ip)
             length = get_updated_length(points, length)
             if length is None:
                 return None
@@ -176,7 +187,7 @@ class SpiralResonatorPolygon(Element):
         poly_points = list(self.poly_path.each_point())
         n_poly_points = len(poly_points)
         if n_poly_points > 2:
-            poly_edges = [pya.DEdge(poly_points[i - 1], poly_points[i]) for i in range(n_poly_points)]
+            poly_edges = [pya.DEdge(poly_points[i], poly_points[(i+1) % n_poly_points]) for i in range(n_poly_points)]
             clockwise = is_clockwise(poly_points)
             # get the normal vectors (toward inside of polygon) of each edge
             normals = []
@@ -184,19 +195,27 @@ class SpiralResonatorPolygon(Element):
                 _, direction = vector_length_and_direction(edge.p2 - edge.p1)
                 normals.append(pya.DVector(direction.y, -direction.x) if clockwise else
                                pya.DVector(-direction.y, direction.x))
+            # define amount of spacing for the first round
+            shifts = [0.0] * len(poly_edges)
+            if len(points) > 0:
+                _, input_dir = vector_length_and_direction(poly_points[0] - points[-1])
+                _, poly_dir = vector_length_and_direction(poly_points[0] - poly_points[-1])
+                shifts[-1] = max(0.0, spacing[-1] * input_dir.sprod(poly_dir))
             i = 0
-            current_edge = poly_edges[0]
+            current_edge = poly_edges[-1]
             while True:
-                # get the edge with i//len spacing from the corresponding poly edge
-                next_edge_without_shift = poly_edges[(i + 1) % n_poly_points]
-                shift = spacing*((i + 1)//n_poly_points)*normals[(i + 1) % n_poly_points]
+                # get the edge shifted with spacing from the corresponding poly edge
+                next_edge_without_shift = poly_edges[i % n_poly_points]
+                shift = shifts[i % n_poly_points] * normals[i % n_poly_points]
+                shifts[i % n_poly_points] += spacing[i % len(spacing)]
                 next_edge = pya.DEdge(next_edge_without_shift.p1 + shift, next_edge_without_shift.p2 + shift)
                 # Find intersection point of the lines defined by current_edge and next_edge.
                 # We use `extended` since we want intersections between the "infinite" lines instead of finite edges.
+                # Use  "intersection_point = current_edge.cut_point(next_edge)" after Klayout 0.26 support is dropped.
                 intersection_point = current_edge.extended(1e7).crossing_point(next_edge.extended(1e7))
                 # if the shift was so large that the new segment would end up in the opposite direction,
                 # resonator cannot be created
-                if (intersection_point - points[-1]).sprod_sign(current_edge.d()) <= 0:
+                if i > 0 >= (intersection_point - points[-1]).sprod_sign(current_edge.d()):
                     return None
 
                 # Append point and update length
@@ -205,19 +224,24 @@ class SpiralResonatorPolygon(Element):
                 if length is None:
                     return None
 
-                # Compute outer curve shortcut length for the last point.
-                # This may limit the length of the last straight segment to avoid overlapping with the outer segment.
-                if i >= n_poly_points and self.r > spacing:
-                    next_corner_cut_dist = self._corner_cut_distance(poly_points[(i - 1) % n_poly_points],
-                                                                     poly_points[i % n_poly_points],
-                                                                     poly_points[(i + 1) % n_poly_points])
-                    shortcut_length = (self.r - spacing) / self.r * next_corner_cut_dist
-                else:
-                    shortcut_length = 0.0
-
                 # Test if the resonator is long enough
-                if length - shortcut_length >= self.length:
-                    return points
+                if length >= self.length:
+                    if i < n_poly_points:  # Outest segments don't need overlapping consideration
+                        return points
+
+                    # Check outer curve shortcut length to avoid inner segments overlapping with the outer curve.
+                    i_out = len(points) - n_poly_points - 1
+                    corner_diff = points[-1] - points[i_out]  # vector from outer corner to inner corner
+                    _, inner_dir = vector_length_and_direction(points[-1] - points[-2])
+                    s_cut = corner_diff.sprod(inner_dir)
+                    if s_cut >= 0:  # For concave corner, segment cannot overlap with outer curve
+                        return points
+
+                    if i_out > 0:  # For convex corner, allow straight segment until the outer curve begins.
+                        _, outer_dir = vector_length_and_direction(points[i_out] - points[i_out - 1])
+                        r_cut, _ = self._corner_cut_distance(points[i_out - 1], points[i_out], points[i_out + 1])
+                        if length - max(0.0, s_cut + r_cut * outer_dir.sprod(inner_dir)) >= self.length:
+                            return points
 
                 # prepare for the next iteration
                 current_edge = next_edge
@@ -239,13 +263,13 @@ class SpiralResonatorPolygon(Element):
         term2 = 0 if last_segment_curved else self.term2
 
         # produce bridges
-        if self.bridges:
-            dist_to_next_bridge = self.bridge_spacing
-            for i in range(1, len(points)):
-                dist_to_next_bridge = self._produce_airbridges_for_segment(points, i, dist_to_next_bridge)
+        self._produce_airbridges(points)
 
-        wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0), term2=term2)
-        self.insert_cell(wg_cell)
+        # insert waveguide with or without connector
+        if self.connector_dist >= 0:
+            self._produce_wg_with_connector(points, term2)
+        else:
+            self.insert_cell(WaveguideCoplanar, path=pya.DPath(points, 0), term2=term2)
 
     def _fix_waveguide_end(self, points, current_length):
         """Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.
@@ -270,73 +294,187 @@ class SpiralResonatorPolygon(Element):
             if last_seg_len - extra_len < corner_cut_dist:
                 # remove last point and move the new last point to the start position of the old curve
                 points.pop()
-                points[-1] -= corner_cut_dist * vector_length_and_direction(points[-1] - points[-2])[1]
+                _, new_last_dir = vector_length_and_direction(points[-1] - points[-2])
+                points[-1] -= corner_cut_dist * new_last_dir
                 # calculate how long the new curve piece needs to be
-                tmp_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0))
-                curve_length = self.length - tmp_cell.length()
+                if len(points) > 2:
+                    tmp_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0))
+                    curve_length = self.length - tmp_cell.length()
+                    if curve_length <= 0.0:
+                        points[-1] += curve_length * new_last_dir
+                        return False
+                else:
+                    curve_length = self.length - (points[-1] - points[-2]).length()
                 curve_alpha = curve_length / self.r
                 # add new curve piece at the waveguide end
-                curve_cell = self.add_element(WaveguideCoplanarCurved, alpha=curve_alpha)
+                fid = 0 if self.connector_dist < 0 else 1
+                curve_cell = self.add_element(WaveguideCoplanarCurved, alpha=curve_alpha, face_ids=[self.face_ids[fid]])
                 curve_trans = pya.DCplxTrans(1, degrees(alpha1) - v1.vprod_sign(v2)*90, v1.vprod_sign(v2) < 0,
                                              corner_pos)
                 self.insert_cell(curve_cell, curve_trans)
-                WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans)
+                WaveguideCoplanarCurved.produce_curve_termination(self, curve_alpha, self.term2, curve_trans,
+                                                                  face_index=fid)
                 return True
 
         # set last point to correct position based on length
         points[-1] = points[-1] - extra_len * last_seg_dir
         return False
 
-    def _produce_airbridges_for_segment(self, points, end_point_idx, dist_to_next_bridge):
-        """Produces airbridges in the segment between points[end_point_idx-1] and points[end_point_idx].
+    def _produce_airbridges(self, points):
+        """Produces airbridges defined either by self.bridge_spacing or self.n_bridges_pattern.
+
+        All airbridges have at least half bridge width distance to end of the straight.
 
         Args:
             points: list of points used to create the resonator waveguide
-            end_point_idx: index of the segment end point
-            dist_to_next_bridge: distance until the next airbridge should created
-
-        Returns:
-            distance until the next airbridge should created
         """
-        segment_len, segment_dir = vector_length_and_direction(points[end_point_idx] - points[end_point_idx - 1])
+        # Create airbridges by self.bridge_spacing
         bridge_width = Airbridge.get_schema()["bridge_width"].default
-        remaining_len = segment_len - bridge_width
-        prev_pos = points[end_point_idx - 1]
-        # ensure that the bridge will not be too close to the corner before
-        if end_point_idx - 2 >= 0:
-            corner_1_cut_dist = self._corner_cut_distance(points[end_point_idx - 2], points[end_point_idx - 1],
-                                                          points[end_point_idx])
-            dist_to_next_bridge = max(dist_to_next_bridge, corner_1_cut_dist)
-        while remaining_len > dist_to_next_bridge:
-            add_bridge = True
-            # ensure that the bridge will not be too close to the corner after
-            if end_point_idx + 1 < len(points):
-                corner_2_cut_dist = self._corner_cut_distance(points[end_point_idx - 1], points[end_point_idx],
-                                                              points[end_point_idx + 1])
-                if remaining_len - dist_to_next_bridge < corner_2_cut_dist:
-                    remaining_len = 0
-                    dist_to_next_bridge = 0
-                    add_bridge = False
-            # create bridge
-            if add_bridge:
-                pos = prev_pos + dist_to_next_bridge*segment_dir
+        if self.bridge_spacing > 0.0:
+            dist_to_next_bridge = self.bridge_spacing
+            for i in range(0, len(points) - 1):
+                segment_len, segment_dir = vector_length_and_direction(points[i + 1] - points[i])
+                cut_dist, curve_len = (self._corner_cut_distance(points[i], points[i + 1], points[i + 2])
+                                       if i + 2 < len(points) else (0.0, 0.0))
+                end_of_straight = segment_len - bridge_width - cut_dist
+
                 angle = degrees(atan2(segment_dir.y, segment_dir.x))
-                self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos))
-                remaining_len -= dist_to_next_bridge
-                dist_to_next_bridge = self.bridge_spacing
-                prev_pos = pos
-        dist_to_next_bridge -= remaining_len
-        return dist_to_next_bridge
+                while dist_to_next_bridge < end_of_straight:
+                    pos = points[i] + dist_to_next_bridge * segment_dir
+                    self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos))
+                    dist_to_next_bridge += self.bridge_spacing
+                dist_to_next_bridge = max(dist_to_next_bridge - segment_len + 2 * cut_dist - curve_len,
+                                          cut_dist + bridge_width)
+
+        # Create airbridges by self.n_bridges_pattern
+        nb = [int(n) for n in self.n_bridges_pattern] if isinstance(self.n_bridges_pattern, list) else []
+        n_beg = self.input_path.num_points()
+        if any(nb) and n_beg < len(points) - 2:
+            cut_dist0, _ = self._corner_cut_distance(points[n_beg - 1], points[n_beg], points[n_beg + 1])
+            for i in range(n_beg, len(points) - 2):
+                segment_len, segment_dir = vector_length_and_direction(points[i+1] - points[i])
+                cut_dist1, _ = self._corner_cut_distance(points[i], points[i + 1], points[i + 2])
+
+                n_bridges = nb[(i - n_beg) % len(nb)]
+                shift = 0.5 - 0.5 * (((i - n_beg) // len(nb)) % 2)
+                ab_dist = (segment_len - cut_dist0 - cut_dist1 - 2 * bridge_width) / (n_bridges - 0.5)
+                angle = degrees(atan2(segment_dir.y, segment_dir.x))
+                for b in range(n_bridges):
+                    pos = points[i] + (cut_dist0 + bridge_width + (b + shift) * ab_dist) * segment_dir
+                    self.insert_cell(Airbridge, pya.DCplxTrans(1, angle, False, pos))
+                cut_dist0 = cut_dist1
+
+    def _produce_wg_with_connector(self, points, term2):
+        """Produces waveguide with face-to-face connector.
+
+        Args:
+            points: list of points used to create the resonator waveguide
+            term2: end termination
+        """
+        # add connector cell and get connector length
+        conn_cell = self.add_element(FlipChipConnectorRf)
+        conn_ref = self.get_refpoints(conn_cell)
+        conn_len, conn_dir = vector_length_and_direction(conn_ref["t_port"] - conn_ref["b_port"])
+
+        def insert_wg_with_connector(segment, distance):
+            s_len, s_dir = vector_length_and_direction(points[segment + 1] - points[segment])
+            b_pos = points[segment] + distance * s_dir
+            ang = get_angle(s_dir) - get_angle(conn_dir)
+            trans = pya.DCplxTrans(1.0, ang, False, b_pos) * pya.DTrans(-conn_ref["b_port"])
+            t_pos = self.insert_cell(conn_cell, trans=trans)[1]["t_port"]
+            if segment == 0 and distance < 1e-3:
+                WaveguideCoplanar.produce_end_termination(self, t_pos, b_pos, self.term1)
+            else:
+                self.insert_cell(WaveguideCoplanar, path=pya.DPath(points[:segment + 1] + [b_pos], 0), term2=0)
+            if segment + 2 == len(points) and s_len - conn_len - distance < 1e-3:
+                WaveguideCoplanar.produce_end_termination(self, b_pos, t_pos, term2, face_index=1)
+            else:
+                self.insert_cell(WaveguideCoplanar, path=pya.DPath([t_pos] + points[segment + 1:], 0),
+                                 term1=0, term2=term2, face_ids=[self.face_ids[1]])
+
+        last = {}  # parameters for last possible connector position
+        prev_len = 0.0
+        prev_cut_dist = 0.0
+        for i, p in enumerate(points):
+            if i + 1 >= len(points):
+                if last:
+                    insert_wg_with_connector(**last)
+                    return
+                self.raise_error_on_cell("Face-to-face connector cannot fit.",
+                                         (self.input_path.bbox() + self.poly_path.bbox()).center())
+            corner_cut_dist, corner_length = ((0.0, 0.0) if i + 2 == len(points) else
+                                              self._corner_cut_distance(p, points[i + 1], points[i + 2]))
+            segment_len, _ = vector_length_and_direction(points[i + 1] - p)
+            straight_len = segment_len - prev_cut_dist - corner_cut_dist
+            if conn_len <= straight_len:
+                last = {'segment': i, 'distance': segment_len - corner_cut_dist - conn_len}
+                dist = self.connector_dist - conn_len / 2 - prev_len + prev_cut_dist
+                if dist <= last['distance']:
+                    insert_wg_with_connector(i, max(prev_cut_dist, dist))
+                    return
+            prev_len += straight_len + corner_length
+            prev_cut_dist = corner_cut_dist
 
     def _corner_cut_distance(self, point1, point2, point3):
-        """Returns the distance from waveguide path corner to the start of a curved waveguide placed at the corner.
+        """Returns the distance from waveguide path corner to the start of the curve and the curve length.
 
         Args:
             point1: point before corner
             point2: corner point
             point3: point after corner
 
+        Returns:
+            corner cut distance, curve length
         """
         _, _, alpha1, alpha2, _ = WaveguideCoplanar.get_corner_data(point1, point2, point3, self.r)
         abs_curve = pi - abs(pi - abs(alpha2 - alpha1))
-        return self.r*tan(abs_curve/2)
+        return self.r*tan(abs_curve/2), self.r * abs_curve
+
+
+def rectangular_parameters(above_space=500, below_space=400, right_space=1000, x_spacing=100, y_spacing=100,
+                           bridges_left=False, bridges_bottom=False, bridges_right=False, bridges_top=False,
+                           r=Element.get_schema()["r"].default, **kwargs):
+    """A utility function to easily produce rectangular spiral resonator (old SpiralResonatorRectangle).
+
+    Args:
+        above_space: Space above the input [µm]
+        below_space: Space below the input [µm]
+        right_space: Space right of the input [µm]
+        x_spacing: Spacing between vertical segments [µm]
+        y_spacing: Spacing between horizontal segments [µm]
+        bridges_left: Crossing airbridges left
+        bridges_bottom: Crossing airbridges bottom
+        bridges_right: Crossing airbridges right
+        bridges_top: Crossing airbridges top
+        r: Turn radius [µm]
+
+    Returns:
+        dictionary of parameters for SpiralResonatorPolygon
+    """
+    defaults = {"manual_spacing": [y_spacing, x_spacing], "r": r}
+    if above_space == 0:
+        params = {"input_path": pya.DPath([], 10),
+                  "poly_path": pya.DPath([pya.DPoint(0, above_space), pya.DPoint(right_space, above_space),
+                                          pya.DPoint(right_space, -below_space), pya.DPoint(0, -below_space)], 10),
+                  "n_bridges_pattern": [bridges_top, bridges_right, bridges_bottom, bridges_left]}
+    elif below_space == 0:
+        params = {"input_path": pya.DPath([], 10),
+                  "poly_path": pya.DPath([pya.DPoint(0, -below_space), pya.DPoint(right_space, -below_space),
+                                          pya.DPoint(right_space, above_space), pya.DPoint(0, above_space)], 10),
+                  "n_bridges_pattern": [bridges_bottom, bridges_right, bridges_top, bridges_left]}
+    elif above_space > below_space:
+        x1 = sqrt(above_space / (4 * r - above_space)) * r if above_space < 2 * r else r
+        x2 = (sqrt((4 * r - above_space) * above_space) if above_space < 2 * r else 2 * r) - x1
+        params = {"input_path": pya.DPath([pya.DPoint(0, 0), pya.DPoint(x1, 0)], 10),
+                  "poly_path": pya.DPath([pya.DPoint(x2, above_space), pya.DPoint(right_space, above_space),
+                                          pya.DPoint(right_space, -below_space), pya.DPoint(x2, -below_space)], 10),
+                  "n_bridges_pattern": [bridges_top, bridges_right, bridges_bottom, bridges_left]}
+    else:
+        x1 = sqrt(below_space / (4 * r - below_space)) * r if below_space < 2 * r else r
+        x2 = (sqrt((4 * r - below_space) * below_space) if below_space < 2 * r else 2 * r) - x1
+        params = {"input_path": pya.DPath([pya.DPoint(0, 0), pya.DPoint(x1, 0)], 10),
+                  "poly_path": pya.DPath([pya.DPoint(x2, -below_space), pya.DPoint(right_space, -below_space),
+                                          pya.DPoint(right_space, above_space), pya.DPoint(x2, above_space)], 10),
+                  "n_bridges_pattern": [bridges_bottom, bridges_right, bridges_top, bridges_left]}
+
+    return {**defaults, **params, **kwargs}
