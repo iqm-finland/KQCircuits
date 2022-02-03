@@ -18,7 +18,8 @@
 
 """Checks all files for existence of IQM copyright header.
 
-The required copyright header is taken from a file ci/COPYRIGHT.
+The required copyright header is taken from a file ci/copyright_template where the year has been substituted by one of
+the valid copyright years.
 
 Paths to exclude from the copyright check can be given using --exclude-paths. These paths should be relative to the
 working directory.
@@ -34,6 +35,7 @@ without copyright.
 from argparse import ArgumentParser
 from pathlib import Path
 from sys import exit
+from string import Template
 
 
 if __name__ == "__main__":
@@ -57,11 +59,15 @@ if __name__ == "__main__":
         if not exclude:
             file_paths_2.append(path)
 
-    files_without_copyright = []
-    copyright_string = open("ci/COPYRIGHT").read()
-    for file in file_paths_2:
-        if copyright_string not in open(file, encoding="utf-8").read():
-            files_without_copyright.append(file)
+    with open(f"ci/copyright_template", "r") as template_file:
+        copyright_template = Template(template_file.read())
+
+    files_without_copyright = file_paths_2
+    for copyright_year in [2021, 2022]:
+        copyright_string = copyright_template.substitute(year=copyright_year)
+        files_without_copyright = [file for file in files_without_copyright
+                                   if copyright_string not in open(file, encoding="utf-8").read()]
+
     if len(files_without_copyright) > 0:
         print("Files without copyright header:")
         [print(file) for file in files_without_copyright]
