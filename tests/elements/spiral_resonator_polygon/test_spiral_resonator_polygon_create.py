@@ -77,12 +77,12 @@ def test_length_automatic_spacing():
 
 
 def test_length_with_bridges():
-    relative_error = _get_length_error(length=5300, bridges=True)
+    relative_error = _get_length_error(length=5300, bridge_spacing=300)
     assert relative_error < relative_length_tolerance
 
 
 def test_length_without_bridges():
-    relative_error = _get_length_error(length=5300, bridges=False)
+    relative_error = _get_length_error(length=5300, bridge_spacing=0)
     assert relative_error < relative_length_tolerance
 
 
@@ -149,7 +149,7 @@ def test_length_too_long_resonator(capfd):
                              pya.DPoint(0, 0)], 10)
     )
     # the resonator should either have small relative error or fail
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     assert relative_error < relative_length_tolerance or err != ""
 
 
@@ -189,7 +189,7 @@ def test_can_create_resonator_with_short_segment(capfd):
         auto_spacing=False,
         manual_spacing=100,
     )
-    out, err = capfd.readouterr()
+    _, err = capfd.readouterr()
     assert err == "", err
 
 

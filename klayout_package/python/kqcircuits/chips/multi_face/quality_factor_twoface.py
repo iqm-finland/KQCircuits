@@ -17,8 +17,7 @@
 
 
 from kqcircuits.chips.multi_face.multi_face import MultiFace
-from kqcircuits.elements.spiral_resonator_rectangle import SpiralResonatorRectangle
-from kqcircuits.elements.spiral_resonator_rectangle_multiface import SpiralResonatorRectangleMultiface
+from kqcircuits.elements.spiral_resonator_polygon import SpiralResonatorPolygon, rectangular_parameters
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
@@ -139,19 +138,11 @@ class QualityFactorTwoface(MultiFace):
 
             # Spiral resonator
             if self.resonator_type == "twoface":
-                cell_res_even_width = self.add_element(SpiralResonatorRectangleMultiface,
-                                                       right_space=self.spiral_box_height - self.cap_res_distance,
-                                                       above_space=0,
-                                                       below_space=self.spiral_box_width,
-                                                       length=res_lengths[i] - self.cap_res_distance,
-                                                       a=res_a[i],
-                                                       b=res_b[i],
-                                                       connector_dist=connector_distances[i] - self.cap_res_distance,
-                                                       face_ids=face_config,
-                                                       )
+                res_params = {'connector_dist': connector_distances[i] - self.cap_res_distance}
             else:
-                cell_res_even_width = self.add_element(SpiralResonatorRectangle,
-                                                       name='resonator{}'.format(i),
+                res_params = {'name': 'resonator{}'.format(i)}
+            cell_res_even_width = self.add_element(SpiralResonatorPolygon,
+                                                   **rectangular_parameters(
                                                        right_space=self.spiral_box_height - self.cap_res_distance,
                                                        above_space=0,
                                                        below_space=self.spiral_box_width,
@@ -159,7 +150,7 @@ class QualityFactorTwoface(MultiFace):
                                                        a=res_a[i],
                                                        b=res_b[i],
                                                        face_ids=face_config,
-                                                       )
+                                                       **res_params))
             self.insert_cell(cell_res_even_width, pya.DTrans(pos_res_start) * rotation)
 
             # Feedline
