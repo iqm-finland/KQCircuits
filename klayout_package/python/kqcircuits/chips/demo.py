@@ -122,7 +122,9 @@ class Demo(Chip):
     def produce_fluxline(self, qubit_nr):
         self.insert_cell(WaveguideComposite, nodes=[
             Node(self.refpoints["FL-QB{}_base".format(qubit_nr)]),
-            Node(self.refpoints["QB{}_port_flux".format(qubit_nr)], n_bridges=4),
+            Node(self.refpoints["FL-QB{}_port_corner".format(qubit_nr)]),
+            Node(self.refpoints["QB{}_port_flux_corner".format(qubit_nr)], n_bridges=4),
+            Node(self.refpoints["QB{}_port_flux".format(qubit_nr)])
         ])
 
     def produce_readout_structures(self):
