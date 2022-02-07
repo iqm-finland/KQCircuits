@@ -131,11 +131,17 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
             location = [0.0, 0.0]
 
         correct_instance = [i for i in possible_instances if i.has_prop_id() and (i.dtrans.disp == location)]
+        if correct_instance:
+            property_dict = {key: value for (key, value) in original_layout.properties(correct_instance[0].prop_id)
+                             if key != "id"}
+        else:
+            property_dict = {}
 
         subcircuits_for_export[subcircuit.id()] = {
             "cell_name": internal_cell.name,
             "instance_name": correct_instance[0].property('id') if correct_instance else None,
             "subcircuit_location": location,
+            "properties": property_dict,
         }
 
     circuits_for_export = {}
