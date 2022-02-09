@@ -18,6 +18,7 @@
 """Functions for exporting mask sets."""
 import json
 import os
+import platform
 import subprocess
 from importlib import import_module
 
@@ -337,8 +338,11 @@ def export_drc_report(name, path):
 
 def klayout_executable_command():
     """Returns the command (string) needed to run klayout executable in the current OS."""
-    if os.name == "nt":
+    name = platform.system()
+    if name == "Windows":
         return os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
+    elif name == "Darwin":
+        return "/Applications/klayout.app/Contents/MacOS/klayout"
     else:
         return "klayout"
 
