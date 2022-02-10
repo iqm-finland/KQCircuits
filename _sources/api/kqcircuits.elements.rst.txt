@@ -24,8 +24,6 @@ kqcircuits.elements
    kqcircuits.elements.meander
    kqcircuits.elements.smooth_capacitor
    kqcircuits.elements.spiral_resonator_polygon
-   kqcircuits.elements.spiral_resonator_rectangle
-   kqcircuits.elements.spiral_resonator_rectangle_multiface
    kqcircuits.elements.waveguide_composite
    kqcircuits.elements.waveguide_coplanar
    kqcircuits.elements.waveguide_coplanar_curved

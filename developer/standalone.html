@@ -217,7 +217,7 @@ terminal:</p>
 <p>The previous command installs only the packages which are always required
 when using KQC. Other packages may be required for specific purposes, and
 these can be installed by using instead a command like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;klayout_package/python[docs,tests,gds_export,png_export]&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;klayout_package/python[docs,tests,notebooks]&quot;</span>
 </pre></div>
 </div>
 <p>You can choose for which purposes you want to install the requirements by
@@ -235,13 +235,14 @@ debuggers and automated testing (see <a class="reference internal" href="testing
 not be possible without the standalone KLayout module.</p>
 <p>There is an example Jupyter notebook <code class="docutils literal notranslate"><span class="pre">viewer.ipynb</span></code> in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
-standalone KLayout module. Any other files in the notebooks folder will be
-ignored by git, so you can create your own notebooks based on <code class="docutils literal notranslate"><span class="pre">viewer.ipynb</span></code>
-in that folder. This notebook requires that <code class="docutils literal notranslate"><span class="pre">gds_export</span></code> and
-optionally <code class="docutils literal notranslate"><span class="pre">png_export</span></code> were specified as features during installation. On
-windows, the CairoSVG package required for <code class="docutils literal notranslate"><span class="pre">png_export</span></code> may not work, so
-the lines using the <code class="docutils literal notranslate"><span class="pre">.png</span></code> export may have to be removed from the notebook
-for it to be usable.</p>
+standalone KLayout module. Run it like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jupyter</span><span class="o">-</span><span class="n">notebook</span> <span class="n">notebooks</span><span class="o">/</span><span class="n">viewer</span><span class="o">.</span><span class="n">ipynb</span>
+</pre></div>
+</div>
+<p>Any other files in the notebooks folder will be ignored by git, so you can
+create your own notebooks based on <code class="docutils literal notranslate"><span class="pre">viewer.ipynb</span></code> in that folder. This
+notebook requires that <code class="docutils literal notranslate"><span class="pre">notebooks</span></code> was specified as a feature during
+installation.</p>
 </div>
 </div>
 
@@ -259,7 +260,7 @@ for it to be usable.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2019-2021, IQM.
+        &#169; Copyright 2021-2022, IQM.
 
     </p>
   </div>

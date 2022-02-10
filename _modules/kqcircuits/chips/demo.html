@@ -288,7 +288,9 @@
 <div class="viewcode-block" id="Demo.produce_fluxline"><a class="viewcode-back" href="../../../api/kqcircuits.chips.demo.html#kqcircuits.chips.demo.Demo.produce_fluxline">[docs]</a>    <span class="k">def</span> <span class="nf">produce_fluxline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubit_nr</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
             <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;FL-QB</span><span class="si">{}</span><span class="s2">_base&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qubit_nr</span><span class="p">)]),</span>
-            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB</span><span class="si">{}</span><span class="s2">_port_flux&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qubit_nr</span><span class="p">)],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;FL-QB</span><span class="si">{}</span><span class="s2">_port_corner&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qubit_nr</span><span class="p">)]),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB</span><span class="si">{}</span><span class="s2">_port_flux_corner&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qubit_nr</span><span class="p">)],</span> <span class="n">n_bridges</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+            <span class="n">Node</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;QB</span><span class="si">{}</span><span class="s2">_port_flux&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">qubit_nr</span><span class="p">)])</span>
         <span class="p">])</span></div>
 
 <div class="viewcode-block" id="Demo.produce_readout_structures"><a class="viewcode-back" href="../../../api/kqcircuits.chips.demo.html#kqcircuits.chips.demo.Demo.produce_readout_structures">[docs]</a>    <span class="k">def</span> <span class="nf">produce_readout_structures</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -415,7 +417,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2019-2021, IQM.
+        &#169; Copyright 2021-2022, IQM.
 
     </p>
   </div>

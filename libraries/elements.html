@@ -111,7 +111,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#marker">Marker</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#maskmarkerfc">MaskMarkerFc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#meander">Meander</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#spiralresonatorrectangle">SpiralResonatorRectangle</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#swissmon">Swissmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanar">WaveguideCoplanar</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
@@ -368,31 +367,6 @@ segment is a meander.</p>
 <p><strong>Origin:</strong> absolute position of <code class="docutils literal notranslate"><span class="pre">start</span></code></p>
 <img alt="meander" src="../_images/meander.png" />
 </div>
-<div class="section" id="spiralresonatorrectangle">
-<h2>SpiralResonatorRectangle<a class="headerlink" href="#spiralresonatorrectangle" title="Permalink to this headline">¶</a></h2>
-<p>The input of the resonator (refpoint <cite>base</cite>) is at left edge of the resonator
-. The space above, below, and right of the input are parameters, so the
-resonator will be within a box right of the input. The resonator length is a
-parameter, and it is attempted to be fit into the box such that the spacing
-between waveguides is as large as possible.</p>
-<strong>PCell parameters:</strong><div class="line"><br /></div>
-<ul class="simple">
-<li><p><strong>above_space</strong><em> (Double)</em><span> - Space above the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
-<li><p><strong>below_space</strong><em> (Double)</em><span> - Space below the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code></p></li>
-<li><p><strong>right_space</strong><em> (Double)</em><span> - Space right of the input</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000</span></code></p></li>
-<li><p><strong>length</strong><em> (Double)</em><span> - Length of the resonator</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">4200</span></code></p></li>
-<li><p><strong>auto_spacing</strong><em> (Boolean)</em><span> - Automatic determination of spacing</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>x_spacing</strong><em> (Double)</em><span> - Spacing between vertical segments</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
-<li><p><strong>y_spacing</strong><em> (Double)</em><span> - Spacing between horizontal segments</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
-<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>bridges_left</strong><em> (Boolean)</em><span> - Crossing airbridges left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>bridges_bottom</strong><em> (Boolean)</em><span> - Crossing airbridges bottom</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>bridges_right</strong><em> (Boolean)</em><span> - Crossing airbridges right</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>bridges_top</strong><em> (Boolean)</em><span> - Crossing airbridges top</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-</ul>
-<img alt="spiral resonator" src="../_images/spiral_resonator.png" />
-</div>
 <div class="section" id="swissmon">
 <h2>Swissmon<a class="headerlink" href="#swissmon" title="Permalink to this headline">¶</a></h2>
 <p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own
@@ -494,7 +468,7 @@ in a future release.</p>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2019-2021, IQM.
+        &#169; Copyright 2021-2022, IQM.
 
     </p>
   </div>

@@ -297,11 +297,17 @@
             <span class="n">location</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
 
         <span class="n">correct_instance</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">possible_instances</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">has_prop_id</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">disp</span> <span class="o">==</span> <span class="n">location</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">correct_instance</span><span class="p">:</span>
+            <span class="n">property_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="n">original_layout</span><span class="o">.</span><span class="n">properties</span><span class="p">(</span><span class="n">correct_instance</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">prop_id</span><span class="p">)</span>
+                             <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;id&quot;</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">property_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">subcircuits_for_export</span><span class="p">[</span><span class="n">subcircuit</span><span class="o">.</span><span class="n">id</span><span class="p">()]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;cell_name&quot;</span><span class="p">:</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;instance_name&quot;</span><span class="p">:</span> <span class="n">correct_instance</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">correct_instance</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="s2">&quot;subcircuit_location&quot;</span><span class="p">:</span> <span class="n">location</span><span class="p">,</span>
+            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="n">property_dict</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="n">circuits_for_export</span> <span class="o">=</span> <span class="p">{}</span>
@@ -359,7 +365,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2019-2021, IQM.
+        &#169; Copyright 2021-2022, IQM.
 
     </p>
   </div>

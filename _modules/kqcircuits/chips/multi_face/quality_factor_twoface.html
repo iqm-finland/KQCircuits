@@ -183,8 +183,7 @@
 
 
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.multi_face.multi_face</span> <span class="kn">import</span> <span class="n">MultiFace</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.spiral_resonator_rectangle</span> <span class="kn">import</span> <span class="n">SpiralResonatorRectangle</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.spiral_resonator_rectangle_multiface</span> <span class="kn">import</span> <span class="n">SpiralResonatorRectangleMultiface</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.spiral_resonator_polygon</span> <span class="kn">import</span> <span class="n">SpiralResonatorPolygon</span><span class="p">,</span> <span class="n">rectangular_parameters</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_tcross</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTCross</span>
@@ -305,19 +304,11 @@
 
             <span class="c1"># Spiral resonator</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">resonator_type</span> <span class="o">==</span> <span class="s2">&quot;twoface&quot;</span><span class="p">:</span>
-                <span class="n">cell_res_even_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">SpiralResonatorRectangleMultiface</span><span class="p">,</span>
-                                                       <span class="n">right_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spiral_box_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap_res_distance</span><span class="p">,</span>
-                                                       <span class="n">above_space</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                                                       <span class="n">below_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spiral_box_width</span><span class="p">,</span>
-                                                       <span class="n">length</span><span class="o">=</span><span class="n">res_lengths</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap_res_distance</span><span class="p">,</span>
-                                                       <span class="n">a</span><span class="o">=</span><span class="n">res_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                       <span class="n">b</span><span class="o">=</span><span class="n">res_b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                       <span class="n">connector_dist</span><span class="o">=</span><span class="n">connector_distances</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap_res_distance</span><span class="p">,</span>
-                                                       <span class="n">face_ids</span><span class="o">=</span><span class="n">face_config</span><span class="p">,</span>
-                                                       <span class="p">)</span>
+                <span class="n">res_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;connector_dist&#39;</span><span class="p">:</span> <span class="n">connector_distances</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap_res_distance</span><span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">cell_res_even_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">SpiralResonatorRectangle</span><span class="p">,</span>
-                                                       <span class="n">name</span><span class="o">=</span><span class="s1">&#39;resonator</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+                <span class="n">res_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;resonator</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)}</span>
+            <span class="n">cell_res_even_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">SpiralResonatorPolygon</span><span class="p">,</span>
+                                                   <span class="o">**</span><span class="n">rectangular_parameters</span><span class="p">(</span>
                                                        <span class="n">right_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spiral_box_height</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">cap_res_distance</span><span class="p">,</span>
                                                        <span class="n">above_space</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                                        <span class="n">below_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">spiral_box_width</span><span class="p">,</span>
@@ -325,7 +316,7 @@
                                                        <span class="n">a</span><span class="o">=</span><span class="n">res_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                                                        <span class="n">b</span><span class="o">=</span><span class="n">res_b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                                                        <span class="n">face_ids</span><span class="o">=</span><span class="n">face_config</span><span class="p">,</span>
-                                                       <span class="p">)</span>
+                                                       <span class="o">**</span><span class="n">res_params</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell_res_even_width</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pos_res_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">rotation</span><span class="p">)</span>
 
             <span class="c1"># Feedline</span>
@@ -397,7 +388,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2019-2021, IQM.
+        &#169; Copyright 2021-2022, IQM.
 
     </p>
   </div>

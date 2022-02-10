@@ -150,20 +150,6 @@ segment is a meander.
 .. image:: ../images/elements/meander.png
     :alt: meander
 
-SpiralResonatorRectangle
---------------------------
-
-The input of the resonator (refpoint `base`) is at left edge of the resonator
-. The space above, below, and right of the input are parameters, so the
-resonator will be within a box right of the input. The resonator length is a
-parameter, and it is attempted to be fit into the box such that the spacing
-between waveguides is as large as possible.
-
-.. kqc_elem_params:: kqcircuits.elements.spiral_resonator_rectangle
-
-.. image:: ../images/elements/spiral_resonator.png
-    :alt: spiral resonator
-
 Swissmon
 ---------
 
