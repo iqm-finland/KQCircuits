@@ -18,6 +18,7 @@
 
 import ast
 from importlib import import_module
+from itertools import zip_longest
 from typing import Tuple
 from math import pi, tan
 from autologging import logged
@@ -225,11 +226,21 @@ class WaveguideComposite(Element):
     """
 
     nodes = Param(pdt.TypeString, "List of Nodes for the waveguide", "(0, 0, 'Airbridge'), (200, 0)")
+    gui_path = Param(pdt.TypeShape, "Path for editing the waveguide in the KLayout GUI",
+                     pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1))
+    gui_path_shadow = Param(pdt.TypeShape, "Hidden path to detect GUI operations",
+                            pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1), hidden=True)
     taper_length = Param(pdt.TypeDouble, "Taper length", 100, unit="μm")
     tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
 
     @classmethod
     def create(cls, layout, library=None, **parameters):
+        # For code-generated cells, make sure the gui path matches te node definition.
+        if "nodes" in parameters:
+            path = pya.DPath([node.position for node in parameters["nodes"]], 1)
+            parameters["gui_path"] = path
+            parameters["gui_path_shadow"] = path
+
         cell = super().create(layout, library, **parameters)
 
         # Measure segment lengths, counting only "regular waveguides"
@@ -242,6 +253,80 @@ class WaveguideComposite(Element):
         setattr(cell, "segment_lengths", lambda: segment_lengths)
 
         return cell
+
+    def coerce_parameters_impl(self):
+        nodes = Node.nodes_from_string(self.nodes)
+
+        # If gui_path was edited by the user, it is now different from gui_path_shadow. Detect changes
+        changed = self.gui_path != self.gui_path_shadow
+
+        if changed:
+            new_points = list(self.gui_path.each_point())
+            old_points = list(self.gui_path_shadow.each_point())
+
+            # KLayout automatically removes "redundant" points from gui_path when moving any points around. These are
+            # any points that are exactly on the line between their neighbors. Here we detect such redundant points in
+            # old_points, and re-insert them in new_points.
+            for i in range(len(old_points) - 1):
+                # From point i, find greedily the list of consecutive points that are all on the same line
+                start_point = old_points[i]
+                i += 2
+                missing_points = []
+                while i < len(old_points):
+                    if old_points[i-1] not in new_points and \
+                            pya.DEdge(start_point, old_points[i]).contains(old_points[i-1]):
+                        missing_points.append(old_points[i-1])
+                        i += 1
+                    else:
+                        break
+                if len(missing_points) > 0:
+                    next_point = old_points[i - 1]
+                    if next_point in new_points and start_point in new_points and \
+                            new_points.index(next_point) - new_points.index(start_point) == 1:
+                        for p in missing_points:
+                            new_points.insert(new_points.index(next_point), p)
+
+            length_change = len(new_points) - len(old_points)
+            if length_change == 0:
+                # One or more points were moved; update all node positions
+                for node, new_position in zip(nodes, new_points):
+                    node.position = new_position
+                self.nodes = [str(node) for node in nodes]
+            elif length_change == 1:
+                # One node was added. Figure out which node it was.
+                added_index = None
+                added_point = None
+                for i, (new_point, old_point) in enumerate(zip_longest(new_points, old_points)):
+                    if old_point is None or new_point != old_point:
+                        added_index = i
+                        added_point = new_point
+                        break
+
+                if added_index is not None:
+                    nodes.insert(added_index, Node(added_point))
+                    self.nodes = [str(node) for node in nodes]
+            elif length_change < 0 and self.gui_path.num_points() >= 2:
+                # One or more points deleted; delete corresponding nodes. We require at least two remaining nodes.
+                remaining_indices = []
+                new_indices = []
+
+                for i, old_point in enumerate(old_points):
+                    if old_point in new_points:
+                        remaining_indices.append(i)
+                        new_indices.append(new_points.index(old_point))
+
+                # Verify we found the right number of remaining indices, and the order is correct
+                new_indices_monotonic = all(i < j for i, j in zip(new_indices, new_indices[1:]))
+                if len(remaining_indices) == len(new_points) and new_indices_monotonic:
+                    nodes = [nodes[i] for i in remaining_indices]
+                    self.nodes = [str(node) for node in nodes]
+
+        # After coerce the gui_path and gui_path_shadow should both match the nodes
+        new_path = pya.DPath([node.position for node in nodes], 1)
+        self.gui_path = new_path
+        self.gui_path_shadow = new_path
+
+        super().coerce_parameters_impl()
 
     def build(self):
         """Produce the composite waveguide.
@@ -430,7 +515,7 @@ class WaveguideComposite(Element):
         """
         if len(points) < 2:
             return
-        params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": pya.DPath(points, 1)}
+        params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": points}
         if start_index != 0 or self._nodes[start_index].element:
             params['term1'] = 0
         if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
@@ -557,7 +642,8 @@ class WaveguideComposite(Element):
                     else:
                         meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
 
-                self.insert_cell(Meander, start=meander_start, end=meander_end, length=meander_len, **node1.params)
+                self.insert_cell(Meander, start=[meander_start.x, meander_start.y], end=[meander_end.x, meander_end.y],
+                                 length=meander_len, **node1.params)
                 wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])
                 self._insert_wg_cell(wg_points, n0, n1)
                 n0 = n1

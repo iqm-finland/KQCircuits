@@ -32,6 +32,11 @@ class WaveguideCoplanar(Element):
     Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
     predefined bending radios. It actually consists of straight and bent PCells.
 
+    The ``path`` parameter defines the waypoints of the waveguide. When a DPath is supplied, the waypoints can be edited
+    in the KLayout GUI with the Partial tool. Alternatively, a list of DPoint can be supplied, in which case the
+    guiding shape is not visible in the GUI. This is useful for code-generated (sub)cells where graphical editing is not
+    possible or desired.
+
     Warning:
         Arbitrary angle bents can have very small gaps between bends and straight segments due to
         precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.
@@ -54,7 +59,11 @@ class WaveguideCoplanar(Element):
         return pya.Trans()
 
     def produce_waveguide(self):
-        points = list(self.path.each_point())
+        if isinstance(self.path, list):
+            points = [pya.DPoint(p) if isinstance(p, pya.DVector) else p for p in self.path]
+        else:
+            points = list(self.path.each_point())
+
         if len(points) < 2:
             self.raise_error_on_cell("Need at least 2 points for a waveguide.",
                                      points[0] if len(points) == 1 else pya.DPoint())

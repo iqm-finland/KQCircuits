@@ -255,7 +255,7 @@ class SpiralResonatorPolygon(Element):
         Args:
             points: List of DPoints created by function _produce_path_points
         """
-        tmp_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0))
+        tmp_cell = self.add_element(WaveguideCoplanar, path=points)
         length = tmp_cell.length()
 
         # handle correctly the last waveguide segment
@@ -269,7 +269,7 @@ class SpiralResonatorPolygon(Element):
         if self.connector_dist >= 0:
             self._produce_wg_with_connector(points, term2)
         else:
-            self.insert_cell(WaveguideCoplanar, path=pya.DPath(points, 0), term2=term2)
+            self.insert_cell(WaveguideCoplanar, path=points, term2=term2)
 
     def _fix_waveguide_end(self, points, current_length):
         """Modifies the last points and places a WaveguideCoplanarCurved element at the end if needed.
@@ -298,7 +298,7 @@ class SpiralResonatorPolygon(Element):
                 points[-1] -= corner_cut_dist * new_last_dir
                 # calculate how long the new curve piece needs to be
                 if len(points) > 2:
-                    tmp_cell = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 0))
+                    tmp_cell = self.add_element(WaveguideCoplanar, path=points)
                     curve_length = self.length - tmp_cell.length()
                     if curve_length <= 0.0:
                         points[-1] += curve_length * new_last_dir
@@ -385,11 +385,11 @@ class SpiralResonatorPolygon(Element):
             if segment == 0 and distance < 1e-3:
                 WaveguideCoplanar.produce_end_termination(self, t_pos, b_pos, self.term1)
             else:
-                self.insert_cell(WaveguideCoplanar, path=pya.DPath(points[:segment + 1] + [b_pos], 0), term2=0)
+                self.insert_cell(WaveguideCoplanar, path=points[:segment + 1] + [b_pos], term2=0)
             if segment + 2 == len(points) and s_len - conn_len - distance < 1e-3:
                 WaveguideCoplanar.produce_end_termination(self, b_pos, t_pos, term2, face_index=1)
             else:
-                self.insert_cell(WaveguideCoplanar, path=pya.DPath([t_pos] + points[segment + 1:], 0),
+                self.insert_cell(WaveguideCoplanar, path=[t_pos] + points[segment + 1:],
                                  term1=0, term2=term2, face_ids=[self.face_ids[1]])
 
         last = {}  # parameters for last possible connector position

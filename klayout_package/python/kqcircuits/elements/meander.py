@@ -31,8 +31,13 @@ from kqcircuits.util.geometry_helper import vector_length_and_direction, get_ang
 class Meander(Element):
     """The PCell declaration for a meandering waveguide.
 
-    Defined by two points, total length and number of meanders. The start and end points can be moved in GUI using the
-    "Move"-tool. By default the number of meanders is automatically chosen to minimize the area taken by bounding box of
+    Defined by two points, total length and number of meanders.
+
+    The start and end points can be moved in GUI using the "Move"-tool. Alternatively, if a list of ``[x, y]``
+    coordinates is given for ``start`` and ``end``, the GUI markers will not be shown. The latter is useful for
+    code-generated cells that cannot be edited in the GUI.
+
+    By default, the number of meanders is automatically chosen to minimize the area taken by bounding box of
     the meander. Uses the same bending radius as the underlying waveguide. Equidistant airbridges can be placed in the
     meander using ``n_bridges`` parameter.
     """
@@ -51,20 +56,28 @@ class Meander(Element):
         self.end = points[-1]
 
     def build(self):
+        if isinstance(self.start, list):
+            start = pya.DPoint(self.start[0], self.start[1])
+        else:
+            start = self.start
+        if isinstance(self.end, list):
+            end = pya.DPoint(self.end[0], self.end[1])
+        else:
+            end = self.end
 
-        angle = 180/pi*atan2(self.end.y - self.start.y, self.end.x - self.start.x)
-        transf = pya.DCplxTrans(1, angle, False, pya.DVector(self.start))
+        angle = 180/pi*atan2(end.y - start.y, end.x - start.x)
+        transf = pya.DCplxTrans(1, angle, False, pya.DVector(start))
 
         # parameters needed for bridge creation
         curve_angle = pi/2
         corner_cut_dist = self.r
         curve_angle_2, corner_cut_dist_2 = curve_angle, corner_cut_dist
 
-        l_direct = self.start.distance(self.end)
+        l_direct = start.distance(end)
         if l_direct < 4*self.r:
             self.raise_error_on_cell(
                 "Cannot create a Meander because start and end points are too close to each other.",
-                (self.start + self.end)/2)
+                (start + end)/2)
         if self.meanders < 1:
             self.meanders = int(l_direct/(2*self.r) - 1)  # automatically choose maximum possible number of meanders
 
@@ -118,7 +131,7 @@ class Meander(Element):
             if length_diff(alpha) > 1e-3:
                 self.raise_error_on_cell(
                     "Cannot create a Meander with the given parameters. Try setting a different number of meanders.",
-                    (self.start + self.end)/2)
+                    (start + end)/2)
 
             y_increment = x_increment/(2*tan(alpha/2))  # half of y-distance between peaks of two meanders
 
@@ -134,12 +147,12 @@ class Meander(Element):
 
         else:
             self.raise_error_on_cell("Cannot create a Meander with the given parameters. Try increasing the length.",
-                                     (self.start + self.end)/2)
+                                     (start + end)/2)
 
         if self.n_bridges > 0:
             self._produce_bridges(points, transf, curve_angle, corner_cut_dist, curve_angle_2, corner_cut_dist_2)
 
-        waveguide = self.add_element(WaveguideCoplanar, path=pya.DPath(points, 1.))
+        waveguide = self.add_element(WaveguideCoplanar, path=points)
         wg_inst, _ = self.insert_cell(waveguide, transf)
         self.copy_port("a", wg_inst)
         self.copy_port("b", wg_inst)
