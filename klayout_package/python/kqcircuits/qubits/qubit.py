@@ -71,13 +71,17 @@ class Qubit(Element):
         squid_transf = transf * pya.DTrans.M90 if self.mirror_squid else transf
 
         # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
-        # the cell, convert the integer transform back to float to keep cell and geometry consistent
+        # the cell, convert the integer transform back to float to keep cell and geometry consistent.
         integer_transf = squid_transf.to_itrans(self.layout.dbu)
         float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
 
-        inst, _ = self.insert_cell(cell, float_transf)
         if "squid_index" in parameters:
-            inst.set_property("squid_index", int(parameters.pop('squid_index')))
+            s_index = int(parameters.pop('squid_index'))
+            inst, _ = self.insert_cell(cell, float_transf, inst_name=f"squid_{s_index}")
+            inst.set_property("squid_index", s_index)
+        else:
+            inst, _ = self.insert_cell(cell, float_transf, inst_name="squid")
+
         squid_unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
         squid_unetch_region.transform(integer_transf)
         # add parts of qubit to the layer needed for EBL
