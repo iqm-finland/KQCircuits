@@ -34,6 +34,9 @@ layer views are hidden by default. See https://www.klayout.de/doc-qt5/manual/lay
 While ``default_faces`` is a dictionary mapping 'b', 't' and 'c' to an other dictionary, a subset of
 ``default_layers`` in the given face. With a minor twist: in these "face-dictionaries" the keys do not
 start with the face id, for example "b_base_metal_gap" becomes "base_metal_gap".
+
+Layer names should not start with ``-``, this is reserved for marking exported layers to be inverted
+in ``mask_export_layers``.
 """
 
 import os

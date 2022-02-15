@@ -34,6 +34,7 @@ from kqcircuits.util.area import get_area_and_density
 from kqcircuits.util.count_instances import count_instances_in_cell
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.util.netlist_extraction import export_cell_netlist
+from kqcircuits.util.geometry_helper import circle_polygon
 
 
 @traced
@@ -153,16 +154,36 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
 
     Args:
         export_dir: directory for the files
-        layer_name: name of the layer exported as a mask
+        layer_name: name of the layer exported as a mask, if starts with '-' then it will be inverted
         mask_layout: MaskLayout object for the cell and face reference
         mask_set: MaskSet object for the name and version attributes to be included in the filename
     """
-    layout = mask_layout.top_cell.layout()
-    layer_info = resolve_default_layer_info(layer_name, mask_layout.face_id)
-    layers_to_export = {layer_info.name: layout.layer(layer_info)}
-    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f" {layer_info.name}.oas")
-    _export_cell(path, mask_layout.top_cell, layers_to_export)
+    invert = False
+    if layer_name.startswith('-'):
+        layer_name = layer_name[1:]
+        invert = True
 
+    top_cell = mask_layout.top_cell
+    layout = top_cell.layout()
+    layer_info = resolve_default_layer_info(layer_name, mask_layout.face_id)
+    layer = layout.layer(layer_info)
+    tmp_layer = layout.layer()
+
+    if invert:
+        wafer = pya.Region(top_cell.begin_shapes_rec(layer)).merged()
+        disc = pya.Region([circle_polygon(mask_layout.wafer_rad).to_itype(layout.dbu)])
+        layout.copy_layer(layer, tmp_layer)
+        layout.clear_layer(layer)
+        top_cell.shapes(layer).insert(wafer ^ disc)
+
+    layers_to_export = {layer_info.name: layer}
+    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f" {layer_info.name}.oas")
+    _export_cell(path, top_cell, layers_to_export)
+
+    if invert:
+        layout.clear_layer(layer)
+        layout.copy_layer(tmp_layer, layer)
+    layout.delete_layer(tmp_layer)
 
 @traced
 @logged
