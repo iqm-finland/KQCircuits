@@ -21,21 +21,45 @@ import numpy
 from kqcircuits.pya_resolver import pya
 
 
-def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5):
-    """Generates the ground grid.
+def make_grid(boundbox, avoid_region, grid_step=10, grid_size=5, group_n=10):
+    """Generates ground grid covering `boundbox` with holes not overlapping with the `avoid_region`.
 
-  Returns a `Region` covering `boundbox` with `Box`es not overlapping with
-  the avoid `Region`.
+    Args:
+        boundbox: bounding box of grid in database unit
+        avoid_region: area on which grid is avoided
+        grid_step: step between consecutive holes in database unit
+        grid_size: hole edge length in database unit
+        group_n: number of adjacent holes in a group (is used to speed up grid generation)
 
-  All arguments are in database unit, not in micrometers!
-
+    Returns:
+        grid region
   """
+    def grid_region(box, step, size):
+        square = pya.Box(0, 0, size, size)
+        x_region = pya.Region()
+        for x in numpy.arange(box.p1.x, box.p2.x, step):
+            x_region.insert(square.transformed(pya.Trans(pya.Vector(x, 0))))
+        xy_region = pya.Region()
+        for y in numpy.arange(box.p1.y, box.p2.y, step):
+            xy_region.insert(x_region.transformed(pya.Trans(pya.Vector(0, y))))
+        return xy_region
 
-    grid_region = pya.Region()
-    for y in numpy.arange(boundbox.p1.y, boundbox.p2.y, grid_step):
-        for x in numpy.arange(boundbox.p1.x, boundbox.p2.x, grid_step):
-            hole = pya.Box(x, y, x + grid_size, y + grid_size)
-            grid_region.insert(hole)
-    grid_masked_region = (grid_region - avoid_region).with_area(grid_size ** 2, None, False)
+    # Create box grid, where each box can include group_n x group_n holes.
+    box_step = group_n * grid_step
+    box_size = box_step - grid_step + grid_size
+    boxes_region = grid_region(boundbox, box_step, box_size)
+    # Filter boxes that do not overlap with avoid_region. These will be used to speed up filtering of holes.
+    masked_boxes_region = ((boxes_region & pya.Region(boundbox)) - avoid_region).with_area(box_size**2, None, False)
 
-    return grid_masked_region
+    # Create grid of holes and duplicate it on boxes that overlap with avoid_region.
+    holes_region = grid_region(pya.Box(0, 0, box_step, box_step), grid_step, grid_size)
+    overlap_region = pya.Region()
+    for poly in (boxes_region - masked_boxes_region).each():
+        overlap_region.insert(holes_region.transformed(pya.Trans(pya.Vector(poly.bbox().p1))))
+
+    # Create grid of holes that do not overlap with avoid region.
+    masked_holes_region = ((overlap_region & pya.Region(boundbox)) - avoid_region).with_area(grid_size**2, None, False)
+    for poly in masked_boxes_region.each():
+        masked_holes_region.insert(holes_region.transformed(pya.Trans(pya.Vector(poly.bbox().p1))))
+
+    return masked_holes_region
