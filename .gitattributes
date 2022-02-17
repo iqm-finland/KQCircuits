@@ -2,3 +2,13 @@ iqc/_static_version.py export-subst
 
 # Declare LF line endings for shell scripts
 *.sh text eol=lf
+
+## Custom strategies for linguist
+# KLayout scripts as Python
+*.lym linguist-language=Python
+# KLayout DRC as Ruby
+*.drc linguist-language=Ruby
+# Jupyter Notebooks not counted as source code
+*.ipynb linguist-documentation
+# KLayout XSection not classified incorrectly
+*.xs linguist-vendored
