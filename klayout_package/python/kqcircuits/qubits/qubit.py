@@ -29,7 +29,7 @@ from kqcircuits.squids.squid import Squid
 
 
 @add_parameters_from(Fluxline, "fluxline_gap_width")
-@add_parameters_from(Squid, "junction_width")
+@add_parameters_from(Squid, "junction_width", "loop_area")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
 
