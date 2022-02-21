@@ -77,7 +77,7 @@ def get_enclosing_polygon(points: List[List[float]]):
 
     # Find y-coordinate of linear interpolation between p0 = [x0,y0] and
     # p1 = [x1,y1] corresponding to x
-    def linearinterpy(p0,p1,x):
+    def _linearinterpy(p0, p1, x):
         """
         Find y-coordinate of linear interpolation between p0 = [x0,y0] and p1 = [x1,y1] corresponding to x
 
@@ -103,7 +103,7 @@ def get_enclosing_polygon(points: List[List[float]]):
     pabove = []
     pbelow = []
     for p in points[1:-1]:
-        if p[1] > linearinterpy(pleft,pright,p[0]):
+        if p[1] > _linearinterpy(pleft, pright, p[0]):
             pabove.append(p)
         else:
             pbelow.append(p)

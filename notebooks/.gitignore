@@ -4,3 +4,4 @@
 # But not these files...
 !.gitignore
 !viewer.ipynb
+!pyEPR_example.ipynb

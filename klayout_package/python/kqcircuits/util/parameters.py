@@ -19,7 +19,7 @@
 from kqcircuits.pya_resolver import pya
 
 
-def add_parameters_from(cls, *param_names, **param_with_default_value):
+def add_parameters_from(cls, /, *param_names, **param_with_default_value):
     """Decorator function to add parameters to the decorated class.
 
     Only the named parameters are added or changed. Use a starting wildcard (``"*"``) argument to

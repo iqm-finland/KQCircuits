@@ -19,6 +19,7 @@
 # This is a Python 2.7 script that should be run in HFSS in order to import and run the simulation
 import os
 import json
+import sys
 import ScriptEnv
 
 # Set up environment
@@ -28,6 +29,10 @@ scriptpath = os.path.dirname(__file__)
 jsonfile = ScriptArgument
 path = os.path.dirname(jsonfile)
 basename = os.path.splitext(os.path.basename(jsonfile))[0]
+
+# Read simulation_flags settings from .json
+with open(jsonfile, 'r') as fp:
+    simulation_flags = json.load(fp)['simulation_flags']
 
 # Create project and geometry
 oDesktop.RunScriptWithArguments(os.path.join(scriptpath, 'import_simulation_geometry.py'), jsonfile)
@@ -39,6 +44,10 @@ oDesktop.TileWindows(0)
 # Save project
 oProject = oDesktop.GetActiveProject()
 oProject.SaveAs(os.path.join(path, basename + '_project.aedt'), True)
+
+# only import geometry for pyEPR simulations
+if 'pyepr' in simulation_flags:
+    sys.exit(0)
 
 # Run
 oDesign = oProject.GetActiveDesign()
@@ -55,14 +64,10 @@ oDesktop.RunScript(os.path.join(scriptpath, 'export_solution_data.py'))
 # Optional processing #
 #######################
 
-# Read export_processing settings from .json
-with open(jsonfile, 'r') as fp:
-    export_processing = json.load(fp)['export_processing']
-
 # Time Domain Reflectometry
-if 'tdr' in export_processing:
+if 'tdr' in simulation_flags:
     oDesktop.RunScript(os.path.join(scriptpath, 'export_tdr.py'))
 
 # Export Touchstone S-matrix (.sNp) w/o de-embedding
-if 'snp_no_deembed' in export_processing:
+if 'snp_no_deembed' in simulation_flags:
     oDesktop.RunScript(os.path.join(scriptpath, 'export_snp_no_deembed.py'))

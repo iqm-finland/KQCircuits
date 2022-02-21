@@ -18,6 +18,7 @@
 import logging
 from itertools import product
 from pathlib import Path
+
 from kqcircuits.simulations.export.util import export_layers
 
 
@@ -45,7 +46,11 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     for param in sweeps:
         for value in sweeps[param]:
             parameters = {**sim_parameters, param: value,
-                          'name': '{}_{}_{}'.format(sim_parameters['name'], param, value)}
+                          'name': '{}_{}_{}'.format(
+                            sim_parameters['name'],
+                            param,
+                            value
+                          )}
             simulations.append(sim_class(layout, **parameters))
     return simulations
 

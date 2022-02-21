@@ -43,7 +43,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                      export_processing=None, ansys_project_template=None):
+                      max_delta_f=0.1, n_modes=2, simulation_flags=None, ansys_project_template=None):
     """
     Export Ansys simulation into json and gds files.
 
@@ -64,7 +64,9 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         sweep_end: The highest frequency in the sweep.
         sweep_count: Number of frequencies in the sweep.
         sweep_type: choices are "interpolating", "discrete" or "fast"
-        export_processing: Optional export processing, given as list of strings
+        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
+        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'pyepr'.
+        simulation_flags: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
 
     Returns:
@@ -72,8 +74,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     """
     if simulation is None or not isinstance(simulation, Simulation):
         raise ValueError("Cannot export without simulation")
-    if export_processing is None:
-        export_processing = []
+    if simulation_flags is None:
+        simulation_flags = []
 
     # select layers
     layers = ["b_simulation_signal",
@@ -104,8 +106,10 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'sweep_end': sweep_end,
             'sweep_count': sweep_count,
             'sweep_type': sweep_type,
+            'max_delta_f': max_delta_f,
+            'n_modes': n_modes,
         },
-        'export_processing': export_processing
+        'simulation_flags': simulation_flags
     }
 
     if ansys_project_template is not None:
@@ -181,16 +185,17 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                  maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                 exit_after_run=False, ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
+                 max_delta_f=0.1, n_modes=2, exit_after_run=False,
+                 ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
-                 use_rel_path=True, export_processing=None, ansys_project_template=None):
+                 use_rel_path=True, simulation_flags=None, ansys_project_template=None):
     """
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
     Arguments:
         simulations: List of simulations to be exported.
         path: Location where to write export files.
-        ansys_tool: Determines whether to use HFSS ('hfss') or Q3D Extractor ('q3d').
+        ansys_tool: Determines whether to use HFSS ('hfss'), Q3D Extractor ('q3d') or HFSS eigenmode ('eigenmode').
         import_script_folder: Path to the Ansys-scripts folder.
         file_prefix: Name of the batch file to be created.
         frequency_units: Units of frequency.
@@ -206,12 +211,14 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         sweep_end: The highest frequency in the sweep.
         sweep_count: Number of frequencies in the sweep.
         sweep_type: choices are "interpolating", "discrete" or "fast"
+        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
+        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'eigenmode'.
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
         ansys_executable: Path to the Ansys Electronics Desktop executable.
         import_script: Name of import script file.
         post_process_script: Name of post processing script file.
         use_rel_path: Determines if to use relative paths.
-        export_processing: Optional export processing, given as list of strings
+        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
         ansys_project_template: path to the simulation template
 
     Returns:
@@ -228,9 +235,9 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                                 maximum_passes=maximum_passes, minimum_passes=minimum_passes,
                                                 minimum_converged_passes=minimum_converged_passes,
                                                 sweep_enabled=sweep_enabled, sweep_start=sweep_start,
-                                                sweep_end=sweep_end, sweep_count=sweep_count,
-                                                sweep_type=sweep_type,
-                                                export_processing=export_processing,
+                                                sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
+                                                max_delta_f=max_delta_f, n_modes=n_modes,
+                                                simulation_flags=simulation_flags,
                                                 ansys_project_template=ansys_project_template))
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
                             ansys_executable=ansys_executable, import_script_folder=import_script_folder,

@@ -68,7 +68,8 @@ Create an instance of ``Simulation``::
 Ansys export
 ------------
 
-Once the ``simulation`` object is created, call function ``export_ansys_json`` to export the geometry as GDSII file and meta-data in json format. Parameter ``ansys_tool`` determines whether to use HFSS ('hfss') or Q3D Extractor ('q3d')::
+Once the ``simulation`` object is created, call function ``export_ansys_json`` to export the geometry as GDSII file and meta-data in json format. Parameter ``ansys_tool`` determines whether to use HFSS ('hfss') or Q3D Extractor ('q3d').
+HFSS eigenmode simulations are done with 'eigenmode', this is used for :ref:`py-epr` as well::
 
     from kqcircuits.simulations.export.ansys.ansys_export import export_ansys_json, copy_ansys_scripts_to_directory, export_ansys_bat, export_ansys
     path = "C:\\Your\\Path\\Here\\"
@@ -138,7 +139,7 @@ Additional scripts for use cases other than capacitive coupling exist.
 These are enabled in :git_url:`import_and_simulate.py <klayout_package/python/scripts/simulations/ansys/import_and_simulate.py>` with a list of strings as parameters to ``export_ansys``,
 e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (``.sNp``) files::
 
-    export_ansys(..., export_processing=['tdr', 'snp_no_deembed'])
+    export_ansys(..., simulation_flags=['tdr', 'snp_no_deembed'])
 
 The optional scripts are listed below.
 
@@ -160,6 +161,18 @@ Optional scripts:
   Creates a Time Domain Reflectometry report using ``TDRZt(port)`` for all ports and exports the data to a ``.csv``.
 
   Works only in HFSS.
+
+
+
+.. _py-epr:
+
+pyEPR
+"""""
+
+`pyEPR <https://github.com/zlatko-minev/pyEPR>`_ is supported for HFSS eigenmode simulations.
+A simulation needs to be created with ``ansys_tool=eigenmode`` and ``simulation_flags=['pyepr']``.
+An example simulation is found at :git_url:`klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py`.
+See ``notebooks\pyEPR_example.ipynb`` for an example on using pyEPR itself.
 
 
 Sonnet export
@@ -205,11 +218,11 @@ with simulation scripts. The folder is created to `$TMP` (usually `kqcircuits/tm
 
 `script` folder contains scripts that are used for preparing the simulations.
 
-`sif` contains the Solver Input Files (SIF) for Elmer (scripts in `scripts` -folder are used 
+`sif` contains the Solver Input Files (SIF) for Elmer (scripts in `scripts` -folder are used
 to build the SIF files for each simulation).
 
 `waveguides_n_guides_1.sh`, `waveguides_n_guides_2.sh`, `...` are the shell scripts for running each simulation.
-Each script executes Gmsh (mesh creation), computes the FEM model using Elmer (computes the 
+Each script executes Gmsh (mesh creation), computes the FEM model using Elmer (computes the
 capacitance matrix), and visualizes the results using Paraview.
 
 `simulation.sh` is a shell script for running all simulations at once.
@@ -224,6 +237,6 @@ Please note that running the example requires the installation of
 * Paraview
   https://www.paraview.org/
 
-Gmsh api suffices if one needs to generate the mesh only.
+Gmsh API suffices if one needs to only generate the mesh.
 
 

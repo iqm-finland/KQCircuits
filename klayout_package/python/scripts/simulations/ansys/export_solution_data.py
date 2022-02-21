@@ -55,6 +55,7 @@ oDesktop.AddMessage("", "", 0, "Exporting PI model results (%s)" % time.asctime(
 oDesktop.RestoreWindow()
 oProject = oDesktop.GetActiveProject()
 oDesign = oProject.GetActiveDesign()
+oSolutions = oDesign.GetModule("Solutions")
 oBoundarySetup = oDesign.GetModule("BoundarySetup")
 oOutputVariable = oDesign.GetModule("OutputVariable")
 oReportSetup = oDesign.GetModule("ReportSetup")
@@ -64,10 +65,12 @@ path = oProject.GetPath()
 basename = oProject.GetName()
 matrix_filename = os.path.join(path, basename + '_CMatrix.txt')
 json_filename = os.path.join(path, basename + '_results.json')
+eig_filename = os.path.join(path, basename + '_modes.eig')
 
 # Export solution data separately for HFSS and Q3D
 design_type = oDesign.GetDesignType()
-if design_type == "HFSS":
+if design_type == "HFSS" and oDesign.GetSolutionType() == "DrivenTerminal":
+
     freq = '1GHz'  # export frequency
     (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
     solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
@@ -113,10 +116,18 @@ if design_type == "HFSS":
     precision = 8
     show_gamma_and_impedance = False
 
-    oSolutions = oDesign.GetModule("Solutions")
     oSolutions.ExportNetworkData("", solution, file_format, file_name, frequencies, do_renormalize, renorm_impedance,
                                  data_type, pass_number, complex_format, precision, True, show_gamma_and_impedance,
                                  True)
+
+elif design_type == "HFSS" and oDesign.GetSolutionType() == "Eigenmode":
+
+    solution = get_enabled_setup(oDesign, tab="HfssTab") + " : LastAdaptive"
+    oSolutions.ExportEigenmodes(
+        solution,
+        oSolutions.ListVariations(solution)[0],
+        eig_filename
+    )
 
 elif design_type == "Q3D Extractor":
     solution = get_enabled_setup(oDesign) + " : LastAdaptive"

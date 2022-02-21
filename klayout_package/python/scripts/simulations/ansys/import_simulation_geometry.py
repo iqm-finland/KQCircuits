@@ -38,8 +38,10 @@ path = os.path.dirname(jsonfile)
 with open(jsonfile, 'r') as fjsonfile:
     data = json.load(fjsonfile)
 
+
 ansys_tool = data['ansys_tool'] if 'ansys_tool' in data else 'hfss'
 
+simulation_flags = data['simulation_flags']
 gds_file = data['gds_file']
 signal_layer = data['signal_layer']
 ground_layer = data['ground_layer']
@@ -105,6 +107,9 @@ oDefinitionManager = oProject.GetDefinitionManager()
 
 if ansys_tool == 'hfss':
     oProject.InsertDesign("HFSS", "HFSSDesign1", "DrivenTerminal", "")
+    oDesign = oProject.SetActiveDesign("HFSSDesign1")
+elif ansys_tool == 'eigenmode':
+    oProject.InsertDesign("HFSS", "HFSSDesign1", "Eigenmode", "")
     oDesign = oProject.SetActiveDesign("HFSSDesign1")
 elif ansys_tool == 'q3d':
     oProject.InsertDesign("Q3D Extractor", "Q3DDesign1", "", "")
@@ -177,7 +182,7 @@ airbridge_pads_objects = oEditor.GetMatchedObjectName('Airbridge_Pads_*')
 airbridge_flyover_objects = oEditor.GetMatchedObjectName('Airbridge_Flyover_*')
 
 # Assign perfect electric conductor to imported objects
-if ansys_tool == 'hfss':
+if ansys_tool in {'hfss', 'eigenmode'}:
     oBoundarySetup.AssignPerfectE(
         ["NAME:PerfE1",
          "Objects:=", signal_objects + ground_objects + airbridge_flyover_objects,
@@ -207,7 +212,7 @@ if wafer_stack_type == 'multiface':
     t_ground_objects = oEditor.GetMatchedObjectName('t_Ground_*')
     signal_objects += t_signal_objects
     ground_objects += t_ground_objects
-    if ansys_tool == 'hfss':
+    if ansys_tool in {'hfss', 'eigenmode'}:
         oBoundarySetup.AssignPerfectE(
             ["NAME:PerfE2",
              "Objects:=", t_ground_objects + t_signal_objects,
@@ -283,8 +288,20 @@ if airbridge_flyover_objects:
          "TranslateVectorZ:=", "{} {}".format(airbridge_height, units)
          ])
 
+# Add safe margin to port signal locations, used for Q3D
+for port in data['ports']:
+    # Compute the signal location of the port
+    if ansys_tool == 'q3d' and 'ground_location' in port:
+            # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
+            port['signal_location'] = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
+    else:
+        port['signal_location'] = list(port['signal_location'])
+    z_component = [chip_distance if port['face'] == 1 else 0.0]
+    port['signal_location'] += z_component
+    port['ground_location'] += z_component
+
 # Create ports or nets
-if ansys_tool == 'hfss':
+if ansys_tool in {'hfss', 'eigenmode'}:
     ports = sorted(data['ports'], key=lambda k: k['number'])
     for port in ports:
         is_wave_port = port['type'] == 'EdgePort'
@@ -311,23 +328,121 @@ if ansys_tool == 'hfss':
                      ]
                 )
 
+            # Turn junctions to lumped RLC
+            if port['junction'] and ansys_tool == 'eigenmode':
+                # add junction inductance variable
+                oDesign.ChangeProperty(
+                    ["NAME:AllTabs",
+                        ["NAME:LocalVariableTab",
+                            ["NAME:PropServers", "LocalVariables"],
+                            ["NAME:NewProps",
+                                ["NAME:Lj_%d" % port['number'],
+                                 "PropType:=", "VariableProp",
+                                 "UserDef:=", True,
+                                 "Value:=", "%.32eH" % port['inductance']]  # use best float precision
+                            ]
+                        ]
+                    ])
+                # add junction capacitance variable
+                oDesign.ChangeProperty(
+                    ["NAME:AllTabs",
+                        ["NAME:LocalVariableTab",
+                            ["NAME:PropServers", "LocalVariables"],
+                            ["NAME:NewProps",
+                                ["NAME:Cj_%d" % port['number'],
+                                 "PropType:=", "VariableProp",
+                                 "UserDef:=", True,
+                                 "Value:=", "%.32efarad" % port['capacitance']]
+                            ]
+                        ]
+                    ])
+
+                current_start = ["%.32e%s" % (p, units) for p in port['signal_location']]
+                current_end = ["%.32e%s" % (p, units) for p in port['ground_location']]
+
+                oDesign.GetModule("BoundarySetup").AssignLumpedRLC(
+                    ["NAME:LumpRLC_jj_%d" % port['number'],
+                     "Objects:=", [polyname],
+                        ["NAME:CurrentLine",  # set direction of current across junction
+                         "Coordinate System:=", "Global",
+                         "Start:=", current_start,
+                         "End:=", current_end],
+                     "RLC Type:=", "Parallel",
+                     "UseResist:=", False,
+                     "UseInduct:=", True,
+                     "Inductance:=", "Lj_%d" % port['number'],
+                     "UseCap:=", True,
+                     "Capacitance:=", "Cj_%d" % port['number'],
+                     "Faces:=", [int(oEditor.GetFaceIDs(polyname)[0])]
+                    ])
+
+                if 'pyepr' in simulation_flags:
+                    # add polyline across junction for voltage across the junction
+                    oEditor.CreatePolyline(
+                        ["NAME:PolylineParameters",
+                        "IsPolylineCovered:=", True,
+                        "IsPolylineClosed:=", False,
+                            ["NAME:PolylinePoints",
+                            ["NAME:PLPoint",
+                            "X:=", current_start[0],
+                            "Y:=", current_start[1],
+                            "Z:=", current_start[2]],
+                            ["NAME:PLPoint",
+                            "X:=", current_end[0],
+                            "Y:=", current_end[1],
+                            "Z:=", current_end[2]]],
+                            ["NAME:PolylineSegments",
+                            ["NAME:PLSegment",
+                            "SegmentType:=", "Line",
+                            "StartIndex:=", 0,
+                            "NoOfPoints:=", 2]],
+                            ["NAME:PolylineXSection",
+                            "XSectionType:=", "None",
+                            "XSectionOrient:=", "Auto",
+                            "XSectionWidth:=", "0um",
+                            "XSectionTopWidth:=", "0um",
+                            "XSectionHeight:=", "0um",
+                            "XSectionNumSegments:=", "0",
+                            "XSectionBendType:=", "Corner"]],
+                        ["NAME:Attributes",
+                        "Name:=", "Junction%d" % port['number'],
+                        "Flags:=", "",
+                        "Color:=", "(143 175 143)",
+                        "Transparency:=", 0.4,
+                        "PartCoordinateSystem:=", "Global",
+                        "UDMId:=", "",
+                        "MaterialValue:=", "\"vacuum\"",
+                        "SurfaceMaterialValue:=", "\"\"",
+                        "SolveInside:=", True,
+                        "ShellElement:=", False,
+                        "ShellElementThickness:=", "0um",
+                        "IsMaterialEditable:="	, True,
+                        "UseMaterialAppearance:=", False,
+                        "IsLightweight:="	, False
+                        ])
+
+                    oEditor.ChangeProperty(
+                        ["NAME:AllTabs",
+                            ["NAME:Geometry3DAttributeTab",
+                                ["NAME:PropServers", "Junction%d" % port['number']],
+                                ["NAME:ChangedProps",
+                                    ["NAME:Show Direction",
+                                    "Value:=", True]]]
+                        ])
+
+    if ansys_tool == 'eigenmode':
+        oBoundarySetup.DeleteAllExcitations()
+
+
 elif ansys_tool == 'q3d':
     port_objects = []  # signal objects to be assigned as SignalNets
     ports = sorted(data['ports'], key=lambda k: k['number'])
     for port in ports:
-        # Compute the signal location of the port
-        if 'ground_location' in port:
-            # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
-            signal_location = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
-        else:
-            signal_location = list(port['signal_location'])
-        signal_location += [chip_distance if port['face'] == 1 else 0.0]  # z-component
-
         port_object = oEditor.GetBodyNamesByPosition(
             ["NAME:Parameters",
-             "XPosition:=", str(signal_location[0]) + units,
-             "YPosition:=", str(signal_location[1]) + units,
-             "ZPosition:=", str(signal_location[2]) + units
+             "XPosition:=", str(port['signal_location'][0]) + units,
+             "YPosition:=", str(port['signal_location'][1]) + units,
+             "ZPosition:=", str(port['signal_location'][2]) + units
              ])
 
         if len(port_object) == 1 and port_object[0] not in port_objects and port_object[0] in signal_objects:
@@ -439,6 +554,7 @@ if not use_ansys_project_template:
         ]
         oAnalysisSetup.InsertSetup("HfssDriven", setup_list)
 
+
         oAnalysisSetup.InsertFrequencySweep(
             "Setup1",
             ["NAME:Sweep",
@@ -490,6 +606,25 @@ if not use_ansys_project_template:
                                            "Solver Type:=", "Iterative"
                                        ]
                                    ])
+    elif ansys_tool == 'eigenmode':
+        # Create EM setup
+        min_freq_ghz = str(setup.get('frequency', 0.1)) + setup['frequency_units']
+
+        setup_list = [
+            "NAME:Setup1",
+            "MinimumFrequency:=", min_freq_ghz,
+            "NumModes:=", setup['n_modes'],
+            "MaxDeltaFreq:=", setup['max_delta_f'],
+            "ConvergeOnRealFreq:=", True,
+            "MaximumPasses:=", setup['maximum_passes'],
+            "MinimumPasses:=", setup['minimum_passes'],
+            "MinimumConvergedPasses:=", setup['minimum_converged_passes'],
+            "PercentRefinement:=", setup['percent_refinement'],
+            "IsEnabled:=", True,
+            "BasisOrder:=", 1
+        ]
+        oAnalysisSetup.InsertSetup("HfssEigen", setup_list)
+
 else:
     scriptpath = os.path.dirname(__file__)
     aedt_path = os.path.join(scriptpath, '../')
