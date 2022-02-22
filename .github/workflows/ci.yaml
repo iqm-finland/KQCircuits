@@ -39,10 +39,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest]
-        klayout_version: [0.26.7, 0.26.12, 1.latest]
-        exclude:
-          - os: macos-latest
-            klayout_version: 0.26.7
+        klayout_version: [0.26.12, 1.latest]
     steps:
       - uses: actions/checkout@v2
       - name: macOS setup
