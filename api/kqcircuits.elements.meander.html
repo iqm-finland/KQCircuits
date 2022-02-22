@@ -220,8 +220,11 @@
 <em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.meander.</code><code class="sig-name descname">Meander</code><a class="reference internal" href="../_modules/kqcircuits/elements/meander.html#Meander"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.meander.Meander" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for a meandering waveguide.</p>
-<p>Defined by two points, total length and number of meanders. The start and end points can be moved in GUI using the
-“Move”-tool. By default the number of meanders is automatically chosen to minimize the area taken by bounding box of
+<p>Defined by two points, total length and number of meanders.</p>
+<p>The start and end points can be moved in GUI using the “Move”-tool. Alternatively, if a list of <code class="docutils literal notranslate"><span class="pre">[x,</span> <span class="pre">y]</span></code>
+coordinates is given for <code class="docutils literal notranslate"><span class="pre">start</span></code> and <code class="docutils literal notranslate"><span class="pre">end</span></code>, the GUI markers will not be shown. The latter is useful for
+code-generated cells that cannot be edited in the GUI.</p>
+<p>By default, the number of meanders is automatically chosen to minimize the area taken by bounding box of
 the meander. Uses the same bending radius as the underlying waveguide. Equidistant airbridges can be placed in the
 meander using <code class="docutils literal notranslate"><span class="pre">n_bridges</span></code> parameter.</p>
 <dl class="method">

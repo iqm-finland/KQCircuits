@@ -198,6 +198,11 @@
 <span class="sd">    Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with</span>
 <span class="sd">    predefined bending radios. It actually consists of straight and bent PCells.</span>
 
+<span class="sd">    The ``path`` parameter defines the waypoints of the waveguide. When a DPath is supplied, the waypoints can be edited</span>
+<span class="sd">    in the KLayout GUI with the Partial tool. Alternatively, a list of DPoint can be supplied, in which case the</span>
+<span class="sd">    guiding shape is not visible in the GUI. This is useful for code-generated (sub)cells where graphical editing is not</span>
+<span class="sd">    possible or desired.</span>
+
 <span class="sd">    Warning:</span>
 <span class="sd">        Arbitrary angle bents can have very small gaps between bends and straight segments due to</span>
 <span class="sd">        precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.</span>
@@ -220,7 +225,11 @@
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="WaveguideCoplanar.produce_waveguide"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_waveguide">[docs]</a>    <span class="k">def</span> <span class="nf">produce_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">)</span> <span class="k">else</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
+
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span><span class="s2">&quot;Need at least 2 points for a waveguide.&quot;</span><span class="p">,</span>
                                      <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">())</span>

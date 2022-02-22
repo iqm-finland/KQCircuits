@@ -197,8 +197,13 @@
 <div class="viewcode-block" id="Meander"><a class="viewcode-back" href="../../../api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander">[docs]</a><span class="k">class</span> <span class="nc">Meander</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The PCell declaration for a meandering waveguide.</span>
 
-<span class="sd">    Defined by two points, total length and number of meanders. The start and end points can be moved in GUI using the</span>
-<span class="sd">    &quot;Move&quot;-tool. By default the number of meanders is automatically chosen to minimize the area taken by bounding box of</span>
+<span class="sd">    Defined by two points, total length and number of meanders.</span>
+
+<span class="sd">    The start and end points can be moved in GUI using the &quot;Move&quot;-tool. Alternatively, if a list of ``[x, y]``</span>
+<span class="sd">    coordinates is given for ``start`` and ``end``, the GUI markers will not be shown. The latter is useful for</span>
+<span class="sd">    code-generated cells that cannot be edited in the GUI.</span>
+
+<span class="sd">    By default, the number of meanders is automatically chosen to minimize the area taken by bounding box of</span>
 <span class="sd">    the meander. Uses the same bending radius as the underlying waveguide. Equidistant airbridges can be placed in the</span>
 <span class="sd">    meander using ``n_bridges`` parameter.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -217,20 +222,28 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Meander.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span>
 
-        <span class="n">angle</span> <span class="o">=</span> <span class="mi">180</span><span class="o">/</span><span class="n">pi</span><span class="o">*</span><span class="n">atan2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-        <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">))</span>
+        <span class="n">angle</span> <span class="o">=</span> <span class="mi">180</span><span class="o">/</span><span class="n">pi</span><span class="o">*</span><span class="n">atan2</span><span class="p">(</span><span class="n">end</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">start</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">end</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">start</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">start</span><span class="p">))</span>
 
         <span class="c1"># parameters needed for bridge creation</span>
         <span class="n">curve_angle</span> <span class="o">=</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span>
         <span class="n">corner_cut_dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span>
         <span class="n">curve_angle_2</span><span class="p">,</span> <span class="n">corner_cut_dist_2</span> <span class="o">=</span> <span class="n">curve_angle</span><span class="p">,</span> <span class="n">corner_cut_dist</span>
 
-        <span class="n">l_direct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
+        <span class="n">l_direct</span> <span class="o">=</span> <span class="n">start</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">l_direct</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span>
                 <span class="s2">&quot;Cannot create a Meander because start and end points are too close to each other.&quot;</span><span class="p">,</span>
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">end</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meanders</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">meanders</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">l_direct</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># automatically choose maximum possible number of meanders</span>
 
@@ -284,7 +297,7 @@
             <span class="k">if</span> <span class="n">length_diff</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-3</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span>
                     <span class="s2">&quot;Cannot create a Meander with the given parameters. Try setting a different number of meanders.&quot;</span><span class="p">,</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">end</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 
             <span class="n">y_increment</span> <span class="o">=</span> <span class="n">x_increment</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">tan</span><span class="p">(</span><span class="n">alpha</span><span class="o">/</span><span class="mi">2</span><span class="p">))</span>  <span class="c1"># half of y-distance between peaks of two meanders</span>
 
@@ -300,12 +313,12 @@
 
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">raise_error_on_cell</span><span class="p">(</span><span class="s2">&quot;Cannot create a Meander with the given parameters. Try increasing the length.&quot;</span><span class="p">,</span>
-                                     <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+                                     <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">end</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bridges</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_bridges</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">transf</span><span class="p">,</span> <span class="n">curve_angle</span><span class="p">,</span> <span class="n">corner_cut_dist</span><span class="p">,</span> <span class="n">curve_angle_2</span><span class="p">,</span> <span class="n">corner_cut_dist_2</span><span class="p">)</span>
 
-        <span class="n">waveguide</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="mf">1.</span><span class="p">))</span>
+        <span class="n">waveguide</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">points</span><span class="p">)</span>
         <span class="n">wg_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">waveguide</span><span class="p">,</span> <span class="n">transf</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy_port</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">wg_inst</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">copy_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">wg_inst</span><span class="p">)</span></div>

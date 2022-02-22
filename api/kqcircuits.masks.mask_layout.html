@@ -368,20 +368,42 @@
 <dd><p>Top cell of this mask layout</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="kqcircuits.masks.mask_layout.MaskLayout.added_chips">
+<code class="sig-name descname">added_chips</code><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.added_chips" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of (chip name, chip position, chip_inst) populated by chips added during build()</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="kqcircuits.masks.mask_layout.MaskLayout.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param">chips_map_legend</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Builds the cell hierarchy for this mask layout.</p>
 <p>Inserts cells copied from chips_map_legend to self.top_cell at positions determined by self.chips_map. The
 copied cells are modified to only have layers corresponding to self.face_id, and they are translated and/or
-mirrored correctly based on self.face_id. Also inserts cells for mask markers, mask name label, pixel position
-labels, and the circular area covered by the mask. Finally, merges the “base_metal_gap_wo_grid” and “ground
-grid” layers into “base_metal_gap” layer.</p>
+mirrored correctly based on self.face_id. Also inserts cells for mask markers, mask name label, and the circular
+area covered by the mask.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>chips_map_legend</strong> – Dictionary where keys are chip names, values are chip cells</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">
+<code class="sig-name descname">insert_chip_copy_labels</code><span class="sig-paren">(</span><em class="sig-param">labels_cell</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.insert_chip_copy_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts chip copy labels to all chips in this mask layout and its submasks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>labels_cell</strong> – Cell to which the labels are inserted</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="kqcircuits.masks.mask_layout.MaskLayout.face">
+<code class="sig-name descname">face</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.face"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the face dictionary for this mask layout</p>
 </dd></dl>
 
 </dd></dl>

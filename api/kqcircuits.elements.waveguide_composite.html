@@ -357,6 +357,12 @@ flip chip, taper or any custom element.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">
+<code class="sig-name descname">coerce_parameters_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.coerce_parameters_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>default implementation</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="kqcircuits.elements.waveguide_composite.WaveguideComposite.build">
 <code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce the composite waveguide.</p>
@@ -395,6 +401,8 @@ inserted after if the next Node is not collinear.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>nodes</strong><em> (String)</em><span> - List of Nodes for the waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">'Airbridge'),</span> <span class="pre">(200,</span> <span class="pre">0)</span></code></p></li>
+<li><p><strong>gui_path</strong><em> (Shape)</em><span> - Path for editing the waveguide in the KLayout GUI</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
+<li><p><strong>gui_path_shadow</strong><em> (Shape)</em><span> - Hidden path to detect GUI operations</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tight_routing</strong><em> (Boolean)</em><span> - Tight routing for corners</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>

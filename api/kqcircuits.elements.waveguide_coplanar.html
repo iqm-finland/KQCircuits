@@ -222,6 +222,10 @@
 <p>The PCell declaration for an arbitrary coplanar waveguide.</p>
 <p>Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
 predefined bending radios. It actually consists of straight and bent PCells.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">path</span></code> parameter defines the waypoints of the waveguide. When a DPath is supplied, the waypoints can be edited
+in the KLayout GUI with the Partial tool. Alternatively, a list of DPoint can be supplied, in which case the
+guiding shape is not visible in the GUI. This is useful for code-generated (sub)cells where graphical editing is not
+possible or desired.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Arbitrary angle bents can have very small gaps between bends and straight segments due to
