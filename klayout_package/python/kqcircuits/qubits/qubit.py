@@ -43,7 +43,7 @@ class Qubit(Element):
 
     mirror_squid =  Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)
 
-    def produce_squid(self, transf, **parameters):
+    def produce_squid(self, transf, only_arms=False, **parameters):
         """Produces the squid.
 
         Creates the squid cell and inserts it with the given transformation as a subcell. Also inserts the squid parts
@@ -52,6 +52,8 @@ class Qubit(Element):
         Args:
             transf (DCplxTrans): squid transformation
             parameters: other parameters for the squid
+            only_arms: Boolean argument that allows to choose whether to create the arms and the squid device or only
+                       the arms
 
         Returns:
             A tuple ``(squid_unetch_region, refpoints_rel)``
@@ -69,19 +71,21 @@ class Qubit(Element):
         integer_transf = squid_transf.to_itrans(self.layout.dbu)
         float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
 
-        if "squid_index" in parameters:
-            s_index = int(parameters.pop('squid_index'))
-            inst, _ = self.insert_cell(cell, float_transf, inst_name=f"squid_{s_index}")
-            inst.set_property("squid_index", s_index)
-        else:
-            inst, _ = self.insert_cell(cell, float_transf, inst_name="squid")
+        if not only_arms:
+            if "squid_index" in parameters:
+                s_index = int(parameters.pop('squid_index'))
+                inst, _ = self.insert_cell(cell, float_transf, inst_name=f"squid_{s_index}")
+                inst.set_property("squid_index", s_index)
+            else:
+                inst, _ = self.insert_cell(cell, float_transf, inst_name="squid")
 
         squid_unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
         squid_unetch_region.transform(integer_transf)
         # add parts of qubit to the layer needed for EBL
         squid_etch_region = pya.Region(cell.shapes(self.get_layer("base_metal_gap_wo_grid")))
         squid_etch_region.transform(integer_transf)
-        self.cell.shapes(self.get_layer("base_metal_gap_for_EBL")).insert(squid_etch_region)
+        if not only_arms:
+            self.cell.shapes(self.get_layer("base_metal_gap_for_EBL")).insert(squid_etch_region)
 
         return squid_unetch_region, refpoints_rel
 

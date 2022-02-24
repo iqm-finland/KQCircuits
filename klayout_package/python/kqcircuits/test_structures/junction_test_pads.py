@@ -29,7 +29,7 @@ from kqcircuits.defaults import default_junction_test_pads_type
 
 
 @add_parameters_from(Squid, "squid_type")
-@add_parameters_from(Qubit, "junction_width")
+@add_parameters_from(Qubit, "junction_width", "loop_area")
 @add_parameters_from(Qubit, "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
@@ -169,7 +169,7 @@ class JunctionTestPads(TestStructure):
         self.produce_etched_region(pads_region, pya.DPoint(self.area_width / 2, self.area_height / 2), self.area_width,
                                    self.area_height)
 
-    def _produce_squid_and_arms(self, x, y, pads_region, arm_width, index):
+    def _produce_squid_and_arms(self, x, y, pads_region, arm_width, index, only_arms=False):
         """Produces a squid and arms for connecting it to pads.
 
         The squid is inserted as a subcell. The arm shapes are inserted to pads_region, and their shape depends on
@@ -180,6 +180,8 @@ class JunctionTestPads(TestStructure):
            y: y-coordinate of squid origin
            pads_region: Region to which the arm shapes are inserted
            arm_width: width of the arms
+           only_arms: Boolean argument that allows to choose whether to create the arms and the squid device or
+                            only the arms
 
         """
 
@@ -189,7 +191,8 @@ class JunctionTestPads(TestStructure):
         if self.junctions_horizontal:
             # squid
             trans = pya.DCplxTrans(x, y - junction_spacing)
-            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width, squid_index=index)
+            region_unetch, squid_ref_rel = self.produce_squid(trans, only_arms=only_arms,
+                                        junction_width=self._next_width, squid_index=index, loop_area=self.loop_area)
             pos_rel_squid_top = squid_ref_rel["port_common"]
             pads_region.insert(region_unetch)
             # arm below
@@ -207,7 +210,8 @@ class JunctionTestPads(TestStructure):
         else:
             # squid
             trans = pya.DCplxTrans(x - junction_spacing, y)
-            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width, squid_index=index)
+            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width,
+                                only_arms=only_arms, squid_index=index, loop_area=self.loop_area)
             pos_rel_squid_top = squid_ref_rel["port_common"]
             pads_region.insert(region_unetch)
             # arm below
