@@ -57,13 +57,15 @@ class MaskLayout:
         edge_clearance: minimum clearance of outer chips from the edge of the mask, measured from the chip center
         chip_box_offset: Offset (pya.DVector) from chip origin of the chip frame boxes for this face
         chip_trans: DTrans applied to all chips
-        mask_name_offset: mask name label offset from default position in vertical direction (float)
+        mask_name_offset: mask name label offset from default position (DPoint)
         mask_name_scale: text scaling factor for mask name label (float)
         mask_text_scale: text scaling factor for graphical representation layer (float)
         mask_marker_offset: offset of mask markers from wafer center in horizontal and vertical directions (float)
         mask_export_layers: list of layer names (without face_ids) to be exported as individual mask `.oas` files
         submasks: list of submasks, each element is a tuple (submask mask_layout, submask position)
         extra_id: extra string used to create unique name for mask layouts with the same face_id
+        extra_chips: List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional
+            transformation to use in place of self.chip_trans
         top_cell: Top cell of this mask layout
         added_chips: List of (chip name, chip position, chip_inst) populated by chips added during build()
     """
@@ -103,6 +105,7 @@ class MaskLayout:
         self.mask_export_layers = kwargs.get("mask_export_layers", default_mask_export_layers)
         self.submasks = kwargs.get("submasks", [])
         self.extra_id = kwargs.get("extra_id", "")
+        self.extra_chips = kwargs.get("extra_chips", [])
 
         self.top_cell = self.layout.create_cell(f"{self.name} {self.face_id}")
         self.added_chips = []
@@ -162,13 +165,25 @@ class MaskLayout:
                                        pya.DTrans(submask_pos - submask_layout.wafer_center + self.wafer_center))
                 )
 
+        # add chips from chips_map
         for (i, row) in enumerate(tqdm(self.chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
             for (j, chip_name) in enumerate(row):
-                position = pya.DPoint(step_ver * (i + 1) + step_hor * j)
-                added_chip, region_chip = self._add_chip(step_ver, step_hor, position, chip_name)
+                position = pya.DPoint(step_ver * (i + 1) + step_hor * j) - self.chips_map_offset \
+                           + pya.DVector(-self.wafer_rad, self.wafer_rad)
+                if (position - step_ver*0.5 + step_hor*0.5 - self.wafer_center).length() - self.wafer_rad < \
+                        -self.edge_clearance:
+                    added_chip, region_chip = self._add_chip(chip_name, position, self.chip_trans)
+                else:
+                    added_chip, region_chip = False, pya.Region()
                 region_covered -= region_chip
                 if not added_chip:
                     self.chips_map[i][j] = "---"
+
+        # add chips outside chips_map
+        for name, pos, *trans in self.extra_chips:  # trans is optional
+            if name in chips_map_legend:
+                region_covered -= self._add_chip(name, pos, trans[0] if trans else self.chip_trans)[1]
+                self.chips_map.append([name])  # to get correct amount of chips in mask documentation
 
         maskextra_cell = self.layout.create_cell("MaskExtra")
         self._insert_mask_name_label(self.top_cell, default_layers["mask_graphical_rep"])
@@ -250,21 +265,16 @@ class MaskLayout:
         region_covered = pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
         return None, region_covered  #TODO return only region_covered
 
-    def _add_chip(self, step_ver, step_hor, position, chip_name):
+    def _add_chip(self, name, position, trans):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""
-        # center of the chip at distance self.chip_size from the mask edge
         chip_region = pya.Region()
-        position += pya.DVector(-self.wafer_rad, self.wafer_rad) - self.chips_map_offset
-        if (position - step_ver * 0.5 + step_hor * 0.5 - self.wafer_center).length() - self.wafer_rad < \
-                -self.edge_clearance:
-            if chip_name in self.chips_map_legend.keys():
-                chip_cell, bounding_box, bbox_offset = self._get_chip_cell_and_bbox(chip_name)
-                trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset) * self.chip_trans
-                inst = self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
-                chip_region = pya.Region(pya.Box(trans * bounding_box * (1 / self.layout.dbu)))
-                self.added_chips.append((chip_name, position, inst))
-                return True, chip_region
-
+        if name in self.chips_map_legend.keys():
+            chip_cell, bounding_box, bbox_offset = self._get_chip_cell_and_bbox(name)
+            trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset)*trans
+            inst = self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
+            chip_region = pya.Region(pya.Box(trans*bounding_box*(1/self.layout.dbu)))
+            self.added_chips.append((name, position, inst))
+            return True, chip_region
         return False, chip_region
 
     def _mask_create_covered_region(self, maskextra_cell, region_covered, layers_dict):
@@ -350,7 +360,7 @@ class MaskLayout:
         })
         cell_mask_name_h = cell_mask_name.dbbox().height()
         cell_mask_name_w = cell_mask_name.dbbox().width()
-        trans = pya.DTrans(self.wafer_center.x - cell_mask_name_w / 2,
-                           self.wafer_rad - self.mask_name_offset - cell_mask_name_h / 2)
+        trans = pya.DTrans(self.wafer_center.x + self.mask_name_offset.x - cell_mask_name_w / 2,
+                           self.wafer_rad + self.mask_name_offset.y - cell_mask_name_h / 2)
         inst = cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), trans))
         return inst
