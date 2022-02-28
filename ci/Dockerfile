@@ -10,7 +10,7 @@ ENV XDG_RUNTIME_DIR=/tmp
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y apt-utils && apt-get upgrade -y && \
-    apt-get install -y wget xvfb python-is-python3 python3-pip git libcurl4 && \
+    apt-get install -y wget xvfb python-is-python3 python3-pip git libcurl4 libglu1-mesa libxft-dev && \
     wget -q https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.3-1_amd64.deb && \
     echo "5779feaecc03d85e31b174088b6232c7  klayout_0.27.3-1_amd64.deb" > klayout.md5 && \
     md5sum --check klayout.md5  && \
