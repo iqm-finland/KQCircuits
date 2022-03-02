@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.groundgrid &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.groundgrid &mdash; KQCircuits 4.2.8 documentation</title>
   
 
   
@@ -65,6 +65,10 @@
 
           
             
+            
+              <div class="version">
+                4.2.8
+              </div>
             
           
 
@@ -187,24 +191,48 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="make_grid"><a class="viewcode-back" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid">[docs]</a><span class="k">def</span> <span class="nf">make_grid</span><span class="p">(</span><span class="n">boundbox</span><span class="p">,</span> <span class="n">avoid_region</span><span class="p">,</span> <span class="n">grid_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates the ground grid.</span>
+<div class="viewcode-block" id="make_grid"><a class="viewcode-back" href="../../../api/kqcircuits.util.groundgrid.html#kqcircuits.util.groundgrid.make_grid">[docs]</a><span class="k">def</span> <span class="nf">make_grid</span><span class="p">(</span><span class="n">boundbox</span><span class="p">,</span> <span class="n">avoid_region</span><span class="p">,</span> <span class="n">grid_step</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">group_n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates ground grid covering `boundbox` with holes not overlapping with the `avoid_region`.</span>
 
-<span class="sd">  Returns a `Region` covering `boundbox` with `Box`es not overlapping with</span>
-<span class="sd">  the avoid `Region`.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        boundbox: bounding box of grid in database unit</span>
+<span class="sd">        avoid_region: area on which grid is avoided</span>
+<span class="sd">        grid_step: step between consecutive holes in database unit</span>
+<span class="sd">        grid_size: hole edge length in database unit</span>
+<span class="sd">        group_n: number of adjacent holes in a group (is used to speed up grid generation)</span>
 
-<span class="sd">  All arguments are in database unit, not in micrometers!</span>
-
+<span class="sd">    Returns:</span>
+<span class="sd">        grid region</span>
 <span class="sd">  &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">grid_region</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">square</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+        <span class="n">x_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+            <span class="n">x_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">square</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">))))</span>
+        <span class="n">xy_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+            <span class="n">xy_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">x_region</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">))))</span>
+        <span class="k">return</span> <span class="n">xy_region</span>
 
-    <span class="n">grid_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">boundbox</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">boundbox</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">boundbox</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">boundbox</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">grid_step</span><span class="p">):</span>
-            <span class="n">hole</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">grid_size</span><span class="p">)</span>
-            <span class="n">grid_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">hole</span><span class="p">)</span>
-    <span class="n">grid_masked_region</span> <span class="o">=</span> <span class="p">(</span><span class="n">grid_region</span> <span class="o">-</span> <span class="n">avoid_region</span><span class="p">)</span><span class="o">.</span><span class="n">with_area</span><span class="p">(</span><span class="n">grid_size</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># Create box grid, where each box can include group_n x group_n holes.</span>
+    <span class="n">box_step</span> <span class="o">=</span> <span class="n">group_n</span> <span class="o">*</span> <span class="n">grid_step</span>
+    <span class="n">box_size</span> <span class="o">=</span> <span class="n">box_step</span> <span class="o">-</span> <span class="n">grid_step</span> <span class="o">+</span> <span class="n">grid_size</span>
+    <span class="n">boxes_region</span> <span class="o">=</span> <span class="n">grid_region</span><span class="p">(</span><span class="n">boundbox</span><span class="p">,</span> <span class="n">box_step</span><span class="p">,</span> <span class="n">box_size</span><span class="p">)</span>
+    <span class="c1"># Filter boxes that do not overlap with avoid_region. These will be used to speed up filtering of holes.</span>
+    <span class="n">masked_boxes_region</span> <span class="o">=</span> <span class="p">((</span><span class="n">boxes_region</span> <span class="o">&amp;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">boundbox</span><span class="p">))</span> <span class="o">-</span> <span class="n">avoid_region</span><span class="p">)</span><span class="o">.</span><span class="n">with_area</span><span class="p">(</span><span class="n">box_size</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">grid_masked_region</span></div>
+    <span class="c1"># Create grid of holes and duplicate it on boxes that overlap with avoid_region.</span>
+    <span class="n">holes_region</span> <span class="o">=</span> <span class="n">grid_region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">box_step</span><span class="p">,</span> <span class="n">box_step</span><span class="p">),</span> <span class="n">grid_step</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">)</span>
+    <span class="n">overlap_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="p">(</span><span class="n">boxes_region</span> <span class="o">-</span> <span class="n">masked_boxes_region</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
+        <span class="n">overlap_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">holes_region</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">p1</span><span class="p">))))</span>
+
+    <span class="c1"># Create grid of holes that do not overlap with avoid region.</span>
+    <span class="n">masked_holes_region</span> <span class="o">=</span> <span class="p">((</span><span class="n">overlap_region</span> <span class="o">&amp;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">boundbox</span><span class="p">))</span> <span class="o">-</span> <span class="n">avoid_region</span><span class="p">)</span><span class="o">.</span><span class="n">with_area</span><span class="p">(</span><span class="n">grid_size</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">masked_boxes_region</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
+        <span class="n">masked_holes_region</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">holes_region</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Vector</span><span class="p">(</span><span class="n">poly</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span><span class="o">.</span><span class="n">p1</span><span class="p">))))</span>
+
+    <span class="k">return</span> <span class="n">masked_holes_region</span></div>
 </pre></div>
 
            </div>

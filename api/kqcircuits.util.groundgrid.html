@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.groundgrid &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.util.groundgrid &mdash; KQCircuits 4.2.8 documentation</title>
   
 
   
@@ -67,6 +67,10 @@
 
           
             
+            
+              <div class="version">
+                4.2.8
+              </div>
             
           
 
@@ -212,11 +216,22 @@
 <span id="kqcircuits-util-groundgrid"></span><h1>kqcircuits.util.groundgrid<a class="headerlink" href="#module-kqcircuits.util.groundgrid" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="kqcircuits.util.groundgrid.make_grid">
-<code class="sig-prename descclassname">kqcircuits.util.groundgrid.</code><code class="sig-name descname">make_grid</code><span class="sig-paren">(</span><em class="sig-param">boundbox</em>, <em class="sig-param">avoid_region</em>, <em class="sig-param">grid_step=10</em>, <em class="sig-param">grid_size=5</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/groundgrid.html#make_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.groundgrid.make_grid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates the ground grid.</p>
-<p>Returns a <cite>Region</cite> covering <cite>boundbox</cite> with <cite>Box`es not overlapping with
-the avoid `Region</cite>.</p>
-<p>All arguments are in database unit, not in micrometers!</p>
+<code class="sig-prename descclassname">kqcircuits.util.groundgrid.</code><code class="sig-name descname">make_grid</code><span class="sig-paren">(</span><em class="sig-param">boundbox</em>, <em class="sig-param">avoid_region</em>, <em class="sig-param">grid_step=10</em>, <em class="sig-param">grid_size=5</em>, <em class="sig-param">group_n=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/groundgrid.html#make_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.groundgrid.make_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates ground grid covering <cite>boundbox</cite> with holes not overlapping with the <cite>avoid_region</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundbox</strong> – bounding box of grid in database unit</p></li>
+<li><p><strong>avoid_region</strong> – area on which grid is avoided</p></li>
+<li><p><strong>grid_step</strong> – step between consecutive holes in database unit</p></li>
+<li><p><strong>grid_size</strong> – hole edge length in database unit</p></li>
+<li><p><strong>group_n</strong> – number of adjacent holes in a group (is used to speed up grid generation)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>grid region</p>
+</dd>
+</dl>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.util.groundgrid.png" src="../_images/kqcircuits.util.groundgrid.png" />
