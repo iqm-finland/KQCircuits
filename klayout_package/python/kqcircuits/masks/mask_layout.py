@@ -125,38 +125,42 @@ class MaskLayout:
         self.chips_map_legend = {}
 
         for name, cell in tqdm(chips_map_legend.items(), desc='Building cell hierarchy', bar_format=default_bar_format):
-            # create copies of the chips, so that modifying these only affects the ones in this MaskLayout
-            new_cell = self.layout.create_cell(name)
-            new_cell.copy_tree(cell)
-            # remove layers belonging to another face
-            for face_id, face_dictionary in default_faces.items():
-                if face_id != self.face_id:
-                    for layer_info in face_dictionary.values():
-                        shapes_iter = new_cell.begin_shapes_rec(self.layout.layer(layer_info))
 
-                        # iterating shapes using shapes_iter.at_end() fails:
-                        # https://www.klayout.de/forum/discussion/comment/4275
-                        # solution is to use a separate buffer list to iterate
-                        shapes = []
-                        while not shapes_iter.at_end():
-                            try:
-                                shapes.append(shapes_iter.shape())
-                                shapes_iter.next()
-                            except ValueError:
-                                print("error occurs at %s at %s" % (name, face_id))
+            # pylint: disable=use-a-generator
+            if any([name in row for row in self.chips_map] + [chip[0] == name for chip in self.extra_chips]):
 
-                        for shapes_to_remove in shapes:
-                            shapes_to_remove.delete()
+                # create copies of the chips, so that modifying these only affects the ones in this MaskLayout
+                new_cell = self.layout.create_cell(name)
+                new_cell.copy_tree(cell)
+                # remove layers belonging to another face
+                for face_id, face_dictionary in default_faces.items():
+                    if face_id != self.face_id:
+                        for layer_info in face_dictionary.values():
+                            shapes_iter = new_cell.begin_shapes_rec(self.layout.layer(layer_info))
 
-            merge_layers(self.layout, [new_cell], self.face()["base_metal_gap_wo_grid"], self.face()["ground_grid"],
-                         self.face()["base_metal_gap"])
+                            # iterating shapes using shapes_iter.at_end() fails:
+                            # https://www.klayout.de/forum/discussion/comment/4275
+                            # solution is to use a separate buffer list to iterate
+                            shapes = []
+                            while not shapes_iter.at_end():
+                                try:
+                                    shapes.append(shapes_iter.shape())
+                                    shapes_iter.next()
+                                except ValueError:
+                                    print("error occurs at %s at %s" % (name, face_id))
 
-            self.chips_map_legend[name] = new_cell
+                            for shapes_to_remove in shapes:
+                                shapes_to_remove.delete()
+
+                merge_layers(self.layout, [new_cell], self.face()["base_metal_gap_wo_grid"], self.face()["ground_grid"],
+                             self.face()["base_metal_gap"])
+
+                self.chips_map_legend[name] = new_cell
 
         step_ver = pya.DVector(0, -self.chip_size)
         step_hor = pya.DVector(self.chip_size, 0)
 
-        _, region_covered = self._mask_create_geometry()
+        region_covered = self._mask_create_geometry()
         if len(self.submasks) > 0:
             region_covered = pya.Region()  # don't fill with metal gap layer if using submasks
             for submask_layout, submask_pos in self.submasks:
@@ -263,7 +267,7 @@ class MaskLayout:
                 points.append(pya.DPoint(self.wafer_center.x + x, self.wafer_center.y + y))
 
         region_covered = pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
-        return None, region_covered  #TODO return only region_covered
+        return region_covered
 
     def _add_chip(self, name, position, trans):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""

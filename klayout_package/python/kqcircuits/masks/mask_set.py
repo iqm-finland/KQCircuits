@@ -283,12 +283,6 @@ class MaskSet:
         if remove_guiding_shapes and self.layout.is_valid_layer(self.layout.guiding_shape_layer()):
             self.layout.delete_layer(self.layout.guiding_shape_layer())
 
-        # remove any unnecessary top-level cells
-        mask_layout_top_cells = [ml.top_cell for ml in self.mask_layouts]
-        for cell in self.layout.top_cells():
-            if cell not in mask_layout_top_cells + list(self.used_chips.values()):
-                cell.prune_cell()
-
     def export(self, path, view):
         """Exports designs, bitmaps and documentation of this mask set.
 
