@@ -100,7 +100,7 @@ for ab in ab_single:
 
 for ab in ab_multi:
     simulations += cross_sweep_simulation(layout, sim_class,
-        sim_parameters | {'wafer_stack_type': "multiface"}, {
+        {**sim_parameters, 'wafer_stack_type': "multiface"}, {
         'chip_distance': chip_distances,
         'r_inner': r_inner,
         'swept_angle': swept_angle,

@@ -387,4 +387,6 @@ class Simulation:
         """
         for i in index:
             index_name = f'${i}' if i > 0 else ''
-            cell.layout().cell(f'{name}{index_name}').delete()
+            cell_to_be_deleted = cell.layout().cell(f'{name}{index_name}')
+            if cell_to_be_deleted is not None:
+                cell_to_be_deleted.delete()

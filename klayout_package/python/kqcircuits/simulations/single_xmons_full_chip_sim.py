@@ -52,16 +52,15 @@ class SingleXmonsFullChipSim(Simulation):
         })
 
         # Remove unneeded elements
-        chip.layout().cell('Chip Frame').delete()
-        chip.layout().cell(default_junction_test_pads_type).delete()
-        chip.layout().cell(f'{default_junction_test_pads_type}$1').delete()
+        self.delete_instances(chip, 'Chip Frame')
+        self.delete_instances(chip, default_junction_test_pads_type, range(2))
 
         # Insert chip and get refpoints
         _, refpoints = self.insert_cell(chip, rec_levels=None)
 
         if not self.launchers:
             # Remove launchers
-            chip.layout().cell('Launcher').delete()
+            self.delete_instances(chip, 'Launcher')
 
             maximum_box = pya.DBox(pya.DPoint(800, 800), pya.DPoint(9200, 9200))
             port_shift = 0
