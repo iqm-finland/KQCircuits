@@ -52,7 +52,6 @@ class KLayoutView():
         super().__init__()
         if not hasattr(pya, "Application"):
             error = MissingUILibraryException()
-            self.__log.exception("Cannot find KLayout UI library.", exc_info=error)
             raise error
         if view is None:
             if not current or pya.LayoutView.current() is None:
@@ -63,7 +62,6 @@ class KLayoutView():
                 self.layout_view = view
             else:
                 error = InvalidViewException(view)
-                self.__log.exception("The view is not an instance of pya.LayoutView", exc_info=error)
                 raise error
         if initialize:
             self.add_default_layers()
