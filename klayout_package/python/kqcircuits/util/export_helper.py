@@ -145,8 +145,12 @@ def get_active_or_new_layout():
 
 def write_commit_reference_file(path: Path):
     """
-    Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number of KQCircuits.
+    Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number.
+    If git repository is not found in given path, no file is written.
     """
+    try:
+        output = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL, cwd=path)
+    except subprocess.CalledProcessError:
+        return
     with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
-        file.write("KQCircuits revision number: " +
-                   subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii'))
+        file.write("Git revision number: " + output.decode('ascii'))
