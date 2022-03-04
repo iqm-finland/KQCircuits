@@ -27,8 +27,8 @@ from autologging import logged, traced
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_bar_format, TMP_PATH, PY_PATH
-from kqcircuits.masks.mask_export import export_chip, export_mask_set, klayout_executable_command
+from kqcircuits.defaults import default_bar_format, TMP_PATH, PY_PATH, klayout_executable_command
+from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 
 

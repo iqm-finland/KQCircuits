@@ -40,10 +40,23 @@ in ``mask_export_layers``.
 """
 
 import os
+import platform
 from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.layer_cluster import LayerCluster
+
+
+def klayout_executable_command():
+    """Returns the command (string) needed to run klayout executable in the current OS."""
+    name = platform.system()
+    if name == "Windows":
+        return os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
+    elif name == "Darwin":
+        return "/Applications/klayout.app/Contents/MacOS/klayout"
+    else:
+        return "klayout"
+
 
 _kqcircuits_path = Path(os.path.dirname(os.path.realpath(__file__)))
 # workaround for Windows because os.path.realpath doesn't work there before Python 3.8

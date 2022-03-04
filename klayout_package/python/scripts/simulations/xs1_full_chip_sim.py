@@ -17,12 +17,11 @@
 
 
 from pathlib import Path
-import subprocess
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChipSim
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory
+from kqcircuits.util.export_helper import create_or_empty_tmp_directory, open_with_klayout_or_default_application
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -47,4 +46,4 @@ simulations = [sim_class(pya.Layout(), **sim_parameters)]
 export_ansys(simulations, **export_parameters)
 
 # Write and open oas file
-subprocess.call(export_simulation_oas(simulations, dir_path), shell=True)
+open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

@@ -18,13 +18,13 @@
 import sys
 import logging
 from pathlib import Path
-import subprocess
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_sweep_simulation
 from kqcircuits.simulations.airbridges_sim import AirbridgesSim
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout
+from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
+    open_with_klayout_or_default_application
 
 # Simulation parameters
 sim_class = AirbridgesSim  # pylint: disable=invalid-name
@@ -79,4 +79,4 @@ sub_path = create_or_empty_tmp_directory(dir_path.joinpath('airbridges_sim'))
 
 # Write and open oas file
 export_ansys(simulations, path=sub_path, **export_parameters)
-subprocess.call(export_simulation_oas(simulations, sub_path), shell=True)
+open_with_klayout_or_default_application(export_simulation_oas(simulations, sub_path))

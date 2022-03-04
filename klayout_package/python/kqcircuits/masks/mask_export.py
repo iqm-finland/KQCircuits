@@ -18,7 +18,6 @@
 """Functions for exporting mask sets."""
 import json
 import os
-import platform
 import subprocess
 from importlib import import_module
 
@@ -26,7 +25,7 @@ from autologging import logged, traced
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH
+    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH, klayout_executable_command
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.pya_resolver import pya
@@ -355,17 +354,6 @@ def export_drc_report(name, path):
                         ], check=True)
     except subprocess.CalledProcessError as e:
         export_drc_report._log.error(e.output)
-
-
-def klayout_executable_command():
-    """Returns the command (string) needed to run klayout executable in the current OS."""
-    name = platform.system()
-    if name == "Windows":
-        return os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
-    elif name == "Darwin":
-        return "/Applications/klayout.app/Contents/MacOS/klayout"
-    else:
-        return "klayout"
 
 
 def _export_cell(path, cell=None, layers_to_export=None):

@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import logging
-import subprocess
 import sys
 from pathlib import Path
 
@@ -24,7 +23,8 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
 from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout
+from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
+    open_with_klayout_or_default_application
 
 
 class InternalPortCalibration(Simulation):
@@ -83,4 +83,4 @@ simulations = sweep_simulation(layout, sim_class, sim_parameters, {
 export_ansys(simulations, **export_parameters)
 
 # Write and open oas file
-subprocess.call(export_simulation_oas(simulations, dir_path), shell=True)
+open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

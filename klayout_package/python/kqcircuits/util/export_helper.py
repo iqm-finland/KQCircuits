@@ -17,13 +17,16 @@
 
 
 import json
+import logging
 import subprocess
+import platform
 from pathlib import Path
 
 from autologging import logged, traced
 
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.defaults import default_layers, TMP_PATH, default_probe_types, default_probe_suffixes
+from kqcircuits.defaults import default_layers, TMP_PATH, default_probe_types, default_probe_suffixes, \
+    klayout_executable_command
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya
 
@@ -154,3 +157,25 @@ def write_commit_reference_file(path: Path):
         return
     with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
         file.write("Git revision number: " + output.decode('ascii'))
+
+
+def open_with_klayout_or_default_application(filepath):
+    """
+    Tries to open file with Klayout. If Klayout is not found, opens file with operating system's default application.
+    Implementation supports Windows, macOS, and Linux.
+    """
+    try:
+        subprocess.call((klayout_executable_command(), filepath))
+        return
+    except FileNotFoundError:
+        logging.warning("Klayout executable not found.")
+
+    try:
+        if platform.system() == 'Windows':  # Windows
+            subprocess.call(filepath, shell=True)
+        elif platform.system() == 'Darwin':  # macOS
+            subprocess.call(('open', filepath))
+        else:  # Linux
+            subprocess.call(('xdg-open', filepath))
+    except FileNotFoundError:
+        logging.warning("Unable to open file %s.", filepath)

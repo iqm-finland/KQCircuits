@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import logging
-import subprocess
 import sys
 from pathlib import Path
 
@@ -24,7 +23,8 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.circular_capacitor_sim import CircularCapacitorSim
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout
+from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
+    open_with_klayout_or_default_application
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -122,4 +122,4 @@ for ab in ab_multi:
 export_ansys(simulations, **export_parameters)
 
 # Write and open oas file
-subprocess.call(export_simulation_oas(simulations, dir_path), shell=True)
+open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))
