@@ -51,6 +51,8 @@ class QualityFactor(Chip):
     resonators_both_sides = Param(pdt.TypeBoolean, "Place resonators on both sides of feedline", False)
     max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="[μm]",
                         docstring="Resonators exceeding this length become meandering")
+    # override box to have hidden=False and allow GUI editing
+    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
 
     def build(self):
         # Interpretation of parameter lists

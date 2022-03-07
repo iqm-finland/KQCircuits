@@ -19,7 +19,8 @@
 import numpy
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_layers, default_squid_type, default_tsv_parameters, default_marker_type
+from kqcircuits.defaults import default_layers, default_squid_type, default_tsv_parameters, default_marker_type,\
+    default_sampleholders
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
@@ -48,7 +49,7 @@ class Chip(Element):
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for chips."
     LIBRARY_PATH = "chips"
 
-    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
+    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)), hidden=True)
     with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="[μm]")
     name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
@@ -56,7 +57,7 @@ class Chip(Element):
     name_copy = Param(pdt.TypeString, "Name of the copy", None)
     dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100, hidden=True)
     marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
-                        default=[default_marker_type] * 4)
+                         default=[default_marker_type] * 4)
     # Tsv grid parameters
     with_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs", False)
     tsv_grid_spacing = Param(pdt.TypeDouble,"TSV grid distance (center to center)",
@@ -251,7 +252,7 @@ class Chip(Element):
                 self.insert_cell(cell, label_trans)
 
     def produce_launchers(self, sampleholder_type, launcher_assignments=None, enabled=None):
-        """Produces launchers for typical sample holders.
+        """Produces launchers for typical sample holders and sets chip size (``self.box``) accordingly.
 
         This is a wrapper around ``produce_n_launchers()`` to generate typical launcher configurations.
 
@@ -268,19 +269,15 @@ class Chip(Element):
         if sampleholder_type == "SMA8":  # this is special: it has default launcher assignments
             if not launcher_assignments:
                 launcher_assignments = {1: "NW", 2: "NE", 3: "EN", 4: "ES", 5: "SE", 6: "SW", 7: "WS", 8: "WN"}
-            return self.produce_n_launchers(8, "RF", 300, 180, 800, 4400, launcher_assignments, enabled)
-        elif sampleholder_type == "ARD24":
-            return self.produce_n_launchers(24, "RF", 240, 144, 680, 1200, launcher_assignments, enabled)
-        elif sampleholder_type == "RF80":
-            return self.produce_n_launchers(80, "RF", 160, 96, 520, 685, launcher_assignments, enabled)
-        elif sampleholder_type == "DC24":
-            return self.produce_n_launchers(24, "DC", 500, 300, 680, 850, launcher_assignments, enabled)
 
+        if sampleholder_type in default_sampleholders:
+            return self.produce_n_launchers(**default_sampleholders[sampleholder_type],
+                                            launcher_assignments=launcher_assignments, enabled=enabled)
         return {}
 
     def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent, pad_pitch,
-                            launcher_assignments=None, enabled=None):
-        """Produces n launchers at default locations.
+                            launcher_assignments=None, enabled=None, chip_box=None):
+        """Produces n launchers at default locations and optionally changes the chip size.
 
         Launcher pads are equally distributed around the chip. This may be overridden by specifying
         the number of pads desired per chip side if ``n`` is an array of 4 numbers.
@@ -297,10 +294,14 @@ class Chip(Element):
             pad_pitch: distance between pad centers
             launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
             enabled: optional list of enabled launchers
+            chip_box: optionally changes the chip size (``self.box``)
 
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
+
+        if chip_box is not None:
+            self.box = chip_box
 
         if launcher_type == "DC":
             launcher_cell = self.add_element(LauncherDC, width=launcher_width)

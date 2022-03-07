@@ -340,3 +340,45 @@ default_bump_parameters = {
     "bump_edge_to_bump_edge_separation": 95,
     "edge_from_bump": 550,
 }
+
+
+# Dictionary of sample holders to determine launcher parameters and chip sizes. Keys are sampleholder names, values are
+# dictionaries containing the following items:
+#
+#            n: number of launcher pads or an array of pad numbers per side
+#            launcher_type: type of the launchers, "RF" or "DC"
+#            launcher_width: width of the launchers
+#            launcher_gap: pad to ground gap of the launchers
+#            launcher_indent: distance between the chip edge and pad port
+#            pad_pitch: distance between pad centers
+#            chip_box: chip size
+#
+default_sampleholders = {
+    "SMA8": {
+        "n": 8,
+        "launcher_type": "RF",
+        "launcher_width": 300,
+        "launcher_gap": 180,
+        "launcher_indent": 800,
+        "pad_pitch": 4400,
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
+    },
+    "ARD24": {
+        "n": 24,
+        "launcher_type": "RF",
+        "launcher_width": 240,
+        "launcher_gap": 144,
+        "launcher_indent": 680,
+        "pad_pitch": 1200,
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
+    },
+    "DC24": {
+        "n": 24,
+        "launcher_type": "DC",
+        "launcher_width": 500,
+        "launcher_gap": 300,
+        "launcher_indent": 680,
+        "pad_pitch": 850,
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
+    }
+}

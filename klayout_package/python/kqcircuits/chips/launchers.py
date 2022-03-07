@@ -17,14 +17,16 @@
 
 
 from kqcircuits.chips.chip import Chip
+from kqcircuits.defaults import default_sampleholders
 from kqcircuits.util.parameters import Param, pdt
+
+sampleholder_type_choices = [[name, name] for name in default_sampleholders]
 
 
 class Launchers(Chip):
     """The PCell declaration for a chip with predefined launchers."""
 
-    sampleholder_type = Param(pdt.TypeString, "Type of the launchers", "SMA8",
-                              choices=[["SMA8", "SMA8"], ["ARD24", "ARD24"], ["RF80", "RF80"], ["DC24", "DC24"]])
+    sampleholder_type = Param(pdt.TypeString, "Type of the launchers", "SMA8", choices=sampleholder_type_choices)
 
     def build(self):
         self.produce_launchers(self.sampleholder_type)
