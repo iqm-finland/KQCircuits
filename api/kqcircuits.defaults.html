@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.defaults &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.defaults &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -203,6 +199,14 @@ layer views are hidden by default. See <a class="reference external" href="https
 While <code class="docutils literal notranslate"><span class="pre">default_faces</span></code> is a dictionary mapping ‘b’, ‘t’ and ‘c’ to an other dictionary, a subset of
 <code class="docutils literal notranslate"><span class="pre">default_layers</span></code> in the given face. With a minor twist: in these “face-dictionaries” the keys do not
 start with the face id, for example “b_base_metal_gap” becomes “base_metal_gap”.</p>
+<p>Layer names should not start with <code class="docutils literal notranslate"><span class="pre">-</span></code>, this is reserved for marking exported layers to be inverted
+in <code class="docutils literal notranslate"><span class="pre">mask_export_layers</span></code>.</p>
+<dl class="function">
+<dt id="kqcircuits.defaults.klayout_executable_command">
+<code class="sig-prename descclassname">kqcircuits.defaults.</code><code class="sig-name descname">klayout_executable_command</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/defaults.html#klayout_executable_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.defaults.klayout_executable_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the command (string) needed to run klayout executable in the current OS.</p>
+</dd></dl>
+
 <img alt="../_images/kqcircuits.defaults.png" src="../_images/kqcircuits.defaults.png" />
 </div>
 

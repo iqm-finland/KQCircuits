@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.export_helper &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.util.export_helper &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -241,7 +237,15 @@ Returns directory path.</p>
 <dl class="function">
 <dt id="kqcircuits.util.export_helper.write_commit_reference_file">
 <code class="sig-prename descclassname">kqcircuits.util.export_helper.</code><code class="sig-name descname">write_commit_reference_file</code><span class="sig-paren">(</span><em class="sig-param">path: pathlib.Path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#write_commit_reference_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.export_helper.write_commit_reference_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number of KQCircuits.</p>
+<dd><p>Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number.
+If git repository is not found in given path, no file is written.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="kqcircuits.util.export_helper.open_with_klayout_or_default_application">
+<code class="sig-prename descclassname">kqcircuits.util.export_helper.</code><code class="sig-name descname">open_with_klayout_or_default_application</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/export_helper.html#open_with_klayout_or_default_application"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.export_helper.open_with_klayout_or_default_application" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tries to open file with Klayout. If Klayout is not found, opens file with operating system’s default application.
+Implementation supports Windows, macOS, and Linux.</p>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.util.export_helper.png" src="../_images/kqcircuits.util.export_helper.png" />

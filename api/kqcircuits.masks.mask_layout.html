@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -327,7 +323,7 @@
 <dl class="attribute">
 <dt id="kqcircuits.masks.mask_layout.MaskLayout.mask_name_offset">
 <code class="sig-name descname">mask_name_offset</code><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.mask_name_offset" title="Permalink to this definition">¶</a></dt>
-<dd><p>mask name label offset from default position in vertical direction (float)</p>
+<dd><p>mask name label offset from default position (DPoint)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -364,6 +360,13 @@
 <dt id="kqcircuits.masks.mask_layout.MaskLayout.extra_id">
 <code class="sig-name descname">extra_id</code><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.extra_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>extra string used to create unique name for mask layouts with the same face_id</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="kqcircuits.masks.mask_layout.MaskLayout.extra_chips">
+<code class="sig-name descname">extra_chips</code><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.extra_chips" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional
+transformation to use in place of self.chip_trans</p>
 </dd></dl>
 
 <dl class="attribute">

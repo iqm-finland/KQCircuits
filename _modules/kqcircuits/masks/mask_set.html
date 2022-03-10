@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.masks.mask_set &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -197,8 +193,8 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">PY_PATH</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">PY_PATH</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
 
 
@@ -451,13 +447,7 @@
 
         <span class="c1"># remove the guiding shapes, like chip boxes and waveguide paths</span>
         <span class="k">if</span> <span class="n">remove_guiding_shapes</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">is_valid_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">()):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">())</span>
-
-        <span class="c1"># remove any unnecessary top-level cells</span>
-        <span class="n">mask_layout_top_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">ml</span><span class="o">.</span><span class="n">top_cell</span> <span class="k">for</span> <span class="n">ml</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">]</span>
-        <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">cell</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mask_layout_top_cells</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-                <span class="n">cell</span><span class="o">.</span><span class="n">prune_cell</span><span class="p">()</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="MaskSet.export"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Exports designs, bitmaps and documentation of this mask set.</span>

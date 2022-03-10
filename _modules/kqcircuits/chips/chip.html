@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -189,7 +185,8 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">default_tsv_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">default_tsv_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span><span class="p">,</span>\
+    <span class="n">default_sampleholders</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher</span> <span class="kn">import</span> <span class="n">Launcher</span>
@@ -218,7 +215,7 @@
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Superconducting quantum circuit library for chips.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;chips&quot;</span>
 
-    <span class="n">box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)))</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)),</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">with_grid</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground plane grid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">dice_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Dicing width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">name_mask</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the mask&quot;</span><span class="p">,</span> <span class="s2">&quot;M99&quot;</span><span class="p">)</span>
@@ -226,7 +223,7 @@
     <span class="n">name_copy</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the copy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">dice_grid_margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Margin between dicing edge and ground grid&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each chip corner, starting from lower left and going clockwise&quot;</span><span class="p">,</span>
-                        <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
+                         <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
     <span class="c1"># Tsv grid parameters</span>
     <span class="n">with_gnd_tsvs</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground TSVs&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">tsv_grid_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span><span class="s2">&quot;TSV grid distance (center to center)&quot;</span><span class="p">,</span>
@@ -421,7 +418,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">label_trans</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Chip.produce_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampleholder_type</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces launchers for typical sample holders.</span>
+        <span class="sd">&quot;&quot;&quot;Produces launchers for typical sample holders and sets chip size (``self.box``) accordingly.</span>
 
 <span class="sd">        This is a wrapper around ``produce_n_launchers()`` to generate typical launcher configurations.</span>
 
@@ -438,19 +435,15 @@
         <span class="k">if</span> <span class="n">sampleholder_type</span> <span class="o">==</span> <span class="s2">&quot;SMA8&quot;</span><span class="p">:</span>  <span class="c1"># this is special: it has default launcher assignments</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">launcher_assignments</span><span class="p">:</span>
                 <span class="n">launcher_assignments</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;NW&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;NE&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;EN&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;ES&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;SE&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">:</span> <span class="s2">&quot;SW&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;WS&quot;</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="s2">&quot;WN&quot;</span><span class="p">}</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">4400</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">sampleholder_type</span> <span class="o">==</span> <span class="s2">&quot;ARD24&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">144</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">sampleholder_type</span> <span class="o">==</span> <span class="s2">&quot;RF80&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">520</span><span class="p">,</span> <span class="mi">685</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">sampleholder_type</span> <span class="o">==</span> <span class="s2">&quot;DC24&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="s2">&quot;DC&quot;</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">680</span><span class="p">,</span> <span class="mi">850</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="n">sampleholder_type</span> <span class="ow">in</span> <span class="n">default_sampleholders</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="o">**</span><span class="n">default_sampleholders</span><span class="p">[</span><span class="n">sampleholder_type</span><span class="p">],</span>
+                                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
 <div class="viewcode-block" id="Chip.produce_n_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_n_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">launcher_type</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span> <span class="n">launcher_gap</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span> <span class="n">pad_pitch</span><span class="p">,</span>
-                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces n launchers at default locations.</span>
+                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces n launchers at default locations and optionally changes the chip size.</span>
 
 <span class="sd">        Launcher pads are equally distributed around the chip. This may be overridden by specifying</span>
 <span class="sd">        the number of pads desired per chip side if ``n`` is an array of 4 numbers.</span>
@@ -467,10 +460,14 @@
 <span class="sd">            pad_pitch: distance between pad centers</span>
 <span class="sd">            launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers</span>
 <span class="sd">            enabled: optional list of enabled launchers</span>
+<span class="sd">            chip_box: optionally changes the chip size (``self.box``)</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">chip_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">chip_box</span>
 
         <span class="k">if</span> <span class="n">launcher_type</span> <span class="o">==</span> <span class="s2">&quot;DC&quot;</span><span class="p">:</span>
             <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">LauncherDC</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">)</span>

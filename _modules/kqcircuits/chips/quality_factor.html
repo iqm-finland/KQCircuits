@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.quality_factor &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.chips.quality_factor &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -221,6 +217,8 @@
     <span class="n">resonators_both_sides</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Place resonators on both sides of feedline&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">max_res_len</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Maximal straight length of resonators&quot;</span><span class="p">,</span> <span class="mf">1e30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
                         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Resonators exceeding this length become meandering&quot;</span><span class="p">)</span>
+    <span class="c1"># override box to have hidden=False and allow GUI editing</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="QualityFactor.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.quality_factor.html#kqcircuits.chips.quality_factor.QualityFactor.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Interpretation of parameter lists</span>

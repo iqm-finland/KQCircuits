@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
   
 
   
@@ -67,10 +67,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -349,7 +345,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <dl class="method">
 <dt id="kqcircuits.chips.chip.Chip.produce_launchers">
 <code class="sig-name descname">produce_launchers</code><span class="sig-paren">(</span><em class="sig-param">sampleholder_type</em>, <em class="sig-param">launcher_assignments=None</em>, <em class="sig-param">enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_launchers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces launchers for typical sample holders.</p>
+<dd><p>Produces launchers for typical sample holders and sets chip size (<code class="docutils literal notranslate"><span class="pre">self.box</span></code>) accordingly.</p>
 <p>This is a wrapper around <code class="docutils literal notranslate"><span class="pre">produce_n_launchers()</span></code> to generate typical launcher configurations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -367,8 +363,8 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 
 <dl class="method">
 <dt id="kqcircuits.chips.chip.Chip.produce_n_launchers">
-<code class="sig-name descname">produce_n_launchers</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">launcher_type</em>, <em class="sig-param">launcher_width</em>, <em class="sig-param">launcher_gap</em>, <em class="sig-param">launcher_indent</em>, <em class="sig-param">pad_pitch</em>, <em class="sig-param">launcher_assignments=None</em>, <em class="sig-param">enabled=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces n launchers at default locations.</p>
+<code class="sig-name descname">produce_n_launchers</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">launcher_type</em>, <em class="sig-param">launcher_width</em>, <em class="sig-param">launcher_gap</em>, <em class="sig-param">launcher_indent</em>, <em class="sig-param">pad_pitch</em>, <em class="sig-param">launcher_assignments=None</em>, <em class="sig-param">enabled=None</em>, <em class="sig-param">chip_box=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces n launchers at default locations and optionally changes the chip size.</p>
 <p>Launcher pads are equally distributed around the chip. This may be overridden by specifying
 the number of pads desired per chip side if <code class="docutils literal notranslate"><span class="pre">n</span></code> is an array of 4 numbers.</p>
 <p>Pads not in <code class="docutils literal notranslate"><span class="pre">launcher_assignments</span></code> are disabled by default. The <code class="docutils literal notranslate"><span class="pre">enabled</span></code> argument may
@@ -384,6 +380,7 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>pad_pitch</strong> – distance between pad centers</p></li>
 <li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a name to some of the launchers</p></li>
 <li><p><strong>enabled</strong> – optional list of enabled launchers</p></li>
+<li><p><strong>chip_box</strong> – optionally changes the chip size (<code class="docutils literal notranslate"><span class="pre">self.box</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

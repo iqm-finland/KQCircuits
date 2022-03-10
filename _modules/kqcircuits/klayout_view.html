@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.klayout_view &mdash; KQCircuits 4.2.8 documentation</title>
+  <title>kqcircuits.klayout_view &mdash; KQCircuits  documentation</title>
   
 
   
@@ -65,10 +65,6 @@
 
           
             
-            
-              <div class="version">
-                4.2.8
-              </div>
             
           
 
@@ -222,7 +218,6 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="p">,</span> <span class="s2">&quot;Application&quot;</span><span class="p">):</span>
             <span class="n">error</span> <span class="o">=</span> <span class="n">MissingUILibraryException</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Cannot find KLayout UI library.&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">error</span>
         <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">current</span> <span class="ow">or</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutView</span><span class="o">.</span><span class="n">current</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -233,7 +228,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span> <span class="o">=</span> <span class="n">view</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">error</span> <span class="o">=</span> <span class="n">InvalidViewException</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;The view is not an instance of pya.LayoutView&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
                 <span class="k">raise</span> <span class="n">error</span>
         <span class="k">if</span> <span class="n">initialize</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_default_layers</span><span class="p">()</span>
