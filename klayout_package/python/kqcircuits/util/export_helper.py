@@ -20,6 +20,7 @@ import json
 import logging
 import subprocess
 import platform
+from sys import argv
 from pathlib import Path
 
 from autologging import logged, traced
@@ -164,6 +165,9 @@ def open_with_klayout_or_default_application(filepath):
     Tries to open file with Klayout. If Klayout is not found, opens file with operating system's default application.
     Implementation supports Windows, macOS, and Linux.
     """
+    if argv[-1] == "-q":  # quiet mode, do not run viewer
+        return
+
     try:
         subprocess.call((klayout_executable_command(), filepath))
         return
