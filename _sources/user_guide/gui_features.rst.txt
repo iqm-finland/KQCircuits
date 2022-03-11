@@ -59,7 +59,7 @@ PCell shape is updated after each change in the parameters.
 .. image:: ../images/gui_workflows/modifying_waveguide.gif
 
 Converting elements placed in GUI into code
----------------------------------------------
+-------------------------------------------
 
 KQCircuits includes a macro ``export_cells_as_code.lym`` that can be used to
 convert elements placed in GUI into code that can be used in chip PCells. For
