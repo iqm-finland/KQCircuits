@@ -38,10 +38,17 @@ from kqcircuits.pya_resolver import pya
 
 _kqc_libraries = {}  # dictionary {library name: (library, library path relative to kqcircuits)}
 
+# Source directories not to be included in the library
+_excluded_paths = (
+    "__pycache__",
+    "util",
+    "simulations",
+    "masks",
+)
+
 # modules NOT to be included in the library, (python file names without extension)
 _excluded_module_names = (
     "__init__",
-    "library_helper",
     "element",
     "qubit",
     "airbridge",
@@ -53,6 +60,7 @@ _excluded_module_names = (
     "junction_test_pads",
     "tsv",
 )
+
 
 @traced
 @logged
@@ -256,22 +264,28 @@ def _get_all_pcell_classes(reload=False, path=""):
     pcell_classes = []
 
     for src in SRC_PATHS:
-        module_paths = src.joinpath(path).rglob("*.py")
         pkg = src.parts[-1]
 
-        for mp in module_paths:
-            module_name = mp.stem
-            if module_name in _excluded_module_names:
-                continue
-            # Get the module path starting from the "pkg" directory below project root directory.
-            import_path_parts = mp.parts[::-1][mp.parts[::-1].index(pkg)::-1]
-            import_path = ".".join(import_path_parts)[:-3]  # the -3 is for removing ".py" from the path
+        if path == "":
+            library_src_paths = [f for f in src.iterdir() if f.is_dir() and f.name not in _excluded_paths]
+        else:
+            library_src_paths = [src.joinpath(path)]
 
-            module = importlib.import_module(import_path)
-            if reload:
-                importlib.reload(module)
-                _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
-            pcell_classes += _get_pcell_classes(module)
+        for library_src in library_src_paths:
+            module_paths = library_src.rglob("*.py")
+            for mp in module_paths:
+                module_name = mp.stem
+                if module_name in _excluded_module_names:
+                    continue
+                # Get the module path starting from the "pkg" directory below project root directory.
+                import_path_parts = mp.parts[::-1][mp.parts[::-1].index(pkg)::-1]
+                import_path = ".".join(import_path_parts)[:-3]  # the -3 is for removing ".py" from the path
+
+                module = importlib.import_module(import_path)
+                if reload:
+                    importlib.reload(module)
+                    _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
+                pcell_classes += _get_pcell_classes(module)
 
     return pcell_classes
 
