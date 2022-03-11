@@ -238,10 +238,17 @@ class MaskSet:
                 mask_layout.name += mask_layout.face_id
             mask_layout.build(self.chips_map_legend)
 
+        chip_copy_label_layers = [
+            "base_metal_gap",
+            "base_metal_gap_wo_grid",
+            "base_metal_gap_for_EBL"
+        ]
+
         # Insert submask cells to different cell instances, so that these cells can have different chip labels even if
         # the original submask cells are identical. Also copy the MaskLayout objects of identical submasks into separate
         # MaskLayout objects with different `extra_id` so that mask export can use that information.
         mask_layouts_to_remove = set()
+        submask_layouts_with_exported_layers = set()
         submask_layouts = []
         for mask_layout in self.mask_layouts:
             for i, (sm_layout, sm_pos) in enumerate(mask_layout.submasks):
@@ -257,6 +264,13 @@ class MaskSet:
                 mask_layout.submasks[i] = (new_sm_layout, sm_pos)
                 submask_layouts.append(new_sm_layout)
                 mask_layouts_to_remove.add(sm_layout)
+                # Make sure that layers are only exported once if there are multiple identical submasks
+                if sm_layout in submask_layouts_with_exported_layers:
+                    # only export layers where chip copy labels are since they are different even for identical submasks
+                    new_sm_layout.mask_export_layers = \
+                        [layer for layer in chip_copy_label_layers if layer in new_sm_layout.mask_export_layers]
+                else:
+                    submask_layouts_with_exported_layers.add(sm_layout)
         self.mask_layouts = submask_layouts + [ml for ml in self.mask_layouts if ml not in mask_layouts_to_remove]
 
         # add chip copy labels for every mask layout
@@ -266,7 +280,7 @@ class MaskSet:
             mask_layout.top_cell.insert(pya.DCellInstArray(labels_cell.cell_index(), pya.DTrans(pya.DVector(0, 0))))
 
             if mask_layout not in submask_layouts:
-                mask_layout.insert_chip_copy_labels(labels_cell)
+                mask_layout.insert_chip_copy_labels(labels_cell, chip_copy_label_layers)
                 # remove "$1" or similar unnecessary postfix from cell name
                 mask_layout.top_cell.name = f"{mask_layout.name}"
 

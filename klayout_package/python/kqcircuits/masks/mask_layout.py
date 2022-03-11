@@ -195,11 +195,12 @@ class MaskLayout:
         merge_layers(self.layout, [maskextra_cell], self.face()["base_metal_gap_wo_grid"], self.face()["ground_grid"],
                      self.face()["base_metal_gap"])
 
-    def insert_chip_copy_labels(self, labels_cell):
+    def insert_chip_copy_labels(self, labels_cell, layers):
         """Inserts chip copy labels to all chips in this mask layout and its submasks
 
         Args:
             labels_cell: Cell to which the labels are inserted
+            layers: list of layer names (without face_ids) where the labels are produced
         """
 
         # find labels_cell for this mask and each submask
@@ -240,11 +241,7 @@ class MaskLayout:
                     bbox_x1 = bbox.left if inst.dtrans.is_mirror() else bbox.right
                     produce_label(labels_cell_2, pos_index_name, inst.dtrans*(pya.DPoint(bbox_x1, bbox.bottom)),
                                   "bottomright", mask_layout.dice_width, mask_layout.text_margin,
-                                  [
-                                      mask_layout.face()["base_metal_gap"],
-                                      mask_layout.face()["base_metal_gap_wo_grid"],
-                                      mask_layout.face()["base_metal_gap_for_EBL"]
-                                  ],
+                                  [mask_layout.face()[layer] for layer in layers],
                                   mask_layout.face()["ground_grid_avoidance"])
                     bbox_x2 = bbox.right if inst.dtrans.is_mirror() else bbox.left
                     mask_layout._add_chip_graphical_representation_layer(chip_name,
