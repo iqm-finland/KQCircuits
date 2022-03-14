@@ -70,21 +70,24 @@ the configuration file.
 
 Examples::
 
-    # Get all parameters form 'OtherClass'
-    @add_parameters_from(OtherClass)
-    class MyClass():
-
-    # Get only some parameters form 'OtherClass'
+    # Get two parameters form 'OtherClass'
     @add_parameters_from(OtherClass, "param_a", "param_b")
     class MyClass():
 
-    # Also change the default value of some borrowed parameters
+    # Get all parameters form 'OtherClass'
+    @add_parameters_from(OtherClass, "*")  # or just @add_parameters_from(OtherClass)
+    class MyClass():
+
+    # Get all parameters form 'OtherClass' except one
+    @add_parameters_from(OtherClass, "*", "param_a")
+    class MyClass():
+
+    # Get and change default values of several parameters at once
     @add_parameters_from(OtherClass, "param_a", "param_b", param_c=42, param_d=43)
     class MyClass():
 
     # Get all parameters form 'OtherClass' but override one
-    @add_parameters_from(OtherClass, param_b=41)
-    @add_parameters_from(OtherClass)
+    @add_parameters_from(OtherClass, "*", param_b=41)
     class MyClass():
 
 Note that decorators are applied in "reverse-order", i.e. first the class is

@@ -22,26 +22,37 @@ from kqcircuits.pya_resolver import pya
 def add_parameters_from(cls, *param_names, **param_with_default_value):
     """Decorator function to add parameters to the decorated class.
 
-    If both `param_names` and `param_with_default_value` is empty it takes all parameters of `cls`,
-    otherwise only takes parameters mentioned in `param_names` and `param_with_default_value`.
+    Only the named parameters are added or changed. Use a starting wildcard (``"*"``) argument to
+    get all parameters of ``cls``. For simplicity, if nothing is specified it gets all parameters.
+
+    Parameters in ``param_names`` after the starting ``"*"`` will be *excluded*. The ``"*"`` is also
+    useful together with ``param_with_default_value`` to get all parameters but change some.
 
     Args:
         cls: the class to take parameters from
-        param_names: is an optional list of parameter names to take
-        param_with_default_value: is an optional list of parameter names and new default values
+        *param_names: parameter names to take (or remove if '*' is the first)
+        **param_with_default_value: dictionary of parameter names and new default values
     """
-    pl = list(param_names) + list(param_with_default_value.keys())
-    cp = {n: p for n, p in cls.get_schema(noparents=True).items() if not pl or n in pl}
+
+    invert = (not param_names and not param_with_default_value)
+    if param_names and param_names[0] == "*":
+        param_names = param_names[1:]
+        invert = True
+
+    unknown = (set(param_names) or set(param_with_default_value.keys())) - set(cls.get_schema().keys())
+    if unknown:
+        raise ValueError(f"Parameter(s) {unknown} not availeble in '{cls.__name__}'")
 
     def _decorate(obj):
-        for name, p in cp.items():
+        for name, p in cls.get_schema().items():
             if name in param_with_default_value and param_with_default_value[name] != p.default:
                 # Redefine the Param object because multiple elements may refer to it
                 p = Param(p.data_type, p.description, param_with_default_value[name], **p.kwargs)
+            elif invert ^ (name not in param_names):
+                continue
             setattr(obj, name, p)
             p.__set_name__(obj, name)
         return obj
-
     return _decorate
 
 

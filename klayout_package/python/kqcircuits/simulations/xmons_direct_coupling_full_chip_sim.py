@@ -154,7 +154,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
             "fluxline_type": "Fluxline Standard" if self.enable_flux_lines else "none",
             "squid_type": 'SIM1',
             "arm_length": [146] * 4,
-            "corner_r": 2,
+            "island_r": 2,
             "cpl_length": [0, 140, 0],
             "cpl_width": [60, 24, 60],
             "cpl_gap": [110, 102, 110],

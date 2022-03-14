@@ -41,6 +41,7 @@ class Swissmon(Qubit):
     cpl_gap = Param(pdt.TypeList, "Coupler gap (um, WNE)", [102, 102, 102])
     port_width = Param(pdt.TypeList, "Port width (um, WNE)", [10, 10, 10])
     cl_offset = Param(pdt.TypeList, "Chargeline offset (um, um)", [200, 200])
+    island_r = Param(pdt.TypeDouble, "Center island rounding radius", 5, unit="μm")
 
     def build(self):
         self._produce_cross_and_squid()
@@ -98,7 +99,7 @@ class Swissmon(Qubit):
 
             # convert to range and recover CPW port
             shoe_region = pya.Region([shoe.to_itype(self.layout.dbu)])
-            shoe_region.round_corners(self.corner_r / self.layout.dbu, self.corner_r / self.layout.dbu, self.n)
+            shoe_region.round_corners(self.island_r / self.layout.dbu, self.island_r / self.layout.dbu, self.n)
             shoe_region2 = shoe_region - port_region
 
         # move to the north arm of swiss cross
@@ -180,7 +181,7 @@ class Swissmon(Qubit):
 
         cross = pya.DPolygon(cross_gap_points)
         cross.insert_hole(cross_island_points)
-        cross_rounded = cross.round_corners(self.corner_r, self.corner_r, self.n)
+        cross_rounded = cross.round_corners(self.island_r, self.island_r, self.n)
         region_etch = pya.Region([cross_rounded.to_itype(self.layout.dbu)]) - squid_unetch_region
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region_etch)
 

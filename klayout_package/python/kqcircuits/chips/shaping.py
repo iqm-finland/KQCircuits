@@ -44,7 +44,7 @@ class Shaping(Chip):
             arm_width=[30, 23, 30, 23],
             arm_length=[190, 96, 160, 96],
             gap_width=89,
-            corner_r=2,
+            island_r=2,
             cpl_length=[235, 0, 205],
             cpl_width=[60, 42, 60],
             cpl_gap=[110, 112, 110],

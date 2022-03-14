@@ -134,7 +134,7 @@ class XMonsDirectCoupling(Chip):
         arm_length = 146
         qubit_props_common = {
             "arm_length": [arm_length] * 4,
-            "corner_r": 2,
+            "island_r": 2,
             "port_width": [10, 5, 10],
         }
         arm_width_a = self.arm_width_a

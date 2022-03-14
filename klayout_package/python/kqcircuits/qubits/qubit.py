@@ -44,7 +44,6 @@ class Qubit(Element):
     LIBRARY_DESCRIPTION = "Library for qubits."
     LIBRARY_PATH = "qubits"
 
-    corner_r = Param(pdt.TypeDouble, "Center island rounding radius", 5, unit="μm")
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_fluxline_type, choices=fluxline_type_choices)
     mirror_squid =  Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)

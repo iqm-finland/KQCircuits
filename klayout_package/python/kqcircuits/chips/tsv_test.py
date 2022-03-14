@@ -22,9 +22,10 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.test_structures.tsv_test_pattern import TsvTestPattern
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse import TsvEllipse
 
 
-@add_parameters_from(Tsv, "tsv_elliptical_width")
+@add_parameters_from(TsvEllipse, "tsv_elliptical_width")
 class TsvTest(Chip):
     """Through silicon via test chip.
 

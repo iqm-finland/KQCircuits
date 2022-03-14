@@ -141,7 +141,7 @@ class SingleXmons(Chip):
             arm_length=[146] * 4,
             arm_width=[24] * 4,
             gap_width=72,
-            corner_r=2,
+            island_r=2,
             cpl_length=[0, 140, 0],
             cpl_width=[60, 24, 60],
             cpl_gap=[110, 102, 110],
