@@ -70,13 +70,11 @@ class MultiFace(Chip):
             "marker_diagonals": 2,
             "face_ids": self.face_ids[1],
             "use_face_prefix": True,
-            "name_chip": self.name_chip,
-            "name_mask": self.name_mask,
             "dice_width": default_mask_parameters[self.face_ids[1]]["dice_width"],
             "text_margin": default_mask_parameters[self.face_ids[1]]["text_margin"],
             "marker_types": self.face1_marker_types
         }
-        t_frame_trans = pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans.M90
+        t_frame_trans = pya.DTrans(self.box.p2.x, 0) * pya.DTrans.M90
         self.produce_frame(t_frame_parameters, t_frame_trans)
 
         if self.with_gnd_tsvs:
