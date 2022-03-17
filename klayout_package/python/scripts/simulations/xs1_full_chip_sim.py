@@ -26,14 +26,19 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, open_wi
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
+launchers = True
+port_size = 200
+if launchers:
+    port_size = 900
+
 # Simulation parameters
 sim_class = SingleXmonsFullChipSim  # pylint: disable=invalid-name
 sim_parameters = {
     'use_ports': True,
-    'launchers': True,  # True includes bonding pads and tapers, false includes only waveguides
+    'launchers': launchers,  # True includes bonding pads and tapers, false includes only waveguides
     'use_test_resonators': True,  # True makes XS1, false makes XS2
     'n': 16,  # Reduce number of point in waveguide corners
-    'port_size': 200
+    'port_size': port_size
 }
 export_parameters = {
     'path': dir_path
