@@ -3,6 +3,8 @@ Architecture
 
 This section explains some things about the KQCircuits code architecture.
 
+.. _architecture_elements:
+
 Elements
 ^^^^^^^^
 
@@ -38,6 +40,8 @@ things should be taken into account when writing new elements:
     "build" the element. When ``produce_impl`` is called, the instance variables
     of the PCell are set to new values based on the given parameters. The PCell
     instance is then created or updated based on these new parameter values.
+
+.. _architecture_parameters:
 
 PCell parameters
 ^^^^^^^^^^^^^^^^

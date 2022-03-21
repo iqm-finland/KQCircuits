@@ -11,22 +11,166 @@ using any external code editor. To start working with the KQCircuits code base d
 File system hierarchy
 ---------------------
 
-TODO: describe where the different parts of KQCircuits are located in the file system.
+In the KQCircuits root folder the most important folder for most users is the
+``klayout_package`` folder, which is also all that is included in the Salt
+package. Other folders are mainly for automatic tests and documentation.
+KQCircuits code is divided into the ``kqcircuits`` and ``scripts`` folders in
+``klayout_package/python``. These two folders are also (after installation
+process) linked as symbolic links ``kqcircuits`` and ``kqcircuits_scripts``
+in the ``~/.klayout` or ``~/KLayout`` folder.
+
+The ``kqcircuits`` folder contains all the KQCircuits PCell classes and many
+other modules used by them or by scripts. Folders directly under under
+``kqcircuits`` containing PCell classes correspond to different PCell
+libraries such as elements, chips, or test structures.
+
+The ``scripts`` folder contains macros to be run in KLayout GUI and
+scripts for generating simulation files or mask files. The files there are in
+general not meant to be imported in other Python files. The outputs of
+simulation or mask scripts can be found in the ``tmp`` folder below the main
+KQCircuits folder.
 
 Structure of  PCell code
 ------------------------
 
-TODO: describe the general structure of PCell code, Element class, parameters, produce_impl(), etc.
+Element class
+^^^^^^^^^^^^^
 
-Example of defining a Chip and an Element
------------------------------------------
+Any KQCircuits PCells must be derived from the Element class, and we
+call them "elements". For example, to define a new element ``MyElement`` you
+would start the code with::
 
-TODO: further details about writing Element and Chip code.
+    class MyElement(Element):
 
-Example of inserting an Element
--------------------------------
+You can of course also have elements derived from other existing elements
+instead of Element directly::
 
-TODO: how to bild new Elements or Chips from existing Elements.
+    class MyElement2(MyElement):
+
+There are common base classes for certain types of elements such as chips
+(Chip) or qubits (Qubit). For more information, see
+:ref:`architecture_elements` and the API documentation for Element.
+
+Parameters
+^^^^^^^^^^
+
+PCell parameters are used to create PCell instances with different parameter
+values. They can be modified in GUI or when creating the instance in code.
+The PCell parameters of a KQCircuits element are defined using ``Param``
+objects as class-level variables, for example::
+
+    bridge_length = Param(pdt.TypeDouble, "Bridge length (from pad to pad)", 44, unit="μm")
+
+The ``Param``  definition always has type, description and default value, and
+optionally some other information such as the unit or ``hidden=True`` to hide
+it from GUI. More information about parameters can be found in
+:ref:`architecture_parameters` section.
+
+Build
+^^^^^
+
+The geometry for any KQCircuit element is created in the ``build`` method, so
+generally you should define at least that method in you element classes. See
+:ref:`architecture_elements` section for more details about how this works.
+
+Example of defining an Element
+------------------------------
+
+Here is an example of defining a new element, with code comments explaining
+the different parts::
+
+    # Import any modules, classes or functions used in our code.
+    from kqcircuits.elements.element import Element
+    from kqcircuits.pya_resolver import pya
+    from kqcircuits.util.parameters import Param, pdt
+    from kqcircuits.util.symmetric_polygons import polygon_with_vsym
+
+
+    # Any KQCircuits element must inherit from Element.
+    class SimpleCross(Element):
+
+        # Define PCell parameters for this class here.
+        # Each parameter definition contains the parameter type, description and default value.
+        # Other optional data such as the unit can also be defined for parameters.
+        arm_length = Param(pdt.TypeDouble, "Cross arm length", 100, unit="μm")
+
+        # The build() function is where the element geometry is built.
+        def build(self):
+            # We define a hardcoded value for arm_width, so it cannot be changed from outside like arm_length.
+            arm_width = 30
+            # Define some variables to hold values used commonly in this function.
+            len1 = arm_width/2
+            len2 = arm_width/2 + self.arm_length
+            # Define the cross polygon using a list of DPoints.
+            # Note that we use polygon_with_vsym() to only have to define half of the points.
+            # For non-symmetric polygons we would use pya.DPolygon() instead of polygon_with_vsym().
+            cross_poly = polygon_with_vsym([
+                pya.DPoint(-len1, -len2),
+                pya.DPoint(-len1, -len1),
+                pya.DPoint(-len2, -len1),
+                pya.DPoint(-len2, len1),
+                pya.DPoint(-len1, len1),
+                pya.DPoint(-len1, len2),
+            ])
+            # Add the cross polygon to the cell.
+            # We use the get_layer() function to select in which layer the polygon is added.
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(cross_poly)
+
+To include this element in the KQCircuits element library, copy this code to a
+new Python-file ``simple_cross.py`` in the
+``klayout_package/python/kqcircuits/elements`` folder. Then ``SimpleCross``
+can be used like any other KQCircuits element.
+
+Example of defining a Chip and inserting elements into it
+---------------------------------------------------------
+
+Many elements not only create their own geometry from scratch, but also
+include other elements as subcells. This is especially true for chips, which
+typically use existing elements as building blocks instead of producing shapes
+directly. In this example we show how to place instances of the ``SimpleCross``
+element created in the previous section into a new chip::
+
+    from kqcircuits.chips.chip import Chip
+    from kqcircuits.elements.simple_cross import SimpleCross
+    from kqcircuits.pya_resolver import pya
+
+
+    # New chip implementation must use the Chip element as a base class.
+    # As chips are also elements, all the previous explanations about
+    # parameters, build-method etc. hold also for them.
+    class NewChip1(Chip):
+
+        def build(self):
+
+            # The produce_launchers function creates launchers fitting a certain
+            # sampleholder and sets the chip size accordingly. The available
+            # sampleholder types are defined in defaults.py (default_sampleholders).
+            self.produce_launchers("SMA8")
+
+            # Define variable for half chip width for positioning elements
+            half_width = self.box.width()/2
+
+            # Elements can be inserted to other elements (including chips) using the insert_cell function.
+            # Giving the class name, instance transformation and pcell parameters, it creates a cell object
+            # with the given parameter values and places an instance of that cell inside this cell with the
+            # given transformation. (Note that the chip origin is at the bottom left corner of the chip)
+            self.insert_cell(SimpleCross, pya.DTrans(half_width, half_width), arm_length=200)
+
+            # Another option is to first create the cell separately using add_element, and then insert
+            # instances of that cell using insert_cell. This can be useful when placing many instances
+            # with the same parameter values.
+            cross_cell = self.add_element(SimpleCross, arm_length=150)
+            self.insert_cell(cross_cell, pya.DTrans(half_width - 2000, half_width - 2000))
+            self.insert_cell(cross_cell, pya.DTrans(half_width - 2000, half_width + 2000))
+            self.insert_cell(cross_cell, pya.DTrans(half_width + 2000, half_width + 2000))
+            self.insert_cell(cross_cell, pya.DTrans(half_width + 2000, half_width - 2000))
+
+            # Call the Chip-class build-method to produce the chip frame and possible ground plane grid.
+            super().build()
+
+This code can be copied to a new Python-file ``new_chip1.py`` in the
+``klayout_package/python/kqcircuits/chips`` folder to make it visible in the
+KQCircuits chip library.
 
 Refpoints
 ---------
