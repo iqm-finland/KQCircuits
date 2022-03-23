@@ -51,6 +51,7 @@ class Chip(Element):
 
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)), hidden=True)
     with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
+    merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
     dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="[μm]")
     name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
     name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
@@ -226,7 +227,8 @@ class Chip(Element):
         self.produce_structures()
         if self.with_grid:
             self.produce_ground_grid()
-        self.merge_layout_layers()
+        if self.merge_base_metal_gap:
+            self.merge_layout_layers()
         self._produce_instance_name_labels()
 
     def _produce_instance_name_labels(self):

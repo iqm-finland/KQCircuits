@@ -139,7 +139,7 @@ class MaskSet:
                 create_element = textwrap.dedent(
                     f"""
                     from {chip_class.__module__} import {chip_class.__name__}
-                    cell = {chip_class.__name__}.create(layout,
+                    cell = {chip_class.__name__}.create(layout, merge_base_metal_gap=True,
                         {('name_chip="' + variant_name + '",') if 'name_chip' not in params else ''}
                         {('name_mask="' + self.name + '",') if 'name_mask' not in params else ''}
                         {f'with_grid={self.with_grid},' if 'with_grid' not in params else ''}
@@ -211,6 +211,7 @@ class MaskSet:
         self.__log.info("Resolving %s", variant_name)
 
         chip_parameters = {
+            "merge_base_metal_gap": True,
             "name_chip": variant_name,
             "display_name": variant_name,
             "name_mask": self.name,

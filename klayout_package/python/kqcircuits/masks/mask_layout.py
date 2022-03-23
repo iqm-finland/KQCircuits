@@ -152,9 +152,6 @@ class MaskLayout:
                             for shapes_to_remove in shapes:
                                 shapes_to_remove.delete()
 
-                merge_layers(self.layout, [new_cell], self.face()["base_metal_gap_wo_grid"], self.face()["ground_grid"],
-                             self.face()["base_metal_gap"])
-
                 self.chips_map_legend[name] = new_cell
 
         step_ver = pya.DVector(0, -self.chip_size)

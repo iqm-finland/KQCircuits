@@ -42,16 +42,6 @@ only after you know the API.
    #. Drag the new node with the mouse. The waveguide should change
       shape.
 
-   .. note::
-    * You may still see also the old waveguide shape, because of how chips are
-      currently implemented in KQC. To hide it, hide the "b base metal gap"
-      layer in the *Layers* panel to the right.
-    * Some other waveguides in the demo chip are "composite waveguides",
-      which contain both "simple waveguides" and other types of elements,
-      such as airbridges. Their shape cannot be modified in the same way.
-      They can be converted to static cells and then the shapes of the simple
-      waveguide cells inside them can be modified.
-
 #. **Change a location of a qubit.**
 
    #. Press ``F2`` to see the whole top cell.
