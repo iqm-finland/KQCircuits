@@ -55,7 +55,7 @@ KQCircuits is a KLayout extension. KLayout can be used either using a graphical 
 a standalone python module. KQCircuits supports both modes of operation. For the first time users,
 the graphical user interface (GUI) mode is recommended.
 
-A video tutorial for the GUI installation can be found `on YouTube <https://youtu.be/9ra_5s2i3eU>`__
+Video tutorials for the GUI installation can be found on YouTube.
 
 .. raw:: html
 
@@ -68,6 +68,9 @@ A video tutorial for the GUI installation can be found `on YouTube <https://yout
          <th>
            Ubuntu
          </th>
+         <th>
+           MacOS
+         </th>
        </tr>
        <tr>
          <th>
@@ -78,6 +81,11 @@ A video tutorial for the GUI installation can be found `on YouTube <https://yout
          <th>
            <a href="https://youtu.be/ml773WtfnT0">
              <img src="https://img.youtube.com/vi/ml773WtfnT0/mqdefault.jpg" width=300 alt="KQCircuits Getting Started (Ubuntu)">
+           </a>
+         </th>
+         <th>
+           <a href="https://youtu.be/lt5ThOQ-caU">
+             <img src="https://img.youtube.com/vi/lt5ThOQ-caU/mqdefault.jpg" width=300 alt="KQCircuits Getting Started (MacOS)">
            </a>
          </th>
        </tr>
