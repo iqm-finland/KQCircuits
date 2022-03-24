@@ -48,7 +48,7 @@ setup(
         "tqdm>=4.61",
     ],
     extras_require={
-        "docs": ["sphinx~=2.4", "sphinx-rtd-theme~=0.4", "networkx>=2.7", "matplotlib>=3.5.1", "gmsh>=4.9.3"],
+        "docs": ["sphinx~=4.4", "sphinx-rtd-theme~=0.4", "networkx>=2.7", "matplotlib>=3.5.1", "gmsh>=4.9.3"],
         "tests": ["pytest>=6.0.2", "pytest-cov~=2.8", "pytest-xdist>=2.1", "tox>=3.18", "pylint==2.9",
                   "networkx>=2.7", "matplotlib>=3.5.1"],
         "notebooks": ["gdspy~=1.5", "jupyter~=1.0.0"],

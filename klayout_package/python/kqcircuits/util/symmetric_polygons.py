@@ -22,7 +22,7 @@ from kqcircuits.pya_resolver import pya
 def polygon_with_hsym(points):
     """Polygon with horizontal symmetry.
 
-    Attributes:
+    Arguments:
         points: List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will
             be doubled.
 
@@ -35,7 +35,7 @@ def polygon_with_hsym(points):
 def polygon_with_vsym(points):
     """Polygon with vertical symmetry.
 
-    Attributes:
+    Arguments:
         points: List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will
             be doubled.
 
@@ -48,7 +48,7 @@ def polygon_with_vsym(points):
 def polygon_with_sym(points, mirror_trans):
     """Polygon with symmetry with respect to an axis.
 
-    Attributes:
+    Arguments:
         points: List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will
             be doubled.
         mirror_trans: pya.DTrans that mirrors the points with respect to an axis

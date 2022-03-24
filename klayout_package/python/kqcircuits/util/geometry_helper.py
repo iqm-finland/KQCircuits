@@ -92,7 +92,7 @@ def get_cell_path_length(cell, annotation_layer):
 def get_object_path_length(obj, layer):
     """Returns sum of lengths of all the paths in the object and its children
 
-    Attributes:
+    Arguments:
         obj: ObjectInstPath object
         layer: layer integer id in the database
     """
