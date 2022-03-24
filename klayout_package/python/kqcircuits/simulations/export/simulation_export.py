@@ -18,7 +18,6 @@
 import logging
 from itertools import product
 from pathlib import Path
-
 from kqcircuits.simulations.export.util import export_layers
 
 

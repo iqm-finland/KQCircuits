@@ -75,6 +75,7 @@ TMP_PATH = ROOT_PATH.joinpath("tmp")
 TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
 ANSYS_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")
+ELMER_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")
 
 # printed to corners of all chips and top of all masks
 # could be for example "IQM" or "A!"
@@ -127,6 +128,7 @@ _face_layers['b'] = {
     # Simulation faces [Layer 90-99]
     "simulation_signal": (90, 0),
     "simulation_ground": (91, 0),
+    "simulation_gap": (96, 0),
     "simulation_airbridge_flyover": (94, 0),
     "simulation_airbridge_pads": (95, 0),
 }
@@ -145,6 +147,7 @@ _face_layers['t'] = {
     # Simulation faces
     "simulation_signal": (92, 0),
     "simulation_ground": (93, 0),
+    "simulation_gap": (97, 0),
 }
 
 # Ceiling face layers

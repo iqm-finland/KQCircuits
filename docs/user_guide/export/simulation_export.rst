@@ -172,3 +172,23 @@ Once the ``simulation`` object is created, call function ``export_sonnet_son`` t
 Multiple simulations can be exported by calling ``export_sonnet``. The function takes list of simulations as it's first parameter::
 
     sons = export_sonnet([simulation], path)
+
+
+Gmsh export
+-----------
+
+The ``simulation`` object can be used to export an FEM mesh using Gmsh calling function ``export_simulation_gmsh``.
+There is an automatized simulation example at 'klayout_package/python/scripts/simulations' that creates a mesh using Gmsh and 
+computes the capacitance matrix using Elmer and visualizes the results using Paraview.
+
+Please note that the example requires the installation of
+
+* gmsh python api
+  ``pip install gmsh``
+* Elmerfem solver
+  see https://github.com/ElmerCSC/elmerfem
+* Paraview
+  https://www.paraview.org/
+
+Gmsh api suffices if one needs to generate the mesh only.
+

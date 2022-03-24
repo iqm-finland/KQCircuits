@@ -1,0 +1,78 @@
+Header
+  Mesh DB "." "simulation"
+End
+Simulation
+  Max Output Level = 5
+  Coordinate System = Cartesian 3D
+  Simulation Type = Steady State
+  Steady State Max Iterations = 1
+  Coordinate Scaling = 1e-6
+End
+Constants
+  Permittivity Of Vacuum = 8.8542e-12
+!  This one is changed to one to allow easier verification
+!  Permittivity Of Vacuum = 1.0
+End
+Body 1
+  Target Bodies(1) = $ chip_0
+  Equation = 1
+  Material = 2
+End
+Body 2
+  Target Bodies(1) = $ chip_1
+  Equation = 1
+  Material = 2
+End
+Body 3
+  Target Bodies(1) = $ vacuum
+  Equation = 1
+  Material = 1
+End
+Equation 1
+  Active Solvers(2) = 1 2
+  Calculate Electric Energy = True
+End
+Solver 1
+  Equation = Stat Elec Solver
+  Variable = Potential
+  Variable DOFs = 1
+  Procedure = "StatElecSolve" "StatElecSolver"
+  Calculate Electric Field = False
+  Calculate Electric Flux = False
+  Calculate Capacitance Matrix = True
+  Capacitance Matrix Filename = #FILEPATHSTEM/CapacitanceMatrix.dat
+  Potential Difference = 1.0e6
+  Linear System Solver = Iterative
+  Linear System Iterative Method = BiCGStab
+  Linear System Max Iterations = 200
+  Linear System Convergence Tolerance = 1.0e-07
+  Linear System Preconditioning = ILU1
+  Linear System ILUT Tolerance = 1.0e-03
+  Nonlinear System Max Iterations = 1
+  Nonlinear System Convergence Tolerance = 1.0e-4
+  Nonlinear System Newton After Tolerance = 1.0e-3
+  Nonlinear System Newton After Iterations = 10
+  Nonlinear System Relaxation Factor = 1
+  Steady State Convergence Tolerance = 1.0e-4
+  Nonlinear Post Solvers(1) = 2
+End
+Solver 2  !---- ResultOutputSolve, ResultOutputSolver
+   Exec Solver = Never
+   Equation = "ResultOutput"
+   Procedure = "ResultOutputSolve" "ResultOutputSolver"
+   Output File Name = #FILEPATHSTEM
+   Vtu format = Logical True
+   Save Geometry Ids = Logical True
+End
+Solver 3  !---- SaveData, SaveScalars
+   Exec Solver = Always
+   Equation = "sv"
+   Procedure = "SaveData" "SaveScalars"
+   Filename = results.dat
+End
+Material 1
+  Relative Permittivity = 1
+End
+Material 2
+  Relative Permittivity = 11.45
+End

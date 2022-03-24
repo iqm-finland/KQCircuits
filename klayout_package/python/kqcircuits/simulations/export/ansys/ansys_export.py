@@ -22,8 +22,7 @@ from pathlib import Path
 
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
-from kqcircuits.simulations.port import EdgePort, InternalPort
-from kqcircuits.simulations.export.util import get_enclosing_polygon, find_edge_from_point_in_cell, export_layers
+from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.defaults import default_layers, ANSYS_SCRIPTS_PATH
 from kqcircuits.simulations.simulation import Simulation
 
@@ -75,84 +74,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     if export_processing is None:
         export_processing = []
 
-    # gather port data
-    port_data = []
-    if simulation.use_ports:
-        for port in simulation.ports:
-            # Basic data from Port
-            p_data = port.as_dict()
-
-            # Define a 3D polygon for each port
-            if isinstance(port, EdgePort):
-
-                if simulation.wafer_stack_type == "multiface":
-                    port_top_height = simulation.substrate_height_top + simulation.chip_distance
-                else:
-                    port_top_height = simulation.box_height
-
-                # Determine which edge this port is on
-                if (port.signal_location.x == simulation.box.left
-                        or port.signal_location.x == simulation.box.right):
-                    p_data['polygon'] = [
-                        [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
-                         -simulation.substrate_height],
-                        [port.signal_location.x, port.signal_location.y + simulation.port_size / 2,
-                         -simulation.substrate_height],
-                        [port.signal_location.x, port.signal_location.y + simulation.port_size / 2, port_top_height],
-                        [port.signal_location.x, port.signal_location.y - simulation.port_size / 2, port_top_height]
-                    ]
-
-                elif (port.signal_location.y == simulation.box.top
-                      or port.signal_location.y == simulation.box.bottom):
-                    p_data['polygon'] = [
-                        [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
-                         -simulation.substrate_height],
-                        [port.signal_location.x + simulation.port_size / 2, port.signal_location.y,
-                         -simulation.substrate_height],
-                        [port.signal_location.x + simulation.port_size / 2, port.signal_location.y, port_top_height],
-                        [port.signal_location.x - simulation.port_size / 2, port.signal_location.y, port_top_height]
-                    ]
-
-                else:
-                    raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
-
-            elif isinstance(port, InternalPort):
-                try:
-                    _, _, signal_edge = find_edge_from_point_in_cell(
-                        simulation.cell,
-                        simulation.get_layer('simulation_signal', port.face),
-                        port.signal_location,
-                        simulation.layout.dbu)
-                except ValueError as e:
-                    raise ValueError('Signal edge of port {} on layer {} not found at location ({:.3f}, {:.3f})'.format(
-                        port.number,
-                        simulation.get_layer('simulation_signal', port.face),
-                        port.signal_location.x,
-                        port.signal_location.y
-                    )) from e
-
-                try:
-                    _, _, ground_edge = find_edge_from_point_in_cell(
-                        simulation.cell,
-                        simulation.get_layer('simulation_ground', port.face),
-                        port.ground_location,
-                        simulation.layout.dbu)
-                except ValueError as e:
-                    raise ValueError('Ground edge of port {} on layer {} not found at location ({:.3f}, {:.3f})'.format(
-                        port.number,
-                        simulation.get_layer('simulation_signal', port.face),
-                        port.signal_location.x,
-                        port.signal_location.y
-                    )) from e
-
-                port_z = simulation.chip_distance if port.face == 1 else 0
-                p_data['polygon'] = get_enclosing_polygon(
-                    [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
-                     [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])
-            else:
-                raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
-
-            port_data.append(p_data)
+    port_data = simulation.get_port_data()
 
     # ansys_data and optional_layers
     ansys_data = {

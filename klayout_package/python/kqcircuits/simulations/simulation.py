@@ -26,6 +26,8 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.port import Port, InternalPort, EdgePort
 from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
+from kqcircuits.simulations.export.util import get_enclosing_polygon
 
 
 @add_parameters_from(Element)
@@ -226,8 +228,10 @@ class Simulation:
                 ground_region.merge()
                 sim_region -= ground_region
 
+            sim_gap_region = ground_box_region - sim_region - ground_region
             insert_region(sim_region, face_id, "simulation_signal")
             insert_region(ground_region, face_id, "simulation_ground")
+            insert_region(sim_gap_region, face_id, "simulation_gap")
 
         # Export airbridge regions as merged simple polygons
         insert_region(merged_region_from_layer(0, "airbridge_flyover"), 0, "simulation_airbridge_flyover")
@@ -378,6 +382,110 @@ class Simulation:
         """
         d = (self.over_etching / p1.distance(p2)) * (p2 - p1)
         return [p1 - d, p2 + d]
+
+    def get_port_data(self):
+        """
+            Return the port data in dictionary form and add the information of port polygon
+
+            Returns:
+                port_data(list): list of port data dictionaries
+
+                    * Items from `Port` instance
+                    * polygon: point coordinates of the port polygon
+                    * signal_edge: point coordinates of the signal edge
+                    * ground_edge: point coordinates of the ground edge
+        """
+        simulation = self
+        # gather port data
+        port_data = []
+        if simulation.use_ports:
+            for port in simulation.ports:
+                # Basic data from Port
+                p_data = port.as_dict()
+
+                # Define a 3D polygon for each port
+                if isinstance(port, EdgePort):
+
+                    if simulation.wafer_stack_type == "multiface":
+                        port_top_height = simulation.substrate_height_top + simulation.chip_distance
+                    else:
+                        port_top_height = simulation.box_height
+
+                    # Determine which edge this port is on
+                    if (port.signal_location.x == simulation.box.left
+                            or port.signal_location.x == simulation.box.right):
+                        p_data['polygon'] = [
+                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
+                             -simulation.substrate_height],
+                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2,
+                             -simulation.substrate_height],
+                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2,
+                                port_top_height],
+                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
+                                port_top_height]
+                        ]
+
+                    elif (port.signal_location.y == simulation.box.top
+                          or port.signal_location.y == simulation.box.bottom):
+                        p_data['polygon'] = [
+                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
+                             -simulation.substrate_height],
+                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y,
+                             -simulation.substrate_height],
+                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y,
+                                port_top_height],
+                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
+                                port_top_height]
+                        ]
+
+                    else:
+                        raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
+
+                elif isinstance(port, InternalPort):
+                    try:
+                        _, _, signal_edge = find_edge_from_point_in_cell(
+                            simulation.cell,
+                            simulation.get_layer('simulation_signal', port.face),
+                            port.signal_location,
+                            simulation.layout.dbu)
+                    except ValueError as e:
+                        raise ValueError('Signal edge of port {} on layer {} not found at \
+                                location ({:.3f}, {:.3f})'.format(
+                            port.number,
+                            simulation.get_layer('simulation_signal', port.face),
+                            port.signal_location.x,
+                            port.signal_location.y
+                        )) from e
+
+                    try:
+                        _, _, ground_edge = find_edge_from_point_in_cell(
+                            simulation.cell,
+                            simulation.get_layer('simulation_ground', port.face),
+                            port.ground_location,
+                            simulation.layout.dbu)
+                    except ValueError as e:
+                        raise ValueError('Ground edge of port {} on layer {} not found at \
+                                location ({:.3f}, {:.3f})'.format(
+                            port.number,
+                            simulation.get_layer('simulation_signal', port.face),
+                            port.signal_location.x,
+                            port.signal_location.y
+                        )) from e
+
+                    port_z = simulation.chip_distance if port.face == 1 else 0
+                    p_data['polygon'] = get_enclosing_polygon(
+                        [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
+                         [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])
+                    p_data['signal_edge'] = ((signal_edge.x1, signal_edge.y1, port_z),
+                                             (signal_edge.x2, signal_edge.y2, port_z))
+                    p_data['ground_edge'] = ((ground_edge.x1, ground_edge.y1, port_z),
+                                             (ground_edge.x2, ground_edge.y2, port_z))
+                else:
+                    raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
+
+                port_data.append(p_data)
+
+        return port_data
 
     @staticmethod
     def delete_instances(cell, name, index=(0,)):
