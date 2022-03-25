@@ -15,6 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+
 import logging
 import sys
 from pathlib import Path
@@ -40,7 +41,7 @@ sim_parameters = {
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
     "finger_number": 5,
     "finger_width": 15,
-    "finger_gap_side": 5,
+    "finger_gap": 5,
     "finger_gap_end": 5,
     "finger_length": 20,
     "ground_padding": 10,
@@ -53,7 +54,7 @@ sim_parameters = {
 gap_parameters = {
     'finger_number': 4,
     'finger_length': 0,
-    'finger_gap_side': 0,
+    'finger_gap': 0,
     'finger_width': 10,
 }
 export_parameters = {

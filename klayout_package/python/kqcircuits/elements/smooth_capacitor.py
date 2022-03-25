@@ -18,10 +18,12 @@
 
 from math import pi, cos, sin, atan
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.element import Element
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
+
+@add_parameters_from(FingerCapacitorSquare, "fixed_length", finger_width=10, finger_gap=5)
 class SmoothCapacitor(Element):
     """The PCell declaration for a smooth finger capacitor.
 
@@ -29,18 +31,16 @@ class SmoothCapacitor(Element):
     through the capacitance range. This leads to continuous capacitance function,
     which enables using capacitor inside numerical optimization methods.
 
-    Capacitance range is achieved by changing single parameter called `finger_number`.
+    Capacitance range is achieved by changing single parameter called `finger_control`.
     """
 
     a2 = Param(pdt.TypeDouble, "Width of center conductor on the other end", -1, unit="μm",
                docstring="Non-physical value '-1' means that the default size 'a' is used.")
     b2 = Param(pdt.TypeDouble, "Width of gap on the other end", -1, unit="μm",
                docstring="Non-physical value '-1' means that the default size 'b' is used.")
-    finger_number = Param(pdt.TypeDouble, "Parameter for capacitor growth (related to number of fingers per side)", 2.1)
-    finger_width = Param(pdt.TypeDouble, "Width of a finger", 10, unit="μm")
+    finger_control = Param(pdt.TypeDouble, "Continuously adjust finger number", 2.1,
+               docstring="Parameter for capacitor growth (related to number of fingers per side)")
     ground_gap = Param(pdt.TypeDouble, "Gap between ground and finger", 10, unit="μm")
-    gap = Param(pdt.TypeDouble, "Gap between the fingers", 5, unit="μm")
-    fixed_length = Param(pdt.TypeDouble, "Fixed length of element, 0 for auto-length", 0, unit="μm")
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()
@@ -48,9 +48,9 @@ class SmoothCapacitor(Element):
     def build(self):
         # constants
         r1 = self.finger_width / 2
-        r2 = r1 + self.gap
-        scale = self.finger_width + self.gap
-        x_max = max(self.finger_number, 1.0 / self.finger_number) * scale - self.gap / 2
+        r2 = r1 + self.finger_gap
+        scale = self.finger_width + self.finger_gap
+        x_max = max(self.finger_control, 1.0 / self.finger_control) * scale - self.finger_gap / 2
         x_mid = x_max - self.finger_width
         xport = x_max + self.ground_gap
 
@@ -95,15 +95,15 @@ class SmoothCapacitor(Element):
             return pya.DPolygon(pnts)
 
         def finger_polygon(order_number):
-            if self.finger_number <= order_number:  # The finger does not exist for given order_number.
+            if self.finger_control <= order_number:  # The finger does not exist for given order_number.
                 return None
             trans = pya.DTrans(0, order_number % 2 == 1) * pya.DTrans(x_max, (order_number - 0.5) * scale)
-            if self.finger_number <= 1.0:
+            if self.finger_control <= 1.0:
                 return t_poly(0.0, scale).transformed(trans)
             t_len = scale * pi/2  # length of 90-degree turn segment
-            s_len = scale * (2 * self.finger_number - 3)  # length of straight segment
+            s_len = scale * (2 * self.finger_control - 3)  # length of straight segment
             f_len = s_len + 2 * t_len  # total length of finger (including two 90-degree turns and straight)
-            x = (self.finger_number - order_number) * f_len
+            x = (self.finger_control - order_number) * f_len
             if x < t_len:  # The first turn is not full 90 degrees.
                 return t_poly((x / t_len) * pi / 2, 0.0).transformed(trans)
             if s_len < 0.0:  # The first turn is limited by finger length. This only happens when order_number=0.
@@ -126,9 +126,9 @@ class SmoothCapacitor(Element):
                                                   ]).to_itype(self.layout.dbu))
 
         def middle_gap_fill():
-            y = scale - self.gap / 2 + self.ground_gap
+            y = scale - self.finger_gap / 2 + self.ground_gap
             x = (x_mid + x_max) / 2
-            l = 2 * x if self.finger_number < 1 else scale
+            l = 2 * x if self.finger_control < 1 else scale
             return pya.Region(pya.DPolygon([pya.DPoint(-x, y), pya.DPoint(l - x, y),
                                             pya.DPoint(x, -y), pya.DPoint(x - l, -y)]).to_itype(self.layout.dbu))
 
@@ -161,13 +161,13 @@ class SmoothCapacitor(Element):
         b2 = self.b if self.b2 < 0 else self.b2
         region_ground += wg_joint(xport, x_mid - self.ground_gap, b2 + a2/2)
         region_ground += wg_joint(-xport, -x_mid + self.ground_gap, self.b + self.a/2)
-        super_smoothen_region(region_ground, self.gap + self.ground_gap)
+        super_smoothen_region(region_ground, self.finger_gap + self.ground_gap)
 
         # Finalize finger pad regions
         right_fingers += wg_joint(xport, x_mid, a2/2)
         left_fingers += wg_joint(-xport, -x_mid, self.a/2)
-        super_smoothen_region(right_fingers, self.gap)
-        super_smoothen_region(left_fingers, self.gap)
+        super_smoothen_region(right_fingers, self.finger_gap)
+        super_smoothen_region(left_fingers, self.finger_gap)
 
         # Insert waveguide segments in both ends, if fixed_length is set
         if self.fixed_length != 0:

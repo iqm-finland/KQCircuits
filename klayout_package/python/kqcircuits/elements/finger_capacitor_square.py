@@ -17,11 +17,12 @@
 
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.element import Element
+from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 
 
+@add_parameters_from(FingerCapacitorTaper, "*", "taper_length")
 class FingerCapacitorSquare(Element):
     """The PCell declaration for a square finger capacitor.
 
@@ -33,13 +34,8 @@ class FingerCapacitorSquare(Element):
                docstring="Non-physical value '-1' means that the default size 'a' is used.")
     b2 = Param(pdt.TypeDouble, "Width of gap on the other end", -1, unit="μm",
                docstring="Non-physical value '-1' means that the default size 'b' is used.")
-    finger_number = Param(pdt.TypeInt, "Number of fingers", 5)
-    finger_width = Param(pdt.TypeDouble, "Width of a finger", 5, unit="μm")
-    finger_gap_side = Param(pdt.TypeDouble, "Gap between the fingers", 3, unit="μm")
     finger_gap_end = Param(pdt.TypeDouble, "Gap between the finger and other pad", 3, unit="μm")
-    finger_length = Param(pdt.TypeDouble, "Length of the fingers", 20, unit="μm")
     ground_padding = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
-    corner_r = Param(pdt.TypeDouble, "Corner radius", 2, unit="μm")
     fixed_length = Param(pdt.TypeDouble, "Fixed length of element, 0 for auto-length", 0, unit="μm")
     ground_gap_ratio = Param(pdt.TypeDouble, "Ground connection width per gap ratio", 0, unit="μm")
 
@@ -82,7 +78,7 @@ class FingerCapacitorSquare(Element):
         polys_fingers = []
         for i in range(self.finger_number):
             x = (i % 2) * self.finger_gap_end - x_mid
-            y = i * (self.finger_width + self.finger_gap_side) - y_mid
+            y = i * (self.finger_width + self.finger_gap) - y_mid
             polys_fingers.append(pya.DPolygon([
                 pya.DPoint(x + self.finger_length, y + self.finger_width),
                 pya.DPoint(x + self.finger_length, y),
@@ -147,9 +143,9 @@ class FingerCapacitorSquare(Element):
             for i in range(self.finger_number):
                 sign = 2 * (i % 2) - 1
                 x = -sign * self.finger_length / 2
-                y0 = i * (self.finger_width + self.finger_gap_side) - (finger_area_width + self.finger_gap_side) / 2
-                y1 = y0 + self.finger_width + self.finger_gap_side
-                y_conn = sign * self.ground_gap_ratio * self.finger_gap_side / 2
+                y0 = i * (self.finger_width + self.finger_gap) - (finger_area_width + self.finger_gap) / 2
+                y1 = y0 + self.finger_width + self.finger_gap
+                y_conn = sign * self.ground_gap_ratio * self.finger_gap / 2
                 left_pts += [pya.DPoint(x - x_conn, y0 - y_conn if i > 0 else -y_mid),
                              pya.DPoint(x - x_conn, y1 + y_conn if i + 1 < self.finger_number else y_mid)]
                 right_pts += [pya.DPoint(x + x_conn, y0 + y_conn if i > 0 else -y_mid),
@@ -163,7 +159,7 @@ class FingerCapacitorSquare(Element):
         return region_ground
 
     def finger_area_width(self):
-        return self.finger_number * self.finger_width + (self.finger_number - 1) * self.finger_gap_side
+        return self.finger_number * self.finger_width + (self.finger_number - 1) * self.finger_gap
 
     def finger_area_length(self):
         return self.finger_length + self.finger_gap_end

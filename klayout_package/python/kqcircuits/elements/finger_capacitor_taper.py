@@ -18,7 +18,6 @@
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-
 from kqcircuits.elements.element import Element
 
 

@@ -15,6 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+
 import logging
 import sys
 from pathlib import Path
@@ -62,9 +63,9 @@ sim_parameters = {
     'use_internal_ports': True,
     'use_ports': True,
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
-    "finger_number": 1,
+    "finger_control": 1,
     "finger_width": 10,
-    "gap": 5,
+    "finger_gap": 5,
     "ground_gap": 10,
 }
 # Parameters that differ from sim_parameters for gap type
@@ -100,7 +101,7 @@ simulations = []
 
 # Default sweep
 simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {
-    'finger_number': finger_numbers,
+    'finger_control': finger_numbers,
     'chip_distance': chip_distances,
     'a': a_def,
     'b': b_def,
@@ -120,7 +121,7 @@ for n in finger_numbers_comp:
                         if a + b > a2 + b2:
                             continue  # due to symmetry, we can skip almost half of the simulations
                         simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {
-                            'finger_number': [n],
+                            'finger_control': [n],
                             'chip_distance': [d],
                             'a': [a],
                             'b': [b],

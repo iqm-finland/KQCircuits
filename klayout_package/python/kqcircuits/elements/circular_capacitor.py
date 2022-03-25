@@ -15,13 +15,16 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+
 import math
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.geometry_helper import circle_polygon, arc_points
 from kqcircuits.elements.element import Element
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
+@add_parameters_from(FingerCapacitorSquare, "fixed_length")
 class CircularCapacitor(Element):
     """The PCell declaration for a circular capacitor.
 
@@ -40,7 +43,6 @@ class CircularCapacitor(Element):
     outer_island_width = Param(pdt.TypeDouble, "External island width", 40, unit="μm",
                                docstring="Width of the external island [μm]")
     ground_gap = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
-    fixed_length = Param(pdt.TypeDouble, "Fixed length of element, 0 for auto-length", 0, unit="μm")
 
     def build(self):
         y_left = self.a / 2

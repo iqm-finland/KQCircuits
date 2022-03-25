@@ -14,6 +14,8 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 
@@ -33,17 +35,17 @@ def cap_params(fingers, length, coupler_type="interdigital", element_key='cls', 
     """
     if coupler_type == 'smooth':
         return {element_key: SmoothCapacitor,
-                'finger_number': fingers,
+                'finger_control': fingers,
                 "finger_width": 10,
                 "ground_gap": 10,
-                "gap": 5,
+                "finger_gap": 5,
                 **kwargs}
 
     defaults = {element_key: FingerCapacitorSquare,
                 "finger_number": int(fingers),
                 "finger_length": length,
                 "finger_gap_end": 5,
-                "finger_gap_side": 5,
+                "finger_gap": 5,
                 "finger_width": 15,
                 "ground_padding": 10,
                }
@@ -53,13 +55,13 @@ def cap_params(fingers, length, coupler_type="interdigital", element_key='cls', 
     if coupler_type == "gap":
         params = {"finger_length": 0,
                   "finger_gap_end": length,
-                  "finger_gap_side": 0,
+                  "finger_gap": 0,
                   "finger_width": 10,
                  }
     elif coupler_type == "ground gap":
         params = {"finger_length": 0,
                   "finger_gap_end": length,
-                  "finger_gap_side": 50 - length / 2,
+                  "finger_gap": 50 - length / 2,
                   "finger_width": 20,
                   "ground_gap_ratio": 1/3
                   }
