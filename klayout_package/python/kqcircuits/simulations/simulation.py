@@ -28,6 +28,7 @@ from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
 from kqcircuits.simulations.export.util import get_enclosing_polygon
+from kqcircuits.util.groundgrid import make_grid
 
 
 @add_parameters_from(Element)
@@ -48,6 +49,8 @@ class Simulation:
 
     # Parameters
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
+    ground_grid_box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
+    with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     name = Param(pdt.TypeString, "Name of the simulation", "Simulation")
 
     use_ports = Param(pdt.TypeBoolean, "Turn off to disable all ports (for debugging)", True)
@@ -190,10 +193,14 @@ class Simulation:
 
         def insert_region(region, face_id, layer_name):
             """Merges points in the `region` and inserts the result in a target layer."""
-            self.cell.shapes(self.layout.layer(self.face(face_id)[layer_name])).insert(
-               region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
+            if layer_name in self.face(face_id):
+                self.cell.shapes(self.layout.layer(self.face(face_id)[layer_name])).insert(
+                   region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
 
         for face_id in [0, 1]:
+            if self.with_grid:
+                self.produce_ground_on_face_grid(self.ground_grid_box, face_id)
+
             ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
             lithography_region = merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching)
             tolerance=self.minimum_point_spacing / self.layout.dbu
@@ -228,14 +235,38 @@ class Simulation:
                 ground_region.merge()
                 sim_region -= ground_region
 
-            sim_gap_region = ground_box_region - sim_region - ground_region
+            if self.with_grid:
+                region_ground_grid = merged_region_from_layer(face_id,"ground_grid", self.over_etching)
+                sim_gap_region = ground_box_region - sim_region - ground_region
+                ground_region -= region_ground_grid
+            else:
+                sim_gap_region = ground_box_region - sim_region - ground_region
+
             insert_region(sim_region, face_id, "simulation_signal")
             insert_region(ground_region, face_id, "simulation_ground")
             insert_region(sim_gap_region, face_id, "simulation_gap")
 
-        # Export airbridge regions as merged simple polygons
-        insert_region(merged_region_from_layer(0, "airbridge_flyover"), 0, "simulation_airbridge_flyover")
-        insert_region(merged_region_from_layer(0, "airbridge_pads"), 0, "simulation_airbridge_pads")
+            # Export airbridge regions as merged simple polygons
+            insert_region(merged_region_from_layer(face_id, "airbridge_flyover"),
+                    face_id, "simulation_airbridge_flyover")
+            insert_region(merged_region_from_layer(face_id, "airbridge_pads"),
+                    face_id, "simulation_airbridge_pads")
+
+    def produce_ground_on_face_grid(self, box, face_id):
+        """Produces ground grid in the given face of the chip.
+
+        Args:
+            box: pya.DBox within which the grid is created
+            face_id (str): ID of the face where the grid is created
+
+        """
+        grid_area = box * (1 / self.layout.dbu)
+        protection = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
+        grid_mag_factor = 1
+        region_ground_grid = make_grid(grid_area, protection,
+                                       grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
+                                       grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor)
+        self.cell.shapes(self.get_layer("ground_grid", face_id)).insert(region_ground_grid)
 
     def produce_waveguide_to_port(self, location, towards, port_nr, side=None,
                                   use_internal_ports=None, waveguide_length=None,
@@ -472,7 +503,7 @@ class Simulation:
                             port.signal_location.y
                         )) from e
 
-                    port_z = simulation.chip_distance if port.face == 1 else 0
+                    port_z = simulation.chip_distance if self.face_ids[port.face] == 't' else 0
                     p_data['polygon'] = get_enclosing_polygon(
                         [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
                          [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])

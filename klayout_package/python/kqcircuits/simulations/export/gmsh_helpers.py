@@ -173,6 +173,7 @@ def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes
         mesh_sizes(dict): a mesh size can be given to the points:
 
             * ground(float): mesh size of the ground layer
+            * ground_grid(float): mesh size of the ground grid layer
             * gap(float): mesh size of the gap layer
             * signal(float): mesh size of the signal layer
 
@@ -180,15 +181,23 @@ def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes
 
     Returns:
         tags(dict): a dictionary containing all the dim_tags of the created face:
-            * ground(list(int, int)): a list of dim_tags belonging to the ground, dimTag (as in Gmsh) is a tuple of
+            * ground(list(int, int)): a list of dim_tags belonging to the ground, dimTag is a tuple of
+
                 * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
                 * tag(int): the id of the entity
 
-            * gap(list(int, int)): a list of dim_tags belonging to the gap dimTag (as in Gmsh) is a tuple of
+            * ground_grid(list(int, int)): a list of dim_tags belonging to the ground_grid, dimTag is a tuple of
+
                 * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
                 * tag(int): the id of the entity
 
-            * signal(list(int, int)): a list of dim_tags belonging to the signal dimTag (as in Gmsh) is a tuple of
+            * gap(list(int, int)): a list of dim_tags belonging to the gap dimTag  is a tuple of
+
+                * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
+                * tag(int): the id of the entity
+
+            * signal(list(int, int)): a list of dim_tags belonging to the signal dimTag is a tuple of
+
                 * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
                 * tag(int): the id of the entity
 
@@ -197,18 +206,27 @@ def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes
     if mesh_sizes is None:
         mesh_sizes = {
             'ground': 200.,
+            'ground_grid': 200.,
             'gap': 10.,
             'signal': 10.,
         }
-    ground_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_ground", z_level, mesh_sizes['ground'])
-    gap_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_gap", z_level, mesh_sizes['gap'])
-    signal_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_signal", z_level, mesh_sizes['signal'])
+    if port_dim_tags is None:
+        port_dim_tags = []
 
-    if len(ground_hull_dim_tags) > 0 and len(gap_hull_dim_tags) > 0:
-        ground_dim_tags, _ = gmsh.model.occ.cut(ground_hull_dim_tags, gap_hull_dim_tags, removeTool=False)
-        gap_dim_tags, _ = gmsh.model.occ.cut(gap_hull_dim_tags, signal_hull_dim_tags, removeTool=False)
-        if port_dim_tags is not None and len(port_dim_tags) > 0:
-            gap_dim_tags, _ = gmsh.model.occ.cut(gap_dim_tags, port_dim_tags, removeTool=False)
+    ground_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_ground",
+            z_level, mesh_sizes['ground'])
+    ground_grid_hull_dim_tags = add_shape_polygons(simulation, face_id, "ground_grid",
+            z_level, mesh_sizes['ground_grid'])
+    gap_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_gap",
+            z_level, mesh_sizes['gap'])
+    signal_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_signal",
+            z_level, mesh_sizes['signal'])
+
+    if len(ground_hull_dim_tags) > 0 and (len(gap_hull_dim_tags) > 0 or len(ground_grid_hull_dim_tags) > 0):
+        cutter = gap_hull_dim_tags + ground_grid_hull_dim_tags
+        ground_dim_tags, _ = gmsh.model.occ.cut(ground_hull_dim_tags, cutter, removeTool=False)
+        cutter = signal_hull_dim_tags + port_dim_tags
+        gap_dim_tags, _ = gmsh.model.occ.cut(gap_hull_dim_tags, cutter, removeTool=False)
     else:
         ground_dim_tags = ground_hull_dim_tags
         gap_dim_tags = gap_hull_dim_tags
@@ -217,6 +235,7 @@ def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes
         'ground': ground_dim_tags,
         'gap': gap_dim_tags,
         'signal': signal_hull_dim_tags,
+        'ground_grid': ground_grid_hull_dim_tags,
     }
 
     return tags
@@ -356,6 +375,12 @@ def face_tag_dict_to_list(face_dim_tag_dict: dict):
                         * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
                         * tag(int): the id of the entity
 
+            * ground_grid(list(int, int)): a list of dim_tags belonging to the ground_grid:
+                    dimTag (as called in Gmsh) is a tuple of
+
+                        * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
+                        * tag(int): the id of the entity
+
             * gap(list(int, int)): a list of dim_tags belonging to the gap:
                     dimTag (as called in Gmsh) is a tuple of
 
@@ -374,7 +399,7 @@ def face_tag_dict_to_list(face_dim_tag_dict: dict):
                 * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
                 * tag(int): the id of the entity
     """
-    keys = ['ground', 'gap', 'signal']
+    keys = ['ground', 'ground_grid', 'gap', 'signal']
     dim_tags = []
     for key in keys:
         dim_tags += face_dim_tag_dict[key]
@@ -717,6 +742,11 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
                     ground_min_dist: float = 100,
                     ground_max_dist: float = 100,
                     ground_sampling: float = None,
+                    ground_grid_min_mesh_size: float = 100,
+                    ground_grid_max_mesh_size: float = 100,
+                    ground_grid_min_dist: float = 100,
+                    ground_grid_max_dist: float = 100,
+                    ground_grid_sampling: float = None,
                     gap_min_mesh_size: float = 100,
                     gap_max_mesh_size: float = 100,
                     gap_min_dist: float = 100,
@@ -753,6 +783,13 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
         ground_max_dist(float): Mesh size will grow from to the maximum size until
                                 this distance from the ground region curves
         ground_sampling(float): Number of points used for sampling each ground region curve
+        ground_grid_min_mesh_size(float): Minimum mesh size near ground_grid region curves
+        ground_grid_max_mesh_size(float): Maximum mesh size near ground_grid region curves
+        ground_grid_min_dist(float): Mesh size will be the minimum size until this distance
+                                from the ground_grid region curves
+        ground_grid_max_dist(float): Mesh size will grow from to the maximum size until
+                                this distance from the ground_grid region curves
+        ground_grid_sampling(float): Number of points used for sampling each ground_grid region curve
         gap_min_mesh_size(float): Minimum mesh size near gap region curves
         gap_max_mesh_size(float): Maximum mesh size near gap region curves
         gap_min_dist(float): Mesh size will be the minimum size until this distance
@@ -798,64 +835,74 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
     port_data_gmsh = simulation.get_port_data()
     if simulation.wafer_stack_type == 'multiface':
         chip_distance = simulation.chip_distance
-        face1_port_dim_tags = []
+        face_ids = simulation.face_ids
+        face_z_levels = [chip_distance if id == 't' else 0 for id in face_ids]
+        chip_dzs = [-simulation.substrate_height if id == 'b' else simulation.substrate_height_top for id in face_ids]
+        face_port_dim_tags = [[], []]
         edge_port_dim_tags = []
         for port in port_data_gmsh:
-            if port['face'] == 1:
-                if port['type'] == 'InternalPort':
-                    face1_port_dim_tags.append(add_port(port, port_min_mesh_size))
-                    edge_dim_tags.append(port['signal_edge_dim_tag'])
-                    edge_dim_tags.append(port['ground_edge_dim_tag'])
-                else:
-                    edge_port_dim_tags.append(add_port(port, port_min_mesh_size))
-                    port['occ_bounding_box'] = gmsh.model.occ.getBoundingBox(*port['dim_tag'])
-                    port['signal_location_float'] = port['signal_location'].x, port['signal_location'].y, chip_distance
+            if port['type'] == 'InternalPort':
+                face_port_dim_tags[port['face']].append(add_port(port, port_min_mesh_size))
+                edge_dim_tags.append(port['signal_edge_dim_tag'])
+                edge_dim_tags.append(port['ground_edge_dim_tag'])
+            else:
+                edge_port_dim_tags.append(add_port(port, port_min_mesh_size))
+                port['occ_bounding_box'] = gmsh.model.occ.getBoundingBox(*port['dim_tag'])
+                port['signal_location_float'] = \
+                        port['signal_location'].x, port['signal_location'].y, face_z_levels[port['face']]
 
-        face0_dim_tag_dict = create_face(0, 0., simulation)
-        face1_dim_tag_dict = create_face(1, chip_distance, simulation, port_dim_tags=face1_port_dim_tags)
-        chip0 = substrate(face0_dim_tag_dict, -simulation.substrate_height)
-        chip1 = substrate(face1_dim_tag_dict, simulation.substrate_height_top)
-        vacuum = vacuum_between_faces(face0_dim_tag_dict['ground'], face1_dim_tag_dict['ground'])
-        face0_dim_tags = face_tag_dict_to_list(face0_dim_tag_dict)
-        face1_dim_tags = face_tag_dict_to_list(face1_dim_tag_dict)
+        face_dim_tag_dicts = []
+        for face in [0, 1]:
+            face_dim_tag_dicts.append(create_face(face, face_z_levels[face], simulation,
+                                                port_dim_tags=face_port_dim_tags[face]))
+
+        chip0 = substrate(face_dim_tag_dicts[0], chip_dzs[0])
+        chip1 = substrate(face_dim_tag_dicts[1], chip_dzs[1])
+        vacuum = vacuum_between_faces(face_dim_tag_dicts[0]['ground'], face_dim_tag_dicts[1]['ground'])
+        face0_dim_tags = face_tag_dict_to_list(face_dim_tag_dicts[0])
+        face1_dim_tags = face_tag_dict_to_list(face_dim_tag_dicts[1])
         all_dim_tags = [chip0, chip1, vacuum] + (face0_dim_tags + face1_dim_tags
-                                                 + face1_port_dim_tags + edge_port_dim_tags)
+                                                 + face_port_dim_tags[0] + face_port_dim_tags[1] + edge_port_dim_tags)
         gmsh.model.occ.synchronize()
         out_all_dim_tags, _ = gmsh.model.occ.fragment(all_dim_tags, [])
         gmsh.model.occ.synchronize()
 
         gmsh.model.mesh.setSize(gmsh.model.getEntities(0), default_mesh_size)
         mesh_field_ids = []
-        mesh_field_ids += set_mesh_size(face1_dim_tag_dict['signal'], signal_min_mesh_size, signal_max_mesh_size,
-                                        signal_min_dist, signal_max_dist, signal_sampling)
-        mesh_field_ids += set_mesh_size(face1_dim_tag_dict['ground'], ground_min_mesh_size, ground_max_mesh_size,
-                                        ground_min_dist, ground_max_dist, ground_sampling)
-        mesh_field_ids += set_mesh_size(face1_dim_tag_dict['gap'], gap_min_mesh_size, gap_max_mesh_size,
-                                        gap_min_dist, gap_max_dist, gap_sampling)
-        mesh_field_ids += set_mesh_size(face1_port_dim_tags, port_min_mesh_size, port_max_mesh_size,
-                                        port_min_dist, port_max_dist, port_sampling)
+        for face in [0, 1]:
+            mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['signal'],
+                    signal_min_mesh_size, signal_max_mesh_size, signal_min_dist, signal_max_dist, signal_sampling)
+            mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['ground'],
+                    ground_min_mesh_size, ground_max_mesh_size, ground_min_dist, ground_max_dist, ground_sampling)
+            mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['gap'],
+                    gap_min_mesh_size, gap_max_mesh_size, gap_min_dist, gap_max_dist, gap_sampling)
+            mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['ground_grid'], ground_grid_min_mesh_size,
+                    ground_grid_max_mesh_size, ground_grid_min_dist, ground_grid_max_dist, ground_grid_sampling)
+            mesh_field_ids += set_mesh_size(face_port_dim_tags[face],
+                    port_min_mesh_size, port_max_mesh_size, port_min_dist, port_max_dist, port_sampling)
 
-        face1_signal_dim_tags = list(face1_dim_tag_dict['signal'])
-        for port in port_data_gmsh:
-            if port['type'] == 'InternalPort':
-                gmsh.model.setPhysicalName(*port['dim_tag'], 'port_' + str(port['number']))
+        for face_dim_tag_dict in face_dim_tag_dicts:
+            face_signal_dim_tags = list(face_dim_tag_dict['signal'])
+            for port in port_data_gmsh:
+                if port['type'] == 'InternalPort':
+                    gmsh.model.setPhysicalName(*port['dim_tag'], 'port_' + str(port['number']))
 
-                for dim_tag in face1_signal_dim_tags:
-                    if gmsh.model.isInside(*dim_tag, port['signal_edge'][0]) and\
-                       gmsh.model.isInside(*dim_tag, port['signal_edge'][1]):
-                        port['signal_dim_tag'] = dim_tag
-                        port['signal_physical_name'] = 'signal_' + str(port['number'])
-                        gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
-            else:
-                port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
-                for i, dim_tag in enumerate(port['dim_tags']):
-                    gmsh.model.setPhysicalName(*dim_tag, 'port_{}_{}'.format(port['number'], i))
+                    for dim_tag in face_signal_dim_tags:
+                        if gmsh.model.isInside(*dim_tag, port['signal_edge'][0]) and\
+                           gmsh.model.isInside(*dim_tag, port['signal_edge'][1]):
+                            port['signal_dim_tag'] = dim_tag
+                            port['signal_physical_name'] = 'signal_' + str(port['number'])
+                            gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
+                else:
+                    port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
+                    for i, dim_tag in enumerate(port['dim_tags']):
+                        gmsh.model.setPhysicalName(*dim_tag, 'port_{}_{}'.format(port['number'], i))
 
-                for dim_tag in face1_signal_dim_tags:
-                    if gmsh.model.isInside(*dim_tag, port['signal_location_float']):
-                        port['signal_dim_tag'] = dim_tag
-                        port['signal_physical_name'] = 'signal_' + str(port['number'])
-                        gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
+                    for dim_tag in face_signal_dim_tags:
+                        if gmsh.model.isInside(*dim_tag, port['signal_location_float']):
+                            port['signal_dim_tag'] = dim_tag
+                            port['signal_physical_name'] = 'signal_' + str(port['number'])
+                            gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
 
         gmsh.model.setPhysicalName(*chip0, 'chip_0')
         gmsh.model.setPhysicalName(*chip1, 'chip_1')
@@ -870,7 +917,7 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
             gmsh.model.setPhysicalName(*dim_tag, '{}_{}'.format(side_name, i))
 
     simulation.ground_names = []
-    for i, dim_tag in enumerate(face0_dim_tag_dict['ground'] + face1_dim_tag_dict['ground']):
+    for i, dim_tag in enumerate(face_dim_tag_dicts[0]['ground'] + face_dim_tag_dicts[1]['ground']):
         ground_name = 'ground_{}'.format(i)
         gmsh.model.setPhysicalName(*dim_tag, ground_name)
         simulation.ground_names.append(ground_name)
@@ -882,6 +929,7 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
     gmsh.option.setNumber("Mesh.MeshSizeFromPoints", 0)
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
     gmsh.option.setNumber("Mesh.Algorithm", algorithm)
+    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-14)
     gmsh.model.mesh.generate(3)
     gmsh.write(str(filepath))
     if show:

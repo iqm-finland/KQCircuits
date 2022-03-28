@@ -108,6 +108,11 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
                  ground_min_dist: float = 100,
                  ground_max_dist: float = 100,
                  ground_sampling: float = None,
+                 ground_grid_min_mesh_size: float = 100,
+                 ground_grid_max_mesh_size: float = 100,
+                 ground_grid_min_dist: float = 100,
+                 ground_grid_max_dist: float = 100,
+                 ground_grid_sampling: float = None,
                  gap_min_mesh_size: float = 100,
                  gap_max_mesh_size: float = 100,
                  gap_min_dist: float = 100,
@@ -144,6 +149,13 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
         ground_max_dist(float): Mesh size will grow from to the maximum size until
                                 this distance from the ground region curves
         ground_sampling(float): Number of points used for sampling each ground region curve
+        ground_grid_min_mesh_size(float): Minimum mesh size near ground_grid region curves
+        ground_grid_max_mesh_size(float): Maximum mesh size near ground_grid region curves
+        ground_grid_min_dist(float): Mesh size will be the minimum size until this distance
+                                from the ground_grid region curves
+        ground_grid_max_dist(float): Mesh size will grow from to the maximum size until
+                                this distance from the ground_grid region curves
+        ground_grid_sampling(float): Number of points used for sampling each ground_grid region curve
         gap_min_mesh_size(float): Minimum mesh size near gap region curves
         gap_max_mesh_size(float): Maximum mesh size near gap region curves
         gap_min_dist(float): Mesh size will be the minimum size until this distance
@@ -184,6 +196,11 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
                                                        ground_min_dist,
                                                        ground_max_dist,
                                                        ground_sampling,
+                                                       ground_grid_min_mesh_size,
+                                                       ground_grid_max_mesh_size,
+                                                       ground_grid_min_dist,
+                                                       ground_grid_max_dist,
+                                                       ground_grid_sampling,
                                                        gap_min_mesh_size,
                                                        gap_max_mesh_size,
                                                        gap_min_dist,

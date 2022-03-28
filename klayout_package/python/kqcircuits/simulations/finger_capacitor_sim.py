@@ -25,10 +25,12 @@ from kqcircuits.util.parameters import add_parameters_from
 class FingerCapacitorSim(Simulation):
 
     def build(self):
-        capacitor_cell = self.add_element(FingerCapacitorSquare, **{**self.get_parameters()})
+        capacitor_cell = self.add_element(FingerCapacitorSquare, **{**self.get_parameters(),})
 
         cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
         _, refp = self.insert_cell(capacitor_cell, cap_trans)
 
-        self.produce_waveguide_to_port(refp["port_a"], refp["port_a_corner"], 1, 'left')
-        self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right')
+        a2 = self.a if self.a2 < 0 else self.a2
+        b2 = self.b if self.b2 < 0 else self.b2
+        self.produce_waveguide_to_port(refp["port_a"], refp["port_a_corner"], 1, 'left', a=self.a, b=self.b)
+        self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right', a=a2, b=b2)
