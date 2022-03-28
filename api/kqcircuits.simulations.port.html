@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.port &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.port &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -115,6 +116,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
@@ -206,28 +208,28 @@
             
   <div class="section" id="module-kqcircuits.simulations.port">
 <span id="kqcircuits-simulations-port"></span><h1>kqcircuits.simulations.port<a class="headerlink" href="#module-kqcircuits.simulations.port" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.simulations.port.Port">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.simulations.port.</code><code class="sig-name descname">Port</code><span class="sig-paren">(</span><em class="sig-param">number: int</em>, <em class="sig-param">resistance: float = 50</em>, <em class="sig-param">reactance: float = 0</em>, <em class="sig-param">inductance: float = 0</em>, <em class="sig-param">capacitance: float = 0</em>, <em class="sig-param">face: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#Port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.port.Port" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.port.Port">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.port.</span></span><span class="sig-name descname"><span class="pre">Port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reactance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacitance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#Port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.port.Port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base data structure for simulation ports.</p>
-<dl class="method">
-<dt id="kqcircuits.simulations.port.Port.as_dict">
-<code class="sig-name descname">as_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#Port.as_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.port.Port.as_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.port.Port.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#Port.as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.port.Port.as_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="kqcircuits.simulations.port.InternalPort">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.simulations.port.</code><code class="sig-name descname">InternalPort</code><span class="sig-paren">(</span><em class="sig-param">number: int</em>, <em class="sig-param">signal_location: klayout.dbcore.DPoint</em>, <em class="sig-param">ground_location: klayout.dbcore.DPoint</em>, <em class="sig-param">resistance: float = 50</em>, <em class="sig-param">reactance: float = 0</em>, <em class="sig-param">inductance: float = 0</em>, <em class="sig-param">capacitance: float = 0</em>, <em class="sig-param">face: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#InternalPort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.port.InternalPort" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.port.InternalPort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.port.</span></span><span class="sig-name descname"><span class="pre">InternalPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reactance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacitance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#InternalPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.port.InternalPort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.simulations.port.Port</span></code></a></p>
 <p>Data structure for ports inside the simulation area.</p>
 </dd></dl>
 
-<dl class="class">
-<dt id="kqcircuits.simulations.port.EdgePort">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.simulations.port.</code><code class="sig-name descname">EdgePort</code><span class="sig-paren">(</span><em class="sig-param">number: int</em>, <em class="sig-param">signal_location: klayout.dbcore.DPoint</em>, <em class="sig-param">resistance: float = 50</em>, <em class="sig-param">reactance: float = 0</em>, <em class="sig-param">inductance: float = 0</em>, <em class="sig-param">capacitance: float = 0</em>, <em class="sig-param">deembed_len: float = None</em>, <em class="sig-param">face: int = 0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#EdgePort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.port.EdgePort" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.port.EdgePort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.port.</span></span><span class="sig-name descname"><span class="pre">EdgePort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reactance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacitance</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deembed_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/port.html#EdgePort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.port.EdgePort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.simulations.port.Port</span></code></a></p>
 <p>Data structure for ports at the edge of the simulation area.</p>
 </dd></dl>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -214,7 +215,6 @@
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Library for qubits.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;qubits&quot;</span>
 
-    <span class="n">corner_r</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Center island rounding radius&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">squid_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;SQUID Type&quot;</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">squid_type_choices</span><span class="p">)</span>
     <span class="n">fluxline_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Fluxline Type&quot;</span><span class="p">,</span> <span class="n">default_fluxline_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">fluxline_type_choices</span><span class="p">)</span>
     <span class="n">mirror_squid</span> <span class="o">=</span>  <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Mirror SQUID by its Y axis&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>

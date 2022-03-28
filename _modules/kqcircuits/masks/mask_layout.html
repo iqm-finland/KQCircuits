@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -365,11 +366,12 @@
         <span class="n">merge_layers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">maskextra_cell</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;ground_grid&quot;</span><span class="p">],</span>
                      <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="MaskLayout.insert_chip_copy_labels"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">[docs]</a>    <span class="k">def</span> <span class="nf">insert_chip_copy_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels_cell</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskLayout.insert_chip_copy_labels"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">[docs]</a>    <span class="k">def</span> <span class="nf">insert_chip_copy_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels_cell</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Inserts chip copy labels to all chips in this mask layout and its submasks</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            labels_cell: Cell to which the labels are inserted</span>
+<span class="sd">            layers: list of layer names (without face_ids) where the labels are produced</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># find labels_cell for this mask and each submask</span>
@@ -410,11 +412,7 @@
                     <span class="n">bbox_x1</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">left</span> <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span> <span class="k">else</span> <span class="n">bbox</span><span class="o">.</span><span class="n">right</span>
                     <span class="n">produce_label</span><span class="p">(</span><span class="n">labels_cell_2</span><span class="p">,</span> <span class="n">pos_index_name</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">*</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bbox_x1</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">bottom</span><span class="p">)),</span>
                                   <span class="s2">&quot;bottomright&quot;</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">dice_width</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">text_margin</span><span class="p">,</span>
-                                  <span class="p">[</span>
-                                      <span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">],</span>
-                                      <span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">],</span>
-                                      <span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;base_metal_gap_for_EBL&quot;</span><span class="p">]</span>
-                                  <span class="p">],</span>
+                                  <span class="p">[</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="n">layer</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">],</span>
                                   <span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">])</span>
                     <span class="n">bbox_x2</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">right</span> <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span> <span class="k">else</span> <span class="n">bbox</span><span class="o">.</span><span class="n">left</span>
                     <span class="n">mask_layout</span><span class="o">.</span><span class="n">_add_chip_graphical_representation_layer</span><span class="p">(</span><span class="n">chip_name</span><span class="p">,</span>

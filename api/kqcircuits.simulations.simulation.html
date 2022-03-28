@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -115,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
@@ -206,9 +208,9 @@
             
   <div class="section" id="module-kqcircuits.simulations.simulation">
 <span id="kqcircuits-simulations-simulation"></span><h1>kqcircuits.simulations.simulation<a class="headerlink" href="#module-kqcircuits.simulations.simulation" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.simulations.simulation.Simulation">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.simulations.simulation.</code><code class="sig-name descname">Simulation</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.simulation.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for simulation geometries.</p>
 <p>Generally, this class is intended to be subclassed by a specific simulation implementation; the
@@ -231,19 +233,19 @@ used as the top cell for the simulation. Otherwise, a new cell will be created. 
 </p>
 </dd>
 </dl>
-<dl class="attribute">
-<dt id="kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME">
-<code class="sig-name descname">LIBRARY_NAME</code><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME">
+<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.simulations.simulation.Simulation.ports">
-<code class="sig-name descname">ports</code><em class="property">: List[Port]</em><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ports" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.ports">
+<span class="sig-name descname"><span class="pre">ports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.port.html#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><span class="pre">kqcircuits.simulations.port.Port</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ports" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.from_cell">
-<em class="property">classmethod </em><code class="sig-name descname">from_cell</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">margin=300</em>, <em class="sig-param">grid_size=1</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.from_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.from_cell" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.from_cell">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.from_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.from_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Simulation from an existing cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,17 +264,17 @@ If the <cite>box</cite> keyword argument is given, grid_size is ignored.</p></li
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.build">
-<em class="property">abstract </em><code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.build">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build simulation geometry.</p>
 <p>This method is to be overridden, and the overriding method should create the geometry to be
 simulated and add any ports to <cite>self.ports</cite>.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.get_schema">
-<em class="property">classmethod </em><code class="sig-name descname">get_schema</code><span class="sig-paren">(</span><em class="sig-param">noparents=False</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_schema" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_schema">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noparents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the combined parameters of the class “cls” and all its ancestor classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -281,9 +283,9 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.face">
-<code class="sig-name descname">face</code><span class="sig-paren">(</span><em class="sig-param">face_index=0</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.face" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.face">
+<span class="sig-name descname"><span class="pre">face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.face" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the face dictionary corresponding to self.face_ids[face_index].</p>
 <p>The face dictionary contains key “id” for the face ID and keys for all the available layers in that face.</p>
 <dl class="field-list simple">
@@ -293,9 +295,9 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.insert_cell">
-<code class="sig-name descname">insert_cell</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">trans=None</em>, <em class="sig-param">inst_name=None</em>, <em class="sig-param">label_trans=None</em>, <em class="sig-param">align_to=None</em>, <em class="sig-param">align=None</em>, <em class="sig-param">rec_levels=0</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_cell" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_cell">
+<span class="sig-name descname"><span class="pre">insert_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inserts a subcell into the present cell.</p>
 <p>It will use the given <cite>cell</cite> object or if <cite>cell</cite> is an Element class’ name then directly
 take the provided keyword arguments to first create the cell object.</p>
@@ -323,15 +325,15 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.get_refpoints">
-<code class="sig-name descname">get_refpoints</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">cell_transf=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_refpoints" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_refpoints">
+<span class="sig-name descname"><span class="pre">get_refpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_transf=&lt;klayout.dbcore.DTrans</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_refpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>See <cite>get_refpoints</cite>.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.add_element">
-<code class="sig-name descname">add_element</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.add_element" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.add_element">
+<span class="sig-name descname"><span class="pre">add_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.add_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new cell for the given element in this layout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -346,9 +348,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.get_layer">
-<code class="sig-name descname">get_layer</code><span class="sig-paren">(</span><em class="sig-param">layer_name</em>, <em class="sig-param">face_id=0</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_layer" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_layer">
+<span class="sig-name descname"><span class="pre">get_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the specified Layer object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -360,9 +362,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.pcell_params_by_name">
-<code class="sig-name descname">pcell_params_by_name</code><span class="sig-paren">(</span><em class="sig-param">whitelist=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.pcell_params_by_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.pcell_params_by_name">
+<span class="sig-name descname"><span class="pre">pcell_params_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">whitelist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.pcell_params_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Give PCell parameters as a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -377,9 +379,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.create_simulation_layers">
-<code class="sig-name descname">create_simulation_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.create_simulation_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.create_simulation_layers" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.create_simulation_layers">
+<span class="sig-name descname"><span class="pre">create_simulation_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.create_simulation_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.create_simulation_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the layers used for simulation export.</p>
 <p>Based on any geometry defined on the relevant lithography layers.</p>
 <p>This method is called from <cite>__init__</cite> after <cite>build</cite>, and should not be called directly.</p>
@@ -402,9 +404,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 (that is, polygons without holes).</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port">
-<code class="sig-name descname">produce_waveguide_to_port</code><span class="sig-paren">(</span><em class="sig-param">location</em>, <em class="sig-param">towards</em>, <em class="sig-param">port_nr</em>, <em class="sig-param">side=None</em>, <em class="sig-param">use_internal_ports=None</em>, <em class="sig-param">waveguide_length=None</em>, <em class="sig-param">term1=0</em>, <em class="sig-param">turn_radius=None</em>, <em class="sig-param">a=None</em>, <em class="sig-param">b=None</em>, <em class="sig-param">over_etching=None</em>, <em class="sig-param">airbridge=False</em>, <em class="sig-param">airbridge_a=None</em>, <em class="sig-param">airbridge_b=None</em>, <em class="sig-param">face=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_waveguide_to_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port">
+<span class="sig-name descname"><span class="pre">produce_waveguide_to_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">towards</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_nr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_ports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waveguide_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">over_etching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airbridge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airbridge_a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airbridge_b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_waveguide_to_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a waveguide connection from some <cite>location</cite> to a port, and add the corresponding port to
 <cite>simulation.ports</cite>.</p>
 <dl class="field-list simple">
@@ -438,15 +440,15 @@ Defaults to the value of the <cite>b</cite> parameter</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.get_parameters">
-<code class="sig-name descname">get_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_parameters" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return dictionary with all parameters and their values.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.etched_line">
-<code class="sig-name descname">etched_line</code><span class="sig-paren">(</span><em class="sig-param">p1: klayout.dbcore.DPoint</em>, <em class="sig-param">p2: klayout.dbcore.DPoint</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.etched_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.etched_line" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.etched_line">
+<span class="sig-name descname"><span class="pre">etched_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.etched_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.etched_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the end points of line segment after extending it at both ends by amount of over_etching.
 This function must be used when initializing InternalPort.</p>
 <dl class="field-list simple">
@@ -465,9 +467,32 @@ This function must be used when initializing InternalPort.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.simulation.Simulation.delete_instances">
-<em class="property">static </em><code class="sig-name descname">delete_instances</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">name</em>, <em class="sig-param">index=(0</em>, <em class="sig-param">)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.delete_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.delete_instances" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_port_data">
+<span class="sig-name descname"><span class="pre">get_port_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_port_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_port_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the port data in dictionary form and add the information of port polygon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>list of port data dictionaries</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Items from <cite>Port</cite> instance</p></li>
+<li><p>polygon: point coordinates of the port polygon</p></li>
+<li><p>signal_edge: point coordinates of the signal edge</p></li>
+<li><p>ground_edge: point coordinates of the ground edge</p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>port_data(list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.delete_instances">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.delete_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.delete_instances" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows for deleting a sub-cell of the top ‘cell’ with a specific ‘name’. The ‘index’ argument can be used to
 access more than one sub-cell sharing the same ‘name’, but with different appended ‘index’ to the ‘name’.</p>
 </dd></dl>

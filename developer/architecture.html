@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Architecture &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>Architecture &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -193,7 +194,7 @@
 <h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
 <p>This section explains some things about the KQCircuits code architecture.</p>
 <div class="section" id="elements">
-<h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
+<span id="architecture-elements"></span><h2>Elements<a class="headerlink" href="#elements" title="Permalink to this headline">¶</a></h2>
 <img alt="class diagram" src="../_images/class_diagram_1.png" />
 <p>Every KQCircuits object that can be placed in a KLayout layout is derived from
 <code class="docutils literal notranslate"><span class="pre">Element</span></code>. There exist also more specific base classes such as <code class="docutils literal notranslate"><span class="pre">Chip</span></code>,
@@ -223,7 +224,7 @@ instance is then created or updated based on these new parameter values.</p></li
 </ol>
 </div>
 <div class="section" id="pcell-parameters">
-<h2>PCell parameters<a class="headerlink" href="#pcell-parameters" title="Permalink to this headline">¶</a></h2>
+<span id="architecture-parameters"></span><h2>PCell parameters<a class="headerlink" href="#pcell-parameters" title="Permalink to this headline">¶</a></h2>
 <p>The PCell parameters for KQCircuits elements are plain class attributes defined
 with the <code class="docutils literal notranslate"><span class="pre">Param</span></code> descriptor class. These can be used like normal instance
 variables. The values of these parameters can be set from the KLayout GUI, or in
@@ -247,21 +248,24 @@ parameter with a changed default value. This is practically identical to setting
 a default value for the decorated class using <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> in
 the configuration file.</p>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get all parameters form &#39;OtherClass&#39;</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
-
-<span class="c1"># Get only some parameters form &#39;OtherClass&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get two parameters form &#39;OtherClass&#39;</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="s2">&quot;param_b&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
 
-<span class="c1"># Also change the default value of some borrowed parameters</span>
+<span class="c1"># Get all parameters form &#39;OtherClass&#39;</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">)</span>  <span class="c1"># or just @add_parameters_from(OtherClass)</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+
+<span class="c1"># Get all parameters form &#39;OtherClass&#39; except one</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+
+<span class="c1"># Get and change default values of several parameters at once</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="s2">&quot;param_b&quot;</span><span class="p">,</span> <span class="n">param_c</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">param_d</span><span class="o">=</span><span class="mi">43</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
 
 <span class="c1"># Get all parameters form &#39;OtherClass&#39; but override one</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="n">param_b</span><span class="o">=</span><span class="mi">41</span><span class="p">)</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">param_b</span><span class="o">=</span><span class="mi">41</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
 </pre></div>
 </div>

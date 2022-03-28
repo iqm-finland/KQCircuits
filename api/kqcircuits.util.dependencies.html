@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.dependencies &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.dependencies &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -124,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
@@ -214,9 +216,9 @@
             
   <div class="section" id="module-kqcircuits.util.dependencies">
 <span id="kqcircuits-util-dependencies"></span><h1>kqcircuits.util.dependencies<a class="headerlink" href="#module-kqcircuits.util.dependencies" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="kqcircuits.util.dependencies.install_kqc_dependencies">
-<code class="sig-prename descclassname">kqcircuits.util.dependencies.</code><code class="sig-name descname">install_kqc_dependencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/dependencies.html#install_kqc_dependencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.dependencies.install_kqc_dependencies" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.dependencies.install_kqc_dependencies">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.dependencies.</span></span><span class="sig-name descname"><span class="pre">install_kqc_dependencies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/dependencies.html#install_kqc_dependencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.dependencies.install_kqc_dependencies" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check KQCircuits’ dependencies and install/upgrade if missing.</p>
 <p>This is <em>only</em> for KLayout. Stand-alone mode needs manual pip install, preferably in a venv.
 This function should run only once at KLayout startup.</p>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -408,10 +409,17 @@
                 <span class="n">mask_layout</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">face_id</span>
             <span class="n">mask_layout</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="p">)</span>
 
+        <span class="n">chip_copy_label_layers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;base_metal_gap&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;base_metal_gap_for_EBL&quot;</span>
+        <span class="p">]</span>
+
         <span class="c1"># Insert submask cells to different cell instances, so that these cells can have different chip labels even if</span>
         <span class="c1"># the original submask cells are identical. Also copy the MaskLayout objects of identical submasks into separate</span>
         <span class="c1"># MaskLayout objects with different `extra_id` so that mask export can use that information.</span>
         <span class="n">mask_layouts_to_remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">submask_layouts_with_exported_layers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">submask_layouts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">sm_layout</span><span class="p">,</span> <span class="n">sm_pos</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">submasks</span><span class="p">):</span>
@@ -427,6 +435,13 @@
                 <span class="n">mask_layout</span><span class="o">.</span><span class="n">submasks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">new_sm_layout</span><span class="p">,</span> <span class="n">sm_pos</span><span class="p">)</span>
                 <span class="n">submask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_sm_layout</span><span class="p">)</span>
                 <span class="n">mask_layouts_to_remove</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sm_layout</span><span class="p">)</span>
+                <span class="c1"># Make sure that layers are only exported once if there are multiple identical submasks</span>
+                <span class="k">if</span> <span class="n">sm_layout</span> <span class="ow">in</span> <span class="n">submask_layouts_with_exported_layers</span><span class="p">:</span>
+                    <span class="c1"># only export layers where chip copy labels are since they are different even for identical submasks</span>
+                    <span class="n">new_sm_layout</span><span class="o">.</span><span class="n">mask_export_layers</span> <span class="o">=</span> \
+                        <span class="p">[</span><span class="n">layer</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">chip_copy_label_layers</span> <span class="k">if</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">new_sm_layout</span><span class="o">.</span><span class="n">mask_export_layers</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">submask_layouts_with_exported_layers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sm_layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span> <span class="o">=</span> <span class="n">submask_layouts</span> <span class="o">+</span> <span class="p">[</span><span class="n">ml</span> <span class="k">for</span> <span class="n">ml</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span> <span class="k">if</span> <span class="n">ml</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mask_layouts_to_remove</span><span class="p">]</span>
 
         <span class="c1"># add chip copy labels for every mask layout</span>
@@ -436,7 +451,7 @@
             <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">labels_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))))</span>
 
             <span class="k">if</span> <span class="n">mask_layout</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">submask_layouts</span><span class="p">:</span>
-                <span class="n">mask_layout</span><span class="o">.</span><span class="n">insert_chip_copy_labels</span><span class="p">(</span><span class="n">labels_cell</span><span class="p">)</span>
+                <span class="n">mask_layout</span><span class="o">.</span><span class="n">insert_chip_copy_labels</span><span class="p">(</span><span class="n">labels_cell</span><span class="p">,</span> <span class="n">chip_copy_label_layers</span><span class="p">)</span>
                 <span class="c1"># remove &quot;$1&quot; or similar unnecessary postfix from cell name</span>
                 <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
 

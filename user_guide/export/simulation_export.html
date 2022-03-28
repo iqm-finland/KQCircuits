@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Export for external simulation tools &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>Export for external simulation tools &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -69,7 +71,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -108,6 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#creating-simulation-object">Creating simulation object</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#ansys-export">Ansys export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sonnet-export">Sonnet export</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gmsh-export">Gmsh export</a></li>
 </ul>
 </li>
 </ul>
@@ -345,6 +348,22 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sons</span> <span class="o">=</span> <span class="n">export_sonnet</span><span class="p">([</span><span class="n">simulation</span><span class="p">],</span> <span class="n">path</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="gmsh-export">
+<h2>Gmsh export<a class="headerlink" href="#gmsh-export" title="Permalink to this headline">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object can be used to export an FEM mesh using Gmsh calling function <code class="docutils literal notranslate"><span class="pre">export_simulation_gmsh</span></code>.
+There is an automatized simulation example at ‘klayout_package/python/scripts/simulations’ that creates a mesh using Gmsh and
+computes the capacitance matrix using Elmer and visualizes the results using Paraview.</p>
+<p>Please note that the example requires the installation of</p>
+<ul class="simple">
+<li><p>gmsh python api
+<code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">gmsh</span></code></p></li>
+<li><p>Elmerfem solver
+see <a class="reference external" href="https://github.com/ElmerCSC/elmerfem">https://github.com/ElmerCSC/elmerfem</a></p></li>
+<li><p>Paraview
+<a class="reference external" href="https://www.paraview.org/">https://www.paraview.org/</a></p></li>
+</ul>
+<p>Gmsh api suffices if one needs to generate the mesh only.</p>
 </div>
 </div>
 

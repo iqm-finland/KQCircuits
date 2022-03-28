@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.chips.multi_face.multi_face &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script src="../../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -240,13 +241,11 @@
             <span class="s2">&quot;marker_diagonals&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
             <span class="s2">&quot;face_ids&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="s2">&quot;use_face_prefix&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;name_chip&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_chip</span><span class="p">,</span>
-            <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_mask</span><span class="p">,</span>
             <span class="s2">&quot;dice_width&quot;</span><span class="p">:</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;dice_width&quot;</span><span class="p">],</span>
             <span class="s2">&quot;text_margin&quot;</span><span class="p">:</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="s2">&quot;text_margin&quot;</span><span class="p">],</span>
             <span class="s2">&quot;marker_types&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">face1_marker_types</span>
         <span class="p">}</span>
-        <span class="n">t_frame_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">M90</span>
+        <span class="n">t_frame_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">M90</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_frame</span><span class="p">(</span><span class="n">t_frame_parameters</span><span class="p">,</span> <span class="n">t_frame_trans</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_tsvs</span><span class="p">:</span>

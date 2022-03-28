@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.sonnet.sonnet_export &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.export.sonnet.sonnet_export &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -44,7 +45,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.export.simulation_export" href="kqcircuits.simulations.export.simulation_export.html" />
+    <link rel="next" title="kqcircuits.simulations.export.gmsh_helpers" href="kqcircuits.simulations.export.gmsh_helpers.html" />
     <link rel="prev" title="kqcircuits.simulations.export.sonnet.parser" href="kqcircuits.simulations.export.sonnet.parser.html" /> 
 </head>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -108,7 +109,9 @@
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.gmsh_helpers.html">kqcircuits.simulations.export.gmsh_helpers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 </ul>
@@ -121,6 +124,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
@@ -216,14 +220,14 @@
             
   <div class="section" id="module-kqcircuits.simulations.export.sonnet.sonnet_export">
 <span id="kqcircuits-simulations-export-sonnet-sonnet-export"></span><h1>kqcircuits.simulations.export.sonnet.sonnet_export<a class="headerlink" href="#module-kqcircuits.simulations.export.sonnet.sonnet_export" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.sonnet_export.</code><code class="sig-name descname">poly_and_edge_indices</code><span class="sig-paren">(</span><em class="sig-param">polygons</em>, <em class="sig-param">dbu</em>, <em class="sig-param">port</em>, <em class="sig-param">number</em>, <em class="sig-param">location</em>, <em class="sig-param">group</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/sonnet_export.html#poly_and_edge_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.sonnet.sonnet_export.</span></span><span class="sig-name descname"><span class="pre">poly_and_edge_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/sonnet_export.html#poly_and_edge_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.sonnet_export.poly_and_edge_indices" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.sonnet_export.</code><code class="sig-name descname">export_sonnet_son</code><span class="sig-paren">(</span><em class="sig-param">simulation: kqcircuits.simulations.simulation.Simulation</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">detailed_resonance=False</em>, <em class="sig-param">lower_accuracy=False</em>, <em class="sig-param">current=False</em>, <em class="sig-param">control='ABS'</em>, <em class="sig-param">fill_type='Staircase'</em>, <em class="sig-param">simulation_safety=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/sonnet_export.html#export_sonnet_son"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.sonnet.sonnet_export.</span></span><span class="sig-name descname"><span class="pre">export_sonnet_son</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_resonance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_accuracy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ABS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Staircase'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_safety</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/sonnet_export.html#export_sonnet_son"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet_son" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export simulation into son file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -249,9 +253,9 @@ sweeping.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.sonnet.sonnet_export.</code><code class="sig-name descname">export_sonnet</code><span class="sig-paren">(</span><em class="sig-param">simulations</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">detailed_resonance=False</em>, <em class="sig-param">lower_accuracy=False</em>, <em class="sig-param">current=False</em>, <em class="sig-param">control='ABS'</em>, <em class="sig-param">fill_type='Staircase'</em>, <em class="sig-param">simulation_safety=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/sonnet_export.html#export_sonnet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.sonnet.sonnet_export.</span></span><span class="sig-name descname"><span class="pre">export_sonnet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detailed_resonance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_accuracy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ABS'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Staircase'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simulation_safety</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/sonnet/sonnet_export.html#export_sonnet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Sonnet simulations by writing son files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -286,7 +290,7 @@ sweeping.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.simulations.export.simulation_export.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.simulation_export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.export.gmsh_helpers.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.gmsh_helpers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kqcircuits.simulations.export.sonnet.parser.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.sonnet.parser" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

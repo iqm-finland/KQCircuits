@@ -1,0 +1,10 @@
+kqcircuits.simulations.export.elmer.elmer\_export
+=================================================
+
+.. automodule:: kqcircuits.simulations.export.elmer.elmer_export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.elmer.elmer_export
+.. image:: ../pcell_images/kqcircuits.simulations.export.elmer.elmer_export.png

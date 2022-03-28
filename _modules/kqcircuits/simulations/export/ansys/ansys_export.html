@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
         <script src="../../../../../_static/jquery.js"></script>
         <script src="../../../../../_static/underscore.js"></script>
         <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -192,8 +193,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">EdgePort</span><span class="p">,</span> <span class="n">InternalPort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">get_enclosing_polygon</span><span class="p">,</span> <span class="n">find_edge_from_point_in_cell</span><span class="p">,</span> <span class="n">export_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">ANSYS_SCRIPTS_PATH</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
@@ -245,84 +245,7 @@
     <span class="k">if</span> <span class="n">export_processing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">export_processing</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="c1"># gather port data</span>
-    <span class="n">port_data</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">use_ports</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">ports</span><span class="p">:</span>
-            <span class="c1"># Basic data from Port</span>
-            <span class="n">p_data</span> <span class="o">=</span> <span class="n">port</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
-
-            <span class="c1"># Define a 3D polygon for each port</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">EdgePort</span><span class="p">):</span>
-
-                <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
-                    <span class="n">port_top_height</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height_top</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">port_top_height</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box_height</span>
-
-                <span class="c1"># Determine which edge this port is on</span>
-                <span class="k">if</span> <span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">left</span>
-                        <span class="ow">or</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">right</span><span class="p">):</span>
-                    <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
-                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">],</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">]</span>
-                    <span class="p">]</span>
-
-                <span class="k">elif</span> <span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">top</span>
-                      <span class="ow">or</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span> <span class="o">==</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">bottom</span><span class="p">):</span>
-                    <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span>
-                         <span class="o">-</span><span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">],</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">],</span>
-                        <span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">simulation</span><span class="o">.</span><span class="n">port_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">port_top_height</span><span class="p">]</span>
-                    <span class="p">]</span>
-
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Port </span><span class="si">{</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="si">}</span><span class="s2"> is an EdgePort but not on the edge of the simulation box&quot;</span><span class="p">)</span>
-
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">InternalPort</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">signal_edge</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_cell</span><span class="p">(</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="p">,</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Signal edge of port </span><span class="si">{}</span><span class="s1"> on layer </span><span class="si">{}</span><span class="s1"> not found at location (</span><span class="si">{:.3f}</span><span class="s1">, </span><span class="si">{:.3f}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span>
-                    <span class="p">))</span> <span class="kn">from</span> <span class="nn">e</span>
-
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ground_edge</span> <span class="o">=</span> <span class="n">find_edge_from_point_in_cell</span><span class="p">(</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_ground&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">ground_location</span><span class="p">,</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Ground edge of port </span><span class="si">{}</span><span class="s1"> on layer </span><span class="si">{}</span><span class="s1"> not found at location (</span><span class="si">{:.3f}</span><span class="s1">, </span><span class="si">{:.3f}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
-                        <span class="n">simulation</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">),</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">x</span><span class="p">,</span>
-                        <span class="n">port</span><span class="o">.</span><span class="n">signal_location</span><span class="o">.</span><span class="n">y</span>
-                    <span class="p">))</span> <span class="kn">from</span> <span class="nn">e</span>
-
-                <span class="n">port_z</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span> <span class="k">if</span> <span class="n">port</span><span class="o">.</span><span class="n">face</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="mi">0</span>
-                <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_enclosing_polygon</span><span class="p">(</span>
-                    <span class="p">[[</span><span class="n">signal_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">signal_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span> <span class="p">[</span><span class="n">signal_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">signal_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span>
-                     <span class="p">[</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span> <span class="p">[</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">]])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Port </span><span class="si">{}</span><span class="s2"> has unsupported port class </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
-
-            <span class="n">port_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_data</span><span class="p">)</span>
+    <span class="n">port_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_port_data</span><span class="p">()</span>
 
     <span class="c1"># ansys_data and optional_layers</span>
     <span class="n">ansys_data</span> <span class="o">=</span> <span class="p">{</span>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.coupler_lib &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -184,6 +185,8 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.smooth_capacitor</span> <span class="kn">import</span> <span class="n">SmoothCapacitor</span>
 
@@ -203,17 +206,17 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s1">&#39;smooth&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">element_key</span><span class="p">:</span> <span class="n">SmoothCapacitor</span><span class="p">,</span>
-                <span class="s1">&#39;finger_number&#39;</span><span class="p">:</span> <span class="n">fingers</span><span class="p">,</span>
+                <span class="s1">&#39;finger_control&#39;</span><span class="p">:</span> <span class="n">fingers</span><span class="p">,</span>
                 <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
                 <span class="s2">&quot;ground_gap&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-                <span class="s2">&quot;gap&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s2">&quot;finger_gap&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">}</span>
 
     <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span><span class="n">element_key</span><span class="p">:</span> <span class="n">FingerCapacitorSquare</span><span class="p">,</span>
                 <span class="s2">&quot;finger_number&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">fingers</span><span class="p">),</span>
                 <span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
                 <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-                <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+                <span class="s2">&quot;finger_gap&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
                 <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span>
                 <span class="s2">&quot;ground_padding&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
                <span class="p">}</span>
@@ -223,13 +226,13 @@
     <span class="k">if</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;gap&quot;</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                   <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
-                  <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_gap&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                   <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
                  <span class="p">}</span>
     <span class="k">elif</span> <span class="n">coupler_type</span> <span class="o">==</span> <span class="s2">&quot;ground gap&quot;</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;finger_length&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
                   <span class="s2">&quot;finger_gap_end&quot;</span><span class="p">:</span> <span class="n">length</span><span class="p">,</span>
-                  <span class="s2">&quot;finger_gap_side&quot;</span><span class="p">:</span> <span class="mi">50</span> <span class="o">-</span> <span class="n">length</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+                  <span class="s2">&quot;finger_gap&quot;</span><span class="p">:</span> <span class="mi">50</span> <span class="o">-</span> <span class="n">length</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
                   <span class="s2">&quot;finger_width&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
                   <span class="s2">&quot;ground_gap_ratio&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
                   <span class="p">}</span>

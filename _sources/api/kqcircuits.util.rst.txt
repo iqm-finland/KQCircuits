@@ -19,6 +19,7 @@ kqcircuits.util
    kqcircuits.util.macro_prepare
    kqcircuits.util.merge
    kqcircuits.util.netlist_extraction
+   kqcircuits.util.netlist_graph
    kqcircuits.util.parameter_helper
    kqcircuits.util.parameters
    kqcircuits.util.replace_squids

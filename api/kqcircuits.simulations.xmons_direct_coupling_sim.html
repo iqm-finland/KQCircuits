@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.xmons_direct_coupling_sim &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.xmons_direct_coupling_sim &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -115,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
@@ -206,9 +208,9 @@
             
   <div class="section" id="module-kqcircuits.simulations.xmons_direct_coupling_sim">
 <span id="kqcircuits-simulations-xmons-direct-coupling-sim"></span><h1>kqcircuits.simulations.xmons_direct_coupling_sim<a class="headerlink" href="#module-kqcircuits.simulations.xmons_direct_coupling_sim" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.simulations.xmons_direct_coupling_sim.</code><code class="sig-name descname">XMonsDirectCouplingSim</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/xmons_direct_coupling_sim.html#XMonsDirectCouplingSim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.xmons_direct_coupling_sim.</span></span><span class="sig-name descname"><span class="pre">XMonsDirectCouplingSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/xmons_direct_coupling_sim.html#XMonsDirectCouplingSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></code></a></p>
 <p>Initialize a Simulation.</p>
 <p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
@@ -226,9 +228,9 @@ used as the top cell for the simulation. Otherwise, a new cell will be created. 
 </p>
 </dd>
 </dl>
-<dl class="method">
-<dt id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.produce_qubits">
-<code class="sig-name descname">produce_qubits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.produce_qubits" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.produce_qubits">
+<span class="sig-name descname"><span class="pre">produce_qubits</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.produce_qubits" title="Permalink to this definition">¶</a></dt>
 <dd><p>A dedicated function to be used also by the corresponding simulation object.</p>
 <p>Assumes following attributes:</p>
 <ul class="simple">
@@ -243,17 +245,17 @@ used as the top cell for the simulation. Otherwise, a new cell will be created. 
 </ul>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/xmons_direct_coupling_sim.html#XMonsDirectCouplingSim.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/xmons_direct_coupling_sim.html#XMonsDirectCouplingSim.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build simulation geometry.</p>
 <p>This method is to be overridden, and the overriding method should create the geometry to be
 simulated and add any ports to <cite>self.ports</cite>.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.ports">
-<code class="sig-name descname">ports</code><em class="property"> = None</em><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.ports" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.ports">
+<span class="sig-name descname"><span class="pre">ports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.port.html#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><span class="pre">kqcircuits.simulations.port.Port</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim.ports" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.symmetric_polygons &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.symmetric_polygons &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -192,7 +193,7 @@
 <div class="viewcode-block" id="polygon_with_hsym"><a class="viewcode-back" href="../../../api/kqcircuits.util.symmetric_polygons.html#kqcircuits.util.symmetric_polygons.polygon_with_hsym">[docs]</a><span class="k">def</span> <span class="nf">polygon_with_hsym</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Polygon with horizontal symmetry.</span>
 
-<span class="sd">    Attributes:</span>
+<span class="sd">    Arguments:</span>
 <span class="sd">        points: List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will</span>
 <span class="sd">            be doubled.</span>
 
@@ -205,7 +206,7 @@
 <div class="viewcode-block" id="polygon_with_vsym"><a class="viewcode-back" href="../../../api/kqcircuits.util.symmetric_polygons.html#kqcircuits.util.symmetric_polygons.polygon_with_vsym">[docs]</a><span class="k">def</span> <span class="nf">polygon_with_vsym</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Polygon with vertical symmetry.</span>
 
-<span class="sd">    Attributes:</span>
+<span class="sd">    Arguments:</span>
 <span class="sd">        points: List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will</span>
 <span class="sd">            be doubled.</span>
 
@@ -218,7 +219,7 @@
 <div class="viewcode-block" id="polygon_with_sym"><a class="viewcode-back" href="../../../api/kqcircuits.util.symmetric_polygons.html#kqcircuits.util.symmetric_polygons.polygon_with_sym">[docs]</a><span class="k">def</span> <span class="nf">polygon_with_sym</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">mirror_trans</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Polygon with symmetry with respect to an axis.</span>
 
-<span class="sd">    Attributes:</span>
+<span class="sd">    Arguments:</span>
 <span class="sd">        points: List of points to copied to the other side of the symmetry axis. Points at the symmetry axis will</span>
 <span class="sd">            be doubled.</span>
 <span class="sd">        mirror_trans: pya.DTrans that mirrors the points with respect to an axis</span>

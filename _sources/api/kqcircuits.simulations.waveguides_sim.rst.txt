@@ -1,0 +1,10 @@
+kqcircuits.simulations.waveguides\_sim
+======================================
+
+.. automodule:: kqcircuits.simulations.waveguides_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.waveguides_sim
+.. image:: ../pcell_images/kqcircuits.simulations.waveguides_sim.png

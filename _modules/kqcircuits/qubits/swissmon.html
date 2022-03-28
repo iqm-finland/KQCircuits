@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.qubits.swissmon &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.qubits.swissmon &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -211,6 +212,7 @@
     <span class="n">cpl_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Coupler gap (um, WNE)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">102</span><span class="p">])</span>
     <span class="n">port_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Port width (um, WNE)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
     <span class="n">cl_offset</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Chargeline offset (um, um)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">200</span><span class="p">])</span>
+    <span class="n">island_r</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Center island rounding radius&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Swissmon.build"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_cross_and_squid</span><span class="p">()</span>
@@ -268,7 +270,7 @@
 
             <span class="c1"># convert to range and recover CPW port</span>
             <span class="n">shoe_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">shoe</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)])</span>
-            <span class="n">shoe_region</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corner_r</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_r</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">shoe_region</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island_r</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">island_r</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
             <span class="n">shoe_region2</span> <span class="o">=</span> <span class="n">shoe_region</span> <span class="o">-</span> <span class="n">port_region</span>
 
         <span class="c1"># move to the north arm of swiss cross</span>
@@ -350,7 +352,7 @@
 
         <span class="n">cross</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">cross_gap_points</span><span class="p">)</span>
         <span class="n">cross</span><span class="o">.</span><span class="n">insert_hole</span><span class="p">(</span><span class="n">cross_island_points</span><span class="p">)</span>
-        <span class="n">cross_rounded</span> <span class="o">=</span> <span class="n">cross</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corner_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">corner_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
+        <span class="n">cross_rounded</span> <span class="o">=</span> <span class="n">cross</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">island_r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
         <span class="n">region_etch</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([</span><span class="n">cross_rounded</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)])</span> <span class="o">-</span> <span class="n">squid_unetch_region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region_etch</span><span class="p">)</span>
 

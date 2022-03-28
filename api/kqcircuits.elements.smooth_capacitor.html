@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.smooth_capacitor &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.smooth_capacitor &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -219,24 +220,24 @@
             
   <div class="section" id="module-kqcircuits.elements.smooth_capacitor">
 <span id="kqcircuits-elements-smooth-capacitor"></span><h1>kqcircuits.elements.smooth_capacitor<a class="headerlink" href="#module-kqcircuits.elements.smooth_capacitor" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.elements.smooth_capacitor.SmoothCapacitor">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.smooth_capacitor.</code><code class="sig-name descname">SmoothCapacitor</code><a class="reference internal" href="../_modules/kqcircuits/elements/smooth_capacitor.html#SmoothCapacitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.smooth_capacitor.SmoothCapacitor" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.smooth_capacitor.SmoothCapacitor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.smooth_capacitor.</span></span><span class="sig-name descname"><span class="pre">SmoothCapacitor</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/smooth_capacitor.html#SmoothCapacitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.smooth_capacitor.SmoothCapacitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for a smooth finger capacitor.</p>
 <p>SmoothCapacitor is a finger capacitor, which has continuous geometry changes
 through the capacitance range. This leads to continuous capacitance function,
 which enables using capacitor inside numerical optimization methods.</p>
-<p>Capacitance range is achieved by changing single parameter called <cite>finger_number</cite>.</p>
-<dl class="method">
-<dt id="kqcircuits.elements.smooth_capacitor.SmoothCapacitor.can_create_from_shape_impl">
-<code class="sig-name descname">can_create_from_shape_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/smooth_capacitor.html#SmoothCapacitor.can_create_from_shape_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.can_create_from_shape_impl" title="Permalink to this definition">¶</a></dt>
+<p>Capacitance range is achieved by changing single parameter called <cite>finger_control</cite>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.smooth_capacitor.SmoothCapacitor.can_create_from_shape_impl">
+<span class="sig-name descname"><span class="pre">can_create_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/smooth_capacitor.html#SmoothCapacitor.can_create_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.can_create_from_shape_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/smooth_capacitor.html#SmoothCapacitor.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/smooth_capacitor.html#SmoothCapacitor.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
@@ -246,11 +247,11 @@ which enables using capacitor inside numerical optimization methods.</p>
 <ul class="simple">
 <li><p><strong>a2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘a’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>b2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘b’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>finger_number</strong><em> (Double)</em><span> - Parameter for capacitor growth (related to number of fingers per side)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2.1</span></code></p></li>
-<li><p><strong>finger_width</strong><em> (Double)</em><span> - Width of a finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_control</strong><em> (Double)</em><span> - Parameter for capacitor growth (related to number of fingers per side)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2.1</span></code></p></li>
 <li><p><strong>ground_gap</strong><em> (Double)</em><span> - Gap between ground and finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>gap</strong><em> (Double)</em><span> - Gap between the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>fixed_length</strong><em> (Double)</em><span> - Fixed length of element, 0 for auto-length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_width</strong><em> (Double)</em><span> - Width of a finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_gap</strong><em> (Double)</em><span> - Gap between the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.smooth_capacitor.png" src="../_images/kqcircuits.elements.smooth_capacitor.png" />
 </div>

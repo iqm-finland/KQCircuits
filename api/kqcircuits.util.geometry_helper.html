@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.geometry_helper &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -124,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
@@ -215,21 +217,21 @@
   <div class="section" id="module-kqcircuits.util.geometry_helper">
 <span id="kqcircuits-util-geometry-helper"></span><h1>kqcircuits.util.geometry_helper<a class="headerlink" href="#module-kqcircuits.util.geometry_helper" title="Permalink to this headline">¶</a></h1>
 <p>Helper module for general geometric functions</p>
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.vector_length_and_direction">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">vector_length_and_direction</code><span class="sig-paren">(</span><em class="sig-param">vector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#vector_length_and_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.vector_length_and_direction" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.vector_length_and_direction">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">vector_length_and_direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#vector_length_and_direction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.vector_length_and_direction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the direction and length of the pya.DVector “vector”.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.point_shift_along_vector">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">point_shift_along_vector</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">other</em>, <em class="sig-param">distance=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#point_shift_along_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.point_shift_along_vector" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.point_shift_along_vector">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">point_shift_along_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#point_shift_along_vector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.point_shift_along_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a point at a <cite>distance</cite> away from point <cite>start</cite> in the direction of point <cite>other</cite>.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.get_direction">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">get_direction</code><span class="sig-paren">(</span><em class="sig-param">angle</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_direction" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_direction">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_direction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_direction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_direction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the direction vector corresponding to <cite>angle</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -239,9 +241,9 @@
 <p>Returns: Unit vector in direction angle</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.get_angle">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">get_angle</code><span class="sig-paren">(</span><em class="sig-param">vector</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_angle" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_angle">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_angle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_angle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the angle in degrees for a given DVector (or DPoint)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -251,9 +253,9 @@
 <p>Returns: angle in degrees</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.get_cell_path_length">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">get_cell_path_length</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">annotation_layer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_cell_path_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_cell_path_length" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_cell_path_length">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_cell_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_cell_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_cell_path_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of the paths in the cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -265,32 +267,28 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.get_object_path_length">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">get_object_path_length</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">layer</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_object_path_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_object_path_length" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_object_path_length">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_object_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_object_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_object_path_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns sum of lengths of all the paths in the object and its children</p>
-<dl class="attribute">
-<dt id="kqcircuits.util.geometry_helper.obj">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">obj</code><a class="headerlink" href="#kqcircuits.util.geometry_helper.obj" title="Permalink to this definition">¶</a></dt>
-<dd><p>ObjectInstPath object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> – ObjectInstPath object</p></li>
+<li><p><strong>layer</strong> – layer integer id in the database</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.util.geometry_helper.layer">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">layer</code><a class="headerlink" href="#kqcircuits.util.geometry_helper.layer" title="Permalink to this definition">¶</a></dt>
-<dd><p>layer integer id in the database</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.simple_region">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">simple_region</code><span class="sig-paren">(</span><em class="sig-param">region</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#simple_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.simple_region" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.simple_region">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">simple_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#simple_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.simple_region" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.region_with_merged_points">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">region_with_merged_points</code><span class="sig-paren">(</span><em class="sig-param">region</em>, <em class="sig-param">tolerance</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#region_with_merged_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.region_with_merged_points" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.region_with_merged_points">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">region_with_merged_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#region_with_merged_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.region_with_merged_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>In each polygon of the region, removes points that are closer to other points than a given tolerance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -308,9 +306,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.region_with_merged_polygons">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">region_with_merged_polygons</code><span class="sig-paren">(</span><em class="sig-param">region</em>, <em class="sig-param">tolerance</em>, <em class="sig-param">expansion=0.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#region_with_merged_polygons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.region_with_merged_polygons" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.region_with_merged_polygons">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">region_with_merged_polygons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expansion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#region_with_merged_polygons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.region_with_merged_polygons" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merges polygons in given region. Ignores gaps that are smaller than given tolerance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -326,9 +324,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.is_clockwise">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">is_clockwise</code><span class="sig-paren">(</span><em class="sig-param">polygon_points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#is_clockwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.is_clockwise" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.is_clockwise">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">is_clockwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polygon_points</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#is_clockwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.is_clockwise" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns True if the polygon points are in clockwise order, False if they are counter-clockwise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -337,9 +335,9 @@
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.circle_polygon">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">circle_polygon</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">n=64</em>, <em class="sig-param">origin=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#circle_polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.circle_polygon" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.circle_polygon">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">circle_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=&lt;klayout.dbcore.DPoint</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#circle_polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.circle_polygon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a polygon for a full circle around the origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -353,9 +351,9 @@
 <p>Returns: list of <code class="docutils literal notranslate"><span class="pre">DPoint``s,</span> <span class="pre">length</span> <span class="pre">``n</span></code>.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.util.geometry_helper.arc_points">
-<code class="sig-prename descclassname">kqcircuits.util.geometry_helper.</code><code class="sig-name descname">arc_points</code><span class="sig-paren">(</span><em class="sig-param">r</em>, <em class="sig-param">start=0</em>, <em class="sig-param">stop=6.283185307179586</em>, <em class="sig-param">n=64</em>, <em class="sig-param">origin=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#arc_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.arc_points" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.arc_points">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">arc_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop=6.283185307179586</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=&lt;klayout.dbcore.DPoint</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#arc_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.arc_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns point describing an arc around the origin with specified start and stop angles. The start and stop angle
 are included.</p>
 <p>If start &lt; stop, the points are counter-clockwise; if start &gt; stop, the points are clockwise.</p>

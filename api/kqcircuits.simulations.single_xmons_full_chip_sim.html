@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.single_xmons_full_chip_sim &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -44,7 +45,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html" />
+    <link rel="next" title="kqcircuits.simulations.waveguides_sim" href="kqcircuits.simulations.waveguides_sim.html" />
     <link rel="prev" title="kqcircuits.simulations.simulation" href="kqcircuits.simulations.simulation.html" /> 
 </head>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -115,6 +116,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
@@ -206,9 +208,9 @@
             
   <div class="section" id="module-kqcircuits.simulations.single_xmons_full_chip_sim">
 <span id="kqcircuits-simulations-single-xmons-full-chip-sim"></span><h1>kqcircuits.simulations.single_xmons_full_chip_sim<a class="headerlink" href="#module-kqcircuits.simulations.single_xmons_full_chip_sim" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.simulations.single_xmons_full_chip_sim.</code><code class="sig-name descname">SingleXmonsFullChipSim</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_xmons_full_chip_sim.html#SingleXmonsFullChipSim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.single_xmons_full_chip_sim.</span></span><span class="sig-name descname"><span class="pre">SingleXmonsFullChipSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_xmons_full_chip_sim.html#SingleXmonsFullChipSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></code></a></p>
 <p>Initialize a Simulation.</p>
 <p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
@@ -226,9 +228,9 @@ used as the top cell for the simulation. Otherwise, a new cell will be created. 
 </p>
 </dd>
 </dl>
-<dl class="method">
-<dt id="kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_xmons_full_chip_sim.html#SingleXmonsFullChipSim.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_xmons_full_chip_sim.html#SingleXmonsFullChipSim.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Build simulation geometry.</p>
 <p>This method is to be overridden, and the overriding method should create the geometry to be
 simulated and add any ports to <cite>self.ports</cite>.</p>
@@ -250,7 +252,7 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.waveguides_sim.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.waveguides_sim" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kqcircuits.simulations.simulation.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

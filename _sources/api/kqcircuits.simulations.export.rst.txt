@@ -4,10 +4,12 @@ kqcircuits.simulations.export
 .. toctree::
 
    kqcircuits.simulations.export.ansys
+   kqcircuits.simulations.export.elmer
    kqcircuits.simulations.export.sonnet
 
 
 .. toctree::
 
+   kqcircuits.simulations.export.gmsh_helpers
    kqcircuits.simulations.export.simulation_export
    kqcircuits.simulations.export.util

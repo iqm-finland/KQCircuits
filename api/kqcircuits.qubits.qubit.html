@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -197,9 +198,9 @@
             
   <div class="section" id="module-kqcircuits.qubits.qubit">
 <span id="kqcircuits-qubits-qubit"></span><h1>kqcircuits.qubits.qubit<a class="headerlink" href="#module-kqcircuits.qubits.qubit" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.qubits.qubit.Qubit">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.qubits.qubit.</code><code class="sig-name descname">Qubit</code><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.qubits.qubit.</span></span><span class="sig-name descname"><span class="pre">Qubit</span></span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>Base class for qubit objects without actual produce function.</p>
 <p>Collection of shared sub routines for shared parameters and producing shared aspects of qubit geometry including</p>
@@ -208,24 +209,24 @@
 <li><p>e-beam layers for SQUIDs</p></li>
 <li><p>SQUID name parameter</p></li>
 </ul>
-<dl class="attribute">
-<dt id="kqcircuits.qubits.qubit.Qubit.LIBRARY_NAME">
-<code class="sig-name descname">LIBRARY_NAME</code><em class="property"> = 'Qubit Library'</em><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit.LIBRARY_NAME">
+<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Qubit</span> <span class="pre">Library'</span></em><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.qubits.qubit.Qubit.LIBRARY_DESCRIPTION">
-<code class="sig-name descname">LIBRARY_DESCRIPTION</code><em class="property"> = 'Library for qubits.'</em><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit.LIBRARY_DESCRIPTION">
+<span class="sig-name descname"><span class="pre">LIBRARY_DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Library</span> <span class="pre">for</span> <span class="pre">qubits.'</span></em><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.qubits.qubit.Qubit.LIBRARY_PATH">
-<code class="sig-name descname">LIBRARY_PATH</code><em class="property"> = 'qubits'</em><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit.LIBRARY_PATH">
+<span class="sig-name descname"><span class="pre">LIBRARY_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'qubits'</span></em><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.qubits.qubit.Qubit.produce_squid">
-<code class="sig-name descname">produce_squid</code><span class="sig-paren">(</span><em class="sig-param">transf</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit.produce_squid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.produce_squid" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit.produce_squid">
+<span class="sig-name descname"><span class="pre">produce_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transf</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit.produce_squid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.produce_squid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces the squid.</p>
 <p>Creates the squid cell and inserts it with the given transformation as a subcell. Also inserts the squid parts
 in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
@@ -247,9 +248,9 @@ in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.qubits.qubit.Qubit.produce_fluxline">
-<code class="sig-name descname">produce_fluxline</code><span class="sig-paren">(</span><em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit.produce_fluxline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.produce_fluxline" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.qubits.qubit.Qubit.produce_fluxline">
+<span class="sig-name descname"><span class="pre">produce_fluxline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/qubit.html#Qubit.produce_fluxline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.qubit.Qubit.produce_fluxline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces the fluxline.</p>
 <p>Creates the fluxline cell and inserts it as a subcell. The “flux” and “flux_corner” ports
 are made available for the qubit.</p>
@@ -267,7 +268,6 @@ are made available for the qubit.</p>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>corner_r</strong><em> (Double)</em><span> - Center island rounding radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">QCD1</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'QCD1',</span> <span class="pre">'QCD2',</span> <span class="pre">'QCD3',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
 <li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Fluxline</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['none',</span> <span class="pre">'Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>
 <li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>

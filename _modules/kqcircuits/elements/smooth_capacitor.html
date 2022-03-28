@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.smooth_capacitor &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.smooth_capacitor &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -188,29 +189,29 @@
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">atan</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
-
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
 
-<div class="viewcode-block" id="SmoothCapacitor"><a class="viewcode-back" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor">[docs]</a><span class="k">class</span> <span class="nc">SmoothCapacitor</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+
+<div class="viewcode-block" id="SmoothCapacitor"><a class="viewcode-back" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="s2">&quot;fixed_length&quot;</span><span class="p">,</span> <span class="n">finger_width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">finger_gap</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SmoothCapacitor</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The PCell declaration for a smooth finger capacitor.</span>
 
 <span class="sd">    SmoothCapacitor is a finger capacitor, which has continuous geometry changes</span>
 <span class="sd">    through the capacitance range. This leads to continuous capacitance function,</span>
 <span class="sd">    which enables using capacitor inside numerical optimization methods.</span>
 
-<span class="sd">    Capacitance range is achieved by changing single parameter called `finger_number`.</span>
+<span class="sd">    Capacitance range is achieved by changing single parameter called `finger_control`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">a2</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of center conductor on the other end&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
                <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Non-physical value &#39;-1&#39; means that the default size &#39;a&#39; is used.&quot;</span><span class="p">)</span>
     <span class="n">b2</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of gap on the other end&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
                <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Non-physical value &#39;-1&#39; means that the default size &#39;b&#39; is used.&quot;</span><span class="p">)</span>
-    <span class="n">finger_number</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Parameter for capacitor growth (related to number of fingers per side)&quot;</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">)</span>
-    <span class="n">finger_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of a finger&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">finger_control</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Continuously adjust finger number&quot;</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span>
+               <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Parameter for capacitor growth (related to number of fingers per side)&quot;</span><span class="p">)</span>
     <span class="n">ground_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Gap between ground and finger&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Gap between the fingers&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">fixed_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fixed length of element, 0 for auto-length&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SmoothCapacitor.can_create_from_shape_impl"><a class="viewcode-back" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.can_create_from_shape_impl">[docs]</a>    <span class="k">def</span> <span class="nf">can_create_from_shape_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="o">.</span><span class="n">is_path</span><span class="p">()</span></div>
@@ -218,9 +219,9 @@
 <div class="viewcode-block" id="SmoothCapacitor.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># constants</span>
         <span class="n">r1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">/</span> <span class="mi">2</span>
-        <span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span>
-        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span>
-        <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">r2</span> <span class="o">=</span> <span class="n">r1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span>
+        <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="n">x_mid</span> <span class="o">=</span> <span class="n">x_max</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_width</span>
         <span class="n">xport</span> <span class="o">=</span> <span class="n">x_max</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span>
 
@@ -265,15 +266,15 @@
             <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pnts</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">finger_polygon</span><span class="p">(</span><span class="n">order_number</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span> <span class="o">&lt;=</span> <span class="n">order_number</span><span class="p">:</span>  <span class="c1"># The finger does not exist for given order_number.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">&lt;=</span> <span class="n">order_number</span><span class="p">:</span>  <span class="c1"># The finger does not exist for given order_number.</span>
                 <span class="k">return</span> <span class="kc">None</span>
             <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">order_number</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="p">(</span><span class="n">order_number</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">t_poly</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
             <span class="n">t_len</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="n">pi</span><span class="o">/</span><span class="mi">2</span>  <span class="c1"># length of 90-degree turn segment</span>
-            <span class="n">s_len</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># length of straight segment</span>
+            <span class="n">s_len</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># length of straight segment</span>
             <span class="n">f_len</span> <span class="o">=</span> <span class="n">s_len</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">t_len</span>  <span class="c1"># total length of finger (including two 90-degree turns and straight)</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span> <span class="o">-</span> <span class="n">order_number</span><span class="p">)</span> <span class="o">*</span> <span class="n">f_len</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">-</span> <span class="n">order_number</span><span class="p">)</span> <span class="o">*</span> <span class="n">f_len</span>
             <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">t_len</span><span class="p">:</span>  <span class="c1"># The first turn is not full 90 degrees.</span>
                 <span class="k">return</span> <span class="n">t_poly</span><span class="p">((</span><span class="n">x</span> <span class="o">/</span> <span class="n">t_len</span><span class="p">)</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">s_len</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>  <span class="c1"># The first turn is limited by finger length. This only happens when order_number=0.</span>
@@ -296,9 +297,9 @@
                                                   <span class="p">])</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">middle_gap_fill</span><span class="p">():</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">scale</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span>
             <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_mid</span> <span class="o">+</span> <span class="n">x_max</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_number</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">scale</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_control</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">scale</span>
             <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span>
                                             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">l</span><span class="p">,</span> <span class="o">-</span><span class="n">y</span><span class="p">)])</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
 
@@ -331,13 +332,13 @@
         <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span>
         <span class="n">region_ground</span> <span class="o">+=</span> <span class="n">wg_joint</span><span class="p">(</span><span class="n">xport</span><span class="p">,</span> <span class="n">x_mid</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">,</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">a2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">region_ground</span> <span class="o">+=</span> <span class="n">wg_joint</span><span class="p">(</span><span class="o">-</span><span class="n">xport</span><span class="p">,</span> <span class="o">-</span><span class="n">x_mid</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">region_ground</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">)</span>
+        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">region_ground</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">)</span>
 
         <span class="c1"># Finalize finger pad regions</span>
         <span class="n">right_fingers</span> <span class="o">+=</span> <span class="n">wg_joint</span><span class="p">(</span><span class="n">xport</span><span class="p">,</span> <span class="n">x_mid</span><span class="p">,</span> <span class="n">a2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">left_fingers</span> <span class="o">+=</span> <span class="n">wg_joint</span><span class="p">(</span><span class="o">-</span><span class="n">xport</span><span class="p">,</span> <span class="o">-</span><span class="n">x_mid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">right_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span><span class="p">)</span>
-        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">left_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gap</span><span class="p">)</span>
+        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">right_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">)</span>
+        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">left_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">)</span>
 
         <span class="c1"># Insert waveguide segments in both ends, if fixed_length is set</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -219,9 +220,9 @@
             
   <div class="section" id="module-kqcircuits.elements.element">
 <span id="kqcircuits-elements-element"></span><h1>kqcircuits.elements.element<a class="headerlink" href="#module-kqcircuits.elements.element" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="kqcircuits.elements.element.get_refpoints">
-<code class="sig-prename descclassname">kqcircuits.elements.element.</code><code class="sig-name descname">get_refpoints</code><span class="sig-paren">(</span><em class="sig-param">layer</em>, <em class="sig-param">cell</em>, <em class="sig-param">cell_transf=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#get_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.get_refpoints" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.get_refpoints">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.element.</span></span><span class="sig-name descname"><span class="pre">get_refpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_transf=&lt;klayout.dbcore.DTrans</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#get_refpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.get_refpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract reference points from cell from layer as dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -238,36 +239,36 @@
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="kqcircuits.elements.element.Element">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.element.</code><code class="sig-name descname">Element</code><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.element.</span></span><span class="sig-name descname"><span class="pre">Element</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">klayout.db.pcell_declaration_helper._PCellDeclarationHelper</span></code></p>
 <p>Element PCell declaration.</p>
 <p>PCell parameters for an element are defined as class attributes of Param type.
 Elements have ports.</p>
-<dl class="attribute">
-<dt id="kqcircuits.elements.element.Element.LIBRARY_NAME">
-<code class="sig-name descname">LIBRARY_NAME</code><em class="property"> = 'Element Library'</em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.LIBRARY_NAME">
+<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Element</span> <span class="pre">Library'</span></em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.elements.element.Element.LIBRARY_DESCRIPTION">
-<code class="sig-name descname">LIBRARY_DESCRIPTION</code><em class="property"> = 'Superconducting quantum circuit library for elements.'</em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.LIBRARY_DESCRIPTION">
+<span class="sig-name descname"><span class="pre">LIBRARY_DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Superconducting</span> <span class="pre">quantum</span> <span class="pre">circuit</span> <span class="pre">library</span> <span class="pre">for</span> <span class="pre">elements.'</span></em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.elements.element.Element.LIBRARY_PATH">
-<code class="sig-name descname">LIBRARY_PATH</code><em class="property"> = 'elements'</em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.LIBRARY_PATH">
+<span class="sig-name descname"><span class="pre">LIBRARY_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'elements'</span></em><a class="headerlink" href="#kqcircuits.elements.element.Element.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.create_cell_from_shape">
-<em class="property">static </em><code class="sig-name descname">create_cell_from_shape</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_cell_from_shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_cell_from_shape" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.create_cell_from_shape">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_cell_from_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_cell_from_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_cell_from_shape" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.create">
-<em class="property">classmethod </em><code class="sig-name descname">create</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">library=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create cell for this element in layout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -280,9 +281,9 @@ Elements have ports.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.create_with_refpoints">
-<em class="property">classmethod </em><code class="sig-name descname">create_with_refpoints</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">library=None</em>, <em class="sig-param">refpoint_transform=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_with_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_with_refpoints" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.create_with_refpoints">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_with_refpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoint_transform=&lt;klayout.dbcore.DTrans</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create_with_refpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create_with_refpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convenience function to create cell and return refpoints too.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -297,9 +298,9 @@ Elements have ports.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.add_element">
-<code class="sig-name descname">add_element</code><span class="sig-paren">(</span><em class="sig-param">cls</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_element"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_element" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.add_element">
+<span class="sig-name descname"><span class="pre">add_element</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new cell for the given element in this layout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -314,9 +315,9 @@ Elements have ports.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.insert_cell">
-<code class="sig-name descname">insert_cell</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">trans=None</em>, <em class="sig-param">inst_name=None</em>, <em class="sig-param">label_trans=None</em>, <em class="sig-param">align_to=None</em>, <em class="sig-param">align=None</em>, <em class="sig-param">rec_levels=0</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.insert_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.insert_cell" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.insert_cell">
+<span class="sig-name descname"><span class="pre">insert_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.insert_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.insert_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inserts a subcell into the present cell.</p>
 <p>It will use the given <cite>cell</cite> object or if <cite>cell</cite> is an Element class’ name then directly
 take the provided keyword arguments to first create the cell object.</p>
@@ -344,9 +345,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.face">
-<code class="sig-name descname">face</code><span class="sig-paren">(</span><em class="sig-param">face_index=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.face"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.face" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.face">
+<span class="sig-name descname"><span class="pre">face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.face" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the face dictionary corresponding to self.face_ids[face_index].</p>
 <p>The face dictionary contains key “id” for the face ID and keys for all the available layers in that face.</p>
 <dl class="field-list simple">
@@ -356,9 +357,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.pcell_params_by_name">
-<code class="sig-name descname">pcell_params_by_name</code><span class="sig-paren">(</span><em class="sig-param">whitelist=None</em>, <em class="sig-param">**parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.pcell_params_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.pcell_params_by_name" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.pcell_params_by_name">
+<span class="sig-name descname"><span class="pre">pcell_params_by_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">whitelist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.pcell_params_by_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.pcell_params_by_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Give PCell parameters as a dictionary.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -373,9 +374,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.add_port">
-<code class="sig-name descname">add_port</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">pos</em>, <em class="sig-param">direction=None</em>, <em class="sig-param">face_id=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_port" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.add_port">
+<span class="sig-name descname"><span class="pre">add_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a port location to the list of reference points as well as ports layer for netlist extraction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -392,9 +393,9 @@ added.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.copy_port">
-<code class="sig-name descname">copy_port</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">cell_inst</em>, <em class="sig-param">new_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.copy_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.copy_port" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.copy_port">
+<span class="sig-name descname"><span class="pre">copy_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.copy_port"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.copy_port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy a port definition from a different cell and instance; typically used to expose a specific subcell port.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -407,9 +408,9 @@ added.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.get_schema">
-<em class="property">classmethod </em><code class="sig-name descname">get_schema</code><span class="sig-paren">(</span><em class="sig-param">noparents=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_schema" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.get_schema">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_schema</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">noparents</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the combined parameters of the class “cls” and all its ancestor classes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -418,34 +419,34 @@ added.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.produce_impl">
-<code class="sig-name descname">produce_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.produce_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.produce_impl">
+<span class="sig-name descname"><span class="pre">produce_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.produce_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.produce_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method builds the PCell.</p>
 <p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.display_text_impl">
-<code class="sig-name descname">display_text_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.display_text_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.display_text_impl" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.display_text_impl">
+<span class="sig-name descname"><span class="pre">display_text_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.display_text_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.display_text_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.get_refpoints">
-<code class="sig-name descname">get_refpoints</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">cell_transf=&lt;klayout.dbcore.DTrans object&gt;</em>, <em class="sig-param">rec_levels=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_refpoints"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_refpoints" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.get_refpoints">
+<span class="sig-name descname"><span class="pre">get_refpoints</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_transf=&lt;klayout.dbcore.DTrans</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_refpoints"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_refpoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>See <cite>get_refpoints</cite>.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.get_layer">
-<code class="sig-name descname">get_layer</code><span class="sig-paren">(</span><em class="sig-param">layer_name</em>, <em class="sig-param">face_id=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_layer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_layer" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.get_layer">
+<span class="sig-name descname"><span class="pre">get_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.get_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.get_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the specified Layer object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -457,9 +458,9 @@ added.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.element.Element.raise_error_on_cell">
-<code class="sig-name descname">raise_error_on_cell</code><span class="sig-paren">(</span><em class="sig-param">error_msg</em>, <em class="sig-param">position=&lt;klayout.dbcore.DPoint object&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.raise_error_on_cell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.raise_error_on_cell" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.raise_error_on_cell">
+<span class="sig-name descname"><span class="pre">raise_error_on_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position=&lt;klayout.dbcore.DPoint</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.raise_error_on_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.raise_error_on_cell" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replaces cell with error text in the annotation layer, and raises ValueError with the same error message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.waveguide_coplanar &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.waveguide_coplanar &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -219,9 +220,9 @@
             
   <div class="section" id="module-kqcircuits.elements.waveguide_coplanar">
 <span id="kqcircuits-elements-waveguide-coplanar"></span><h1>kqcircuits.elements.waveguide_coplanar<a class="headerlink" href="#module-kqcircuits.elements.waveguide_coplanar" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.waveguide_coplanar.</code><code class="sig-name descname">WaveguideCoplanar</code><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.waveguide_coplanar.</span></span><span class="sig-name descname"><span class="pre">WaveguideCoplanar</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for an arbitrary coplanar waveguide.</p>
 <p>Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
@@ -235,38 +236,38 @@ possible or desired.</p>
 <p>Arbitrary angle bents can have very small gaps between bends and straight segments due to
 precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.</p>
 </div>
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl">
-<code class="sig-name descname">can_create_from_shape_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.can_create_from_shape_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl">
+<span class="sig-name descname"><span class="pre">can_create_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.can_create_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.can_create_from_shape_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.parameters_from_shape_impl">
-<code class="sig-name descname">parameters_from_shape_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.parameters_from_shape_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.parameters_from_shape_impl" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.parameters_from_shape_impl">
+<span class="sig-name descname"><span class="pre">parameters_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.parameters_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.parameters_from_shape_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.transformation_from_shape_impl">
-<code class="sig-name descname">transformation_from_shape_impl</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.transformation_from_shape_impl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.transformation_from_shape_impl" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.transformation_from_shape_impl">
+<span class="sig-name descname"><span class="pre">transformation_from_shape_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.transformation_from_shape_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.transformation_from_shape_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>default implementation</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_waveguide">
-<code class="sig-name descname">produce_waveguide</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.produce_waveguide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_waveguide" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_waveguide">
+<span class="sig-name descname"><span class="pre">produce_waveguide</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.produce_waveguide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_waveguide" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.get_corner_data">
-<em class="property">static </em><code class="sig-name descname">get_corner_data</code><span class="sig-paren">(</span><em class="sig-param">point1</em>, <em class="sig-param">point2</em>, <em class="sig-param">point3</em>, <em class="sig-param">r</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.get_corner_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.get_corner_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.get_corner_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_corner_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.get_corner_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.get_corner_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns data needed to create a curved waveguide at path corner.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -291,9 +292,9 @@ precision of arithmetic. Small positive value of corner_safety_overlap can avoid
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_end_termination">
-<em class="property">static </em><code class="sig-name descname">produce_end_termination</code><span class="sig-paren">(</span><em class="sig-param">elem</em>, <em class="sig-param">point_1</em>, <em class="sig-param">point_2</em>, <em class="sig-param">term_len</em>, <em class="sig-param">face_index=0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.produce_end_termination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_end_termination" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_end_termination">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">produce_end_termination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.produce_end_termination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.produce_end_termination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces termination for a waveguide.</p>
 <p>The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.
 One edge of the polygon is centered at point_2, and the polygon extends to length “term_len” in the
@@ -311,9 +312,9 @@ direction of (point_2 - point_1).</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.is_continuous">
-<em class="property">static </em><code class="sig-name descname">is_continuous</code><span class="sig-paren">(</span><em class="sig-param">waveguide_cell</em>, <em class="sig-param">annotation_layer</em>, <em class="sig-param">tolerance</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.is_continuous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.is_continuous" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.is_continuous">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_continuous</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waveguide_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar.html#WaveguideCoplanar.is_continuous"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar.is_continuous" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns true if the given waveguide is determined to be continuous, false otherwise.</p>
 <p>The waveguide is considered continuous if the endpoints of its every segment (except first and last) are close
 enough to the endpoints of neighboring segments. The waveguide segments are not necessarily ordered correctly

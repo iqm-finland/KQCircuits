@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.layout_to_code &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -124,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
@@ -214,9 +216,9 @@
             
   <div class="section" id="module-kqcircuits.util.layout_to_code">
 <span id="kqcircuits-util-layout-to-code"></span><h1>kqcircuits.util.layout_to_code<a class="headerlink" href="#module-kqcircuits.util.layout_to_code" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="kqcircuits.util.layout_to_code.convert_cells_to_code">
-<code class="sig-prename descclassname">kqcircuits.util.layout_to_code.</code><code class="sig-name descname">convert_cells_to_code</code><span class="sig-paren">(</span><em class="sig-param">top_cell</em>, <em class="sig-param">print_waveguides_as_composite=False</em>, <em class="sig-param">add_instance_names=True</em>, <em class="sig-param">refpoint_snap=50.0</em>, <em class="sig-param">grid_snap=1.0</em>, <em class="sig-param">output_format='insert_cell+chip'</em>, <em class="sig-param">include_imports=True</em>, <em class="sig-param">use_create_with_refpoints=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.convert_cells_to_code">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">convert_cells_to_code</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_waveguides_as_composite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_instance_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refpoint_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_snap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'insert_cell+chip'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_imports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_create_with_refpoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#convert_cells_to_code"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.convert_cells_to_code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints out the Python code required to create the cells in top_cell.</p>
 <p>For each instance that is selected in GUI, prints out an <cite>insert_cell()</cite> command that can be copy pasted to a chip’s
 <cite>build()</cite>. If no instances are selected, then it will do the same for all instances that are one level below

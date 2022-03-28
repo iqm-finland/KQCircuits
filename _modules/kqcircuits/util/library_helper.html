@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.library_helper &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.library_helper &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -67,7 +68,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -208,10 +209,17 @@
 
 <span class="n">_kqc_libraries</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dictionary {library name: (library, library path relative to kqcircuits)}</span>
 
+<span class="c1"># Source directories not to be included in the library</span>
+<span class="n">_excluded_paths</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;__pycache__&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;util&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;simulations&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;masks&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
 <span class="c1"># modules NOT to be included in the library, (python file names without extension)</span>
 <span class="n">_excluded_module_names</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;__init__&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;library_helper&quot;</span><span class="p">,</span>
     <span class="s2">&quot;element&quot;</span><span class="p">,</span>
     <span class="s2">&quot;qubit&quot;</span><span class="p">,</span>
     <span class="s2">&quot;airbridge&quot;</span><span class="p">,</span>
@@ -222,7 +230,10 @@
     <span class="s2">&quot;marker&quot;</span><span class="p">,</span>
     <span class="s2">&quot;junction_test_pads&quot;</span><span class="p">,</span>
     <span class="s2">&quot;tsv&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;gmsh_helpers&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;elmer_export&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+
 
 <div class="viewcode-block" id="load_libraries"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
@@ -426,22 +437,28 @@
     <span class="n">pcell_classes</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">src</span> <span class="ow">in</span> <span class="n">SRC_PATHS</span><span class="p">:</span>
-        <span class="n">module_paths</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">)</span>
         <span class="n">pkg</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="k">for</span> <span class="n">mp</span> <span class="ow">in</span> <span class="n">module_paths</span><span class="p">:</span>
-            <span class="n">module_name</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">stem</span>
-            <span class="k">if</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">_excluded_module_names</span><span class="p">:</span>
-                <span class="k">continue</span>
-            <span class="c1"># Get the module path starting from the &quot;pkg&quot; directory below project root directory.</span>
-            <span class="n">import_path_parts</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pkg</span><span class="p">)::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">import_path</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">import_path_parts</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># the -3 is for removing &quot;.py&quot; from the path</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">library_src_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">src</span><span class="o">.</span><span class="n">iterdir</span><span class="p">()</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_excluded_paths</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">library_src_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">src</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
 
-            <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">reload</span><span class="p">:</span>
-                <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-                <span class="n">_get_all_pcell_classes</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reloaded module &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">))</span>
-            <span class="n">pcell_classes</span> <span class="o">+=</span> <span class="n">_get_pcell_classes</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">library_src</span> <span class="ow">in</span> <span class="n">library_src_paths</span><span class="p">:</span>
+            <span class="n">module_paths</span> <span class="o">=</span> <span class="n">library_src</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">mp</span> <span class="ow">in</span> <span class="n">module_paths</span><span class="p">:</span>
+                <span class="n">module_name</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">stem</span>
+                <span class="k">if</span> <span class="n">module_name</span> <span class="ow">in</span> <span class="n">_excluded_module_names</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># Get the module path starting from the &quot;pkg&quot; directory below project root directory.</span>
+                <span class="n">import_path_parts</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">mp</span><span class="o">.</span><span class="n">parts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pkg</span><span class="p">)::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">import_path</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">import_path_parts</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>  <span class="c1"># the -3 is for removing &quot;.py&quot; from the path</span>
+
+                <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">reload</span><span class="p">:</span>
+                    <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+                    <span class="n">_get_all_pcell_classes</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reloaded module &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">))</span>
+                <span class="n">pcell_classes</span> <span class="o">+=</span> <span class="n">_get_pcell_classes</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">pcell_classes</span>
 

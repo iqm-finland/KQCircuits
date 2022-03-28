@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Python workflow tutorial &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>Python workflow tutorial &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -102,9 +103,14 @@
 <li class="toctree-l2"><a class="reference internal" href="gui_workflow.html">Point-and-click workflow tutorial</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Python workflow tutorial</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#file-system-hierarchy">File system hierarchy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#structure-of-pcell-code">Structure of  PCell code</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-a-chip-and-an-element">Example of defining a Chip and an Element</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-of-inserting-an-element">Example of inserting an Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structure-of-pcell-code">Structure of  PCell code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#element-class">Element class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#build">Build</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-an-element">Example of defining an Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#refpoints">Refpoints</a></li>
 </ul>
 </li>
@@ -198,19 +204,159 @@ using any external code editor. To start working with the KQCircuits code base d
 <a class="reference internal" href="../developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a>.</p>
 <div class="section" id="file-system-hierarchy">
 <h2>File system hierarchy<a class="headerlink" href="#file-system-hierarchy" title="Permalink to this headline">¶</a></h2>
-<p>TODO: describe where the different parts of KQCircuits are located in the file system.</p>
+<p>In the KQCircuits root folder the most important folder for most users is the
+<code class="docutils literal notranslate"><span class="pre">klayout_package</span></code> folder, which is also all that is included in the Salt
+package. Other folders are mainly for automatic tests and documentation.
+KQCircuits code is divided into the <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and <code class="docutils literal notranslate"><span class="pre">scripts</span></code> folders in
+<code class="docutils literal notranslate"><span class="pre">klayout_package/python</span></code>. These two folders are also (after installation
+process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and <code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code>
+in the <code class="docutils literal notranslate"><span class="pre">~/.klayout`</span> <span class="pre">or</span> <span class="pre">``~/KLayout</span></code> folder.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits PCell classes and many
+other modules used by them or by scripts. Folders directly under under
+<code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> containing PCell classes correspond to different PCell
+libraries such as elements, chips, or test structures.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">scripts</span></code> folder contains macros to be run in KLayout GUI and
+scripts for generating simulation files or mask files. The files there are in
+general not meant to be imported in other Python files. The outputs of
+simulation or mask scripts can be found in the <code class="docutils literal notranslate"><span class="pre">tmp</span></code> folder below the main
+KQCircuits folder.</p>
 </div>
 <div class="section" id="structure-of-pcell-code">
 <h2>Structure of  PCell code<a class="headerlink" href="#structure-of-pcell-code" title="Permalink to this headline">¶</a></h2>
-<p>TODO: describe the general structure of PCell code, Element class, parameters, produce_impl(), etc.</p>
+<div class="section" id="element-class">
+<h3>Element class<a class="headerlink" href="#element-class" title="Permalink to this headline">¶</a></h3>
+<p>Any KQCircuits PCells must be derived from the Element class, and we
+call them “elements”. For example, to define a new element <code class="docutils literal notranslate"><span class="pre">MyElement</span></code> you
+would start the code with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+</pre></div>
 </div>
-<div class="section" id="example-of-defining-a-chip-and-an-element">
-<h2>Example of defining a Chip and an Element<a class="headerlink" href="#example-of-defining-a-chip-and-an-element" title="Permalink to this headline">¶</a></h2>
-<p>TODO: further details about writing Element and Chip code.</p>
+<p>You can of course also have elements derived from other existing elements
+instead of Element directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement2</span><span class="p">(</span><span class="n">MyElement</span><span class="p">):</span>
+</pre></div>
 </div>
-<div class="section" id="example-of-inserting-an-element">
-<h2>Example of inserting an Element<a class="headerlink" href="#example-of-inserting-an-element" title="Permalink to this headline">¶</a></h2>
-<p>TODO: how to bild new Elements or Chips from existing Elements.</p>
+<p>There are common base classes for certain types of elements such as chips
+(Chip) or qubits (Qubit). For more information, see
+<a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a> and the API documentation for Element.</p>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<p>PCell parameters are used to create PCell instances with different parameter
+values. They can be modified in GUI or when creating the instance in code.
+The PCell parameters of a KQCircuits element are defined using <code class="docutils literal notranslate"><span class="pre">Param</span></code>
+objects as class-level variables, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge length (from pad to pad)&quot;</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Param</span></code>  definition always has type, description and default value, and
+optionally some other information such as the unit or <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code> to hide
+it from GUI. More information about parameters can be found in
+<a class="reference internal" href="../developer/architecture.html#architecture-parameters"><span class="std std-ref">PCell parameters</span></a> section.</p>
+</div>
+<div class="section" id="build">
+<h3>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h3>
+<p>The geometry for any KQCircuit element is created in the <code class="docutils literal notranslate"><span class="pre">build</span></code> method, so
+generally you should define at least that method in you element classes. See
+<a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a> section for more details about how this works.</p>
+</div>
+</div>
+<div class="section" id="example-of-defining-an-element">
+<h2>Example of defining an Element<a class="headerlink" href="#example-of-defining-an-element" title="Permalink to this headline">¶</a></h2>
+<p>Here is an example of defining a new element, with code comments explaining
+the different parts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import any modules, classes or functions used in our code.</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.symmetric_polygons</span> <span class="kn">import</span> <span class="n">polygon_with_vsym</span>
+
+
+<span class="c1"># Any KQCircuits element must inherit from Element.</span>
+<span class="k">class</span> <span class="nc">SimpleCross</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+
+    <span class="c1"># Define PCell parameters for this class here.</span>
+    <span class="c1"># Each parameter definition contains the parameter type, description and default value.</span>
+    <span class="c1"># Other optional data such as the unit can also be defined for parameters.</span>
+    <span class="n">arm_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Cross arm length&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+
+    <span class="c1"># The build() function is where the element geometry is built.</span>
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># We define a hardcoded value for arm_width, so it cannot be changed from outside like arm_length.</span>
+        <span class="n">arm_width</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="c1"># Define some variables to hold values used commonly in this function.</span>
+        <span class="n">len1</span> <span class="o">=</span> <span class="n">arm_width</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">len2</span> <span class="o">=</span> <span class="n">arm_width</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_length</span>
+        <span class="c1"># Define the cross polygon using a list of DPoints.</span>
+        <span class="c1"># Note that we use polygon_with_vsym() to only have to define half of the points.</span>
+        <span class="c1"># For non-symmetric polygons we would use pya.DPolygon() instead of polygon_with_vsym().</span>
+        <span class="n">cross_poly</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">([</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">len1</span><span class="p">,</span> <span class="o">-</span><span class="n">len2</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">len1</span><span class="p">,</span> <span class="o">-</span><span class="n">len1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">len2</span><span class="p">,</span> <span class="o">-</span><span class="n">len1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">len2</span><span class="p">,</span> <span class="n">len1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">len1</span><span class="p">,</span> <span class="n">len1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">len1</span><span class="p">,</span> <span class="n">len2</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="c1"># Add the cross polygon to the cell.</span>
+        <span class="c1"># We use the get_layer() function to select in which layer the polygon is added.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">cross_poly</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To include this element in the KQCircuits element library, copy this code to a
+new Python-file <code class="docutils literal notranslate"><span class="pre">simple_cross.py</span></code> in the
+<code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/elements</span></code> folder. Then <code class="docutils literal notranslate"><span class="pre">SimpleCross</span></code>
+can be used like any other KQCircuits element.</p>
+</div>
+<div class="section" id="example-of-defining-a-chip-and-inserting-elements-into-it">
+<h2>Example of defining a Chip and inserting elements into it<a class="headerlink" href="#example-of-defining-a-chip-and-inserting-elements-into-it" title="Permalink to this headline">¶</a></h2>
+<p>Many elements not only create their own geometry from scratch, but also
+include other elements as subcells. This is especially true for chips, which
+typically use existing elements as building blocks instead of producing shapes
+directly. In this example we show how to place instances of the <code class="docutils literal notranslate"><span class="pre">SimpleCross</span></code>
+element created in the previous section into a new chip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.simple_cross</span> <span class="kn">import</span> <span class="n">SimpleCross</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+
+
+<span class="c1"># New chip implementation must use the Chip element as a base class.</span>
+<span class="c1"># As chips are also elements, all the previous explanations about</span>
+<span class="c1"># parameters, build-method etc. hold also for them.</span>
+<span class="k">class</span> <span class="nc">NewChip1</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># The produce_launchers function creates launchers fitting a certain</span>
+        <span class="c1"># sampleholder and sets the chip size accordingly. The available</span>
+        <span class="c1"># sampleholder types are defined in defaults.py (default_sampleholders).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;SMA8&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Define variable for half chip width for positioning elements</span>
+        <span class="n">half_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span>
+
+        <span class="c1"># Elements can be inserted to other elements (including chips) using the insert_cell function.</span>
+        <span class="c1"># Giving the class name, instance transformation and pcell parameters, it creates a cell object</span>
+        <span class="c1"># with the given parameter values and places an instance of that cell inside this cell with the</span>
+        <span class="c1"># given transformation. (Note that the chip origin is at the bottom left corner of the chip)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">SimpleCross</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span><span class="p">,</span> <span class="n">half_width</span><span class="p">),</span> <span class="n">arm_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
+        <span class="c1"># Another option is to first create the cell separately using add_element, and then insert</span>
+        <span class="c1"># instances of that cell using insert_cell. This can be useful when placing many instances</span>
+        <span class="c1"># with the same parameter values.</span>
+        <span class="n">cross_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">SimpleCross</span><span class="p">,</span> <span class="n">arm_length</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">))</span>
+
+        <span class="c1"># Call the Chip-class build-method to produce the chip frame and possible ground plane grid.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This code can be copied to a new Python-file <code class="docutils literal notranslate"><span class="pre">new_chip1.py</span></code> in the
+<code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/chips</span></code> folder to make it visible in the
+KQCircuits chip library.</p>
 </div>
 <div class="section" id="refpoints">
 <h2>Refpoints<a class="headerlink" href="#refpoints" title="Permalink to this headline">¶</a></h2>

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.simulations.export.simulation_export &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -45,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="kqcircuits.simulations.export.util" href="kqcircuits.simulations.export.util.html" />
-    <link rel="prev" title="kqcircuits.simulations.export.sonnet.sonnet_export" href="kqcircuits.simulations.export.sonnet.sonnet_export.html" /> 
+    <link rel="prev" title="kqcircuits.simulations.export.gmsh_helpers" href="kqcircuits.simulations.export.gmsh_helpers.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -108,7 +109,9 @@
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.simulations.html">kqcircuits.simulations</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.simulations.export.html">kqcircuits.simulations.export</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.gmsh_helpers.html">kqcircuits.simulations.export.gmsh_helpers</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 </ul>
@@ -121,6 +124,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
@@ -214,21 +218,21 @@
             
   <div class="section" id="module-kqcircuits.simulations.export.simulation_export">
 <span id="kqcircuits-simulations-export-simulation-export"></span><h1>kqcircuits.simulations.export.simulation_export<a class="headerlink" href="#module-kqcircuits.simulations.export.simulation_export" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="kqcircuits.simulations.export.simulation_export.export_simulation_oas">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.simulation_export.</code><code class="sig-name descname">export_simulation_oas</code><span class="sig-paren">(</span><em class="sig-param">simulations</em>, <em class="sig-param">path: pathlib.Path</em>, <em class="sig-param">file_prefix='simulation'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#export_simulation_oas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.export_simulation_oas" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.export_simulation_oas">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">export_simulation_oas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simulation'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#export_simulation_oas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.export_simulation_oas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write single OASIS file containing all simulations in list.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.simulations.export.simulation_export.sweep_simulation">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.simulation_export.</code><code class="sig-name descname">sweep_simulation</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">sim_class</em>, <em class="sig-param">sim_parameters</em>, <em class="sig-param">sweeps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#sweep_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.sweep_simulation" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.sweep_simulation">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">sweep_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweeps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#sweep_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.sweep_simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create simulation sweep by varying one parameter at time. Return list of simulations.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.simulations.export.simulation_export.cross_sweep_simulation">
-<code class="sig-prename descclassname">kqcircuits.simulations.export.simulation_export.</code><code class="sig-name descname">cross_sweep_simulation</code><span class="sig-paren">(</span><em class="sig-param">layout</em>, <em class="sig-param">sim_class</em>, <em class="sig-param">sim_parameters</em>, <em class="sig-param">sweeps</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#cross_sweep_simulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.simulation_export.cross_sweep_simulation">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.simulation_export.</span></span><span class="sig-name descname"><span class="pre">cross_sweep_simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sweeps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/simulation_export.html#cross_sweep_simulation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create simulation sweep by cross varying all parameters. Return list of simulations.</p>
 </dd></dl>
 
@@ -242,7 +246,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="kqcircuits.simulations.export.util.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.export.util" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kqcircuits.simulations.export.sonnet.sonnet_export.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.sonnet.sonnet_export" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.simulations.export.gmsh_helpers.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.export.gmsh_helpers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

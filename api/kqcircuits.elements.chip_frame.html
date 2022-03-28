@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.chip_frame &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.chip_frame &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -219,9 +220,9 @@
             
   <div class="section" id="module-kqcircuits.elements.chip_frame">
 <span id="kqcircuits-elements-chip-frame"></span><h1>kqcircuits.elements.chip_frame<a class="headerlink" href="#module-kqcircuits.elements.chip_frame" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="kqcircuits.elements.chip_frame.produce_label">
-<code class="sig-prename descclassname">kqcircuits.elements.chip_frame.</code><code class="sig-name descname">produce_label</code><span class="sig-paren">(</span><em class="sig-param">cell</em>, <em class="sig-param">label</em>, <em class="sig-param">location</em>, <em class="sig-param">origin</em>, <em class="sig-param">dice_width</em>, <em class="sig-param">margin</em>, <em class="sig-param">layers</em>, <em class="sig-param">layer_protection</em>, <em class="sig-param">size=350</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/chip_frame.html#produce_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.chip_frame.produce_label" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.chip_frame.produce_label">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.chip_frame.</span></span><span class="sig-name descname"><span class="pre">produce_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dice_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_protection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">350</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/chip_frame.html#produce_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.chip_frame.produce_label" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces a Text PCell accounting for desired relative position of the text respect to the given location
 and the spacing.</p>
 <dl class="field-list simple">
@@ -245,15 +246,15 @@ and the spacing.</p>
 </dl>
 </dd></dl>
 
-<dl class="class">
-<dt id="kqcircuits.elements.chip_frame.ChipFrame">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.chip_frame.</code><code class="sig-name descname">ChipFrame</code><a class="reference internal" href="../_modules/kqcircuits/elements/chip_frame.html#ChipFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.chip_frame.ChipFrame" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.chip_frame.ChipFrame">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.chip_frame.</span></span><span class="sig-name descname"><span class="pre">ChipFrame</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/chip_frame.html#ChipFrame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.chip_frame.ChipFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for a chip frame.</p>
 <p>The chip frame consists of a dicing edge, and labels and markers in the corners.</p>
-<dl class="method">
-<dt id="kqcircuits.elements.chip_frame.ChipFrame.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/chip_frame.html#ChipFrame.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.chip_frame.ChipFrame.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.chip_frame.ChipFrame.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/chip_frame.html#ChipFrame.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.chip_frame.ChipFrame.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces dicing edge, markers, labels and ground grid for the chip face.</p>
 </dd></dl>
 

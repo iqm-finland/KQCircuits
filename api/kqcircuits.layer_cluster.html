@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.layer_cluster &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.layer_cluster &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -190,34 +191,34 @@
             
   <div class="section" id="module-kqcircuits.layer_cluster">
 <span id="kqcircuits-layer-cluster"></span><h1>kqcircuits.layer_cluster<a class="headerlink" href="#module-kqcircuits.layer_cluster" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.layer_cluster.LayerCluster">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.layer_cluster.</code><code class="sig-name descname">LayerCluster</code><span class="sig-paren">(</span><em class="sig-param">main_layers</em>, <em class="sig-param">extra_layers</em>, <em class="sig-param">face_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/layer_cluster.html#LayerCluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.layer_cluster.LayerCluster">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.layer_cluster.</span></span><span class="sig-name descname"><span class="pre">LayerCluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_layers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/layer_cluster.html#LayerCluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Container class for a cluster of layers.</p>
 <p>Some files need to be exported with certain clusters of layers, for example for EBL process. This class wraps
 information about such layer cluster.</p>
-<dl class="attribute">
-<dt id="kqcircuits.layer_cluster.LayerCluster.main_layers">
-<code class="sig-name descname">main_layers</code><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.main_layers" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.layer_cluster.LayerCluster.main_layers">
+<span class="sig-name descname"><span class="pre">main_layers</span></span><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.main_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of names of the layers which should contain shapes for this cluster to be exported</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.layer_cluster.LayerCluster.extra_layers">
-<code class="sig-name descname">extra_layers</code><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.extra_layers" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.layer_cluster.LayerCluster.extra_layers">
+<span class="sig-name descname"><span class="pre">extra_layers</span></span><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.extra_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of names of other layers exported together with main_layers</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="kqcircuits.layer_cluster.LayerCluster.face_id">
-<code class="sig-name descname">face_id</code><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.face_id" title="Permalink to this definition">¶</a></dt>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.layer_cluster.LayerCluster.face_id">
+<span class="sig-name descname"><span class="pre">face_id</span></span><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.face_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>face_id of the layers in this cluster</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.layer_cluster.LayerCluster.all_layers">
-<code class="sig-name descname">all_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/layer_cluster.html#LayerCluster.all_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.all_layers" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.layer_cluster.LayerCluster.all_layers">
+<span class="sig-name descname"><span class="pre">all_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/layer_cluster.html#LayerCluster.all_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.layer_cluster.LayerCluster.all_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns main_layers + extra_layers.</p>
 </dd></dl>
 

@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.airbridge_connection &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.airbridge_connection &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -219,14 +220,14 @@
             
   <div class="section" id="module-kqcircuits.elements.airbridge_connection">
 <span id="kqcircuits-elements-airbridge-connection"></span><h1>kqcircuits.elements.airbridge_connection<a class="headerlink" href="#module-kqcircuits.elements.airbridge_connection" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.elements.airbridge_connection.AirbridgeConnection">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.airbridge_connection.</code><code class="sig-name descname">AirbridgeConnection</code><a class="reference internal" href="../_modules/kqcircuits/elements/airbridge_connection.html#AirbridgeConnection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.airbridge_connection.AirbridgeConnection" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.airbridge_connection.AirbridgeConnection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.airbridge_connection.</span></span><span class="sig-name descname"><span class="pre">AirbridgeConnection</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridge_connection.html#AirbridgeConnection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.airbridge_connection.AirbridgeConnection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration of an Airbridge with tapered waveguides in both ends.</p>
-<dl class="method">
-<dt id="kqcircuits.elements.airbridge_connection.AirbridgeConnection.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridge_connection.html#AirbridgeConnection.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.airbridge_connection.AirbridgeConnection.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.airbridge_connection.AirbridgeConnection.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridge_connection.html#AirbridgeConnection.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.airbridge_connection.AirbridgeConnection.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
@@ -239,6 +240,13 @@
 <li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular']</span></code></p></li>
 <li><p><strong>gap_between_bridges</strong><em> (Double)</em><span> - Inner distance between adjacent bridges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code></p></li>
 <li><p><strong>waveguide_extra</strong><em> (Double)</em><span> - Waveguide extra length below airbridge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
+<li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
+<li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 <li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">31.41592653589793</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>a1</strong><em> (Double)</em><span> - Width of left waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>b1</strong><em> (Double)</em><span> - Width of left waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>

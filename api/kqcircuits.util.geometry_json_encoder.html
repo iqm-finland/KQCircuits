@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.geometry_json_encoder &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.util.geometry_json_encoder &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -124,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
@@ -214,9 +216,9 @@
             
   <div class="section" id="module-kqcircuits.util.geometry_json_encoder">
 <span id="kqcircuits-util-geometry-json-encoder"></span><h1>kqcircuits.util.geometry_json_encoder<a class="headerlink" href="#module-kqcircuits.util.geometry_json_encoder" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.util.geometry_json_encoder.</code><code class="sig-name descname">GeometryJsonEncoder</code><span class="sig-paren">(</span><em class="sig-param">*</em>, <em class="sig-param">skipkeys=False</em>, <em class="sig-param">ensure_ascii=True</em>, <em class="sig-param">check_circular=True</em>, <em class="sig-param">allow_nan=True</em>, <em class="sig-param">sort_keys=False</em>, <em class="sig-param">indent=None</em>, <em class="sig-param">separators=None</em>, <em class="sig-param">default=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_json_encoder.html#GeometryJsonEncoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_json_encoder.</span></span><span class="sig-name descname"><span class="pre">GeometryJsonEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_json_encoder.html#GeometryJsonEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">json.encoder.JSONEncoder</span></code></p>
 <p>JSON encoder that converts several pya D* types into nested lists.</p>
 <p>Constructor for JSONEncoder, with sensible defaults.</p>
@@ -248,9 +250,9 @@ you should specify (‘,’, ‘:’) to eliminate whitespace.</p>
 <p>If specified, default is a function that gets called for objects
 that can’t otherwise be serialized.  It should return a JSON encodable
 version of the object or raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
-<dl class="method">
-<dt id="kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder.default">
-<code class="sig-name descname">default</code><span class="sig-paren">(</span><em class="sig-param">o</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_json_encoder.html#GeometryJsonEncoder.default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder.default" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder.default">
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_json_encoder.html#GeometryJsonEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder.default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement this method in a subclass such that it returns
 a serializable object for <code class="docutils literal notranslate"><span class="pre">o</span></code>, or calls the base implementation
 (to raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>).</p>

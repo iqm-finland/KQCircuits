@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.spiral_resonator_polygon &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -219,9 +220,9 @@
             
   <div class="section" id="module-kqcircuits.elements.spiral_resonator_polygon">
 <span id="kqcircuits-elements-spiral-resonator-polygon"></span><h1>kqcircuits.elements.spiral_resonator_polygon<a class="headerlink" href="#module-kqcircuits.elements.spiral_resonator_polygon" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.spiral_resonator_polygon.</code><code class="sig-name descname">SpiralResonatorPolygon</code><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#SpiralResonatorPolygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.spiral_resonator_polygon.</span></span><span class="sig-name descname"><span class="pre">SpiralResonatorPolygon</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#SpiralResonatorPolygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for a polygon shaped spiral resonator.</p>
 <p>The resonator waveguide starts at the first point of <cite>self.input_path</cite> and goes through each each of its points. The
@@ -241,17 +242,17 @@ attempts to find the largest possible spacing.</p>
 polygon by using parameter <cite>n_bridges_pattern</cite>.</p>
 <p>Non-negative value to <cite>connector_dist</cite> inserts face-to-face connector to spiral resonator so that the beginning and
 the end of resonator will be on different faces.</p>
-<dl class="method">
-<dt id="kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#SpiralResonatorPolygon.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#SpiralResonatorPolygon.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.SpiralResonatorPolygon.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="kqcircuits.elements.spiral_resonator_polygon.rectangular_parameters">
-<code class="sig-prename descclassname">kqcircuits.elements.spiral_resonator_polygon.</code><code class="sig-name descname">rectangular_parameters</code><span class="sig-paren">(</span><em class="sig-param">above_space=500</em>, <em class="sig-param">below_space=400</em>, <em class="sig-param">right_space=1000</em>, <em class="sig-param">x_spacing=100</em>, <em class="sig-param">y_spacing=100</em>, <em class="sig-param">bridges_left=False</em>, <em class="sig-param">bridges_bottom=False</em>, <em class="sig-param">bridges_right=False</em>, <em class="sig-param">bridges_top=False</em>, <em class="sig-param">r=100</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#rectangular_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.rectangular_parameters" title="Permalink to this definition">¶</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.spiral_resonator_polygon.rectangular_parameters">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.spiral_resonator_polygon.</span></span><span class="sig-name descname"><span class="pre">rectangular_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">above_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">below_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right_space</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bridges_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bridges_bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bridges_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bridges_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/spiral_resonator_polygon.html#rectangular_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.spiral_resonator_polygon.rectangular_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>A utility function to easily produce rectangular spiral resonator (old SpiralResonatorRectangle).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

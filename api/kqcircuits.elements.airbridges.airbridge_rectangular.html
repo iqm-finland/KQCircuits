@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.airbridges.airbridge_rectangular &mdash; KQCircuits 4.3.0 documentation</title>
+  <title>kqcircuits.elements.airbridges.airbridge_rectangular &mdash; KQCircuits 4.3.5 documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -32,11 +34,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -69,7 +70,7 @@
             
             
               <div class="version">
-                4.3.0
+                4.3.5
               </div>
             
           
@@ -226,22 +227,23 @@
             
   <div class="section" id="module-kqcircuits.elements.airbridges.airbridge_rectangular">
 <span id="kqcircuits-elements-airbridges-airbridge-rectangular"></span><h1>kqcircuits.elements.airbridges.airbridge_rectangular<a class="headerlink" href="#module-kqcircuits.elements.airbridges.airbridge_rectangular" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular">
-<em class="property">class </em><code class="sig-prename descclassname">kqcircuits.elements.airbridges.airbridge_rectangular.</code><code class="sig-name descname">AirbridgeRectangular</code><a class="reference internal" href="../_modules/kqcircuits/elements/airbridges/airbridge_rectangular.html#AirbridgeRectangular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.airbridges.airbridge_rectangular.</span></span><span class="sig-name descname"><span class="pre">AirbridgeRectangular</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridges/airbridge_rectangular.html#AirbridgeRectangular"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge" title="kqcircuits.elements.airbridges.airbridge.Airbridge"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.airbridges.airbridge.Airbridge</span></code></a></p>
 <p>PCell declaration for a rectangular airbridge.</p>
 <p>Origin is at the geometric center. The airbridge is in vertical direction.</p>
 <p>Bottom parts of pads in bottom layer, bridge and top parts of pads in top layer. Pads and bridge are rectangular.
 Refpoints “port_a” and “port_b” at top pad points closest to origin.</p>
-<dl class="attribute">
-<dt id="kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.default_type">
-<code class="sig-name descname">default_type</code><em class="property"> = 'Airbridge Rectangular'</em><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.default_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.default_type">
+<span class="sig-name descname"><span class="pre">default_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Airbridge</span> <span class="pre">Rectangular'</span></em><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.default_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the default shape if not specified otherwise by the user.</p>
+</dd></dl>
 
-<dl class="method">
-<dt id="kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.build">
-<code class="sig-name descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridges/airbridge_rectangular.html#AirbridgeRectangular.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.build" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridges/airbridge_rectangular.html#AirbridgeRectangular.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.build" title="Permalink to this definition">¶</a></dt>
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
