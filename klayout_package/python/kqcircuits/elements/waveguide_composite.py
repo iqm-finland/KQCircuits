@@ -406,6 +406,8 @@ class WaveguideComposite(Element):
     def _add_fc_bump(self, ind):
         """Add FlipChipConnectorRF and change default face_id."""
         node = self._nodes[ind]
+        if "face_id" not in node.params:
+            node.params["face_id"] = self.face_ids[1]
         params = {**self.pcell_params_by_name(FlipChipConnectorRf), **node.params}
         new_id = node.params.pop("face_id")
         old_id = self.face_ids[0]
