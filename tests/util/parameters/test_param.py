@@ -118,6 +118,15 @@ def test_add_parameters_from_overrides_both():
     assert t.pa1 == 1 and t.pa2 == 20
 
 
+def test_add_parameters_from_override_with_same_default():
+    @add_parameters_from(A, pa1=1)
+    class Test(Element):
+        pass
+
+    t = Test()
+    assert t.pa1 == 1
+
+
 # test inherited parameters
 
 def test_add_parameters_from_everything_inherited():
@@ -131,7 +140,7 @@ def test_add_parameters_from_everything_inherited():
 
 
 def test_add_parameters_from_inheritance_chain():
-    @add_parameters_from(B)
+    @add_parameters_from(C)
     class Source(A):
         pass
     @add_parameters_from(Source)
@@ -140,12 +149,11 @@ def test_add_parameters_from_inheritance_chain():
 
     p = Source()
     t = Test()
-    assert p.pa1 == 1 and p.pb1 == 2
-    assert t.pa1 == 1 and t.pb1 == 2
+    assert p.pa1 == t.pa1 and p.pc1 == t.pc1
 
 
 def test_add_parameters_from_longer_inheritance_chain():
-    @add_parameters_from(B)
+    @add_parameters_from(C)
     class SourceParent(A):
         pass
     class Source(SourceParent):
@@ -157,9 +165,8 @@ def test_add_parameters_from_longer_inheritance_chain():
     p = SourceParent()
     s = Source()
     t = Test()
-    assert p.pa2 == 10 and p.pb2 == 20
-    assert s.pa2 == 10 and s.pb2 == 20
-    assert t.pa2 == 10 and t.pb2 == 20
+    assert p.pa2 == s.pa2 == t.pa2
+    assert p.pc2 == s.pc2 == t.pc2
 
 
 # test wildcard and parameter removal

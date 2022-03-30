@@ -45,9 +45,10 @@ def add_parameters_from(cls, *param_names, **param_with_default_value):
 
     def _decorate(obj):
         for name, p in cls.get_schema().items():
-            if name in param_with_default_value and param_with_default_value[name] != p.default:
-                # Redefine the Param object because multiple elements may refer to it
-                p = Param(p.data_type, p.description, param_with_default_value[name], **p.kwargs)
+            if name in param_with_default_value:
+                # Redefine the Param object, if needed, because multiple elements may refer to it
+                if param_with_default_value[name] != p.default:
+                    p = Param(p.data_type, p.description, param_with_default_value[name], **p.kwargs)
             elif invert ^ (name not in param_names):
                 continue
             setattr(obj, name, p)
