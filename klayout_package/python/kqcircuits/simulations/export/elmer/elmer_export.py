@@ -16,9 +16,11 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+import logging
 import shutil
 import subprocess
 from pathlib import Path
+from sys import argv
 
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.defaults import ELMER_SCRIPTS_PATH
@@ -183,6 +185,7 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
     copy_elmer_scripts_to_directory(path)
     msh_filepaths = []
     sif_filepaths = []
+    show = show and argv[-1] != "-q"
     for simulation in simulations:
         msh_filepath, port_data_gmsh = export_gmsh_msh(simulation, path,
                                                        default_mesh_size,
@@ -235,10 +238,30 @@ def run_elmer(path: Path, msh_filepaths: [],
     """
     for msh_filepath in msh_filepaths:
         if run_elmergrid:
-            subprocess.check_call(['ElmerGrid', '14', '2', msh_filepath], cwd=path)
+
+            if shutil.which('ElmerGrid') is not None:
+                subprocess.check_call(['ElmerGrid', '14', '2', msh_filepath], cwd=path)
+            else:
+                logging.warning("ElmerGrid was not found! Make sure you have ElmerFEM "\
+                        "installed: https://github.com/ElmerCSC/elmerfem")
+                logging.warning("Mesh was created, but Elmer cannot be run!")
+                return
 
         if run_elmer:
-            subprocess.check_call(['ElmerSolver', 'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
 
-    if run_paraview:
-        subprocess.check_call(['paraview'], cwd=path)
+            if shutil.which('ElmerSolver') is not None:
+                subprocess.check_call(['ElmerSolver', 'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
+            else:
+                logging.warning("ElmerSolver was not found! Make sure you have ElmerFEM "\
+                        "installed: https://github.com/ElmerCSC/elmerfem")
+                logging.warning("Mesh was created, but Elmer cannot be run!")
+                return
+
+    if run_paraview and argv[-1] != "-q": # quiet mode, do not run viewer
+        if shutil.which('paraview') is not None:
+            subprocess.check_call(['paraview'], cwd=path)
+        else:
+            logging.warning("Paraview was not found! Make sure you have it "\
+                    "installed: https://www.paraview.org/")
+            logging.warning("The simulation was run, but Paraview cannot be run for viewing the results!")
+            return
