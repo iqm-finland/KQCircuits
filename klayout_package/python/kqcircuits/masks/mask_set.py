@@ -131,19 +131,38 @@ class MaskSet:
                 with subprocess.Popen(args) as proc:
                     proc.wait()
 
+            def _params_to_str(params):  # flatten a parameters dictionary to a string
+                ps = ""
+                for n, v in params.items():
+                    if isinstance(v, str):
+                        ps += f",{n}={repr(v)}"
+                    elif isinstance(v, pya.DBox):
+                        ps += f",{n}=pya.DBox({v.p1.x}, {v.p1.y}, {v.p2.x}, {v.p2.y})"
+                    elif isinstance(v, pya.DVector):
+                        ps += f",{n}=pya.DVector({v.x}, {v.y})"
+                    elif isinstance(v, pya.DPoint):
+                        ps += f",{n}=pya.DPoint({v.x}, {v.y})"
+                    else:
+                        ps += f",{n}={v}"
+                return ps
+
             tp = ThreadPool(threads)
             file_names = []
-            for chip_class, variant_name, *params in chips:
+            for chip_class, variant_name, *param_list in chips:
                 # create the script for generating this chip with the correct parameters and exporting the chip files
-                params = params[0] if params else {}
+                params = {
+                    'name_chip': variant_name,
+                    'name_mask': self.name,
+                    'with_grid': self.with_grid,
+                    'merge_base_metal_gap': True,
+                    }
+                if param_list:
+                    params.update(param_list[0])
+
                 create_element = textwrap.dedent(
                     f"""
                     from {chip_class.__module__} import {chip_class.__name__}
-                    cell = {chip_class.__name__}.create(layout, merge_base_metal_gap=True,
-                        {('name_chip="' + variant_name + '",') if 'name_chip' not in params else ''}
-                        {('name_mask="' + self.name + '",') if 'name_mask' not in params else ''}
-                        {f'with_grid={self.with_grid},' if 'with_grid' not in params else ''}
-                        **{str(params)})
+                    cell = {chip_class.__name__}.create(layout {_params_to_str(params)})
                     """)
                 chip_path = TMP_PATH/f"{self.name}_v{self.version}"/"Chips"/f"{variant_name}"
                 chip_path.mkdir(parents=True, exist_ok=True)
@@ -151,8 +170,7 @@ class MaskSet:
                 file_names.append((variant_name, str(chip_path / f"{variant_name}.oas"), script_name))
 
                 result = template.substitute(name_mask=f"{self.name}_v{self.version}", variant_name=variant_name,
-                                             create_element=create_element, chip_class_name=chip_class.__name__,
-                                             chip_params=params, export_drc=self.export_drc)
+                                             create_element=create_element, export_drc=self.export_drc)
                 with open(script_name, "w") as f:
                     f.write(result)
 
