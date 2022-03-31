@@ -17,13 +17,13 @@
 from math import cos, sin, pi, radians
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.geometry_helper import arc_points
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
-from kqcircuits.elements.airbridges import airbridge_type_choices
 
 
+@add_parameters_from(Airbridge, "airbridge_type")
 class WaveguideCoplanarSplitter(Element):
     """
     The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the
@@ -33,7 +33,6 @@ class WaveguideCoplanarSplitter(Element):
     angles = Param(pdt.TypeList, "Angle of each port (degrees)", [0, 120, 240])
     use_airbridges = Param(pdt.TypeBoolean, "Use airbridges at a distance from the centre", False)
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
-    bridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
 
     def build(self):
 
@@ -86,7 +85,7 @@ class WaveguideCoplanarSplitter(Element):
                 ab_trans = pya.DCplxTrans(1, angle_deg, False,
                                           self.bridge_distance*cos(angle_rad),
                                           self.bridge_distance*sin(angle_rad))
-                ab_cell = self.add_element(Airbridge, pad_length=14, pad_extra=2, airbridge_type=self.bridge_type)
+                ab_cell = self.add_element(Airbridge, pad_length=14, pad_extra=2)
                 self.insert_cell(ab_cell, ab_trans)
 
         # Merge and insert shapes

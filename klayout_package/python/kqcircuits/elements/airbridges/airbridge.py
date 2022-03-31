@@ -22,7 +22,7 @@ from kqcircuits.util.geometry_helper import get_angle
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.library_helper import load_libraries
 from kqcircuits.defaults import default_airbridge_type, default_layers
-
+from kqcircuits.elements.airbridges import airbridge_type_choices
 from kqcircuits.elements.element import Element, get_refpoints
 
 
@@ -37,6 +37,7 @@ class Airbridge(Element):
     default_type = default_airbridge_type
     """This is the default shape if not specified otherwise by the user."""
 
+    airbridge_type = Param(pdt.TypeString, "Airbridge type", default_type, choices=airbridge_type_choices)
     bridge_width = Param(pdt.TypeDouble, "Bridge width", 20, unit="μm")
     pad_length = Param(pdt.TypeDouble, "Pad length", 18, unit="μm")
     bridge_length = Param(pdt.TypeDouble, "Bridge length (from pad to pad)", 44, unit="μm")

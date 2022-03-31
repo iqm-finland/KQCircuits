@@ -21,17 +21,18 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.chips.xmons_direct_coupling import XMonsDirectCoupling
 from kqcircuits.simulations.port import InternalPort
+from kqcircuits.elements.fluxlines.fluxline import Fluxline
+from kqcircuits.squids.squid import Squid
 
 
+@add_parameters_from(Squid, squid_type="SIM1")
+@add_parameters_from(Fluxline, fluxline_type="none")
 @add_parameters_from(XMonsDirectCoupling, "arm_width_a", "rr_cpl_width")
 class XMonsDirectCouplingSim(Simulation):
 
     #Re-define some XMonsDirectCoupling parameters with defaults changed:
     qubit_spacing = Param(pdt.TypeDouble, "Qubit spacing", 3, unit="[μm]")
     arm_width_b = Param(pdt.TypeDouble, "Qubit 2 arm width", 66, unit="[μm]")
-    squid_type = Param(pdt.TypeString, "SQUID Type", "SIM1")
-    fluxline_type = Param(pdt.TypeString, "Fluxline Type", "none")
-
     waveguide_length = Param(pdt.TypeDouble,
                              "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
     cpl_width = Param(pdt.TypeDouble, "Qubit RR coupler width", 24, unit="μm")

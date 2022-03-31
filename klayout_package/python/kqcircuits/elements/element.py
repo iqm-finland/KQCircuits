@@ -291,8 +291,10 @@ class Element(pya.PCellDeclarationHelper):
         """
         schema = {}
         for pc in cls.__mro__:
+            if not hasattr(pc, 'LIBRARY_NAME'):
+                break
             schema = {**Param.get_all(pc), **schema}
-            if noparents:   # not interested in parent classes
+            if noparents:  # not interested in parent classes
                 break
         return schema
 

@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.elements.airbridges import airbridge_type_choices
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -32,7 +31,6 @@ class AirbridgeConnection(Element):
 
     with_side_airbridges = Param(pdt.TypeBoolean, "With airbridges on the sides", True)
     with_right_waveguide = Param(pdt.TypeBoolean, "With waveguide on right side", True)
-    airbridge_type = Param(pdt.TypeString, "Airbridge type", Airbridge.default_type, choices=airbridge_type_choices)
     gap_between_bridges = Param(pdt.TypeDouble, "Inner distance between adjacent bridges", 20)
     waveguide_extra = Param(pdt.TypeDouble, "Waveguide extra length below airbridge", 0)
 

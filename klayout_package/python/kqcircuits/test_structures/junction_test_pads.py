@@ -18,17 +18,17 @@
 
 import numpy
 
-from kqcircuits.defaults import default_squid_type
+from kqcircuits.squids.squid import Squid
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
-from kqcircuits.squids import squid_type_choices
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
 
 
+@add_parameters_from(Squid, "squid_type")
 @add_parameters_from(Qubit, "junction_width")
 @add_parameters_from(Qubit, "mirror_squid")
 class JunctionTestPads(TestStructure):
@@ -37,7 +37,6 @@ class JunctionTestPads(TestStructure):
     pad_width = Param(pdt.TypeDouble, "Pad width", 500, unit="μm")
     area_height = Param(pdt.TypeDouble, "Area height", 1900, unit="μm")
     area_width = Param(pdt.TypeDouble, "Area width", 1300, unit="μm")
-    squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="μm")
     only_pads = Param(pdt.TypeBoolean, "Only produce pads, no junctions", False)

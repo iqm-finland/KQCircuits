@@ -18,18 +18,15 @@
 
 import math
 
-from kqcircuits.defaults import default_squid_type, default_fluxline_type
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.fluxlines import fluxline_type_choices
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.squids import squid_type_choices
 from kqcircuits.squids.squid import Squid
 
 
-@add_parameters_from(Fluxline, "fluxline_gap_width")
-@add_parameters_from(Squid, "junction_width", "loop_area")
+@add_parameters_from(Fluxline, "fluxline_gap_width", "fluxline_type")
+@add_parameters_from(Squid, "junction_width", "loop_area", "squid_type")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
 
@@ -44,8 +41,6 @@ class Qubit(Element):
     LIBRARY_DESCRIPTION = "Library for qubits."
     LIBRARY_PATH = "qubits"
 
-    squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
-    fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_fluxline_type, choices=fluxline_type_choices)
     mirror_squid =  Param(pdt.TypeBoolean, "Mirror SQUID by its Y axis", False)
 
     def produce_squid(self, transf, **parameters):

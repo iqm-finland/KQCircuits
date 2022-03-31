@@ -21,15 +21,14 @@ from math import pi
 from autologging import traced
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.defaults import default_squid_type
 from kqcircuits.elements.meander import Meander
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
-from kqcircuits.squids import squid_type_choices
 from kqcircuits.util.coupler_lib import cap_params
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.squids.squid import Squid
 
 
 def _get_num_meanders(meander_length, turn_radius, meander_min_width):
@@ -39,6 +38,7 @@ def _get_num_meanders(meander_length, turn_radius, meander_min_width):
 
 
 @traced
+@add_parameters_from(Squid, "squid_type")
 class SingleXmons(Chip):
     """The PCell declaration for a SingleXmons chip.
 
@@ -64,7 +64,6 @@ class SingleXmons(Chip):
     l_fingers = Param(pdt.TypeList, "Length of fingers for test resonator couplers", [23.1, 9.9, 14.1, 10, 21])
     type_coupler = Param(pdt.TypeList, "Coupler type for test resonator couplers",
                          ["interdigital", "interdigital", "interdigital", "gap"])
-    squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
 
     def build(self):
         """Produces a SingleXmons PCell."""

@@ -23,12 +23,15 @@ from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
 from kqcircuits.defaults import default_fluxline_type
+from kqcircuits.elements.fluxlines import fluxline_type_choices
 
 
 @traced
 @logged
 class Fluxline(Element):
     """Base class for fluxline objects without actual produce function."""
+
+    fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_fluxline_type, choices=fluxline_type_choices)
     fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
     fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 

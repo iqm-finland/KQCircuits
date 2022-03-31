@@ -18,19 +18,18 @@
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.chips.chip import Chip
-from kqcircuits.defaults import default_squid_type
 from kqcircuits.pya_resolver import pya
-from kqcircuits.squids import squid_type_choices
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
+from kqcircuits.squids.squid import Squid
 
 
+@add_parameters_from(Squid, "squid_type")
 @add_parameters_from(ChipFrame, "marker_types")
 class JunctionTest2(Chip):
     """The PCell declaration for a JunctionTest2 chip."""
 
     pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="[μm]")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
-    squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="[μm]")
 
     def build(self):

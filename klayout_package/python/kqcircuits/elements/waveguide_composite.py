@@ -177,7 +177,7 @@ class Node:
         return [Node.deserialize(node) for node in node_list]
 
 
-@add_parameters_from(AirbridgeConnection, "airbridge_type")
+@add_parameters_from(Airbridge, "airbridge_type")
 @add_parameters_from(FlipChipConnectorRf)
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
 @logged
