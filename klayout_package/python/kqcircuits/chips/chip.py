@@ -80,8 +80,10 @@ class Chip(Element):
         return self.shape.is_box()
 
     def parameters_from_shape_impl(self):
-        self.box.p1 = self.shape.p1
-        self.box.p2 = self.shape.p2
+        self.box = pya.DBox(0, 0, self.shape.box_dwidth, self.shape.box_dheight)
+
+    def transformation_from_shape_impl(self):
+        return pya.Trans(self.shape.box_p1)
 
     @staticmethod
     def get_launcher_assignments(chip_cell):
