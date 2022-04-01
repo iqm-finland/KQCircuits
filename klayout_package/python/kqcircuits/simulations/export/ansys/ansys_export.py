@@ -74,25 +74,12 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     if export_processing is None:
         export_processing = []
 
-    port_data = simulation.get_port_data()
+    simulation_data = simulation.get_simulation_data()
 
     # ansys_data and optional_layers
     ansys_data = {
         'ansys_tool': ansys_tool,
-        'gds_file': simulation.name + '.gds',
-        'stack_type': simulation.wafer_stack_type,
-        'signal_layer': default_layers["b_simulation_signal"],
-        'ground_layer': default_layers["b_simulation_ground"],
-        'airbridge_flyover_layer': default_layers["b_simulation_airbridge_flyover"],
-        'airbridge_pads_layer': default_layers["b_simulation_airbridge_pads"],
-        'units': 'um',  # hardcoded assumption in multiple places
-        'substrate_height': simulation.substrate_height,
-        'airbridge_height': simulation.airbridge_height,
-        'box_height': simulation.box_height,
-        'permittivity': simulation.permittivity,
-        'box': simulation.box,
-        'ports': port_data,
-        'parameters': simulation.get_parameters(),
+        **simulation_data,
         'analysis_setup': {
             'frequency_units': frequency_units,
             'frequency': frequency,
@@ -114,14 +101,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         ansys_data['ansys_project_template'] = ansys_project_template
 
     if simulation.wafer_stack_type == "multiface":
-        ansys_data = {**ansys_data,
-                      "substrate_height_top": simulation.substrate_height_top,
-                      "chip_distance": simulation.chip_distance,
-                      "t_signal_layer": default_layers["t_simulation_signal"],
-                      "t_ground_layer": default_layers["t_simulation_ground"],
-                      "b_bump_layer": default_layers["b_indium_bump"],
-                      "t_bump_layer": default_layers["t_indium_bump"],
-                      }
         optional_layers = {default_layers["t_simulation_signal"],
                            default_layers["t_simulation_ground"],
                            default_layers["b_indium_bump"],
