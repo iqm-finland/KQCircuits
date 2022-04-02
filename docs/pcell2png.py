@@ -26,18 +26,24 @@ from importlib import import_module
 from pathlib import Path
 
 from kqcircuits.klayout_view import KLayoutView
-import kqcircuits.util.macro_prepare as macroprep
 from kqcircuits.pya_resolver import pya
 
 module = import_module(lib_name)
 cls = getattr(module, cls_name)
 path = Path(dest_dir)
 
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+layout = KLayoutView.get_active_layout()
 top = layout.create_cell("top")
 cell = cls.create(layout)
 top.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
 view = KLayoutView(current=True)
 view.focus(top)
-size = 1000 if lib_name.startswith("kqcircuits.chips") else 500
+size = 1000 if lib_name.find(".chips.") != -1 else 500
 view.export_pcell_png(path, top, cls.__module__, max_size=size)
+
+# save the element as static .oas file too
+static_cell = layout.cell(layout.convert_cell_to_static(cell.cell_index()))
+save_opts = pya.SaveLayoutOptions()
+save_opts.format = "OASIS"
+save_opts.write_context_info = False  # to save all cells as static cells
+static_cell.write(f"{path}/{cls.__module__}.oas", save_opts)

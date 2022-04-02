@@ -50,6 +50,15 @@ verify_documentation:
     - Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
     - cd docs
     - make html SPHINXOPTS="-W --keep-going"
+  after_script:
+    - echo "See documentation at https://iqm.gitlab-pages.iqm.fi/-/qe/KQCircuits/-/jobs/$CI_JOB_ID/artifacts/docs/_build/html/index.html"
+  artifacts:
+    expose_as: 'HTML docs PNG and OAS files'
+    paths:
+    - docs/pcell_images/
+    - docs/_build/html/
+    expire_in: 1 week
+    when: always
   only:
     - merge_requests
 

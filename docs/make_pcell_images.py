@@ -23,12 +23,13 @@ import sys
 import subprocess
 from multiprocessing import Pool
 from kqcircuits.util.library_helper import _get_all_pcell_classes
-from kqcircuits.defaults import ROOT_PATH, PY_PATH
+from kqcircuits.defaults import ROOT_PATH
 
 
-sys.path.append(str(ROOT_PATH))
+kqc_root_path = sys.argv[1] if len(sys.argv) == 2 else str(ROOT_PATH)
+sys.path.append(kqc_root_path)
 from setup_helper import klayout_configdir
-configdir = klayout_configdir(ROOT_PATH)
+configdir = klayout_configdir(kqc_root_path)
 if not os.path.exists(f"{configdir}/python/kqcircuits"):
     print("Documentation generation needs KLayout. Please run setup_within_klayout.py.")
     sys.exit(-1)
@@ -36,7 +37,7 @@ if not os.path.exists(f"{configdir}/python/kqcircuits"):
 DIR = ROOT_PATH.joinpath("docs/pcell_images")
 DIR.mkdir(exist_ok=True)
 
-script = PY_PATH.joinpath("scripts").joinpath("util").joinpath("pcell2png.py")
+script = ROOT_PATH.joinpath("docs/pcell2png.py")
 
 if os.name == "nt":
     exe = os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
