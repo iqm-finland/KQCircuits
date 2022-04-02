@@ -19,14 +19,13 @@
 import numpy
 from autologging import logged, traced
 
-from kqcircuits.defaults import default_layers, default_squid_type, default_tsv_parameters, default_marker_type,\
-    default_sampleholders
+from kqcircuits.defaults import default_layers, default_squid_type, default_sampleholders
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.merge import merge_layers
@@ -36,6 +35,8 @@ from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
 @traced
 @logged
+@add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy",
+                     "with_grid", "dice_width", "dice_grid_margin", "marker_types")
 class Chip(Element):
     """Base PCell declaration for chips.
 
@@ -50,27 +51,15 @@ class Chip(Element):
     LIBRARY_PATH = "chips"
 
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)), hidden=True)
-    with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
-    dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="[μm]")
-    name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
-    name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
-    name_copy = Param(pdt.TypeString, "Name of the copy", None)
-    dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100, hidden=True)
-    marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
-                         default=[default_marker_type] * 4)
     # Tsv grid parameters
     with_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs", False)
-    tsv_grid_spacing = Param(pdt.TypeDouble,"TSV grid distance (center to center)",
-                               default_tsv_parameters['tsv_grid_spacing'], unit="[μm]")
+    tsv_grid_spacing = Param(pdt.TypeDouble,"TSV grid distance (center to center)", 300, unit="[μm]")
     tsv_edge_to_tsv_edge_separation = \
-        Param(pdt.TypeDouble, "Ground TSV clearance to manually placed TSVs (edge to edge)",
-                               default_tsv_parameters['tsv_edge_to_tsv_edge_separation'], unit="[μm]")
-    tsv_edge_to_nearest_element = Param(
-        pdt.TypeDouble, "Ground TSV clearance to other elements (edge to edge)",
-        default_tsv_parameters['tsv_edge_to_nearest_element'], unit="[μm]")
-    edge_from_tsv = Param(pdt.TypeDouble, "Ground TSV center clearance to chip edge",
-                          default_tsv_parameters['edge_from_tsv'], unit="[μm]")
+        Param(pdt.TypeDouble, "Ground TSV clearance to manually placed TSVs (edge to edge)", 250, unit="[μm]")
+    tsv_edge_to_nearest_element = Param(pdt.TypeDouble, "Ground TSV clearance to other elements (edge to edge)",
+                                        100, unit="[μm]")
+    edge_from_tsv = Param(pdt.TypeDouble, "Ground TSV center clearance to chip edge", 550, unit="[μm]")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell

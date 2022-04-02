@@ -17,12 +17,12 @@
 
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
-
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
 
+@add_parameters_from(Tsv, "*", tsv_diameter=10)
 class TsvTestPattern(TestStructure):
     """PCell declaration for TSV test structures which resembles a TSV fencing for a CPW transmission line.
 
@@ -33,8 +33,6 @@ class TsvTestPattern(TestStructure):
     cpw_distance = Param(pdt.TypeDouble, "CPW Placeholder distance", 100, unit="μm")
     hor_distance = Param(pdt.TypeDouble, "Horizontal pitch on TSV", 200, unit="μm")
     ver_distance = Param(pdt.TypeDouble, "Vertical pitch on TSV", 500, unit="μm")
-    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 10, unit="μm")
-    tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
     tsv_array_form = Param(pdt.TypeList, "TSV test layout", [2, 6, 6, 2, 6, 6, 2])
 
     def build(self):

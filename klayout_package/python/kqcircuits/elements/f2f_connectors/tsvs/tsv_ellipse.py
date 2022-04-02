@@ -20,17 +20,15 @@ import numpy
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
-from kqcircuits.defaults import default_tsv_parameters
 
 
 class TsvEllipse(Tsv):
     """Connector between faces of two sides of a substrate.
-    Origin is at the geometric center. Geometry es elliptical.
+
+    Origin is at the geometric center. Geometry is elliptical.
     """
 
-    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", default_tsv_parameters['tsv_diameter'], unit="μm")
-    tsv_elliptical_width = Param(pdt.TypeDouble, "TSV elliptical width",
-                                 default_tsv_parameters['tsv_elliptical_width'], unit="μm")
+    tsv_elliptical_width = Param(pdt.TypeDouble, "TSV elliptical width", 30, unit="μm")
 
     def produce_impl(self):
         self.create_tsv_connector()

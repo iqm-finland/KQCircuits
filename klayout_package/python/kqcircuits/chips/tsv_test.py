@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.chips.chip import Chip
 from kqcircuits.test_structures.tsv_test_pattern import TsvTestPattern
@@ -25,7 +24,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse import TsvEllipse
 
 
-@add_parameters_from(TsvEllipse, "tsv_elliptical_width")
+@add_parameters_from(TsvEllipse, "*", tsv_diameter=10)
 class TsvTest(Chip):
     """Through silicon via test chip.
 
@@ -38,8 +37,6 @@ class TsvTest(Chip):
     cpw_distance = Param(pdt.TypeDouble, "CPW Placeholder distance", 100, unit="μm")
     hor_distance = Param(pdt.TypeDouble, "Horizontal pitch on TSV", 200, unit="μm")
     ver_distance = Param(pdt.TypeDouble, "Vertical pitch on TSV", 500, unit="μm")
-    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 10, unit="μm")
-    tsv_type = Param(pdt.TypeString, "TSV type", "circular", choices=[["circular", "circular"], ["oval", "oval"]])
 
     def build(self):
         # create cell pattern in the center
@@ -47,7 +44,7 @@ class TsvTest(Chip):
         self.insert_cell(cell_pattern, pya.DCplxTrans(1, 0, False, 5000, 5000))
 
         # metrology cell for crossectional analysis
-        min_spacing = self.tsv_diameter if self.tsv_type == "circular" else max([self.tsv_diameter,
+        min_spacing = self.tsv_diameter if self.tsv_type == "standard" else max([self.tsv_diameter,
                                                                                  self.tsv_elliptical_width])
         self.create_xsection(position=pya.DPoint(1250, 1250), array_form=[10, 10],
                              pitch=self.metrology_pitch + min_spacing)

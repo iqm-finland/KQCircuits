@@ -18,6 +18,7 @@
 
 from autologging import logged, traced
 
+from kqcircuits.elements.f2f_connectors.flip_chip_connectors import connector_type_choices
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.launcher import Launcher
@@ -39,9 +40,8 @@ class FlipChipConnectorRf(FlipChipConnector):
         * ``Coax``: signal transmitting bump is surrounded by four ground bumps
     """
 
-    connector_type = Param(pdt.TypeString, "Connector type", "Coax",
-        choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
-    inter_bump_distance = Param(pdt.TypeDouble, "Distance between bumps", 100, unit="μm")
+    connector_type = Param(pdt.TypeString, "Connector type", "Coax", choices=connector_type_choices)
+    inter_bump_distance = Param(pdt.TypeDouble, "Distance between In bumps", 100, unit="μm")
     output_rotation = Param(pdt.TypeDouble, "Rotation of output port w.r.t. input port", 180, unit="degrees")
     connector_a = Param(pdt.TypeDouble, "Conductor width at the connector area", 40, unit="μm")
     connector_b = Param(pdt.TypeDouble, "Gap width at the connector area", 40, unit="μm")

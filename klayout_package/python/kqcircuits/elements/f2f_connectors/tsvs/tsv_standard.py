@@ -15,39 +15,19 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-import math
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
-from kqcircuits.defaults import default_tsv_parameters
+from kqcircuits.util.geometry_helper import circle_polygon
 
 
 class TsvStandard(Tsv):
-    """Connector between faces of two sides of a substrate..
+    """Connector between faces of two sides of a substrate.
+
     Origin is at the geometric center. Geometry es circular.
     """
 
-    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", default_tsv_parameters['tsv_diameter'], unit="μm")
-
-    def produce_impl(self):
-        self.create_tsv_connector()
-
-    def create_tsv_connector(self):
-        """
-        Generate circular TSV
-        """
-        # shorthand
-        r = self.tsv_diameter / 2
-        m = self.margin
-
-        # Protection layer
-        tsv_pts_avoidance = [pya.DPoint(math.cos(a) * (r + m),
-                                        math.sin(a) * (r + m)) for a in (x/32*math.pi for x in range(0, 65))]
-        # TSV geometry
-        tsv_pts = [pya.DPoint(math.cos(a) * r,
-                              math.sin(a) * r) for a in (x/32*math.pi for x in range(0, 65))]
-
-        shape = pya.DPolygon(tsv_pts_avoidance)
-        # ground avoidance layer b face
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
-        self.cell.shapes(self.get_layer("through_silicon_via")).insert(pya.DPolygon(tsv_pts))  # TSV only on b face
+    def build(self):
+        tsv = circle_polygon(self.tsv_diameter / 2)
+        self.cell.shapes(self.get_layer("through_silicon_via")).insert(tsv)
+        margin = circle_polygon(self.tsv_diameter / 2 + self.margin)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(margin)
+        del self.refpoints['base']

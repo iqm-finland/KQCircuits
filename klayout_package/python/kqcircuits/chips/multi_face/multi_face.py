@@ -18,15 +18,17 @@
 
 from autologging import traced, logged
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
+from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.defaults import default_mask_parameters, default_bump_parameters, default_marker_type
 
 
 @traced
 @logged
+@add_parameters_from(FlipChipConnectorRf, "connector_type")
 class MultiFace(Chip):
     """Base class for multi-face chips.
 
@@ -38,8 +40,6 @@ class MultiFace(Chip):
     a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="[μm]",
                      docstring="Width of center conductor in the capped region [μm]")
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="[μm]")
-    connector_type = Param(pdt.TypeString, "Connector type for CPW waveguides", "Coax",
-                           choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
     face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
     with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs on the top face", False)
     with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)

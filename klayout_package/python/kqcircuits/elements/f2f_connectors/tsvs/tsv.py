@@ -20,13 +20,18 @@ from autologging import logged, traced
 
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.defaults import default_tsv_type
+from kqcircuits.elements.f2f_connectors.tsvs import tsv_type_choices
 
 
 @traced
 @logged
 class Tsv(Element):
     """Base Class for TSVs."""
+
+    tsv_type = Param(pdt.TypeString, "TSV type", default_tsv_type, choices=tsv_type_choices)
+    tsv_diameter = Param(pdt.TypeDouble, "TSV diameter", 100, unit="μm")
 
     @classmethod
     def create(cls, layout, library=None, tsv_type=None, **parameters):
