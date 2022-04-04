@@ -6,7 +6,9 @@ This is a collection of tips and tricks about the "Python workflow".
 To unlock the full potential of KQCircuits the user often needs to define new Chips and Elements,
 which is done by writing Python code. This can be done in the Macro Editor included in KLayout, or
 using any external code editor. To start working with the KQCircuits code base directly, see
-:ref:`developer_setup`.
+:ref:`developer_setup`. In addition to KQCircuits documentation it is useful
+to check the `KLayout documentation <https://www.klayout.de/doc.html>`__ when
+writing Python code for new elements.
 
 File system hierarchy
 ---------------------
@@ -47,9 +49,33 @@ instead of Element directly::
 
     class MyElement2(MyElement):
 
-There are common base classes for certain types of elements such as chips
-(Chip) or qubits (Qubit). For more information, see
-:ref:`architecture_elements` and the API documentation for Element.
+The KQCircuits Element class offers many useful features compared to normal
+KLayout PCells. These features include helper functions for inserting subcells
+and for using layers, a refpoint system for positioning elements, nicer
+parameter syntax, automatic loading into a pcell library, and more.
+Further details about the code architecture of KQCircuits elements can be
+found in :ref:`architecture_elements`.
+
+PCell Libraries
+^^^^^^^^^^^^^^^
+
+There are separate PCell libraries in KQCircuits for certain kinds of
+elements, such as qubits or chips. To add your element into a specific
+library, it must be put in the corresponding subfolder (or its subfolders) in
+``kqcircuits`` folder and it must be a child class of the corresponding base
+class. For example, to define a new qubit in the "Qubit library", you would
+need to have::
+
+    class MyQubit(Qubit):
+
+in a file ``my_qubit.py`` in ``kqcircuits/qubits`` folder. The registration
+of PCell classes to different libraries is handled by KQCircuits code in
+``library_helper.py`` and ``element.py``. For more information about PCell
+libraries see the KLayout documentation pages
+https://www.klayout.de/doc-qt5/about/about_libraries.html,
+https://www.klayout.de/doc-qt5/code/class_Library.html, and
+https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426 (in Ruby).
+
 
 Parameters
 ^^^^^^^^^^
@@ -102,15 +128,19 @@ the different parts::
             len1 = arm_width/2
             len2 = arm_width/2 + self.arm_length
             # Define the cross polygon using a list of DPoints.
-            # Note that we use polygon_with_vsym() to only have to define half of the points.
-            # For non-symmetric polygons we would use pya.DPolygon() instead of polygon_with_vsym().
-            cross_poly = polygon_with_vsym([
+            cross_poly = pya.DPolygon([
                 pya.DPoint(-len1, -len2),
                 pya.DPoint(-len1, -len1),
                 pya.DPoint(-len2, -len1),
                 pya.DPoint(-len2, len1),
                 pya.DPoint(-len1, len1),
                 pya.DPoint(-len1, len2),
+                pya.DPoint(len1, len2),
+                pya.DPoint(len1, len1),
+                pya.DPoint(len2, len1),
+                pya.DPoint(len2, -len1),
+                pya.DPoint(len1, -len1),
+                pya.DPoint(len1, -len2),
             ])
             # Add the cross polygon to the cell.
             # We use the get_layer() function to select in which layer the polygon is added.
@@ -151,9 +181,10 @@ element created in the previous section into a new chip::
             half_width = self.box.width()/2
 
             # Elements can be inserted to other elements (including chips) using the insert_cell function.
-            # Giving the class name, instance transformation and pcell parameters, it creates a cell object
-            # with the given parameter values and places an instance of that cell inside this cell with the
-            # given transformation. (Note that the chip origin is at the bottom left corner of the chip)
+            # Giving the class name, instance transformation and pcell parameters, it creates a cell
+            # object with the given parameter values and places an instance of that cell inside this cell
+            # with the given transformation.
+            # (Note that the chip origin is at the bottom left corner of the chip)
             self.insert_cell(SimpleCross, pya.DTrans(half_width, half_width), arm_length=200)
 
             # Another option is to first create the cell separately using add_element, and then insert
@@ -189,6 +220,44 @@ There are several ways the refpoints are used:
 - ``insert_cell`` also has a ``rec_levels`` argument which determines now many layers down the
   hierarchy the refpoints are added.
 
+As an example of using refpoints, let us extend the NewChip1 code from
+previous section. Here we add a waveguide from a launcher to a capacitor
+using refpoints::
+
+    # In addition to the imports from previous example, import these:
+    from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
+    from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+
+
+    class NewChip1(Chip):
+
+        def build(self):
+
+            # After produce_launchers call, there will be "chip-level" refpoints in self.refpoints.
+            # These refpoints have prefixes corresponding to launcher names, such as "WN" for one
+            # of the SMA8 launchers. Same is true for elements inserted with an inst_name.
+            self.produce_launchers("SMA8")
+
+            # ... other code here ...
+
+            # insert_cell can return a dictionary of refpoints for the inserted element
+            _, cap_refpoints = self.insert_cell(FingerCapacitorSquare, pya.DTrans(1, False, 5000, 3000))
+            # Refpoints can be used to position WaveguideCoplanar path points or WaveguideComposite nodes.
+            self.insert_cell(
+                WaveguideCoplanar,
+                path=pya.DPath([
+                    # "Chip-level" refpoints with launcher name prefix "WN"
+                    self.refpoints["WN_port"],
+                    self.refpoints["WN_port_corner"],
+                    # Refpoints of the capacitor element instance (no instance name prefix)
+                    cap_refpoints["port_b_corner"],
+                    cap_refpoints["port_b"],
+                ], 0),
+            )
+
+            super().build()
+
+
 How to use the points once they exist? Several styles have evolved:
 
 - Just use them as a point and perhaps do some geometry calculations to come up with other points
@@ -196,7 +265,7 @@ How to use the points once they exist? Several styles have evolved:
   to decide on geometry.
 - On the Chip or Simulation level you can use ``align`` and ``align_to`` arguments of
   ``insert_cell()``. These can be either a point or a string name referring to a refpoint name, and
-  will displace (but not not rotate!) the element such that the two points overlap. For example,
+  will displace (but not rotate!) the element such that the two points overlap. For example,
   ``insert_cell(SomeElement, align="refpoint_of_some_element",
   align_to=self.refpoints["existing_ref"])``.
 
@@ -217,3 +286,29 @@ refpoints. If there are many overlapping refpoints the texts can be hard to read
 ``texts/top refpoints`` layer may be used to see only the top-level refpoints. For this choose a new
 top cell by right clicking the chip in the cell view of KLayout and selecting "Show As New Top".
 This can be very useful to see "chip-level" refpoints only.
+
+Faces
+-----
+
+Elements support a concept of faces, which is used for 3D-integrated chips to
+place shapes in layers belonging to a certain chip face. For example, an
+element may create shapes in face 0 and face 1, and the ``face_ids`` parameter
+of the element determines which actual chip faces the faces 0 and 1 refer to.
+By default, KQC elements have ``face_ids=["b","t","c"]``, so face 0 would be
+"b" and face 1 would be "t".
+
+To choose which face/layer a shape is placed in, you can use the ``face_id``
+argument of ``self.get_layer``::
+
+    # (the face_id passed to self.get_layer is actually an index to self.face_ids)
+    self.cell.shapes(self.get_layer("indium_bump", face_id=0)).insert(pya.DBox(0, 500, 500, 0))
+    self.cell.shapes(self.get_layer("indium_bump", face_id=1)).insert(pya.DBox(100, 400, 400, 100))
+
+Note that by default ``face_id=0`` will be used in ``get_layer``, so it could
+be omitted. It is also possible to change the face in which subcells are
+placed in::
+
+    # Placing a single-face element in a different face than the default
+    self.insert_cell(Launcher, face_ids=[self.face_ids[1]])
+    # Placing a multi-face element with the parts in different faces swapped
+    self.insert_cell(FlipChipConnectorRf, face_ids=[self.face_ids[1], self.face_ids[0]])
