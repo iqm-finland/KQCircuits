@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.airbridge_connection &mdash; KQCircuits 4.3.5 documentation</title>
+  <title>kqcircuits.elements.airbridge_connection &mdash; KQCircuits 4.3.6 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                4.3.5
+                4.3.6
               </div>
             
           
@@ -187,7 +187,6 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges</span> <span class="kn">import</span> <span class="n">airbridge_type_choices</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
@@ -203,7 +202,6 @@
 
     <span class="n">with_side_airbridges</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;With airbridges on the sides&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">with_right_waveguide</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;With waveguide on right side&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">airbridge_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Airbridge type&quot;</span><span class="p">,</span> <span class="n">Airbridge</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">airbridge_type_choices</span><span class="p">)</span>
     <span class="n">gap_between_bridges</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Inner distance between adjacent bridges&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
     <span class="n">waveguide_extra</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Waveguide extra length below airbridge&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 

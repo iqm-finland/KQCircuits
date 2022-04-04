@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.3.5 documentation</title>
+  <title>kqcircuits.masks.mask_set &mdash; KQCircuits 4.3.6 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                4.3.5
+                4.3.6
               </div>
             
           
@@ -302,19 +302,38 @@
                 <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="k">as</span> <span class="n">proc</span><span class="p">:</span>
                     <span class="n">proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
 
+            <span class="k">def</span> <span class="nf">_params_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>  <span class="c1"># flatten a parameters dictionary to a string</span>
+                <span class="n">ps</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">):</span>
+                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=pya.DBox(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">):</span>
+                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=pya.DVector(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">):</span>
+                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=pya.DPoint(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">return</span> <span class="n">ps</span>
+
             <span class="n">tp</span> <span class="o">=</span> <span class="n">ThreadPool</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
             <span class="n">file_names</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span> <span class="ow">in</span> <span class="n">chips</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">param_list</span> <span class="ow">in</span> <span class="n">chips</span><span class="p">:</span>
                 <span class="c1"># create the script for generating this chip with the correct parameters and exporting the chip files</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span> <span class="k">else</span> <span class="p">{}</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;name_chip&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
+                    <span class="s1">&#39;name_mask&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="s1">&#39;with_grid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span>
+                    <span class="s1">&#39;merge_base_metal_gap&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="k">if</span> <span class="n">param_list</span><span class="p">:</span>
+                    <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">param_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
                 <span class="n">create_element</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">                    from </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2"> import </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">                    cell = </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create(layout,</span>
-<span class="s2">                        </span><span class="si">{</span><span class="p">(</span><span class="s1">&#39;name_chip=&quot;&#39;</span> <span class="o">+</span> <span class="n">variant_name</span> <span class="o">+</span> <span class="s1">&#39;&quot;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;name_chip&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">                        </span><span class="si">{</span><span class="p">(</span><span class="s1">&#39;name_mask=&quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;&quot;,&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;name_mask&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">                        </span><span class="si">{</span><span class="sa">f</span><span class="s1">&#39;with_grid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="si">}</span><span class="s1">,&#39;</span> <span class="k">if</span> <span class="s1">&#39;with_grid&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="si">}</span><span class="s2"></span>
-<span class="s2">                        **</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span>
+<span class="s2">                    cell = </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.create(layout </span><span class="si">{</span><span class="n">_params_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span>
 <span class="s2">                    &quot;&quot;&quot;</span><span class="p">)</span>
                 <span class="n">chip_path</span> <span class="o">=</span> <span class="n">TMP_PATH</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -322,8 +341,7 @@
                 <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">),</span> <span class="n">script_name</span><span class="p">))</span>
 
                 <span class="n">result</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">name_mask</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">variant_name</span><span class="o">=</span><span class="n">variant_name</span><span class="p">,</span>
-                                             <span class="n">create_element</span><span class="o">=</span><span class="n">create_element</span><span class="p">,</span> <span class="n">chip_class_name</span><span class="o">=</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                                             <span class="n">chip_params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">export_drc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span>
+                                             <span class="n">create_element</span><span class="o">=</span><span class="n">create_element</span><span class="p">,</span> <span class="n">export_drc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 
@@ -382,6 +400,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Resolving </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)</span>
 
         <span class="n">chip_parameters</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;merge_base_metal_gap&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="s2">&quot;name_chip&quot;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
             <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
             <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>

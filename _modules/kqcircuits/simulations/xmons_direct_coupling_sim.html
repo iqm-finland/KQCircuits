@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.xmons_direct_coupling_sim &mdash; KQCircuits 4.3.5 documentation</title>
+  <title>kqcircuits.simulations.xmons_direct_coupling_sim &mdash; KQCircuits 4.3.6 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                4.3.5
+                4.3.6
               </div>
             
           
@@ -192,17 +192,18 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.xmons_direct_coupling</span> <span class="kn">import</span> <span class="n">XMonsDirectCoupling</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines.fluxline</span> <span class="kn">import</span> <span class="n">Fluxline</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
 
 
-<div class="viewcode-block" id="XMonsDirectCouplingSim"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">XMonsDirectCoupling</span><span class="p">,</span> <span class="s2">&quot;arm_width_a&quot;</span><span class="p">,</span> <span class="s2">&quot;rr_cpl_width&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="XMonsDirectCouplingSim"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html#kqcircuits.simulations.xmons_direct_coupling_sim.XMonsDirectCouplingSim">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="s2">&quot;SIM1&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">,</span> <span class="n">fluxline_type</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">XMonsDirectCoupling</span><span class="p">,</span> <span class="s2">&quot;arm_width_a&quot;</span><span class="p">,</span> <span class="s2">&quot;rr_cpl_width&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">XMonsDirectCouplingSim</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
 
     <span class="c1">#Re-define some XMonsDirectCoupling parameters with defaults changed:</span>
     <span class="n">qubit_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit spacing&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">arm_width_b</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit 2 arm width&quot;</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
-    <span class="n">squid_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;SQUID Type&quot;</span><span class="p">,</span> <span class="s2">&quot;SIM1&quot;</span><span class="p">)</span>
-    <span class="n">fluxline_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Fluxline Type&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">)</span>
-
     <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span>
                              <span class="s2">&quot;Length of waveguide stubs or distance between couplers and waveguide turning point&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
     <span class="n">cpl_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Qubit RR coupler width&quot;</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>

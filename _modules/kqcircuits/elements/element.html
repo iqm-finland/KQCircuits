@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.element &mdash; KQCircuits 4.3.5 documentation</title>
+  <title>kqcircuits.elements.element &mdash; KQCircuits 4.3.6 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                4.3.5
+                4.3.6
               </div>
             
           
@@ -462,8 +462,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">schema</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pc</span><span class="p">,</span> <span class="s1">&#39;LIBRARY_NAME&#39;</span><span class="p">):</span>
+                <span class="k">break</span>
             <span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">Param</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">pc</span><span class="p">),</span> <span class="o">**</span><span class="n">schema</span><span class="p">}</span>
-            <span class="k">if</span> <span class="n">noparents</span><span class="p">:</span>   <span class="c1"># not interested in parent classes</span>
+            <span class="k">if</span> <span class="n">noparents</span><span class="p">:</span>  <span class="c1"># not interested in parent classes</span>
                 <span class="k">break</span>
         <span class="k">return</span> <span class="n">schema</span></div>
 

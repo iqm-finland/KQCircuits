@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.3.5 documentation</title>
+  <title>kqcircuits.qubits.qubit &mdash; KQCircuits 4.3.6 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                4.3.5
+                4.3.6
               </div>
             
           
@@ -189,18 +189,15 @@
 
 <span class="kn">import</span> <span class="nn">math</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">default_fluxline_type</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines</span> <span class="kn">import</span> <span class="n">fluxline_type_choices</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.fluxlines.fluxline</span> <span class="kn">import</span> <span class="n">Fluxline</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
 
 
-<div class="viewcode-block" id="Qubit"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">,</span> <span class="s2">&quot;fluxline_gap_width&quot;</span><span class="p">)</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="s2">&quot;junction_width&quot;</span><span class="p">,</span> <span class="s2">&quot;loop_area&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="Qubit"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">,</span> <span class="s2">&quot;fluxline_gap_width&quot;</span><span class="p">,</span> <span class="s2">&quot;fluxline_type&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="s2">&quot;junction_width&quot;</span><span class="p">,</span> <span class="s2">&quot;loop_area&quot;</span><span class="p">,</span> <span class="s2">&quot;squid_type&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Qubit</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for qubit objects without actual produce function.</span>
 
@@ -215,8 +212,6 @@
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Library for qubits.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;qubits&quot;</span>
 
-    <span class="n">squid_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;SQUID Type&quot;</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">squid_type_choices</span><span class="p">)</span>
-    <span class="n">fluxline_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Fluxline Type&quot;</span><span class="p">,</span> <span class="n">default_fluxline_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">fluxline_type_choices</span><span class="p">)</span>
     <span class="n">mirror_squid</span> <span class="o">=</span>  <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Mirror SQUID by its Y axis&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Qubit.produce_squid"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit.produce_squid">[docs]</a>    <span class="k">def</span> <span class="nf">produce_squid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transf</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>

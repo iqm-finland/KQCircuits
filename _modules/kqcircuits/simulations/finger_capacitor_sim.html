@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.finger_capacitor_sim &mdash; KQCircuits 4.3.5 documentation</title>
+  <title>kqcircuits.simulations.finger_capacitor_sim &mdash; KQCircuits 4.3.6 documentation</title>
   
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                4.3.5
+                4.3.6
               </div>
             
           
@@ -196,13 +196,15 @@
 <span class="k">class</span> <span class="nc">FingerCapacitorSim</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
 
 <div class="viewcode-block" id="FingerCapacitorSim.build"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html#kqcircuits.simulations.finger_capacitor_sim.FingerCapacitorSim.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">capacitor_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()})</span>
+        <span class="n">capacitor_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FingerCapacitorSquare</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),})</span>
 
         <span class="n">cap_trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">left</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">right</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">bottom</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">top</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">refp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">capacitor_cell</span><span class="p">,</span> <span class="n">cap_trans</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_a_corner&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_b_corner&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">)</span></div></div>
+        <span class="n">a2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">a2</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_a_corner&quot;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_b_corner&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b2</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
