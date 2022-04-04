@@ -15,6 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 from pathlib import Path
+import os
 import gmsh
 from kqcircuits.simulations.simulation import Simulation
 import numpy as np
@@ -758,7 +759,8 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
                     port_max_dist: float = 100,
                     port_sampling: float = None,
                     algorithm: int = 5,
-                    show: bool = False
+                    show: bool = False,
+                    gmsh_n_threads: int = 1
                     ):
     """
     Builds the model using OpenCASCADE kernel and exports the result in "simulation.msh"
@@ -807,6 +809,7 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
         algorithm(float): Gmsh meshing algorithm (default is 5)
         show(float): Show the mesh in Gmsh graphical interface after completing the mesh
                      (for large meshes this can take a long time)
+        gmsh_n_threads(int): number of threads used in Gmsh meshing (default=1, -1 means all physical cores)
 
     Returns:
 
@@ -825,10 +828,13 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
                     * signal_physical_name: physical name of the signal face
 
     """
-
     filepath = path.joinpath(simulation.name + '.msh')
 
+    if gmsh_n_threads == -1:
+        gmsh_n_threads = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
+
     gmsh.initialize()
+    gmsh.option.setNumber("General.NumThreads", gmsh_n_threads)
     gmsh.model.add(simulation.name)
 
     edge_dim_tags = []
@@ -929,7 +935,12 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
     gmsh.option.setNumber("Mesh.MeshSizeFromPoints", 0)
     gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
     gmsh.option.setNumber("Mesh.Algorithm", algorithm)
+    gmsh.option.setNumber("Mesh.Algorithm3D", 10) # HTX
     gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-14)
+    gmsh.option.setNumber("Mesh.MaxNumThreads1D", gmsh_n_threads)
+    gmsh.option.setNumber("Mesh.MaxNumThreads2D", gmsh_n_threads)
+    gmsh.option.setNumber("Mesh.MaxNumThreads3D", gmsh_n_threads)
+
     gmsh.model.mesh.generate(3)
     gmsh.write(str(filepath))
     if show:

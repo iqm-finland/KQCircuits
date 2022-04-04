@@ -16,6 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+import os
 import logging
 import shutil
 import subprocess
@@ -199,7 +200,8 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
                  port_max_dist: float = 100,
                  port_sampling: float = None,
                  algorithm: int = 5,
-                 show: bool = False
+                 show: bool = False,
+                 gmsh_n_threads: int = 1,
                  ):
     """
     Exports an elmer simulation model to the simulation path.
@@ -248,6 +250,7 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
         algorithm(float): Gmsh meshing algorithm (default is 5)
         show(float): Show the mesh in Gmsh graphical interface after completing the mesh
                      (for large meshes this can take a long time)
+        gmsh_n_threads(int): number of threads used in Gmsh meshing (default=1, -1 means all physical cores)
 
     Returns:
 
@@ -288,7 +291,8 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
                                                        port_max_dist,
                                                        port_sampling,
                                                        algorithm,
-                                                       show
+                                                       show,
+                                                       gmsh_n_threads,
                                                        )
         sif_filepath = export_elmer_sif(simulation, msh_filepath, port_data_gmsh, path, tool)
         export_elmer_json(simulation, path, tool)
@@ -299,7 +303,8 @@ def export_elmer(simulations: [], path: Path, tool='capacitance',
 
 
 def run_elmer(path: Path, msh_filepaths: [],
-              run_elmergrid=True, run_elmer=True, run_paraview=False):
+              run_elmergrid=True, run_elmer=True, run_paraview=False,
+              elmer_n_processes: int=1):
     """
     Run simulations using elmer.
 
@@ -309,12 +314,26 @@ def run_elmer(path: Path, msh_filepaths: [],
         run_elmergrid: if true, ElmerGrid is run (Default: True)
         run_elmer: if true, ElmerSolver is run (Default: True)
         run_paraview: if true, Paraview is launched at path (Default: False)
+        elmer_n_processes(int): number of processes used in Elmer simulation (default=1, -1 means all physical cores)
     """
+    if elmer_n_processes == -1:
+        elmer_n_processes = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
+
     for msh_filepath in msh_filepaths:
         if run_elmergrid:
 
             if shutil.which('ElmerGrid') is not None:
                 subprocess.check_call(['ElmerGrid', '14', '2', msh_filepath], cwd=path)
+                if elmer_n_processes > 1:
+                    subprocess.check_call(['ElmerGrid',
+                       '2',
+                       '2',
+                       msh_filepath.stem,
+                       '-metis',
+                       '{}'.format(elmer_n_processes),
+                       '4',
+                       '-removeunused'],
+                       cwd=path)
             else:
                 logging.warning("ElmerGrid was not found! Make sure you have ElmerFEM "\
                         "installed: https://github.com/ElmerCSC/elmerfem")
@@ -323,7 +342,16 @@ def run_elmer(path: Path, msh_filepaths: [],
 
         if run_elmer:
             if shutil.which('ElmerSolver') is not None:
-                subprocess.check_call(['ElmerSolver', 'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
+                if elmer_n_processes > 1:
+                    subprocess.check_call(['mpirun',
+                        '-np',
+                        '{}'.format(elmer_n_processes),
+                        'ElmerSolver_mpi',
+                        'sif/{}.sif'.format(msh_filepath.stem)],
+                        cwd=path)
+                else:
+                    subprocess.check_call(['ElmerSolver', 'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
+
                 write_project_results_json(path, msh_filepath)
             else:
                 logging.warning("ElmerSolver was not found! Make sure you have ElmerFEM "\

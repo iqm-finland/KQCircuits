@@ -99,6 +99,7 @@ if use_elmer:
         'port_min_dist': 4.,
         'port_max_dist': 200.,
         'algorithm': 5,
+        'gmsh_n_threads': -1,  # -1 means all the physical cores
         'show': True,  # For GMSH: if true, the mesh is shown after it is done
                        # (for large meshes this can take a long time)
     }
@@ -112,6 +113,7 @@ if use_elmer:
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
+        'elmer_n_processes': -1,  # -1 means all the physical cores
     }
 else:
     if wave_equation:

@@ -46,6 +46,8 @@ setup(
         "Autologging~=1.3",
         "scipy>=1.2",
         "tqdm>=4.61",
+        # psutil was considered when cpu_count(logical=False), was implemented in an alternative way
+        # in elmer_export.py and gmsh_helpers.py, consider adding if more features are needed.
     ],
     extras_require={
         "docs": ["sphinx~=4.4", "sphinx-rtd-theme~=0.4", "networkx>=2.7", "matplotlib>=3.5.1", "gmsh>=4.9.3"],
