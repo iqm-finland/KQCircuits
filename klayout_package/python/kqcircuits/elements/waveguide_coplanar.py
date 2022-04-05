@@ -149,8 +149,9 @@ class WaveguideCoplanar(Element):
         v2 = point3 - point2
         alpha1 = math.atan2(v1.y, v1.x)
         alpha2 = math.atan2(v2.y, v2.x)
-        alphacorner = (((math.pi - (alpha2 - alpha1))/2) + alpha2)
-        distcorner = v1.vprod_sign(v2)*r/math.sin((math.pi - (alpha2 - alpha1))/2)
+        alpha = (alpha2 - alpha1 + math.pi) % (2 * math.pi) - math.pi  # turn angle (between -pi and pi) in radians
+        alphacorner = alpha1 + (alpha + math.pi) / 2  # corner middle angle plus 90 degrees
+        distcorner = (r if alpha > 0 else -r) / math.cos(alpha / 2)
         corner_pos = point2 + pya.DVector(math.cos(alphacorner)*distcorner, math.sin(alphacorner)*distcorner)
         return v1, v2, alpha1, alpha2, corner_pos
 
