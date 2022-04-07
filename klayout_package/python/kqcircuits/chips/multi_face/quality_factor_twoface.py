@@ -117,14 +117,14 @@ class QualityFactorTwoface(MultiFace):
             # Coupler
             cplr_pos = cross_refpoints_abs["port_bottom"] + cplr_pos_post
             cplr_trans = pya.DTrans(cplr_pos.x, cplr_pos.y) * rot_3
-            self.insert_cell(cplr, cplr_trans)
+            inst_cplr, _ = self.insert_cell(cplr, cplr_trans)
 
             # Y-indentation for spiral resonator
             endpoint = point_shift_along_vector(cplr_refpoints_rel["port_b"],
                                                 cplr_refpoints_rel["port_b_corner"],
                                                 self.cap_res_distance)
 
-            self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
+            inst_cpw, _ = self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
                 "path": pya.DPath([cplr_refpoints_rel["port_b"], endpoint], 1),
                 "term2": 0,
                 "a": res_a[i],
@@ -132,7 +132,7 @@ class QualityFactorTwoface(MultiFace):
                 "r": self.r,
                 "face_ids": face_config,
                 "margin": self.margin}},
-                             trans=pya.DTrans(cplr_pos) * rotation)
+                                           trans=pya.DTrans(cplr_pos) * rotation)
 
             pos_res_start = cplr_pos - rot_3 * endpoint
 
@@ -141,17 +141,25 @@ class QualityFactorTwoface(MultiFace):
                 res_params = {'connector_dist': connector_distances[i] - self.cap_res_distance}
             else:
                 res_params = {'name': 'resonator{}'.format(i)}
-            cell_res_even_width = self.add_element(SpiralResonatorPolygon,
-                                                   **rectangular_parameters(
-                                                       right_space=self.spiral_box_height - self.cap_res_distance,
-                                                       above_space=0,
-                                                       below_space=self.spiral_box_width,
-                                                       length=res_lengths[i] - self.cap_res_distance,
-                                                       a=res_a[i],
-                                                       b=res_b[i],
-                                                       face_ids=face_config,
-                                                       **res_params))
-            self.insert_cell(cell_res_even_width, pya.DTrans(pos_res_start) * rotation)
+            inst_res, _ = self.insert_cell(SpiralResonatorPolygon,
+                                           **rectangular_parameters(
+                                               right_space=self.spiral_box_height - self.cap_res_distance,
+                                               above_space=0,
+                                               below_space=self.spiral_box_width,
+                                               length=res_lengths[i] - self.cap_res_distance,
+                                               a=res_a[i],
+                                               b=res_b[i],
+                                               face_ids=face_config,
+                                               **res_params),
+                                           trans=pya.DTrans(pos_res_start) * rotation)
+
+            # Top chip etching above resonator
+            if self.resonator_type == "etched":
+                l0 = self.get_layer("ground_grid_avoidance")
+                region = pya.Region(inst_res.cell.begin_shapes_rec(l0)).transformed(inst_res.trans)
+                region += pya.Region(inst_cpw.cell.begin_shapes_rec(l0)).transformed(inst_cpw.trans)
+                region += pya.Region(inst_cplr.cell.begin_shapes_rec(l0)).transformed(inst_cplr.trans)
+                self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id=1)).insert(region)
 
             # Feedline
             if i == 0:
@@ -201,13 +209,8 @@ class QualityFactorTwoface(MultiFace):
         self.insert_cell(WaveguideComposite, nodes=nodes_left)
         self.insert_cell(WaveguideComposite, nodes=nodes_right)
 
-        # Top chip etching and ground grid avoidance
+        # Top chip ground grid avoidance
         if self.resonator_type == "etched" or self.resonator_type == "solid":
-            region = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id=0)))
-            region &= pya.Region([pya.DPolygon([
-                self.face1_box.p1, pya.DPoint(self.face1_box.p1.x, self.face1_box.p2.y),
-                self.face1_box.p2, pya.DPoint(self.face1_box.p2.x, self.face1_box.p1.y)
-            ]).to_itype(self.layout.dbu)])
-            if self.resonator_type == "etched":
-                self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id=1)).insert(region)
+            region = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance")))
+            region &= pya.Region(self.face1_box.to_itype(self.layout.dbu))
             self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id=1)).insert(region)
