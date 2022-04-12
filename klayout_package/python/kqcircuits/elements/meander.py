@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from math import pi, sin, tan, atan2, degrees
+from math import pi, cos, sin, tan, atan, atan2, degrees, sqrt
 from scipy.optimize import brentq
 
 from kqcircuits.pya_resolver import pya
@@ -67,12 +67,6 @@ class Meander(Element):
 
         angle = 180/pi*atan2(end.y - start.y, end.x - start.x)
         transf = pya.DCplxTrans(1, angle, False, pya.DVector(start))
-
-        # parameters needed for bridge creation
-        curve_angle = pi/2
-        corner_cut_dist = self.r
-        curve_angle_2, corner_cut_dist_2 = curve_angle, corner_cut_dist
-
         l_direct = start.distance(end)
         if l_direct < 4*self.r:
             self.raise_error_on_cell(
@@ -81,160 +75,116 @@ class Meander(Element):
         if self.meanders < 1:
             self.meanders = int(l_direct/(2*self.r) - 1)  # automatically choose maximum possible number of meanders
 
-        l_min = (self.meanders+1)*pi*self.r + (self.meanders - 1)*2*self.r + (l_direct - (self.meanders+1)*2*self.r)
-
-        if self.length >= l_min:
-            # create meander with 90-degree turns
-            points = [pya.DPoint(0, 0)]
-            l_rest = l_direct - self.meanders*2*self.r
-            l_single_meander = (self.length - (l_rest - 2*self.r) - (self.meanders*2 + 2)*(pi/2)*self.r - (
-                    self.meanders - 1)*self.r*2)/(2*self.meanders)
-
-            points.append(pya.DPoint(l_rest/2, 0))
-            for i in range(self.meanders):
-                points.append(pya.DPoint(l_rest/2 + i*2*self.r, ((-1)**(i % 2))*(l_single_meander + 2*self.r)))
-                points.append(
-                    pya.DPoint(l_rest/2 + (i + 1)*2*self.r, ((-1)**(i % 2))*(l_single_meander + 2*self.r)))
-            points.append(pya.DPoint(l_direct - l_rest/2, 0))
-            points.append(pya.DPoint(l_direct, 0))
-
-        elif self.length >= l_direct:
-            # Create meander with non-90-degree turns.
-            # The waveguide path points are in a "sawtooth" shape, with one point per meander (whereas 90-degree
-            # meanders have two points per meander) and two points for the straight segments at the ends. In the
-            # following, the one point at each meander is called "peak".
-
-            x_increment = (l_direct - 2*self.r)/self.meanders  # x-distance between peaks of two meanders
-
-            def length_diff(a):
-                # a is the angle of one peak
-                len1 = x_increment/(2*sin(a/2))  # length of diagonal straight line from x-axis to meander peak
-                len2 = self.r*(pi - a)  # length of the curved waveguide piece at a peak
-                len3 = self.r/tan(a/2)  # length missing from diagonal line due to curve at the peak
-                len4 = len2/2  # length of the curved waveguide piece near the straight parts at both ends
-                len5 = self.r/tan((a + pi)/4)  # length missing from horizontal and diagonal line due to the curve
-                len_total = self.meanders*(2*len1 + len2 - 2*len3) + 2*(self.r + len4 - 2*len5)
-                return self.length - len_total
-
-            # find curve angle such that correct length is achieved with maximum number of meanders
-            while True:
-                min_angle = 1e-16  # smallest possible value for alpha needs to be != 0 to avoid division by zero
-                alpha = brentq(length_diff, min_angle, pi)
-                if x_increment/(2*sin(alpha/2)) - self.r/tan(alpha/2) - self.r/tan((alpha + pi)/4) \
-                        > 0:
-                    break
-                self.meanders -= 1
-                x_increment = (l_direct - 2*self.r)/self.meanders  # x-distance between peaks of two meanders
-                if self.meanders < 1:
-                    break
-
-            if length_diff(alpha) > 1e-3:
-                self.raise_error_on_cell(
-                    "Cannot create a Meander with the given parameters. Try setting a different number of meanders.",
-                    (start + end)/2)
-
-            y_increment = x_increment/(2*tan(alpha/2))  # half of y-distance between peaks of two meanders
-
-            points = [pya.DPoint(0, 0), pya.DPoint(self.r, 0)] + \
-                     [pya.DPoint(self.r + i*x_increment - x_increment/2,
-                                 y_increment * (2*(i % 2)-1)) for i in range(1, self.meanders+1)] + \
-                     [pya.DPoint(l_direct - self.r, 0), pya.DPoint(l_direct, 0)]
-
-            curve_angle = pi - alpha
-            corner_cut_dist = self.r/tan(alpha/2)
-            curve_angle_2 = pi - (alpha + pi)/2
-            corner_cut_dist_2 = self.r/tan((alpha + pi)/4)
-
-        else:
+        target_increment = self.length - l_direct  # target length increment compared to straight segment
+        if target_increment < -1e-3:
             self.raise_error_on_cell("Cannot create a Meander with the given parameters. Try increasing the length.",
-                                     (start + end)/2)
+                                     (start + end) / 2)
 
+        def bend_corner_displacement(w):
+            """Returns x-displacement of corner point as function of bend width w.
+
+            Waveguide starts as straight segment from origin (0,0) and ends with bend pointing towards x at (self.r,w).
+            """
+            if w >= self.r:
+                return 0.0
+            return (self.r - w) / (1 - w / (2 * self.r))
+
+        def bend_length_increment(w):
+            """Returns amount of waveguide length increment due to a single bend as function of bend width w.
+
+            Waveguide starts as straight segment from origin (0,0) and ends with bend pointing towards x at (self.r,w).
+            """
+            if w >= self.r:
+                return self.r * (pi / 2 - 2) + w
+            h = w / self.r
+            x = (1 - h) / (1 - h / 2)
+            return self.r * (2 * atan(1 - x) + (x + h * (h - 1)) / sqrt(x ** 2 + h ** 2) - 1)
+
+        def meander_length_increment(w):
+            """Returns amount of waveguide length increment due to all meander bends as function of meander width w."""
+            l0 = bend_length_increment(w / 4)  # starting and ending bend increment
+            l1 = bend_length_increment(w / 2)  # middle bend increment
+            return 4 * l0 + 2 * (self.meanders - 1) * l1
+
+        # Create meander points
+        points = [pya.DPoint(0, 0)]
+        if target_increment > 1e-3:
+            min_90deg_increment = meander_length_increment(4 * self.r)  # minimal length increment for 90-degree bends
+            if target_increment >= min_90deg_increment:  # if all meander bends are 90 degrees
+                width = 4 * self.r + (target_increment - min_90deg_increment) / self.meanders
+            else:  # computation of meander width is not trivial, so we need to use root finding algorithm
+                width = brentq(lambda w: meander_length_increment(w) - target_increment, 0.0, 4 * self.r)
+
+            l_rest = l_direct / 2 - self.r * self.meanders  # distance to first corner
+            x0 = bend_corner_displacement(width / 4)  # x-displacement of corner points in both ends
+            x1 = bend_corner_displacement(width / 2)  # x-displacement of corner points in the middle of meander
+
+            points.append(pya.DPoint(l_rest - x0, 0))
+            points.append(pya.DPoint(l_rest + x0, width/2))
+            for i in range(1, self.meanders):
+                x = l_rest + 2 * self.r * i
+                points.append(pya.DPoint(x - x1, (-1)**(i+1) * width / 2))
+                points.append(pya.DPoint(x + x1, (-1)**i * width / 2))
+            points.append(pya.DPoint(l_direct - l_rest - x0, (-1)**(self.meanders+1) * width / 2))
+            points.append(pya.DPoint(l_direct - l_rest + x0, 0))
+        points.append(pya.DPoint(l_direct, 0))
+
+        # Create airbridges
         if self.n_bridges > 0:
-            self._produce_bridges(points, transf, curve_angle, corner_cut_dist, curve_angle_2, corner_cut_dist_2)
+            self._produce_bridges(points, transf)
 
+        # Insert waveguide and ports
         waveguide = self.add_element(WaveguideCoplanar, path=points)
         wg_inst, _ = self.insert_cell(waveguide, transf)
         self.copy_port("a", wg_inst)
         self.copy_port("b", wg_inst)
 
-    def _produce_bridges(self, wg_points, meander_trans, curve_angle, corner_cut_dist, curve_angle_2,
-                         corner_cut_dist_2):
+    def _produce_bridges(self, points, trans):
         """Produces equally spaced airbridges on top of the meander waveguide.
 
         Args:
-            wg_points: list of points for the waveguide path
-            meander_trans: transformation applied to the entire meander
-            curve_angle: angle of the curves at each meander
-            corner_cut_dist: distance from waveguide path point to curve start for each meander
-            curve_angle_2: angle of the curves after straight segments at each end
-            corner_cut_dist_2: distance from waveguide path point to curve start for the curves after straight segments
-                at each end
+            points: list of points for the waveguide path
+            trans: transformation applied to the entire meander
         """
 
         def insert_bridge(position, angle):
-            self.insert_cell(Airbridge, meander_trans*pya.DCplxTrans(1, angle, False, position))
+            self.insert_cell(Airbridge, trans*pya.DCplxTrans(1, angle, False, position))
 
-        bridge_separation = self.length/(self.n_bridges + 1)
+        bridge_separation = self.length / (self.n_bridges + 1)
         dist_to_next = bridge_separation
         n_inserted = 0
 
-        for i in range(1, len(wg_points)):
+        # Insert airbridges on bends and between bends
+        for i in range(1, len(points)-1):
+            v1, _, a1, a2, c_pos = WaveguideCoplanar.get_corner_data(points[i - 1], points[i], points[i + 1], self.r)
+            alpha = (a2 - a1 + pi) % (2 * pi) - pi  # turn angle (between -pi and pi) in radians
+            sign_r = (self.r if alpha > 0 else -self.r)  # positive or negative radius depending on turn signature
+            length, direction = vector_length_and_direction(v1)
+            cut_dist = self.r * tan(abs(alpha) / 2)  # distance between corner point and beginning of straights
 
-            straight_len, straight_dir = vector_length_and_direction(wg_points[i] - wg_points[i - 1])
-            if i in (1, len(wg_points) - 1):  # only one curve for first and last segment
-                straight_len -= corner_cut_dist_2
-            elif i in (2, len(wg_points) - 2):
-                straight_len -= corner_cut_dist + corner_cut_dist_2
-            else:
-                straight_len -= 2*corner_cut_dist
-            straight_len = max(0, straight_len)
-
-            # bridges in the straight part of this segment
-
-            remaining_len = straight_len
-            cut_dist = corner_cut_dist if i > 2 else corner_cut_dist_2 if i > 1 else 0
-            prev_pos = wg_points[i - 1] + cut_dist*straight_dir
-            while dist_to_next < remaining_len and n_inserted < self.n_bridges:
-
-                pos = prev_pos + dist_to_next*straight_dir
-
-                insert_bridge(pos, get_angle(straight_dir))
+            dist_to_next -= length - cut_dist
+            while dist_to_next <= 0.0:  # insert airbridges on straight segment before corner
+                insert_bridge(points[i] + (dist_to_next - cut_dist) * direction, degrees(a1))
+                dist_to_next += bridge_separation
                 n_inserted += 1
-                remaining_len -= dist_to_next
-                dist_to_next = bridge_separation
-                prev_pos = pos
-
-            dist_to_next -= remaining_len
-
-            # bridges in the curve at the end of this segment
-
-            c_angle = curve_angle_2 if i in (1, len(wg_points) - 2) else curve_angle
-            remaining_len = self.r*c_angle
-            prev_angle = 0
-
-            while dist_to_next < remaining_len and n_inserted < self.n_bridges and i < len(wg_points) - 1:
-
-                v1, v2, angle1, angle2, corner_pos = \
-                    WaveguideCoplanar.get_corner_data(wg_points[i - 1], wg_points[i], wg_points[i + 1], self.r)
-                _, dir1 = vector_length_and_direction(v1)
-                _, dir2 = vector_length_and_direction(v2)
-                cut_dist = corner_cut_dist_2 if i in (1, len(wg_points) - 2) else corner_cut_dist
-                p1 = wg_points[i] - cut_dist*dir1
-                p2 = wg_points[i] + cut_dist*dir2
-
-                angle3 = prev_angle + dist_to_next/self.r
-                t = angle3/c_angle
-                # interpolation along circular arc from p1 to p2 based on t
-                # see https://en.wikipedia.org/wiki/Slerp
-                pos = corner_pos + sin((1 - t)*c_angle)*(p1 - corner_pos)/sin(c_angle) \
-                    + sin(t*c_angle)*(p2 - corner_pos)/sin(c_angle)
-                # linear interpolation between angle1 and angle2 based on t
-                angle4 = angle1*(1 - t) + angle2*t
-
-                insert_bridge(pos, degrees(angle4))
+                if n_inserted >= self.n_bridges:
+                    return
+            dist_to_next -= alpha * sign_r
+            while dist_to_next <= 0.0:  # insert airbridges on corner segment
+                a = a2 + dist_to_next / sign_r
+                insert_bridge(c_pos + sign_r * pya.DVector(sin(a), -cos(a)), degrees(a))
+                dist_to_next += bridge_separation
                 n_inserted += 1
-                remaining_len -= dist_to_next
-                dist_to_next = bridge_separation
-                prev_angle = angle3
+                if n_inserted >= self.n_bridges:
+                    return
+            dist_to_next += cut_dist
 
-            dist_to_next -= remaining_len
+        # Insert airbridges on the last segment
+        length, direction = vector_length_and_direction(points[-1] - points[-2])
+        dist_to_next -= length
+        while dist_to_next <= 0.0:  # insert airbridges on last straight segment
+            insert_bridge(points[-1] + dist_to_next * direction, get_angle(direction))
+            dist_to_next += bridge_separation
+            n_inserted += 1
+            if n_inserted >= self.n_bridges:
+                return

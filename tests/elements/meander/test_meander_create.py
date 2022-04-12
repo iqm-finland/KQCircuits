@@ -63,6 +63,11 @@ def test_length_non_90_deg_turns():
     assert relative_error < relative_length_tolerance
 
 
+def test_length_close_to_90_deg_turns():
+    relative_error = _get_meander_length_error(4725.9, -1, 2000, 100)
+    assert relative_error < relative_length_tolerance
+
+
 def test_continuity_short_meander():
     layout = pya.Layout()
     meander_cell = Meander.create(layout,
@@ -138,12 +143,12 @@ def test_bridges_non_90_deg_turns():
         n_bridges=6
     )
     bridge_positions = [
-        pya.DPoint(528.921, -79.605),
-        pya.DPoint(671.080, 79.605),
-        pya.DPoint(182.916, 86.101),
-        pya.DPoint(1017.084, -86.101),
-        pya.DPoint(354.255, -5.248),
-        pya.DPoint(845.745, 5.248),
+        pya.DPoint(198.351, 75.475),
+        pya.DPoint(348.247, -61.056),
+        pya.DPoint(512.211, 23.376),
+        pya.DPoint(687.789, 23.376),
+        pya.DPoint(851.753, -61.056),
+        pya.DPoint(1001.649, 75.475),
     ]
     assert _bridges_at_correct_positions(layout, meander_cell, bridge_positions)
 
