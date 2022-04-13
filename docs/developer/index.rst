@@ -9,7 +9,7 @@ is hosted here: https://github.com/iqm-finland/KQCircuits.
 
     setup
     standalone
-    docker_image
+    containers
     architecture
     testing
     coding_style

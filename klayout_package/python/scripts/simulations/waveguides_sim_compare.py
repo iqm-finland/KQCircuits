@@ -115,6 +115,7 @@ if use_elmer:
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
         'elmer_n_processes': -1,  # -1 means all the physical cores
+        'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
     }
     if use_sbatch:  # if simulation is run in a HPC system, sbatch_parameters can be given here
         workflow['sbatch_parameters'] = {

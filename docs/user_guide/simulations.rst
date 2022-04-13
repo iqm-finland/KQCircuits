@@ -239,4 +239,7 @@ Please note that running the example requires the installation of
 
 Gmsh API suffices if one needs to only generate the mesh.
 
+.. note::
 
+        If one does not want to install all the software to their computer (for example Gmsh or Elmer), 
+        there is a possibility to use the `singularity` image. See :ref:`singularity_image`.
