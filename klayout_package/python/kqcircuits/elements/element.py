@@ -253,7 +253,7 @@ class Element(pya.PCellDeclarationHelper):
         text = pya.DText(name, pos.x, pos.y)
         self.cell.shapes(self.get_layer("ports", face_id)).insert(text)
 
-        port_name = "port_"+name if name else "port"
+        port_name = name if "port" in name else ("port_"+name if name else "port")
         self.refpoints[port_name] = pos
         if direction:
             self.refpoints[port_name+"_corner"] = pos+direction/direction.length()*self.r
@@ -410,13 +410,15 @@ class Element(pya.PCellDeclarationHelper):
         self.insert_cell(error_text_cell, pya.DTrans(position - text_center))
         raise ValueError(error_msg)
 
-    def add_protection(self, shape):
+    def add_protection(self, shape, face_id=0, opposite_face_id=1):
         """Add ground grid protection shape
 
         Args:
              shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer
+             face_id: primary face index of ground_grid_avoidance layer, default=0
+             opposite_face_id: opposite face index, will be used if protect_opposite_face is True, default=1
         """
 
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
-        if self.protect_opposite_face and len(self.face_ids) > 1:
-            self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id=1)).insert(shape)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id)).insert(shape)
+        if self.protect_opposite_face and len(self.face_ids) > opposite_face_id:
+            self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face_id)).insert(shape)

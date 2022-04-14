@@ -70,7 +70,7 @@ class Launcher(Element):
         ]
         pts2 = [p + s for p, s in zip(pts2, shifts)]
         shape = pya.DPolygon(pts2)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        self.add_protection(shape)
 
         # add reference point
         self.add_port("", pya.DPoint(0, 0), pya.DVector(-1, 0))

@@ -41,39 +41,66 @@ class FlipChipConnectorRf(FlipChipConnector):
 
     connector_type = Param(pdt.TypeString, "Connector type", "Coax",
         choices=[["Single", "Single"], ["GSG", "GSG"], ["Coax", "Coax"]])
-    inter_bump_distance = Param(pdt.TypeDouble, "Distance between In bumps", 100, unit="μm")
+    inter_bump_distance = Param(pdt.TypeDouble, "Distance between bumps", 100, unit="μm")
     output_rotation = Param(pdt.TypeDouble, "Rotation of output port w.r.t. input port", 180, unit="degrees")
     connector_a = Param(pdt.TypeDouble, "Conductor width at the connector area", 40, unit="μm")
     connector_b = Param(pdt.TypeDouble, "Gap width at the connector area", 40, unit="μm")
+    round_connector = Param(pdt.TypeBoolean, "Use round connector shape", False)
+    n_center_bumps = Param(pdt.TypeInt, "Number of center bumps in series", 1)
 
     def build(self):
         # Flip-chip bump
         bump = self.add_element(FlipChipConnectorDc)
-        self.insert_cell(bump)
+        for i in range(self.n_center_bumps):
+            self.insert_cell(bump, pya.DTrans((i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance, 0))
         bump_ref = self.get_refpoints(bump)
         self.__log.debug("bump_ref: %s", bump_ref)
 
-        # Taper geometry
-        taper = self.add_element(Launcher,
-                                 s=self.ubm_diameter, l=self.ubm_diameter, face_ids=[self.face_ids[0]],
-                                 a_launcher=self.connector_a, b_launcher=self.connector_b)
-        taper_t = self.add_element(Launcher,
-                                   s=self.ubm_diameter, l=self.ubm_diameter, face_ids=[self.face_ids[1]],
-                                   a_launcher=self.connector_a, b_launcher=self.connector_b)
-        self.insert_cell(taper, pya.DCplxTrans(
-            1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_diameter, 0)), self.face_ids[0])
-        self.insert_cell(taper_t, pya.DCplxTrans(
-            1, self.output_rotation, False, pya.DVector(0, 0)) * pya.DCplxTrans(
-            1, 0, False, bump_ref["base"] + pya.DPoint(- 3 / 2 * self.ubm_diameter, 0)), self.face_ids[1])
+        tt = pya.DCplxTrans(1, self.output_rotation, False, 0, 0)  # top transformation
+        if self.round_connector:
+            # Rounded geometry
+            def rounded_plate_with_trace(trace_x, plate_x, trace_width, plate_width, plate_length):
+                reg = pya.Region(pya.DBox(plate_x - plate_length / 2, -plate_width / 2,
+                                          plate_x + plate_length / 2, plate_width / 2).to_itype(self.layout.dbu))
+                reg.round_corners(0, min(plate_width, plate_length) / (2 * self.layout.dbu), self.n)
+                reg += pya.Region(pya.DBox(trace_x, -trace_width / 2,
+                                           plate_x, trace_width / 2).to_itype(self.layout.dbu))
+                return reg
 
+            w = self.connector_a + 2 * self.connector_b
+            l = w + (self.n_center_bumps - 1) * self.inter_bump_distance
+            region = rounded_plate_with_trace(-l/2, 0, self.a + 2 * self.b, w, l)
+            avoid_region = region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)
+            for i in range(self.n_center_bumps):
+                region -= rounded_plate_with_trace(-l/2, (i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance,
+                                                   self.a, self.connector_a, self.connector_a)
+
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region)
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", 1)).insert(region.transformed(pya.ICplxTrans(tt)))
+            self.add_protection(avoid_region)
+            self.add_protection(avoid_region.transformed(pya.ICplxTrans(tt)), 1, 0)
+
+            # add reference point
+            self.add_port("{}_port".format(self.face_ids[0]), pya.DPoint(-l/2, 0), pya.DVector(-1, 0), 0)
+            self.add_port("{}_port".format(self.face_ids[1]), tt * pya.DPoint(-l/2, 0), tt * pya.DVector(-1, 0), 1)
+        else:
+            # Taper geometry
+            s = self.ubm_diameter + (self.n_center_bumps - 1) * self.inter_bump_distance
+            trans = pya.DCplxTrans(1, 0, False, bump_ref["base"] + pya.DPoint(- self.ubm_diameter - s / 2, 0))
+            self.insert_cell(Launcher, trans, self.face_ids[0], s=s, l=self.ubm_diameter,
+                             a_launcher=self.connector_a, b_launcher=self.connector_b)
+            self.insert_cell(Launcher, tt * trans, self.face_ids[1], s=s, l=self.ubm_diameter,
+                             a_launcher=self.connector_a, b_launcher=self.connector_b,
+                             face_ids=[self.face_ids[1], self.face_ids[0]])
+
+        # Insert ground bumps
         if self.connector_type == "GSG":
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(0, self.inter_bump_distance)))
             self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(0, -self.inter_bump_distance)))
-
         elif self.connector_type == "Coax":
-            # short-hand notation
-            dist = 0.5**0.5 * self.inter_bump_distance
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(dist, dist)))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(-dist, dist)))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(dist, -dist)))
-            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(-dist, -dist)))
+            dist_y = 0.5**0.5 * self.inter_bump_distance
+            dist_x = dist_y + self.inter_bump_distance * (self.n_center_bumps - 1) / 2
+            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(dist_x, dist_y)))
+            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(-dist_x, dist_y)))
+            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(dist_x, -dist_y)))
+            self.insert_cell(bump, pya.DCplxTrans(1, 0, False, pya.DPoint(-dist_x, -dist_y)))
