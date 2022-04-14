@@ -62,8 +62,7 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(self.taper_length, self.a2 / 2 + self.b2 + self.m2),
             pya.DPoint(0, self.a1 / 2 + self.b1 + self.m1)
         ]
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        self.add_protection(pya.DPolygon(pts))
         # Annotation
         pts = [
             pya.DPoint(0, 0),

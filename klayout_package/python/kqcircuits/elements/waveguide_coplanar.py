@@ -187,8 +187,7 @@ class WaveguideCoplanar(Element):
         term_len += elem.margin
         poly2 = pya.DPolygon([u*(a/2 + b + elem.margin), u*(a/2 + b + elem.margin) + v*term_len,
                               u*(-a/2 - b - elem.margin) + v*term_len, u*(-a/2 - b - elem.margin)])
-        elem.cell.shapes(elem.layout.layer(elem.face(face_index)["ground_grid_avoidance"])).insert(
-            poly2.transform(shift_start))
+        elem.add_protection(poly2.transform(shift_start))
 
     @staticmethod
     def is_continuous(waveguide_cell, annotation_layer, tolerance):

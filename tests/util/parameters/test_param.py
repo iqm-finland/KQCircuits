@@ -135,8 +135,9 @@ def test_add_parameters_from_everything_inherited():
         pass
 
     t = Test()
-    params = set(p for p in t.pcell_params_by_name().keys() if p.startswith('p'))
-    assert params == set(["pa1", "pa2", "pb1", "pb2", "pc1", "pc2", "pd1", "pd2"])
+    params = set(t.pcell_params_by_name().keys())
+    abcd12 = set(["pa1", "pa2", "pb1", "pb2", "pc1", "pc2", "pd1", "pd2"])
+    assert abcd12.issubset(params)
 
 
 def test_add_parameters_from_inheritance_chain():

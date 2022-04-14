@@ -100,7 +100,7 @@ class FingerCapacitorTaper(Element):
 
         # protection
         region_protection = region_ground.size(0, self.margin / self.layout.dbu, 2)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(region_protection)
+        self.add_protection(region_protection)
 
         # ports
         port_a = pya.DPoint(-(l + g) / 2 - t, 0)

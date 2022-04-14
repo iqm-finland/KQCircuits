@@ -86,8 +86,7 @@ class WaveguideCoplanarCurved(Element):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
         # Protection layer
         pts = left_protection_arc + right_protection_arc
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        self.add_protection(pya.DPolygon(pts))
         # Annotation
         pts = annotation_arc
         shape = pya.DPath(pts, self.a + 2 * self.b)
@@ -157,5 +156,4 @@ class WaveguideCoplanarCurved(Element):
             right_protection_arc[0] + (term_len + elem.margin)*term_dir,
             right_protection_arc[0],
         ]
-        protection_shape = pya.DPolygon(protection_pts)
-        elem.cell.shapes(elem.get_layer("ground_grid_avoidance", face_index)).insert(trans*protection_shape)
+        elem.add_protection(trans * pya.DPolygon(protection_pts))

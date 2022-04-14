@@ -186,7 +186,7 @@ class SmoothCapacitor(Element):
 
         # protection
         region_protection = region_ground.size(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 1)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(region_protection)
+        self.add_protection(region_protection)
 
         # Create ports
         self.add_port("a", pya.DPoint(-xport, 0), pya.DVector(-1, 0))

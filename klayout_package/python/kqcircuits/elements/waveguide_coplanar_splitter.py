@@ -92,9 +92,7 @@ class WaveguideCoplanarSplitter(Element):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(
             pya.Region(gap_shapes) - pya.Region(trace_shapes)
         )
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(
-            pya.Region(avoidance_shapes).merged()
-        )
+        self.add_protection(pya.Region(avoidance_shapes).merged())
 
     def _get_port_shape(self, angle_rad, length, width):
         # Generate a shape consisting of a rectangle (length, width) starting at (0, 0), with a round cap at the origin

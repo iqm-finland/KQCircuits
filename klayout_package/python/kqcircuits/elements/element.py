@@ -75,6 +75,7 @@ class Element(pya.PCellDeclarationHelper):
     margin = Param(pdt.TypeDouble, "Margin of the protection layer", 5, unit="μm")
     face_ids = Param(pdt.TypeList, "Chip face IDs, list of b | t | c", ["b", "t", "c"])
     display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
+    protect_opposite_face = Param(pdt.TypeBoolean, "Add opposite face protection too", False)
 
     def __init__(self):
         ""
@@ -408,3 +409,14 @@ class Element(pya.PCellDeclarationHelper):
         text_center = error_text_cell.bbox().center().to_dtype(self.layout.dbu)
         self.insert_cell(error_text_cell, pya.DTrans(position - text_center))
         raise ValueError(error_msg)
+
+    def add_protection(self, shape):
+        """Add ground grid protection shape
+
+        Args:
+             shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer
+        """
+
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        if self.protect_opposite_face and len(self.face_ids) > 1:
+            self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id=1)).insert(shape)

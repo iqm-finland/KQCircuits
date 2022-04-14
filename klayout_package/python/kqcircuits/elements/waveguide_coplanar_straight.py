@@ -54,8 +54,7 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(self.l, w),
             pya.DPoint(0, w)
         ]
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        self.add_protection(pya.DPolygon(pts))
         # Waveguide length
         pts = [
             pya.DPoint(0, 0),

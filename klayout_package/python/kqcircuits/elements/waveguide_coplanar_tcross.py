@@ -101,8 +101,7 @@ class WaveguideCoplanarTCross(Element):
             pya.DPoint(-a/2 - b - m, -a/2 - b - m),
             pya.DPoint(port_l_location_x - m, -a/2 - b - m),
         ]
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
+        self.add_protection(pya.DPolygon(pts))
 
         # refpoints text
         self.add_port("left", pya.DPoint(port_l_location_x, 0), pya.DVector(-1, 0))
