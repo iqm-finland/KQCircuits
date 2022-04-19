@@ -472,6 +472,17 @@ added.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.Element.add_protection">
+<span class="sig-name descname"><span class="pre">add_protection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.add_protection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.add_protection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add ground grid protection shape</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shape</strong> – The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer</p>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
@@ -483,6 +494,7 @@ added.</p></li>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
+<li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - Add opposite face protection too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.element.png" src="../_images/kqcircuits.elements.element.png" />
 </div>

@@ -225,8 +225,7 @@
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="n">w</span><span class="p">),</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
         <span class="p">]</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_protection</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">pts</span><span class="p">))</span>
         <span class="c1"># Waveguide length</span>
         <span class="n">pts</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
