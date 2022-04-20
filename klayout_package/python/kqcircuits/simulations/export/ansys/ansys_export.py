@@ -103,8 +103,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     if simulation.wafer_stack_type == "multiface":
         optional_layers = {default_layers["t_simulation_signal"],
                            default_layers["t_simulation_ground"],
-                           default_layers["b_indium_bump"],
-                           default_layers["t_indium_bump"]}
+                           default_layers["b_simulation_indium_bump"]}
     else:
         optional_layers = {}
 

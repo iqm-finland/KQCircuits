@@ -237,7 +237,7 @@
    <name/>
    <source>'b indium bump' 33/4@1</source>
   </group-members>
-<group-members>
+  <group-members>
    <frame-color>#218b82</frame-color>
    <fill-color>#218b82</fill-color>
    <frame-brightness>0</frame-brightness>
@@ -254,7 +254,7 @@
    <name/>
    <source>'b through silicon via' 34/4@1</source>
   </group-members>
-    <group-members>
+  <group-members>
    <frame-color>#9ad9db</frame-color>
    <fill-color>#9ad9db</fill-color>
    <frame-brightness>0</frame-brightness>
@@ -916,6 +916,23 @@
    <animation>0</animation>
    <name/>
    <source>'b simulation airbridge pads' 95/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#01ff6b</frame-color>
+   <fill-color>#01ff6b</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I13</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>true</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'b simulation indium bump' 98/0@1</source>
   </group-members>
   <group-members>
    <frame-color>#ff6458</frame-color>

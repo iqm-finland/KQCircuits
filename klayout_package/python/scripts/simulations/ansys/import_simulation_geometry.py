@@ -74,25 +74,19 @@ if wafer_stack_type == "multiface":
         "entry:=", ["order:=", 2, "layer:=", "t_Signal"],
         "entry:=", ["order:=", 3, "layer:=", "t_Ground"]]
     vacuum_box_height = chip_distance
-    if 'b_bump_layer' in data:
+    if 'indium_bump_layer' in data:
         entry_option += [
-            "entry:=", ["order:=", 4, "layer:=", "b_Indium_Bumps"],
-            "entry:=", ["order:=", 5, "layer:=", "t_Indium_Bumps"]]
+            "entry:=", ["order:=", 4, "layer:=", "Indium_Bumps"]]
         layer_map_option += [["NAME:LayerMapInfo",
-                              "LayerNum:=", data['b_bump_layer'],
-                              "DestLayer:=", "b_Indium_Bumps",
-                              "layer_type:=", "signal"
-                              ],
-                             ["NAME:LayerMapInfo",
-                              "LayerNum:=", data['t_bump_layer'],
-                              "DestLayer:=", "t_Indium_Bumps",
+                              "LayerNum:=", data['indium_bump_layer'],
+                              "DestLayer:=", "Indium_Bumps",
                               "layer_type:=", "signal"
                               ]]
 
 if 'airbridge_pads_layer' in data:
     entry_option += [
-        "entry:=", ["order:=", 6, "layer:=", "Airbridge_Flyover"],
-        "entry:=", ["order:=", 7, "layer:=", "Airbridge_Pads"]]
+        "entry:=", ["order:=", 5, "layer:=", "Airbridge_Flyover"],
+        "entry:=", ["order:=", 6, "layer:=", "Airbridge_Pads"]]
     layer_map_option += [["NAME:LayerMapInfo",
                           "LayerNum:=", data['airbridge_flyover_layer'],
                           "DestLayer:=", "Airbridge_Flyover",
@@ -228,13 +222,12 @@ if wafer_stack_type == 'multiface':
              ])
 
     # Indium bumps
-    t_bump_objects = oEditor.GetMatchedObjectName('t_Indium_Bumps_*')
-    b_bump_objects = oEditor.GetMatchedObjectName('b_Indium_Bumps_*')
+    bump_objects = oEditor.GetMatchedObjectName('Indium_Bumps_*')
 
-    if b_bump_objects:
+    if bump_objects:
         oEditor.SweepAlongVector(
             ["NAME:Selections",
-             "Selections:=", ",".join(b_bump_objects),
+             "Selections:=", ",".join(bump_objects),
              "NewPartsModelFlag:=", "Model"],
             ["NAME:VectorSweepParameters",
              "DraftAngle:=", "0deg",
@@ -242,35 +235,12 @@ if wafer_stack_type == 'multiface':
              "CheckFaceFaceIntersection:=", False,
              "SweepVectorX:=", "0um",
              "SweepVectorY:=", "0um",
-             "SweepVectorZ:=", "{} {}".format(chip_distance / 2, units)
+             "SweepVectorZ:=", "{} {}".format(chip_distance, units)
              ])
         oEditor.ChangeProperty(
             ["NAME:AllTabs",
              ["NAME:Geometry3DAttributeTab",
-              ["NAME:PropServers"] + b_bump_objects,
-              ["NAME:ChangedProps",
-               ["NAME:Material", "Value:=", "\"sc_metal\""]
-               ]
-              ]
-             ])
-
-    if t_bump_objects:
-        oEditor.SweepAlongVector(
-            ["NAME:Selections",
-             "Selections:=", ",".join(t_bump_objects),
-             "NewPartsModelFlag:=", "Model"],
-            ["NAME:VectorSweepParameters",
-             "DraftAngle:=", "0deg",
-             "DraftType:=", "Round",
-             "CheckFaceFaceIntersection:=", False,
-             "SweepVectorX:=", "0um",
-             "SweepVectorY:=", "0um",
-             "SweepVectorZ:=", "{} {}".format(-chip_distance / 2, units)
-             ])
-        oEditor.ChangeProperty(
-            ["NAME:AllTabs",
-             ["NAME:Geometry3DAttributeTab",
-              ["NAME:PropServers"] + t_bump_objects,
+              ["NAME:PropServers"] + bump_objects,
               ["NAME:ChangedProps",
                ["NAME:Material", "Value:=", "\"sc_metal\""]
                ]

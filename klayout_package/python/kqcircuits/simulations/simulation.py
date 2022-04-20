@@ -247,11 +247,13 @@ class Simulation:
             insert_region(ground_region, face_id, "simulation_ground")
             insert_region(sim_gap_region, face_id, "simulation_gap")
 
-            # Export airbridge regions as merged simple polygons
-            insert_region(merged_region_from_layer(face_id, "airbridge_flyover"),
-                    face_id, "simulation_airbridge_flyover")
-            insert_region(merged_region_from_layer(face_id, "airbridge_pads"),
-                    face_id, "simulation_airbridge_pads")
+            # Export airbridge and indium bump regions as merged simple polygons
+            insert_region(merged_region_from_layer(face_id, "airbridge_flyover") & ground_box_region,
+                          face_id, "simulation_airbridge_flyover")
+            insert_region(merged_region_from_layer(face_id, "airbridge_pads") & ground_box_region,
+                          face_id, "simulation_airbridge_pads")
+            insert_region(merged_region_from_layer(face_id, "indium_bump") & ground_box_region,
+                          face_id, "simulation_indium_bump")
 
     def produce_ground_on_face_grid(self, box, face_id):
         """Produces ground grid in the given face of the chip.
@@ -547,8 +549,7 @@ class Simulation:
                     * chip_distance(float): simulation.chip_distance,
                     * t_signal_layer(pya.Layer): default_layers["t_simulation_signal"],
                     * t_ground_layer(pya.Layer): default_layers["t_simulation_ground"],
-                    * b_bump_layer(pya.Layer): default_layers["b_indium_bump"],
-                    * t_bump_layer(pya.Layer): default_layers["t_indium_bump"],
+                    * indium_bump_layer(pya.Layer): default_layers["b_simulation_indium_bump"],
 
         """
         simulation_data = {
@@ -574,8 +575,7 @@ class Simulation:
                           "chip_distance": self.chip_distance,
                           "t_signal_layer": default_layers["t_simulation_signal"],
                           "t_ground_layer": default_layers["t_simulation_ground"],
-                          "b_bump_layer": default_layers["b_indium_bump"],
-                          "t_bump_layer": default_layers["t_indium_bump"],
+                          "indium_bump_layer": default_layers["b_simulation_indium_bump"],
                           }
 
         return simulation_data

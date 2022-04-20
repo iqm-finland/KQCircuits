@@ -140,6 +140,7 @@ _face_layers['b'] = {
     "simulation_gap": (96, 0),
     "simulation_airbridge_flyover": (94, 0),
     "simulation_airbridge_pads": (95, 0),
+    "simulation_indium_bump": (98, 0),
 }
 
 
