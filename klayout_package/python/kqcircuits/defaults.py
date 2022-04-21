@@ -65,10 +65,19 @@ if os.name == "nt" and os.path.islink(Path(__file__).parent):
 
 # project paths
 ROOT_PATH = _kqcircuits_path.parents[2]
-if ROOT_PATH.parts[-1] == "salt":  # need different paths for KQC Salt package
+if ROOT_PATH.parts[-1] == "salt":
+    # need different paths for KQC Salt package
     ROOT_PATH = _kqcircuits_path.parents[1]
     PY_PATH = ROOT_PATH.joinpath("python")
+elif _kqcircuits_path.parents[0].name == "python" and _kqcircuits_path.parents[1].name in ("KLayout", ".klayout"):
+    # allow using KQC by having kqcircuits and scripts folders directly in KLayout python folder
+    if _kqcircuits_path.parents[1].name == "KLayout":
+        ROOT_PATH = ROOT_PATH.joinpath("KLayout")
+    else:
+        ROOT_PATH = ROOT_PATH.joinpath(".klayout")
+    PY_PATH = ROOT_PATH.joinpath("python")
 else:
+    # for normal installation
     PY_PATH = ROOT_PATH.joinpath("klayout_package").joinpath("python")
 SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
 TMP_PATH = ROOT_PATH.joinpath("tmp")
