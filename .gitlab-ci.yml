@@ -31,13 +31,17 @@ static_analysis:
   stage: test
   script:
     - pip install pylint-gitlab
+    - export CODEQUALITY_JSON=codeclimate.json CODEQUALITY_NB_JSON=codeclimate_nb.json
     - >
       tox -e static_analysis --
+      --exit-zero
       --output-format=pylint_gitlab.GitlabCodeClimateReporter
-      --output=codeclimate.json
+      --output=
+    - jq -s add "$CODEQUALITY_JSON" "$CODEQUALITY_NB_JSON" > codeclimate_merged.json
+    - if [ $(jq '. | length' codeclimate_merged.json) != "0" ]; then exit 1; else exit 0; fi  # raise error if not empty
   artifacts:
     reports:
-      codequality: codeclimate.json
+      codequality: codeclimate_merged.json
     when: always
   only:
     - master
