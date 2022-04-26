@@ -164,7 +164,7 @@ jobs:
       - name: Install rsync  # https://github.com/JamesIves/github-pages-deploy-action#using-a-container-
         run: apt-get update && apt-get install -y rsync
       - name: Upload pages
-        uses: JamesIves/github-pages-deploy-action@4.1.4
+        uses: JamesIves/github-pages-deploy-action@v4.3.3
         with:
           branch: gh-pages
           folder: public
