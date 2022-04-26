@@ -44,6 +44,17 @@ static_analysis:
     - merge_requests
     - tags
 
+shell_check:
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y shellcheck
+  script:
+    - shellcheck ./**/*.sh
+  only:
+    - master
+    - merge_requests
+    - tags
+
 verify_documentation:
   stage: test
   script:

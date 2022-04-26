@@ -88,6 +88,14 @@ jobs:
       - name: Run static code analysis
         run: tox -e static_analysis
 
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run ShellCheck
+      uses: ludeeus/action-shellcheck@master
+
   verify_documentation:
     name: Verify documentation
     runs-on: ubuntu-latest
