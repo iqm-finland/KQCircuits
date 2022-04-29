@@ -25,7 +25,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.merge import merge_layers
@@ -35,6 +35,7 @@ from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
 @traced
 @logged
+@add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy",
                      "with_grid", "dice_width", "dice_grid_margin", "marker_types")
 class Chip(Element):
@@ -50,7 +51,6 @@ class Chip(Element):
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for chips."
     LIBRARY_PATH = "chips"
 
-    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)), hidden=True)
     merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
     # Tsv grid parameters
     with_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs", False)

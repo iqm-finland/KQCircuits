@@ -61,7 +61,7 @@ basis using the ``default_parameter_values`` section of the ``defaults.py``
 configuration file. Technically this creates a copy of the Param object with
 different default value.
 
-The ``add_parameters_from`` decorator function adds some other class'
+The ``add_parameters_from``  or ``add_parameter`` decorator functions add some other class'
 parameter(s) to the decorated class so there is no need to re-define the same
 parameter in multiple places. They are like normal parameters to all intents and
 purposes. Note that these parameters will be inherited by descendants of the
@@ -70,7 +70,8 @@ decorated class. Technically these are like references to the same Param object.
 With ``add_parameters_from`` it is also possible to add some other class'
 parameter with a changed default value. This is practically identical to setting
 a default value for the decorated class using ``default_parameter_values`` in
-the configuration file.
+the configuration file. Technically, new parameter(s) are created with the
+updated values.
 
 Examples::
 
@@ -93,6 +94,14 @@ Examples::
     # Get all parameters form 'OtherClass' but override one
     @add_parameters_from(OtherClass, "*", param_b=41)
     class MyClass():
+
+The ``add_parameter`` decorator is less practical as it only allows adding
+parameters one-by-one, but it is possible to change all the properties of a
+parameter with it, not only the ``default`` value but also ``hidden``,
+``choices``, ``unit`` or even ``description``. The syntax is also a bit
+different::
+
+    @add_parameter(OtherClass, "param_a", hidden=True, choices=[...], ...)
 
 Note that decorators are applied in "reverse-order", i.e. first the class is
 defined and then from bottom-up the decorators are called. This is also the

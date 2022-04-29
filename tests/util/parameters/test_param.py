@@ -19,7 +19,7 @@
 import logging
 import pytest
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.elements.element import Element
 
 
@@ -245,3 +245,64 @@ def test_add_parameters_from_detect_bad_param_removal():
         pass
     else:
        assert False
+
+
+# test add_parameter
+
+def test_add_paramet_unchanged():
+    @add_parameter(A, "pa1")
+    class Test(Element):
+        pass
+
+    t = Test()
+    assert t.pa1 == 1
+    assert not hasattr(t, "pa2")
+
+
+def test_add_paramet_hide():
+    @add_parameter(A, "pa2", hidden=True)
+    @add_parameter(A, "pa1")
+    class Test(Element):
+        pass
+
+    t = Test()
+    s = Test.get_schema()
+    assert 'hidden' not in s['pa1'].kwargs
+    assert s['pa2'].kwargs['hidden']
+
+
+def test_add_paramet_default():
+    @add_parameter(A, "pa1", default=123, hidden=False)
+    class Test(Element):
+        pass
+
+    t = Test()
+    s = Test.get_schema()
+    assert not s['pa1'].kwargs['hidden'] and t.pa1 == 123
+    assert A.pa1 == 1
+
+
+def test_add_paramet_choices_description_and_unit():
+    test_choices = [['One', 1], ["Two", 2]]
+
+    @add_parameter(A, "pa1", choices=test_choices, unit="nm", description="FooBar")
+    class Test(Element):
+        pass
+
+    t = Test()
+    s = Test.get_schema()
+    assert s['pa1'].kwargs['choices']  == test_choices
+    assert s['pa1'].kwargs['unit'] == "nm"
+    assert s['pa1'].description == "FooBar"
+
+
+def test_add_parameter_inherited():
+    @add_parameter(A, "pa1", hidden=True)
+    class Parent(Element):
+        pass
+    class Test(Parent):
+        pass
+
+    t = Test()
+    s = Test.get_schema()
+    assert  s['pa1'].kwargs['hidden']

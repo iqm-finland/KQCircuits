@@ -54,6 +54,35 @@ def add_parameters_from(cls, *param_names, **param_with_default_value):
             setattr(obj, name, p)
             p.__set_name__(obj, name)
         return obj
+
+    return _decorate
+
+
+def add_parameter(cls, name, **change):
+    """Decorator function to add a single parameter to the decorated class.
+
+    Makes it possible to have fine-grained control over the Parameter's properties. Particularly,
+    changing the "hidden" or the "choices" property of the parameter.
+
+    Args:
+        cls: the class to take parameters from
+        name: name of the re-used parameter
+        **change: dictionary of properties to change, like ``hidden=True``
+    """
+
+    schema = cls.get_schema()
+    if name not in schema:
+        raise ValueError(f"Parameter {name} not availeble in '{cls.__name__}'")
+
+    def _decorate(obj):
+        p = schema[name]
+        if change:  # Redefine the parameter in case of any change
+            kwargs = {**p.kwargs, "description":p.description, "default": p.default, **change}
+            p = Param(p.data_type, **kwargs)
+        setattr(obj, name, p)
+        p.__set_name__(obj, name)
+        return obj
+
     return _decorate
 
 
