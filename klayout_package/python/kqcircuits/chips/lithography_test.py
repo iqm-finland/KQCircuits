@@ -21,6 +21,7 @@ from kqcircuits.pya_resolver import pya
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.test_structures.stripes_test import StripesTest
+from kqcircuits.test_structures.cross_test import CrossTest
 
 
 class LithographyTest(Chip):
@@ -63,18 +64,32 @@ class LithographyTest(Chip):
             stripes_cell = self.add_element(StripesTest, num_stripes=num_stripes, stripe_width=width,
                                             stripe_length=length, stripe_spacing=spacing * width, face_ids=face_id)
 
+            # calculate the number of cross alignment marker
+            if (num_stripes*(width + spacing * width) - spacing * width - 45) % 100 < 50:
+                num_crosses = (num_stripes * (width + spacing * width) - spacing * width - 45)//100 + 1
+            else:
+                num_crosses = (num_stripes * (width + spacing * width) - spacing * width - 45)//100 + 2
+
+            cross_cell = self.add_element(CrossTest, num_crosses=int(num_crosses), cross_spacing=100)
+
             # horizontal
             cell_horizontal.insert(pya.DCellInstArray(stripes_cell.cell_index(),
                                                       pya.DCplxTrans(1, 0, False, 0, 2 * i * length +
-                                                                     first_stripes_width)))
+                                                            first_stripes_width)))
+            cell_horizontal.insert(pya.DCellInstArray(cross_cell.cell_index(),
+                                                      pya.DCplxTrans(1, 0, False, 45, 2 * i * length +
+                                                            first_stripes_width - CrossTest.cross_length*5/2)))
             # vertical
             cell_vertical.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, 90, False, 2 * i * length + length +
-                                                                   first_stripes_width, 0)))
+                                                      pya.DCplxTrans(1, 90, False, 2 * i * length + length +
+                                                            first_stripes_width, 0)))
+            cell_vertical.insert(pya.DCellInstArray(cross_cell.cell_index(),
+                                                      pya.DCplxTrans(1, 90, True, 2 * i * length + length +
+                                                    first_stripes_width - length - CrossTest.cross_length*5/2, +45)))
             # diagonal
             diag_offset = 0  # 2*num_stripes*width/numpy.sqrt(8)
             cell_diagonal.insert(pya.DCellInstArray(stripes_cell.cell_index(),
-                                                    pya.DCplxTrans(1, -45, False, 500 + i * length - diag_offset,
-                                                                   500 + i * length + diag_offset)))
+                                                      pya.DCplxTrans(1, -45, False, 500 + i * length - diag_offset,
+                                                            500 + i * length + diag_offset)))
 
         return cell_horizontal, cell_vertical, cell_diagonal
