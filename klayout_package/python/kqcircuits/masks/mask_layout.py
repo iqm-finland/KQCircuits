@@ -25,7 +25,7 @@ from kqcircuits.defaults import default_layers, default_brand, default_faces, de
     default_layers_to_mask, default_covered_region_excluded_layers, default_mask_export_layers, default_bar_format
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.elements.mask_marker_fc import MaskMarkerFc
-from kqcircuits.elements.chip_frame import produce_label
+from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.merge import merge_layers
 
 
@@ -237,7 +237,7 @@ class MaskLayout:
                     pos_index_name = chr(ord("A") + i) + ("{:02d}".format(j))
                     bbox_x1 = bbox.left if inst.dtrans.is_mirror() else bbox.right
                     produce_label(labels_cell_2, pos_index_name, inst.dtrans*(pya.DPoint(bbox_x1, bbox.bottom)),
-                                  "bottomright", mask_layout.dice_width, mask_layout.text_margin,
+                                  LabelOrigin.BOTTOMRIGHT, mask_layout.dice_width, mask_layout.text_margin,
                                   [mask_layout.face()[layer] for layer in layers],
                                   mask_layout.face()["ground_grid_avoidance"])
                     bbox_x2 = bbox.right if inst.dtrans.is_mirror() else bbox.left

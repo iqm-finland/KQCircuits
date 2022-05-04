@@ -16,87 +16,13 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import traced
-
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.markers import marker_type_choices
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.defaults import default_brand, default_marker_type
-
-
-@traced
-def produce_label(cell, label, location, origin, dice_width, margin, layers, layer_protection, size=350):
-    """Produces a Text PCell accounting for desired relative position of the text respect to the given location
-    and the spacing.
-
-    Args:
-        cell: container cell for the label PCell
-        label: text of the label
-        location: DPoint for the location of the text
-        origin: name of the corner of the text located at the location, bottomleft | topleft | topright | bottomright
-        dice_width: extra spacing from the location
-        margin: margin of the ground grid avoidance layer around the text
-        layers: list of layers where the label text is added
-        layer_protection: layer where a box around the label text is added
-        size: Character height in um, default 350
-
-    Effect:
-        Shapes added to the corresponding layers
-    """
-
-    layout = cell.layout()
-    dbu = layout.dbu
-
-    if not label:
-        label = "A13"  # longest label on 6 inch wafer
-        protection_only = True
-    else:
-        protection_only = False
-
-    # text cell
-    subcells = []
-    for layer in layers:
-        subcells.append(layout.create_cell("TEXT", "Basic", {
-            "layer": layer,
-            "text": label,
-            "mag": size/350*500,
-        }))
-
-    # relative placement with margin
-    margin = margin / dbu
-    dice_width = dice_width / dbu
-
-    trans = pya.DTrans(location + {
-        "bottomleft": pya.Vector(
-            subcells[0].bbox().p1.x - margin - dice_width,
-            subcells[0].bbox().p1.y - margin - dice_width),
-        "topleft": pya.Vector(
-            subcells[0].bbox().p1.x - margin - dice_width,
-            subcells[0].bbox().p2.y + margin + dice_width),
-        "topright": pya.Vector(
-            subcells[0].bbox().p2.x + margin + dice_width,
-            subcells[0].bbox().p2.y + margin + dice_width),
-        "bottomright": pya.Vector(
-            subcells[0].bbox().p2.x + margin + dice_width,
-            subcells[0].bbox().p1.y - margin - dice_width),
-    }[origin] * dbu * (-1))
-
-    if not protection_only:
-        for subcell in subcells:
-            cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
-
-    # protection layer with margin
-    protection = pya.DBox(pya.Point(
-        subcells[0].bbox().p1.x - margin,
-        subcells[0].bbox().p1.y - margin) * dbu,
-                          pya.Point(
-                              subcells[0].bbox().p2.x + margin,
-                              subcells[0].bbox().p2.y + margin) * dbu
-                          )
-    cell.shapes(layout.layer(layer_protection)).insert(
-        trans.trans(protection))
 
 
 class ChipFrame(Element):
@@ -134,11 +60,11 @@ class ChipFrame(Element):
         chip_name = self.face()["id"].upper() + self.name_chip if self.use_face_prefix else self.name_chip
         labels = [self.name_mask, chip_name, self.name_copy, default_brand]
         if self.name_mask:
-            self._produce_label(labels[0], pya.DPoint(x_min, y_max), "topleft")
+            self._produce_label(labels[0], pya.DPoint(x_min, y_max), LabelOrigin.TOPLEFT)
         if self.name_chip:
-            self._produce_label(labels[1], pya.DPoint(x_max, y_max), "topright")
-        self._produce_label(labels[2], pya.DPoint(x_max, y_min), "bottomright")
-        self._produce_label(labels[3], pya.DPoint(x_min, y_min), "bottomleft")
+            self._produce_label(labels[1], pya.DPoint(x_max, y_max), LabelOrigin.TOPRIGHT)
+        self._produce_label(labels[2], pya.DPoint(x_max, y_min), LabelOrigin.BOTTOMRIGHT)
+        self._produce_label(labels[3], pya.DPoint(x_min, y_min), LabelOrigin.BOTTOMLEFT)
 
     def _produce_label(self, label, location, origin):
         """Produces Text PCells with text `label` with `origin` of the text at `location`.
@@ -149,7 +75,7 @@ class ChipFrame(Element):
         Args:
             label: the produced text
             location: DPoint of the location of the text
-            origin: the name of the corner of the label to be placed at the location
+            origin: LabelOrigin of the corner of the label to be placed at the location
 
         Effect:
             label PCells added to the layout into the parent PCell
