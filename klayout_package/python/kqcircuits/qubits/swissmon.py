@@ -37,7 +37,7 @@ class Swissmon(Qubit):
     arm_width = Param(pdt.TypeList, "Arm width (um, WNES)", [24, 24, 24, 24])
     gap_width = Param(pdt.TypeDouble, "Arm gap full width", 48, unit="μm")
     cpl_width = Param(pdt.TypeList, "Coupler width (um, WNE)", [24, 24, 24])
-    cpl_length = Param(pdt.TypeList, "Coupler lengths (um, WNE)", [160, 160, 160])
+    cpl_length = Param(pdt.TypeList, "Coupler lengths (um, WNE)", [120, 120, 120])
     cpl_gap = Param(pdt.TypeList, "Coupler gap (um, WNE)", [102, 102, 102])
     port_width = Param(pdt.TypeList, "Port width (um, WNE)", [10, 10, 10])
     cl_offset = Param(pdt.TypeList, "Chargeline offset (um, um)", [200, 200])
