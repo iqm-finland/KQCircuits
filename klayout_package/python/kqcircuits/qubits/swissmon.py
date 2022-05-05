@@ -51,8 +51,6 @@ class Swissmon(Qubit):
         for i in range(3):
             self._produce_coupler(i)
 
-        # adds annotation based on refpoints calculated above
-
     def _produce_chargeline(self):
         # shorthands
         l = [float(offset) for offset in self.cl_offset]  # swissmon arm length from the center of the cross (refpoint)
@@ -139,7 +137,7 @@ class Swissmon(Qubit):
         # # SQUID
         # SQUID origin at the ground plane edge
         squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, -l[3] - ss))
-        squid_unetch_region, squid_ref_rel = self.produce_squid(squid_transf)
+        squid_ref_rel = self.produce_squid(squid_transf)
         # SQUID port_common at the end of the south arm
         squid_length = squid_ref_rel["port_common"].distance(pya.DPoint(0, 0))
 
@@ -180,7 +178,7 @@ class Swissmon(Qubit):
         cross = pya.DPolygon(cross_gap_points)
         cross.insert_hole(cross_island_points)
         cross_rounded = cross.round_corners(self.island_r, self.island_r, self.n)
-        region_etch = pya.Region([cross_rounded.to_itype(self.layout.dbu)]) - squid_unetch_region
+        region_etch = pya.Region([cross_rounded.to_itype(self.layout.dbu)])
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region_etch)
 
         # Protection

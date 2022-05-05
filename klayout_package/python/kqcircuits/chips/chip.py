@@ -28,7 +28,6 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
-from kqcircuits.util.merge import merge_layers
 from kqcircuits.util.groundgrid import make_grid
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
@@ -176,7 +175,7 @@ class Chip(Element):
         self.cell.shapes(self.get_layer("ground_grid", face_id)).insert(region_ground_grid)
 
     def produce_frame(self, frame_parameters, trans=pya.DTrans()):
-        """"Produces a chip frame and markers for the given face.
+        """Produces a chip frame and markers for the given face.
 
         Args:
             frame_parameters: PCell parameters for the chip frame
@@ -185,22 +184,28 @@ class Chip(Element):
         self.insert_cell(ChipFrame, trans, **frame_parameters)
 
     def merge_layout_layers_on_face(self, face):
+        """Creates "base_metal_gap" layer on given face.
+
+         The layer shape is combination of three layers using subtract (-) and insert (+) operations:
+
+            "base_metal_gap" = "base_metal_gap_wo_grid" - "base_metal_addition" + "ground_grid"
         """
-          Shapes in "base_metal_gap" layer must be created by combining the "base_metal_gap_wo_grid" and
-          "ground_grid" layers even if no grid is generated
-
-          This method is called in build(). Override this method to produce a different set of chip frames.
-          """
-
-        merge_layers(self.layout, [self.cell], face["base_metal_gap_wo_grid"], face["ground_grid"],
-                     face["base_metal_gap"])
+        gaps = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face["base_metal_gap_wo_grid"])))
+        metal = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face["base_metal_addition"])))
+        grid = self.cell.begin_shapes_rec(self.layout.layer(face["ground_grid"]))
+        res = self.cell.shapes(self.layout.layer(face["base_metal_gap"]))
+        res.insert(gaps - metal)
+        res.insert(grid)
 
     def merge_layout_layers(self):
-        """
-          Shapes in "base_metal_gap" layer must be created by combining the "base_metal_gap_wo_grid" and
-          "ground_grid" layers even if no grid is generated
+        """Creates "base_metal_gap" layer.
 
-          """
+         The layer shape is combination of three layers using subtract (-) and insert (+) operations:
+
+            "base_metal_gap" = "base_metal_gap_wo_grid" - "base_metal_addition" + "ground_grid"
+
+        This method is called in build(). Override this method to produce a different set of chip frames.
+        """
         self.merge_layout_layers_on_face(self.face(0))
 
     def produce_structures(self):

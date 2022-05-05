@@ -51,11 +51,11 @@
    <source>'b base metal gap wo grid' 11/1@1</source>
   </group-members>
   <group-members>
-   <frame-color>#c0c0c0</frame-color>
+   <frame-color>#6685f4</frame-color>
    <fill-color>#c0c0c0</fill-color>
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
-   <dither-pattern>I9</dither-pattern>
+   <dither-pattern>I2</dither-pattern>
    <line-style/>
    <valid>true</valid>
    <visible>true</visible>
@@ -323,11 +323,11 @@
    <source>'t base metal gap wo grid' 41/1@1</source>
   </group-members>
   <group-members>
-   <frame-color>#c0c0c0</frame-color>
+   <frame-color>#ff6458</frame-color>
    <fill-color>#c0c0c0</fill-color>
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
-   <dither-pattern>I9</dither-pattern>
+   <dither-pattern>I2</dither-pattern>
    <line-style/>
    <valid>true</valid>
    <visible>true</visible>
@@ -595,11 +595,11 @@
    <source>'c base metal gap wo grid' 71/1@1</source>
   </group-members>
   <group-members>
-   <frame-color>#c0c0c0</frame-color>
+   <frame-color>#f353f3</frame-color>
    <fill-color>#c0c0c0</fill-color>
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
-   <dither-pattern>I9</dither-pattern>
+   <dither-pattern>I2</dither-pattern>
    <line-style/>
    <valid>true</valid>
    <visible>true</visible>

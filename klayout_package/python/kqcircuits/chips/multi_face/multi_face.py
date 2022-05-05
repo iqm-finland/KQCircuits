@@ -152,6 +152,11 @@ class MultiFace(Chip):
             self.produce_ground_on_face_grid(box, face_id)
 
     def merge_layout_layers(self):
-        """Merges layers on t and b faces."""
+        """Creates "base_metal_gap" layers on two faces.
+
+         The layer shape is combination of three layers using subtract (-) and insert (+) operations:
+
+            "base_metal_gap" = "base_metal_gap_wo_grid" - "base_metal_addition" + "ground_grid"
+        """
         for i in range(int(2)):
             self.merge_layout_layers_on_face(self.face(i))

@@ -56,38 +56,34 @@ class Qubit(Element):
                        the arms
 
         Returns:
-            A tuple ``(squid_unetch_region, refpoints_rel)``
-
-            * ``squid_unetch_region`` (Region):  squid unetch region
-            * ``refpoints_rel`` (Dictionary): relative refpoints for the squid
+            (dict): Relative refpoints for the squid
 
         """
         cell = self.add_element(Squid, squid_type=self.squid_type, **parameters)
         refpoints_rel = self.get_refpoints(cell)
         squid_transf = transf * pya.DTrans.M90 if self.mirror_squid else transf
 
-        # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
-        # the cell, convert the integer transform back to float to keep cell and geometry consistent.
-        integer_transf = squid_transf.to_itrans(self.layout.dbu)
-        float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
+        if "squid_index" in parameters:
+            s_index = int(parameters.pop('squid_index'))
+            inst, _ = self.insert_cell(cell, squid_transf, inst_name=f"squid_{s_index}")
+            inst.set_property("squid_index", s_index)
+        else:
+            inst, _ = self.insert_cell(cell, squid_transf, inst_name="squid")
 
-        if not only_arms:
-            if "squid_index" in parameters:
-                s_index = int(parameters.pop('squid_index'))
-                inst, _ = self.insert_cell(cell, float_transf, inst_name=f"squid_{s_index}")
-                inst.set_property("squid_index", s_index)
-            else:
-                inst, _ = self.insert_cell(cell, float_transf, inst_name="squid")
+        if only_arms:
+            # add squid metal etch and unetch shapes to qubit and erase instance of squid
+            for layer_name in ["base_metal_gap_wo_grid", "base_metal_addition"]:
+                region = pya.Region(cell.shapes(self.get_layer(layer_name)))
+                region.transform(inst.cplx_trans)
+                self.cell.shapes(self.get_layer(layer_name)).insert(region)
+            self.cell.erase(inst)
+        else:
+            # add parts of qubit to the layer needed for EBL
+            region = pya.Region(cell.shapes(self.get_layer("base_metal_gap_wo_grid")))
+            region.transform(inst.cplx_trans)
+            self.cell.shapes(self.get_layer("base_metal_gap_for_EBL")).insert(region)
 
-        squid_unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
-        squid_unetch_region.transform(integer_transf)
-        # add parts of qubit to the layer needed for EBL
-        squid_etch_region = pya.Region(cell.shapes(self.get_layer("base_metal_gap_wo_grid")))
-        squid_etch_region.transform(integer_transf)
-        if not only_arms:
-            self.cell.shapes(self.get_layer("base_metal_gap_for_EBL")).insert(squid_etch_region)
-
-        return squid_unetch_region, refpoints_rel
+        return refpoints_rel
 
     def produce_fluxline(self, **parameters):
         """Produces the fluxline.
@@ -97,13 +93,10 @@ class Qubit(Element):
 
         Args:
             parameters: parameters for the fluxline to overwrite default and subclass parameters
-
-        Returns:
-            The unetch region of the fluxline
         """
 
         if self.fluxline_type == "none":
-            return pya.Region([])
+            return
         parameters = {"fluxline_type": self.fluxline_type, **parameters}
 
         cell = self.add_element(Fluxline, **parameters)
@@ -114,14 +107,5 @@ class Qubit(Element):
         rotation = math.atan2(a.y, a.x) / math.pi * 180 + 90
         transf = pya.DCplxTrans(1, rotation, False, squid_edge - self.refpoints["base"])
 
-        # For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting
-        # the cell, convert the integer transform back to float to keep cell and geometry consistent
-        integer_transf = transf.to_itrans(self.layout.dbu)
-        float_transf = integer_transf.to_itrans(self.layout.dbu)  # Note: ICplxTrans.to_itrans returns DCplxTrans
-
-        cell_inst, _ = self.insert_cell(cell, float_transf)
+        cell_inst, _ = self.insert_cell(cell, transf)
         self.copy_port("flux", cell_inst)
-
-        unetch_region = pya.Region(cell.shapes(self.get_layer("base_metal_addition")))
-        unetch_region.transform(integer_transf)
-        return unetch_region

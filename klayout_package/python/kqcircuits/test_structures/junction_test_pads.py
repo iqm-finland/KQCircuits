@@ -191,10 +191,9 @@ class JunctionTestPads(TestStructure):
         if self.junctions_horizontal:
             # squid
             trans = pya.DCplxTrans(x, y - junction_spacing)
-            region_unetch, squid_ref_rel = self.produce_squid(trans, only_arms=only_arms,
-                                        junction_width=self._next_width, squid_index=index, loop_area=self.loop_area)
+            squid_ref_rel = self.produce_squid(trans, only_arms=only_arms, junction_width=self._next_width,
+                                               squid_index=index, loop_area=self.loop_area)
             pos_rel_squid_top = squid_ref_rel["port_common"]
-            pads_region.insert(region_unetch)
             # arm below
             arm1 = pya.DBox(
                 pya.DPoint(x + 11 + extra_arm_length, y - junction_spacing),
@@ -210,10 +209,9 @@ class JunctionTestPads(TestStructure):
         else:
             # squid
             trans = pya.DCplxTrans(x - junction_spacing, y)
-            region_unetch, squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width,
+            squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width,
                                 only_arms=only_arms, squid_index=index, loop_area=self.loop_area)
             pos_rel_squid_top = squid_ref_rel["port_common"]
-            pads_region.insert(region_unetch)
             # arm below
             arm1 = pya.DBox(
                 pya.DPoint(x + 11 + extra_arm_length - junction_spacing, y),

@@ -202,7 +202,8 @@ class Simulation:
                 self.produce_ground_on_face_grid(self.ground_grid_box, face_id)
 
             ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
-            lithography_region = merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching)
+            lithography_region = merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching) - \
+                merged_region_from_layer(face_id, "base_metal_addition", -self.over_etching)
             tolerance=self.minimum_point_spacing / self.layout.dbu
 
             if lithography_region.is_empty():
