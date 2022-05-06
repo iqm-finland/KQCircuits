@@ -295,7 +295,7 @@ default_mask_parameters = {
     }
 }
 
-default_squid_type = "QCD1"
+default_squid_type = "Manhattan"
 default_airbridge_type = "Airbridge Rectangular"
 default_fluxline_type = "Fluxline Standard"
 default_marker_type = "Marker Standard"
