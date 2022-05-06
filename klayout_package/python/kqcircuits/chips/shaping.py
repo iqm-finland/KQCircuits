@@ -43,7 +43,7 @@ class Shaping(Chip):
         _, finnmon_refpoints_abs = self.insert_cell(Swissmon, pya.DTrans(3, False, 4000, 5000),
             arm_width=[30, 23, 30, 23],
             arm_length=[190, 96, 160, 96],
-            gap_width=89,
+            gap_width=[29.5, 33, 29.5, 33],
             island_r=2,
             cpl_length=[235, 0, 205],
             cpl_width=[60, 42, 60],

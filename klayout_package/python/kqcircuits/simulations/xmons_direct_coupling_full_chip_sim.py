@@ -162,10 +162,10 @@ class XMonsDirectCouplingFullChipSim(Simulation):
         }
         finnmon_a = self.add_element(Swissmon,
             arm_width=[self.arm_width_a] * 4,
-            gap_width=72, **qubit_props_common)
+            gap_width=[(72 - self.arm_width_a) / 2] * 4, **qubit_props_common)
         finnmon_b = self.add_element(Swissmon,
             arm_width=[self.arm_width_b] * 4,
-            gap_width=72, **qubit_props_common)
+            gap_width=[(72 - self.arm_width_b) / 2] * 4, **qubit_props_common)
 
         (pos_qb1_dr, pos_qb1_fl, pos_qb1_rr, port_qubit1_squid_a, port_qubit1_squid_b) = \
             self.produce_qubit(finnmon_a, 5e3 - 330 - self.qubit_spacing, name="qb_1")

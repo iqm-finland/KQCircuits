@@ -153,8 +153,8 @@ segment is a meander.
 Swissmon
 ---------
 
-Swissmon type qubit. Each arm (West, North, East, South) has it's own
-width. "Hole" for the island has the same ``gap_width`` for each arm.
+Swissmon type qubit. Each arm (West, North, East, South) has it's own arm
+gap width (``gap_width``) and arm metal width (``arm_width``).
 SQUID is loaded from another library. Option of having fluxline.
 Refpoints for 3 couplers, fluxline position and chargeline position.
 Length between the ports is from waveguide port to the rectangular part of the launcher pad.

@@ -139,11 +139,11 @@ class XMonsDirectCoupling(Chip):
         }
         arm_width_a = self.arm_width_a
         arm_width_b = self.arm_width_b
-        gap_width = 72
+        full_gap_width = 72
         qb1_coupler_width, qb2_coupler_width, qb3_coupler_width = [float(param) for param in self.rr_cpl_width]
         finnmon_1 = self.add_element(Swissmon,
             arm_width=[arm_width_a] * 4,
-            gap_width=gap_width,
+            gap_width=[(full_gap_width - arm_width_a) / 2] * 4,
             cpl_gap=[110, 90, 110],
             cpl_length=[0, 134+qb1_coupler_width, 0],
             cpl_width=[60, qb1_coupler_width, 60],
@@ -151,7 +151,7 @@ class XMonsDirectCoupling(Chip):
             **qubit_props_common)
         finnmon_2 = self.add_element(Swissmon,
             arm_width=[arm_width_b] * 4,
-            gap_width=gap_width,
+            gap_width=[(full_gap_width - arm_width_b) / 2] * 4,
             cpl_gap=[110, 102, 110],
             cpl_length=[0, 116+qb2_coupler_width, 0],
             cpl_width=[60, qb2_coupler_width, 60],
@@ -159,7 +159,7 @@ class XMonsDirectCoupling(Chip):
             **qubit_props_common)
         finnmon_3 = self.add_element(Swissmon,
             arm_width=[arm_width_a]*4,
-            gap_width=gap_width,
+            gap_width=[(full_gap_width - arm_width_a) / 2] * 4,
             cpl_gap=[110, 90, 110],
             cpl_length=[0, 134+qb3_coupler_width, 0],
             cpl_width=[60, qb3_coupler_width, 60],
@@ -167,7 +167,7 @@ class XMonsDirectCoupling(Chip):
             **qubit_props_common)
 
         qubit_y = 5e3
-        qubit_step = ((gap_width-arm_width_a)/2+(gap_width-arm_width_b)/2)+2*arm_length
+        qubit_step = ((full_gap_width-arm_width_a)/2+(full_gap_width-arm_width_b)/2)+2*arm_length
         self.insert_cell(finnmon_1,
                          trans=pya.DTrans(5e3 - qubit_step - self.qubit_spacing, qubit_y),
                          inst_name="QB1",

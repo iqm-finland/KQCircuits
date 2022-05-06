@@ -26,14 +26,14 @@ from kqcircuits.pya_resolver import pya
 class Swissmon(Qubit):
     """The PCell declaration for a Swissmon qubit.
 
-    Swissmon type qubit. Each arm (West, North, East, South) has it’s own width. “Hole” for the island has the same
-    gap_width for each arm. SQUID is loaded from another library. Option of having fluxline. Refpoints for 3
-    couplers, fluxline position and chargeline position.
+    Swissmon type qubit. Each arm (West, North, East, South) has it's own arm gap width (gap_width)
+    and arm metal width (arm_width). SQUID is loaded from another library. Option of having fluxline.
+    Refpoints for 3 couplers, fluxline position and chargeline position.
     """
 
     arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300. / 2] * 4)
-    arm_width = Param(pdt.TypeList, "Arm width (um, WNES)", [24, 24, 24, 24])
-    gap_width = Param(pdt.TypeDouble, "Arm gap full width", 48, unit="μm")
+    arm_width = Param(pdt.TypeList, "Arm metal width (um, WNES)", [24, 24, 24, 24])
+    gap_width = Param(pdt.TypeList, "Arm gap width (um, WNES)", [12, 12, 12, 12])
     cpl_width = Param(pdt.TypeList, "Coupler width (um, WNE)", [24, 24, 24])
     cpl_length = Param(pdt.TypeList, "Coupler lengths (um, WNE)", [120, 120, 120])
     cpl_gap = Param(pdt.TypeList, "Coupler gap (um, WNE)", [102, 102, 102])
@@ -66,8 +66,8 @@ class Swissmon(Qubit):
         # shorthand
         a = float(self.port_width[cpl_nr])
         b = self.b
-        [we, wn, ww, ws] = [float(width) / 2 for width in self.arm_width]
-        aw = [we, wn, ww, ws][cpl_nr]
+        [ww, wn, we, ws] = [float(width) / 2 for width in self.arm_width]
+        aw = [ww, wn, we, ws][cpl_nr]
         w = float(self.cpl_width[cpl_nr])
         l = float(self.cpl_length[cpl_nr])
         g = float(self.cpl_gap[cpl_nr]) / 2
@@ -101,8 +101,8 @@ class Swissmon(Qubit):
             shoe_region2 = shoe_region - port_region
 
         # move to the north arm of swiss cross
-        ground_width = (2 * g - self.gap_width - 2 * b) / 2
-        shift_up = float(self.arm_length[cpl_nr]) + (self.gap_width - 2 * aw) / 2 + ground_width + w + b
+        ground_width = (2 * g - float(self.gap_width[1]) - 2 * b) / 2
+        shift_up = float(self.arm_length[cpl_nr]) + (float(self.gap_width[1]) - 2 * aw) / 2 + ground_width + w + b
         transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, shift_up))
 
         # rotate to the correct direction
@@ -131,14 +131,14 @@ class Swissmon(Qubit):
     def _produce_cross_and_squid(self):
         """Produces the cross and squid for the Swissmon."""
         # shorthand
-        [we, wn, ww, ws] = [float(width) / 2 for width in self.arm_width]
+        [ww, wn, we, ws] = [float(width) / 2 for width in self.arm_width]
         l = [float(length) for length in self.arm_length]
 
-        s = self.gap_width / 2
+        [sw, sn, se, ss] = [float(width) for width in self.gap_width]
 
         # # SQUID
         # SQUID origin at the ground plane edge
-        squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, -l[3] - (s - ws)))
+        squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, -l[3] - ss))
         squid_unetch_region, squid_ref_rel = self.produce_squid(squid_transf)
         # SQUID port_common at the end of the south arm
         squid_length = squid_ref_rel["port_common"].distance(pya.DPoint(0, 0))
@@ -147,34 +147,34 @@ class Swissmon(Qubit):
 
         # refpoint in the center of the swiss cross
         cross_island_points = [
-            pya.DPoint(wn, ww),
-            pya.DPoint(l[2], ww),
-            pya.DPoint(l[2], -ww),
-            pya.DPoint(ws, -ww),
-            pya.DPoint(ws, -l[3] - (s - we) + squid_length),
-            pya.DPoint(-ws, -l[3] - (s - we) + squid_length),
-            pya.DPoint(-ws, -we),
-            pya.DPoint(-l[0], -we),
-            pya.DPoint(-l[0], we),
-            pya.DPoint(-wn, we),
+            pya.DPoint(wn, we),
+            pya.DPoint(l[2], we),
+            pya.DPoint(l[2], -we),
+            pya.DPoint(ws, -we),
+            pya.DPoint(ws, -l[3] - ss + squid_length),
+            pya.DPoint(-ws, -l[3] - ss + squid_length),
+            pya.DPoint(-ws, -ww),
+            pya.DPoint(-l[0], -ww),
+            pya.DPoint(-l[0], ww),
+            pya.DPoint(-wn, ww),
             pya.DPoint(-wn, l[1]),
             pya.DPoint(wn, l[1]),
         ]
 
         # refpoint in the center of the swiss cross
         cross_gap_points = [
-            pya.DPoint(s, s),
-            pya.DPoint(l[2] + (s - ww), s),
-            pya.DPoint(l[2] + (s - ww), -s),
-            pya.DPoint(s, -s),
-            pya.DPoint(s, -l[3] - (s - ws)),
-            pya.DPoint(-s, -l[3] - (s - ws)),
-            pya.DPoint(-s, -s),
-            pya.DPoint(-l[0] - (s - we), -s),
-            pya.DPoint(-l[0] - (s - we), s),
-            pya.DPoint(-s, s),
-            pya.DPoint(-s, l[1] + (s - wn)),
-            pya.DPoint(s, l[1] + (s - wn)),
+            pya.DPoint(wn + sn, we + se),
+            pya.DPoint(l[2] + se, we + se),
+            pya.DPoint(l[2] + se, -we - se),
+            pya.DPoint(ws + ss, -we - se),
+            pya.DPoint(ws + ss, -l[3] - ss),
+            pya.DPoint(-ws - ss, -l[3] - ss),
+            pya.DPoint(-ws - ss, -ww - sw),
+            pya.DPoint(-l[0] - sw, -ww - sw),
+            pya.DPoint(-l[0] - sw, ww + sw),
+            pya.DPoint(-wn - sn, ww + sw),
+            pya.DPoint(-wn - sn, l[1] + sn),
+            pya.DPoint(wn + sn, l[1] + sn),
         ]
 
         cross = pya.DPolygon(cross_gap_points)
@@ -185,8 +185,8 @@ class Swissmon(Qubit):
 
         # Protection
         cross_protection = pya.DPolygon([
-            p + pya.DVector(math.copysign(s + self.margin, p.x), math.copysign(s + self.margin, p.y)) for p in
-            cross_gap_points
+            p + pya.DVector(math.copysign(max([sw, sn, se, ss]) + self.margin, p.x),
+            math.copysign(max([sw, sn, se, ss]) + self.margin, p.y)) for p in cross_gap_points
         ])
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(cross_protection)
 

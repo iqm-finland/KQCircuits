@@ -136,7 +136,7 @@ class SingleXmons(Chip):
             fluxline_type="none",
             arm_length=[146] * 4,
             arm_width=[24] * 4,
-            gap_width=72,
+            gap_width=[24] * 4,
             island_r=2,
             cpl_length=[0, 140, 0],
             cpl_width=[60, 24, 60],
