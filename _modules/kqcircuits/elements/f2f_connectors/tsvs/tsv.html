@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -191,13 +187,18 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_tsv_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.tsvs</span> <span class="kn">import</span> <span class="n">tsv_type_choices</span>
 
 
 <div class="viewcode-block" id="Tsv"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">Tsv</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base Class for TSVs.&quot;&quot;&quot;</span>
+
+    <span class="n">tsv_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;TSV type&quot;</span><span class="p">,</span> <span class="n">default_tsv_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">tsv_type_choices</span><span class="p">)</span>
+    <span class="n">tsv_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV diameter&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Tsv.create"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tsv_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>

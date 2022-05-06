@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.simulations.export.ansys.ansys_export &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -245,25 +241,12 @@
     <span class="k">if</span> <span class="n">export_processing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">export_processing</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="n">port_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_port_data</span><span class="p">()</span>
+    <span class="n">simulation_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">()</span>
 
     <span class="c1"># ansys_data and optional_layers</span>
     <span class="n">ansys_data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="n">ansys_tool</span><span class="p">,</span>
-        <span class="s1">&#39;gds_file&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;stack_type&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span><span class="p">,</span>
-        <span class="s1">&#39;signal_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">],</span>
-        <span class="s1">&#39;ground_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">],</span>
-        <span class="s1">&#39;airbridge_flyover_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">],</span>
-        <span class="s1">&#39;airbridge_pads_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_pads&quot;</span><span class="p">],</span>
-        <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;um&#39;</span><span class="p">,</span>  <span class="c1"># hardcoded assumption in multiple places</span>
-        <span class="s1">&#39;substrate_height&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">,</span>
-        <span class="s1">&#39;airbridge_height&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">airbridge_height</span><span class="p">,</span>
-        <span class="s1">&#39;box_height&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box_height</span><span class="p">,</span>
-        <span class="s1">&#39;permittivity&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">permittivity</span><span class="p">,</span>
-        <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
-        <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="n">port_data</span><span class="p">,</span>
-        <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>
+        <span class="o">**</span><span class="n">simulation_data</span><span class="p">,</span>
         <span class="s1">&#39;analysis_setup&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="n">frequency_units</span><span class="p">,</span>
             <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
@@ -285,18 +268,9 @@
         <span class="n">ansys_data</span><span class="p">[</span><span class="s1">&#39;ansys_project_template&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ansys_project_template</span>
 
     <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
-        <span class="n">ansys_data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">ansys_data</span><span class="p">,</span>
-                      <span class="s2">&quot;substrate_height_top&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">substrate_height_top</span><span class="p">,</span>
-                      <span class="s2">&quot;chip_distance&quot;</span><span class="p">:</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span><span class="p">,</span>
-                      <span class="s2">&quot;t_signal_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">],</span>
-                      <span class="s2">&quot;t_ground_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">],</span>
-                      <span class="s2">&quot;b_bump_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_indium_bump&quot;</span><span class="p">],</span>
-                      <span class="s2">&quot;t_bump_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_indium_bump&quot;</span><span class="p">],</span>
-                      <span class="p">}</span>
         <span class="n">optional_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">],</span>
                            <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">],</span>
-                           <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_indium_bump&quot;</span><span class="p">],</span>
-                           <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_indium_bump&quot;</span><span class="p">]}</span>
+                           <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_indium_bump&quot;</span><span class="p">]}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">optional_layers</span> <span class="o">=</span> <span class="p">{}</span>
 

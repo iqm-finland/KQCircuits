@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -191,17 +187,15 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.f2f_connectors.tsvs.tsv</span> <span class="kn">import</span> <span class="n">Tsv</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_tsv_parameters</span>
 
 
 <div class="viewcode-block" id="TsvEllipse"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html#kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.TsvEllipse">[docs]</a><span class="k">class</span> <span class="nc">TsvEllipse</span><span class="p">(</span><span class="n">Tsv</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Connector between faces of two sides of a substrate.</span>
-<span class="sd">    Origin is at the geometric center. Geometry es elliptical.</span>
+
+<span class="sd">    Origin is at the geometric center. Geometry is elliptical.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">tsv_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV diameter&quot;</span><span class="p">,</span> <span class="n">default_tsv_parameters</span><span class="p">[</span><span class="s1">&#39;tsv_diameter&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
-    <span class="n">tsv_elliptical_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV elliptical width&quot;</span><span class="p">,</span>
-                                 <span class="n">default_tsv_parameters</span><span class="p">[</span><span class="s1">&#39;tsv_elliptical_width&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">tsv_elliptical_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV elliptical width&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TsvEllipse.produce_impl"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html#kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.TsvEllipse.produce_impl">[docs]</a>    <span class="k">def</span> <span class="nf">produce_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">create_tsv_connector</span><span class="p">()</span></div>

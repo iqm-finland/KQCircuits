@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv_standard &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv_standard &mdash; KQCircuits  documentation</title>
   
 
   
@@ -69,10 +69,6 @@
           
             
             
-              <div class="version">
-                4.3.6
-              </div>
-            
           
 
           
@@ -118,7 +114,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_square_multiface.html">kqcircuits.elements.finger_capacitor_square_multiface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
@@ -233,27 +228,16 @@
 <dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.</span></span><span class="sig-name descname"><span class="pre">TsvStandard</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/tsvs/tsv_standard.html#TsvStandard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv" title="kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv</span></code></a></p>
-<p>Connector between faces of two sides of a substrate..
-Origin is at the geometric center. Geometry es circular.</p>
+<p>Connector between faces of two sides of a substrate.</p>
+<p>Origin is at the geometric center. Geometry es circular.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard.produce_impl">
-<span class="sig-name descname"><span class="pre">produce_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/tsvs/tsv_standard.html#TsvStandard.produce_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard.produce_impl" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method builds the PCell.</p>
-<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard.create_tsv_connector">
-<span class="sig-name descname"><span class="pre">create_tsv_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/tsvs/tsv_standard.html#TsvStandard.create_tsv_connector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard.create_tsv_connector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate circular TSV</p>
+<dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/tsvs/tsv_standard.html#TsvStandard.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.TsvStandard.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
 </dd></dl>
 
-<strong>PCell parameters:</strong><div class="line"><br /></div>
-<ul class="simple">
-<li><p><strong>tsv_diameter</strong><em> (Double)</em><span> - TSV diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-</ul>
 <img alt="../_images/kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.png" src="../_images/kqcircuits.elements.f2f_connectors.tsvs.tsv_standard.png" />
 </div>
 

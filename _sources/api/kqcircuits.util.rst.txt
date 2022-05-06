@@ -13,6 +13,7 @@ kqcircuits.util
    kqcircuits.util.geometry_helper
    kqcircuits.util.geometry_json_encoder
    kqcircuits.util.groundgrid
+   kqcircuits.util.label
    kqcircuits.util.layout_to_code
    kqcircuits.util.library_helper
    kqcircuits.util.log_router

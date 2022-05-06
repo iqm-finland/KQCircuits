@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Architecture &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>Architecture &mdash; KQCircuits  documentation</title>
   
 
   
@@ -68,10 +68,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -238,7 +234,7 @@ for a sub-element are transparently passed to it from the caller with
 basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <code class="docutils literal notranslate"><span class="pre">defaults.py</span></code>
 configuration file. Technically this creates a copy of the Param object with
 different default value.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> decorator function adds some other class’
+<p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code>  or <code class="docutils literal notranslate"><span class="pre">add_parameter</span></code> decorator functions add some other class’
 parameter(s) to the decorated class so there is no need to re-define the same
 parameter in multiple places. They are like normal parameters to all intents and
 purposes. Note that these parameters will be inherited by descendants of the
@@ -246,7 +242,8 @@ decorated class. Technically these are like references to the same Param object.
 <p>With <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code> it is also possible to add some other class’
 parameter with a changed default value. This is practically identical to setting
 a default value for the decorated class using <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> in
-the configuration file.</p>
+the configuration file. Technically, new parameter(s) are created with the
+updated values.</p>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get two parameters form &#39;OtherClass&#39;</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="s2">&quot;param_b&quot;</span><span class="p">)</span>
@@ -267,6 +264,14 @@ the configuration file.</p>
 <span class="c1"># Get all parameters form &#39;OtherClass&#39; but override one</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">param_b</span><span class="o">=</span><span class="mi">41</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">add_parameter</span></code> decorator is less practical as it only allows adding
+parameters one-by-one, but it is possible to change all the properties of a
+parameter with it, not only the <code class="docutils literal notranslate"><span class="pre">default</span></code> value but also <code class="docutils literal notranslate"><span class="pre">hidden</span></code>,
+<code class="docutils literal notranslate"><span class="pre">choices</span></code>, <code class="docutils literal notranslate"><span class="pre">unit</span></code> or even <code class="docutils literal notranslate"><span class="pre">description</span></code>. The syntax is also a bit
+different:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@add_parameter</span><span class="p">(</span><span class="n">OtherClass</span><span class="p">,</span> <span class="s2">&quot;param_a&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Note that decorators are applied in “reverse-order”, i.e. first the class is

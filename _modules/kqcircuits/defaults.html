@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.defaults &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.defaults &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -236,10 +232,19 @@
 
 <span class="c1"># project paths</span>
 <span class="n">ROOT_PATH</span> <span class="o">=</span> <span class="n">_kqcircuits_path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-<span class="k">if</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;salt&quot;</span><span class="p">:</span>  <span class="c1"># need different paths for KQC Salt package</span>
+<span class="k">if</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;salt&quot;</span><span class="p">:</span>
+    <span class="c1"># need different paths for KQC Salt package</span>
     <span class="n">ROOT_PATH</span> <span class="o">=</span> <span class="n">_kqcircuits_path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">PY_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">_kqcircuits_path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;python&quot;</span> <span class="ow">and</span> <span class="n">_kqcircuits_path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;KLayout&quot;</span><span class="p">,</span> <span class="s2">&quot;.klayout&quot;</span><span class="p">):</span>
+    <span class="c1"># allow using KQC by having kqcircuits and scripts folders directly in KLayout python folder</span>
+    <span class="k">if</span> <span class="n">_kqcircuits_path</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;KLayout&quot;</span><span class="p">:</span>
+        <span class="n">ROOT_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;KLayout&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ROOT_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;.klayout&quot;</span><span class="p">)</span>
+    <span class="n">PY_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
+    <span class="c1"># for normal installation</span>
     <span class="n">PY_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;klayout_package&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
 <span class="n">SRC_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="n">PY_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;kqcircuits&quot;</span><span class="p">)]</span>
 <span class="n">TMP_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
@@ -302,6 +307,7 @@
     <span class="s2">&quot;simulation_gap&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
     <span class="s2">&quot;simulation_airbridge_flyover&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
     <span class="s2">&quot;simulation_airbridge_pads&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="s2">&quot;simulation_indium_bump&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
 <span class="p">}</span>
 
 
@@ -496,15 +502,6 @@
 <span class="n">default_parameter_values</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;AirbridgeConnection&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bridge_length&quot;</span><span class="p">:</span> <span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;pad_length&quot;</span><span class="p">:</span> <span class="mi">22</span><span class="p">},</span>
     <span class="s2">&quot;TsvTest&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;tsv_elliptical_width&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
-<span class="p">}</span>
-
-<span class="n">default_tsv_parameters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;tsv_edge_to_nearest_element&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="s2">&quot;tsv_diameter&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="s2">&quot;tsv_grid_spacing&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
-    <span class="s2">&quot;tsv_edge_to_tsv_edge_separation&quot;</span><span class="p">:</span> <span class="mi">250</span><span class="p">,</span>
-    <span class="s2">&quot;edge_from_tsv&quot;</span><span class="p">:</span> <span class="mi">550</span><span class="p">,</span>
-    <span class="s2">&quot;tsv_elliptical_width&quot;</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">default_bump_parameters</span> <span class="o">=</span> <span class="p">{</span>

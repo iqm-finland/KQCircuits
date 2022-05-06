@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.lithography_test &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.chips.lithography_test &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -192,6 +188,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.test_structures.stripes_test</span> <span class="kn">import</span> <span class="n">StripesTest</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.test_structures.cross_test</span> <span class="kn">import</span> <span class="n">CrossTest</span>
 
 
 <div class="viewcode-block" id="LithographyTest"><a class="viewcode-back" href="../../../api/kqcircuits.chips.lithography_test.html#kqcircuits.chips.lithography_test.LithographyTest">[docs]</a><span class="k">class</span> <span class="nc">LithographyTest</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
@@ -234,19 +231,33 @@
             <span class="n">stripes_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">StripesTest</span><span class="p">,</span> <span class="n">num_stripes</span><span class="o">=</span><span class="n">num_stripes</span><span class="p">,</span> <span class="n">stripe_width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
                                             <span class="n">stripe_length</span><span class="o">=</span><span class="n">length</span><span class="p">,</span> <span class="n">stripe_spacing</span><span class="o">=</span><span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="n">face_id</span><span class="p">)</span>
 
+            <span class="c1"># calculate the number of cross alignment marker</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">num_stripes</span><span class="o">*</span><span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span> <span class="o">-</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">45</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">&lt;</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="n">num_crosses</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_stripes</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span> <span class="o">-</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">45</span><span class="p">)</span><span class="o">//</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">num_crosses</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_stripes</span> <span class="o">*</span> <span class="p">(</span><span class="n">width</span> <span class="o">+</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span> <span class="o">-</span> <span class="n">spacing</span> <span class="o">*</span> <span class="n">width</span> <span class="o">-</span> <span class="mi">45</span><span class="p">)</span><span class="o">//</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">2</span>
+
+            <span class="n">cross_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">CrossTest</span><span class="p">,</span> <span class="n">num_crosses</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">num_crosses</span><span class="p">),</span> <span class="n">cross_spacing</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
             <span class="c1"># horizontal</span>
             <span class="n">cell_horizontal</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">stripes_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
                                                       <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span>
-                                                                     <span class="n">first_stripes_width</span><span class="p">)))</span>
+                                                            <span class="n">first_stripes_width</span><span class="p">)))</span>
+            <span class="n">cell_horizontal</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">cross_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
+                                                      <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span>
+                                                            <span class="n">first_stripes_width</span> <span class="o">-</span> <span class="n">CrossTest</span><span class="o">.</span><span class="n">cross_length</span><span class="o">*</span><span class="mi">5</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
             <span class="c1"># vertical</span>
             <span class="n">cell_vertical</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">stripes_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
-                                                    <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span> <span class="n">length</span> <span class="o">+</span>
-                                                                   <span class="n">first_stripes_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+                                                      <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span> <span class="n">length</span> <span class="o">+</span>
+                                                            <span class="n">first_stripes_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+            <span class="n">cell_vertical</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">cross_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
+                                                      <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span> <span class="n">length</span> <span class="o">+</span>
+                                                    <span class="n">first_stripes_width</span> <span class="o">-</span> <span class="n">length</span> <span class="o">-</span> <span class="n">CrossTest</span><span class="o">.</span><span class="n">cross_length</span><span class="o">*</span><span class="mi">5</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">+</span><span class="mi">45</span><span class="p">)))</span>
             <span class="c1"># diagonal</span>
             <span class="n">diag_offset</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 2*num_stripes*width/numpy.sqrt(8)</span>
             <span class="n">cell_diagonal</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">stripes_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span>
-                                                    <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">500</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">-</span> <span class="n">diag_offset</span><span class="p">,</span>
-                                                                   <span class="mi">500</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span> <span class="n">diag_offset</span><span class="p">)))</span>
+                                                      <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">500</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">-</span> <span class="n">diag_offset</span><span class="p">,</span>
+                                                            <span class="mi">500</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">length</span> <span class="o">+</span> <span class="n">diag_offset</span><span class="p">)))</span>
 
         <span class="k">return</span> <span class="n">cell_horizontal</span><span class="p">,</span> <span class="n">cell_vertical</span><span class="p">,</span> <span class="n">cell_diagonal</span></div></div>
 </pre></div>

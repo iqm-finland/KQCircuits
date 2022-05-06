@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.util.parameters &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -225,6 +221,35 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
             <span class="n">p</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">return</span> <span class="n">_decorate</span></div>
+
+
+<div class="viewcode-block" id="add_parameter"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameter">[docs]</a><span class="k">def</span> <span class="nf">add_parameter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">change</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Decorator function to add a single parameter to the decorated class.</span>
+
+<span class="sd">    Makes it possible to have fine-grained control over the Parameter&#39;s properties. Particularly,</span>
+<span class="sd">    changing the &quot;hidden&quot; or the &quot;choices&quot; property of the parameter.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cls: the class to take parameters from</span>
+<span class="sd">        name: name of the re-used parameter</span>
+<span class="sd">        **change: dictionary of properties to change, like ``hidden=True``</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">schema</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not availeble in &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_decorate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">:</span>  <span class="c1"># Redefine the parameter in case of any change</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">p</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span><span class="n">p</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="o">**</span><span class="n">change</span><span class="p">}</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">data_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">__set_name__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
     <span class="k">return</span> <span class="n">_decorate</span></div>
 
 

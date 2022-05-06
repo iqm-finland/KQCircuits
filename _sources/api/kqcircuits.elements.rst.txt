@@ -16,7 +16,6 @@ kqcircuits.elements
    kqcircuits.elements.circular_capacitor
    kqcircuits.elements.element
    kqcircuits.elements.finger_capacitor_square
-   kqcircuits.elements.finger_capacitor_square_multiface
    kqcircuits.elements.finger_capacitor_taper
    kqcircuits.elements.launcher
    kqcircuits.elements.launcher_dc

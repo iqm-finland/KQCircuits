@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.junction_test2 &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.chips.junction_test2 &mdash; KQCircuits  documentation</title>
   
 
   
@@ -68,10 +68,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -232,7 +228,15 @@
 <ul class="simple">
 <li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad Width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>junctions_horizontal</strong><em> (Boolean)</em><span> - Horizontal (True) or vertical (False) junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">SQUID</span></code></p></li>
+<li><p><strong>small_loop_area</strong><em> (Double)</em><span> - Test SQUIDs small loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>large_loop_area</strong><em> (Double)</em><span> - Test SQUIDs large loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">130</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>junction_width_small</strong><em> (Double)</em><span> - Test SQUIDs Junction finger width starting value (small loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.15</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>junction_width_large</strong><em> (Double)</em><span> - Test SQUIDs Junction finger width starting value (large loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.08</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>junction_width_step_increment_small</strong><em> (Double)</em><span> - Junction finger width step increment (small loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.01</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>junction_width_step_increment_large</strong><em> (Double)</em><span> - Junction finger width step increment (large loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.03</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>pads_loop</strong><em> (List)</em><span> - Select large or small loop area for each central test pad</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['large',</span> <span class="pre">'large',</span> <span class="pre">'small',</span> <span class="pre">'small',</span> <span class="pre">'small',</span> <span class="pre">'large']</span></code></p></li>
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, starting from lower left and going clockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">QCD1</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'QCD1',</span> <span class="pre">'QCD2',</span> <span class="pre">'QCD3',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
 </ul>

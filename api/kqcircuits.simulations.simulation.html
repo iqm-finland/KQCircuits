@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits  documentation</title>
   
 
   
@@ -68,10 +68,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -500,6 +496,49 @@ This function must be used when initializing InternalPort.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>port_data(list)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_simulation_data">
+<span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_simulation_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the simulation data in dictionary form.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>simulation_data</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>gds_file(str): self.name + ‘.gds’,</p></li>
+<li><p>stack_type(str): self.wafer_stack_type,</p></li>
+<li><p>signal_layer(pya.Layer): default_layers[“b_simulation_signal”],</p></li>
+<li><p>ground_layer(pya.Layer): default_layers[“b_simulation_ground”],</p></li>
+<li><p>airbridge_flyover_layer(pya.Layer): default_layers[“b_simulation_airbridge_flyover”],</p></li>
+<li><p>airbridge_pads_layer(pya.Layer): default_layers[“b_simulation_airbridge_pads”],</p></li>
+<li><p>units(str): ‘um’,  # hardcoded assumption in multiple places</p></li>
+<li><p>substrate_height(float): self.substrate_height,</p></li>
+<li><p>airbridge_height(float): self.airbridge_height,</p></li>
+<li><p>box_height(float): self.box_height,</p></li>
+<li><p>permittivity(float): self.permittivity,</p></li>
+<li><p>box(pya.DBox): self.box,</p></li>
+<li><p>ports(list): dictionary (see <cite>self.get_port_data</cite>)</p></li>
+<li><p>parameters(dict): dictionary (see <cite>self.get_parameters</cite>),</p></li>
+</ul>
+</div></blockquote>
+<p>if wafer stack type is ‘multiface data’, simulation_data contains also</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>substrate_height_top(float): simulation.substrate_height_top,</p></li>
+<li><p>chip_distance(float): simulation.chip_distance,</p></li>
+<li><p>t_signal_layer(pya.Layer): default_layers[“t_simulation_signal”],</p></li>
+<li><p>t_ground_layer(pya.Layer): default_layers[“t_simulation_ground”],</p></li>
+<li><p>indium_bump_layer(pya.Layer): default_layers[“b_simulation_indium_bump”],</p></li>
+</ul>
+</div></blockquote>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>

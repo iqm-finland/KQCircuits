@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.simulations.export.elmer.elmer_export &mdash; KQCircuits  documentation</title>
   
 
   
@@ -68,10 +68,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -261,6 +257,44 @@
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>sif_filepath</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.calculate_total_capacitance_to_ground">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">calculate_total_capacitance_to_ground</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#calculate_total_capacitance_to_ground"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.calculate_total_capacitance_to_ground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns total capacitance to ground for each column of c_matrix.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.write_project_results_json">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">write_project_results_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msh_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#write_project_results_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.write_project_results_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the solution data in ‘_project_results.json’ format for one Elmer capacitance matrix computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – Location where to output the simulation model</p></li>
+<li><p><strong>msh_filepath</strong> (<em>Path</em>) – Location of msh file in <cite>Path</cite> format</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export Ansys simulation into json and gds files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>simulation</strong> – The simulation to be exported.</p></li>
+<li><p><strong>path</strong> – Location where to write json.</p></li>
+<li><p><strong>tool</strong> (<em>str</em>) – Elmer tool used. Available: “capacitance” that computes the capacitance matrix (Default: capacitance)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path to exported json file.</p>
 </dd>
 </dl>
 </dd></dl>

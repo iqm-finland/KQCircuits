@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.chips.chip &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.chips.chip &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -190,14 +186,13 @@
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">default_tsv_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span><span class="p">,</span>\
-    <span class="n">default_sampleholders</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">default_sampleholders</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher</span> <span class="kn">import</span> <span class="n">Launcher</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.launcher_dc</span> <span class="kn">import</span> <span class="n">LauncherDC</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span><span class="p">,</span> <span class="n">add_parameter</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.test_structures.junction_test_pads</span> <span class="kn">import</span> <span class="n">JunctionTestPads</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.test_structures.stripes_test</span> <span class="kn">import</span> <span class="n">StripesTest</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.merge</span> <span class="kn">import</span> <span class="n">merge_layers</span>
@@ -207,6 +202,9 @@
 
 <div class="viewcode-block" id="Chip"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip">[docs]</a><span class="nd">@traced</span>
 <span class="nd">@logged</span>
+<span class="nd">@add_parameter</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;name_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;name_chip&quot;</span><span class="p">,</span> <span class="s2">&quot;name_copy&quot;</span><span class="p">,</span>
+                     <span class="s2">&quot;with_grid&quot;</span><span class="p">,</span> <span class="s2">&quot;dice_width&quot;</span><span class="p">,</span> <span class="s2">&quot;dice_grid_margin&quot;</span><span class="p">,</span> <span class="s2">&quot;marker_types&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Chip</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base PCell declaration for chips.</span>
 
@@ -220,28 +218,15 @@
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Superconducting quantum circuit library for chips.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;chips&quot;</span>
 
-    <span class="n">box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)),</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">with_grid</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground plane grid&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">merge_base_metal_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Merge grid and other gaps into base_metal_gap layer&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">dice_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Dicing width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
-    <span class="n">name_mask</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the mask&quot;</span><span class="p">,</span> <span class="s2">&quot;M99&quot;</span><span class="p">)</span>
-    <span class="n">name_chip</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the chip&quot;</span><span class="p">,</span> <span class="s2">&quot;CTest&quot;</span><span class="p">)</span>
-    <span class="n">name_copy</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Name of the copy&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">dice_grid_margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Margin between dicing edge and ground grid&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each chip corner, starting from lower left and going clockwise&quot;</span><span class="p">,</span>
-                         <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
     <span class="c1"># Tsv grid parameters</span>
     <span class="n">with_gnd_tsvs</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground TSVs&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">tsv_grid_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span><span class="s2">&quot;TSV grid distance (center to center)&quot;</span><span class="p">,</span>
-                               <span class="n">default_tsv_parameters</span><span class="p">[</span><span class="s1">&#39;tsv_grid_spacing&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">tsv_grid_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span><span class="s2">&quot;TSV grid distance (center to center)&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">tsv_edge_to_tsv_edge_separation</span> <span class="o">=</span> \
-        <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Ground TSV clearance to manually placed TSVs (edge to edge)&quot;</span><span class="p">,</span>
-                               <span class="n">default_tsv_parameters</span><span class="p">[</span><span class="s1">&#39;tsv_edge_to_tsv_edge_separation&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
-    <span class="n">tsv_edge_to_nearest_element</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
-        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Ground TSV clearance to other elements (edge to edge)&quot;</span><span class="p">,</span>
-        <span class="n">default_tsv_parameters</span><span class="p">[</span><span class="s1">&#39;tsv_edge_to_nearest_element&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
-    <span class="n">edge_from_tsv</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Ground TSV center clearance to chip edge&quot;</span><span class="p">,</span>
-                          <span class="n">default_tsv_parameters</span><span class="p">[</span><span class="s1">&#39;edge_from_tsv&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+        <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Ground TSV clearance to manually placed TSVs (edge to edge)&quot;</span><span class="p">,</span> <span class="mi">250</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">tsv_edge_to_nearest_element</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Ground TSV clearance to other elements (edge to edge)&quot;</span><span class="p">,</span>
+                                        <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">edge_from_tsv</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Ground TSV center clearance to chip edge&quot;</span><span class="p">,</span> <span class="mi">550</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Chip.display_text_impl"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.display_text_impl">[docs]</a>    <span class="k">def</span> <span class="nf">display_text_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># Provide a descriptive text for the cell</span>

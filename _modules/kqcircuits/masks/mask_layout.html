@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.masks.mask_layout &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -196,7 +192,7 @@
     <span class="n">default_layers_to_mask</span><span class="p">,</span> <span class="n">default_covered_region_excluded_layers</span><span class="p">,</span> <span class="n">default_mask_export_layers</span><span class="p">,</span> <span class="n">default_bar_format</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.markers.marker</span> <span class="kn">import</span> <span class="n">Marker</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.mask_marker_fc</span> <span class="kn">import</span> <span class="n">MaskMarkerFc</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">produce_label</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.label</span> <span class="kn">import</span> <span class="n">produce_label</span><span class="p">,</span> <span class="n">LabelOrigin</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.merge</span> <span class="kn">import</span> <span class="n">merge_layers</span>
 
 
@@ -408,7 +404,7 @@
                     <span class="n">pos_index_name</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{:02d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
                     <span class="n">bbox_x1</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">left</span> <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span> <span class="k">else</span> <span class="n">bbox</span><span class="o">.</span><span class="n">right</span>
                     <span class="n">produce_label</span><span class="p">(</span><span class="n">labels_cell_2</span><span class="p">,</span> <span class="n">pos_index_name</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">*</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bbox_x1</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">bottom</span><span class="p">)),</span>
-                                  <span class="s2">&quot;bottomright&quot;</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">dice_width</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">text_margin</span><span class="p">,</span>
+                                  <span class="n">LabelOrigin</span><span class="o">.</span><span class="n">BOTTOMRIGHT</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">dice_width</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">text_margin</span><span class="p">,</span>
                                   <span class="p">[</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="n">layer</span><span class="p">]</span> <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">],</span>
                                   <span class="n">mask_layout</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">])</span>
                     <span class="n">bbox_x2</span> <span class="o">=</span> <span class="n">bbox</span><span class="o">.</span><span class="n">right</span> <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">is_mirror</span><span class="p">()</span> <span class="k">else</span> <span class="n">bbox</span><span class="o">.</span><span class="n">left</span>

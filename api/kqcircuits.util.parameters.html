@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.util.parameters &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.util.parameters &mdash; KQCircuits  documentation</title>
   
 
   
@@ -69,10 +69,6 @@
           
             
             
-              <div class="version">
-                4.3.6
-              </div>
-            
           
 
           
@@ -119,6 +115,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
@@ -230,6 +227,23 @@ useful together with <code class="docutils literal notranslate"><span class="pre
 <li><p><strong>cls</strong> – the class to take parameters from</p></li>
 <li><p><strong>*param_names</strong> – parameter names to take (or remove if ‘*’ is the first)</p></li>
 <li><p><strong>**param_with_default_value</strong> – dictionary of parameter names and new default values</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.parameters.add_parameter">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">add_parameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">change</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#add_parameter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.add_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator function to add a single parameter to the decorated class.</p>
+<p>Makes it possible to have fine-grained control over the Parameter’s properties. Particularly,
+changing the “hidden” or the “choices” property of the parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cls</strong> – the class to take parameters from</p></li>
+<li><p><strong>name</strong> – name of the re-used parameter</p></li>
+<li><p><strong>**change</strong> – dictionary of properties to change, like <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code></p></li>
 </ul>
 </dd>
 </dl>

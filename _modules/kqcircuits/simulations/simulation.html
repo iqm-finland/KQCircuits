@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.simulation &mdash; KQCircuits 4.3.6 documentation</title>
+  <title>kqcircuits.simulations.simulation &mdash; KQCircuits  documentation</title>
   
 
   
@@ -66,10 +66,6 @@
 
           
             
-            
-              <div class="version">
-                4.3.6
-              </div>
             
           
 
@@ -200,6 +196,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">find_edge_from_point_in_cell</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">get_enclosing_polygon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.groundgrid</span> <span class="kn">import</span> <span class="n">make_grid</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
 
 
 <div class="viewcode-block" id="Simulation"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
@@ -417,11 +414,13 @@
             <span class="n">insert_region</span><span class="p">(</span><span class="n">ground_region</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_ground&quot;</span><span class="p">)</span>
             <span class="n">insert_region</span><span class="p">(</span><span class="n">sim_gap_region</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_gap&quot;</span><span class="p">)</span>
 
-            <span class="c1"># Export airbridge regions as merged simple polygons</span>
-            <span class="n">insert_region</span><span class="p">(</span><span class="n">merged_region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">),</span>
-                    <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_airbridge_flyover&quot;</span><span class="p">)</span>
-            <span class="n">insert_region</span><span class="p">(</span><span class="n">merged_region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;airbridge_pads&quot;</span><span class="p">),</span>
-                    <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_airbridge_pads&quot;</span><span class="p">)</span></div>
+            <span class="c1"># Export airbridge and indium bump regions as merged simple polygons</span>
+            <span class="n">insert_region</span><span class="p">(</span><span class="n">merged_region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">ground_box_region</span><span class="p">,</span>
+                          <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_airbridge_flyover&quot;</span><span class="p">)</span>
+            <span class="n">insert_region</span><span class="p">(</span><span class="n">merged_region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;airbridge_pads&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">ground_box_region</span><span class="p">,</span>
+                          <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_airbridge_pads&quot;</span><span class="p">)</span>
+            <span class="n">insert_region</span><span class="p">(</span><span class="n">merged_region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;indium_bump&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">ground_box_region</span><span class="p">,</span>
+                          <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_indium_bump&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Simulation.produce_ground_on_face_grid"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.produce_ground_on_face_grid">[docs]</a>    <span class="k">def</span> <span class="nf">produce_ground_on_face_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces ground grid in the given face of the chip.</span>
@@ -688,6 +687,65 @@
                 <span class="n">port_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_data</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">port_data</span></div>
+
+<div class="viewcode-block" id="Simulation.get_simulation_data"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_simulation_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Return the simulation data in dictionary form.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                dict: simulation_data</span>
+
+<span class="sd">                    * gds_file(str): self.name + &#39;.gds&#39;,</span>
+<span class="sd">                    * stack_type(str): self.wafer_stack_type,</span>
+<span class="sd">                    * signal_layer(pya.Layer): default_layers[&quot;b_simulation_signal&quot;],</span>
+<span class="sd">                    * ground_layer(pya.Layer): default_layers[&quot;b_simulation_ground&quot;],</span>
+<span class="sd">                    * airbridge_flyover_layer(pya.Layer): default_layers[&quot;b_simulation_airbridge_flyover&quot;],</span>
+<span class="sd">                    * airbridge_pads_layer(pya.Layer): default_layers[&quot;b_simulation_airbridge_pads&quot;],</span>
+<span class="sd">                    * units(str): &#39;um&#39;,  # hardcoded assumption in multiple places</span>
+<span class="sd">                    * substrate_height(float): self.substrate_height,</span>
+<span class="sd">                    * airbridge_height(float): self.airbridge_height,</span>
+<span class="sd">                    * box_height(float): self.box_height,</span>
+<span class="sd">                    * permittivity(float): self.permittivity,</span>
+<span class="sd">                    * box(pya.DBox): self.box,</span>
+<span class="sd">                    * ports(list): dictionary (see `self.get_port_data`)</span>
+<span class="sd">                    * parameters(dict): dictionary (see `self.get_parameters`),</span>
+
+<span class="sd">                if wafer stack type is &#39;multiface data&#39;, simulation_data contains also</span>
+
+<span class="sd">                    * substrate_height_top(float): simulation.substrate_height_top,</span>
+<span class="sd">                    * chip_distance(float): simulation.chip_distance,</span>
+<span class="sd">                    * t_signal_layer(pya.Layer): default_layers[&quot;t_simulation_signal&quot;],</span>
+<span class="sd">                    * t_ground_layer(pya.Layer): default_layers[&quot;t_simulation_ground&quot;],</span>
+<span class="sd">                    * indium_bump_layer(pya.Layer): default_layers[&quot;b_simulation_indium_bump&quot;],</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">simulation_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;gds_file&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;stack_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">wafer_stack_type</span><span class="p">,</span>
+            <span class="s1">&#39;signal_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">],</span>
+            <span class="s1">&#39;ground_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">],</span>
+            <span class="s1">&#39;airbridge_flyover_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">],</span>
+            <span class="s1">&#39;airbridge_pads_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_airbridge_pads&quot;</span><span class="p">],</span>
+            <span class="s1">&#39;units&#39;</span><span class="p">:</span> <span class="s1">&#39;um&#39;</span><span class="p">,</span>  <span class="c1"># hardcoded assumption in multiple places</span>
+            <span class="s1">&#39;substrate_height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">substrate_height</span><span class="p">,</span>
+            <span class="s1">&#39;airbridge_height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_height</span><span class="p">,</span>
+            <span class="s1">&#39;box_height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">box_height</span><span class="p">,</span>
+            <span class="s1">&#39;permittivity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permittivity</span><span class="p">,</span>
+            <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
+            <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_port_data</span><span class="p">(),</span>
+            <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
+            <span class="n">simulation_data</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">simulation_data</span><span class="p">,</span>
+                          <span class="s2">&quot;substrate_height_top&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">substrate_height_top</span><span class="p">,</span>
+                          <span class="s2">&quot;chip_distance&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_distance</span><span class="p">,</span>
+                          <span class="s2">&quot;t_signal_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">],</span>
+                          <span class="s2">&quot;t_ground_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">],</span>
+                          <span class="s2">&quot;indium_bump_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_simulation_indium_bump&quot;</span><span class="p">],</span>
+                          <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">simulation_data</span></div>
 
 <div class="viewcode-block" id="Simulation.delete_instances"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">delete_instances</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
