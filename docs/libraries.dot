@@ -1,0 +1,5 @@
+digraph {
+    "Element Library" -> {"SQUID Library", "Qubit Library", "Chip Library", "TestStructure Library"}
+    "SQUID Library" -> "TestStructure Library" -> "Chip Library"
+    "SQUID Library" -> "Qubit Library" -> "Chip Library"
+}

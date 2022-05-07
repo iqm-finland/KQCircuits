@@ -1,0 +1,31 @@
+digraph {
+    rankdir="LR"
+
+    ## Base classes
+    Element -> Qubit
+    Element -> Squid
+    Element -> Airbridge
+    Element -> TestStructure
+    Element -> FlipChipConnector
+    Element -> Fluxline
+    Element -> Marker
+    Element -> Tsv
+
+    ## Cocrete base classes
+    node [shape="rect"]
+    Element -> Chip -> MultiFace
+
+    ## Concrete examples
+    node [color="green"]
+    Element -> WaveguideCoplanar
+    Chip -> Demo
+    MultiFace -> DemoTwoface
+    Qubit -> Swissmon
+    Squid -> Manhattan
+    Airbridge -> AirbridgeRectangular
+    Fluxline -> FluxlineStraight
+    Marker -> MarkerStandard
+    TestStructure -> AirbridgeDC
+    FlipChipConnector -> FlipChipConnectorDc
+    Tsv -> TsvEllipse
+}
