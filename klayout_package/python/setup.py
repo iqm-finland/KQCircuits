@@ -39,7 +39,7 @@ setup(
     author_email="kqcircuits@meetiqm.com",
     url="meetiqm.com",
     packages=find_packages(),
-    python_requires=">=3.6.9,<3.10",  # klayout package not yet released for 3.10
+    python_requires=">=3.6.9",
     install_requires=[                # Record dependencies in kqcircuits/util/dependecies.py too
         "klayout>=0.26",
         "numpy>=1.16",
