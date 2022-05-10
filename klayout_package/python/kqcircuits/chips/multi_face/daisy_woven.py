@@ -16,15 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import traced
-
 from kqcircuits.chips.multi_face.multi_face import MultiFace
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 
-@traced
 class DaisyWoven(MultiFace):
     """Base PCell declaration for a Daisy Woven chip.
 

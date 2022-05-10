@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.elements.element import Element
 from kqcircuits.util.library_helper import load_libraries, to_library_name
@@ -25,7 +25,6 @@ from kqcircuits.defaults import default_squid_type
 from kqcircuits.squids import squid_type_choices
 
 
-@traced
 @logged
 class Squid(Element):
     """Base class for SQUIDs without actual produce function.

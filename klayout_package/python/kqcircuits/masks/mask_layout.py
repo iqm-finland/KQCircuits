@@ -17,7 +17,7 @@
 
 
 import math
-from autologging import logged, traced
+from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
@@ -29,7 +29,6 @@ from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.merge import merge_layers
 
 
-@traced
 @logged
 class MaskLayout:
     """Class representing the mask for a certain face.

@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import traced, logged
+from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.chips.chip import Chip
@@ -26,7 +26,6 @@ from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector
 from kqcircuits.defaults import default_mask_parameters, default_bump_parameters, default_marker_type
 
 
-@traced
 @logged
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 class MultiFace(Chip):

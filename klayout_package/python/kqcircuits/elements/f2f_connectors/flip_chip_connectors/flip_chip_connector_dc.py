@@ -16,10 +16,9 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged, traced
+from autologging import logged
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 
-@traced
 @logged
 class FlipChipConnectorDc(FlipChipConnector):
     """PCell declaration for an inter-chip dc connector."""

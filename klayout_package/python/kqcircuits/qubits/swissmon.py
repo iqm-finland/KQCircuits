@@ -17,14 +17,12 @@
 
 
 import math
-from autologging import traced
 
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
 
 
-@traced
 class Swissmon(Qubit):
     """The PCell declaration for a Swissmon qubit.
 

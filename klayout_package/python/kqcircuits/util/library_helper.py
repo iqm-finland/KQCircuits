@@ -30,7 +30,7 @@ import re
 import types
 import inspect
 import importlib
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.defaults import SRC_PATHS, kqc_library_names
 from kqcircuits.pya_resolver import pya
@@ -64,7 +64,6 @@ _excluded_module_names = (
 )
 
 
-@traced
 @logged
 def load_libraries(flush=False, path=""):
     """Load all KQCircuits libraries from the given path.
@@ -120,14 +119,12 @@ def load_libraries(flush=False, path=""):
     return {key: value[0] for key, value in _kqc_libraries.items()}
 
 
-@traced
 def delete_all_libraries():
     """Delete all KQCircuits libraries from KLayout memory."""
     for name in reversed(kqc_library_names):
         delete_library(name)
 
 
-@traced
 @logged
 def delete_library(name=None):
     """Delete a KQCircuits library.
@@ -154,7 +151,6 @@ def delete_library(name=None):
         raise SystemError("Failed to delete library '[]'.".format(name))
 
 
-@traced
 @logged
 def to_module_name(class_name=None):
     """Converts class name to module name.
@@ -182,7 +178,6 @@ def to_module_name(class_name=None):
     return _join_module_words(words)
 
 
-@traced
 @logged
 def to_library_name(class_name=None):
     """Converts class name to library name.
@@ -216,7 +211,6 @@ def to_library_name(class_name=None):
 # ********************************************************************************
 
 
-@traced
 @logged
 def _register_pcell(pcell_class, library, library_name):
     """Registers the PCell to the library.
@@ -237,7 +231,6 @@ def _register_pcell(pcell_class, library, library_name):
         )
 
 
-@traced
 def _load_manual_designs(library_name):
     """Loads .oas files to the library
 
@@ -251,7 +244,6 @@ def _load_manual_designs(library_name):
             library.layout().read(str(path.absolute()))
 
 
-@traced
 @logged
 def _get_all_pcell_classes(reload=False, path=""):
     """Returns all PCell classes in the given path.
@@ -292,7 +284,6 @@ def _get_all_pcell_classes(reload=False, path=""):
     return pcell_classes
 
 
-@traced
 def _get_pcell_classes(module=None):
     """Returns all PCell classes found in the module.
 
@@ -313,7 +304,6 @@ def _get_pcell_classes(module=None):
     return class_list
 
 
-@traced
 def _get_pcell_class(name=None, module=None):
     """Returns class found for specified path and circuit type.
 
@@ -334,7 +324,6 @@ def _get_pcell_class(name=None, module=None):
     else:
         return None
 
-@traced
 def _is_valid_class_name(value=None):
     """Check if string value is valid PEP-8 compliant Python class name."""
     if value is None or not isinstance(value, str) or len(value) == 0:
@@ -345,7 +334,6 @@ def _is_valid_class_name(value=None):
         raise ValueError("PEP8 compliant class name '{}' must be PascalCase without underscores.".format(value))
 
 
-@traced
 def _join_module_words(words=None):
     """Join words to build module name.
 
@@ -374,7 +362,6 @@ def _join_module_words(words=None):
     return name
 
 
-@traced
 def _join_library_words(words=None):
     """Join words to build library name.
 
@@ -402,7 +389,6 @@ def _join_library_words(words=None):
     return name
 
 
-@traced
 @logged
 def _clean_words(words=None):
     """Clean word list by removing None values, empty strings, and non-string values.

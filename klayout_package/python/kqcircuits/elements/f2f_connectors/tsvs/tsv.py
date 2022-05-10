@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
@@ -25,7 +25,6 @@ from kqcircuits.defaults import default_tsv_type
 from kqcircuits.elements.f2f_connectors.tsvs import tsv_type_choices
 
 
-@traced
 @logged
 class Tsv(Element):
     """Base Class for TSVs."""

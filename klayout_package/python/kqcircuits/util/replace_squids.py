@@ -26,14 +26,13 @@
 """
 
 from os import path
-from autologging import logged, traced
+from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.squids import squid_type_choices
 from kqcircuits.squids.squid import Squid
 from kqcircuits.chips.chip import Chip
 
 
-@traced
 @logged
 def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
     """Replaces squids by code generated squids with the given parameter sweep.

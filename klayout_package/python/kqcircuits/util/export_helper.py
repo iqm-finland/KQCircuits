@@ -23,7 +23,7 @@ import platform
 from sys import argv
 from pathlib import Path
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.elements.element import get_refpoints
 from kqcircuits.defaults import default_layers, TMP_PATH, default_probe_types, default_probe_suffixes, \
@@ -32,7 +32,6 @@ from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya
 
 
-@traced
 @logged
 def generate_probepoints_json(cell, face='b'):
     # make autoprober json string for cell with reference points with magical names

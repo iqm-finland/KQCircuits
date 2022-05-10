@@ -17,7 +17,7 @@
 
 
 import numpy
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.defaults import default_layers, default_squid_type, default_sampleholders
 from kqcircuits.elements.chip_frame import ChipFrame
@@ -33,7 +33,6 @@ from kqcircuits.util.groundgrid import make_grid
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
 
 
-@traced
 @logged
 @add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy",

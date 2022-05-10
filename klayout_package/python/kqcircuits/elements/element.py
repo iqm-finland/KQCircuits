@@ -18,7 +18,7 @@
 
 from inspect import isclass
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
 from kqcircuits.pya_resolver import pya
@@ -27,7 +27,6 @@ from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.util.parameters import Param, pdt
 
 
-@traced
 def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
     """Extract reference points from cell from layer as dictionary.
 
@@ -55,7 +54,6 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
     return refpoints
 
 
-@traced
 @logged
 class Element(pya.PCellDeclarationHelper):
     """Element PCell declaration.

@@ -33,12 +33,11 @@
             # Do something with validated parameters...
 """
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.pya_resolver import pya
 
 
-@traced
 def normalize_rules(name, rules):
     """Normalizes rule fields corresponding to specified name.
 

@@ -18,8 +18,6 @@
 
 from math import pi
 
-from autologging import traced
-
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.meander import Meander
 from kqcircuits.qubits.swissmon import Swissmon
@@ -37,7 +35,6 @@ def _get_num_meanders(meander_length, turn_radius, meander_min_width):
     return int((meander_length - turn_radius * (pi - 2)) / (meander_min_width + turn_radius * (pi - 2)))
 
 
-@traced
 @add_parameters_from(Squid, "squid_type")
 class SingleXmons(Chip):
     """The PCell declaration for a SingleXmons chip.

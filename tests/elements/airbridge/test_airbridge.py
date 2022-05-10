@@ -18,7 +18,6 @@
 
 import pytest
 from kqcircuits.pya_resolver import pya
-from autologging import TRACE
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 

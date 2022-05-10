@@ -23,7 +23,7 @@ from inspect import isclass
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
 
-from autologging import logged, traced
+from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
@@ -32,7 +32,6 @@ from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 
 
-@traced
 @logged
 class MaskSet:
     """Class representing a set of masks for different chip faces.

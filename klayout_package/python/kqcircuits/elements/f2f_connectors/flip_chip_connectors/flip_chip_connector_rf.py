@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors import connector_type_choices
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector import FlipChipConnector
@@ -26,7 +26,6 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 
-@traced
 @logged
 class FlipChipConnectorRf(FlipChipConnector):
     """PCell declaration for an inter-chip rf connector.

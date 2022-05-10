@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 from enum import Enum, auto
-from autologging import traced
 
 from kqcircuits.pya_resolver import pya
 
@@ -28,7 +27,6 @@ class LabelOrigin(Enum):
     TOPLEFT = auto()
     TOPRIGHT = auto()
 
-@traced
 def produce_label(cell, label, location, origin, origin_offset, margin, layers, layer_protection, size=350):
     """Produces a Text PCell accounting for desired relative position of the text respect to the given location
     and the spacing.

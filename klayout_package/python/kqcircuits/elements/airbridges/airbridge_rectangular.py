@@ -16,14 +16,13 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 
-@traced
 @logged
 class AirbridgeRectangular(Airbridge):
     """PCell declaration for a rectangular airbridge.

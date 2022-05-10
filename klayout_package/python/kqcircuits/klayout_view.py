@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.pya_resolver import pya
 
@@ -24,7 +24,6 @@ from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bit
     all_layers_bitmap_hide_layers, default_faces, SRC_PATHS
 
 
-@traced
 @logged
 def resolve_default_layer_info(layer_name, face_id=None):
     """Returns LayerInfo based on default_layers.
@@ -43,7 +42,6 @@ def resolve_default_layer_info(layer_name, face_id=None):
     else:
         return default_layers[layer_name]
 
-@traced
 @logged
 class KLayoutView():
     """KLayout layout view wrapper with helper methods."""
@@ -199,13 +197,11 @@ class KLayoutView():
                 layer.visible = current_layer_visibility[i]
 
 
-@traced
 class ViewException(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
 
 
-@traced
 class MissingUILibraryException(ViewException):
     def __init__(self):
         ViewException.__init__(
@@ -214,7 +210,6 @@ class MissingUILibraryException(ViewException):
         )
 
 
-@traced
 class InvalidViewException(ViewException):
     def __init__(self, view):
         ViewException.__init__(

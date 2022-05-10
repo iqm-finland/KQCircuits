@@ -21,7 +21,7 @@ import os
 import subprocess
 from importlib import import_module
 
-from autologging import logged, traced
+from autologging import logged
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
@@ -36,7 +36,6 @@ from kqcircuits.util.netlist_extraction import export_cell_netlist
 from kqcircuits.util.geometry_helper import circle_polygon
 
 
-@traced
 @logged
 def export_mask_set(mask_set, path, view):
     """Exports the designs, bitmap and documentation for the mask_set."""
@@ -47,7 +46,6 @@ def export_mask_set(mask_set, path, view):
     export_docs(mask_set, mask_set_dir)
 
 
-@traced
 @logged
 def export_designs(mask_set, export_dir):
     """Exports .oas and .gds files of the mask_set."""
@@ -184,7 +182,6 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         layout.copy_layer(tmp_layer, layer)
     layout.delete_layer(tmp_layer)
 
-@traced
 @logged
 def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
     """Exports mask documentation containing mask layouts and parameters of all chips in the mask_set."""
@@ -313,7 +310,6 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
         f.close()
 
 
-@traced
 @logged
 def export_bitmaps(mask_set, export_dir, view, spec_layers=mask_bitmap_export_layers):
     """Exports bitmaps for the mask_set."""
