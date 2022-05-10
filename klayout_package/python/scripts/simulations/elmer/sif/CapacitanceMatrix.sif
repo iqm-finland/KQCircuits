@@ -1,6 +1,3 @@
-Header
-  Mesh DB "." "simulation"
-End
 Simulation
   Max Output Level = 5
   Coordinate System = Cartesian 3D

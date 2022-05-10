@@ -29,7 +29,6 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
 from kqcircuits.simulations.export.util import get_enclosing_polygon
 from kqcircuits.util.groundgrid import make_grid
-from kqcircuits.defaults import default_layers
 
 
 @add_parameters_from(Element)
@@ -530,10 +529,6 @@ class Simulation:
 
                     * gds_file(str): self.name + '.gds',
                     * stack_type(str): self.wafer_stack_type,
-                    * signal_layer(pya.Layer): default_layers["b_simulation_signal"],
-                    * ground_layer(pya.Layer): default_layers["b_simulation_ground"],
-                    * airbridge_flyover_layer(pya.Layer): default_layers["b_simulation_airbridge_flyover"],
-                    * airbridge_pads_layer(pya.Layer): default_layers["b_simulation_airbridge_pads"],
                     * units(str): 'um',  # hardcoded assumption in multiple places
                     * substrate_height(float): self.substrate_height,
                     * airbridge_height(float): self.airbridge_height,
@@ -547,18 +542,11 @@ class Simulation:
 
                     * substrate_height_top(float): simulation.substrate_height_top,
                     * chip_distance(float): simulation.chip_distance,
-                    * t_signal_layer(pya.Layer): default_layers["t_simulation_signal"],
-                    * t_ground_layer(pya.Layer): default_layers["t_simulation_ground"],
-                    * indium_bump_layer(pya.Layer): default_layers["b_simulation_indium_bump"],
 
         """
         simulation_data = {
             'gds_file': self.name + '.gds',
             'stack_type': self.wafer_stack_type,
-            'signal_layer': default_layers["b_simulation_signal"],
-            'ground_layer': default_layers["b_simulation_ground"],
-            'airbridge_flyover_layer': default_layers["b_simulation_airbridge_flyover"],
-            'airbridge_pads_layer': default_layers["b_simulation_airbridge_pads"],
             'units': 'um',  # hardcoded assumption in multiple places
             'substrate_height': self.substrate_height,
             'airbridge_height': self.airbridge_height,
@@ -571,12 +559,9 @@ class Simulation:
 
         if self.wafer_stack_type == "multiface":
             simulation_data = {**simulation_data,
-                          "substrate_height_top": self.substrate_height_top,
-                          "chip_distance": self.chip_distance,
-                          "t_signal_layer": default_layers["t_simulation_signal"],
-                          "t_ground_layer": default_layers["t_simulation_ground"],
-                          "indium_bump_layer": default_layers["b_simulation_indium_bump"],
-                          }
+                               "substrate_height_top": self.substrate_height_top,
+                               "chip_distance": self.chip_distance,
+                               }
 
         return simulation_data
 

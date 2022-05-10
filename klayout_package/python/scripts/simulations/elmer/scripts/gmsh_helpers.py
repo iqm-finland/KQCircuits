@@ -14,11 +14,16 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-from pathlib import Path
 import os
+from pathlib import Path
 import gmsh
-from kqcircuits.simulations.simulation import Simulation
 import numpy as np
+
+try:
+    import pya
+except ImportError:
+    import klayout.db as pya
+
 
 def coord_dist(coord1: [], coord2: []):
     """
@@ -32,10 +37,11 @@ def coord_dist(coord1: [], coord2: []):
         (float): distance between point 1 and 2
     """
     return np.sqrt(
-                  (coord1[0]-coord2[0])**2.
-                + (coord1[1]-coord2[1])**2.
-                + (coord1[2]-coord2[2])**2.
+        (coord1[0] - coord2[0]) ** 2.
+        + (coord1[1] - coord2[1]) ** 2.
+        + (coord1[2] - coord2[2]) ** 2.
     )
+
 
 def add_polygon(point_coordinates: [], mesh_size: float):
     """
@@ -65,11 +71,12 @@ def add_polygon(point_coordinates: [], mesh_size: float):
     for i, coord in enumerate(point_coordinates):
         point_ids.append(gmsh.model.occ.addPoint(*coord, mesh_size))
         if i > 0:
-            line_ids.append(gmsh.model.occ.addLine(point_ids[i-1], point_ids[i]))
+            line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
     line_ids.append(gmsh.model.occ.addLine(point_ids[i], point_ids[0]))
     curve_loop_ids.append(gmsh.model.occ.addCurveLoop(line_ids))
     plane_surface_id = gmsh.model.occ.addPlaneSurface(curve_loop_ids)
     return point_ids, line_ids, curve_loop_ids, plane_surface_id
+
 
 def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
     """
@@ -107,7 +114,7 @@ def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
         point_id = point_ids[-1]
         spline_points.append(point_id)
         if i > 0:
-            coord1 = point_coordinates[i-1]
+            coord1 = point_coordinates[i - 1]
             coord2 = point_coordinates[i]
             if spline:
                 if coord_dist(coord1, coord2) > tol:
@@ -117,13 +124,13 @@ def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
                         line_ids.append(gmsh.model.occ.addSpline(spline_points))
                     else:
                         line_ids.append(gmsh.model.occ.addLine(spline_points[0], spline_points[1]))
-                    line_ids.append(gmsh.model.occ.addLine(point_ids[i-1], point_ids[i]))
+                    line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
                     spline_points = [point_id]
             else:
                 if coord_dist(coord1, coord2) <= tol:
                     spline = True
                 else:
-                    line_ids.append(gmsh.model.occ.addLine(point_ids[i-1], point_ids[i]))
+                    line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
                     spline_points = [point_id]
     if len(spline_points) > 1:  # in case spline and the last point distance < tol
         line_ids.append(gmsh.model.occ.addSpline(spline_points))
@@ -133,16 +140,31 @@ def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
     plane_surface_id = gmsh.model.occ.addPlaneSurface(curve_loop_ids)
     return point_ids, line_ids, curve_loop_ids, plane_surface_id
 
-def add_shape_polygons(simulation: Simulation, face_id: int, layer_name: str, z_level: float, mesh_size: float):
+
+def separated_hull_and_holes(polygon):
+    """Returns Polygon with holes separated from hull. Takes Polygon or SimplePolygon as the argument."""
+    bbox = polygon.bbox().enlarged(10, 10)
+    region = pya.Region(bbox) - pya.Region(polygon)
+    new_poly = pya.Polygon()
+    for p in region.each():
+        if p.bbox() == bbox:
+            hull_region = pya.Region(bbox) - pya.Region(p)
+            new_poly.assign_hull(list(hull_region[0].each_point_hull()), True)
+        else:
+            new_poly.insert_hole(list(p.each_point_hull()), True)
+    return new_poly
+
+
+def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z_level: float, mesh_size: float):
     """
     Create all polygons in a layer using `add_polygon_with_splines` according to the hull of each KLayout shape.
     Returns the so called list of dim_tags of all the created polygons which can be used to refer to the shapes later.
 
     Args:
-        simulation(Simulation): KQC simulation object that contains all the polygons.
-        face_id(int): KQC uses face ids to differenciate between different chips faces (for example in flip chip, 0 is
-                      the bottom and 1 is the top).
-        layer_name(str): the name of the layer to be created.
+        cell(pya.Cell): 2-dimensional geometry as pya.Cell object
+        layer_map(dict): map from full layer name to layer number
+        face(str): face abbreviation (for example in flip chip, 'b' is the bottom and 't' is the top).
+        layer(str): layer name (for example 'simulation_ground')
         z_level(float): the z-coordinate of the layer.
         mesh_size(float): mesh size can be given to the points (note that these points are not used in the final mesh in
                           case the boolean operations are used.
@@ -151,26 +173,28 @@ def add_shape_polygons(simulation: Simulation, face_id: int, layer_name: str, z_
             * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
             * tag(int): the id of the entity
     """
-    layout = simulation.layout
-    shapes = simulation.cell.shapes(layout.layer(simulation.face(face_id)[layer_name]))
+    layout = cell.layout()
+    shapes = cell.shapes(layout.layer(layer_map[face + "_" + layer], 0))
     hull_dim_tags = []
     for shape in shapes.each():
-        hull_point_coordinates = [(point.x*layout.dbu, point.y*layout.dbu, z_level)
-                                  for point in shape.each_point_hull()]
+        poly = separated_hull_and_holes(shape.polygon)
+        hull_point_coordinates = [(point.x * layout.dbu, point.y * layout.dbu, z_level)
+                                  for point in poly.each_point_hull()]
         _, _, _, hull_plane_surface_id = add_polygon_with_splines(hull_point_coordinates, mesh_size)
         hull_dim_tags.append((2, hull_plane_surface_id))
     return hull_dim_tags
 
-def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes=None, port_dim_tags=None):
+
+def create_face(cell: pya.Cell, layer_map: dict, face: str, z_level: float, mesh_sizes=None, port_dim_tags=None):
     """
     Create the face of a chip according to the "simulation_ground", "simulation_gap" and "simulation_signal" layers
     using the `add_shape_polygons` method.
 
     Args:
-        face_id(int): KQC uses face ids to differenciate between different chips faces (for example in flip chip, 0 is
-            the bottom and 1 is the top).
+        cell(pya.Cell): 2-dimensional geometry as pya.Cell object
+        layer_map(dict): map from full layer name to layer number
+        face(str): face abbreviation (for example in flip chip, 'b' is the bottom and 't' is the top).
         z_level(float): set the z-coordinate of the chip face.
-        simulation(Simulation): KQC simulation object that contains all the polygons.
         mesh_sizes(dict): a mesh size can be given to the points:
 
             * ground(float): mesh size of the ground layer
@@ -214,14 +238,14 @@ def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes
     if port_dim_tags is None:
         port_dim_tags = []
 
-    ground_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_ground",
-            z_level, mesh_sizes['ground'])
-    ground_grid_hull_dim_tags = add_shape_polygons(simulation, face_id, "ground_grid",
-            z_level, mesh_sizes['ground_grid'])
-    gap_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_gap",
-            z_level, mesh_sizes['gap'])
-    signal_hull_dim_tags = add_shape_polygons(simulation, face_id, "simulation_signal",
-            z_level, mesh_sizes['signal'])
+    ground_hull_dim_tags = add_shape_polygons(cell, layer_map, face, "simulation_ground",
+                                              z_level, mesh_sizes['ground'])
+    ground_grid_hull_dim_tags = add_shape_polygons(cell, layer_map, face, "ground_grid",
+                                                   z_level, mesh_sizes['ground_grid'])
+    gap_hull_dim_tags = add_shape_polygons(cell, layer_map, face, "simulation_gap",
+                                           z_level, mesh_sizes['gap'])
+    signal_hull_dim_tags = add_shape_polygons(cell, layer_map, face, "simulation_signal",
+                                              z_level, mesh_sizes['signal'])
 
     if len(ground_hull_dim_tags) > 0 and (len(gap_hull_dim_tags) > 0 or len(ground_grid_hull_dim_tags) > 0):
         cutter = gap_hull_dim_tags + ground_grid_hull_dim_tags
@@ -240,6 +264,7 @@ def create_face(face_id: int, z_level: float, simulation: Simulation, mesh_sizes
     }
 
     return tags
+
 
 def bounding_box_from_dim_tags(dim_tags: list):
     """
@@ -280,7 +305,8 @@ def bounding_box_from_dim_tags(dim_tags: list):
 
     return bounding_box
 
-def bounding_box_to_xyzdxdydz(bounding_box: [], dz: float=None):
+
+def bounding_box_to_xyzdxdydz(bounding_box: [], dz: float = None):
     """
     Returns a bounding box in a format that is compatible to generating a box.
 
@@ -305,11 +331,12 @@ def bounding_box_to_xyzdxdydz(bounding_box: [], dz: float=None):
     x = bounding_box[0]
     y = bounding_box[1]
     z = bounding_box[2]
-    dx = bounding_box[3]-bounding_box[0]
-    dy = bounding_box[4]-bounding_box[1]
+    dx = bounding_box[3] - bounding_box[0]
+    dy = bounding_box[4] - bounding_box[1]
     if dz is None:
-        dz = bounding_box[5]-bounding_box[2]
+        dz = bounding_box[5] - bounding_box[2]
     return x, y, z, dx, dy, dz
+
 
 def substrate(face_dim_tag_dict: dict, dz: float):
     """
@@ -336,7 +363,8 @@ def substrate(face_dim_tag_dict: dict, dz: float):
     """
     face_bounding_box = bounding_box_from_dim_tags(face_dim_tag_dict['ground'])
     xyzdxdydz = bounding_box_to_xyzdxdydz(face_bounding_box, dz)
-    return (3, gmsh.model.occ.addBox(*xyzdxdydz, tag=-1))
+    return 3, gmsh.model.occ.addBox(*xyzdxdydz, tag=-1)
+
 
 def vacuum_between_faces(face0_ground_dim_tags: list, face1_ground_dim_tags: list):
     """
@@ -360,7 +388,8 @@ def vacuum_between_faces(face0_ground_dim_tags: list, face1_ground_dim_tags: lis
     """
     bounding_box = bounding_box_from_dim_tags(face0_ground_dim_tags + face1_ground_dim_tags)
     xyzdxdydz = bounding_box_to_xyzdxdydz(bounding_box)
-    return (3, gmsh.model.occ.addBox(*xyzdxdydz, tag=-1))
+    return 3, gmsh.model.occ.addBox(*xyzdxdydz, tag=-1)
+
 
 def face_tag_dict_to_list(face_dim_tag_dict: dict):
     """
@@ -406,6 +435,7 @@ def face_tag_dict_to_list(face_dim_tag_dict: dict):
         dim_tags += face_dim_tag_dict[key]
     return dim_tags
 
+
 def get_bounding_boxes(dim_tags: list):
     """
     Return bounding boxes of entities defined by list of dim_tags.
@@ -431,6 +461,7 @@ def get_bounding_boxes(dim_tags: list):
     for dim_tag in dim_tags:
         bboxes.append(gmsh.model.occ.getBoundingBox(*dim_tag))
     return bboxes
+
 
 def get_entities_in_bounding_boxes(bboxes: list, dim: int, eps=1e-6):
     """
@@ -466,6 +497,7 @@ def get_entities_in_bounding_boxes(bboxes: list, dim: int, eps=1e-6):
                                                                 xmax + eps, ymax + eps, zmax + eps, dim)
     return out_dim_tags
 
+
 def set_mesh_size_use_bounding_box(dim_tags: list, mesh_size: float):
     """
     Set the mesh size of those entities that are in the bounding box of entities defined by list of dim_tags.
@@ -481,6 +513,7 @@ def set_mesh_size_use_bounding_box(dim_tags: list, mesh_size: float):
     """
     bboxes = get_bounding_boxes(dim_tags)
     gmsh.model.mesh.setSize(get_entities_in_bounding_boxes(bboxes, 0), mesh_size)
+
 
 def produce_geometry_info_for_dim_tags(dim_tags: list):
     """
@@ -518,6 +551,7 @@ def produce_geometry_info_for_dim_tags(dim_tags: list):
         geom_info[dim_tag]['bbox'] = gmsh.model.occ.getBoundingBox(*dim_tag)
 
     return geom_info
+
 
 def map_dim_tags_to_outdim_tags(geom_info: dict, dim: int):
     """
@@ -564,6 +598,7 @@ def map_dim_tags_to_outdim_tags(geom_info: dict, dim: int):
 
     return dim_tagMap
 
+
 def dtmap(dim_tagMap: dict, dim_tags: list):
     """
     Returns a map old dim_tags->dim_tags in the current model.
@@ -591,6 +626,7 @@ def dtmap(dim_tagMap: dict, dim_tags: list):
     """
     mapped_dim_tags = [dim_tagMap[dim_tag] for dim_tag in dim_tags]
     return gmsh.model.getBoundary(mapped_dim_tags, False, False, True)
+
 
 def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, dist_min: float, dist_max: float,
                   sampling: float = None):
@@ -642,7 +678,7 @@ def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, di
             gmsh.model.mesh.field.setNumbers(tag_distance_field, "CurvesList", [curve])
             bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
             bbox_maxdist = coord_dist(bbox[0:3], bbox[3:6])
-            sampling = np.ceil(1.5*bbox_maxdist/min_mesh_size)
+            sampling = np.ceil(1.5 * bbox_maxdist / min_mesh_size)
             gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", sampling)
             tag_threshold_field = gmsh.model.mesh.field.add("Threshold")
             gmsh.model.mesh.field.setNumber(tag_threshold_field, "InField", tag_distance_field)
@@ -665,6 +701,7 @@ def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, di
         tag_threshold_fields.append(tag_threshold_field)
     return tag_threshold_fields
 
+
 def add_port(port, mesh_size: float):
     """
     Adds a port polygon to the model, sets the signal and ground ids and returns the port dim_tag.
@@ -684,7 +721,7 @@ def add_port(port, mesh_size: float):
     if port['type'] == 'InternalPort':
         for line_id in line_ids:
             if gmsh.model.isInside(1, line_id, port['signal_edge'][0]) and \
-               gmsh.model.isInside(1, line_id, port['signal_edge'][1]):
+                    gmsh.model.isInside(1, line_id, port['signal_edge'][1]):
                 signal_id = line_id
             elif gmsh.model.isInside(1, line_id, port['ground_edge'][0]) and \
                     gmsh.model.isInside(1, line_id, port['ground_edge'][1]):
@@ -694,6 +731,7 @@ def add_port(port, mesh_size: float):
         port['ground_edge_dim_tag'] = (1, ground_id)
 
     return port['dim_tag']
+
 
 def get_bbox_sides_as_bboxes(bbox):
     """
@@ -731,44 +769,25 @@ def get_bbox_sides_as_bboxes(bbox):
     }
     return sides
 
-def export_gmsh_msh(simulation: Simulation, path: Path,
-                    default_mesh_size: float = 100,
-                    signal_min_mesh_size: float = 100,
-                    signal_max_mesh_size: float = 100,
-                    signal_min_dist: float = 100,
-                    signal_max_dist: float = 100,
-                    signal_sampling: float = None,
-                    ground_min_mesh_size: float = 100,
-                    ground_max_mesh_size: float = 100,
-                    ground_min_dist: float = 100,
-                    ground_max_dist: float = 100,
-                    ground_sampling: float = None,
-                    ground_grid_min_mesh_size: float = 100,
-                    ground_grid_max_mesh_size: float = 100,
-                    ground_grid_min_dist: float = 100,
-                    ground_grid_max_dist: float = 100,
-                    ground_grid_sampling: float = None,
-                    gap_min_mesh_size: float = 100,
-                    gap_max_mesh_size: float = 100,
-                    gap_min_dist: float = 100,
-                    gap_max_dist: float = 100,
-                    gap_sampling: float = None,
-                    port_min_mesh_size: float = 100,
-                    port_max_mesh_size: float = 100,
-                    port_min_dist: float = 100,
-                    port_max_dist: float = 100,
-                    port_sampling: float = None,
-                    algorithm: int = 5,
-                    show: bool = False,
-                    gmsh_n_threads: int = 1
-                    ):
+
+def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, signal_min_mesh_size: float = 100,
+                    signal_max_mesh_size: float = 100, signal_min_dist: float = 100, signal_max_dist: float = 100,
+                    signal_sampling: float = None, ground_min_mesh_size: float = 100, ground_max_mesh_size: float = 100,
+                    ground_min_dist: float = 100, ground_max_dist: float = 100, ground_sampling: float = None,
+                    ground_grid_min_mesh_size: float = 100, ground_grid_max_mesh_size: float = 100,
+                    ground_grid_min_dist: float = 100, ground_grid_max_dist: float = 100,
+                    ground_grid_sampling: float = None, gap_min_mesh_size: float = 100,
+                    gap_max_mesh_size: float = 100, gap_min_dist: float = 100, gap_max_dist: float = 100,
+                    gap_sampling: float = None, port_min_mesh_size: float = 100, port_max_mesh_size: float = 100,
+                    port_min_dist: float = 100, port_max_dist: float = 100, port_sampling: float = None,
+                    algorithm: int = 5, show: bool = False, gmsh_n_threads: int = 1):
     """
     Builds the model using OpenCASCADE kernel and exports the result in "simulation.msh"
     file in the specified simulation `path`
 
     Args:
 
-        simulation(Simulation): The simulation to be exported
+        sim_data(dict): simulation data in dictionary format
         path(Path): path of the simulation export folder
         default_mesh_size(float): Default size to be used where not defined
         signal_min_mesh_size(float): Minimum mesh size near signal region curves
@@ -815,10 +834,10 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
 
         tuple:
 
-             * filepath(Path): Path to exported msh file
-             * port_data_gmsh(list):
+            * filepath(Path): Path to exported msh file
+            * port_data_gmsh(list):
 
-                 each element contain port data that one gets from `Simulation.get_port_data` + gmsh specific data:
+                each element contain port data that one gets from `Simulation.get_port_data` + gmsh specific data:
 
                     * Items from `Simulation.get_port_data`
                     * dim_tag: DimTags of the port polygons
@@ -827,23 +846,31 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
                     * signal_dim_tag: DimTag of the face that is connected to the signal edge of the port
                     * signal_physical_name: physical name of the signal face
 
+            * ground_names(list): List of ground names in gmsh model
+
     """
-    filepath = path.joinpath(simulation.name + '.msh')
+
+    params = sim_data['parameters']
+    filepath = Path(path).joinpath(params['name'] + '.msh')
 
     if gmsh_n_threads == -1:
         gmsh_n_threads = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
 
     gmsh.initialize()
     gmsh.option.setNumber("General.NumThreads", gmsh_n_threads)
-    gmsh.model.add(simulation.name)
+    gmsh.model.add(params['name'])
+
+    layout = pya.Layout()
+    layout.read(str(Path(path).joinpath(sim_data['gds_file'])))
+    cell = layout.top_cell()
 
     edge_dim_tags = []
-    port_data_gmsh = simulation.get_port_data()
-    if simulation.wafer_stack_type == 'multiface':
-        chip_distance = simulation.chip_distance
-        face_ids = simulation.face_ids
+    port_data_gmsh = sim_data['ports']
+    if params['wafer_stack_type'] == 'multiface':
+        chip_distance = params['chip_distance']
+        face_ids = params['face_ids']
         face_z_levels = [chip_distance if id == 't' else 0 for id in face_ids]
-        chip_dzs = [-simulation.substrate_height if id == 'b' else simulation.substrate_height_top for id in face_ids]
+        chip_dzs = [-params['substrate_height'] if id == 'b' else params['substrate_height_top'] for id in face_ids]
         face_port_dim_tags = [[], []]
         edge_port_dim_tags = []
         for port in port_data_gmsh:
@@ -855,12 +882,12 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
                 edge_port_dim_tags.append(add_port(port, port_min_mesh_size))
                 port['occ_bounding_box'] = gmsh.model.occ.getBoundingBox(*port['dim_tag'])
                 port['signal_location_float'] = \
-                        port['signal_location'].x, port['signal_location'].y, face_z_levels[port['face']]
+                    port['signal_location'][0], port['signal_location'][1], face_z_levels[port['face']]
 
         face_dim_tag_dicts = []
         for face in [0, 1]:
-            face_dim_tag_dicts.append(create_face(face, face_z_levels[face], simulation,
-                                                port_dim_tags=face_port_dim_tags[face]))
+            face_dim_tag_dicts.append(create_face(cell, sim_data['layers'], params['face_ids'][face],
+                                                  face_z_levels[face], port_dim_tags=face_port_dim_tags[face]))
 
         chip0 = substrate(face_dim_tag_dicts[0], chip_dzs[0])
         chip1 = substrate(face_dim_tag_dicts[1], chip_dzs[1])
@@ -877,15 +904,20 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
         mesh_field_ids = []
         for face in [0, 1]:
             mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['signal'],
-                    signal_min_mesh_size, signal_max_mesh_size, signal_min_dist, signal_max_dist, signal_sampling)
+                                            signal_min_mesh_size, signal_max_mesh_size, signal_min_dist,
+                                            signal_max_dist, signal_sampling)
             mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['ground'],
-                    ground_min_mesh_size, ground_max_mesh_size, ground_min_dist, ground_max_dist, ground_sampling)
+                                            ground_min_mesh_size, ground_max_mesh_size, ground_min_dist,
+                                            ground_max_dist, ground_sampling)
             mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['gap'],
-                    gap_min_mesh_size, gap_max_mesh_size, gap_min_dist, gap_max_dist, gap_sampling)
+                                            gap_min_mesh_size, gap_max_mesh_size, gap_min_dist, gap_max_dist,
+                                            gap_sampling)
             mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['ground_grid'], ground_grid_min_mesh_size,
-                    ground_grid_max_mesh_size, ground_grid_min_dist, ground_grid_max_dist, ground_grid_sampling)
+                                            ground_grid_max_mesh_size, ground_grid_min_dist, ground_grid_max_dist,
+                                            ground_grid_sampling)
             mesh_field_ids += set_mesh_size(face_port_dim_tags[face],
-                    port_min_mesh_size, port_max_mesh_size, port_min_dist, port_max_dist, port_sampling)
+                                            port_min_mesh_size, port_max_mesh_size, port_min_dist, port_max_dist,
+                                            port_sampling)
 
         for face_dim_tag_dict in face_dim_tag_dicts:
             face_signal_dim_tags = list(face_dim_tag_dict['signal'])
@@ -894,8 +926,8 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
                     gmsh.model.setPhysicalName(*port['dim_tag'], 'port_' + str(port['number']))
 
                     for dim_tag in face_signal_dim_tags:
-                        if gmsh.model.isInside(*dim_tag, port['signal_edge'][0]) and\
-                           gmsh.model.isInside(*dim_tag, port['signal_edge'][1]):
+                        if gmsh.model.isInside(*dim_tag, port['signal_edge'][0]) and \
+                                gmsh.model.isInside(*dim_tag, port['signal_edge'][1]):
                             port['signal_dim_tag'] = dim_tag
                             port['signal_physical_name'] = 'signal_' + str(port['number'])
                             gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
@@ -922,11 +954,11 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
         for i, dim_tag in enumerate(bbox_all_dim_tags):
             gmsh.model.setPhysicalName(*dim_tag, '{}_{}'.format(side_name, i))
 
-    simulation.ground_names = []
+    ground_names = []
     for i, dim_tag in enumerate(face_dim_tag_dicts[0]['ground'] + face_dim_tag_dicts[1]['ground']):
         ground_name = 'ground_{}'.format(i)
         gmsh.model.setPhysicalName(*dim_tag, ground_name)
-        simulation.ground_names.append(ground_name)
+        ground_names.append(ground_name)
 
     background_field_id = gmsh.model.mesh.field.add("Min")
     gmsh.model.mesh.field.setNumbers(background_field_id, "FieldsList", mesh_field_ids)
@@ -947,4 +979,4 @@ def export_gmsh_msh(simulation: Simulation, path: Path,
         gmsh.fltk.run()
     gmsh.finalize()
 
-    return filepath, port_data_gmsh
+    return Path(filepath), port_data_gmsh, ground_names

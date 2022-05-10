@@ -59,8 +59,6 @@ _excluded_module_names = (
     "marker",
     "junction_test_pads",
     "tsv",
-    "gmsh_helpers",
-    "elmer_export",
 )
 
 

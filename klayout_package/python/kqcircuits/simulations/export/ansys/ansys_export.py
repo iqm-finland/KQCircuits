@@ -33,7 +33,7 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
 
     Arguments:
         path: Location where to copy scripts folder.
-        import_script_folder: Name of the folder in it's new location.
+        import_script_folder: Name of the folder in its new location.
     """
     if path.exists() and path.is_dir():
         shutil.copytree(ANSYS_SCRIPTS_PATH, path.joinpath(import_script_folder))
@@ -74,12 +74,21 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     if export_processing is None:
         export_processing = []
 
-    simulation_data = simulation.get_simulation_data()
+    # select layers
+    layers = ["b_simulation_signal",
+              "b_simulation_ground",
+              "b_simulation_airbridge_flyover",
+              "b_simulation_airbridge_pads"]
+    if simulation.wafer_stack_type == "multiface":
+        layers += ["t_simulation_signal",
+                   "t_simulation_ground",
+                   "b_simulation_indium_bump"]
 
-    # ansys_data and optional_layers
-    ansys_data = {
+    # collect data for .json file
+    json_data = {
         'ansys_tool': ansys_tool,
-        **simulation_data,
+        **simulation.get_simulation_data(),
+        **{(r[13:] if r.startswith('b_') else r[:2] + r[13:]) + '_layer': default_layers[r] for r in layers},
         'analysis_setup': {
             'frequency_units': frequency_units,
             'frequency': frequency,
@@ -98,29 +107,18 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     }
 
     if ansys_project_template is not None:
-        ansys_data['ansys_project_template'] = ansys_project_template
-
-    if simulation.wafer_stack_type == "multiface":
-        optional_layers = {default_layers["t_simulation_signal"],
-                           default_layers["t_simulation_ground"],
-                           default_layers["b_simulation_indium_bump"]}
-    else:
-        optional_layers = {}
+        json_data['ansys_project_template'] = ansys_project_template
 
     # write .json file
     json_filename = str(path.joinpath(simulation.name + '.json'))
     with open(json_filename, 'w') as fp:
-        json.dump(ansys_data, fp, cls=GeometryJsonEncoder, indent=4)
+        json.dump(json_data, fp, cls=GeometryJsonEncoder, indent=4)
 
     # write .gds file
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
     export_layers(gds_filename, simulation.layout, [simulation.cell],
                   output_format='GDS2',
-                  layers={default_layers["b_simulation_signal"],
-                          default_layers["b_simulation_ground"],
-                          default_layers["b_simulation_airbridge_flyover"],
-                          default_layers["b_simulation_airbridge_pads"],
-                          *optional_layers}
+                  layers={default_layers[r] for r in layers}
                   )
 
     return json_filename

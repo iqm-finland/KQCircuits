@@ -21,7 +21,7 @@ from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
-from kqcircuits.simulations.export.elmer.elmer_export import export_elmer, run_elmer
+from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 
 from kqcircuits.simulations.finger_capacitor_sim import FingerCapacitorSim
@@ -119,8 +119,6 @@ simulations = [sim_class(layout, **param) for param in sim_param_list]
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))
 
 if use_elmer:
-    msh_filepaths, _ = export_elmer(simulations,
-        **export_parameters_elmer, **mesh_parameters)
-    run_elmer(path, msh_filepaths, **run_parameters)
+    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=run_parameters)
 else:
     export_ansys(simulations, **export_parameters_ansys)
