@@ -157,13 +157,13 @@ class SpiralResonatorPolygon(Element):
             updated_length = prev_length - 2 * corner_cut_dist + self.r * abs_curve + last_segment_len
 
             # if the new segment is not long enough for the curve in the beginning, resonator cannot be created
-            if last_segment_len < corner_cut_dist - 1e-13:
+            if last_segment_len < corner_cut_dist - 1e-5:
                 return None
 
             # if the previous segment is not long enough for the curves at each end, resonator cannot be created
             if len(pts) > 3:
                 corner_cut_dist += self._corner_cut_distance(pts[-4], pts[-3], pts[-2])[0]
-            if (pts[-2] - pts[-3]).length() < corner_cut_dist - 1e-13:
+            if (pts[-2] - pts[-3]).length() < corner_cut_dist - 1e-5:
                 return None
 
             return updated_length
