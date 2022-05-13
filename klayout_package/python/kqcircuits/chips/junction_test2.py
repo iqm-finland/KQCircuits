@@ -28,9 +28,9 @@ from kqcircuits.squids.squid import Squid
 class JunctionTest2(Chip):
     """The PCell declaration for a JunctionTest2 chip."""
 
-    pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="[μm]")
+    pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="μm")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
-    pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 200, unit="[μm]")
+    pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 200, unit="μm")
     junction_type = Param(pdt.TypeString, "Junction type", "SQUID")
     small_loop_area = Param(pdt.TypeDouble, "Test SQUIDs small loop area",
                                  default=80, unit="μm")

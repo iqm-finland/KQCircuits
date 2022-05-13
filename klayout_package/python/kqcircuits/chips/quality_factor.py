@@ -40,16 +40,16 @@ class QualityFactor(Chip):
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
     res_beg = Param(pdt.TypeList, "Resonator beginning type",
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
-    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [5, 10, 20, 5, 10, 20], unit="[μm]",
+    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [5, 10, 20, 5, 10, 20], unit="μm",
                   docstring="Width of the center conductor in the resonators [μm]")
-    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="[μm]",
+    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="μm",
                   docstring="Width of the gap in the resonators [μm]")
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
-    launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="[μm]")
-    launcher_indent = Param(pdt.TypeDouble, "Launcher indentation from edge", 800, unit="[μm]")
-    marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="[μm]")
+    launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="μm")
+    launcher_indent = Param(pdt.TypeDouble, "Launcher indentation from edge", 800, unit="μm")
+    marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="μm")
     resonators_both_sides = Param(pdt.TypeBoolean, "Place resonators on both sides of feedline", False)
-    max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="[μm]",
+    max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="μm",
                         docstring="Resonators exceeding this length become meandering")
     # override box to have hidden=False and allow GUI editing
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))

@@ -33,9 +33,9 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 class XMonsDirectCoupling(Chip):
     """The PCell declaration for an XMonsDirectCoupling chip."""
 
-    qubit_spacing = Param(pdt.TypeDouble, "Qubit spacing", 10, unit="[μm]")
-    arm_width_a = Param(pdt.TypeDouble, "Qubit 1 and 3 arm width", 24, unit="[μm]")
-    arm_width_b = Param(pdt.TypeDouble, "Qubit 2 arm width", 24, unit="[μm]")
+    qubit_spacing = Param(pdt.TypeDouble, "Qubit spacing", 10, unit="μm")
+    arm_width_a = Param(pdt.TypeDouble, "Qubit 1 and 3 arm width", 24, unit="μm")
+    arm_width_b = Param(pdt.TypeDouble, "Qubit 2 arm width", 24, unit="μm")
     rr_cpl_width = Param(pdt.TypeList, "RR to QB coupler width (um for each RR)", [24, 24, 24])
 
     def produce_readout_resonator(self, pos_start, end_y, length, name, c_kappa_l_fingers):

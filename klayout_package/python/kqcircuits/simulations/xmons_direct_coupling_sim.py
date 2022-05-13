@@ -31,8 +31,8 @@ from kqcircuits.squids.squid import Squid
 class XMonsDirectCouplingSim(Simulation):
 
     #Re-define some XMonsDirectCoupling parameters with defaults changed:
-    qubit_spacing = Param(pdt.TypeDouble, "Qubit spacing", 3, unit="[μm]")
-    arm_width_b = Param(pdt.TypeDouble, "Qubit 2 arm width", 66, unit="[μm]")
+    qubit_spacing = Param(pdt.TypeDouble, "Qubit spacing", 3, unit="μm")
+    arm_width_b = Param(pdt.TypeDouble, "Qubit 2 arm width", 66, unit="μm")
     waveguide_length = Param(pdt.TypeDouble,
                              "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
     cpl_width = Param(pdt.TypeDouble, "Qubit RR coupler width", 24, unit="μm")

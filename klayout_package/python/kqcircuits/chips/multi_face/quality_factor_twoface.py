@@ -33,24 +33,24 @@ class QualityFactorTwoface(MultiFace):
      Preliminary class for flip-chip resonators.
      """
 
-    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589], unit="[μm]",
+    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589], unit="μm",
                         docstring="Physical length of resonators [μm]")
     n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4],
                       docstring="Fingers in planar capacitors")
-    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28], unit="[μm]",
+    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28], unit="μm",
                       docstring="Length of the capacitor fingers [μm]")
     type_coupler = Param(pdt.TypeList, "Coupler type",
                          ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
-    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [10, 10, 10, 20, 10, 5], unit="[μm]",
+    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [10, 10, 10, 20, 10, 5], unit="μm",
                   docstring="Width of the center conductor in the resonators [μm]")
-    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [6, 6, 6, 12, 6, 3], unit="[μm]",
+    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [6, 6, 6, 12, 6, 3], unit="μm",
                   docstring="Width of the gap in the resonators [μm]")
     resonator_type = Param(pdt.TypeString, "Routing type", "capped",
                            choices=[["Capped (1)", "capped"], ["Two-face resonator (2)", "twoface"],
                                     ["Resonator on top (3)", "top"], ["Etched top chip (4)", "etched"],
                                     ["Solid top chip (5)", "solid"]])
     connector_distances = Param(pdt.TypeList, "Resonator input to face to face connector",
-                                [500, 1300, 2100, 2900, 3700, 4500], unit="[μm]",
+                                [500, 1300, 2100, 2900, 3700, 4500], unit="μm",
                                 docstring="Distances of face to face connectors from resonator inputs")
     spiral_box_height = Param(pdt.TypeDouble, "Spiral resonator box height", 2000)
     spiral_box_width = Param(pdt.TypeDouble, "Spiral resonator box width", 500)

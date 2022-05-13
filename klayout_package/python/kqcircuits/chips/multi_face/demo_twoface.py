@@ -32,7 +32,7 @@ class DemoTwoface(MultiFace):
     """Demonstration chip for 3D-integration (multi-face) features."""
 
     name_chip = Param(pdt.TypeString, "Name of the chip", "DT")
-    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
+    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="μm")
     include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 
     def build(self):

@@ -36,20 +36,20 @@ class MultiFace(Chip):
     launchers to the connectors.
     """
 
-    a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="[μm]",
+    a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="μm",
                      docstring="Width of center conductor in the capped region [μm]")
-    b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="[μm]")
+    b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="μm")
     face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
     with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs on the top face", False)
     with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
     bump_grid_spacing = Param(
         pdt.TypeDouble, "Bump grid distance (center to center)",
-        default_bump_parameters['bump_grid_spacing'], unit="[μm]")
+        default_bump_parameters['bump_grid_spacing'], unit="μm")
     bump_edge_to_bump_edge_separation = Param(
         pdt.TypeDouble, "In bump clearance to manually placed Bumps (edge to edge)",
-        default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="[μm]")
+        default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="μm")
     edge_from_bump = Param(pdt.TypeDouble, "Spacing between bump and chip edge",
-                          default_bump_parameters['edge_from_bump'], unit="[μm]")
+                          default_bump_parameters['edge_from_bump'], unit="μm")
     face1_marker_types = Param(pdt.TypeList, "Marker type for each top face corner, starting from lower right and "
                                              "going anticlockwise", default=[default_marker_type] * 4)
 

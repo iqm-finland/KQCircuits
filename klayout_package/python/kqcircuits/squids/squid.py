@@ -42,7 +42,7 @@ class Squid(Element):
     LIBRARY_PATH = "squids"
 
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
-    junction_width = Param(pdt.TypeDouble, "Junction width for code generated squids", 0.02, unit="[μm]",
+    junction_width = Param(pdt.TypeDouble, "Junction width for code generated squids", 0.02, unit="μm",
                            docstring="Junction width (only used for code generated squids)")
     loop_area = Param(pdt.TypeDouble, "Loop area", 100, unit="μm^2")
 

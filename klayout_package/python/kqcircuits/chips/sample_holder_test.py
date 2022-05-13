@@ -33,10 +33,10 @@ class SampleHolderTest(Chip):
     The launchers are connected pairwise by coplanar waveguides.
     """
     n_launchers = Param(pdt.TypeInt, "Number of launchers", 40, unit="")
-    launcher_pitch = Param(pdt.TypeDouble, "Launcher pitch", 635, unit="[μm]")
-    launcher_width = Param(pdt.TypeDouble, "Launcher width", 160, unit="[μm]")
-    launcher_gap = Param(pdt.TypeDouble, "Launcher gap", 96, unit="[μm]")
-    launcher_indent = Param(pdt.TypeDouble, "Launcher indent from edge", 520, unit="[μm]")
+    launcher_pitch = Param(pdt.TypeDouble, "Launcher pitch", 635, unit="μm")
+    launcher_width = Param(pdt.TypeDouble, "Launcher width", 160, unit="μm")
+    launcher_gap = Param(pdt.TypeDouble, "Launcher gap", 96, unit="μm")
+    launcher_indent = Param(pdt.TypeDouble, "Launcher indent from edge", 520, unit="μm")
 
     def build(self):
         self.produce_n_launchers(self.n_launchers, "RF", self.launcher_width, self.launcher_gap, self.launcher_indent,

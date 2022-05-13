@@ -53,12 +53,12 @@ class Chip(Element):
     merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
     # Tsv grid parameters
     with_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs", False)
-    tsv_grid_spacing = Param(pdt.TypeDouble,"TSV grid distance (center to center)", 300, unit="[μm]")
+    tsv_grid_spacing = Param(pdt.TypeDouble,"TSV grid distance (center to center)", 300, unit="μm")
     tsv_edge_to_tsv_edge_separation = \
-        Param(pdt.TypeDouble, "Ground TSV clearance to manually placed TSVs (edge to edge)", 250, unit="[μm]")
+        Param(pdt.TypeDouble, "Ground TSV clearance to manually placed TSVs (edge to edge)", 250, unit="μm")
     tsv_edge_to_nearest_element = Param(pdt.TypeDouble, "Ground TSV clearance to other elements (edge to edge)",
-                                        100, unit="[μm]")
-    edge_from_tsv = Param(pdt.TypeDouble, "Ground TSV center clearance to chip edge", 550, unit="[μm]")
+                                        100, unit="μm")
+    edge_from_tsv = Param(pdt.TypeDouble, "Ground TSV center clearance to chip edge", 550, unit="μm")
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell

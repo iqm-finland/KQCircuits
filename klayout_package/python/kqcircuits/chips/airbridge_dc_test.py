@@ -26,7 +26,7 @@ class AirbridgeDcTest(Chip):
     """Chip full of airbridge 4-point dc tests."""
 
     n_step = Param(pdt.TypeInt, "Increment step for number of airbridges", 1)
-    test_width = Param(pdt.TypeDouble, "Width of a single test", 2000, unit="[μm]")
+    test_width = Param(pdt.TypeDouble, "Width of a single test", 2000, unit="μm")
 
     def build(self):
 

@@ -43,7 +43,7 @@ class JunctionTestPads(TestStructure):
     pad_configuration = Param(pdt.TypeString, "Pad configuration", "2-port",
                               choices=[["2-port", "2-port"], ["4-port", "4-port"]])
     junction_width_steps = Param(pdt.TypeList, "Automatically generate junction widths [start, step]", [0, 0],
-                                 unit="[μm, μm]")
+                                 unit="μm, μm")
     junction_widths = Param(pdt.TypeList, "Optional junction widths for individual junctions", [],
                             docstring="Override the junction widths with these values.")
 
