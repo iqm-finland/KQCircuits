@@ -20,7 +20,6 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.markers import marker_type_choices
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.defaults import default_brand, default_marker_type
 
@@ -44,7 +43,7 @@ class ChipFrame(Element):
         docstring="Margin of the ground grid avoidance layer around the text")
     marker_dist = Param(pdt.TypeDouble, "Marker distance from edges", 1500,
         docstring="Distance of markers from closest edges of the chip face")
-    marker_diagonals = Param(pdt.TypeInt, "Number of diagonal squares for the markers", 10)
+    diagonal_squares = Param(pdt.TypeInt, "Number of diagonal squares for the markers", 10)
     use_face_prefix = Param(pdt.TypeBoolean, "Use face prefix for chip name label", False)
     marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
                        default=[default_marker_type]*4)
@@ -97,15 +96,11 @@ class ChipFrame(Element):
                              * pya.DTrans.R0, self.face()["id"] + "_marker_ne")
 
     def _produce_marker(self, marker_type, trans, name):
-        if marker_type in [choice[1] for choice in marker_type_choices]:
-            parameters = {
-                **self.cell.pcell_parameters_by_name(),
-                **{"marker_type": marker_type, "window": False, "diagonal_squares": self.marker_diagonals,
-                   "face_ids": self.face_ids}
-            }
-            cell_marker = self.add_element(Marker, **parameters)
-            self.insert_cell(cell_marker, trans)
-            self.refpoints[name] = trans.disp
+        if not marker_type:
+            return
+        cell_marker = self.add_element(Marker, marker_type=marker_type)
+        self.insert_cell(cell_marker, trans)
+        self.refpoints[name] = trans.disp
 
     def _produce_dicing_edge(self):
         shape = pya.DPolygon(self._border_points(self.dice_width))

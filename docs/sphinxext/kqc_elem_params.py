@@ -100,7 +100,7 @@ class KqcElemParamsDirective(Directive):
                     parameter_paragraph += nodes.literal("", param.kwargs["unit"])
                 if "choices" in param.kwargs.keys():
                     parameter_paragraph += nodes.emphasis("", ", choices=")
-                    choices_list = [choice[1] for choice in param.kwargs["choices"]]
+                    choices_list = [choice if isinstance(choice, str) else choice[1] for choice in param.kwargs["choices"]]
                     parameter_paragraph += nodes.literal("", str(choices_list))
 
                 parameters_list += nodes.list_item("", parameter_paragraph)

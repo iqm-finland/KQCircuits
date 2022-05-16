@@ -66,7 +66,7 @@ class MultiFace(Chip):
         t_frame_parameters = {
             "box": self.face1_box,
             "marker_dist": 1000,
-            "marker_diagonals": 2,
+            "diagonal_squares": 2,
             "face_ids": self.face_ids[1],
             "use_face_prefix": True,
             "dice_width": default_mask_parameters[self.face_ids[1]]["dice_width"],

@@ -19,5 +19,5 @@
 """PCell classes for markers."""
 
 marker_type_choices = [
-    ['standard', 'Marker Standard'],
+    'Marker Standard',
 ]

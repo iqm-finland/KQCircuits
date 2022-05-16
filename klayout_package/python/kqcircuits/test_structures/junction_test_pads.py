@@ -40,8 +40,7 @@ class JunctionTestPads(TestStructure):
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="μm")
     only_pads = Param(pdt.TypeBoolean, "Only produce pads, no junctions", False)
-    pad_configuration = Param(pdt.TypeString, "Pad configuration", "2-port",
-                              choices=[["2-port", "2-port"], ["4-port", "4-port"]])
+    pad_configuration = Param(pdt.TypeString, "Pad configuration", "2-port", choices=["2-port", "4-port"])
     junction_width_steps = Param(pdt.TypeList, "Automatically generate junction widths [start, step]", [0, 0],
                                  unit="μm, μm")
     junction_widths = Param(pdt.TypeList, "Optional junction widths for individual junctions", [],

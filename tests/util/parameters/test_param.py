@@ -58,6 +58,16 @@ def test_param_basics():
     assert b.pb1 == 2 and b.pb2 == 20
 
 
+def test_param_choices():
+    class Test(Element):
+        cp1 = Param(pdt.TypeInt, "", "One", choices=['One', "Two"])
+        cp2 = Param(pdt.TypeInt, "", 2, choices=[['One', 1], ["Two", 2]])
+        pass
+
+    t = Test()
+    assert t.cp2 == 2 and t.cp1 == "One"
+
+
 def test_param_override():
     class Test(A):
         pa1 = Param(pdt.TypeInt, "", 2)
@@ -249,7 +259,7 @@ def test_add_parameters_from_detect_bad_param_removal():
 
 # test add_parameter
 
-def test_add_paramet_unchanged():
+def test_add_param_unchanged():
     @add_parameter(A, "pa1")
     class Test(Element):
         pass
@@ -259,19 +269,18 @@ def test_add_paramet_unchanged():
     assert not hasattr(t, "pa2")
 
 
-def test_add_paramet_hide():
+def test_add_param_hide():
     @add_parameter(A, "pa2", hidden=True)
     @add_parameter(A, "pa1")
     class Test(Element):
         pass
 
-    t = Test()
     s = Test.get_schema()
     assert 'hidden' not in s['pa1'].kwargs
     assert s['pa2'].kwargs['hidden']
 
 
-def test_add_paramet_default():
+def test_add_param_default():
     @add_parameter(A, "pa1", default=123, hidden=False)
     class Test(Element):
         pass
@@ -282,27 +291,24 @@ def test_add_paramet_default():
     assert A.pa1 == 1
 
 
-def test_add_paramet_choices_description_and_unit():
+def test_add_param_choices_description_and_unit():
     test_choices = [['One', 1], ["Two", 2]]
 
     @add_parameter(A, "pa1", choices=test_choices, unit="nm", description="FooBar")
     class Test(Element):
         pass
 
-    t = Test()
     s = Test.get_schema()
     assert s['pa1'].kwargs['choices']  == test_choices
     assert s['pa1'].kwargs['unit'] == "nm"
     assert s['pa1'].description == "FooBar"
 
 
-def test_add_parameter_inherited():
+def test_add_param_inherited():
     @add_parameter(A, "pa1", hidden=True)
     class Parent(Element):
         pass
     class Test(Parent):
         pass
 
-    t = Test()
-    s = Test.get_schema()
-    assert  s['pa1'].kwargs['hidden']
+    assert  Test.get_schema()['pa1'].kwargs['hidden']

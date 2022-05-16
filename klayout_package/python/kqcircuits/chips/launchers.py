@@ -20,7 +20,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_sampleholders
 from kqcircuits.util.parameters import Param, pdt
 
-sampleholder_type_choices = [[name, name] for name in default_sampleholders]
+sampleholder_type_choices = list(default_sampleholders.keys())
 
 
 class Launchers(Chip):

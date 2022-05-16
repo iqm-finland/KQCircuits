@@ -356,6 +356,8 @@ class Element(pya.PCellDeclarationHelper):
 
             * `value_type` defines the `type` attribute
             * `docstring` is a more verbose parameter description, used in documentation generation.
+            * `choices` argument is a list of `(description, value)` tuples. For convenience it also accepts
+              self-describing, plain string elements, these will be converted to the expected tuple format.
 
         For TypeLayer parameters this also defines a `name_layer` read accessor for the layer index and modifies
         `self._layer_param_index` accordingly.
@@ -376,6 +378,8 @@ class Element(pya.PCellDeclarationHelper):
             if not isinstance(choices, list) and not isinstance(choices, tuple):
                 raise ValueError("choices must be a list or tuple.")
             for choice in choices:
+                if  isinstance(choice, str):  # description-is-value shorthand
+                    choice = (choice, choice)
                 if len(choice) != 2:
                     raise ValueError("Each item in choices list/tuple must be a two-element array [description, value]")
                 param_decl.add_choice(choice[0], choice[1])

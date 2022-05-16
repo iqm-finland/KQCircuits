@@ -101,7 +101,12 @@ class pdt:  # pylint: disable=invalid-name
 class Param:
     """PCell parameters as Element class attributes.
 
-    This should be used for defining PCell parameters in Element subclasses.
+    This should be used for defining PCell parameters in Element subclasses. The attributes of Param are same
+    as ``pya.PCellParameterDeclaration``'s attributes, except for:
+
+        * ``data_type``: same as ``type`` in ``pya.PCellParameterDeclaration``
+        * ``choices``: List of (description, value) tuples or plain ``str`` values that are used as description too.
+        * ``docstring``: Longer description of the parameter that gets used by Sphinx to generate API docs.
     """
 
     _index = {} # A private dictionary of parameter dictionaries indexed by owner classes' name

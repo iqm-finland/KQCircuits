@@ -23,9 +23,9 @@ qubits or junction test structures.
 """
 
 squid_type_choices = [
-    ['NoSquid', 'NoSquid'],
-    ['Manhattan', 'Manhattan'],
-    ['QCD1', 'QCD1'],
-    ['Sim', 'Sim'],
-    ['SIM1', 'SIM1'],
+    'NoSquid',
+    'Manhattan',
+    'QCD1',
+    'Sim',
+    'SIM1',
 ]

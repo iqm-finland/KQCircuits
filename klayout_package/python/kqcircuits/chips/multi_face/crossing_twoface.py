@@ -36,8 +36,7 @@ class CrossingTwoface(MultiFace):
         docstring="Length of the crossing on the top face [μm]")
     cross_talk_distance = Param(pdt.TypeDouble, "Transmission line distance from meander", 300, unit="μm",
         docstring="Distance between the right straight transmission line and meander on the right [μm]")
-    meander_face = Param(pdt.TypeString, "Meander face on right side", "single",
-                         choices=[["Single", "Single"], ["Two Face", "Two Face"]])
+    meander_face = Param(pdt.TypeString, "Meander face on right side", "single", choices=["Single", "Two Face"])
 
     def build(self):
         launchers = self.produce_launchers("SMA8")

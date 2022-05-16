@@ -52,7 +52,7 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
     """
     layout = cell.layout()
     parameter_value = parameter_start
-    squid_types = [choice[1] for choice in squid_type_choices]
+    squid_types = [choice if isinstance(choice, str) else choice[1] for choice in squid_type_choices]
 
     old_squids = []  # list of tuples (squid instance, squid dtrans with respect to cell, old name)
 

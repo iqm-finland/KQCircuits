@@ -34,7 +34,7 @@ class FlipChipConnectorRf(FlipChipConnector):
     The input port is on the first face and on the left. The output port is on the second face and rotated as chosen.
 
     About connector_type choices:
-        * ``single``: the bump connects the two sides
+        * ``Single``: the bump connects the two sides
         * ``GSG``: ground-signal-ground indium bumps
         * ``Coax``: signal transmitting bump is surrounded by four ground bumps
     """
