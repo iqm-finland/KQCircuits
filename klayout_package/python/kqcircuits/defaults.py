@@ -113,6 +113,7 @@ _common_b_t_layers = {
     # SQUID layer
     "SIS_junction": (17, 2),  # Josephson junction
     "SIS_shadow": (18, 2),  # Ghost layer required for Josephson junction
+    "SIS_junction_2": (20, 2),
 
     # Airbridge layers -- potentially obsolete
     "airbridge_pads": (28, 3),  #
@@ -246,10 +247,10 @@ all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + 
 # Dictionary with items "cluster name: LayerCluster".
 chip_export_layer_clusters = {
     # b-face
-    "SIS b": LayerCluster(["b_SIS_junction", "b_SIS_shadow"], ["b_base_metal_gap_for_EBL"], "b"),
+    "SIS b": LayerCluster(["b_SIS_junction", "b_SIS_shadow", "b_SIS_junction_2"], ["b_base_metal_gap_for_EBL"], "b"),
     "airbridges b": LayerCluster(["b_airbridge_pads", "b_airbridge_flyover"], ["b_base_metal_gap_wo_grid"], "b"),
     # t-face
-    "SIS t": LayerCluster(["t_SIS_junction", "t_SIS_shadow"], ["t_base_metal_gap_for_EBL"], "t"),
+    "SIS t": LayerCluster(["t_SIS_junction", "t_SIS_shadow", "t_SIS_junction_2"], ["t_base_metal_gap_for_EBL"], "t"),
     "airbridges t": LayerCluster(["t_airbridge_pads", "t_airbridge_flyover"], ["t_base_metal_gap_wo_grid"], "t"),
 }
 

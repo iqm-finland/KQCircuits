@@ -153,6 +153,23 @@
    <source>'b SIS shadow' 18/2@1</source>
   </group-members>
   <group-members>
+   <frame-color>#0000ff</frame-color>
+   <fill-color>#800057</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I0</dither-pattern>
+   <line-style>I2</line-style>
+   <valid>true</valid>
+   <visible>true</visible>
+   <transparent>true</transparent>
+   <width>2</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'b SIS junction 2' 20/2@1</source>
+  </group-members>
+  <group-members>
    <frame-color>#fc98b8</frame-color>
    <fill-color>#fc98b8</fill-color>
    <frame-brightness>0</frame-brightness>
@@ -440,6 +457,23 @@
    <animation>0</animation>
    <name/>
    <source>'t SIS region' 49/2@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#ffaaba</frame-color>
+   <fill-color>#ffaaba</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I0</dither-pattern>
+   <line-style>I2</line-style>
+   <valid>true</valid>
+   <visible>true</visible>
+   <transparent>true</transparent>
+   <width>2</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'t SIS junction 2' 50/2@1</source>
   </group-members>
   <group-members>
    <frame-color>#ffc280</frame-color>
