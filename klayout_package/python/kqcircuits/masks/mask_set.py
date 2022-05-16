@@ -80,6 +80,7 @@ class MaskSet:
         self.mask_layouts = []
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
+        self._thread_create_chip_template = PY_PATH / 'kqcircuits/util/create_chip_template.txt'
 
     def add_mask_layout(self, chips_map, face_id="b", mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -123,7 +124,7 @@ class MaskSet:
         else:
             print(f"Building chip variants in parallel using {threads} threads...")
 
-            with open(PY_PATH / 'kqcircuits/util/create_chip_template.txt', 'r') as f:
+            with open(self._thread_create_chip_template, 'r') as f:
                 template = string.Template(f.read())
 
             def _subprocess_worker(args):

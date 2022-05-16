@@ -23,6 +23,7 @@ kqc_python_dependencies = {
     "autologging": "Autologging~=1.3",
     "scipy": "scipy>=1.2",
     "tqdm": "tqdm>=4.61",
+    "networkx": "networkx>=2.7",
 }
 
 

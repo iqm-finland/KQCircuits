@@ -7,3 +7,4 @@
 
 Autologging==1.3.2
 tqdm==4.61
+networkx>=2.7
