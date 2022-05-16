@@ -92,7 +92,7 @@ if use_elmer:
         'tool': 'capacitance',
     }
 
-    run_parameters = {
+    workflow = {
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
@@ -119,6 +119,6 @@ simulations = [sim_class(layout, **param) for param in sim_param_list]
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))
 
 if use_elmer:
-    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=run_parameters)
+    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=workflow)
 else:
     export_ansys(simulations, **export_parameters_ansys)

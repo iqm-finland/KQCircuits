@@ -48,6 +48,7 @@ sim_class = WaveGuidesSim  # pylint: disable=invalid-name
 
 edge_ports = True
 use_elmer = True
+use_sbatch = False
 wave_equation = False  # implemented only for Ansys at the moment (use_elmer=False)!
 sweep_parameters = {
     'n_guides': range(1, 3)
@@ -109,12 +110,23 @@ if use_elmer:
         'tool': 'capacitance',
     }
 
-    run_parameters = {
+    workflow = {
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
         'elmer_n_processes': -1,  # -1 means all the physical cores
     }
+    if use_sbatch:  # if simulation is run in a HPC system, sbatch_parameters can be given here
+        workflow['sbatch_parameters'] = {
+            '--job-name':sim_parameters['name'],
+            '--account':'project_0',
+            '--partition':'test',
+            '--time':'00:10:00',
+            '--ntasks':'40',
+            '--cpus-per-task':'1',
+            '--mem-per-cpu':'4000',
+        }
+
 else:
     if wave_equation:
         export_parameters_ansys = {
@@ -148,6 +160,6 @@ simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_paramete
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))
 
 if use_elmer:
-    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=run_parameters)
+    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=workflow)
 else:
     export_ansys(simulations, **export_parameters_ansys)

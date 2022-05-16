@@ -21,19 +21,75 @@ import subprocess
 import sys
 import json
 from pathlib import Path
+import argparse
 
 from gmsh_helpers import export_gmsh_msh
 from elmer_helpers import export_elmer_sif, write_project_results_json
 
 
+parser = argparse.ArgumentParser(description='Run script for Gmsh-Elmer workflow')
+parser.add_argument('json_filename', type=str, help='KQC simulation data')
+parser.add_argument('--skip-gmsh', action='store_true', help="Run everything else but Gmsh")
+parser.add_argument('--skip-elmergrid', action='store_true', help="Run everything else but Elmergrid")
+parser.add_argument('--skip-elmer', action='store_true', help="Run everything else but Elmer")
+parser.add_argument('--skip-paraview', action='store_true', help="Run everything else but Paraview")
+
+parser.add_argument('--only-gmsh', action='store_true', help="Run only Gmsh")
+parser.add_argument('--only-elmergrid', action='store_true', help="Run only Elmergrid")
+parser.add_argument('--only-elmer', action='store_true', help="Run only Elmer")
+parser.add_argument('--only-paraview', action='store_true', help="Run only Paraview")
+
+parser.add_argument('-q', action='store_true', help="Quiet operation: no GUIs are launched")
+
+parser.add_argument('--write-project-results', action='store_true',
+        help="Write the results in KQC 'project.json' -format")
+
+args = parser.parse_args()
+
 # Get input json filename as first argument
-json_filename = sys.argv[1]
+json_filename = args.json_filename
 path = Path(os.path.split(json_filename)[0])
 
 # Open json file
 with open(json_filename) as f:
     json_data = json.load(f)
 workflow = json_data['workflow']
+
+if args.write_project_results:
+    args.skip_gmsh = True
+    args.skip_elmergrid = True
+    args.skip_elmer = True
+    args.skip_paraview = True
+
+if args.only_gmsh:
+    args.skip_elmergrid = True
+    args.skip_elmer = True
+    args.skip_paraview = True
+elif args.only_elmergrid:
+    args.skip_gmsh = True
+    args.skip_elmer = True
+    args.skip_paraview = True
+elif args.only_elmer:
+    args.skip_gmsh = True
+    args.skip_elmergrid = True
+    args.skip_paraview = True
+elif args.only_paraview:
+    args.skip_gmsh = True
+    args.skip_elmergrid = True
+    args.skip_elmer = True
+
+if args.skip_gmsh:
+    workflow['run_gmsh'] = False
+if args.skip_elmergrid:
+    workflow['run_elmergrid'] = False
+if args.skip_elmer:
+    workflow['run_elmer'] = False
+if args.skip_paraview:
+    workflow['run_paraview'] = False
+
+if args.q:
+    workflow['run_paraview'] = False
+    json_data['gmsh_params']['show'] = False
 
 # Generate mesh
 if workflow['run_gmsh']:
@@ -83,3 +139,6 @@ if workflow['run_paraview']:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         logging.warning("The simulation was run, but Paraview cannot be run for viewing the results!")
         sys.exit()
+
+if args.write_project_results:
+    write_project_results_json(path, msh_filepath)
