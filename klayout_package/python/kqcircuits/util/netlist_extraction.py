@@ -61,6 +61,8 @@ def export_cell_netlist(cell, filename):
     shapes_iter = pya.RecursiveShapeIterator(layout, cell, [layout.layer(default_layers["b_ports"]),
                                                             layout.layer(default_layers["t_ports"])])
     ltn = pya.LayoutToNetlist(shapes_iter)
+    # text_enlargement>0 converts the texts into boxes so that their overlaps are detected as connections
+    ltn.dss().text_enlargement = 1
     # parallel processing
     ltn.threads = cpu_count()
     # select conducting layers
