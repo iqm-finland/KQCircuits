@@ -10,6 +10,5 @@ kqcircuits.simulations.export
 
 .. toctree::
 
-   kqcircuits.simulations.export.gmsh_helpers
    kqcircuits.simulations.export.simulation_export
    kqcircuits.simulations.export.util

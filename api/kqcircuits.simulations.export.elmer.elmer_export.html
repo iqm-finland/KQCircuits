@@ -107,7 +107,6 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.ansys.html">kqcircuits.simulations.export.ansys</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.gmsh_helpers.html">kqcircuits.simulations.export.gmsh_helpers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 </ul>
@@ -228,69 +227,17 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_sif">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer_sif</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msh_filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_data_gmsh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer_sif"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_sif" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exports an elmer simulation model to the simulation path.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>simulation</strong> (<a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><em>Simulation</em></a>) – Exported simulation</p></li>
-<li><p><strong>msh_filepath</strong> (<em>Path</em>) – Path to exported msh file</p></li>
-<li><p><strong>port_data_gmsh</strong> (<em>list</em>) – <p>each element contain port data that one gets from <cite>Simulation.get_port_data</cite> + gmsh specific data:</p>
-<blockquote>
-<div><ul>
-<li><p>Items from <cite>Simulation.get_port_data</cite></p></li>
-<li><p>dim_tag: DimTags of the port polygons</p></li>
-<li><p>occ_bounding_box: port bounding box</p></li>
-<li><p>dim_tags: list of DimTags if the port consist of more than one (<cite>EdgePort</cite>)</p></li>
-<li><p>signal_dim_tag: DimTag of the face that is connected to the signal edge of the port</p></li>
-<li><p>signal_physical_name: physical name of the signal face</p></li>
-</ul>
-</div></blockquote>
-</p></li>
-<li><p><strong>path</strong> (<em>Path</em>) – Location where to output the simulation model</p></li>
-<li><p><strong>tool</strong> (<em>str</em>) – Elmer tool. Available: “capacitance” that computes the capacitance matrix (Default: capacitance)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Path to exported sif file</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>sif_filepath</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.calculate_total_capacitance_to_ground">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">calculate_total_capacitance_to_ground</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c_matrix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#calculate_total_capacitance_to_ground"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.calculate_total_capacitance_to_ground" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns total capacitance to ground for each column of c_matrix.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.write_project_results_json">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">write_project_results_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msh_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#write_project_results_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.write_project_results_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes the solution data in ‘_project_results.json’ format for one Elmer capacitance matrix computation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>Path</em>) – Location where to output the simulation model</p></li>
-<li><p><strong>msh_filepath</strong> (<em>Path</em>) – Location of msh file in <cite>Path</cite> format</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export Ansys simulation into json and gds files.</p>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmsh_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export Elmer simulation into json and gds files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>simulation</strong> – The simulation to be exported.</p></li>
 <li><p><strong>path</strong> – Location where to write json.</p></li>
 <li><p><strong>tool</strong> (<em>str</em>) – Elmer tool used. Available: “capacitance” that computes the capacitance matrix (Default: capacitance)</p></li>
+<li><p><strong>gmsh_params</strong> (<em>dict</em>) – Parameters for Gmsh</p></li>
+<li><p><strong>workflow</strong> (<em>dict</em>) – Parameters for simulation workflow</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -300,8 +247,27 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_filenames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simulation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scripts/run.py'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a script file for running one or more simulations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_filenames</strong> – List of paths to json files to be included into the script.</p></li>
+<li><p><strong>path</strong> – Location where to write the script file.</p></li>
+<li><p><strong>file_prefix</strong> – Name of the script file to be created.</p></li>
+<li><p><strong>script_file</strong> – Name of the script file to run.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Path to exported script file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.export_elmer">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_min_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_max_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_min_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_max_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_grid_min_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_grid_max_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_grid_min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_grid_max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_grid_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap_min_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap_max_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap_min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap_max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gap_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_min_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_max_mesh_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_min_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_max_dist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">algorithm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">export_elmer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">simulations</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capacitance'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simulation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scripts/run.py'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gmsh_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workflow</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#export_elmer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exports an elmer simulation model to the simulation path.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -309,70 +275,14 @@
 <li><p><strong>simulations</strong> (<em>list</em><em>(</em><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><em>Simulation</em></a><em>)</em>) – list of all the simulations</p></li>
 <li><p><strong>path</strong> (<em>Path</em>) – Location where to output the simulation model</p></li>
 <li><p><strong>tool</strong> (<em>str</em>) – Elmer tool used. Available: “capacitance” that computes the capacitance matrix (Default: capacitance)</p></li>
-<li><p><strong>default_mesh_size</strong> (<em>float</em>) – Default size to be used where not defined</p></li>
-<li><p><strong>signal_min_mesh_size</strong> (<em>float</em>) – Minimum mesh size near signal region curves</p></li>
-<li><p><strong>signal_max_mesh_size</strong> (<em>float</em>) – Maximum mesh size near signal region curves</p></li>
-<li><p><strong>signal_min_dist</strong> (<em>float</em>) – Mesh size will be the minimum size until this distance
-from the signal region curves</p></li>
-<li><p><strong>signal_max_dist</strong> (<em>float</em>) – Mesh size will grow from to the maximum size until
-this distance from the signal region curves</p></li>
-<li><p><strong>signal_sampling</strong> (<em>float</em>) – Number of points used for sampling each signal region curve</p></li>
-<li><p><strong>ground_min_mesh_size</strong> (<em>float</em>) – Minimum mesh size near ground region curves</p></li>
-<li><p><strong>ground_max_mesh_size</strong> (<em>float</em>) – Maximum mesh size near ground region curves</p></li>
-<li><p><strong>ground_min_dist</strong> (<em>float</em>) – Mesh size will be the minimum size until this distance
-from the ground region curves</p></li>
-<li><p><strong>ground_max_dist</strong> (<em>float</em>) – Mesh size will grow from to the maximum size until
-this distance from the ground region curves</p></li>
-<li><p><strong>ground_sampling</strong> (<em>float</em>) – Number of points used for sampling each ground region curve</p></li>
-<li><p><strong>ground_grid_min_mesh_size</strong> (<em>float</em>) – Minimum mesh size near ground_grid region curves</p></li>
-<li><p><strong>ground_grid_max_mesh_size</strong> (<em>float</em>) – Maximum mesh size near ground_grid region curves</p></li>
-<li><p><strong>ground_grid_min_dist</strong> (<em>float</em>) – Mesh size will be the minimum size until this distance
-from the ground_grid region curves</p></li>
-<li><p><strong>ground_grid_max_dist</strong> (<em>float</em>) – Mesh size will grow from to the maximum size until
-this distance from the ground_grid region curves</p></li>
-<li><p><strong>ground_grid_sampling</strong> (<em>float</em>) – Number of points used for sampling each ground_grid region curve</p></li>
-<li><p><strong>gap_min_mesh_size</strong> (<em>float</em>) – Minimum mesh size near gap region curves</p></li>
-<li><p><strong>gap_max_mesh_size</strong> (<em>float</em>) – Maximum mesh size near gap region curves</p></li>
-<li><p><strong>gap_min_dist</strong> (<em>float</em>) – Mesh size will be the minimum size until this distance
-from the gap region curves</p></li>
-<li><p><strong>gap_max_dist</strong> (<em>float</em>) – Mesh size will grow from to the maximum size until
-this distance from the gap region curves</p></li>
-<li><p><strong>gap_sampling</strong> (<em>float</em>) – Number of points used for sampling each gap region curve</p></li>
-<li><p><strong>port_min_mesh_size</strong> (<em>float</em>) – Minimum mesh size near port region curves</p></li>
-<li><p><strong>port_max_mesh_size</strong> (<em>float</em>) – Maximum mesh size near port region curves</p></li>
-<li><p><strong>port_min_dist</strong> (<em>float</em>) – Mesh size will be the minimum size until this distance
-from the port region curves</p></li>
-<li><p><strong>port_max_dist</strong> (<em>float</em>) – Mesh size will grow from to the maximum size until
-this distance from the port region curves</p></li>
-<li><p><strong>port_sampling</strong> (<em>float</em>) – Number of points used for sampling each port region curve</p></li>
-<li><p><strong>algorithm</strong> (<em>float</em>) – Gmsh meshing algorithm (default is 5)</p></li>
-<li><p><strong>show</strong> (<em>float</em>) – Show the mesh in Gmsh graphical interface after completing the mesh
-(for large meshes this can take a long time)</p></li>
+<li><p><strong>file_prefix</strong> – File prefix of the script file to be created.</p></li>
+<li><p><strong>script_file</strong> – Name of the script file to run.</p></li>
+<li><p><strong>gmsh_params</strong> (<em>dict</em>) – Parameters for Gmsh</p></li>
+<li><p><strong>workflow</strong> (<em>dict</em>) – Parameters for simulation workflow</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of locations of msh files in <cite>Path</cite> format
-sif_filepaths(list(Path)): List of locations of sif files in <cite>Path</cite> format</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>msh_filepaths(list(Path))</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.simulations.export.elmer.elmer_export.run_elmer">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.elmer.elmer_export.</span></span><span class="sig-name descname"><span class="pre">run_elmer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msh_filepaths</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_elmergrid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_elmer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">run_paraview</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/elmer/elmer_export.html#run_elmer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.elmer.elmer_export.run_elmer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run simulations using elmer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>Path</em>) – Location where to output the simulation model</p></li>
-<li><p><strong>msh_filepaths</strong> (<em>list</em><em>(</em><em>Path</em><em>)</em>) – Locations of msh files in <cite>Path</cite> format</p></li>
-<li><p><strong>run_elmergrid</strong> – if true, ElmerGrid is run (Default: True)</p></li>
-<li><p><strong>run_elmer</strong> – if true, ElmerSolver is run (Default: True)</p></li>
-<li><p><strong>run_paraview</strong> – if true, Paraview is launched at path (Default: False)</p></li>
-</ul>
+<dd class="field-even"><p>Path to exported script file.</p>
 </dd>
 </dl>
 </dd></dl>

@@ -183,143 +183,86 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stat</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">copy_tree</span>
 
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPTS_PATH</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.gmsh_helpers</span> <span class="kn">import</span> <span class="n">export_gmsh_msh</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPTS_PATH</span><span class="p">,</span> <span class="n">default_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
+
+<span class="n">default_gmsh_params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;default_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Default size to be used where not defined</span>
+    <span class="s1">&#39;signal_min_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Minimum mesh size near signal region curves</span>
+    <span class="s1">&#39;signal_max_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Maximum mesh size near signal region curves</span>
+    <span class="s1">&#39;signal_min_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will be the minimum size until this distance from the signal region curves</span>
+    <span class="s1">&#39;signal_max_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will grow from to the maximum size until this distance from the signal region</span>
+                             <span class="c1"># curves</span>
+    <span class="s1">&#39;signal_sampling&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Number of points used for sampling each signal region curve</span>
+    <span class="s1">&#39;ground_min_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Minimum mesh size near ground region curves</span>
+    <span class="s1">&#39;ground_max_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Maximum  mesh size near ground region curves</span>
+    <span class="s1">&#39;ground_min_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will be the minimum size until this distance from the ground region curves</span>
+    <span class="s1">&#39;ground_max_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will grow from to the maximum size until this distance from the ground region</span>
+                             <span class="c1"># curves</span>
+    <span class="s1">&#39;ground_sampling&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Number of points used for sampling each ground region curve</span>
+    <span class="s1">&#39;ground_grid_min_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Minimum mesh size near ground_grid region curves</span>
+    <span class="s1">&#39;ground_grid_max_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Maximum mesh size near ground_grid region curves</span>
+    <span class="s1">&#39;ground_grid_min_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will be the minimum size until this distance from the ground_grid region</span>
+                                  <span class="c1"># curves</span>
+    <span class="s1">&#39;ground_grid_max_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will grow from to the maximum size until this distance from the ground_</span>
+                                  <span class="c1"># grid region curves</span>
+    <span class="s1">&#39;ground_grid_sampling&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Number of points used for sampling each ground_grid region curve</span>
+    <span class="s1">&#39;gap_min_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Minimum mesh size near gap region curves</span>
+    <span class="s1">&#39;gap_max_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Maximum mesh size near gap region curves</span>
+    <span class="s1">&#39;gap_min_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will be the minimum size until this distance from the gap region curves</span>
+    <span class="s1">&#39;gap_max_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will grow from to the maximum size until this distance from the gap region curves</span>
+    <span class="s1">&#39;gap_sampling&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Number of points used for sampling each gap region curve</span>
+    <span class="s1">&#39;port_min_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Minimum mesh size near port region curves</span>
+    <span class="s1">&#39;port_max_mesh_size&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Maximum mesh size near port region curves</span>
+    <span class="s1">&#39;port_min_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will be the minimum size until this distance from the port region curves</span>
+    <span class="s1">&#39;port_max_dist&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># Mesh size will grow from to the maximum size until this distance from the port region</span>
+                           <span class="c1"># curves</span>
+    <span class="s1">&#39;port_sampling&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Number of points used for sampling each port region curve</span>
+    <span class="s1">&#39;algorithm&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># Gmsh meshing algorithm (default is 5)</span>
+    <span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># number of threads used in Gmsh meshing (default=1, -1 means all physical cores)</span>
+    <span class="s1">&#39;show&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Show the mesh in Gmsh graphical interface after completing the mesh (for large meshes this can</span>
+                    <span class="c1"># take a long time)</span>
+<span class="p">}</span>
+
+<span class="n">default_workflow</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;run_gmsh&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Run Gmsh to generate mesh</span>
+    <span class="s1">&#39;run_elmergrid&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Run ElmerGrid</span>
+    <span class="s1">&#39;run_elmer&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Run Elmer simulation</span>
+    <span class="s1">&#39;run_paraview&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Run Paraview. This is visual view of the results.</span>
+    <span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">:</span> <span class="mi">1</span>  <span class="c1"># number of processes used in Elmer simulation (default=1, -1 means all physical cores)</span>
+<span class="p">}</span>
+
 
 <div class="viewcode-block" id="copy_elmer_scripts_to_directory"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory">[docs]</a><span class="k">def</span> <span class="nf">copy_elmer_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Copies Elmer scripts into directory path.</span>
 
 <span class="sd">    Args:</span>
-
 <span class="sd">        path: Location where to copy scripts folder.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;sif&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">ELMER_SCRIPTS_PATH</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;sif&#39;</span><span class="p">))</span></div>
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="n">copy_tree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ELMER_SCRIPTS_PATH</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="export_elmer_sif"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_sif">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_sif</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">msh_filepath</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">port_data_gmsh</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(),</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="export_elmer_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Exports an elmer simulation model to the simulation path.</span>
+<span class="sd">    Export Elmer simulation into json and gds files.</span>
 
 <span class="sd">    Args:</span>
-
-<span class="sd">        simulation(Simulation): Exported simulation</span>
-<span class="sd">        msh_filepath(Path): Path to exported msh file</span>
-<span class="sd">        port_data_gmsh(list):</span>
-
-<span class="sd">          each element contain port data that one gets from `Simulation.get_port_data` + gmsh specific data:</span>
-
-<span class="sd">             * Items from `Simulation.get_port_data`</span>
-<span class="sd">             * dim_tag: DimTags of the port polygons</span>
-<span class="sd">             * occ_bounding_box: port bounding box</span>
-<span class="sd">             * dim_tags: list of DimTags if the port consist of more than one (`EdgePort`)</span>
-<span class="sd">             * signal_dim_tag: DimTag of the face that is connected to the signal edge of the port</span>
-<span class="sd">             * signal_physical_name: physical name of the signal face</span>
-
-<span class="sd">        path(Path): Location where to output the simulation model</span>
-<span class="sd">        tool(str): Elmer tool. Available: &quot;capacitance&quot; that computes the capacitance matrix (Default: capacitance)</span>
-
-<span class="sd">    Returns:</span>
-
-<span class="sd">        sif_filepath: Path to exported sif file</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">copy_elmer_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">tool</span> <span class="o">==</span> <span class="s1">&#39;capacitance&#39;</span><span class="p">:</span>
-        <span class="n">sif_filepath</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;sif/</span><span class="si">{}</span><span class="s1">.sif&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msh_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">))</span>
-        <span class="n">begin</span> <span class="o">=</span> <span class="s1">&#39;Check Keywords Warn</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">begin</span> <span class="o">+=</span> <span class="s1">&#39;INCLUDE </span><span class="si">{}</span><span class="s1">/mesh.names</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msh_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
-        <span class="n">begin</span> <span class="o">+=</span> <span class="s1">&#39;Header</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">begin</span> <span class="o">+=</span> <span class="s1">&#39;  Mesh DB &quot;.&quot; &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msh_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
-        <span class="n">begin</span> <span class="o">+=</span> <span class="s1">&#39;End</span><span class="se">\n</span><span class="s1">&#39;</span>
-
-        <span class="n">n_ground</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">ground_names</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;Boundary Condition 1</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;  Target Boundaries(</span><span class="si">{}</span><span class="s1">) = $ &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_ground</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">ground_names</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Capacitance Body = 0</span><span class="se">\n</span><span class="s1">&#39;</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;End</span><span class="se">\n</span><span class="s1">&#39;</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">port</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="n">port</span> <span class="k">for</span> <span class="n">port</span> <span class="ow">in</span> <span class="n">port_data_gmsh</span> <span class="k">if</span> <span class="s1">&#39;signal_physical_name&#39;</span> <span class="ow">in</span> <span class="n">port</span><span class="p">]):</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;Boundary Condition &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;  Target Boundaries(1) = $ &#39;</span><span class="o">+</span><span class="n">port</span><span class="p">[</span><span class="s1">&#39;signal_physical_name&#39;</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;  Capacitance Body = &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;End</span><span class="se">\n</span><span class="s1">&#39;</span>
-
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;sif/CapacitanceMatrix.sif&#39;</span><span class="p">),</span> <span class="n">sif_filepath</span><span class="p">)</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sif_filepath</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#FILEPATHSTEM&#39;</span><span class="p">,</span> <span class="n">sif_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">begin</span> <span class="o">+</span> <span class="n">content</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;ELMERSOLVER_STARTINFO&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sif_filepath</span><span class="p">))</span>
-
-    <span class="k">return</span> <span class="n">sif_filepath</span></div>
-
-<div class="viewcode-block" id="calculate_total_capacitance_to_ground"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.calculate_total_capacitance_to_ground">[docs]</a><span class="k">def</span> <span class="nf">calculate_total_capacitance_to_ground</span><span class="p">(</span><span class="n">c_matrix</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns total capacitance to ground for each column of c_matrix.&quot;&quot;&quot;</span>
-    <span class="n">columns</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c_matrix</span><span class="p">))</span>
-    <span class="n">c_ground</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">:</span>
-        <span class="n">c_ground</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-            <span class="n">c_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="nb">sum</span><span class="p">([</span><span class="n">c_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">c_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">/</span> <span class="n">c_matrix</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">columns</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">c_ground</span></div>
-
-<div class="viewcode-block" id="write_project_results_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.write_project_results_json">[docs]</a><span class="k">def</span> <span class="nf">write_project_results_json</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">msh_filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Writes the solution data in &#39;_project_results.json&#39; format for one Elmer capacitance matrix computation.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        path(Path): Location where to output the simulation model</span>
-<span class="sd">        msh_filepath(Path): Location of msh file in `Path` format</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">c_matrix_filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">msh_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;capacitancematrix.dat&#39;</span><span class="p">)</span>
-    <span class="n">json_filename</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">msh_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span>
-    <span class="n">json_filename</span> <span class="o">=</span> <span class="n">json_filename</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="p">(</span><span class="n">json_filename</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_project_results.json&#39;</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">c_matrix_filename</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">c_matrix_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">my_reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">skipinitialspace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quoting</span><span class="o">=</span><span class="n">csv</span><span class="o">.</span><span class="n">QUOTE_NONNUMERIC</span><span class="p">)</span>
-            <span class="n">c_matrix</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">my_reader</span><span class="p">]</span>
-
-        <span class="n">c_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;C_Net</span><span class="si">{}</span><span class="s2">_Net</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">net_i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">net_j</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> <span class="p">[</span><span class="n">c_matrix</span><span class="p">[</span><span class="n">net_j</span><span class="p">][</span><span class="n">net_i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">net_j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c_matrix</span><span class="p">))</span>
-                <span class="k">for</span> <span class="n">net_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c_matrix</span><span class="p">))}</span>
-
-        <span class="n">c_g</span> <span class="o">=</span> <span class="n">calculate_total_capacitance_to_ground</span><span class="p">(</span><span class="n">c_matrix</span><span class="p">)</span>
-
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s1">&#39;CMatrix&#39;</span><span class="p">:</span> <span class="n">c_matrix</span><span class="p">,</span>
-                       <span class="s1">&#39;Cg&#39;</span><span class="p">:</span> <span class="n">c_g</span><span class="p">,</span>
-                       <span class="s1">&#39;Cdata&#39;</span><span class="p">:</span> <span class="n">c_data</span><span class="p">,</span>
-                       <span class="s1">&#39;Frequency&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                       <span class="p">},</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="export_elmer_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span>
-                      <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
-                      <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span>
-                      <span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Export Ansys simulation into json and gds files.</span>
-
-<span class="sd">    Arguments:</span>
 <span class="sd">        simulation: The simulation to be exported.</span>
 <span class="sd">        path: Location where to write json.</span>
 <span class="sd">        tool(str): Elmer tool used. Available: &quot;capacitance&quot; that computes the capacitance matrix (Default: capacitance)</span>
+<span class="sd">        gmsh_params(dict): Parameters for Gmsh</span>
+<span class="sd">        workflow(dict): Parameters for simulation workflow</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         Path to exported json file.</span>
@@ -327,47 +270,69 @@
     <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
 
-    <span class="n">simulation_data</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">()</span>
-    <span class="n">simulation_data</span><span class="p">[</span><span class="s1">&#39;tool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tool</span>
+    <span class="c1"># select layers</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;b_simulation_gap&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;b_ground_grid&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
+        <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;t_simulation_gap&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;t_ground_grid&quot;</span><span class="p">]</span>
+
+    <span class="c1"># collect data for .json file</span>
+    <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="n">tool</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
+        <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">r</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">},</span>
+        <span class="s1">&#39;gmsh_params&#39;</span><span class="p">:</span> <span class="n">default_gmsh_params</span> <span class="k">if</span> <span class="n">gmsh_params</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="o">**</span><span class="n">default_gmsh_params</span><span class="p">,</span> <span class="o">**</span><span class="n">gmsh_params</span><span class="p">},</span>
+        <span class="s1">&#39;workflow&#39;</span><span class="p">:</span> <span class="n">default_workflow</span> <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="o">**</span><span class="n">default_workflow</span><span class="p">,</span> <span class="o">**</span><span class="n">workflow</span><span class="p">}</span>
+    <span class="p">}</span>
 
     <span class="c1"># write .json file</span>
     <span class="n">json_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">))</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">simulation_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># write .gds file</span>
+    <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">))</span>
+    <span class="n">export_layers</span><span class="p">(</span><span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
+                  <span class="n">layers</span><span class="o">=</span><span class="p">{</span><span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">})</span>
 
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
 
-<div class="viewcode-block" id="export_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a><span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">:</span> <span class="p">[],</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span>
-                 <span class="n">default_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">signal_min_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">signal_max_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">signal_min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">signal_max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">signal_sampling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ground_min_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_max_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_sampling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ground_grid_min_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_grid_max_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_grid_min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_grid_max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">ground_grid_sampling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">gap_min_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">gap_max_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">gap_min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">gap_max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">gap_sampling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">port_min_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">port_max_mesh_size</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">port_min_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">port_max_dist</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
-                 <span class="n">port_sampling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">algorithm</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
-                 <span class="n">show</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-                 <span class="p">):</span>
+<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a script file for running one or more simulations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        json_filenames: List of paths to json files to be included into the script.</span>
+<span class="sd">        path: Location where to write the script file.</span>
+<span class="sd">        file_prefix: Name of the script file to be created.</span>
+<span class="sd">        script_file: Name of the script file to run.</span>
+
+<span class="sd">    Returns:</span>
+
+<span class="sd">        Path to exported script file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">script_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;.sh&#39;</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;echo &quot;Simulation </span><span class="si">{}</span><span class="s1">/</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">)))</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;python </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">script_file</span><span class="p">,</span>
+                <span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+            <span class="p">)</span>
+
+    <span class="c1"># change permission</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">script_filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">script_filename</span></div>
+
+
+<div class="viewcode-block" id="export_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a><span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">:</span> <span class="p">[],</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+                 <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports an elmer simulation model to the simulation path.</span>
 
@@ -376,136 +341,22 @@
 <span class="sd">        simulations(list(Simulation)): list of all the simulations</span>
 <span class="sd">        path(Path): Location where to output the simulation model</span>
 <span class="sd">        tool(str): Elmer tool used. Available: &quot;capacitance&quot; that computes the capacitance matrix (Default: capacitance)</span>
-<span class="sd">        default_mesh_size(float): Default size to be used where not defined</span>
-<span class="sd">        signal_min_mesh_size(float): Minimum mesh size near signal region curves</span>
-<span class="sd">        signal_max_mesh_size(float): Maximum mesh size near signal region curves</span>
-<span class="sd">        signal_min_dist(float): Mesh size will be the minimum size until this distance</span>
-<span class="sd">                                from the signal region curves</span>
-<span class="sd">        signal_max_dist(float): Mesh size will grow from to the maximum size until</span>
-<span class="sd">                                this distance from the signal region curves</span>
-<span class="sd">        signal_sampling(float): Number of points used for sampling each signal region curve</span>
-<span class="sd">        ground_min_mesh_size(float): Minimum mesh size near ground region curves</span>
-<span class="sd">        ground_max_mesh_size(float): Maximum mesh size near ground region curves</span>
-<span class="sd">        ground_min_dist(float): Mesh size will be the minimum size until this distance</span>
-<span class="sd">                                from the ground region curves</span>
-<span class="sd">        ground_max_dist(float): Mesh size will grow from to the maximum size until</span>
-<span class="sd">                                this distance from the ground region curves</span>
-<span class="sd">        ground_sampling(float): Number of points used for sampling each ground region curve</span>
-<span class="sd">        ground_grid_min_mesh_size(float): Minimum mesh size near ground_grid region curves</span>
-<span class="sd">        ground_grid_max_mesh_size(float): Maximum mesh size near ground_grid region curves</span>
-<span class="sd">        ground_grid_min_dist(float): Mesh size will be the minimum size until this distance</span>
-<span class="sd">                                from the ground_grid region curves</span>
-<span class="sd">        ground_grid_max_dist(float): Mesh size will grow from to the maximum size until</span>
-<span class="sd">                                this distance from the ground_grid region curves</span>
-<span class="sd">        ground_grid_sampling(float): Number of points used for sampling each ground_grid region curve</span>
-<span class="sd">        gap_min_mesh_size(float): Minimum mesh size near gap region curves</span>
-<span class="sd">        gap_max_mesh_size(float): Maximum mesh size near gap region curves</span>
-<span class="sd">        gap_min_dist(float): Mesh size will be the minimum size until this distance</span>
-<span class="sd">                                from the gap region curves</span>
-<span class="sd">        gap_max_dist(float): Mesh size will grow from to the maximum size until</span>
-<span class="sd">                                this distance from the gap region curves</span>
-<span class="sd">        gap_sampling(float): Number of points used for sampling each gap region curve</span>
-<span class="sd">        port_min_mesh_size(float): Minimum mesh size near port region curves</span>
-<span class="sd">        port_max_mesh_size(float): Maximum mesh size near port region curves</span>
-<span class="sd">        port_min_dist(float): Mesh size will be the minimum size until this distance</span>
-<span class="sd">                                from the port region curves</span>
-<span class="sd">        port_max_dist(float): Mesh size will grow from to the maximum size until</span>
-<span class="sd">                                this distance from the port region curves</span>
-<span class="sd">        port_sampling(float): Number of points used for sampling each port region curve</span>
-<span class="sd">        algorithm(float): Gmsh meshing algorithm (default is 5)</span>
-<span class="sd">        show(float): Show the mesh in Gmsh graphical interface after completing the mesh</span>
-<span class="sd">                     (for large meshes this can take a long time)</span>
+<span class="sd">        file_prefix: File prefix of the script file to be created.</span>
+<span class="sd">        script_file: Name of the script file to run.</span>
+<span class="sd">        gmsh_params(dict): Parameters for Gmsh</span>
+<span class="sd">        workflow(dict): Parameters for simulation workflow</span>
 
 <span class="sd">    Returns:</span>
 
-<span class="sd">        msh_filepaths(list(Path)): List of locations of msh files in `Path` format</span>
-<span class="sd">        sif_filepaths(list(Path)): List of locations of sif files in `Path` format</span>
+<span class="sd">        Path to exported script file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
     <span class="n">copy_elmer_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">msh_filepaths</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">sif_filepaths</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">show</span> <span class="o">=</span> <span class="n">show</span> <span class="ow">and</span> <span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-q&quot;</span>
+    <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
-        <span class="n">msh_filepath</span><span class="p">,</span> <span class="n">port_data_gmsh</span> <span class="o">=</span> <span class="n">export_gmsh_msh</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span>
-                                                       <span class="n">default_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">signal_min_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">signal_max_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">signal_min_dist</span><span class="p">,</span>
-                                                       <span class="n">signal_max_dist</span><span class="p">,</span>
-                                                       <span class="n">signal_sampling</span><span class="p">,</span>
-                                                       <span class="n">ground_min_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">ground_max_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">ground_min_dist</span><span class="p">,</span>
-                                                       <span class="n">ground_max_dist</span><span class="p">,</span>
-                                                       <span class="n">ground_sampling</span><span class="p">,</span>
-                                                       <span class="n">ground_grid_min_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">ground_grid_max_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">ground_grid_min_dist</span><span class="p">,</span>
-                                                       <span class="n">ground_grid_max_dist</span><span class="p">,</span>
-                                                       <span class="n">ground_grid_sampling</span><span class="p">,</span>
-                                                       <span class="n">gap_min_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">gap_max_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">gap_min_dist</span><span class="p">,</span>
-                                                       <span class="n">gap_max_dist</span><span class="p">,</span>
-                                                       <span class="n">gap_sampling</span><span class="p">,</span>
-                                                       <span class="n">port_min_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">port_max_mesh_size</span><span class="p">,</span>
-                                                       <span class="n">port_min_dist</span><span class="p">,</span>
-                                                       <span class="n">port_max_dist</span><span class="p">,</span>
-                                                       <span class="n">port_sampling</span><span class="p">,</span>
-                                                       <span class="n">algorithm</span><span class="p">,</span>
-                                                       <span class="n">show</span>
-                                                       <span class="p">)</span>
-        <span class="n">sif_filepath</span> <span class="o">=</span> <span class="n">export_elmer_sif</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">msh_filepath</span><span class="p">,</span> <span class="n">port_data_gmsh</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tool</span><span class="p">)</span>
-        <span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tool</span><span class="p">)</span>
-        <span class="n">msh_filepaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msh_filepath</span><span class="p">)</span>
-        <span class="n">sif_filepaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sif_filepath</span><span class="p">)</span>
+        <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tool</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="p">,</span> <span class="n">workflow</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">msh_filepaths</span><span class="p">,</span> <span class="n">sif_filepaths</span></div>
-
-
-<div class="viewcode-block" id="run_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.run_elmer">[docs]</a><span class="k">def</span> <span class="nf">run_elmer</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">msh_filepaths</span><span class="p">:</span> <span class="p">[],</span>
-              <span class="n">run_elmergrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">run_elmer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">run_paraview</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Run simulations using elmer.</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        path(Path): Location where to output the simulation model</span>
-<span class="sd">        msh_filepaths(list(Path)): Locations of msh files in `Path` format</span>
-<span class="sd">        run_elmergrid: if true, ElmerGrid is run (Default: True)</span>
-<span class="sd">        run_elmer: if true, ElmerSolver is run (Default: True)</span>
-<span class="sd">        run_paraview: if true, Paraview is launched at path (Default: False)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">msh_filepath</span> <span class="ow">in</span> <span class="n">msh_filepaths</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">run_elmergrid</span><span class="p">:</span>
-
-            <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;ElmerGrid&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;ElmerGrid&#39;</span><span class="p">,</span> <span class="s1">&#39;14&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="n">msh_filepath</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;ElmerGrid was not found! Make sure you have ElmerFEM &quot;</span>\
-                        <span class="s2">&quot;installed: https://github.com/ElmerCSC/elmerfem&quot;</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Mesh was created, but Elmer cannot be run!&quot;</span><span class="p">)</span>
-                <span class="k">return</span>
-
-        <span class="k">if</span> <span class="n">run_elmer</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;ElmerSolver&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;ElmerSolver&#39;</span><span class="p">,</span> <span class="s1">&#39;sif/</span><span class="si">{}</span><span class="s1">.sif&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msh_filepath</span><span class="o">.</span><span class="n">stem</span><span class="p">)],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-                <span class="n">write_project_results_json</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">msh_filepath</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;ElmerSolver was not found! Make sure you have ElmerFEM &quot;</span>\
-                        <span class="s2">&quot;installed: https://github.com/ElmerCSC/elmerfem&quot;</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Mesh was created, but Elmer cannot be run!&quot;</span><span class="p">)</span>
-                <span class="k">return</span>
-
-    <span class="k">if</span> <span class="n">run_paraview</span> <span class="ow">and</span> <span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;-q&quot;</span><span class="p">:</span> <span class="c1"># quiet mode, do not run viewer</span>
-        <span class="k">if</span> <span class="n">shutil</span><span class="o">.</span><span class="n">which</span><span class="p">(</span><span class="s1">&#39;paraview&#39;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;paraview&#39;</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Paraview was not found! Make sure you have it &quot;</span>\
-                    <span class="s2">&quot;installed: https://www.paraview.org/&quot;</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;The simulation was run, but Paraview cannot be run for viewing the results!&quot;</span><span class="p">)</span>
-            <span class="k">return</span></div>
+    <span class="k">return</span> <span class="n">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">script_file</span><span class="o">=</span><span class="n">script_file</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

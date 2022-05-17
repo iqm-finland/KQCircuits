@@ -387,8 +387,8 @@ segment is a meander.</p>
 </div>
 <div class="section" id="swissmon">
 <h2>Swissmon<a class="headerlink" href="#swissmon" title="Permalink to this headline">¶</a></h2>
-<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own
-width. “Hole” for the island has the same <code class="docutils literal notranslate"><span class="pre">gap_width</span></code> for each arm.
+<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own arm
+gap width (<code class="docutils literal notranslate"><span class="pre">gap_width</span></code>) and arm metal width (<code class="docutils literal notranslate"><span class="pre">arm_width</span></code>).
 SQUID is loaded from another library. Option of having fluxline.
 Refpoints for 3 couplers, fluxline position and chargeline position.
 Length between the ports is from waveguide port to the rectangular part of the launcher pad.
@@ -396,8 +396,8 @@ Length of the fingers is also used for the length of the launcher pad.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>arm_length</strong><em> (List)</em><span> - Arm length (um, WNES))</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[150.0,</span> <span class="pre">150.0,</span> <span class="pre">150.0,</span> <span class="pre">150.0]</span></code></p></li>
-<li><p><strong>arm_width</strong><em> (List)</em><span> - Arm width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
-<li><p><strong>gap_width</strong><em> (Double)</em><span> - Arm gap full width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>arm_width</strong><em> (List)</em><span> - Arm metal width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
+<li><p><strong>gap_width</strong><em> (List)</em><span> - Arm gap width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[12,</span> <span class="pre">12,</span> <span class="pre">12,</span> <span class="pre">12]</span></code></p></li>
 <li><p><strong>cpl_width</strong><em> (List)</em><span> - Coupler width (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
 <li><p><strong>cpl_length</strong><em> (List)</em><span> - Coupler lengths (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[120,</span> <span class="pre">120,</span> <span class="pre">120]</span></code></p></li>
 <li><p><strong>cpl_gap</strong><em> (List)</em><span> - Coupler gap (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[102,</span> <span class="pre">102,</span> <span class="pre">102]</span></code></p></li>

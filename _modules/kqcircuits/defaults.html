@@ -280,6 +280,7 @@
     <span class="c1"># SQUID layer</span>
     <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Josephson junction</span>
     <span class="s2">&quot;SIS_shadow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Ghost layer required for Josephson junction</span>
+    <span class="s2">&quot;SIS_junction_2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
 
     <span class="c1"># Airbridge layers -- potentially obsolete</span>
     <span class="s2">&quot;airbridge_pads&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>  <span class="c1">#</span>
@@ -413,10 +414,10 @@
 <span class="c1"># Dictionary with items &quot;cluster name: LayerCluster&quot;.</span>
 <span class="n">chip_export_layer_clusters</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># b-face</span>
-    <span class="s2">&quot;SIS b&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;b_SIS_junction&quot;</span><span class="p">,</span> <span class="s2">&quot;b_SIS_shadow&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;b_base_metal_gap_for_EBL&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;SIS b&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;b_SIS_junction&quot;</span><span class="p">,</span> <span class="s2">&quot;b_SIS_shadow&quot;</span><span class="p">,</span> <span class="s2">&quot;b_SIS_junction_2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;b_base_metal_gap_for_EBL&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
     <span class="s2">&quot;airbridges b&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;b_airbridge_pads&quot;</span><span class="p">,</span> <span class="s2">&quot;b_airbridge_flyover&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;b_base_metal_gap_wo_grid&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
     <span class="c1"># t-face</span>
-    <span class="s2">&quot;SIS t&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;t_SIS_junction&quot;</span><span class="p">,</span> <span class="s2">&quot;t_SIS_shadow&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;t_base_metal_gap_for_EBL&quot;</span><span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;SIS t&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;t_SIS_junction&quot;</span><span class="p">,</span> <span class="s2">&quot;t_SIS_shadow&quot;</span><span class="p">,</span> <span class="s2">&quot;t_SIS_junction_2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;t_base_metal_gap_for_EBL&quot;</span><span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">),</span>
     <span class="s2">&quot;airbridges t&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;t_airbridge_pads&quot;</span><span class="p">,</span> <span class="s2">&quot;t_airbridge_flyover&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;t_base_metal_gap_wo_grid&quot;</span><span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">),</span>
 <span class="p">}</span>
 
@@ -462,7 +463,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">default_squid_type</span> <span class="o">=</span> <span class="s2">&quot;QCD1&quot;</span>
+<span class="n">default_squid_type</span> <span class="o">=</span> <span class="s2">&quot;Manhattan&quot;</span>
 <span class="n">default_airbridge_type</span> <span class="o">=</span> <span class="s2">&quot;Airbridge Rectangular&quot;</span>
 <span class="n">default_fluxline_type</span> <span class="o">=</span> <span class="s2">&quot;Fluxline Standard&quot;</span>
 <span class="n">default_marker_type</span> <span class="o">=</span> <span class="s2">&quot;Marker Standard&quot;</span>

@@ -185,8 +185,6 @@
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">traced</span>
-
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
@@ -204,8 +202,7 @@
     <span class="k">return</span> <span class="nb">int</span><span class="p">((</span><span class="n">meander_length</span> <span class="o">-</span> <span class="n">turn_radius</span> <span class="o">*</span> <span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">meander_min_width</span> <span class="o">+</span> <span class="n">turn_radius</span> <span class="o">*</span> <span class="p">(</span><span class="n">pi</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)))</span>
 
 
-<div class="viewcode-block" id="SingleXmons"><a class="viewcode-back" href="../../../api/kqcircuits.chips.single_xmons.html#kqcircuits.chips.single_xmons.SingleXmons">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="s2">&quot;squid_type&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="SingleXmons"><a class="viewcode-back" href="../../../api/kqcircuits.chips.single_xmons.html#kqcircuits.chips.single_xmons.SingleXmons">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="s2">&quot;squid_type&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">SingleXmons</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The PCell declaration for a SingleXmons chip.</span>
 
@@ -306,7 +303,7 @@
             <span class="n">fluxline_type</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
             <span class="n">arm_length</span><span class="o">=</span><span class="p">[</span><span class="mi">146</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
             <span class="n">arm_width</span><span class="o">=</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
-            <span class="n">gap_width</span><span class="o">=</span><span class="mi">72</span><span class="p">,</span>
+            <span class="n">gap_width</span><span class="o">=</span><span class="p">[</span><span class="mi">24</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
             <span class="n">island_r</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
             <span class="n">cpl_length</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">140</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
             <span class="n">cpl_width</span><span class="o">=</span><span class="p">[</span><span class="mi">60</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span>

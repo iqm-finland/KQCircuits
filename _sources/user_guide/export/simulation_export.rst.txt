@@ -5,6 +5,8 @@ KQCircuits supports exports to following external simulation tools:
 
 * `Ansys HFSS <https://www.ansys.com/products/electronics/ansys-hfss>`_ and `Q3D Extractor <https://www.ansys.com/products/electronics/ansys-q3d-extractor>`_
 * `Sonnet <https://www.sonnetsoftware.com>`_
+* `Gmsh <https://gmsh.info>`_ and `Elmer <http://www.elmerfem.org>`_
+
 
 Creating simulation object
 --------------------------
@@ -173,15 +175,18 @@ Multiple simulations can be exported by calling ``export_sonnet``. The function 
 
     sons = export_sonnet([simulation], path)
 
+Gmsh/Elmer export
+-----------------
 
-Gmsh export
------------
+Usage of Gmsh and Elmer export is similar to Ansys export.
+The ``simulation`` object can be used with function ``export_elmer`` to export all necessary files to produce Gmsh/Elmer
+simulations.
 
-The ``simulation`` object can be used to export an FEM mesh using Gmsh calling function ``export_simulation_gmsh``.
-There is an automatized simulation example at 'klayout_package/python/scripts/simulations' that creates a mesh using Gmsh and 
-computes the capacitance matrix using Elmer and visualizes the results using Paraview.
+There is an example at 'klayout_package/python/scripts/simulations/waveguides_sim_compare.py', which creates a mesh
+using Gmsh, computes the capacitance matrix using Elmer, and visualizes the results using Paraview.
+The simulations are executed by running the `.sh` file in the output folder.
 
-Please note that the example requires the installation of
+Please note that running the example requires the installation of
 
 * gmsh python api
   ``pip install gmsh``
@@ -191,4 +196,5 @@ Please note that the example requires the installation of
   https://www.paraview.org/
 
 Gmsh api suffices if one needs to generate the mesh only.
+
 

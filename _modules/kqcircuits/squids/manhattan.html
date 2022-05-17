@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>kqcircuits.squids.manhattan &mdash; KQCircuits  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/logo.svg"/>
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> KQCircuits
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../start/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer/index.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../libraries/index.html">Libraries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/kqcircuits.html">API documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">KQCircuits</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>kqcircuits.squids.manhattan</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for kqcircuits.squids.manhattan</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This code is part of KQCircuits</span>
+<span class="c1"># Copyright (C) 2022 IQM Finland Oy</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
+<span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
+<span class="c1"># version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied</span>
+<span class="c1"># warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License along with this program. If not, see</span>
+<span class="c1"># https://www.gnu.org/licenses/gpl-3.0.html.</span>
+<span class="c1">#</span>
+<span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
+<span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
+<span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.symmetric_polygons</span> <span class="kn">import</span> <span class="n">polygon_with_vsym</span>
+
+
+<div class="viewcode-block" id="Manhattan"><a class="viewcode-back" href="../../../api/kqcircuits.squids.manhattan.html#kqcircuits.squids.manhattan.Manhattan">[docs]</a><span class="nd">@logged</span>
+<span class="k">class</span> <span class="nc">Manhattan</span><span class="p">(</span><span class="n">Squid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The PCell declaration for a Manhattan style SQUID.</span>
+
+<span class="sd">    This SQUID has two distinct sub-types automatically selected by loop-area.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">finger_overshoot</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Length of fingers after the junction.&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">include_base_metal_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Include base metal gap layer&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">shadow_margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Shadow layer margin near the the pads&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">compact_geometry</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Compact geometry for metal addition.&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">separate_junctions</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Junctions to separate layer.&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">finger_overlap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Length of fingers inside the pads.&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Manhattan.build"><a class="viewcode-back" href="../../../api/kqcircuits.squids.manhattan.html#kqcircuits.squids.manhattan.Manhattan.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_manhattan_squid</span><span class="p">(</span><span class="n">top_pad_layer</span><span class="o">=</span><span class="s2">&quot;SIS_junction&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Manhattan.produce_manhattan_squid"><a class="viewcode-back" href="../../../api/kqcircuits.squids.manhattan.html#kqcircuits.squids.manhattan.Manhattan.produce_manhattan_squid">[docs]</a>    <span class="k">def</span> <span class="nf">produce_manhattan_squid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_pad_layer</span><span class="p">):</span>
+
+        <span class="c1"># geometry constants</span>
+        <span class="n">big_loop_height</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="n">loop_bottom_y</span> <span class="o">=</span> <span class="mf">1.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metal_gap_top_y</span> <span class="o">=</span> <span class="mi">20</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact_geometry</span> <span class="k">else</span> <span class="mf">26.5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">36</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact_geometry</span> <span class="k">else</span> <span class="mi">38</span>  <span class="c1"># total width of junction layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="mi">17</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact_geometry</span> <span class="k">else</span> <span class="mf">20.2</span>  <span class="c1"># total height of junction layer</span>
+        <span class="n">bp_height</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># bottom pad height</span>
+        <span class="n">tp_width</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># top pad width</span>
+        <span class="n">brim_height</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># thickness of the &quot;top-hat&#39;s&quot; brim</span>
+        <span class="n">small_loop_height</span> <span class="o">=</span> <span class="mf">5.2</span>
+        <span class="n">small_hat_width</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># width of the small hat shape, in case of small loop</span>
+
+        <span class="c1"># corner rounding parameters</span>
+        <span class="n">rounding_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;rinner&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># inner corner rounding radius</span>
+            <span class="s2">&quot;router&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>  <span class="c1"># outer corner rounding radius</span>
+            <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>  <span class="c1"># number of point per rounded corner</span>
+        <span class="p">}</span>
+
+        <span class="c1"># convenience variables</span>
+        <span class="n">delta_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_area</span> <span class="o">/</span> <span class="n">big_loop_height</span>  <span class="c1"># junction distance, a.k.a. loop width</span>
+        <span class="n">tp_height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">loop_bottom_y</span> <span class="o">-</span> <span class="n">big_loop_height</span>  <span class="c1"># top pad height</span>
+        <span class="n">bp_gap_x</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">delta_j</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>  <span class="c1"># bottom gap left edge x-coordinate</span>
+        <span class="n">bp_gap_x_min</span> <span class="o">=</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">7</span>  <span class="c1"># fixed at minimum size</span>
+        <span class="n">finger_margin</span> <span class="o">=</span> <span class="n">brim_height</span>  <span class="c1"># make hats brim this much wider for good finger connection</span>
+
+        <span class="c1"># adjust for small loop geometry</span>
+        <span class="n">small_loop</span> <span class="o">=</span> <span class="n">tp_width</span> <span class="o">&gt;</span> <span class="o">-</span><span class="n">bp_gap_x</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">small_loop</span><span class="p">:</span>
+            <span class="n">bp_gap_x</span> <span class="o">=</span> <span class="n">bp_gap_x_min</span>
+            <span class="n">delta_j</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop_area</span> <span class="o">/</span> <span class="n">small_loop_height</span>
+
+        <span class="n">junction_shapes_top</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">junction_shapes_bottom</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">shadow_shapes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># create rounded bottom part</span>
+
+        <span class="n">bp_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bp_gap_x</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bp_gap_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span> <span class="o">-</span> <span class="n">big_loop_height</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">bp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bp_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">bp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="n">bp_shadow_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">bp_shadow_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bp_shadow_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">bp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="c1"># create rounded top part</span>
+
+        <span class="n">tp_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">tp_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">tp_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">tp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_top</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+        <span class="c1"># add top pad to bottom shapes for multilayer manhattan</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="n">tp_shadow_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tp_pts_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">tp_pts_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">tp_shadow_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_shadow_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="c1"># create rectangular junction-support structures and junctions</span>
+
+        <span class="k">if</span> <span class="n">small_loop</span><span class="p">:</span>
+            <span class="n">small_hat</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">small_hat_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">small_hat_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">small_loop_height</span> <span class="o">+</span> <span class="n">loop_bottom_y</span> <span class="o">+</span> <span class="n">brim_height</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">delta_j</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="n">small_loop_height</span> <span class="o">+</span> <span class="n">loop_bottom_y</span> <span class="o">+</span> <span class="n">brim_height</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">delta_j</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="n">small_loop_height</span> <span class="o">+</span> <span class="n">loop_bottom_y</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">junction_shapes_top</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">small_hat</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">junction_shapes_bottom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">small_hat</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">small_hat_shadow</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">small_hat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+                <span class="n">small_hat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+                <span class="n">small_hat</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+                <span class="n">small_hat</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">shadow_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">small_hat_shadow</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">small_hat</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">finger_margin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_junctions</span><span class="p">(</span><span class="n">small_hat</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">loop_bottom_y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tp_brim_left</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">delta_j</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span> <span class="o">+</span> <span class="n">brim_height</span><span class="p">),</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">delta_j</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">junction_shapes_top</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_brim_left</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">junction_shapes_bottom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_brim_left</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">tp_brim_shadow_pts</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">tp_brim_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+                <span class="n">tp_brim_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="p">]</span>
+            <span class="n">shadow_shapes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_brim_shadow_pts</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">tp_brim_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">finger_margin</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_junctions</span><span class="p">(</span><span class="n">tp_brim_left</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bp_height</span><span class="p">,</span> <span class="n">finger_margin</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_junction_and_shadow</span><span class="p">(</span><span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">junction_layer</span><span class="o">=</span><span class="s2">&quot;SIS_junction&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_junction_and_shadow</span><span class="p">(</span><span class="n">junction_shapes_top</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">junction_layer</span><span class="o">=</span><span class="n">top_pad_layer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_grid_avoidance</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_make_junctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_corner</span><span class="p">,</span> <span class="n">b_corner_y</span><span class="p">,</span> <span class="n">finger_margin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create junction fingers and add them to some SIS layer.</span>
+
+<span class="sd">        Choose &#39;SIS_junction&#39; layer by default but &#39;SIS_junction_2&#39; if ``separate_junctions`` is True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">jx</span> <span class="o">=</span> <span class="n">top_corner</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">top_corner</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">b_corner_y</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">jy</span> <span class="o">=</span> <span class="p">(</span><span class="n">top_corner</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">b_corner_y</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">junction_width</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">fo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overshoot</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">pl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overlap</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># plus length to connect despite of rounding</span>
+
+        <span class="n">finger_points</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">top_corner</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">pl</span><span class="p">,</span> <span class="n">top_corner</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">dd</span> <span class="o">+</span> <span class="n">pl</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">top_corner</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">dd</span> <span class="o">+</span> <span class="n">pl</span><span class="p">,</span> <span class="n">top_corner</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="n">pl</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">jx</span> <span class="o">-</span> <span class="n">fo</span><span class="p">,</span> <span class="n">jy</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">-</span> <span class="n">dd</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">jx</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">-</span> <span class="n">dd</span><span class="p">,</span> <span class="n">jy</span> <span class="o">-</span> <span class="n">fo</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">finger</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="o">-</span><span class="n">jx</span><span class="p">,</span> <span class="o">-</span><span class="n">jy</span><span class="p">)</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">finger_points</span><span class="p">)</span>
+
+        <span class="n">junction_shapes</span> <span class="o">=</span> <span class="p">[(</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">jx</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="n">jy</span><span class="p">)</span> <span class="o">*</span> <span class="n">finger</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">),</span>
+                           <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">jx</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">top_corner</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">jy</span><span class="p">)</span> <span class="o">*</span> <span class="n">finger</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">),</span>
+                           <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">jx</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="n">jy</span><span class="p">)</span> <span class="o">*</span> <span class="n">finger</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">),</span>
+                           <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">jx</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">top_corner</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">jy</span><span class="p">)</span> <span class="o">*</span> <span class="n">finger</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)]</span>
+
+        <span class="n">junction_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">junction_shapes</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="n">layer_name</span> <span class="o">=</span> <span class="s2">&quot;SIS_junction_2&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">separate_junctions</span> <span class="k">else</span> <span class="s2">&quot;SIS_junction&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">layer_name</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">junction_region</span><span class="p">)</span>
+
+        <span class="c1"># place refpoints at the middle of the left and right junctions</span>
+        <span class="n">squa</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;l&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">jx</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">-</span> <span class="n">finger_margin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overshoot</span> <span class="o">*</span> <span class="n">squa</span><span class="p">,</span>
+                                         <span class="n">jy</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overshoot</span> <span class="o">*</span> <span class="n">squa</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;r&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">jx</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">top_corner</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overshoot</span> <span class="o">*</span> <span class="n">squa</span><span class="p">,</span>
+                                         <span class="n">jy</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overshoot</span> <span class="o">*</span> <span class="n">squa</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_junction_and_shadow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">junction_shapes</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span>
+                                 <span class="n">junction_layer</span><span class="o">=</span><span class="s2">&quot;SIS_junction&quot;</span><span class="p">,</span> <span class="n">shadow_layer</span><span class="o">=</span><span class="s2">&quot;SIS_shadow&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add final shapes to junction and shadow layers.&quot;&quot;&quot;</span>
+
+        <span class="c1"># merge shapes in the same layers and insert to cell</span>
+        <span class="n">junction_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">junction_shapes</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="n">shadow_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">shadow_shapes</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">junction_layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">junction_region</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">shadow_layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shadow_region</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_metal_shapes</span><span class="p">()</span>
+
+        <span class="c1"># refpoints</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;origin_squid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;common&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_gap_top_y</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_produce_ground_metal_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Produces hardcoded shapes in metal gap and metal addition layers.&quot;&quot;&quot;</span>
+        <span class="c1"># metal additions bottom</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="o">-</span><span class="mi">12</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact_geometry</span> <span class="k">else</span> <span class="o">-</span><span class="mi">13</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">bottom_pts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">y0</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="mi">5</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bottom_pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># metal additions top</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="mi">12</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact_geometry</span> <span class="k">else</span> <span class="mf">14.5</span>
+        <span class="n">top_pts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y0</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="n">y0</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_gap_top_y</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">top_pts</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="c1"># metal gap</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">include_base_metal_gap</span><span class="p">:</span>
+            <span class="n">pts</span> <span class="o">=</span> <span class="n">bottom_pts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mf">20.5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mf">20.5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_gap_top_y</span><span class="p">)]</span> <span class="o">+</span> <span class="n">top_pts</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">pts</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_produce_ground_grid_avoidance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add ground grid avoidance.&quot;&quot;&quot;</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="n">protection</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="o">-</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_round_corners_and_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polygon</span><span class="p">,</span> <span class="n">polygon_list</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rounds the corners of the polygon, converts it to integer coordinates, and adds it to the polygon list.&quot;&quot;&quot;</span>
+        <span class="n">polygon</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="n">rounding_params</span><span class="p">[</span><span class="s2">&quot;rinner&quot;</span><span class="p">],</span> <span class="n">rounding_params</span><span class="p">[</span><span class="s2">&quot;router&quot;</span><span class="p">],</span> <span class="n">rounding_params</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">])</span>
+        <span class="n">polygon_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021-2022, IQM.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

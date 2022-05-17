@@ -199,9 +199,9 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.qubits.swissmon.</span></span><span class="sig-name descname"><span class="pre">Swissmon</span></span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit" title="kqcircuits.qubits.qubit.Qubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.qubits.qubit.Qubit</span></code></a></p>
 <p>The PCell declaration for a Swissmon qubit.</p>
-<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own width. “Hole” for the island has the same
-gap_width for each arm. SQUID is loaded from another library. Option of having fluxline. Refpoints for 3
-couplers, fluxline position and chargeline position.</p>
+<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own arm gap width (gap_width)
+and arm metal width (arm_width). SQUID is loaded from another library. Option of having fluxline.
+Refpoints for 3 couplers, fluxline position and chargeline position.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.qubits.swissmon.Swissmon.build">
 <span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon.build" title="Permalink to this definition">¶</a></dt>
@@ -213,8 +213,8 @@ couplers, fluxline position and chargeline position.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>arm_length</strong><em> (List)</em><span> - Arm length (um, WNES))</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[150.0,</span> <span class="pre">150.0,</span> <span class="pre">150.0,</span> <span class="pre">150.0]</span></code></p></li>
-<li><p><strong>arm_width</strong><em> (List)</em><span> - Arm width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
-<li><p><strong>gap_width</strong><em> (Double)</em><span> - Arm gap full width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">48</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>arm_width</strong><em> (List)</em><span> - Arm metal width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
+<li><p><strong>gap_width</strong><em> (List)</em><span> - Arm gap width (um, WNES)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[12,</span> <span class="pre">12,</span> <span class="pre">12,</span> <span class="pre">12]</span></code></p></li>
 <li><p><strong>cpl_width</strong><em> (List)</em><span> - Coupler width (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[24,</span> <span class="pre">24,</span> <span class="pre">24]</span></code></p></li>
 <li><p><strong>cpl_length</strong><em> (List)</em><span> - Coupler lengths (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[120,</span> <span class="pre">120,</span> <span class="pre">120]</span></code></p></li>
 <li><p><strong>cpl_gap</strong><em> (List)</em><span> - Coupler gap (um, WNE)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[102,</span> <span class="pre">102,</span> <span class="pre">102]</span></code></p></li>

@@ -271,7 +271,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_junction_tests">
-<span class="sig-name descname"><span class="pre">produce_junction_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">squid_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QCD1'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">produce_junction_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">squid_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Manhattan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces junction test pads in the chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -310,7 +310,7 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_frame">
 <span class="sig-name descname"><span class="pre">produce_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans=&lt;klayout.dbcore.DTrans</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_frame" title="Permalink to this definition">¶</a></dt>
-<dd><p>“Produces a chip frame and markers for the given face.</p>
+<dd><p>Produces a chip frame and markers for the given face.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -324,16 +324,24 @@ optionally grid. Production of the chip frames can be adjusted by overriding the
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.merge_layout_layers_on_face">
 <span class="sig-name descname"><span class="pre">merge_layout_layers_on_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers_on_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers_on_face" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shapes in “base_metal_gap” layer must be created by combining the “base_metal_gap_wo_grid” and
-“ground_grid” layers even if no grid is generated</p>
-<p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
+<dd><p>Creates “base_metal_gap” layer on given face.</p>
+<p>The layer shape is combination of three layers using subtract (-) and insert (+) operations:</p>
+<blockquote>
+<div><p>“base_metal_gap” = “base_metal_gap_wo_grid” - “base_metal_addition” + “ground_grid”</p>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.merge_layout_layers">
 <span class="sig-name descname"><span class="pre">merge_layout_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.merge_layout_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.merge_layout_layers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shapes in “base_metal_gap” layer must be created by combining the “base_metal_gap_wo_grid” and
-“ground_grid” layers even if no grid is generated</p>
+<dd><p>Creates “base_metal_gap” layer.</p>
+<blockquote>
+<div><p>The layer shape is combination of three layers using subtract (-) and insert (+) operations:</p>
+<blockquote>
+<div><p>“base_metal_gap” = “base_metal_gap_wo_grid” - “base_metal_addition” + “ground_grid”</p>
+</div></blockquote>
+</div></blockquote>
+<p>This method is called in build(). Override this method to produce a different set of chip frames.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -430,10 +438,10 @@ override this. If neither argument is defined then all pads are enabled with def
 <ul class="simple">
 <li><p><strong>merge_base_metal_gap</strong><em> (Boolean)</em><span> - Merge grid and other gaps into base_metal_gap layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>with_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>tsv_grid_spacing</strong><em> (Double)</em><span> - TSV grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>tsv_edge_to_tsv_edge_separation</strong><em> (Double)</em><span> - Ground TSV clearance to manually placed TSVs (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">250</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>tsv_edge_to_nearest_element</strong><em> (Double)</em><span> - Ground TSV clearance to other elements (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>edge_from_tsv</strong><em> (Double)</em><span> - Ground TSV center clearance to chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>tsv_grid_spacing</strong><em> (Double)</em><span> - TSV grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>tsv_edge_to_tsv_edge_separation</strong><em> (Double)</em><span> - Ground TSV clearance to manually placed TSVs (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">250</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>tsv_edge_to_nearest_element</strong><em> (Double)</em><span> - Ground TSV clearance to other elements (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>edge_from_tsv</strong><em> (Double)</em><span> - Ground TSV center clearance to chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>with_grid</strong><em> (Boolean)</em><span> - Make ground plane grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>dice_width</strong><em> (Double)</em><span> - Dicing width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer for dicing edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>

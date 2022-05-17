@@ -1,0 +1,10 @@
+kqcircuits.squids.manhattan
+===========================
+
+.. automodule:: kqcircuits.squids.manhattan
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.squids.manhattan
+.. image:: ../pcell_images/kqcircuits.squids.manhattan.png

@@ -183,7 +183,7 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">traced</span><span class="p">,</span> <span class="n">logged</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
@@ -193,8 +193,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_bump_parameters</span><span class="p">,</span> <span class="n">default_marker_type</span>
 
 
-<div class="viewcode-block" id="MultiFace"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="MultiFace"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace">[docs]</a><span class="nd">@logged</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="s2">&quot;connector_type&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">MultiFace</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for multi-face chips.</span>
@@ -204,20 +203,20 @@
 <span class="sd">    launchers to the connectors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">a_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Capped center conductor width&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">,</span>
+    <span class="n">a_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Capped center conductor width&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
                      <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Width of center conductor in the capped region [μm]&quot;</span><span class="p">)</span>
-    <span class="n">b_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of gap in the capped region &quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+    <span class="n">b_capped</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of gap in the capped region &quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">face1_box</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Border of Face 1&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">8500</span><span class="p">,</span> <span class="mi">8500</span><span class="p">)))</span>
     <span class="n">with_face1_gnd_tsvs</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground TSVs on the top face&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">with_gnd_bumps</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Make ground bumps&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">bump_grid_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bump grid distance (center to center)&quot;</span><span class="p">,</span>
-        <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_grid_spacing&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+        <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_grid_spacing&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">bump_edge_to_bump_edge_separation</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;In bump clearance to manually placed Bumps (edge to edge)&quot;</span><span class="p">,</span>
-        <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_edge_to_bump_edge_separation&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+        <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;bump_edge_to_bump_edge_separation&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">edge_from_bump</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Spacing between bump and chip edge&quot;</span><span class="p">,</span>
-                          <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;edge_from_bump&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+                          <span class="n">default_bump_parameters</span><span class="p">[</span><span class="s1">&#39;edge_from_bump&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">face1_marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each top face corner, starting from lower right and &quot;</span>
                                              <span class="s2">&quot;going anticlockwise&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>
 
@@ -320,7 +319,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">produce_ground_on_face_grid</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">face_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultiFace.merge_layout_layers"><a class="viewcode-back" href="../../../../api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.merge_layout_layers">[docs]</a>    <span class="k">def</span> <span class="nf">merge_layout_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Merges layers on t and b faces.&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;Creates &quot;base_metal_gap&quot; layers on two faces.</span>
+
+<span class="sd">         The layer shape is combination of three layers using subtract (-) and insert (+) operations:</span>
+
+<span class="sd">            &quot;base_metal_gap&quot; = &quot;base_metal_gap_wo_grid&quot; - &quot;base_metal_addition&quot; + &quot;ground_grid&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="p">)):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">merge_layout_layers_on_face</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">i</span><span class="p">))</span></div></div>
 </pre></div>

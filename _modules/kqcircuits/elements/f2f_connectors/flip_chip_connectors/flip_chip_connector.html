@@ -181,7 +181,7 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span>
@@ -189,8 +189,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bump_parameters</span>
 
 
-<div class="viewcode-block" id="FlipChipConnector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="FlipChipConnector"><a class="viewcode-back" href="../../../../../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html#kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.FlipChipConnector">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">FlipChipConnector</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Connector between matching faces of two chips.</span>
 

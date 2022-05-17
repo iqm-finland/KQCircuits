@@ -220,12 +220,10 @@ the arms</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A tuple <code class="docutils literal notranslate"><span class="pre">(squid_unetch_region,</span> <span class="pre">refpoints_rel)</span></code></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">squid_unetch_region</span></code> (Region):  squid unetch region</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">refpoints_rel</span></code> (Dictionary): relative refpoints for the squid</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>Relative refpoints for the squid</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(dict)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,12 +260,12 @@ the arms</p></li>
 <li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>only_pads</strong><em> (Boolean)</em><span> - Only produce pads, no junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>pad_configuration</strong><em> (String)</em><span> - Pad configuration</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2-port</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['2-port',</span> <span class="pre">'4-port']</span></code></p></li>
-<li><p><strong>junction_width_steps</strong><em> (List)</em><span> - Automatically generate junction widths [start, step]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm,</span> <span class="pre">μm]</span></code></p></li>
+<li><p><strong>junction_width_steps</strong><em> (List)</em><span> - Automatically generate junction widths [start, step]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm,</span> <span class="pre">μm</span></code></p></li>
 <li><p><strong>junction_widths</strong><em> (List)</em><span> - Override the junction widths with these values.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
 <li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>loop_area</strong><em> (Double)</em><span> - Loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm^2</span></code></p></li>
-<li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">QCD1</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'QCD1',</span> <span class="pre">'QCD2',</span> <span class="pre">'QCD3',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
+<li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.test_structures.junction_test_pads.png" src="../_images/kqcircuits.test_structures.junction_test_pads.png" />
 </div>

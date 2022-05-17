@@ -8,16 +8,22 @@ This section explains some things about the KQCircuits code architecture.
 Elements
 ^^^^^^^^
 
+Every KQCircuits object that can be placed in a KLayout layout is derived from
+``Element``, that in turn is derived from `PCellDeclarationHelper <https://www
+.klayout.de/doc-qt4/code/class_PCellDeclarationHelper.html>`__.
+There exist also more specific base classes such as ``Chip``, ``Qubit`` or
+``TestStructure``.
+
 .. image:: ../images/class_diagram_1.png
     :alt: class diagram
 
-Every KQCircuits object that can be placed in a KLayout layout is derived from
-``Element``. There exist also more specific base classes such as ``Chip``,
-or ``TestStructure``, which inherit from ``Element``. Elements in KQCircuits
-are PCells (see `KLayout documentation <https://www.klayout
-.de/doc-qt5/about/about_pcells.html>`__ for more information on PCells), or
-more specifically, they inherit from `PCellDeclarationHelper <https://www
-.klayout.de/doc-qt4/code/class_PCellDeclarationHelper.html>`__. Due to how
+All base classes (black) are shown, abstracts are ovals, concretes are
+rectangles. Only one example "leaf" class (green) is shown for each base class.
+The class hierarchy is relatively flat as PCells make it more natural to use
+composition than inheritance.
+
+Elements in KQCircuits are PCells, see `KLayout documentation <https://www.klayout
+.de/doc-qt5/about/about_pcells.html>`__ for more information on PCells. Due to how
 KLayout handles PCells, the elements (i.e. classes inheriting from Element) in
 KQCircuits should not be treated as normal Python classes. The following
 things should be taken into account when writing new elements:
@@ -111,11 +117,19 @@ the other way around.
 Libraries
 ^^^^^^^^^
 
-The PCells in KQCircuits are divided into libraries such as ``elements``,
-``chips`` and ``test_structures``. Each library contains a base class for all
-other classes in the library, for example all classes in ``chips`` library
-inherit from ``Chip``. The base class contains ``LIBRARY_NAME`` and
-``LIBRARY_DESCRIPTION``, so that these are available for all elements.
+The PCells in KQCircuits are divided into libraries such as ``Element
+Library``, ``Chip Library`` or ``SQUID Library``. Each library contains a base
+class for all other classes in the library, for example all classes in the
+``Chip Library`` inherit from the ``Chip`` base class. Each base class contains
+``LIBRARY_NAME`` and ``LIBRARY_DESCRIPTION`` constants, so that these are
+available for all derived classes.
+
+.. image:: ../images/library_diagram.png
+    :alt: library diagram
+
+Libraries have a strict dependency order defined in ``kqc_library_names`` in
+``defaults.py``. KLayout loads them in this order. Classes *can not* use other
+classes from other libraries downstream in the dependency graph.
 
 The elements in these libraries are automatically discovered and registered to
 KLayout by ``library_helper.py``. It finds all classes in KQCircuits

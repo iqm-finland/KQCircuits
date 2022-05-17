@@ -183,7 +183,6 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">auto</span>
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">traced</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
@@ -195,8 +194,7 @@
     <span class="n">TOPLEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">TOPRIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="produce_label"><a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label">[docs]</a><span class="nd">@traced</span>
-<span class="k">def</span> <span class="nf">produce_label</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">origin_offset</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">layer_protection</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">350</span><span class="p">):</span>
+<div class="viewcode-block" id="produce_label"><a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label">[docs]</a><span class="k">def</span> <span class="nf">produce_label</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">origin_offset</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">layer_protection</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">350</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Produces a Text PCell accounting for desired relative position of the text respect to the given location</span>
 <span class="sd">    and the spacing.</span>
 

@@ -188,7 +188,7 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">mask_bitmap_export_layers</span><span class="p">,</span> <span class="n">chip_export_layer_clusters</span><span class="p">,</span> <span class="n">default_layers</span><span class="p">,</span> \
@@ -203,8 +203,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span>
 
 
-<div class="viewcode-block" id="export_mask_set"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask_set">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="export_mask_set"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask_set">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_mask_set</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exports the designs, bitmap and documentation for the mask_set.&quot;&quot;&quot;</span>
 
@@ -214,8 +213,7 @@
     <span class="n">export_docs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_set_dir</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_designs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_designs">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="export_designs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_designs">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_designs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exports .oas and .gds files of the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># export mask layouts</span>
@@ -351,8 +349,7 @@
         <span class="n">layout</span><span class="o">.</span><span class="n">copy_layer</span><span class="p">(</span><span class="n">tmp_layer</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
     <span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="n">tmp_layer</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="export_docs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="export_docs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_docs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;Mask_Documentation.md&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exports mask documentation containing mask layouts and parameters of all chips in the mask_set.&quot;&quot;&quot;</span>
     <span class="n">file_location</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">export_dir</span><span class="p">),</span> <span class="n">filename</span><span class="p">))</span>
@@ -480,8 +477,7 @@
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="export_bitmaps"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_bitmaps">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="export_bitmaps"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_bitmaps">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">spec_layers</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exports bitmaps for the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=dangerous-default-value</span>

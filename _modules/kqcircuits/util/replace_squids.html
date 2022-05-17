@@ -193,15 +193,14 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 
 
-<div class="viewcode-block" id="replace_squids"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squids">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="replace_squids"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squids">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Replaces squids by code generated squids with the given parameter sweep.</span>
 

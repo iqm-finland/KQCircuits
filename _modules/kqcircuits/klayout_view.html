@@ -183,7 +183,7 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span><span class="p">,</span> <span class="n">traced</span>
+<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
@@ -191,8 +191,7 @@
     <span class="n">all_layers_bitmap_hide_layers</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">SRC_PATHS</span>
 
 
-<div class="viewcode-block" id="resolve_default_layer_info"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="resolve_default_layer_info"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns LayerInfo based on default_layers.</span>
 
@@ -210,8 +209,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="KLayoutView"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView">[docs]</a><span class="nd">@traced</span>
-<span class="nd">@logged</span>
+<div class="viewcode-block" id="KLayoutView"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">KLayoutView</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;KLayout layout view wrapper with helper methods.&quot;&quot;&quot;</span>
 
@@ -366,14 +364,12 @@
                 <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">current_layer_visibility</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="ViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.ViewException">[docs]</a><span class="nd">@traced</span>
-<span class="k">class</span> <span class="nc">ViewException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="ViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.ViewException">[docs]</a><span class="k">class</span> <span class="nc">ViewException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="ne">Exception</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MissingUILibraryException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">[docs]</a><span class="nd">@traced</span>
-<span class="k">class</span> <span class="nc">MissingUILibraryException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
+<div class="viewcode-block" id="MissingUILibraryException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">[docs]</a><span class="k">class</span> <span class="nc">MissingUILibraryException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -381,8 +377,7 @@
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="InvalidViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.InvalidViewException">[docs]</a><span class="nd">@traced</span>
-<span class="k">class</span> <span class="nc">InvalidViewException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
+<div class="viewcode-block" id="InvalidViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.InvalidViewException">[docs]</a><span class="k">class</span> <span class="nc">InvalidViewException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
         <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

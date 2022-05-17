@@ -223,38 +223,34 @@
 <span class="sd">                       the arms</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A tuple ``(squid_unetch_region, refpoints_rel)``</span>
-
-<span class="sd">            * ``squid_unetch_region`` (Region):  squid unetch region</span>
-<span class="sd">            * ``refpoints_rel`` (Dictionary): relative refpoints for the squid</span>
+<span class="sd">            (dict): Relative refpoints for the squid</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="n">refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
         <span class="n">squid_transf</span> <span class="o">=</span> <span class="n">transf</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">M90</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirror_squid</span> <span class="k">else</span> <span class="n">transf</span>
 
-        <span class="c1"># For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting</span>
-        <span class="c1"># the cell, convert the integer transform back to float to keep cell and geometry consistent.</span>
-        <span class="n">integer_transf</span> <span class="o">=</span> <span class="n">squid_transf</span><span class="o">.</span><span class="n">to_itrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-        <span class="n">float_transf</span> <span class="o">=</span> <span class="n">integer_transf</span><span class="o">.</span><span class="n">to_itrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>  <span class="c1"># Note: ICplxTrans.to_itrans returns DCplxTrans</span>
+        <span class="k">if</span> <span class="s2">&quot;squid_index&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+            <span class="n">s_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;squid_index&#39;</span><span class="p">))</span>
+            <span class="n">inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">squid_transf</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;squid_</span><span class="si">{</span><span class="n">s_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;squid_index&quot;</span><span class="p">,</span> <span class="n">s_index</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">squid_transf</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="s2">&quot;squid&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">only_arms</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s2">&quot;squid_index&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
-                <span class="n">s_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parameters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;squid_index&#39;</span><span class="p">))</span>
-                <span class="n">inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">float_transf</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;squid_</span><span class="si">{</span><span class="n">s_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;squid_index&quot;</span><span class="p">,</span> <span class="n">s_index</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">float_transf</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="s2">&quot;squid&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">only_arms</span><span class="p">:</span>
+            <span class="c1"># add squid metal etch and unetch shapes to qubit and erase instance of squid</span>
+            <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span> <span class="s2">&quot;base_metal_addition&quot;</span><span class="p">]:</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)))</span>
+                <span class="n">region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cplx_trans</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">layer_name</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">erase</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># add parts of qubit to the layer needed for EBL</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">)))</span>
+            <span class="n">region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cplx_trans</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_for_EBL&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
 
-        <span class="n">squid_unetch_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">)))</span>
-        <span class="n">squid_unetch_region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">integer_transf</span><span class="p">)</span>
-        <span class="c1"># add parts of qubit to the layer needed for EBL</span>
-        <span class="n">squid_etch_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">)))</span>
-        <span class="n">squid_etch_region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">integer_transf</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">only_arms</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_for_EBL&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">squid_etch_region</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">squid_unetch_region</span><span class="p">,</span> <span class="n">refpoints_rel</span></div>
+        <span class="k">return</span> <span class="n">refpoints_rel</span></div>
 
 <div class="viewcode-block" id="Qubit.produce_fluxline"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit.produce_fluxline">[docs]</a>    <span class="k">def</span> <span class="nf">produce_fluxline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces the fluxline.</span>
@@ -264,13 +260,10 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            parameters: parameters for the fluxline to overwrite default and subclass parameters</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            The unetch region of the fluxline</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">([])</span>
+            <span class="k">return</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fluxline_type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxline_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">}</span>
 
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
@@ -281,17 +274,8 @@
         <span class="n">rotation</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">180</span> <span class="o">+</span> <span class="mi">90</span>
         <span class="n">transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">rotation</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">squid_edge</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;base&quot;</span><span class="p">])</span>
 
-        <span class="c1"># For the region transformation, we need to use ICplxTrans, which causes some rounding errors. For inserting</span>
-        <span class="c1"># the cell, convert the integer transform back to float to keep cell and geometry consistent</span>
-        <span class="n">integer_transf</span> <span class="o">=</span> <span class="n">transf</span><span class="o">.</span><span class="n">to_itrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-        <span class="n">float_transf</span> <span class="o">=</span> <span class="n">integer_transf</span><span class="o">.</span><span class="n">to_itrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>  <span class="c1"># Note: ICplxTrans.to_itrans returns DCplxTrans</span>
-
-        <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">float_transf</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">copy_port</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">,</span> <span class="n">cell_inst</span><span class="p">)</span>
-
-        <span class="n">unetch_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">)))</span>
-        <span class="n">unetch_region</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">integer_transf</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">unetch_region</span></div></div>
+        <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">transf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy_port</span><span class="p">(</span><span class="s2">&quot;flux&quot;</span><span class="p">,</span> <span class="n">cell_inst</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
