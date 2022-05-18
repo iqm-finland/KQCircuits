@@ -103,7 +103,7 @@ if design_type == "HFSS":
 
     # S-parameter export (only for HFSS)
     file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
-    file_name = os.path.join(path, basename + '_SMatrix.s2p')
+    file_name = os.path.join(path, basename + '_SMatrix.s{}p'.format(len(ports)))
     frequencies = ["All"]
     do_renormalize = False
     renorm_impedance = 50
