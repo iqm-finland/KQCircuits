@@ -25,10 +25,11 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.refpoints import Refpoints
 
 
 def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
-    """Extract reference points from cell from layer as dictionary.
+    """Returns Refpoints object for extracting reference points from given layer and cell.
 
     Args:
         layer: layer specification for source of refpoints
@@ -37,21 +38,10 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
         rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.
 
     Returns:
-        Dictionary, where keys are refpoints names, values are DPoints.
+        Refpoints object, which behaves like dictionary, where keys are refpoints names, values are DPoints.
 
     """
-
-    refpoints = {}
-    shapes_iter = cell.begin_shapes_rec(layer)
-    if rec_levels is not None:
-        shapes_iter.max_depth = rec_levels
-    while not shapes_iter.at_end():
-        shape = shapes_iter.shape()
-        if shape.type() in (pya.Shape.TText, pya.Shape.TTextRef):
-            refpoints[shape.text_string] = cell_transf * (shapes_iter.dtrans() * (pya.DPoint(shape.text_dpos)))
-        shapes_iter.next()
-
-    return refpoints
+    return Refpoints(layer, cell, cell_transf, rec_levels)
 
 
 @logged
