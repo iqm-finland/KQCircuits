@@ -20,14 +20,16 @@ from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 
 
-def cap_params(fingers, length, coupler_type="interdigital", element_key='cls', **kwargs):
-    """A utility function to easily produce typical finger capacitor instance parameters.
+def cap_params(fingers, length=None, coupler_type="interdigital", element_key='cls', **kwargs):
+    """An utility function to easily produce typical finger capacitor instance parameters.
+    Covers FingerCapacitorSquare and SmoothCapacitor.
 
     Args:
-        fingers: number of fingers
-        length: length of fingers in FingerCapacitorSquare
-        coupler_type: a string describing the capacitor type
-        element_key: dictionary key in which coupler Element is returned
+        fingers: number of fingers in FingerCapacitorSquare or finger control parameter in SmoothCapacitor.
+        length: length of fingers in FingerCapacitorSquare (useless parameter in SmoothCapacitor)
+        coupler_type: a string describing the capacitor type (accepts "interdigital", "gap", "ground gap", or "smooth")
+        element_key: dictionary key in which coupler Element is returned (use 'cls'=default with `add_element` function
+                     or 'cell' with `insert_cell` function)
         **kwargs: other optional parameters
 
     Returns:
