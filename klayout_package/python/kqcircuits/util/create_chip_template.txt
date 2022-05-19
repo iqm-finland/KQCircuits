@@ -31,7 +31,7 @@ from kqcircuits.util.log_router import route_log
 
 
 logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
-chip_path = Path(TMP_PATH / "${name_mask}" / "Chips" / "${variant_name}")
+chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
 route_log(filename=chip_path/"${variant_name}.log")
 
 layout, _, _ = macro_prepare.prep_empty_layout()

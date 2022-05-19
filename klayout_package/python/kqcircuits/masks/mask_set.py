@@ -81,6 +81,7 @@ class MaskSet:
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
         self._thread_create_chip_template = PY_PATH / 'kqcircuits/util/create_chip_template.txt'
+        self._thread_create_chip_parameters = {}
 
     def add_mask_layout(self, chips_map, face_id="b", mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -169,8 +170,16 @@ class MaskSet:
                 script_name = str(chip_path / f"{variant_name}.py")
                 file_names.append((variant_name, str(chip_path / f"{variant_name}.oas"), script_name))
 
-                result = template.substitute(name_mask=f"{self.name}_v{self.version}", variant_name=variant_name,
-                                             create_element=create_element, export_drc=self.export_drc)
+                substitution_parameters = {
+                    'name_mask': self.name,
+                    'version_mask': self.version,
+                    'variant_name': variant_name,
+                    'chip_class': chip_class.__name__,
+                    'create_element': create_element,
+                    'export_drc': self.export_drc
+                }
+                substitution_parameters.update(self._thread_create_chip_parameters)
+                result = template.substitute(**substitution_parameters)
                 with open(script_name, "w") as f:
                     f.write(result)
 
