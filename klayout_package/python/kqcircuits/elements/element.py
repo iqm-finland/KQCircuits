@@ -110,9 +110,8 @@ class Element(pya.PCellDeclarationHelper):
             **parameters: PCell parameters for the element as keyword arguments
         """
         cell = Element._create_cell(cls, layout, library, **parameters)
-        if not cell.bbox_per_layer(layout.layer(default_layers['waveguide_length'])).empty():
-            l = get_cell_path_length(cell, layout.layer(default_layers['waveguide_length']))
-            setattr(cell, "length", lambda: l)
+        layer = layout.layer(default_layers['waveguide_length'])
+        setattr(cell, "length", lambda: get_cell_path_length(cell, layer))
         return cell
 
     @classmethod

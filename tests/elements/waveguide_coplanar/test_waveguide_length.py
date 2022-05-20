@@ -21,12 +21,9 @@ from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
-def test_presence_and_absence_of_length():
+def test_presence_of_length():
     layout = pya.Layout()
 
     waveguide_cell = WaveguideCoplanar.create(layout, path=pya.DPath([pya.DPoint(0, 0), pya.DPoint(0, 99)], 0))
     assert hasattr(waveguide_cell, "length")
     assert waveguide_cell.length() == 99
-
-    capacitor_cell = FingerCapacitorSquare.create(layout)
-    assert not hasattr(capacitor_cell, "length")
