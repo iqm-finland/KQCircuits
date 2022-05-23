@@ -57,6 +57,8 @@ class QualityFactorTwoface(MultiFace):
     x_indentation = Param(pdt.TypeDouble, "Resonator/connector indentation from side edges", 800)
     cap_res_distance = Param(pdt.TypeDouble, "Distance between spiral resonator and capacitor", 200)
     waveguide_indentation = Param(pdt.TypeDouble, "Waveguide indentation from top chip edge", 500)
+    extra_resonator_avoidance = Param(pdt.TypeList, "Added avoidance", [0, 0, 0, 0, 0, 0], unit="[μm]",
+                                      docstring="Added avoidance around resonators [μm]")
 
     def build(self):
         self._produce_resonators()
@@ -71,6 +73,7 @@ class QualityFactorTwoface(MultiFace):
         l_fingers = [float(foo) for foo in self.l_fingers]
         connector_distances = [float(foo) for foo in self.connector_distances]
         face1_box = self.get_box(1)
+        extra_resonator_avoidance = [float(i) for i in self.extra_resonator_avoidance]
 
         # Constants
         left_x = face1_box.p1.x + self.waveguide_indentation
@@ -150,6 +153,7 @@ class QualityFactorTwoface(MultiFace):
             else:
                 res_params = {'name': 'resonator{}'.format(i), "bridge_spacing": 0}
             inst_res, _ = self.insert_cell(SpiralResonatorPolygon,
+                                           margin=self.margin + extra_resonator_avoidance[i],
                                            **rectangular_parameters(
                                                right_space=self.spiral_box_height - self.cap_res_distance,
                                                above_space=0,
