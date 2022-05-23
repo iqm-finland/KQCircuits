@@ -182,9 +182,38 @@ Usage of Gmsh and Elmer export is similar to Ansys export.
 The ``simulation`` object can be used with function ``export_elmer`` to export all necessary files to produce Gmsh/Elmer
 simulations.
 
-There is an example at 'klayout_package/python/scripts/simulations/waveguides_sim_compare.py', which creates a mesh
-using Gmsh, computes the capacitance matrix using Elmer, and visualizes the results using Paraview.
-The simulations are executed by running the `.sh` file in the output folder.
+There is an example at 'klayout_package/python/scripts/simulations/waveguides_sim_compare.py', which creates a simulation folder
+with simulation scripts. The folder is created to `$TMP` (usually `kqcircuits/tmp`). The contents of the folder is something like::
+
+    waveguides_sim_elmer
+    ├── COMMIT_REFERENCE
+    ├── scripts
+    │   ├── elmer_helpers.py
+    │   ├── gmsh_helpers.py
+    │   └── run.py
+    ├── sif
+    │   ├── CapacitanceMatrix.sif
+    │   └── electric_potential.pvsm
+    ├── simulation.oas
+    ├── simulation.sh
+    ├── waveguides_n_guides_1.gds
+    ├── waveguides_n_guides_1.json
+    ├── waveguides_n_guides_1.sh
+    ├── waveguides_n_guides_2.gds
+    ├── waveguides_n_guides_2.json
+    └── waveguides_n_guides_2.sh
+
+`script` folder contains scripts that are used for preparing the simulations.
+
+`sif` contains the Solver Input Files (SIF) for Elmer (scripts in `scripts` -folder are used 
+to build the SIF files for each simulation).
+
+`waveguides_n_guides_1.sh`, `waveguides_n_guides_2.sh`, `...` are the shell scripts for running each simulation.
+Each script executes Gmsh (mesh creation), computes the FEM model using Elmer (computes the 
+capacitance matrix), and visualizes the results using Paraview.
+
+`simulation.sh` is a shell script for running all simulations at once.
+The simulations are executed by running the `.sh` file in the output folder (here `waveguides_sim_elmer`).
 
 Please note that running the example requires the installation of
 

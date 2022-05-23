@@ -228,6 +228,8 @@
     <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span>
                                                             <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_ports&quot;</span><span class="p">])])</span>
     <span class="n">ltn</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutToNetlist</span><span class="p">(</span><span class="n">shapes_iter</span><span class="p">)</span>
+    <span class="c1"># text_enlargement&gt;0 converts the texts into boxes so that their overlaps are detected as connections</span>
+    <span class="n">ltn</span><span class="o">.</span><span class="n">dss</span><span class="p">()</span><span class="o">.</span><span class="n">text_enlargement</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="c1"># parallel processing</span>
     <span class="n">ltn</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
     <span class="c1"># select conducting layers</span>

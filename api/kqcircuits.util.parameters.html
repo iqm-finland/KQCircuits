@@ -45,7 +45,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.util.replace_squids" href="kqcircuits.util.replace_squids.html" />
+    <link rel="next" title="kqcircuits.util.refpoints" href="kqcircuits.util.refpoints.html" />
     <link rel="prev" title="kqcircuits.util.parameter_helper" href="kqcircuits.util.parameter_helper.html" /> 
 </head>
 
@@ -125,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.html#module-kqcircuits.util">Module contents</a></li>
@@ -301,7 +302,15 @@ changing the “hidden” or the “choices” property of the parameter.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.parameters.</span></span><span class="sig-name descname"><span class="pre">Param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#Param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.Param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>PCell parameters as Element class attributes.</p>
-<p>This should be used for defining PCell parameters in Element subclasses.</p>
+<p>This should be used for defining PCell parameters in Element subclasses. The attributes of Param are same
+as <code class="docutils literal notranslate"><span class="pre">pya.PCellParameterDeclaration</span></code>’s attributes, except for:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data_type</span></code>: same as <code class="docutils literal notranslate"><span class="pre">type</span></code> in <code class="docutils literal notranslate"><span class="pre">pya.PCellParameterDeclaration</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">choices</span></code>: List of (description, value) tuples or plain <code class="docutils literal notranslate"><span class="pre">str</span></code> values that are used as description too.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">docstring</span></code>: Longer description of the parameter that gets used by Sphinx to generate API docs.</p></li>
+</ul>
+</div></blockquote>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.util.parameters.Param.get_all">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">owner</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/parameters.html#Param.get_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.parameters.Param.get_all" title="Permalink to this definition">¶</a></dt>
@@ -327,7 +336,7 @@ changing the “hidden” or the “choices” property of the parameter.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.util.replace_squids.html" class="btn btn-neutral float-right" title="kqcircuits.util.replace_squids" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.util.refpoints.html" class="btn btn-neutral float-right" title="kqcircuits.util.refpoints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kqcircuits.util.parameter_helper.html" class="btn btn-neutral float-left" title="kqcircuits.util.parameter_helper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

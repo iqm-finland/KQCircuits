@@ -351,9 +351,35 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <p>Usage of Gmsh and Elmer export is similar to Ansys export.
 The <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object can be used with function <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> to export all necessary files to produce Gmsh/Elmer
 simulations.</p>
-<p>There is an example at ‘klayout_package/python/scripts/simulations/waveguides_sim_compare.py’, which creates a mesh
-using Gmsh, computes the capacitance matrix using Elmer, and visualizes the results using Paraview.
-The simulations are executed by running the <cite>.sh</cite> file in the output folder.</p>
+<p>There is an example at ‘klayout_package/python/scripts/simulations/waveguides_sim_compare.py’, which creates a simulation folder
+with simulation scripts. The folder is created to <cite>$TMP</cite> (usually <cite>kqcircuits/tmp</cite>). The contents of the folder is something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>waveguides_sim_elmer
+├── COMMIT_REFERENCE
+├── scripts
+│   ├── elmer_helpers.py
+│   ├── gmsh_helpers.py
+│   └── run.py
+├── sif
+│   ├── CapacitanceMatrix.sif
+│   └── electric_potential.pvsm
+├── simulation.oas
+├── simulation.sh
+├── waveguides_n_guides_1.gds
+├── waveguides_n_guides_1.json
+├── waveguides_n_guides_1.sh
+├── waveguides_n_guides_2.gds
+├── waveguides_n_guides_2.json
+└── waveguides_n_guides_2.sh
+</pre></div>
+</div>
+<p><cite>script</cite> folder contains scripts that are used for preparing the simulations.</p>
+<p><cite>sif</cite> contains the Solver Input Files (SIF) for Elmer (scripts in <cite>scripts</cite> -folder are used
+to build the SIF files for each simulation).</p>
+<p><cite>waveguides_n_guides_1.sh</cite>, <cite>waveguides_n_guides_2.sh</cite>, <cite>…</cite> are the shell scripts for running each simulation.
+Each script executes Gmsh (mesh creation), computes the FEM model using Elmer (computes the
+capacitance matrix), and visualizes the results using Paraview.</p>
+<p><cite>simulation.sh</cite> is a shell script for running all simulations at once.
+The simulations are executed by running the <cite>.sh</cite> file in the output folder (here <cite>waveguides_sim_elmer</cite>).</p>
 <p>Please note that running the example requires the installation of</p>
 <ul class="simple">
 <li><p>gmsh python api

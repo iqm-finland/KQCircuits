@@ -187,7 +187,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_sampleholders</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 
-<span class="n">sampleholder_type_choices</span> <span class="o">=</span> <span class="p">[[</span><span class="n">name</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">default_sampleholders</span><span class="p">]</span>
+<span class="n">sampleholder_type_choices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">default_sampleholders</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
 
 <div class="viewcode-block" id="Launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.launchers.html#kqcircuits.chips.launchers.Launchers">[docs]</a><span class="k">class</span> <span class="nc">Launchers</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>

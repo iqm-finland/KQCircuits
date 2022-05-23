@@ -187,14 +187,16 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.smooth_capacitor</span> <span class="kn">import</span> <span class="n">SmoothCapacitor</span>
 
 
-<div class="viewcode-block" id="cap_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.cap_params">[docs]</a><span class="k">def</span> <span class="nf">cap_params</span><span class="p">(</span><span class="n">fingers</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="n">element_key</span><span class="o">=</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A utility function to easily produce typical finger capacitor instance parameters.</span>
+<div class="viewcode-block" id="cap_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.coupler_lib.html#kqcircuits.util.coupler_lib.cap_params">[docs]</a><span class="k">def</span> <span class="nf">cap_params</span><span class="p">(</span><span class="n">fingers</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">coupler_type</span><span class="o">=</span><span class="s2">&quot;interdigital&quot;</span><span class="p">,</span> <span class="n">element_key</span><span class="o">=</span><span class="s1">&#39;cls&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An utility function to easily produce typical finger capacitor instance parameters.</span>
+<span class="sd">    Covers FingerCapacitorSquare and SmoothCapacitor.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        fingers: number of fingers</span>
-<span class="sd">        length: length of fingers in FingerCapacitorSquare</span>
-<span class="sd">        coupler_type: a string describing the capacitor type</span>
-<span class="sd">        element_key: dictionary key in which coupler Element is returned</span>
+<span class="sd">        fingers: number of fingers in FingerCapacitorSquare or finger control parameter in SmoothCapacitor.</span>
+<span class="sd">        length: length of fingers in FingerCapacitorSquare (useless parameter in SmoothCapacitor)</span>
+<span class="sd">        coupler_type: a string describing the capacitor type (accepts &quot;interdigital&quot;, &quot;gap&quot;, &quot;ground gap&quot;, or &quot;smooth&quot;)</span>
+<span class="sd">        element_key: dictionary key in which coupler Element is returned (use &#39;cls&#39;=default with `add_element` function</span>
+<span class="sd">                     or &#39;cell&#39; with `insert_cell` function)</span>
 <span class="sd">        **kwargs: other optional parameters</span>
 
 <span class="sd">    Returns:</span>

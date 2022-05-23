@@ -268,7 +268,12 @@
 <div class="viewcode-block" id="Param"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.Param">[docs]</a><span class="k">class</span> <span class="nc">Param</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;PCell parameters as Element class attributes.</span>
 
-<span class="sd">    This should be used for defining PCell parameters in Element subclasses.</span>
+<span class="sd">    This should be used for defining PCell parameters in Element subclasses. The attributes of Param are same</span>
+<span class="sd">    as ``pya.PCellParameterDeclaration``&#39;s attributes, except for:</span>
+
+<span class="sd">        * ``data_type``: same as ``type`` in ``pya.PCellParameterDeclaration``</span>
+<span class="sd">        * ``choices``: List of (description, value) tuples or plain ``str`` values that are used as description too.</span>
+<span class="sd">        * ``docstring``: Longer description of the parameter that gets used by Sphinx to generate API docs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">_index</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># A private dictionary of parameter dictionaries indexed by owner classes&#39; name</span>

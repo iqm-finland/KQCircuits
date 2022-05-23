@@ -192,10 +192,11 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_cell_path_length</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">Refpoints</span>
 
 
 <div class="viewcode-block" id="get_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints">[docs]</a><span class="k">def</span> <span class="nf">get_refpoints</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Extract reference points from cell from layer as dictionary.</span>
+    <span class="sd">&quot;&quot;&quot;Returns Refpoints object for extracting reference points from given layer and cell.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        layer: layer specification for source of refpoints</span>
@@ -204,21 +205,10 @@
 <span class="sd">        rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Dictionary, where keys are refpoints names, values are DPoints.</span>
+<span class="sd">        Refpoints object, which behaves like dictionary, where keys are refpoints names, values are DPoints.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">refpoints</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">rec_levels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">shapes_iter</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">=</span> <span class="n">rec_levels</span>
-    <span class="k">while</span> <span class="ow">not</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">at_end</span><span class="p">():</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">shape</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">TText</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">TTextRef</span><span class="p">):</span>
-            <span class="n">refpoints</span><span class="p">[</span><span class="n">shape</span><span class="o">.</span><span class="n">text_string</span><span class="p">]</span> <span class="o">=</span> <span class="n">cell_transf</span> <span class="o">*</span> <span class="p">(</span><span class="n">shapes_iter</span><span class="o">.</span><span class="n">dtrans</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">text_dpos</span><span class="p">)))</span>
-        <span class="n">shapes_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">refpoints</span></div>
+    <span class="k">return</span> <span class="n">Refpoints</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">[docs]</a><span class="nd">@logged</span>
@@ -533,6 +523,8 @@
 
 <span class="sd">            * `value_type` defines the `type` attribute</span>
 <span class="sd">            * `docstring` is a more verbose parameter description, used in documentation generation.</span>
+<span class="sd">            * `choices` argument is a list of `(description, value)` tuples. For convenience it also accepts</span>
+<span class="sd">              self-describing, plain string elements, these will be converted to the expected tuple format.</span>
 
 <span class="sd">        For TypeLayer parameters this also defines a `name_layer` read accessor for the layer index and modifies</span>
 <span class="sd">        `self._layer_param_index` accordingly.</span>
@@ -553,6 +545,8 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;choices must be a list or tuple.&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">choices</span><span class="p">:</span>
+                <span class="k">if</span>  <span class="nb">isinstance</span><span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>  <span class="c1"># description-is-value shorthand</span>
+                    <span class="n">choice</span> <span class="o">=</span> <span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="n">choice</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Each item in choices list/tuple must be a two-element array [description, value]&quot;</span><span class="p">)</span>
                 <span class="n">param_decl</span><span class="o">.</span><span class="n">add_choice</span><span class="p">(</span><span class="n">choice</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">choice</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
