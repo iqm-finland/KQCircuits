@@ -125,14 +125,14 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
 
         used_internal_cells.add(internal_cell)
 
-        if internal_cell.name.split('$')[0] == 'Waveguide Coplanar':
-            location = subcircuit.circuit_ref().boundary.bbox().center()
-        elif hasattr(subcircuit, "trans"):
-            location = subcircuit.trans.disp
+        if hasattr(subcircuit, "trans"):
+            subcircuit_origin = subcircuit.trans.disp
+            subcircuit_location = (subcircuit.trans * subcircuit.circuit_ref().boundary).bbox().center()
         else:  # sane defaults for klayout 0.26 as it does not have `subcircuit.trans`
-            location = [0.0, 0.0]
+            subcircuit_origin = [0.0, 0.0]
+            subcircuit_location = [0.0, 0.0]
 
-        correct_instance = [i for i in possible_instances if i.has_prop_id() and (i.dtrans.disp == location)]
+        correct_instance = [i for i in possible_instances if i.has_prop_id() and (i.dtrans.disp == subcircuit_origin)]
         if correct_instance:
             property_dict = {key: value for (key, value) in original_layout.properties(correct_instance[0].prop_id)
                              if key != "id"}
@@ -142,7 +142,7 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         subcircuits_for_export[subcircuit.id()] = {
             "cell_name": internal_cell.name,
             "instance_name": correct_instance[0].property('id') if correct_instance else None,
-            "subcircuit_location": location,
+            "subcircuit_location": subcircuit_location,
             "properties": property_dict,
         }
 
