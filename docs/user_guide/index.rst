@@ -10,6 +10,7 @@ User Guide
     gui_workflow
     python_workflow
     macro_workflow
-    export/index
+    mask_export
+    simulations
     xsection
     terminology

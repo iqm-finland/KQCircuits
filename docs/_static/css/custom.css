@@ -1,25 +1,45 @@
-/*
-green: #00e397
-light blue: #002c67
-dark blue: #00274d
-white: #d9d9d9
-red: #f8003a
-orange: #ff9900
-link-blue: #1178e2
-light grey: #f7f7f7
-gradient blue: #759deb
-gradient green: #5fdd97
-black: #000000
-*/
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+/* Get Fira Code and Lato from Google Fonts */
+
+/* Colors as variables */
+:root {
+    --green: #00e397;
+    --comment_green: #2d9975;
+    --light_blue: #002c67;
+    --dark_blue: #00274d;
+    --white: #d9d9d9;
+    --red: #f8003a;
+    --orange: #ff9900;
+    --link_blue: #13088c;
+    --grey: #ececec;
+    --light_grey: #f7f7f7;
+    --gradient_blue: #759deb;
+    --gradient_green: #5fdd97;
+    --black: #000000;
+}
+
 
 body {
- font-family: "Microsoft Sans Serif", sans-serif;
+ font-family: "Lato", "Microsoft Sans Serif", sans-serif;
+}
+
+
+/* Header font */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    font-weight: 600;
+    font-family: "Lato", "Microsoft Sans Serif", sans-serif;
+}
+
+.caption-text {
+    font-family: "Lato", "Microsoft Sans Serif", sans-serif;
 }
 
 a {
     color: grey;
 }
 
+/* Navbar settings */
 .wy-side-nav-search {
     background-color: #ffffff !important;
 }
@@ -38,6 +58,10 @@ a {
 
 .wy-nav-top {  /* Mobile nav */
     background-color: #000000 !important;
+}
+
+.wy-nav-top a { /* Mobile nav more unique font */
+    letter-spacing: 0.05em !important;
 }
 
 .wy-menu-vertical a {
@@ -62,4 +86,56 @@ a {
 
 .wy-menu-vertical li.current a:hover {
     background-color: #ffffff !important;
+}
+
+/* Next and Prev. button style */
+.btn {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.btn-neutral {
+    background-color: #f3f6f600!important;
+}
+
+
+/****************/
+/* CODE STYLING */
+/****************/
+/* Changes on top of selected pygments style */
+
+.rst-content div[class^=highlight] pre {
+    font-family: "Fira Code", "Source Code Pro", monospace !important;
+    line-height: 1.3 !important;
+}
+
+.py.function dt {
+    display: block !important;
+}
+
+.py.function code {
+    white-space: break-spaces !important;
+}
+
+.highlight {
+    background-color: #ffffff !important;
+}
+
+.highlight .ne, .nf, .fm {
+    color: var(--light_blue) !important;
+}
+
+/* Inline code */ 
+.rst-content code.literal, .rst-content tt.literal {
+    color: var(--light_blue) !important;
+}
+
+/* API docs */
+.rst-content dl[class]:not(.option-list):not(.field-list):not(.footnote):not(.glossary):not(.simple)>dt {
+    color: var(--light_blue) !important; /* text */
+    background-color: var(--grey) !important;
+    border-left: 3.5px solid var(--black) !important;
+    border-top: none !important;
+    box-shadow: 4px 3px 7px 1px #002c6726
+     !important;
 }

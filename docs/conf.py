@@ -118,7 +118,7 @@ extensions = [
 
 todo_include_todos = True
 
-pygments_style = 'sphinx'
+pygments_style = 'trac'
 
 autoclass_content = "both"
 autosummary_generate = True
@@ -156,9 +156,16 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/modules.rst']
 #
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+html_theme_options = {
+    'logo_only': True,
+    'display_version': False,
+    'style_nav_header_background': 'white',
+    'collapse_navigation': False,
+}
 
-# Add favicon to site. Vectors are supported by modern browsers.
+# Add favicon and logo to site. Vectors are supported by modern browsers.
 html_favicon = 'images/logo.svg'
+html_logo = "images/logo-small.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -168,10 +175,19 @@ html_css_files = [
     'css/custom.css'
 ]
 
+# Add "Edit on GitHub" button
+html_context = {
+  'display_github': True,
+  'github_user': 'iqm-finland',
+  'github_repo': 'KQCircuits',
+  'github_version': 'main',
+  'conf_py_path': '/docs/'
+}
+
 # A string of reStructuredText that will be included at the end of every source file that is read.
 # This is a possible place to add substitutions that should be available in every file
 rst_epilog = """
 .. |GIT_CLONE_URL| replace:: {url}
 """.format(
-    url=os.environ.get('DOCS_GIT_CLONE_URL', 'https://github.com/iqm-finland/KQCircuits'),  # picks default if no ENV
+    url=os.environ.get('DOCS_GIT_CLONE_URL', f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}'),  # picks default if no ENV
 )
