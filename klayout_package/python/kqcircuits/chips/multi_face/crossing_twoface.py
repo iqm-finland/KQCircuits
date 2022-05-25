@@ -47,13 +47,14 @@ class CrossingTwoface(MultiFace):
         distance = 700
         right_tr_x = 5000 + distance
         left_tr_x = 5000 - distance
+        face1_box = self.get_box(1)
 
         # Left transmission line
         nodes = [Node(self.refpoints["NW_port"]),
                  Node(self.refpoints["NW_port_corner"] + pya.DPoint(0, - 2 * self.r)),
                  Node((left_tr_x, self.refpoints["NW_port_corner"].y - 2 * self.r)),
-                 Node((left_tr_x, self.face1_box.p2.y), a=self.a_capped, b=self.b_capped),
-                 Node((left_tr_x, self.face1_box.p1.y + 100), a=self.a, b=self.b),
+                 Node((left_tr_x, face1_box.p2.y), a=self.a_capped, b=self.b_capped),
+                 Node((left_tr_x, face1_box.p1.y + 100), a=self.a, b=self.b),
                  Node((left_tr_x, self.refpoints["SW_port_corner"].y + 2 * self.r)),
                  Node(self.refpoints["SW_port_corner"] + pya.DPoint(0, 2 * self.r)),
                  Node(self.refpoints["SW_port"])
@@ -65,9 +66,9 @@ class CrossingTwoface(MultiFace):
         nodes = [Node(self.refpoints["NE_port"]),
                  Node(self.refpoints["NE_port_corner"] + pya.DPoint(0, - 2 * self.r)),
                  Node((right_tr_x, self.refpoints["NE_port_corner"].y - 2 * self.r)),
-                 Node((right_tr_x, self.face1_box.p2.y),
+                 Node((right_tr_x, face1_box.p2.y),
                       a=self.a_capped, b=self.b_capped),
-                 Node((right_tr_x, self.face1_box.p1.y + 100), a=self.a, b=self.b),
+                 Node((right_tr_x, face1_box.p1.y + 100), a=self.a, b=self.b),
                  Node((right_tr_x, self.refpoints["SE_port_corner"].y + 2 * self.r)),
                  Node(self.refpoints["SE_port_corner"] + pya.DPoint(0, 2 * self.r)),
                  Node(self.refpoints["SE_port"])
@@ -77,7 +78,7 @@ class CrossingTwoface(MultiFace):
 
         # Crossing transmission line
         nodes = [Node(self.refpoints["WN_port"]),
-                 Node((self.face1_box.p1.x, self.refpoints["WN_port"].y),
+                 Node((face1_box.p1.x, self.refpoints["WN_port"].y),
                       a=self.a_capped, b=self.b_capped)]
         ref_x = left_tr_x
         ref_x_1 = ref_x - self.crossing_length / 2.
@@ -99,7 +100,7 @@ class CrossingTwoface(MultiFace):
             nodes.append(Node((ref_x_1, last_y), face_id="b"))
             nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
-        nodes.append(Node((self.face1_box.p1.x + 100, self.refpoints["WS_port"].y), a=self.a, b=self.b))
+        nodes.append(Node((face1_box.p1.x + 100, self.refpoints["WS_port"].y), a=self.a, b=self.b))
         nodes.append(Node(self.refpoints["WS_port_corner"]))
         nodes.append(Node(self.refpoints["WS_port"]))
         self.insert_cell(WaveguideComposite, nodes=nodes)
@@ -109,7 +110,7 @@ class CrossingTwoface(MultiFace):
         last_y = self.refpoints["EN_port"].y
         nodes = [Node(self.refpoints["EN_port"]),
                  Node(self.refpoints["EN_port_corner"]),
-                 Node((self.face1_box.p2.x, self.refpoints["EN_port"].y),
+                 Node((face1_box.p2.x, self.refpoints["EN_port"].y),
                       a=self.a_capped, b=self.b_capped)]
         for i in range(crossings):
             if i == 0 and self.meander_face == "Two Face":
@@ -125,7 +126,7 @@ class CrossingTwoface(MultiFace):
             else:
                 nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step
-        nodes.append(Node((self.face1_box.p2.x - 100, self.refpoints["ES_port"].y),
+        nodes.append(Node((face1_box.p2.x - 100, self.refpoints["ES_port"].y),
                           a=self.a, b=self.b))
         nodes.append(Node(self.refpoints["ES_port_corner"]))
         nodes.append(Node(self.refpoints["ES_port"]))

@@ -45,8 +45,8 @@ class ChipFrame(Element):
         docstring="Distance of markers from closest edges of the chip face")
     diagonal_squares = Param(pdt.TypeInt, "Number of diagonal squares for the markers", 10)
     use_face_prefix = Param(pdt.TypeBoolean, "Use face prefix for chip name label", False)
-    marker_types = Param(pdt.TypeList, "Marker type for each chip corner, starting from lower left and going clockwise",
-                       default=[default_marker_type]*4)
+    marker_types = Param(pdt.TypeList, "Marker type for each chip corner, clockwise starting from lower left",
+                         default=[default_marker_type]*4)
 
     def build(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""

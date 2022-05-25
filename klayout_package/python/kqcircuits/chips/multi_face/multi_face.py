@@ -28,6 +28,7 @@ from kqcircuits.defaults import default_mask_parameters, default_bump_parameters
 
 @logged
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
+@add_parameters_from(Chip, marker_types=[default_marker_type]*8)
 class MultiFace(Chip):
     """Base class for multi-face chips.
 
@@ -39,7 +40,6 @@ class MultiFace(Chip):
     a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="μm",
                      docstring="Width of center conductor in the capped region [μm]")
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="μm")
-    face1_box = Param(pdt.TypeShape, "Border of Face 1", pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500)))
     with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs on the top face", False)
     with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
     bump_grid_spacing = Param(
@@ -49,48 +49,69 @@ class MultiFace(Chip):
         pdt.TypeDouble, "In bump clearance to manually placed Bumps (edge to edge)",
         default_bump_parameters['bump_edge_to_bump_edge_separation'], unit="μm")
     edge_from_bump = Param(pdt.TypeDouble, "Spacing between bump and chip edge",
-                          default_bump_parameters['edge_from_bump'], unit="μm")
-    face1_marker_types = Param(pdt.TypeList, "Marker type for each top face corner, starting from lower right and "
-                                             "going anticlockwise", default=[default_marker_type] * 4)
+                           default_bump_parameters['edge_from_bump'], unit="μm")
+    chip_frame_faces = Param(pdt.TypeList, "List of face ids (integers) for which a ChipFrame is drawn", [0, 1])
+    chip_frame_marker_dist = Param(pdt.TypeList, "Marker distance from edge for each chip frame", [1500, 1000],
+                                   unit="[μm]")
+    chip_frame_diagonal_squares = Param(pdt.TypeList, "Number of diagonal marker squares for each chip frame", [10, 2])
+    chip_frame_mirrored = Param(pdt.TypeList,
+                                "List of booleans specifying if the frame is mirrored for each chip frame",
+                                [False, True])
+    face_boxes = Param(
+        pdt.TypeShape,
+        "List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.",
+        default=[None, pya.DBox(pya.DPoint(1500, 1500), pya.DPoint(8500, 8500))],
+        hidden=True)
 
     def produce_structures(self):
-        # produce frame for face 0
-        bottom_frame_parameters = self.pcell_params_by_name(
-            ChipFrame,
-            face_ids=self.face_ids[0],
-            use_face_prefix=True,
-        )
-        self.produce_frame(bottom_frame_parameters)
+        for i, face in enumerate(self.chip_frame_faces):
+            face = int(face)
+            frame_box = self.get_box(face)
+            frame_parameters = self.pcell_params_by_name(
+                ChipFrame,
+                box=frame_box,
+                face_ids=[self.face_ids[face]],
+                use_face_prefix=len(self.chip_frame_faces) > 1,
+                dice_width=default_mask_parameters[self.face_ids[face]]["dice_width"],
+                text_margin=default_mask_parameters[self.face_ids[face]]["text_margin"],
+                marker_dist=float(self.chip_frame_marker_dist[i]),
+                diagonal_squares=int(self.chip_frame_diagonal_squares[i]),
+                marker_types=self.marker_types[i*4:(i+1)*4]
+            )
 
-        # produce frame for face 1
-        t_frame_parameters = {
-            "box": self.face1_box,
-            "marker_dist": 1000,
-            "diagonal_squares": 2,
-            "face_ids": self.face_ids[1],
-            "use_face_prefix": True,
-            "dice_width": default_mask_parameters[self.face_ids[1]]["dice_width"],
-            "text_margin": default_mask_parameters[self.face_ids[1]]["text_margin"],
-            "marker_types": self.face1_marker_types
-        }
-        t_frame_trans = pya.DTrans(self.box.p2.x, 0) * pya.DTrans.M90
-        self.produce_frame(t_frame_parameters, t_frame_trans)
+            if str(self.chip_frame_mirrored[i]).lower() == 'true':  # Accept both boolean and string representation
+                frame_trans = pya.DTrans(frame_box.center()) * pya.DTrans.M90 * pya.DTrans(-frame_box.center())
+            else:
+                frame_trans = pya.DTrans(0, 0)
+            self.produce_frame(frame_parameters, frame_trans)
 
         if self.with_gnd_tsvs:
             self._produce_ground_tsvs(face_id=0)
         if self.with_face1_gnd_tsvs:
-            tsv_box = self.face1_box.enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
+            tsv_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
             self._produce_ground_tsvs(face_id=1, tsv_box=tsv_box)
 
         if self.with_gnd_bumps:
             self._produce_ground_bumps()
+
+    def get_box(self, face=0):
+        """
+        Get the chip frame box for the specified face, correctly resolving defaults.
+
+        Args:
+            face: Integer specifying face, default 0
+
+        Returns: pya.DBox box for the specified face
+        """
+        box = self.face_boxes[face]
+        return box if box is not None else self.box
 
     def get_ground_bump_locations(self, bump_box):
         """
         Define the locations for a grid. This method returns the full grid.
 
         Args:
-            box: DBox specifying the region that should be filled with ground bumps
+            bump_box: DBox specifying the region that should be filled with ground bumps
 
         Returns: list of DPoint coordinates where a ground bump can be placed
         """
@@ -105,7 +126,7 @@ class MultiFace(Chip):
         self.__log.info('Starting ground bump generation')
         bump = self.add_element(FlipChipConnectorDc)
 
-        bump_box = self.face1_box.enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
+        bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
 
         avoidance_layer_bottom = pya.Region(
             self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", 0))).merged()
@@ -148,8 +169,8 @@ class MultiFace(Chip):
 
     def produce_ground_grid(self):
         """Produces ground grid on t and b faces."""
-        for face_id, box in enumerate([self.box, self.face1_box]):
-            self.produce_ground_on_face_grid(box, face_id)
+        for face, _ in enumerate(self.face_boxes):
+            self.produce_ground_on_face_grid(self.get_box(face), face)
 
     def merge_layout_layers(self):
         """Creates "base_metal_gap" layers on two faces.

@@ -44,10 +44,7 @@ class DaisyWoven(MultiFace):
 
         # copy features for both faces
         for face_id in [0, 1]:
-            if face_id == 0:
-                box = pya.DPolygon(self.box)  # this is already the shape of the box
-            else:
-                box = pya.DPolygon(self.face1_box)  # this is already the shape of the box
+            box = pya.DPolygon(self.get_box(face_id))
 
             # create box
             x_min = min(self.box.p1.x, self.box.p2.x)

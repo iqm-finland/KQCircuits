@@ -164,7 +164,7 @@ class Chip(Element):
 
         Args:
             box: pya.DBox within which the grid is created
-            face_id (str): ID of the face where the grid is created
+            face_id (int): ID of the face where the grid is created
 
         """
         grid_area = box * (1 / self.layout.dbu)

@@ -41,7 +41,7 @@ def add_parameters_from(cls, *param_names, **param_with_default_value):
 
     unknown = (set(param_names) or set(param_with_default_value.keys())) - set(cls.get_schema().keys())
     if unknown:
-        raise ValueError(f"Parameter(s) {unknown} not availeble in '{cls.__name__}'")
+        raise ValueError(f"Parameter(s) {unknown} not available in '{cls.__name__}'")
 
     def _decorate(obj):
         for name, p in cls.get_schema().items():
@@ -72,7 +72,7 @@ def add_parameter(cls, name, **change):
 
     schema = cls.get_schema()
     if name not in schema:
-        raise ValueError(f"Parameter {name} not availeble in '{cls.__name__}'")
+        raise ValueError(f"Parameter {name} not available in '{cls.__name__}'")
 
     def _decorate(obj):
         p = schema[name]

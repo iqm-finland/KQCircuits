@@ -73,13 +73,14 @@ class QualityFactorTwoface(MultiFace):
         type_coupler = self.type_coupler
         l_fingers = [float(foo) for foo in self.l_fingers]
         connector_distances = [float(foo) for foo in self.connector_distances]
+        face1_box = self.get_box(1)
 
         # Constants
-        left_x = self.face1_box.p1.x + self.waveguide_indentation
-        right_x = self.face1_box.p2.x - self.waveguide_indentation
-        left_connector = self.face1_box.p1.x + self.x_indentation
-        right_connector = self.face1_box.p2.x - self.x_indentation
-        mid_y = (self.face1_box.p1.y + self.face1_box.p2.y) / 2
+        left_x = face1_box.p1.x + self.waveguide_indentation
+        right_x = face1_box.p2.x - self.waveguide_indentation
+        left_connector = face1_box.p1.x + self.x_indentation
+        right_connector = face1_box.p2.x - self.x_indentation
+        mid_y = (face1_box.p1.y + face1_box.p2.y) / 2
         face_config = [self.face_ids[int(i)] for i in self.resonator_faces]
 
         # Create resonators
@@ -195,13 +196,13 @@ class QualityFactorTwoface(MultiFace):
         # Waveguides to the launchers
         if self.waveguide_indentation > 0.0:
             nodes_left = [Node(self.refpoints["WN_port"]),
-                          Node((self.face1_box.p1.x, self.refpoints["WN_port"].y), a=self.a_capped, b=self.b_capped),
+                          Node((face1_box.p1.x, self.refpoints["WN_port"].y), a=self.a_capped, b=self.b_capped),
                           Node((left_x, self.refpoints["WN_port"].y)),
                           Node((left_x, mid_y)),
                           Node((left_connector, mid_y), face_id=face_config[0]),
                           Node(left_point)]
             nodes_right = [Node(self.refpoints["EN_port"]),
-                           Node((self.face1_box.p2.x, self.refpoints["EN_port"].y), a=self.a_capped, b=self.b_capped),
+                           Node((face1_box.p2.x, self.refpoints["EN_port"].y), a=self.a_capped, b=self.b_capped),
                            Node((right_x, self.refpoints["EN_port"].y)),
                            Node((right_x, mid_y)),
                            Node((right_connector, mid_y), face_id=face_config[0]),
@@ -210,13 +211,13 @@ class QualityFactorTwoface(MultiFace):
             nodes_left = [Node(self.refpoints["WN_port"]),
                           Node((left_x, self.refpoints["WN_port"].y)),
                           Node((left_x, mid_y)),
-                          Node((self.face1_box.p1.x, mid_y), a=self.a_capped, b=self.b_capped),
+                          Node((face1_box.p1.x, mid_y), a=self.a_capped, b=self.b_capped),
                           Node((left_connector, mid_y), face_id=face_config[0]),
                           Node(left_point)]
             nodes_right = [Node(self.refpoints["EN_port"]),
                            Node((right_x, self.refpoints["EN_port"].y)),
                            Node((right_x, mid_y)),
-                           Node((self.face1_box.p2.x, mid_y), a=self.a_capped, b=self.b_capped),
+                           Node((face1_box.p2.x, mid_y), a=self.a_capped, b=self.b_capped),
                            Node((right_connector, mid_y), face_id=face_config[0]),
                            Node(right_point)]
         self.insert_cell(WaveguideComposite, nodes=nodes_left)
