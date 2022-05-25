@@ -74,7 +74,7 @@ class Simulation:
     over_etching = Param(pdt.TypeDouble, "Expansion of metal gaps (negative to shrink the gaps).", 0, unit="μm")
 
     minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent points in polygon", 0.01)
-    polygon_tolerance = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent polygons in a layer", 0.002)
+    polygon_tolerance = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent polygons in a layer", 0.004)
 
     def __init__(self, layout, **kwargs):
         """Initialize a Simulation.

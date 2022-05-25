@@ -25,6 +25,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.geometry_helper import region_with_merged_polygons
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
@@ -183,18 +184,22 @@ class Chip(Element):
         """
         self.insert_cell(ChipFrame, trans, **frame_parameters)
 
-    def merge_layout_layers_on_face(self, face):
+    def merge_layout_layers_on_face(self, face, tolerance=0.004):
         """Creates "base_metal_gap" layer on given face.
 
-         The layer shape is combination of three layers using subtract (-) and insert (+) operations:
+        The layer shape is combination of three layers using subtract (-) and insert (+) operations:
 
             "base_metal_gap" = "base_metal_gap_wo_grid" - "base_metal_addition" + "ground_grid"
+
+        Args:
+            face: face dictionary containing layer names as keys and layer info objects as values
+            tolerance: gap length to be ignored while merging (µm)
         """
         gaps = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face["base_metal_gap_wo_grid"])))
         metal = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face["base_metal_addition"])))
         grid = self.cell.begin_shapes_rec(self.layout.layer(face["ground_grid"]))
         res = self.cell.shapes(self.layout.layer(face["base_metal_gap"]))
-        res.insert(gaps - metal)
+        res.insert(region_with_merged_polygons(gaps - metal, tolerance / self.layout.dbu))
         res.insert(grid)
 
     def merge_layout_layers(self):
