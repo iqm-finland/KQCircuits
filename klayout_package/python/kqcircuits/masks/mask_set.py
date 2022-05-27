@@ -18,7 +18,6 @@ import copy
 import os
 import string
 import subprocess
-import textwrap
 from inspect import isclass
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
@@ -128,9 +127,22 @@ class MaskSet:
             with open(self._thread_create_chip_template, 'r') as f:
                 template = string.Template(f.read())
 
+            class ChipSubprocessException(Exception):
+                def __init__(self, err, chip_variant):
+                    super().__init__()
+                    self.err = err
+                    self.chip_variant = chip_variant
+                def __str__(self):
+                    return f'Building the {self.chip_variant} chip variant caused the following error:'\
+                    f'{os.linesep}{self.err}'
+
             def _subprocess_worker(args):
-                with subprocess.Popen(args) as proc:
-                    proc.wait()
+                with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
+                    _, errs = proc.communicate()
+                    # Process has error return code, return error stream
+                    if proc.returncode > 0:
+                        return errs.decode('UTF-8')
+                return None
 
             def _params_to_str(params):  # flatten a parameters dictionary to a string
                 ps = ""
@@ -149,6 +161,7 @@ class MaskSet:
 
             tp = ThreadPool(threads)
             file_names = []
+            processes = {}
             for chip_class, variant_name, *param_list in chips:
                 # create the script for generating this chip with the correct parameters and exporting the chip files
                 params = {
@@ -160,11 +173,8 @@ class MaskSet:
                 if param_list:
                     params.update(param_list[0])
 
-                create_element = textwrap.dedent(
-                    f"""
-                    from {chip_class.__module__} import {chip_class.__name__}
-                    cell = {chip_class.__name__}.create(layout {_params_to_str(params)})
-                    """)
+                element_import = f'from {chip_class.__module__} import {chip_class.__name__}'
+                create_element = f'cell = {chip_class.__name__}.create(layout {_params_to_str(params)})'
                 chip_path = TMP_PATH/f"{self.name}_v{self.version}"/"Chips"/f"{variant_name}"
                 chip_path.mkdir(parents=True, exist_ok=True)
                 script_name = str(chip_path / f"{variant_name}.py")
@@ -175,6 +185,7 @@ class MaskSet:
                     'version_mask': self.version,
                     'variant_name': variant_name,
                     'chip_class': chip_class.__name__,
+                    'element_import': element_import,
                     'create_element': create_element,
                     'export_drc': self.export_drc
                 }
@@ -185,7 +196,7 @@ class MaskSet:
 
                 # launch klayout process that runs the created script
                 try:  # pylint: disable=consider-using-with
-                    tp.apply_async(_subprocess_worker,
+                    processes[variant_name] = tp.apply_async(_subprocess_worker,
                                    ([klayout_executable_command(), "-e", "-z", "-nc", "-rm", script_name],)
                                    )
                 except subprocess.CalledProcessError as e:
@@ -193,6 +204,10 @@ class MaskSet:
 
             # wait for processes to end
             tp.close()
+            for variant_name, process in processes.items():
+                process_error = process.get()
+                if process_error is not None:
+                    raise ChipSubprocessException(process_error, variant_name)
             tp.join()
 
             # import chip cells exported by the parallel processes into the mask

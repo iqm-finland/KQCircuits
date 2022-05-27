@@ -27,22 +27,28 @@ from kqcircuits.masks.mask_export import export_chip
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util import macro_prepare
 import logging
+import sys
+import traceback
 from kqcircuits.util.log_router import route_log
+${element_import}
 
+try:
+    logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
+    chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
+    route_log(filename=chip_path/"${variant_name}.log")
 
-logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
-chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
-route_log(filename=chip_path/"${variant_name}.log")
+    layout, _, _ = macro_prepare.prep_empty_layout()
+    top_cell = layout.create_cell("Top Cell")
 
-layout, _, _ = macro_prepare.prep_empty_layout()
-top_cell = layout.create_cell("Top Cell")
+    # cell definition and arbitrary code here
+    ${create_element}
 
-# cell definition and arbitrary code here
-${create_element}
+    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
 
-top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+    # export chip files
+    export_chip(cell, "${variant_name}", chip_path, layout, ${export_drc})
 
-# export chip files
-export_chip(cell, "${variant_name}", chip_path, layout, ${export_drc})
-
+except Exception as err:
+    print(traceback.format_exc(), file=sys.stderr)
+    pya.Application.instance().exit(1)
 pya.Application.instance().exit(0)
