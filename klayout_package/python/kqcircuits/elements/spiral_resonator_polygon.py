@@ -19,6 +19,7 @@
 from math import pi, tan, degrees, atan2, sqrt
 
 from kqcircuits.elements.airbridges.airbridge import Airbridge
+from kqcircuits.elements.airbridges.airbridge_multi_face import AirbridgeMultiFace
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -28,6 +29,7 @@ from kqcircuits.util.geometry_helper import vector_length_and_direction, is_cloc
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
+@add_parameters_from(AirbridgeMultiFace)
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
 class SpiralResonatorPolygon(Element):
     """The PCell declaration for a polygon shaped spiral resonator.
@@ -377,14 +379,16 @@ class SpiralResonatorPolygon(Element):
         # add connector cell and get connector length
         conn_cell = self.add_element(FlipChipConnectorRf)
         conn_ref = self.get_refpoints(conn_cell)
-        conn_len, conn_dir = vector_length_and_direction(conn_ref["t_port"] - conn_ref["b_port"])
+        port0 = self.face_ids[0] + "_port"
+        port1 = self.face_ids[1] + "_port"
+        conn_len, conn_dir = vector_length_and_direction(conn_ref[port1] - conn_ref[port0])
 
         def insert_wg_with_connector(segment, distance):
             s_len, s_dir = vector_length_and_direction(points[segment + 1] - points[segment])
             b_pos = points[segment] + distance * s_dir
             ang = get_angle(s_dir) - get_angle(conn_dir)
-            trans = pya.DCplxTrans(1.0, ang, False, b_pos) * pya.DTrans(-conn_ref["b_port"])
-            t_pos = self.insert_cell(conn_cell, trans=trans)[1]["t_port"]
+            trans = pya.DCplxTrans(1.0, ang, False, b_pos) * pya.DTrans(-conn_ref[port0])
+            t_pos = self.insert_cell(conn_cell, trans=trans)[1][port1]
             if segment == 0 and distance < 1e-3:
                 WaveguideCoplanar.produce_end_termination(self, t_pos, b_pos, self.term1)
             else:

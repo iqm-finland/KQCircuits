@@ -24,9 +24,10 @@ from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCros
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.geometry_helper import point_shift_along_vector
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
+@add_parameters_from(SpiralResonatorPolygon, "bridge_spacing")
 class QualityFactorTwoface(MultiFace):
     """The PCell declaration for an QualityFactorTwoFace MultiFace chip.
 
@@ -45,10 +46,9 @@ class QualityFactorTwoface(MultiFace):
                   docstring="Width of the center conductor in the resonators [μm]")
     res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [6, 6, 6, 12, 6, 3], unit="μm",
                   docstring="Width of the gap in the resonators [μm]")
-    resonator_type = Param(pdt.TypeString, "Routing type", "capped",
-                           choices=[["Capped (1)", "capped"], ["Two-face resonator (2)", "twoface"],
-                                    ["Resonator on top (3)", "top"], ["Etched top chip (4)", "etched"],
-                                    ["Solid top chip (5)", "solid"]])
+    resonator_types = Param(pdt.TypeList, "Resonator types (capped, twoface, etched, or solid)", ["capped"] * 6,
+                            docstring="Choices: 'capped', 'twoface', 'etched', 'solid'")
+    resonator_faces = Param(pdt.TypeList, "Resonator face order list", [0, 1])
     connector_distances = Param(pdt.TypeList, "Resonator input to face to face connector",
                                 [500, 1300, 2100, 2900, 3700, 4500], unit="μm",
                                 docstring="Distances of face to face connectors from resonator inputs")
@@ -80,7 +80,7 @@ class QualityFactorTwoface(MultiFace):
         left_connector = self.face1_box.p1.x + self.x_indentation
         right_connector = self.face1_box.p2.x - self.x_indentation
         mid_y = (self.face1_box.p1.y + self.face1_box.p2.y) / 2
-        face_config = ["t", "b"] if self.resonator_type == "top" else ["b", "t"]
+        face_config = [self.face_ids[int(i)] for i in self.resonator_faces]
 
         # Create resonators
         resonators = len(self.res_lengths)
@@ -137,10 +137,20 @@ class QualityFactorTwoface(MultiFace):
             pos_res_start = cplr_pos - rot_3 * endpoint
 
             # Spiral resonator
-            if self.resonator_type == "twoface":
-                res_params = {'connector_dist': connector_distances[i] - self.cap_res_distance}
+            if self.resonator_types[i] == "twoface":
+                res_params = {'connector_dist': connector_distances[i] - self.cap_res_distance, "bridge_spacing": 0}
+            elif self.resonator_types[i] == "etched":
+                res_params = {
+                    'name': 'resonator{}'.format(i),
+                    "airbridge_type": "Airbridge Multi Face",
+                    "include_bumps": False,
+                    "bridge_length": res_a[i] + 2 * (res_b[i] + self.margin),
+                    "bridge_width": 2,
+                    "pad_length": 2,
+                    "bridge_spacing": self.bridge_spacing,
+                }
             else:
-                res_params = {'name': 'resonator{}'.format(i)}
+                res_params = {'name': 'resonator{}'.format(i), "bridge_spacing": 0}
             inst_res, _ = self.insert_cell(SpiralResonatorPolygon,
                                            **rectangular_parameters(
                                                right_space=self.spiral_box_height - self.cap_res_distance,
@@ -153,13 +163,16 @@ class QualityFactorTwoface(MultiFace):
                                                **res_params),
                                            trans=pya.DTrans(pos_res_start) * rotation)
 
-            # Top chip etching above resonator
-            if self.resonator_type == "etched":
-                l0 = self.get_layer("ground_grid_avoidance")
+            # Top chip etching and grid avoidance above resonator
+            if self.resonator_types[i] in ["etched", "solid"]:
+                l0 = self.get_layer("ground_grid_avoidance", int(self.resonator_faces[0]))
                 region = pya.Region(inst_res.cell.begin_shapes_rec(l0)).transformed(inst_res.trans)
                 region += pya.Region(inst_cpw.cell.begin_shapes_rec(l0)).transformed(inst_cpw.trans)
                 region += pya.Region(inst_cplr.cell.begin_shapes_rec(l0)).transformed(inst_cplr.trans)
-                self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id=1)).insert(region)
+                opposite_face = int(self.resonator_faces[1])
+                self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face)).insert(region)
+                if self.resonator_types[i] == "etched":
+                    self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", opposite_face)).insert(region)
 
             # Feedline
             if i == 0:
@@ -208,9 +221,3 @@ class QualityFactorTwoface(MultiFace):
                            Node(right_point)]
         self.insert_cell(WaveguideComposite, nodes=nodes_left)
         self.insert_cell(WaveguideComposite, nodes=nodes_right)
-
-        # Top chip ground grid avoidance
-        if self.resonator_type == "etched" or self.resonator_type == "solid":
-            region = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance")))
-            region &= pya.Region(self.face1_box.to_itype(self.layout.dbu))
-            self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id=1)).insert(region)
