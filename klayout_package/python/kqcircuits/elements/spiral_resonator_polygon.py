@@ -231,17 +231,20 @@ class SpiralResonatorPolygon(Element):
 
                     # Check outer curve shortcut length to avoid inner segments overlapping with the outer curve.
                     i_out = len(points) - n_poly_points - 1
+                    if i_out <= 0:  # Outer curve doesn't exist because input_path is empty
+                        return points
+
                     corner_diff = points[-1] - points[i_out]  # vector from outer corner to inner corner
                     _, inner_dir = vector_length_and_direction(points[-1] - points[-2])
                     s_cut = corner_diff.sprod(inner_dir)
                     if s_cut >= 0:  # For concave corner, segment cannot overlap with outer curve
                         return points
 
-                    if i_out > 0:  # For convex corner, allow straight segment until the outer curve begins.
-                        _, outer_dir = vector_length_and_direction(points[i_out] - points[i_out - 1])
-                        r_cut, _ = self._corner_cut_distance(points[i_out - 1], points[i_out], points[i_out + 1])
-                        if length - max(0.0, s_cut + r_cut * outer_dir.sprod(inner_dir)) >= self.length:
-                            return points
+                    # For convex corner, allow straight segment until the outer curve begins.
+                    _, outer_dir = vector_length_and_direction(points[i_out] - points[i_out - 1])
+                    r_cut, _ = self._corner_cut_distance(points[i_out - 1], points[i_out], points[i_out + 1])
+                    if length - max(0.0, s_cut + r_cut * outer_dir.sprod(inner_dir)) >= self.length:
+                        return points
 
                 # prepare for the next iteration
                 current_edge = next_edge

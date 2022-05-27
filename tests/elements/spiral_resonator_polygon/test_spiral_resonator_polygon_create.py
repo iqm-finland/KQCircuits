@@ -49,6 +49,15 @@ def test_length_curved_last_segment():
     assert relative_error < relative_length_tolerance
 
 
+def test_length_empty_input_path():
+    relative_error = _get_length_error(
+        length=4026,
+        input_path=pya.DPath([], 0),
+        poly_path=pya.DPath([pya.DPoint(0, 0), pya.DPoint(1800, 0), pya.DPoint(1800, -500), pya.DPoint(0, -500)], 0),
+    )
+    assert relative_error < relative_length_tolerance
+
+
 def test_length_quadrilateral():
     relative_error = _get_length_error(
         length=5700,
