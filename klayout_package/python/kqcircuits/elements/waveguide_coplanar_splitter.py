@@ -33,6 +33,12 @@ class WaveguideCoplanarSplitter(Element):
     angles = Param(pdt.TypeList, "Angle of each port (degrees)", [0, 120, 240])
     use_airbridges = Param(pdt.TypeBoolean, "Use airbridges at a distance from the centre", False)
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
+    a_list = Param(pdt.TypeList, "Center conductor widths", [], unit="[μm]",
+                   docstring="List of center conductor widths for each port."
+                             " If empty, self.a will be used for all ports instead. [μm]")
+    b_list = Param(pdt.TypeList, "Gap widths", [], unit="[μm]",
+                   docstring="List of gap widths for each port."
+                             " If empty, self.b will be used for all ports instead. [μm]")
 
     def build(self):
 
@@ -43,29 +49,35 @@ class WaveguideCoplanarSplitter(Element):
         # Tolerance to make sure that the trace shape is larger than the gap shape after integer conversion
         rounding_tolerance = 10 * self.layout.dbu
 
+        # Convert a, b to lists of right length
+        a_list = self.a_list if (len(self.a_list) > 0 and self.a_list[0] != "") else [self.a] * len(self.angles)
+        b_list = self.b_list if (len(self.b_list) > 0 and self.b_list[0] != "") else [self.b] * len(self.angles)
+
         port_names = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
-        for length_str, angle_str, port_name in zip(self.lengths, self.angles, port_names):
+        for length_str, angle_str, port_name, a, b in zip(self.lengths, self.angles, port_names, a_list, b_list):
             angle_deg = float(angle_str)
             angle_rad = radians(angle_deg)
             length = float(length_str)
+            a = float(a)
+            b = float(b)
 
             # Generate port shapes
             gap_shapes.append(self._get_port_shape(
                 angle_rad=angle_rad,
                 length=length,
-                width=self.a + 2*self.b
+                width=a + 2*b
             ).to_itype(self.layout.dbu))
 
             trace_shapes.append(self._get_port_shape(
                 angle_rad=angle_rad,
                 length=length + rounding_tolerance,
-                width=self.a
+                width=a
             ).to_itype(self.layout.dbu))
 
             avoidance_shapes.append(self._get_port_shape(
                 angle_rad=angle_rad,
                 length=length + self.margin,
-                width=self.a + 2*self.b + 2*self.margin
+                width=a + 2*b + 2*self.margin
             ).to_itype(self.layout.dbu))
 
             # Port refpoints
@@ -77,7 +89,7 @@ class WaveguideCoplanarSplitter(Element):
 
             # Waveguide length annotation
             self.cell.shapes(self.get_layer("waveguide_length")).insert(
-                pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], self.a + 2 * self.b)
+                pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], a + 2 * b)
             )
 
             # Airbridges
