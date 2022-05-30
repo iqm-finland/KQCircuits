@@ -50,8 +50,6 @@ static_analysis:
 
 shell_check:
   stage: test
-  before_script:
-    - apt-get update && apt-get install -y shellcheck
   script:
     - shellcheck ./**/*.sh
   only:

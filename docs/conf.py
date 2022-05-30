@@ -113,12 +113,15 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
+    'sphinx.ext.graphviz',
     'kqc_elem_params',
 ]
 
 todo_include_todos = True
 
 pygments_style = 'trac'
+
+graphviz_output_format = 'svg'
 
 autoclass_content = "both"
 autosummary_generate = True
