@@ -1,4 +1,4 @@
-Export for external simulation tools
+External simulation tools
 ====================================
 
 KQCircuits supports exports to following external simulation tools:
