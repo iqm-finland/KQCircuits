@@ -60,5 +60,5 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(0, 0),
             pya.DPoint(self.l, 0),
         ]
-        shape = pya.DPath(pts, self.a + 2 * self.b)
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(shape)
+        shape = pya.DPath(pts, self.a)
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)

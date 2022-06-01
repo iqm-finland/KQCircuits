@@ -88,8 +88,8 @@ class WaveguideCoplanarSplitter(Element):
             )
 
             # Waveguide length annotation
-            self.cell.shapes(self.get_layer("waveguide_length")).insert(
-                pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], a + 2 * b)
+            self.cell.shapes(self.get_layer("waveguide_path")).insert(
+                pya.DPath([self.refpoints[f"port_{port_name}"], self.refpoints["base"]], a)
             )
 
             # Airbridges

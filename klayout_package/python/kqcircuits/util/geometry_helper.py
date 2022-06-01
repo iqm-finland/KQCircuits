@@ -19,7 +19,7 @@
 """Helper module for general geometric functions"""
 
 from math import cos, sin, radians, atan2, degrees, pi, ceil
-
+from kqcircuits.defaults import default_layers
 from kqcircuits.pya_resolver import pya
 
 
@@ -63,38 +63,56 @@ def get_angle(vector):
     return degrees(atan2(vector.y, vector.x))
 
 
-def get_cell_path_length(cell, annotation_layer):
-    """
-    Returns the length of the paths in the cell.
+def get_cell_path_length(cell, layer=None):
+    """Returns the length of the paths in the cell.
+
+    Adding together the cell's paths' lengths in the "b_waveguide_path", "t_waveguide_path" and
+    "waveguide_length" layers.
 
     Args:
         cell: A cell object.
-        annotation_layer: An unsigned int representing the annotation_layer.
-
+        layer: None or an unsigned int to specify a non-standard layer
     """
+
+    if layer is not  None:
+        return _get_length_per_layer(cell, layer)
+
+    length  = _get_length_per_layer(cell, "b_waveguide_path")
+    length += _get_length_per_layer(cell, "t_waveguide_path")
+    length += _get_length_per_layer(cell, "waveguide_length")  # AirbridgeConnection uses this
+
+    return length
+
+
+def _get_length_per_layer(cell, layer):
+    """Get length of the paths in the cell in the specified layer."""
+
     length = 0
+    layer = cell.layout().layer(default_layers[layer]) if isinstance(layer, str) else layer
+
     for inst in cell.each_inst():  # over child cell instances, not instances of itself
-        shapes_iter = inst.cell.begin_shapes_rec(annotation_layer)
+        shapes_iter = inst.cell.begin_shapes_rec(layer)
         while not shapes_iter.at_end():
             shape = shapes_iter.shape()
             if shape.is_path():
                 length += shape.path_dlength()
             shapes_iter.next()
+
     # in case of waveguide, there are no shapes in the waveguide cell itself
     # but the following allows function reuse in other applications
-    for shape in cell.shapes(annotation_layer).each():
+    for shape in cell.shapes(layer).each():
         if shape.is_path():
             length += shape.path_dlength()
 
     return length
 
 
-def get_object_path_length(obj, layer):
+def get_object_path_length(obj, layer=None):
     """Returns sum of lengths of all the paths in the object and its children
 
     Arguments:
         obj: ObjectInstPath object
-        layer: layer integer id in the database
+        layer: layer integer id in the database, waveguide layer by default
     """
 
     if obj.is_cell_inst():

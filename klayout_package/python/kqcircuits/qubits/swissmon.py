@@ -114,7 +114,7 @@ class Swissmon(Qubit):
         if l > 0:
             self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(
                 shoe_region2.transformed((rotation * transf).to_itrans(self.layout.dbu)))
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(
             port_region.transformed((rotation * transf).to_itrans(self.layout.dbu)))
 
         # protection

@@ -109,6 +109,7 @@ _common_b_t_layers = {
     **_common_layers,
 
     "base_metal_gap_for_EBL": (15, 0),  # Features of layer 41 that are needed for EBL
+    "waveguide_path": (16, 0),  # Waveguide's metal part, used with waveguide length and DRC calculations
 
     # SQUID layer
     "SIS_junction": (17, 2),  # Josephson junction
@@ -172,7 +173,7 @@ _aux_layers_dict = {
     "annotations_2": (221, 0),
     "instance_names": (222, 0),
     "mask_graphical_rep": (223, 0),
-    "waveguide_length": (224, 0),
+    "waveguide_length": (224, 0),  # Length only, no DRC. When Waveguide leves its layer, e.g. Airbridge.
     "refpoints": (225, 0),
 }
 
@@ -233,10 +234,12 @@ all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + 
     default_layers["b_base_metal_gap"],
     default_layers["b_ground_grid"],
     default_layers["b_ground_grid_avoidance"],
+    default_layers["b_waveguide_path"],
     default_layers["t_ports"],
     default_layers["t_base_metal_gap"],
     default_layers["t_ground_grid"],
     default_layers["t_ground_grid_avoidance"],
+    default_layers["t_waveguide_path"],
     default_layers["c_base_metal_gap"],
     default_layers["c_ground_grid"],
     default_layers["c_ground_grid_avoidance"],

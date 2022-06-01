@@ -17,7 +17,6 @@
 
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.defaults import default_layers
 from kqcircuits.elements.waveguide_composite import produce_fixed_length_bend
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
@@ -61,5 +60,5 @@ def _relative_length_error(target_len, point_a, point_a_corner, point_b, point_b
 
     inst = produce_fixed_length_bend(chip, target_len, point_a, point_a_corner, point_b,
                                                               point_b_corner, bridges)
-    actual_length = get_cell_path_length(inst.cell, layout.layer(default_layers["waveguide_length"]))
+    actual_length = get_cell_path_length(inst.cell)
     return abs(actual_length - target_len) / target_len
