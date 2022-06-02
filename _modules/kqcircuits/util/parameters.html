@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -304,6 +305,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -551,7 +553,7 @@
 
     <span class="n">unknown</span> <span class="o">=</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">param_names</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">set</span><span class="p">(</span><span class="n">param_with_default_value</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter(s) </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2"> not availeble in &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter(s) </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2"> not available in &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_decorate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -582,7 +584,7 @@
 
     <span class="n">schema</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not availeble in &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> not available in &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_decorate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>

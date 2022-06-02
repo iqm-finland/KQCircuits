@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -304,6 +305,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -555,8 +557,8 @@
         <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Distance of markers from closest edges of the chip face&quot;</span><span class="p">)</span>
     <span class="n">diagonal_squares</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeInt</span><span class="p">,</span> <span class="s2">&quot;Number of diagonal squares for the markers&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">use_face_prefix</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use face prefix for chip name label&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each chip corner, starting from lower left and going clockwise&quot;</span><span class="p">,</span>
-                       <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each chip corner, clockwise starting from lower left&quot;</span><span class="p">,</span>
+                         <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChipFrame.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.chip_frame.html#kqcircuits.elements.chip_frame.ChipFrame.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces dicing edge, markers, labels and ground grid for the chip face.&quot;&quot;&quot;</span>

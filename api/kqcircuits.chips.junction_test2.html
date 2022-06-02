@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -306,6 +307,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -545,7 +547,7 @@
 <li><p><strong>junction_width_step_increment_small</strong><em> (Double)</em><span> - Junction finger width step increment (small loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.01</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>junction_width_step_increment_large</strong><em> (Double)</em><span> - Junction finger width step increment (large loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.03</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>pads_loop</strong><em> (List)</em><span> - Select large or small loop area for each central test pad</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['large',</span> <span class="pre">'large',</span> <span class="pre">'small',</span> <span class="pre">'small',</span> <span class="pre">'small',</span> <span class="pre">'large']</span></code></p></li>
-<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, starting from lower left and going clockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
+<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.junction_test2.png" src="../_images/kqcircuits.chips.junction_test2.png" />

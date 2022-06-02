@@ -14,8 +14,9 @@ Every KQCircuits object that can be placed in a KLayout layout is derived from
 There exist also more specific base classes such as ``Chip``, ``Qubit`` or
 ``TestStructure``.
 
-.. image:: ../images/class_diagram_1.png
-    :alt: class diagram
+.. graphviz:: ../class_hierarchy.dot
+    :caption: Class Inheritance Diagram
+    :align: center
 
 All base classes (black) are shown, abstracts are ovals, concretes are
 rectangles. Only one example "leaf" class (green) is shown for each base class.
@@ -124,8 +125,13 @@ class for all other classes in the library, for example all classes in the
 ``LIBRARY_NAME`` and ``LIBRARY_DESCRIPTION`` constants, so that these are
 available for all derived classes.
 
-.. image:: ../images/library_diagram.png
-    :alt: library diagram
+..  digraph:: Libraries
+    :caption: Library Dependency Diagram
+    :align: center
+
+    "Element Library" -> {"SQUID Library", "Qubit Library", "Chip Library", "TestStructure Library"}
+    "SQUID Library" -> "TestStructure Library" -> "Chip Library"
+    "SQUID Library" -> "Qubit Library" -> "Chip Library"
 
 Libraries have a strict dependency order defined in ``kqc_library_names`` in
 ``defaults.py``. KLayout loads them in this order. Classes *can not* use other

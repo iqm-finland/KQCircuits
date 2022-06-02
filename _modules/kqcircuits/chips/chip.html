@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
 
   
@@ -304,6 +305,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -674,7 +676,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            box: pya.DBox within which the grid is created</span>
-<span class="sd">            face_id (str): ID of the face where the grid is created</span>
+<span class="sd">            face_id (int): ID of the face where the grid is created</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">grid_area</span> <span class="o">=</span> <span class="n">box</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>

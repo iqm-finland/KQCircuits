@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -306,6 +307,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -537,12 +539,24 @@ launchers to the connectors.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.chips.multi_face.multi_face.MultiFace.get_box">
+<span class="sig-name descname"><span class="pre">get_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.get_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.get_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the chip frame box for the specified face, correctly resolving defaults.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>face</strong> – Integer specifying face, default 0</p>
+</dd>
+</dl>
+<p>Returns: pya.DBox box for the specified face</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations">
 <span class="sig-name descname"><span class="pre">get_ground_bump_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bump_box</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/multi_face/multi_face.html#MultiFace.get_ground_bump_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.multi_face.multi_face.MultiFace.get_ground_bump_locations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the locations for a grid. This method returns the full grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>box</strong> – DBox specifying the region that should be filled with ground bumps</p>
+<dd class="field-odd"><p><strong>bump_box</strong> – DBox specifying the region that should be filled with ground bumps</p>
 </dd>
 </dl>
 <p>Returns: list of DPoint coordinates where a ground bump can be placed</p>
@@ -570,13 +584,17 @@ launchers to the connectors.</p>
 <ul class="simple">
 <li><p><strong>a_capped</strong><em> (Double)</em><span> - Width of center conductor in the capped region [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>b_capped</strong><em> (Double)</em><span> - Width of gap in the capped region </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>face1_box</strong><em> (Shape)</em><span> - Border of Face 1</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(1500,1500;8500,8500)</span></code></p></li>
 <li><p><strong>with_face1_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs on the top face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>with_gnd_bumps</strong><em> (Boolean)</em><span> - Make ground bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>bump_grid_spacing</strong><em> (Double)</em><span> - Bump grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">120</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>bump_edge_to_bump_edge_separation</strong><em> (Double)</em><span> - In bump clearance to manually placed Bumps (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">95</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>edge_from_bump</strong><em> (Double)</em><span> - Spacing between bump and chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>face1_marker_types</strong><em> (List)</em><span> - Marker type for each top face corner, starting from lower right and going anticlockwise</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
+<li><p><strong>chip_frame_faces</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
+<li><p><strong>chip_frame_marker_dist</strong><em> (List)</em><span> - Marker distance from edge for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>chip_frame_diagonal_squares</strong><em> (List)</em><span> - Number of diagonal marker squares for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">2]</span></code></p></li>
+<li><p><strong>chip_frame_mirrored</strong><em> (List)</em><span> - List of booleans specifying if the frame is mirrored for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[False,</span> <span class="pre">True]</span></code></p></li>
+<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f3ed07e3940&gt;]</span></code></p></li>
+<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.multi_face.multi_face.png" src="../_images/kqcircuits.chips.multi_face.multi_face.png" />

@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -306,6 +307,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -524,7 +526,68 @@
 <code class="docutils literal notranslate"><span class="pre">Element</span></code>, that in turn is derived from <a class="reference external" href="https://www.klayout.de/doc-qt4/code/class_PCellDeclarationHelper.html">PCellDeclarationHelper</a>.
 There exist also more specific base classes such as <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, <code class="docutils literal notranslate"><span class="pre">Qubit</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TestStructure</span></code>.</p>
-<img alt="class diagram" src="../_images/class_diagram_1.png" />
+<div class="figure align-center" id="id1">
+<div class="graphviz"><object data="../_images/graphviz-6ba9577865c634ada05d522b29574d4aee43eb20.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph {
+    rankdir=&quot;LR&quot;
+
+    Element [href=&quot;../api/kqcircuits.elements.element.html&quot;, target=&quot;_top&quot;]
+    Qubit [href=&quot;../api/kqcircuits.qubits.qubit.html&quot;, target=&quot;_top&quot;]
+    Squid [href=&quot;../api/kqcircuits.squids.squid.html&quot;, target=&quot;_top&quot;]
+    Airbridge [href=&quot;../api/kqcircuits.elements.airbridges.airbridge.html&quot;, target=&quot;_top&quot;]
+    TestStructure [href=&quot;../api/kqcircuits.test_structures.test_structure.html&quot;, target=&quot;_top&quot;]
+    FlipChipConnector [href=&quot;../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html&quot;, target=&quot;_top&quot;]
+    Fluxline [href=&quot;../api/kqcircuits.elements.fluxlines.fluxline.html&quot;, target=&quot;_top&quot;]
+    Marker [href=&quot;../api/kqcircuits.elements.markers.marker.html&quot;, target=&quot;_top&quot;]
+    Tsv [href=&quot;../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html&quot;, target=&quot;_top&quot;]
+
+    ## Base classes
+    Element -&gt; Qubit
+    Element -&gt; Squid
+    Element -&gt; Airbridge
+    Element -&gt; TestStructure
+    Element -&gt; FlipChipConnector
+    Element -&gt; Fluxline
+    Element -&gt; Marker
+    Element -&gt; Tsv
+
+    ## Cocrete base classes
+    node [shape=&quot;rect&quot;]
+
+    Chip [href=&quot;../api/kqcircuits.chips.chip.html&quot;, target=&quot;_top&quot;]
+    MultiFace [href=&quot;../api/kqcircuits.chips.multi_face.multi_face.html&quot;, target=&quot;_top&quot;]
+
+    Element -&gt; Chip -&gt; MultiFace
+
+    ## Concrete examples
+    node [color=&quot;green&quot;]
+
+    WaveguideCoplanar [href=&quot;../api/kqcircuits.elements.waveguide_coplanar.html&quot;, target=&quot;_top&quot;]
+    Demo [href=&quot;../api/kqcircuits.chips.demo.html&quot;, target=&quot;_top&quot;]
+    DemoTwoface [href=&quot;../api/kqcircuits.chips.multi_face.demo_twoface.html&quot;, target=&quot;_top&quot;]
+    Swissmon [href=&quot;../api/kqcircuits.qubits.swissmon.html&quot;, target=&quot;_top&quot;]
+    Manhattan [href=&quot;../api/kqcircuits.squids.manhattan.html&quot;, target=&quot;_top&quot;]
+    AirbridgeRectangular [href=&quot;../api/kqcircuits.elements.airbridges.airbridge_rectangular.html&quot;, target=&quot;_top&quot;]
+    FluxlineStraight [href=&quot;../api/kqcircuits.elements.fluxlines.fluxline_straight.html&quot;, target=&quot;_top&quot;]
+    MarkerStandard [href=&quot;../api/kqcircuits.elements.markers.marker_standard.html&quot;, target=&quot;_top&quot;]
+    AirbridgeDC [href=&quot;../api/kqcircuits.test_structures.airbridge_dc.html&quot;, target=&quot;_top&quot;]
+    FlipChipConnectorDc [href=&quot;../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc.html&quot;, target=&quot;_top&quot;]
+    TsvEllipse [href=&quot;../api/kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html&quot;, target=&quot;_top&quot;]
+
+    Element -&gt; WaveguideCoplanar
+    Chip -&gt; Demo
+    MultiFace -&gt; DemoTwoface
+    Qubit -&gt; Swissmon
+    Squid -&gt; Manhattan
+    Airbridge -&gt; AirbridgeRectangular
+    Fluxline -&gt; FluxlineStraight
+    Marker -&gt; MarkerStandard
+    TestStructure -&gt; AirbridgeDC
+    FlipChipConnector -&gt; FlipChipConnectorDc
+    Tsv -&gt; TsvEllipse
+}</p></object></div>
+<p class="caption"><span class="caption-text">Class Inheritance Diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
 <p>All base classes (black) are shown, abstracts are ovals, concretes are
 rectangles. Only one example “leaf” class (green) is shown for each base class.
 The class hierarchy is relatively flat as PCells make it more natural to use
@@ -620,7 +683,15 @@ class for all other classes in the library, for example all classes in the
 <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Library</span></code> inherit from the <code class="docutils literal notranslate"><span class="pre">Chip</span></code> base class. Each base class contains
 <code class="docutils literal notranslate"><span class="pre">LIBRARY_NAME</span></code> and <code class="docutils literal notranslate"><span class="pre">LIBRARY_DESCRIPTION</span></code> constants, so that these are
 available for all derived classes.</p>
-<img alt="library diagram" src="../_images/library_diagram.png" />
+<div class="figure align-center" id="id2">
+<div class="graphviz"><object data="../_images/graphviz-eafae24b3004a0deb055750c2e18d0c3591823b1.svg" type="image/svg+xml" class="graphviz">
+<p class="warning">digraph Libraries {
+&quot;Element Library&quot; -&gt; {&quot;SQUID Library&quot;, &quot;Qubit Library&quot;, &quot;Chip Library&quot;, &quot;TestStructure Library&quot;}
+&quot;SQUID Library&quot; -&gt; &quot;TestStructure Library&quot; -&gt; &quot;Chip Library&quot;
+&quot;SQUID Library&quot; -&gt; &quot;Qubit Library&quot; -&gt; &quot;Chip Library&quot;
+}</p></object></div>
+<p class="caption"><span class="caption-text">Library Dependency Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
 <p>Libraries have a strict dependency order defined in <code class="docutils literal notranslate"><span class="pre">kqc_library_names</span></code> in
 <code class="docutils literal notranslate"><span class="pre">defaults.py</span></code>. KLayout loads them in this order. Classes <em>can not</em> use other
 classes from other libraries downstream in the dependency graph.</p>

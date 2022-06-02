@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -304,6 +305,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/kqcircuits.elements.html">kqcircuits.elements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.elements.airbridges.html">kqcircuits.elements.airbridges</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.airbridges.airbridge.html">kqcircuits.elements.airbridges.airbridge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html">kqcircuits.elements.airbridges.airbridge_multi_face</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html">kqcircuits.elements.airbridges.airbridge_rectangular</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
@@ -571,15 +573,17 @@
 </li>
       <li><a href="api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge">Airbridge (class in kqcircuits.elements.airbridges.airbridge)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.elements.airbridge_connection.html#kqcircuits.elements.airbridge_connection.AirbridgeConnection">AirbridgeConnection (class in kqcircuits.elements.airbridge_connection)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.chips.airbridge_crossings.html#kqcircuits.chips.airbridge_crossings.AirbridgeCrossings">AirbridgeCrossings (class in kqcircuits.chips.airbridge_crossings)</a>
 </li>
       <li><a href="api/kqcircuits.test_structures.airbridge_dc.html#kqcircuits.test_structures.airbridge_dc.AirbridgeDC">AirbridgeDC (class in kqcircuits.test_structures.airbridge_dc)</a>
 </li>
       <li><a href="api/kqcircuits.chips.airbridge_dc_test.html#kqcircuits.chips.airbridge_dc_test.AirbridgeDcTest">AirbridgeDcTest (class in kqcircuits.chips.airbridge_dc_test)</a>
+</li>
+      <li><a href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html#kqcircuits.elements.airbridges.airbridge_multi_face.AirbridgeMultiFace">AirbridgeMultiFace (class in kqcircuits.elements.airbridges.airbridge_multi_face)</a>
 </li>
       <li><a href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular">AirbridgeRectangular (class in kqcircuits.elements.airbridges.airbridge_rectangular)</a>
 </li>
@@ -661,6 +665,8 @@
         <li><a href="api/kqcircuits.chips.xmons_direct_coupling.html#kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling.build">(kqcircuits.chips.xmons_direct_coupling.XMonsDirectCoupling method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.airbridge_connection.html#kqcircuits.elements.airbridge_connection.AirbridgeConnection.build">(kqcircuits.elements.airbridge_connection.AirbridgeConnection method)</a>
+</li>
+        <li><a href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html#kqcircuits.elements.airbridges.airbridge_multi_face.AirbridgeMultiFace.build">(kqcircuits.elements.airbridges.airbridge_multi_face.AirbridgeMultiFace method)</a>
 </li>
         <li><a href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.build">(kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular method)</a>
 </li>
@@ -900,15 +906,17 @@
       <li><a href="api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge.default_type">default_type (kqcircuits.elements.airbridges.airbridge.Airbridge attribute)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html#kqcircuits.elements.airbridges.airbridge_multi_face.AirbridgeMultiFace.default_type">(kqcircuits.elements.airbridges.airbridge_multi_face.AirbridgeMultiFace attribute)</a>
+</li>
         <li><a href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.default_type">(kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_all_libraries">delete_all_libraries() (in module kqcircuits.util.library_helper)</a>
 </li>
-      <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances">delete_instances() (kqcircuits.simulations.simulation.Simulation static method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances">delete_instances() (kqcircuits.simulations.simulation.Simulation static method)</a>
+</li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_library">delete_library() (in module kqcircuits.util.library_helper)</a>
 </li>
       <li><a href="api/kqcircuits.chips.demo.html#kqcircuits.chips.demo.Demo">Demo (class in kqcircuits.chips.demo)</a>
@@ -1090,6 +1098,8 @@
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_angle">get_angle() (in module kqcircuits.util.geometry_helper)</a>
 </li>
       <li><a href="api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density">get_area_and_density() (in module kqcircuits.util.area)</a>
+</li>
+      <li><a href="api/kqcircuits.chips.multi_face.multi_face.html#kqcircuits.chips.multi_face.multi_face.MultiFace.get_box">get_box() (kqcircuits.chips.multi_face.multi_face.MultiFace method)</a>
 </li>
       <li><a href="api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_cell_path_length">get_cell_path_length() (in module kqcircuits.util.geometry_helper)</a>
 </li>
@@ -1424,6 +1434,13 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.elements.airbridges.airbridge_multi_face
+
+      <ul>
+        <li><a href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html#module-kqcircuits.elements.airbridges.airbridge_multi_face">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.elements.airbridges.airbridge_rectangular
 
       <ul>
@@ -1647,6 +1664,8 @@
         <li><a href="api/kqcircuits.elements.waveguide_coplanar_splitter.html#module-kqcircuits.elements.waveguide_coplanar_splitter">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.elements.waveguide_coplanar_straight
 
@@ -1654,8 +1673,6 @@
         <li><a href="api/kqcircuits.elements.waveguide_coplanar_straight.html#module-kqcircuits.elements.waveguide_coplanar_straight">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.elements.waveguide_coplanar_taper
 
@@ -2319,6 +2336,8 @@
         <li><a href="api/kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">kqcircuits.elements.airbridges</a>
 </li>
         <li><a href="api/kqcircuits.elements.airbridges.airbridge.html#module-kqcircuits.elements.airbridges.airbridge">kqcircuits.elements.airbridges.airbridge</a>
+</li>
+        <li><a href="api/kqcircuits.elements.airbridges.airbridge_multi_face.html#module-kqcircuits.elements.airbridges.airbridge_multi_face">kqcircuits.elements.airbridges.airbridge_multi_face</a>
 </li>
         <li><a href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html#module-kqcircuits.elements.airbridges.airbridge_rectangular">kqcircuits.elements.airbridges.airbridge_rectangular</a>
 </li>

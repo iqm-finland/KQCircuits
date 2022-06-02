@@ -1,0 +1,10 @@
+kqcircuits.elements.airbridges.airbridge\_multi\_face
+=====================================================
+
+.. automodule:: kqcircuits.elements.airbridges.airbridge_multi_face
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.airbridges.airbridge_multi_face
+.. image:: ../pcell_images/kqcircuits.elements.airbridges.airbridge_multi_face.png

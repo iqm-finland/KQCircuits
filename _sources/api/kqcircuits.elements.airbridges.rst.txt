@@ -5,6 +5,7 @@ kqcircuits.elements.airbridges
 .. toctree::
 
    kqcircuits.elements.airbridges.airbridge
+   kqcircuits.elements.airbridges.airbridge_multi_face
    kqcircuits.elements.airbridges.airbridge_rectangular
 
 Module contents
