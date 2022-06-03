@@ -25,4 +25,3 @@ class DcTest(Chip):
     def build(self):
 
         self.produce_launchers("DC24")
-        super().build()

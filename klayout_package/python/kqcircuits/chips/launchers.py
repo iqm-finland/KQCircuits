@@ -30,4 +30,3 @@ class Launchers(Chip):
 
     def build(self):
         self.produce_launchers(self.sampleholder_type)
-        super().build()

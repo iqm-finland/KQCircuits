@@ -52,7 +52,6 @@ class TsvTest(Chip):
                              pitch=self.metrology_pitch + 2 * min_spacing)
         self.create_xsection(position=pya.DPoint(8750, 1250), array_form=[6, 6], pitch=self.metrology_pitch + 2.5 *
                                                                                        min_spacing)
-        super().build()
 
     def create_xsection(self, position, array_form, pitch):
         tsv_unit = self.add_element(Tsv)

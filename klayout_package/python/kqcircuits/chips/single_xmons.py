@@ -77,7 +77,6 @@ class SingleXmons(Chip):
 
         self._produce_readout_resonators()
         self._produce_chargelines()
-        super().build()
 
     def _produce_waveguide(self, path, term2=0, turn_radius=None):
         """Produces a coplanar waveguide that follows the given path.

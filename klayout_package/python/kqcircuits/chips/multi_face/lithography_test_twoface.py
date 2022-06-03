@@ -65,5 +65,3 @@ class LithographyTestTwoface(MultiFace):
         self.insert_cell(cell_vertical_4, pya.DCplxTrans(1, 0, False, 5000, 4000) * pya.DCplxTrans.M90)
         self.insert_cell(cell_diagonal_3, pya.DCplxTrans(1, 0, False, 7500, 1800) * pya.DCplxTrans.M90)
         self.insert_cell(cell_diagonal_4, pya.DCplxTrans(1, 0, False, 6200, 1800) * pya.DCplxTrans.M90)
-
-        super().build()

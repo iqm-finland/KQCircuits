@@ -45,7 +45,6 @@ class AirbridgeCrossings(Chip):
         launchers = self.produce_launchers("SMA8")
         self._produce_transmission_lines(launchers)
         self._produce_mechanical_test_array()
-        super().build()
 
     def _produce_transmission_lines(self, launchers):
 

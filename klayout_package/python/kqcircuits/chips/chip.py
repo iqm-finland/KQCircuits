@@ -223,7 +223,7 @@ class Chip(Element):
         if self.with_gnd_tsvs:
             self._produce_ground_tsvs(face_id=0)
 
-    def build(self):
+    def post_build(self):
         self.produce_structures()
         if self.with_grid:
             self.produce_ground_grid()

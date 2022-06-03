@@ -364,6 +364,3 @@ class Shaping(Chip):
                 launchers["SW"][0] + pya.DVector(0, 0),
             ], 1),
         )
-
-        # chip frame and possibly ground plane grid
-        super().build()

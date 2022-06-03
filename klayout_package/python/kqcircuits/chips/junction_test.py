@@ -77,5 +77,3 @@ class JunctionTest(Chip):
 
         result = reg1 - reg2
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(result)
-
-        super().build()

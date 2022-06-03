@@ -173,6 +173,3 @@ class QualityFactor(Chip):
             "path": pya.DPath(points_fl + points_fl_end, 1),
             "term2": 0
         }})
-
-        # Basis chip with possibly ground plane grid
-        super().build()

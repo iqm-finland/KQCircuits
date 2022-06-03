@@ -295,7 +295,6 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
 
     if output_format == "insert_cell+chip":
         full_code = start_code + textwrap.indent(instances_code, "        ") + "\n"
-        full_code += textwrap.indent("super().build()", "        ")
     else:
         full_code = start_code + instances_code
 
