@@ -298,12 +298,17 @@ class Element(pya.PCellDeclarationHelper):
 
         self.build()
 
+        self.post_build()
+
         for name, refpoint in self.refpoints.items():
             text = pya.DText(name, refpoint.x, refpoint.y)
             self.cell.shapes(self.get_layer("refpoints")).insert(text)
 
     def build(self):
         """Child classes re-define this method to build the PCell."""
+
+    def post_build(self):
+        """Child classes re-define this method for post-build operations"""
 
     def display_text_impl(self):
         if self.display_name:

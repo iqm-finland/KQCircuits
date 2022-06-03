@@ -42,8 +42,6 @@ class AirbridgeDcTest(Chip):
         n_ab, test_id = self._produce_tests_within_box(pya.DBox(d1, d2, chip_size - d1, chip_size - d2), n_ab, test_id)
         n_ab, test_id = self._produce_tests_within_box(pya.DBox(d2, d1, chip_size - d2, d2), n_ab, test_id)
 
-        super().build()
-
     def _produce_tests_within_box(self, box, n_ab, test_id):
 
         num_horizontal = int(box.width()//self.test_width)

@@ -63,6 +63,3 @@ class Simple(Chip):
         refs = self.refpoints
         self.insert_cell(WaveguideCoplanar, path=pya.DPath([tcross_refs["port_bottom"], refs["C2_port_a"]], 1))
         self.insert_cell(WaveguideCoplanar, path=pya.DPath([refs["C2_port_b"], launchers["SE"][0]], 1))
-
-        # chip frame and possibly ground plane grid
-        super().build()

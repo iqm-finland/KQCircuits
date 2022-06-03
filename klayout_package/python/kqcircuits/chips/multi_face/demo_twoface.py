@@ -64,8 +64,6 @@ class DemoTwoface(MultiFace):
         self.produce_readout_structures()
         self.produce_probelines()
 
-        super().build()
-
     def produce_qubits(self):
         dist_x = 2000  # distance from bottom chip edge
         dist_y = 3200

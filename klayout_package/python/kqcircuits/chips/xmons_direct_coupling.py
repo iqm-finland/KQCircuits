@@ -279,5 +279,3 @@ class XMonsDirectCoupling(Chip):
             Node(self.refpoints["QB3_port_flux_corner"], n_bridges=30),
             Node(self.refpoints["QB3_port_flux"])
         ])
-
-        super().build()

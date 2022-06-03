@@ -69,8 +69,6 @@ class Demo(Chip):
         self.produce_probelines()
         self.produce_junction_tests()
 
-        super().build()
-
     def produce_qubits(self):
         dist_x = 3220  # x-distance from chip edge
         dist_y = 3000  # y-distance from chip edge

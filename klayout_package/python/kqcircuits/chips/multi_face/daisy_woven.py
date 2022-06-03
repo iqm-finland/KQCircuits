@@ -33,7 +33,6 @@ class DaisyWoven(MultiFace):
 
     def build(self):
         self._produce_daisy_face("Daisy_woven")
-        super().build()
 
     def _produce_daisy_face(self, cell_name):
         # first create chip frame to change polarity of manual drawing

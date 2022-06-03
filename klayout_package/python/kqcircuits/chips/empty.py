@@ -48,4 +48,3 @@ class Empty(Chip):
         empty_area = self.make_empty_area()
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(empty_area)
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(empty_area)
-        super().build()

@@ -61,9 +61,6 @@ class QualityFactorTwoface(MultiFace):
     def build(self):
         self._produce_resonators()
 
-        # Basis chip with possibly ground plane grid
-        super().build()
-
     def _produce_resonators(self):
         # Interpretation of parameter lists
         res_lengths = [float(foo) for foo in self.res_lengths]

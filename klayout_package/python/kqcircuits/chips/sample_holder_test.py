@@ -62,5 +62,3 @@ class SampleHolderTest(Chip):
         for i, j in zip(range(2 * nr_pads_per_side + 1, 3 * nr_pads_per_side + 1),
                         range(4 * nr_pads_per_side, 3 * nr_pads_per_side, -1)):
             _produce_waveguide(i, j, 1200)
-
-        super().build()

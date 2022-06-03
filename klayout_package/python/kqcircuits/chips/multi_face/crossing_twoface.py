@@ -41,7 +41,6 @@ class CrossingTwoface(MultiFace):
     def build(self):
         launchers = self.produce_launchers("SMA8")
         self._produce_transmission_lines(launchers)
-        super().build()
 
     def _produce_transmission_lines(self, launchers):
         distance = 700

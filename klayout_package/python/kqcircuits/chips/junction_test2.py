@@ -94,5 +94,3 @@ class JunctionTest2(Chip):
                                 )
             self.insert_cell(cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]),
                              name + "_{}".format(j+1))
-
-        super().build()

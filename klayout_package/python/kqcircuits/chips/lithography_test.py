@@ -52,8 +52,6 @@ class LithographyTest(Chip):
         self.insert_cell(cell_diagonal_2, pya.DCplxTrans(1, 0, False, 3100, 1500))
         self.insert_cell(cell_diagonal_2, pya.DCplxTrans(1, 0, False, 6100, 1500))
 
-        super().build()
-
     def create_pattern(self, num_stripes, length, min_width, max_width, step, spacing, face_id):
         first_stripes_width = 2 * num_stripes * min_width
         cell_horizontal = self.layout.create_cell("Stripes")
