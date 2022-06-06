@@ -119,6 +119,7 @@ class QualityFactorTwoface(MultiFace):
             cplr_pos = cross_refpoints_abs["port_bottom"] + cplr_pos_post
             cplr_trans = pya.DTrans(cplr_pos.x, cplr_pos.y) * rot_3
             inst_cplr, _ = self.insert_cell(cplr, cplr_trans)
+            self.refpoints[f'res_{i}_coupler'] = cplr_pos
 
             # Y-indentation for spiral resonator
             endpoint = point_shift_along_vector(cplr_refpoints_rel["port_b"],
