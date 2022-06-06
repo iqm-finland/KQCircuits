@@ -93,8 +93,8 @@ if args.q:
 
 # Generate mesh
 if workflow['run_gmsh']:
-    msh_filepath, port_data_gmsh, ground_names = export_gmsh_msh(json_data, path, **json_data['gmsh_params'])
-    sif_filepath = export_elmer_sif(path, msh_filepath, port_data_gmsh, ground_names, tool=json_data['tool'])
+    msh_filepath, model_data = export_gmsh_msh(json_data, path, **json_data['gmsh_params'])
+    sif_filepath = export_elmer_sif(path, msh_filepath, model_data)
 else:
     msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
 

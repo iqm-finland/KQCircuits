@@ -50,6 +50,7 @@ edge_ports = True
 use_elmer = True
 use_sbatch = False
 wave_equation = False  # implemented only for Ansys at the moment (use_elmer=False)!
+multiface = True
 sweep_parameters = {
     'n_guides': range(1, 3)
 }
@@ -82,9 +83,8 @@ sim_parameters = {
     'cpw_length': 100,  # if edge_ports then this has to be box_size_x
     'a': 10,
     'b': 6,
-    'guide_face_id': "t",
     'add_bumps': False,
-    'wafer_stack_type': "multiface",
+    'wafer_stack_type': "multiface" if multiface else "planar",
     'n_guides': 1,
     'chip_distance': 8,
     'port_size': 50,

@@ -20,7 +20,7 @@ import shutil
 from pathlib import Path
 
 
-def export_elmer_sif(path: Path, msh_filepath: Path, port_data_gmsh: dict, ground_names: str, tool='capacitance'):
+def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
     """
     Exports an elmer simulation model to the simulation path.
 
@@ -28,26 +28,20 @@ def export_elmer_sif(path: Path, msh_filepath: Path, port_data_gmsh: dict, groun
 
         path(Path): Location where to output the simulation model
         msh_filepath(Path): Path to exported msh file
-        port_data_gmsh(list):
+        model_data(dict): Simulation model data including following terms:
 
-          each element contain port data that one gets from `Simulation.get_port_data` + gmsh specific data:
-
-             * Items from `Simulation.get_port_data`
-             * dim_tag: DimTags of the port polygons
-             * occ_bounding_box: port bounding box
-             * dim_tags: list of DimTags if the port consist of more than one (`EdgePort`)
-             * signal_dim_tag: DimTag of the face that is connected to the signal edge of the port
-             * signal_physical_name: physical name of the signal face
-
-        ground_names(list): List of ground names in gmsh model
-        tool(str): Elmer tool. Available: "capacitance" that computes the capacitance matrix (Default: capacitance)
+            * 'tool': Elmer tool. Available: "capacitance" that computes the capacitance matrix,
+            * 'faces': Number of faces,
+            * 'port_signal_names': List of signal names in gmsh model for each port,
+            * 'ground_names': List of ground names in gmsh model,
+            * 'substrate_permittivity': Permittivity of the substrates,
 
     Returns:
 
         sif_filepath: Path to exported sif file
 
     """
-    if tool == 'capacitance':
+    if model_data['tool'] == 'capacitance':
         sif_filepath = path.joinpath('sif/{}.sif'.format(msh_filepath.stem))
         begin = 'Check Keywords Warn\n'
         begin += 'INCLUDE {}/mesh.names\n'.format(msh_filepath.stem)
@@ -55,15 +49,37 @@ def export_elmer_sif(path: Path, msh_filepath: Path, port_data_gmsh: dict, groun
         begin += '  Mesh DB "." "{}"\n'.format(msh_filepath.stem)
         begin += 'End\n'
 
-        n_ground = len(ground_names)
-        s = 'Boundary Condition 1\n'
-        s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(ground_names)
+        # vacuum and substrates
+        s = 'Body 1\n'
+        s += '  Target Bodies(1) = $ vacuum\n'
+        s += '  Equation = 1\n'
+        s += '  Material = 1\n'
+        s += 'End\n'
+        for face in range(model_data['faces']):
+            s += 'Body {}\n'.format(face + 2)
+            s += '  Target Bodies(1) = $ chip_{}\n'.format(face)
+            s += '  Equation = 1\n'
+            s += '  Material = 2\n'
+            s += 'End\n'
+
+        # materials
+        s += 'Material 1\n'
+        s += '  Relative Permittivity = 1\n'
+        s += 'End\n'
+        s += 'Material 2\n'
+        s += '  Relative Permittivity = {}\n'.format(model_data['substrate_permittivity'])
+        s += 'End\n'
+
+        # boundary conditions
+        n_ground = len(model_data['ground_names'])
+        s += 'Boundary Condition 1\n'
+        s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(model_data['ground_names'])
         s += '\n  Capacitance Body = 0\n'
         s += 'End\n'
 
-        for i, port in enumerate([port for port in port_data_gmsh if 'signal_physical_name' in port]):
+        for i, port_signal_name in enumerate(model_data['port_signal_names']):
             s += 'Boundary Condition '+str(i+2)+'\n'
-            s += '  Target Boundaries(1) = $ '+port['signal_physical_name']+'\n'
+            s += '  Target Boundaries(1) = $ '+port_signal_name+'\n'
             s += '  Capacitance Body = '+str(i+1)+'\n'
             s += 'End\n'
 

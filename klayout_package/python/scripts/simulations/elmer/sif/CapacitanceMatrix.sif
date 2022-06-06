@@ -10,21 +10,6 @@ Constants
 !  This one is changed to one to allow easier verification
 !  Permittivity Of Vacuum = 1.0
 End
-Body 1
-  Target Bodies(1) = $ chip_0
-  Equation = 1
-  Material = 2
-End
-Body 2
-  Target Bodies(1) = $ chip_1
-  Equation = 1
-  Material = 2
-End
-Body 3
-  Target Bodies(1) = $ vacuum
-  Equation = 1
-  Material = 1
-End
 Equation 1
   Active Solvers(2) = 1 2
   Calculate Electric Energy = True
@@ -66,10 +51,4 @@ Solver 3  !---- SaveData, SaveScalars
    Equation = "sv"
    Procedure = "SaveData" "SaveScalars"
    Filename = results.dat
-End
-Material 1
-  Relative Permittivity = 1
-End
-Material 2
-  Relative Permittivity = 11.45
 End
