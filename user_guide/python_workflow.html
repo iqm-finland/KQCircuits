@@ -700,9 +700,6 @@ element created in the previous section into a new chip:</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">half_width</span> <span class="o">+</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">half_width</span> <span class="o">-</span> <span class="mi">2000</span><span class="p">))</span>
-
-        <span class="c1"># Call the Chip-class build-method to produce the chip frame and possible ground plane grid.</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>This code can be copied to a new Python-file <code class="docutils literal notranslate"><span class="pre">new_chip1.py</span></code> in the
@@ -757,8 +754,6 @@ using refpoints:</p>
                 <span class="n">cap_refpoints</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">],</span>
             <span class="p">],</span> <span class="mi">0</span><span class="p">),</span>
         <span class="p">)</span>
-
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>How to use the points once they exist? Several styles have evolved:</p>

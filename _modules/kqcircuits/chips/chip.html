@@ -735,7 +735,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_gnd_tsvs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_tsvs</span><span class="p">(</span><span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Chip.build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Chip.post_build"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.post_build">[docs]</a>    <span class="k">def</span> <span class="nf">post_build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_structures</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">produce_ground_grid</span><span class="p">()</span>

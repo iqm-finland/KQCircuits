@@ -196,9 +196,6 @@ element created in the previous section into a new chip::
             self.insert_cell(cross_cell, pya.DTrans(half_width + 2000, half_width + 2000))
             self.insert_cell(cross_cell, pya.DTrans(half_width + 2000, half_width - 2000))
 
-            # Call the Chip-class build-method to produce the chip frame and possible ground plane grid.
-            super().build()
-
 This code can be copied to a new Python-file ``new_chip1.py`` in the
 ``klayout_package/python/kqcircuits/chips`` folder to make it visible in the
 KQCircuits chip library.
@@ -254,8 +251,6 @@ using refpoints::
                     cap_refpoints["port_b"],
                 ], 0),
             )
-
-            super().build()
 
 
 How to use the points once they exist? Several styles have evolved:
