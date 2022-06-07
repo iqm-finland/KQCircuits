@@ -36,7 +36,7 @@ from kqcircuits.util.geometry_helper import point_shift_along_vector
 class Demo(Chip):
     """Demonstration chip with a four qubits, four readout resonators, two probe lines, charge- and fluxlines."""
 
-    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="μm")
+    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
     include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 
     def build(self):

@@ -46,7 +46,7 @@ class WaveguideCoplanar(Element):
     term1 = Param(pdt.TypeDouble, "Termination length start", 0, unit="μm")
     term2 = Param(pdt.TypeDouble, "Termination length end", 0, unit="μm")
     corner_safety_overlap = Param(pdt.TypeDouble, "Extend straight sections near corners", 0.001, unit="μm",
-        docstring="Extend straight sections near corners by this amount [μm] to ensure all sections overlap")
+        docstring="Extend straight sections near corners by this amount (μm) to ensure all sections overlap")
 
     def can_create_from_shape_impl(self):
         return self.shape.is_path()

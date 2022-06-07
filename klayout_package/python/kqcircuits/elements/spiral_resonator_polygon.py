@@ -63,7 +63,7 @@ class SpiralResonatorPolygon(Element):
     poly_path = Param(pdt.TypeShape, "Polygon path",
                       pya.DPath([pya.DPoint(0, 800), pya.DPoint(1000, 0), pya.DPoint(0, -800)], 10))
     auto_spacing = Param(pdt.TypeBoolean, "Use automatic spacing", True)
-    manual_spacing = Param(pdt.TypeList, "Manual spacing pattern", [300], unit="μm")
+    manual_spacing = Param(pdt.TypeList, "Manual spacing pattern", [300], unit="[μm]")
     bridge_spacing = Param(pdt.TypeDouble, "Airbridge spacing", 0, unit="μm")
     n_bridges_pattern = Param(pdt.TypeList, "Pattern for number of airbridges on edges", [0])
     connector_dist = Param(pdt.TypeDouble, "Face to face connector distance from beginning", -1, unit="µm",
@@ -444,16 +444,16 @@ def rectangular_parameters(above_space=500, below_space=400, right_space=1000, x
     """A utility function to easily produce rectangular spiral resonator (old SpiralResonatorRectangle).
 
     Args:
-        above_space: Space above the input [µm]
-        below_space: Space below the input [µm]
-        right_space: Space right of the input [µm]
-        x_spacing: Spacing between vertical segments [µm]
-        y_spacing: Spacing between horizontal segments [µm]
+        above_space: Space above the input (µm)
+        below_space: Space below the input (µm)
+        right_space: Space right of the input (µm)
+        x_spacing: Spacing between vertical segments (µm)
+        y_spacing: Spacing between horizontal segments (µm)
         bridges_left: Crossing airbridges left
         bridges_bottom: Crossing airbridges bottom
         bridges_right: Crossing airbridges right
         bridges_top: Crossing airbridges top
-        r: Turn radius [µm]
+        r: Turn radius (µm)
 
     Returns:
         dictionary of parameters for SpiralResonatorPolygon

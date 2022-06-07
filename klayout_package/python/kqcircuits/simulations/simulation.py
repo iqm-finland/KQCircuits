@@ -127,7 +127,7 @@ class Simulation:
 
         Arguments:
             cell: existing top cell for the Simulation
-            margin: distance [μm] to expand the simulation box (ground plane) around the bounding
+            margin: distance (μm) to expand the simulation box (ground plane) around the bounding
                 box of the cell If the `box` keyword argument is given, margin is ignored.
             grid_size: size of the simulation box will be rounded to this resolution
                 If the `box` keyword argument is given, grid_size is ignored.
@@ -290,9 +290,9 @@ class Simulation:
             use_internal_ports (bool, optional): if True, ports will be inside the simulation. If False, ports will be
                 brought out to an edge of the box, determined by `side`.
                 Defaults to the value of the `use_internal_ports` parameter
-            waveguide_length (float, optional): length of the waveguide [μm], used only for internal ports
+            waveguide_length (float, optional): length of the waveguide (μm), used only for internal ports
                 Defaults to the value of the `waveguide_length` parameter
-            term1 (float, optional): Termination gap [μm] at `location`. Default 0
+            term1 (float, optional): Termination gap (μm) at `location`. Default 0
             turn_radius (float, optional): Turn radius of the waveguide. Not relevant for internal ports.
                 Defaults to the value of the `r` parameter
             a (float, optional): Center conductor width. Defaults to the value of the `a` parameter

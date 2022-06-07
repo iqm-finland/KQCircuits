@@ -33,9 +33,9 @@ class CrossingTwoface(MultiFace):
     crossings = Param(pdt.TypeInt, "Number of double crossings", 3,
         docstring="Number of pairs of flip-chip crossings")
     crossing_length = Param(pdt.TypeDouble, "Crossing waveguide length", 400, unit="μm",
-        docstring="Length of the crossing on the top face [μm]")
+        docstring="Length of the crossing on the top face (μm)")
     cross_talk_distance = Param(pdt.TypeDouble, "Transmission line distance from meander", 300, unit="μm",
-        docstring="Distance between the right straight transmission line and meander on the right [μm]")
+        docstring="Distance between the right straight transmission line and meander on the right (μm)")
     meander_face = Param(pdt.TypeString, "Meander face on right side", "single", choices=["Single", "Two Face"])
 
     def build(self):

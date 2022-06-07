@@ -40,9 +40,9 @@ class QualityFactor(Chip):
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
     res_beg = Param(pdt.TypeList, "Resonator beginning type",
         ["galvanic", "galvanic", "galvanic", "airbridge", "airbridge", "airbridge"])
-    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [5, 10, 20, 5, 10, 20], unit="μm",
+    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [5, 10, 20, 5, 10, 20], unit="[μm]",
                   docstring="Width of the center conductor in the resonators [μm]")
-    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="μm",
+    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="[μm]",
                   docstring="Width of the gap in the resonators [μm]")
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
     launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="μm")

@@ -36,12 +36,12 @@ class CircularCapacitor(Element):
     a2 = Param(pdt.TypeDouble, "Width of center conductor on the right side", Element.a, unit="μm")
     b2 = Param(pdt.TypeDouble, "Width of gap on the right side", Element.b, unit="μm")
     r_inner = Param(pdt.TypeDouble, "Internal island radius", 20, unit="μm",
-                    docstring="Radius of the outer edge of the center island [μm]")
+                    docstring="Radius of the outer edge of the center island (μm)")
     r_outer = Param(pdt.TypeDouble, "External island radius, measured at the outer edge", 80, unit="μm",
-                    docstring="Radius of the external coupler island [μm]")
+                    docstring="Radius of the external coupler island (μm)")
     swept_angle = Param(pdt.TypeDouble, "Angle covered by the external island in degrees", 180)
     outer_island_width = Param(pdt.TypeDouble, "External island width", 40, unit="μm",
-                               docstring="Width of the external island [μm]")
+                               docstring="Width of the external island (μm)")
     ground_gap = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
 
     def build(self):

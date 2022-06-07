@@ -38,7 +38,7 @@ class MultiFace(Chip):
     """
 
     a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="μm",
-                     docstring="Width of center conductor in the capped region [μm]")
+                     docstring="Width of center conductor in the capped region (μm)")
     b_capped = Param(pdt.TypeDouble, "Width of gap in the capped region ", 10, unit="μm")
     with_face1_gnd_tsvs = Param(pdt.TypeBoolean, "Make ground TSVs on the top face", False)
     with_gnd_bumps = Param(pdt.TypeBoolean, "Make ground bumps", False)
