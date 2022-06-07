@@ -30,62 +30,123 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
         msh_filepath(Path): Path to exported msh file
         model_data(dict): Simulation model data including following terms:
 
-            * 'tool': Elmer tool. Available: "capacitance" that computes the capacitance matrix,
-            * 'faces': Number of faces,
-            * 'port_signal_names': List of signal names in gmsh model for each port,
-            * 'ground_names': List of ground names in gmsh model,
-            * 'substrate_permittivity': Permittivity of the substrates,
+            * 'tool': Available: "capacitance" and "wave_equation" (Default: capacitance)
+            * 'faces': Number of faces
+            * 'port_signal_names': List of signal names in gmsh model for each port
+            * 'ground_names': List of ground names in gmsh model
+            * 'substrate_permittivity': Permittivity of the substrates
+            * 'body_dim_tags': a list of dim_tags of the bodies in the model
+            * 'body_materials': a dictionary mapping the bodies to their materials
+            * 'body_port_phys_map': a dictionary mapping the bodies to the physical names of the port faces
+            * 'frequency': the exitation frequency of the model
 
     Returns:
 
         sif_filepath: Path to exported sif file
 
     """
-    if model_data['tool'] == 'capacitance':
-        sif_filepath = path.joinpath('sif/{}.sif'.format(msh_filepath.stem))
-        begin = 'Check Keywords Warn\n'
-        begin += 'INCLUDE {}/mesh.names\n'.format(msh_filepath.stem)
-        begin += 'Header\n'
-        begin += '  Mesh DB "." "{}"\n'.format(msh_filepath.stem)
-        begin += 'End\n'
+    sif_filepath = path.joinpath('sif/{}.sif'.format(msh_filepath.stem))
+    begin = 'Check Keywords Warn\n'
+    begin += 'INCLUDE {}/mesh.names\n'.format(msh_filepath.stem)
+    begin += 'Header\n'
+    begin += '  Mesh DB "." "{}"\n'.format(msh_filepath.stem)
+    begin += 'End\n'
 
-        # vacuum and substrates
-        s = 'Body 1\n'
-        s += '  Target Bodies(1) = $ vacuum\n'
+    # vacuum and substrates
+    n_bodies = 0
+    n_boundaries = 0
+    s = 'Body 1\n'
+    s += '  Target Bodies(1) = $ vacuum\n'
+    s += '  Equation = 1\n'
+    s += '  Material = 1\n'
+    s += 'End\n'
+    n_bodies += 1
+    for face in range(model_data['faces']):
+        s += 'Body {}\n'.format(face + 2)
+        s += '  Target Bodies(1) = $ chip_{}\n'.format(face)
         s += '  Equation = 1\n'
-        s += '  Material = 1\n'
+        s += '  Material = 2\n'
         s += 'End\n'
-        for face in range(model_data['faces']):
-            s += 'Body {}\n'.format(face + 2)
-            s += '  Target Bodies(1) = $ chip_{}\n'.format(face)
-            s += '  Equation = 1\n'
-            s += '  Material = 2\n'
-            s += 'End\n'
+        n_bodies += 1
 
-        # materials
-        s += 'Material 1\n'
-        s += '  Relative Permittivity = 1\n'
-        s += 'End\n'
-        s += 'Material 2\n'
-        s += '  Relative Permittivity = {}\n'.format(model_data['substrate_permittivity'])
-        s += 'End\n'
+    # materials
+    s += 'Material 1\n'
+    s += '  Relative Permittivity = 1\n'
+    s += 'End\n'
+    s += 'Material 2\n'
+    s += '  Relative Permittivity = {}\n'.format(model_data['substrate_permittivity'])
+    s += 'End\n'
 
+    if model_data['tool'] == 'capacitance':
         # boundary conditions
         n_ground = len(model_data['ground_names'])
         s += 'Boundary Condition 1\n'
         s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(model_data['ground_names'])
         s += '\n  Capacitance Body = 0\n'
         s += 'End\n'
+        n_boundaries += 1
 
         for i, port_signal_name in enumerate(model_data['port_signal_names']):
             s += 'Boundary Condition '+str(i+2)+'\n'
             s += '  Target Boundaries(1) = $ '+port_signal_name+'\n'
             s += '  Capacitance Body = '+str(i+1)+'\n'
             s += 'End\n'
+            n_boundaries += 1
 
         shutil.copy(path.joinpath('sif/CapacitanceMatrix.sif'), sif_filepath)
         with open(sif_filepath, 'r+') as f:
             content = f.read().replace('#FILEPATHSTEM', sif_filepath.stem)
+            f.seek(0, 0)
+            f.write(begin + content + s)
+
+        with open(path.joinpath('ELMERSOLVER_STARTINFO'), 'w') as f:
+            f.write(str(sif_filepath))
+
+    elif model_data['tool'] == 'wave_equation':
+        # boundary conditions
+        n_ground = len(model_data['ground_names'])
+        s += 'Boundary Condition 1\n'
+        s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(model_data['ground_names'])
+        s += '\n  E re {e} = 0\n'
+        s += '  E im {e} = 0\n'
+        s += '  Potential = 0\n'
+        s += 'End\n'
+        n_boundaries += 1
+
+        for i, port_signal_name in enumerate(model_data['port_signal_names']):
+            s += 'Boundary Condition '+str(i+2)+'\n'
+            s += '  Target Boundaries(1) = $ '+port_signal_name+'\n'
+            s += '\n  E re {e} = 0\n'
+            s += '  E im {e} = 0\n'
+            s += '  Potential = 1\n'
+            s += 'End\n'
+            n_boundaries += 1
+
+        for i, body_dim_tag in enumerate(model_data['body_dim_tags']):
+            body_id = i+1+n_bodies
+            s += 'Body {}\n'.format(body_id)
+            # s += '  Target Bodies(1) = {}\n'.format(body_dim_tag[1])
+            s += '  Equation = 2\n'
+            if model_data['body_materials'][body_dim_tag] == 'vacuum':
+                s += '  Material = 1\n'
+            else:
+                s += '  Material = 2\n'
+            s += 'End\n'
+
+            boundary_physical_names = model_data['body_port_phys_map'][body_dim_tag]
+            s += 'Boundary Condition {}'.format(i+1+n_boundaries)+'\n'
+            s += '  Target Boundaries({}) = $ '.format(len(boundary_physical_names)) + \
+                                            ' '.join(boundary_physical_names)+'\n'
+            s += '\n  Body Id = {}\n'.format(body_id)
+            s += '  TEM Potential im = variable potential\n'
+            s += '    real matc "2*beta*tx"\n'
+            s += '  electric robin coefficient im = real $ beta\n'
+            s += 'End\n'
+
+        shutil.copy(path.joinpath('sif/WaveEquation.sif'), sif_filepath)
+        with open(sif_filepath, 'r+') as f:
+            content = f.read().replace('#FREQUENCY', str(1e9*model_data['frequency']))
+            content = content.replace('#SUBSTRATE_PERMITTIVITY', str(model_data['substrate_permittivity']))
             f.seek(0, 0)
             f.write(begin + content + s)
 

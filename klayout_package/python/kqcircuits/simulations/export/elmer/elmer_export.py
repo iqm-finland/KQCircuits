@@ -88,14 +88,16 @@ def copy_elmer_scripts_to_directory(path: Path):
             copy_tree(str(script_path), str(path), update=1)
 
 
-def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance', gmsh_params=None, workflow=None):
+def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
+                      frequency=5, gmsh_params=None, workflow=None):
     """
     Export Elmer simulation into json and gds files.
 
     Args:
         simulation: The simulation to be exported.
         path: Location where to write json.
-        tool(str): Elmer tool used. Available: "capacitance" that computes the capacitance matrix (Default: capacitance)
+        tool(str): Available: "capacitance" and "wave_equation" (Default: capacitance)
+        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         gmsh_params(dict): Parameters for Gmsh
         workflow(dict): Parameters for simulation workflow
 
@@ -122,7 +124,8 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance', gm
         **simulation.get_simulation_data(),
         'layers': {r: default_layers[r] for r in layers},
         'gmsh_params': default_gmsh_params if gmsh_params is None else {**default_gmsh_params, **gmsh_params},
-        'workflow': default_workflow if workflow is None else {**default_workflow, **workflow}
+        'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
+        'frequency': frequency,
     }
 
     # write .json file
@@ -273,7 +276,7 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
     return main_script_filename
 
 
-def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='simulation',
+def export_elmer(simulations: [], path: Path, tool='capacitance', frequency=5, file_prefix='simulation',
                  script_file='scripts/run.py', gmsh_params=None, workflow=None, skip_errors=False):
     """
     Exports an elmer simulation model to the simulation path.
@@ -282,7 +285,8 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='s
 
         simulations(list(Simulation)): list of all the simulations
         path(Path): Location where to output the simulation model
-        tool(str): Elmer tool used. Available: "capacitance" that computes the capacitance matrix (Default: capacitance)
+        tool(str): Available: "capacitance" and "wave_equation" (Default: capacitance)
+        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.
         gmsh_params(dict): Parameters for Gmsh
@@ -303,7 +307,7 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='s
     json_filenames = []
     for simulation in simulations:
         try:
-            json_filenames.append(export_elmer_json(simulation, path, tool, gmsh_params, workflow))
+            json_filenames.append(export_elmer_json(simulation, path, tool, frequency, gmsh_params, workflow))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

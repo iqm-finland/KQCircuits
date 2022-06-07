@@ -707,6 +707,19 @@ def get_bbox_sides_as_bboxes(bbox):
     }
     return sides
 
+def get_parent_body(dim_tag, body_dim_tags):
+    """
+    Find the parent body of a (outer) boundary.
+    """
+
+    found_dim_tag = None
+
+    for e in body_dim_tags:
+        if dim_tag in gmsh.model.getBoundary([e], oriented=False):
+            found_dim_tag = e
+            break
+
+    return found_dim_tag
 
 def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, signal_min_mesh_size: float = 100,
                     signal_min_dist: float = 100, signal_max_dist: float = 100,
@@ -770,7 +783,6 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
             * filepath(Path): Path to exported msh file
             * model_data(dict): Model data for creating Elmer sif file (see export_elmer_sif)
     """
-
     params = sim_data['parameters']
     filepath = Path(path).joinpath(params['name'] + '.msh')
 
@@ -862,6 +874,31 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
                 port['signal_physical_name'] = 'signal_' + str(port['number'])
                 gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
 
+    for _ in face_dim_tag_dicts:
+        body_dim_tags = gmsh.model.getEntities(3)
+        body_port_phys_map = {}
+        for dim_tag in body_dim_tags:
+            body_port_phys_map[dim_tag] = []
+        for port in port_data_gmsh:
+            port['physical_names'] = []
+            if port['type'] == 'InternalPort':
+                port_physical_name = 'port_' + str(port['number'])
+                gmsh.model.setPhysicalName(*port['dim_tag'], port_physical_name)
+                parent_body_dim_tag = get_parent_body(port['dim_tag'], body_dim_tags)
+                if parent_body_dim_tag is not None:
+                    port['physical_names'].append((parent_body_dim_tag, port_physical_name))
+                    body_port_phys_map[parent_body_dim_tag].append(port_physical_name)
+
+            else:
+                port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
+                for i, dim_tag in enumerate(port['dim_tags']):
+                    port_physical_name = 'port_{}_{}'.format(port['number'], i)
+                    gmsh.model.setPhysicalName(*dim_tag, port_physical_name)
+                    parent_body_dim_tag = get_parent_body(dim_tag, body_dim_tags)
+                    if parent_body_dim_tag is not None:
+                        port['physical_names'].append((parent_body_dim_tag, port_physical_name))
+                        body_port_phys_map[parent_body_dim_tag].append(port_physical_name)
+
         if port['type'] == 'EdgePort':
             port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
             for i, dim_tag in enumerate(port['dim_tags']):
@@ -904,11 +941,27 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
         gmsh.fltk.run()
     gmsh.finalize()
 
+    # TODO: make more intelligent material selector
+    if params['wafer_stack_type'] == 'planar':
+        body_materials = {
+                (3, 1): "dielectric",
+                (3, 2): "vacuum",
+                }
+    else:
+        body_materials = {
+                (3, 1): "dielectric",
+                (3, 2): "dielectric",
+                (3, 3): "vacuum",
+                }
+
     # produce data to create Elmer sif file
     model_data = {
         'tool': sim_data['tool'],
         'faces': len(faces),
         'port_signal_names': [p['signal_physical_name'] for p in port_data_gmsh if 'signal_physical_name' in p],
+        'body_port_phys_map': body_port_phys_map,
+        'body_dim_tags': body_dim_tags,
+        'body_materials': body_materials,
         'ground_names': ground_names,
         'substrate_permittivity': params['permittivity'],
     }

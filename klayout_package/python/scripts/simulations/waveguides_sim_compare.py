@@ -49,16 +49,17 @@ sim_class = WaveGuidesSim  # pylint: disable=invalid-name
 edge_ports = True
 use_elmer = True
 use_sbatch = False
-wave_equation = False  # implemented only for Ansys at the moment (use_elmer=False)!
+wave_equation = False
 multiface = True
 sweep_parameters = {
     'n_guides': range(1, 3)
 }
 
 if use_elmer:
-    path = create_or_empty_tmp_directory("waveguides_sim_elmer")
     if wave_equation:
-        raise ValueError('Wave equation not yet implemented on Elmer!')
+        path = create_or_empty_tmp_directory("waveguides_sim_elmer_wave")
+    else:
+        path = create_or_empty_tmp_directory("waveguides_sim_elmer")
 
 else:
     if wave_equation:
@@ -88,9 +89,11 @@ sim_parameters = {
     'n_guides': 1,
     'chip_distance': 8,
     'port_size': 50,
+    'permittivity': 11.45
 }
 
 if use_elmer:
+    elmer_n_processes = -1
     mesh_parameters = {
         'default_mesh_size': 100.,
         'gap_min_mesh_size': 2.,
@@ -105,17 +108,26 @@ if use_elmer:
                        # (for large meshes this can take a long time)
     }
 
-    export_parameters_elmer = {
-        'path': path,
-        'tool': 'capacitance',
-    }
+    if wave_equation:
+        elmer_n_processes = 1 # multi-core coming soon
+        export_parameters_elmer = {
+            'path': path,
+            'tool': 'wave_equation',
+            'frequency': 10,
+        }
+    else:
+        elmer_n_processes = -1
+        export_parameters_elmer = {
+            'path': path,
+            'tool': 'capacitance',
+        }
 
     workflow = {
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
-        'elmer_n_processes': -1,  # -1 means all the physical cores
-        'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
+        'python_executable': 'python', # use 'kqclib' when using singularity image (you can also put a full path)
+        'elmer_n_processes': elmer_n_processes,  # -1 means all the physical cores
     }
     if use_sbatch:  # if simulation is run in a HPC system, sbatch_parameters can be given here
         workflow['sbatch_parameters'] = {
