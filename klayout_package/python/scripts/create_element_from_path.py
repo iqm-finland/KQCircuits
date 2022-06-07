@@ -47,6 +47,38 @@ from kqcircuits.defaults import TMP_PATH
 #                element_path="$FilePathRelativeToProjectRoot$"
 # - To execute, right click the python file (in the Project browser on the editor tab) containing the element to create
 #   and choose the tool under External Tools.
+#
+# To use this as a task in Visual Studio Code, add the following snippet to your `.vscode/tasks.json`.
+# Linux users may need to edit the "command" field to point to KLayout.
+#    {
+#      "label": "Open in KLayout",
+#      "type": "shell",
+#      "command": "/usr/bin/klayout",
+#      "args": [
+#        "-e",
+#        "-rm",
+#        "'${workspaceFolder:KQCircuits}${pathSeparator}klayout_package${pathSeparator}python${pathSeparator}scripts${pathSeparator}create_element_from_path.py'", // # pylint: disable=line-too-long
+#        "-rd",
+#        "element_path=\"${relativeFile}\""
+#      ],
+#      "windows": {
+#        "command": "${env:APPDATA}\\KLayout\\klayout_app.exe",
+#        "options": {
+#          "shell": {
+#            "executable": "powershell.exe"
+#          }
+#        },
+#      },
+#      "osx": {
+#        "command": "${USER}/Applications/klayout.app"
+#      },
+#      "problemMatchers": [],
+#      // the following field allows running with the default 'build' task (Ctrl+Shift+B)
+#      "group": {
+#        "kind": "build",
+#        "isDefault": true
+#      }
+#    }
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
@@ -56,6 +88,10 @@ logging.info(f"Element path: {element_path}")
 
 # Figure out the python import path from the specified file path
 path_without_extension = pathlib.Path(element_path).with_suffix('')
+# Remove 'KQCircuits' or similar folder from beginning
+if 'Circuits' in path_without_extension.parts[0]:
+    path_without_extension = path_without_extension.relative_to(*path_without_extension.parts[:1])
+
 if path_without_extension.parts[0] == "klayout_package" and path_without_extension.parts[1] == "python":
     module_path = '.'.join(path_without_extension.parts[2:])
 else:
