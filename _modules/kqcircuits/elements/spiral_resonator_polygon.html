@@ -575,7 +575,7 @@
     <span class="n">poly_path</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span> <span class="s2">&quot;Polygon path&quot;</span><span class="p">,</span>
                       <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">800</span><span class="p">)],</span> <span class="mi">10</span><span class="p">))</span>
     <span class="n">auto_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use automatic spacing&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-    <span class="n">manual_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Manual spacing pattern&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">300</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">manual_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Manual spacing pattern&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">300</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
     <span class="n">bridge_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Airbridge spacing&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">n_bridges_pattern</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Pattern for number of airbridges on edges&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">connector_dist</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Face to face connector distance from beginning&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">,</span>
@@ -956,16 +956,16 @@
     <span class="sd">&quot;&quot;&quot;A utility function to easily produce rectangular spiral resonator (old SpiralResonatorRectangle).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        above_space: Space above the input [µm]</span>
-<span class="sd">        below_space: Space below the input [µm]</span>
-<span class="sd">        right_space: Space right of the input [µm]</span>
-<span class="sd">        x_spacing: Spacing between vertical segments [µm]</span>
-<span class="sd">        y_spacing: Spacing between horizontal segments [µm]</span>
+<span class="sd">        above_space: Space above the input (µm)</span>
+<span class="sd">        below_space: Space below the input (µm)</span>
+<span class="sd">        right_space: Space right of the input (µm)</span>
+<span class="sd">        x_spacing: Spacing between vertical segments (µm)</span>
+<span class="sd">        y_spacing: Spacing between horizontal segments (µm)</span>
 <span class="sd">        bridges_left: Crossing airbridges left</span>
 <span class="sd">        bridges_bottom: Crossing airbridges bottom</span>
 <span class="sd">        bridges_right: Crossing airbridges right</span>
 <span class="sd">        bridges_top: Crossing airbridges top</span>
-<span class="sd">        r: Turn radius [µm]</span>
+<span class="sd">        r: Turn radius (µm)</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dictionary of parameters for SpiralResonatorPolygon</span>
