@@ -23,7 +23,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
-@add_parameters_from(FingerCapacitorSquare, "fixed_length", finger_width=10, finger_gap=5)
+@add_parameters_from(FingerCapacitorSquare, "fixed_length", "a2", "b2", finger_width=10, finger_gap=5)
 class SmoothCapacitor(Element):
     """The PCell declaration for a smooth finger capacitor.
 
@@ -34,10 +34,6 @@ class SmoothCapacitor(Element):
     Capacitance range is achieved by changing single parameter called `finger_control`.
     """
 
-    a2 = Param(pdt.TypeDouble, "Width of center conductor on the other end", -1, unit="μm",
-               docstring="Non-physical value '-1' means that the default size 'a' is used.")
-    b2 = Param(pdt.TypeDouble, "Width of gap on the other end", -1, unit="μm",
-               docstring="Non-physical value '-1' means that the default size 'b' is used.")
     finger_control = Param(pdt.TypeDouble, "Continuously adjust finger number", 2.1,
                docstring="Parameter for capacitor growth (related to number of fingers per side)")
     ground_gap = Param(pdt.TypeDouble, "Gap between ground and finger", 10, unit="μm")

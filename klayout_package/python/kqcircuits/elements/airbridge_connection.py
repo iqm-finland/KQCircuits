@@ -25,10 +25,11 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @add_parameters_from(Airbridge)
-@add_parameters_from(WaveguideCoplanarTaper)
+@add_parameters_from(WaveguideCoplanarTaper, "*", m2=5)
 class AirbridgeConnection(Element):
     """The PCell declaration of an Airbridge with tapered waveguides in both ends."""
 
+    bridge_gap_width = Param(pdt.TypeDouble, "Width of waveguide gap around the Airbridge", 12, unit="μm")
     with_side_airbridges = Param(pdt.TypeBoolean, "With airbridges on the sides", True)
     with_right_waveguide = Param(pdt.TypeBoolean, "With waveguide on right side", True)
     gap_between_bridges = Param(pdt.TypeDouble, "Inner distance between adjacent bridges", 20)
@@ -44,7 +45,7 @@ class AirbridgeConnection(Element):
 
         # Add left waveguide
         pad_a = self.bridge_width
-        pad_b = pad_a/self.a * self.b
+        pad_b = self.bridge_gap_width
         wg_l_pos = ab_ref["port_a"] + pya.DPoint(self.waveguide_extra, 0)
         taper_l_pos = pya.DPoint(ab_ref["port_a"] - pya.DVector(self.pad_length, 0))
         terminator_l = self.add_element(WaveguideCoplanar,
@@ -68,7 +69,7 @@ class AirbridgeConnection(Element):
                                             term1=pad_b, term2=0)
             self.insert_cell(terminator_r, pya.DTrans(0, 0))
 
-            taper_r = self.add_element(WaveguideCoplanarTaper, a1=pad_a, b1=pad_b)
+            taper_r = self.add_element(WaveguideCoplanarTaper, a=pad_a, b=pad_b)
             taper_r_ref = self.get_refpoints(taper_r)
             taper_r_inst, _ = self.insert_cell(taper_r, pya.DTrans(taper_r_pos-taper_r_ref["port_a"].to_v()))
             self.copy_port("b", taper_r_inst)

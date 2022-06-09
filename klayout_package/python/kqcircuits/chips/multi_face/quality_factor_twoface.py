@@ -89,7 +89,7 @@ class QualityFactorTwoface(MultiFace):
         v_res_step = pya.DPoint(right_connector - left_connector - self.spiral_box_width, 0) * \
                      (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross, length_extra_side=5 * self.a_capped,
-                                      a=self.a_capped, b=self.b_capped, a2=self.a_capped, b2=self.b_capped,
+                                      a=self.a_capped, b=self.b_capped, a3=self.a_capped, b3=self.b_capped,
                                       face_ids=face_config)
 
         for i in range(resonators):

@@ -27,8 +27,8 @@ from kqcircuits.elements.airbridges.airbridge import Airbridge
 class WaveguideCoplanarTCross(Element):
     """The PCell declaration of T-crossing of waveguides."""
 
-    a2 = Param(pdt.TypeDouble, "Width of the side waveguide", Element.a)
-    b2 = Param(pdt.TypeDouble, "Gap of the side waveguide", Element.b)
+    a3 = Param(pdt.TypeDouble, "Width of the side waveguide. (-1 for the default)", -1)
+    b3 = Param(pdt.TypeDouble, "Gap of the side waveguidei. (-1 for the default)", -1)
     length_extra = Param(pdt.TypeDouble, "Extra length", 0)
     length_extra_side = Param(pdt.TypeDouble, "Extra length of the side waveguide", 0)
     use_airbridges = Param(pdt.TypeBoolean, "Use airbridges at a distance from the centre", False)
@@ -40,11 +40,11 @@ class WaveguideCoplanarTCross(Element):
         # Top gap
 
         l = self.length_extra
-        l2 = self.length_extra_side
-        a2 = self.a2
-        b2 = self.b2
         a = self.a
         b = self.b
+        l3 = self.length_extra_side
+        a3 = self.a3 if self.a3 != -1 else self.a
+        b3 = self.b3 if self.b3 != -1 else self.b
 
         # airbridge
         self.ab_params = {
@@ -52,8 +52,8 @@ class WaveguideCoplanarTCross(Element):
             "pad_extra": 2,
         }
 
-        port_l_location_x = -l - b2 - a2 / 2
-        port_r_location_x = l + b2 + a2 / 2
+        port_l_location_x = -l - b3 - a3 / 2
+        port_r_location_x = l + b3 + a3 / 2
         pts = [
             pya.DPoint(port_l_location_x, a / 2 + 0),
             pya.DPoint(port_r_location_x, a / 2 + 0),
@@ -63,13 +63,13 @@ class WaveguideCoplanarTCross(Element):
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
         # Left gap
-        port_bottom_location_y = -a / 2 - b - l2
+        port_bottom_location_y = -a / 2 - b - l3
         pts = [
             pya.DPoint(port_l_location_x, -a / 2 + 0),
-            pya.DPoint(-a2 / 2, -a / 2 + 0),
-            pya.DPoint(-a2 / 2, port_bottom_location_y),
-            pya.DPoint(-b2 - a2 / 2, port_bottom_location_y),
-            pya.DPoint(-b2 - a2 / 2, -a / 2 - b),
+            pya.DPoint(-a3 / 2, -a / 2 + 0),
+            pya.DPoint(-a3 / 2, port_bottom_location_y),
+            pya.DPoint(-b3 - a3 / 2, port_bottom_location_y),
+            pya.DPoint(-b3 - a3 / 2, -a / 2 - b),
             pya.DPoint(port_l_location_x, -a / 2 - b)
         ]
         shape = pya.DPolygon(pts)

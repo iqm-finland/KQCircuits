@@ -46,63 +46,39 @@ from kqcircuits.elements.airbridges.airbridge import Airbridge
 top_cell = layout.create_cell("Top Cell")
 cell_view.cell_name=top_cell.name     # Shows the new cell
 
-# test termination
-t1=5
-t2=10
+def show(nodes, a, b):
+    wg = WaveguideComposite.create(layout, nodes=nodes, a=a, b=b, term1=5, term2=10)
+    top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
 
-# simple airbridge is easy and it does the "right thing"
-n1 = [
-    Node((100, 900)),
-    Node((300, 900), Airbridge),
-    Node((500, 900)),
-]
-wg = WaveguideComposite.create(layout, nodes=n1, a=10, b=6, term1=t1, term2=t2)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
-
-# airbridge node can change the waveguide
-n2 = [
-    Node((100, 800)),
-    Node((300, 800), Airbridge, a=10, b=6),
-    Node((500, 800)),
-]
-wg = WaveguideComposite.create(layout, nodes=n2, a=20, b=10, term1=t1, term2=t2)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
-
-# atypical airbridge (not changing the waveguide) in the beginnig is easy
-n3 = [
-    Node((100, 700), Airbridge, _a=20, _b=20),
-    Node((300, 700)),
-    Node((500, 700), Airbridge, a=20, b=10),
-]
-wg = WaveguideComposite.create(layout, nodes=n3, a=5, b=15, term1=t1, term2=t2)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
-
-# the default (correct) behaviour is ok if a/b increases.
-n4 = [
-    Node((100, 600)),
-    Node((300, 600), Airbridge, a=10, b=6),
-    Node((500, 600)),
-]
-wg = WaveguideComposite.create(layout, nodes=n4, a=5, b=15, term1=t1, term2=t2)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
-
-# the other way around, although technically correct, is useless and ugly. Needs manual override.
-n5 = [
+# Simple airbridge is easy.
+show([
     Node((100, 500)),
-    Node((300, 500), Airbridge, a=5, b=15, _a=20, _b=10),      # _a/_b needed here!
-    Node((500, 500))
-]
-wg = WaveguideComposite.create(layout, nodes=n5, a=10, b=6, term1=t1, term2=t2)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+    Node((300, 500), Airbridge),
+    Node((500, 500)),
+], 10, 6)
 
-# In this unusual case is simpler to change tha waveguide in the first node
-n6 = [
-    Node((100, 400), Airbridge, a=20, b=10),
-    Node((300, 400)),
-    Node((500, 400), Airbridge, a2=5, b2=10),
-]
-wg = WaveguideComposite.create(layout, nodes=n6, a=5, b=10, term1=t1, term2=t2)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+# Airbridge node can change the waveguide.
+show([
+    Node((100, 400)),
+    Node((300, 400), Airbridge, a=10, b=6),
+    Node((500, 400)),
+], 20, 10)
 
-  </text>
+# Starting/ending Airbridge works as expected.
+show([
+    Node((100, 300), Airbridge, a=3, b=10),
+    Node((300, 300)),
+    Node((500, 300), Airbridge, a=10, b=3),
+], 10, 3)
+
+# Airbrige gap width is constant (12), but it can be changed if needed.
+show([
+    Node((100, 200)),
+    Node((300, 200), Airbridge, bridge_gap_width=20),
+    Node((500, 200)),
+], 6, 3)
+
+# Show all hierarchy levels and zoom to fit window
+layout_view.max_hier()
+layout_view.zoom_fit()</text>
 </klayout-macro>

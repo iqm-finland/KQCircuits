@@ -275,8 +275,7 @@ class Simulation:
                                   use_internal_ports=None, waveguide_length=None,
                                   term1=0, turn_radius=None,
                                   a=None, b=None, over_etching=None,
-                                  airbridge=False, airbridge_a=None, airbridge_b=None,
-                                  face=0):
+                                  airbridge=False, face=0):
         """Create a waveguide connection from some `location` to a port, and add the corresponding port to
         `simulation.ports`.
 
@@ -299,10 +298,6 @@ class Simulation:
             b (float, optional): Conductor gap width. Defaults to the value of the `b` parameter
             over_etching (float, optional): Expansion of gaps. Defaults to the value of the `over_etching` parameter
             airbridge (bool, optional): if True, an airbridge will be inserted at `location`. Default False.
-            airbridge_a (float, optional): Center conductor width for the airbridge part of the waveguide.
-                Defaults to the value of the `a` parameter
-            airbridge_b (float, optional): Gap conductor width for the airbridge part of the waveguide.
-                Defaults to the value of the `b` parameter
             face: face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.
         """
 
@@ -318,10 +313,6 @@ class Simulation:
             b = self.b
         if over_etching is None:
             over_etching = self.over_etching
-        if airbridge_a is None:
-            airbridge_a = self.a
-        if airbridge_b is None:
-            airbridge_b = self.b
         if use_internal_ports is None:
             use_internal_ports = self.use_internal_ports
         if waveguide_length is None:
@@ -331,9 +322,13 @@ class Simulation:
         direction = towards - location
         direction = direction / direction.length()
 
+        waveguide_a = a
+        waveguide_b = b
         # First node may be an airbridge
         if airbridge:
-            first_node = Node(location, Airbridge, _a=airbridge_a, _b=airbridge_b)
+            first_node = Node(location, Airbridge, a=a, b=b)
+            waveguide_a = Airbridge.bridge_width
+            waveguide_b = Airbridge.bridge_width / Element.a * Element.b
         else:
             first_node = Node(location)
 
@@ -374,8 +369,8 @@ class Simulation:
                               r=turn_radius,
                               term1=term1,
                               term2=0,
-                              a=a,
-                              b=b,
+                              a=waveguide_a,
+                              b=waveguide_b,
                               face_ids=[self.face_ids[face]]
                               )
 

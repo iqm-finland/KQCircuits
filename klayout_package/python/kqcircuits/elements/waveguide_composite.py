@@ -201,10 +201,6 @@ class WaveguideComposite(Element):
     parameters: ``a``, ``b`` or ``face_id``. They insert a WaveguideCoplanarTaper or a
     FlipChipConnector, respectively and change the defaults too.
 
-    Using _a/_b sets a/b for the AirbridgeConnection but does not change the waveguide's defaults.
-    Used for directly setting the first airbridge in a waveguide or for circumventing scaling issues
-    of AirbridgeConnection. See "test_wgc_airbridge.lym" for examples.
-
     The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``
     parameter puts N airbridges evenly distributed across the preceding edge.
 
@@ -389,17 +385,15 @@ class WaveguideComposite(Element):
         node = self._nodes[ind]
 
         params = {**self.pcell_params_by_name(WaveguideCoplanarTaper), **node.params}
-        if self.a == params['a'] and self.b == params['b']: # no change, just a Node
+        a, b = params.pop('a', self.a), params.pop('b', self.b)
+        if self.a == a and self.b == b: # no change, just a Node
             return
 
-        taper_cell = self.add_element(WaveguideCoplanarTaper, **{**params,
-                'a1': self.a, 'b1': self.b, 'm1': self.margin,
-                'a2': params['a'], 'b2': params['b'], 'm2': self.margin,
-                })
+        taper_cell = self.add_element(WaveguideCoplanarTaper, **{**params, 'a2': a, 'b2': b, 'm2': self.margin})
         self._insert_cell_and_waveguide(ind, taper_cell)
 
-        self.a = params['a']
-        self.b = params['b']
+        self.a = a
+        self.b = b
 
     def _add_fc_bump(self, ind):
         """Add FlipChipConnectorRF and change default face_id."""
@@ -424,20 +418,14 @@ class WaveguideComposite(Element):
 
         node = self._nodes[ind]
         params = {**self.pcell_params_by_name(AirbridgeConnection), **kwargs,
-                  'a1': self.a, 'b1': self.b, 'm1': self.margin,
                   'a2': self.a, 'b2': self.b, 'm2': self.margin,
                   'taper_length': AirbridgeConnection.taper_length,
                   **node.params}
 
-        a, b = params['a'], params['b']
+        a, b = params.pop('a', self.a), params.pop('b', self.b)
 
-        params['a'], params['b'] = params.pop('_a', a), params.pop('_b', b) # override a/b if it looks funny
-
-        if ind == 0:
-            if not {'a1', 'b1', 'a', 'b'} & set(node.params):
-                params['a1'], params['b1'] = params['a'], params['b']
-            # set temporary private variables used in _terminator()
-            self._ta, self._tb = params['a1'], params['b1']
+        if ind == 0:  # set temporary private variables used in _terminator()
+            self._ta, self._tb = self.a, self.b
 
         if {'a', 'b'} & set(node.params):
             params['a2'], params['b2'] = a, b

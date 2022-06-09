@@ -63,8 +63,8 @@ class XMonsDirectCoupling(Chip):
         # Taper to T
         taper_cell, taper_ref_rel = WaveguideCoplanarTaper.create_with_refpoints(
             self.layout, self.LIBRARY_NAME, pya.DTrans.R90,
-            a1=ro_a,
-            b1=ro_b,
+            a=ro_a,
+            b=ro_b,
             a2=self.a,
             b2=self.b,
             taper_length=taper_length
@@ -78,8 +78,8 @@ class XMonsDirectCoupling(Chip):
             length_extra=0,
             a=ro_a,
             b=ro_b,
-            a2=ro_a,
-            b2=ro_b,
+            a3=ro_a,
+            b3=ro_b,
         )
         rr_cross_ref_rel = self.get_refpoints(rr_cross_cell, pya.DTrans.R90)
         _, rr_cross_ref = self.insert_cell(

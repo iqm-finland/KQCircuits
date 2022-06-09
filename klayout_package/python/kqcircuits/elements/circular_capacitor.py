@@ -24,7 +24,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
-@add_parameters_from(FingerCapacitorSquare, "fixed_length")
+@add_parameters_from(FingerCapacitorSquare, "fixed_length", "a2", "b2")
 class CircularCapacitor(Element):
     """The PCell declaration for a circular capacitor.
 
@@ -33,8 +33,6 @@ class CircularCapacitor(Element):
     Two ports with reference points. The feedline has the same length as the width of the ground gap around the coupler.
     """
 
-    a2 = Param(pdt.TypeDouble, "Width of center conductor on the right side", Element.a, unit="μm")
-    b2 = Param(pdt.TypeDouble, "Width of gap on the right side", Element.b, unit="μm")
     r_inner = Param(pdt.TypeDouble, "Internal island radius", 20, unit="μm",
                     docstring="Radius of the outer edge of the center island (μm)")
     r_outer = Param(pdt.TypeDouble, "External island radius, measured at the outer edge", 80, unit="μm",
@@ -45,6 +43,9 @@ class CircularCapacitor(Element):
     ground_gap = Param(pdt.TypeDouble, "Ground plane padding", 20, unit="μm")
 
     def build(self):
+        self.a2 = self.a if self.a2 < 0 else self.a2
+        self.b2 = self.b if self.b2 < 0 else self.b2
+
         y_left = self.a / 2
         y_right = self.a2 / 2
         x_end = self.r_outer + self.ground_gap

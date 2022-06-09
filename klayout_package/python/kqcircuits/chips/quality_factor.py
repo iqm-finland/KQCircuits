@@ -106,7 +106,7 @@ class QualityFactor(Chip):
         resonators = len(self.res_lengths)
         v_res_step = (tl_end - tl_start) * (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarTCross,
-            length_extra_side=2 * self.a, a2=self.a, b2=self.b)
+            length_extra_side=2 * self.a, a3=self.a, b3=self.b)
 
         # Airbridge crossing resonators
         cell_ab_crossing = self.add_element(Airbridge)
