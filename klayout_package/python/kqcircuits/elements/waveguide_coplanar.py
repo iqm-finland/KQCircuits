@@ -30,7 +30,8 @@ class WaveguideCoplanar(Element):
     """The PCell declaration for an arbitrary coplanar waveguide.
 
     Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
-    predefined bending radios. It actually consists of straight and bent PCells.
+    predefined bending radios. It actually consists of straight and bent PCells. Termination lengths are lengths of
+    extra ground gaps for opened transmission lines
 
     The ``path`` parameter defines the waypoints of the waveguide. When a DPath is supplied, the waypoints can be edited
     in the KLayout GUI with the Partial tool. Alternatively, a list of DPoint can be supplied, in which case the

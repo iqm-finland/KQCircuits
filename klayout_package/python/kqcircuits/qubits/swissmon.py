@@ -26,9 +26,11 @@ from kqcircuits.pya_resolver import pya
 class Swissmon(Qubit):
     """The PCell declaration for a Swissmon qubit.
 
-    Swissmon type qubit. Each arm (West, North, East, South) has it's own arm gap width (gap_width)
-    and arm metal width (arm_width). SQUID is loaded from another library. Option of having fluxline.
-    Refpoints for 3 couplers, fluxline position and chargeline position.
+    Swissmon type qubit. Each arm (West, North, East, South) has it's own arm gap width
+    (``gap_width``) and arm metal width (``arm_width``). SQUID is loaded from another library.
+    Option of having fluxline.  Refpoints for 3 couplers, fluxline position and chargeline position.
+    Length between the ports is from waveguide port to the rectangular part of the launcher pad.
+    Length of the fingers is also used for the length of the launcher pad.
     """
 
     arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300. / 2] * 4)

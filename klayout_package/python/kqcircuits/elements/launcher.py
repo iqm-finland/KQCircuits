@@ -24,8 +24,10 @@ from kqcircuits.util.parameters import Param, pdt
 class Launcher(Element):
     """The PCell declaration for a launcher for connecting wirebonds.
 
-    Default wirebond direction to west, waveguide to east. Uses default ratio a
-    and b for scaling the gap if a_launcher and b_launcher not specified.
+    Default wirebond direction to west, waveguide to east. Uses default ratio ``a`` and ``b`` for
+    scaling the gap if ``a_launcher`` and ``b_launcher`` are not specified. Taper length is from
+    waveguide port to the rectangular part of the launcher pad. Pad width is also used for the
+    length of the launcher pad.
     """
 
     s = Param(pdt.TypeDouble, "Pad width", 300, unit="μm")

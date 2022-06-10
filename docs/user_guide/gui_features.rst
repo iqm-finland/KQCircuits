@@ -82,3 +82,26 @@ two points at ``x_port_a`` and ``x_port_a_corner``. The corner point is not
 needed if the next point would anyway be in the direction of
 ``x_port_a_corner``, since the purpose of the corner point is only to make
 the direction of the first waveguide segment aligned with the port.
+
+
+Useful Menu Commands
+--------------------
+
+Several very useful macros are directly accessible from KLayout's "**Edit -> KQCircuits Library**"
+drop-down menu:
+
+- **Fill with ground plane grid** -- Creates a ground plane grid covering the top cell bounding box,
+  except the parts in grid avoidance layer. Requires at least one cell to exist in the current
+  layout. Only creates the grid for "b"-face.  Remember to unhide the b_ground_grid layer to make it
+  visible.
+
+- **All chips in the library** -- Opens a new layout and puts all available chips there arranged in
+  a grid. Note that this operation may take several minutes.
+
+- **Empty layout with a top cell and default layers** -- A new layout in KLayout is empty and has no
+  assigned layers by default. This macro helps to create a more useful new layout with a predefined
+  top-cell and the default KQCircuits layers.
+
+- **Reload libraries** -- Reloads KQCircuits code from storage making it possible to modify elements
+  and see the change without having to restart KLayout and reload the edited elements. This is
+  illustrated in the end of previous section's video.
