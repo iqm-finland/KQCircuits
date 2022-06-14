@@ -16,14 +16,14 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
-
-class CrossingTwoface(MultiFace):
-    """The PCell declaration for an CrossingTwoFace MultiFace chip.
+@add_parameters_from(Chip, frames_enabled=[0, 1])
+class CrossingTwoface(Chip):
+    """The PCell declaration for a CrossingTwoFace chip.
 
     On the left side of the chip there is a straight vertical waveguide bottom face and a meandering waveguide crossing
     multiple times on the top face. There are transmission lines at different faces at the crossings. On the right side

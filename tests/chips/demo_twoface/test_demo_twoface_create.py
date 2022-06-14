@@ -18,15 +18,15 @@
 
 from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
-from kqcircuits.chips.multi_face.crossing_twoface import CrossingTwoface
+from kqcircuits.chips.demo_twoface import DemoTwoface
 
 from autologging import logging
 
 
 def test_errors(capfd, caplog):
     caplog.set_level(logging.DEBUG)
-    errors_test(capfd, CrossingTwoface)
+    errors_test(capfd, DemoTwoface)
 
 
 def test_box_existence():
-    box_existence_test(CrossingTwoface)
+    box_existence_test(DemoTwoface)

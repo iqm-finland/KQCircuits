@@ -16,13 +16,13 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
-
-class DaisyWoven(MultiFace):
+@add_parameters_from(Chip, frames_enabled=[0, 1])
+class DaisyWoven(Chip):
     """Base PCell declaration for a Daisy Woven chip.
 
     Includes texts in pixel corners, dicing edge, launchers and manually-drawn daisy pattern.

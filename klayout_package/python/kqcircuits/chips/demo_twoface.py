@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.meander import Meander
@@ -25,10 +25,10 @@ from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import point_shift_along_vector
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
-
-class DemoTwoface(MultiFace):
+@add_parameters_from(Chip, frames_enabled=[0, 1])
+class DemoTwoface(Chip):
     """Demonstration chip for 3D-integration (multi-face) features."""
 
     name_chip = Param(pdt.TypeString, "Name of the chip", "DT")

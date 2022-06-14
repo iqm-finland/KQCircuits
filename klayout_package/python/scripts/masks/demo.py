@@ -23,11 +23,11 @@ from kqcircuits.chips.demo import Demo
 from kqcircuits.chips.junction_test import JunctionTest
 from kqcircuits.chips.junction_test2 import JunctionTest2
 from kqcircuits.chips.quality_factor import QualityFactor
+from kqcircuits.chips.quality_factor_twoface import QualityFactorTwoface
 from kqcircuits.chips.shaping import Shaping
 from kqcircuits.chips.single_xmons import SingleXmons
 from kqcircuits.chips.stripes import Stripes
-from kqcircuits.chips.multi_face.demo_twoface import DemoTwoface
-from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.chips.demo_twoface import DemoTwoface
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_set import MaskSet
 from kqcircuits.klayout_view import KLayoutView
@@ -56,10 +56,10 @@ mdemo.add_mask_layout([
     ["---", "---", "CH1", "AC1", "AC1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "---", "---"],
     ["---", "DE1", "CH1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
     ["---", "DE1", "CH1", "SX1", "SX1", "SX1", "SX1", "SX1", "SX1", "SX1", "SX1", "SX1", "SX1", "SX1", "---"],
-    ["---", "DE1", "CH1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "MF1", "CH1", "DE1", "DE1", "---"],
-    ["---", "DE1", "CH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "MF1", "MF1", "DE1", "DE1", "---"],
-    ["---", "DE1", "CH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "MF1", "MF1", "DE1", "DE1", "---"],
-    ["---", "---", "CH1", "AC1", "AC1", "AC1", "AC1", "AC1", "AC1", "AC1", "MF1", "MF1", "AC1", "---", "---"],
+    ["---", "DE1", "CH1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "QF1", "QT1", "CH1", "DE1", "DE1", "---"],
+    ["---", "DE1", "CH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "QT1", "QT1", "DE1", "DE1", "---"],
+    ["---", "DE1", "CH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "SH1", "QT1", "QT1", "DE1", "DE1", "---"],
+    ["---", "---", "CH1", "AC1", "AC1", "AC1", "AC1", "AC1", "AC1", "AC1", "QT1", "QT1", "AC1", "---", "---"],
     ["---", "---", "CH1", "ST1", "ST1", "ST1", "ST1", "ST1", "ST1", "ST1", "ST1", "ST1", "ST1", "---", "---"],
     ["---", "---", "---", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "---", "---", "---"],
     ["---", "---", "---", "---", "---", "SX1", "SX1", "SX1", "SX1", "SX1", "---", "---", "---", "---", "---"],
@@ -70,20 +70,20 @@ mdemo.add_mask_layout([
 # pylint: disable=line-too-long
 mdemo.add_mask_layout([
     ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---"],
-    ["---", "---", "---", "---", "---", "---", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "---", "---", "---", "---", "---", "---"],
-    ["---", "---", "---", "---", "---", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "MF1", "---", "---", "---", "---", "---"],
+    ["---", "---", "---", "---", "---", "---", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "---", "---", "---", "---", "---", "---"],
+    ["---", "---", "---", "---", "---", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "QT1", "---", "---", "---", "---", "---"],
     ["---", "---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---", "---"],
     ["---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---"],
     ["---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---"],
-    ["---", "MF1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
-    ["---", "MF1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
-    ["---", "MF1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
-    ["---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
-    ["---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "QT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "QT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "QT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
     ["---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
     ["---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
-    ["---", "DT1", "DT1", "DT1", "DT1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
-    ["---", "DT1", "DT1", "DT1", "DT1", "MF1", "MF1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "DT1", "DT1", "DT1", "DT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
+    ["---", "DT1", "DT1", "DT1", "DT1", "QT1", "QT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---"],
     ["---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---"],
     ["---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---"],
     ["---", "---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---", "---"],
@@ -101,7 +101,7 @@ mdemo.add_chips([
     (DemoTwoface, "DT1"),
     (JunctionTest, "JT1"),
     (JunctionTest2, "JT2", {'pad_width': 300}),
-    (MultiFace, "MF1"),
+    (QualityFactorTwoface, "QT1"),
     (QualityFactor, "QF1", {'n_ab': [1, 2, 3, 4, 5, 6]}),
     (Shaping, "SH1"),
     (SingleXmons, "SX1"),

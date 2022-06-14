@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.spiral_resonator_polygon import SpiralResonatorPolygon, rectangular_parameters
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
@@ -27,9 +27,10 @@ from kqcircuits.util.geometry_helper import point_shift_along_vector
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
+@add_parameters_from(Chip, frames_enabled=[0, 1])
 @add_parameters_from(SpiralResonatorPolygon, "bridge_spacing")
-class QualityFactorTwoface(MultiFace):
-    """The PCell declaration for an QualityFactorTwoFace MultiFace chip.
+class QualityFactorTwoface(Chip):
+    """The PCell declaration for a QualityFactorTwoFace chip.
 
      Preliminary class for flip-chip resonators.
      """

@@ -18,10 +18,14 @@
 
 from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
-from kqcircuits.chips.multi_face.quality_factor_twoface import QualityFactorTwoface
+from kqcircuits.chips.daisy_woven import DaisyWoven
+
 
 def test_errors(capfd):
-    errors_test(capfd, QualityFactorTwoface)
+    errors_test(capfd, DaisyWoven)
+
 
 def test_box_existence():
-    box_existence_test(QualityFactorTwoface)
+    box_existence_test(DaisyWoven)
+
+

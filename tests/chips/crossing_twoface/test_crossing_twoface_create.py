@@ -16,7 +16,17 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-"""PCell declaration classes for multi-face chips.
+from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
-Multi-face chips have similar features as normal chips, but the default structures are produced for multiple chip faces.
-"""
+from kqcircuits.chips.crossing_twoface import CrossingTwoface
+
+from autologging import logging
+
+
+def test_errors(capfd, caplog):
+    caplog.set_level(logging.DEBUG)
+    errors_test(capfd, CrossingTwoface)
+
+
+def test_box_existence():
+    box_existence_test(CrossingTwoface)

@@ -101,7 +101,7 @@ Adding and modifying chips
 
 #. Add the following lines to the imports section of the script::
 
-    from kqcircuits.chips.multi_face.demo_twoface import DemoTwoface
+    from kqcircuits.chips.demo_twoface import DemoTwoface
     from kqcircuits.chips.quality_factor import QualityFactor
 
 #. Add the new chips::

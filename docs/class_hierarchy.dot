@@ -25,16 +25,15 @@ digraph {
     node [shape="rect"]
 
     Chip [href="../api/kqcircuits.chips.chip.html", target="_top"]
-    MultiFace [href="../api/kqcircuits.chips.multi_face.multi_face.html", target="_top"]
 
-    Element -> Chip -> MultiFace
+    Element -> Chip
 
     ## Concrete examples
     node [color="green"]
 
     WaveguideCoplanar [href="../api/kqcircuits.elements.waveguide_coplanar.html", target="_top"]
     Demo [href="../api/kqcircuits.chips.demo.html", target="_top"]
-    DemoTwoface [href="../api/kqcircuits.chips.multi_face.demo_twoface.html", target="_top"]
+    DemoTwoface [href="../api/kqcircuits.chips.demo_twoface.html", target="_top"]
     Swissmon [href="../api/kqcircuits.qubits.swissmon.html", target="_top"]
     Manhattan [href="../api/kqcircuits.squids.manhattan.html", target="_top"]
     AirbridgeRectangular [href="../api/kqcircuits.elements.airbridges.airbridge_rectangular.html", target="_top"]
@@ -46,7 +45,7 @@ digraph {
 
     Element -> WaveguideCoplanar
     Chip -> Demo
-    MultiFace -> DemoTwoface
+    Chip -> DemoTwoface
     Qubit -> Swissmon
     Squid -> Manhattan
     Airbridge -> AirbridgeRectangular

@@ -17,11 +17,12 @@
 
 
 from kqcircuits.chips.lithography_test import LithographyTest
-from kqcircuits.chips.multi_face.multi_face import MultiFace
+from kqcircuits.chips.chip import Chip
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import add_parameters_from
 
-
-class LithographyTestTwoface(MultiFace):
+@add_parameters_from(Chip, frames_enabled=[0, 1])
+class LithographyTestTwoface(Chip):
     """Optical lithography test chip in a flip chip architecture.
 
     Consists of StripesTest cells with different parameters.
