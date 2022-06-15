@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import math
+from math import pi, sin, cos
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
@@ -24,37 +24,24 @@ from kqcircuits.util.geometry_helper import vector_length_and_direction
 from kqcircuits.util.parameters import Param, pdt
 
 
-def up_mod(a, per):
-    # Finds remainder in the same direction as periodicity
-    if a * per > 0:
-        return a % per
-    else:
-        return a - per * math.floor(a / per)
-
-
 def arc(r, start, stop, n):
-    pts = []
-    last = start
+    """ Returns list of points of an arc
 
-    alpha_rel = up_mod(stop - start, math.pi * 2)  # from 0 to 2 pi
-    alpha_step = 2 * math.pi / n * (
-        -1 if alpha_rel > math.pi else 1)
-    # shorter dir
-    # n_steps = math.floor((2*math.pi-alpha_rel)/abs(alpha_step) if alpha_rel > math.pi else alpha_rel/abs(alpha_step))
-    n_steps = math.floor(
-        (2 * math.pi - alpha_rel) / abs(alpha_step) if alpha_rel > math.pi else alpha_rel / abs(alpha_step))
+    Args:
+        r: radius
+        start: begin angle in radians
+        stop: end angle in radians
+        n: number of corners in full circle
+    """
+    n_steps = max(round(abs(stop - start) * n / (2 * pi)), 1)
+    step = (stop - start) / n_steps
+    r_corner = r / cos(step / 2)
 
-    alpha = start
-
-    for _ in range(0, n_steps + 1):
-        pts.append(pya.DPoint(r * math.cos(alpha), r * math.sin(alpha)))
-        alpha += alpha_step
-        last = alpha
-
-    if last != stop:
-        alpha = stop
-        pts.append(pya.DPoint(r * math.cos(alpha), r * math.sin(alpha)))
-
+    pts = [pya.DPoint(r * cos(start), r * sin(start))]
+    for i in range(n_steps):
+        alpha = start + step * (i + 0.5)
+        pts.append(pya.DPoint(r_corner * cos(alpha), r_corner * sin(alpha)))
+    pts.append(pya.DPoint(r * cos(stop), r * sin(stop)))
     return pts
 
 
@@ -64,7 +51,7 @@ class WaveguideCoplanarCurved(Element):
     Coordinate origin is left at the center of the arc.
     """
 
-    alpha = Param(pdt.TypeDouble, "Curve angle (rad)", math.pi)
+    alpha = Param(pdt.TypeDouble, "Curve angle (rad)", pi)
     length = Param(pdt.TypeDouble, "Actual length", 0, unit="μm", readonly=True)
 
     def coerce_parameters_impl(self):

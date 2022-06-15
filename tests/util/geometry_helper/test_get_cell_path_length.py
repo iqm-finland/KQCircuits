@@ -23,7 +23,7 @@ from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 
-relative_length_tolerance = 1e-4
+relative_length_tolerance = 2e-4
 
 
 def test_get_length_simple_path():

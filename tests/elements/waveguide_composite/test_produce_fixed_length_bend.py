@@ -28,13 +28,13 @@ relative_length_tolerance = 1e-4
 
 
 def test_short_bend_without_bridge():
-    relative_error = _relative_length_error(320, pya.DPoint(0, 0), pya.DPoint(0, 100), pya.DPoint(250, 120),
+    relative_error = _relative_length_error(321, pya.DPoint(0, 0), pya.DPoint(0, 100), pya.DPoint(250, 120),
                                             pya.DPoint(150, 120), "no")
     assert relative_error < relative_length_tolerance
 
 
 def test_short_bend_with_bridge():
-    relative_error = _relative_length_error(320, pya.DPoint(0, 0), pya.DPoint(0, 100), pya.DPoint(250, 120),
+    relative_error = _relative_length_error(321, pya.DPoint(0, 0), pya.DPoint(0, 100), pya.DPoint(250, 120),
                                             pya.DPoint(150, 120), "middle")
     assert relative_error < relative_length_tolerance
 
