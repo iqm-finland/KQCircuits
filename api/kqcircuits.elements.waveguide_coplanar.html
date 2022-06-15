@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/gui_workflow.html">Point-and-click workflow tutorial</a></li>
@@ -180,6 +181,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#manual-installation">Manual installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
@@ -527,7 +529,8 @@
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
 <p>The PCell declaration for an arbitrary coplanar waveguide.</p>
 <p>Coplanar waveguide defined by the width of the center conductor and gap. It can follow any segmented lines with
-predefined bending radios. It actually consists of straight and bent PCells.</p>
+predefined bending radios. It actually consists of straight and bent PCells. Termination lengths are lengths of
+extra ground gaps for opened transmission lines</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">path</span></code> parameter defines the waypoints of the waveguide. When a DPath is supplied, the waypoints can be edited
 in the KLayout GUI with the Partial tool. Alternatively, a list of DPoint can be supplied, in which case the
 guiding shape is not visible in the GUI. This is useful for code-generated (sub)cells where graphical editing is not

@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/gui_workflow.html">Point-and-click workflow tutorial</a></li>
@@ -180,6 +181,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#linux-or-macos">Linux or MacOS</a></li>
@@ -572,6 +574,18 @@ libpython*.dll on Windows.</p>
 not visible, running any macro gives an error, etc.), there might be some
 problem with the specific KLayout version/build you are using, see
 <a class="reference internal" href="../start/installation.html#installation-issues"><span class="std std-ref">Known installation issues</span></a> section for possible solutions.</p>
+</div>
+</div>
+<div class="section" id="update">
+<h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h2>
+<p>Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with <code class="docutils literal notranslate"><span class="pre">git</span>
+<span class="pre">pull</span></code> just run <code class="docutils literal notranslate"><span class="pre">setup_within_klayout.py</span></code> again. This will take care of upgrading (or downgrading)
+KQCircuit’s Python dependencies and installing new ones, as needed. Running KLayout will similarly
+update KQCircuits’ dependencies in its own Python environment.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a new version of KQCircuits has stopped using a certain Python dependency that will <strong>not</strong>
+be removed automatically. The user has to remove that manually if it causes any problem.</p>
 </div>
 </div>
 <div class="section" id="secondary-install">

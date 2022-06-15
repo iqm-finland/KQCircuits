@@ -119,6 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/gui_workflow.html">Point-and-click workflow tutorial</a></li>
@@ -180,6 +181,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/setup.html#manual-installation">Manual installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
@@ -526,9 +528,11 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.qubits.swissmon.</span></span><span class="sig-name descname"><span class="pre">Swissmon</span></span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.qubits.qubit.html#kqcircuits.qubits.qubit.Qubit" title="kqcircuits.qubits.qubit.Qubit"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.qubits.qubit.Qubit</span></code></a></p>
 <p>The PCell declaration for a Swissmon qubit.</p>
-<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own arm gap width (gap_width)
-and arm metal width (arm_width). SQUID is loaded from another library. Option of having fluxline.
-Refpoints for 3 couplers, fluxline position and chargeline position.</p>
+<p>Swissmon type qubit. Each arm (West, North, East, South) has it’s own arm gap width
+(<code class="docutils literal notranslate"><span class="pre">gap_width</span></code>) and arm metal width (<code class="docutils literal notranslate"><span class="pre">arm_width</span></code>). SQUID is loaded from another library.
+Option of having fluxline.  Refpoints for 3 couplers, fluxline position and chargeline position.
+Length between the ports is from waveguide port to the rectangular part of the launcher pad.
+Length of the fingers is also used for the length of the launcher pad.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.qubits.swissmon.Swissmon.build">
 <span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/qubits/swissmon.html#Swissmon.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.qubits.swissmon.Swissmon.build" title="Permalink to this definition">¶</a></dt>

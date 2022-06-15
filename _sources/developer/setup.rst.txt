@@ -69,6 +69,18 @@ libpython*.dll on Windows.
    problem with the specific KLayout version/build you are using, see
    :ref:`installation_issues` section for possible solutions.
 
+Update
+------
+
+Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with ``git
+pull`` just run ``setup_within_klayout.py`` again. This will take care of upgrading (or downgrading)
+KQCircuit's Python dependencies and installing new ones, as needed. Running KLayout will similarly
+update KQCircuits' dependencies in its own Python environment.
+
+.. note::
+    If a new version of KQCircuits has stopped using a certain Python dependency that will **not**
+    be removed automatically. The user has to remove that manually if it causes any problem.
+
 Secondary install
 -----------------
 

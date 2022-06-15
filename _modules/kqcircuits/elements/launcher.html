@@ -117,6 +117,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/gui_workflow.html">Point-and-click workflow tutorial</a></li>
@@ -178,6 +179,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#manual-installation">Manual installation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../developer/setup.html#linux-or-macos">Linux or MacOS</a></li>
@@ -536,8 +538,10 @@
 <div class="viewcode-block" id="Launcher"><a class="viewcode-back" href="../../../api/kqcircuits.elements.launcher.html#kqcircuits.elements.launcher.Launcher">[docs]</a><span class="k">class</span> <span class="nc">Launcher</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The PCell declaration for a launcher for connecting wirebonds.</span>
 
-<span class="sd">    Default wirebond direction to west, waveguide to east. Uses default ratio a</span>
-<span class="sd">    and b for scaling the gap if a_launcher and b_launcher not specified.</span>
+<span class="sd">    Default wirebond direction to west, waveguide to east. Uses default ratio ``a`` and ``b`` for</span>
+<span class="sd">    scaling the gap if ``a_launcher`` and ``b_launcher`` are not specified. Taper length is from</span>
+<span class="sd">    waveguide port to the rectangular part of the launcher pad. Pad width is also used for the</span>
+<span class="sd">    length of the launcher pad.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">s</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Pad width&quot;</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
