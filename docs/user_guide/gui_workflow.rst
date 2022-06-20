@@ -70,7 +70,7 @@ only after you know the API.
    #. Press ``F2`` to see the whole top cell.
    #. From the *Tools* panel select *Instance*.
    #. Double-click on the qubit.
-   #. In the new *Instance Properties* window locate *Library*.
+   #. In the new *Editor Options* window locate *Library*.
    #. Using the drop-down menu select *Qubit Library*.
    #. Click on a button ``🔍`` a little bit to the left from the *Library* 
       for older versions click ``...`` a little bit to the left from the.
