@@ -72,7 +72,7 @@ only after you know the API.
    #. Double-click on the qubit.
    #. In the new *Instance Properties* window locate *Library*.
    #. Using the drop-down menu select *Qubit Library*.
-   #. Click on a button ``🔍 `` a little bit to the left from the *Library* 
+   #. Click on a button ``🔍`` a little bit to the left from the *Library* 
       for older versions click ``...`` a little bit to the left from the.
       *Library*.
    #. From the new *Select Cell* window select *Swissmon* and press
