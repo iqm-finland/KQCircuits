@@ -15,8 +15,8 @@ only after you know the API.
       for KLayout Viewer and KLayout Editor. On Linux you may have to go
       to *File -> Setup -> Application -> Editing Mode* and set *Use
       editing mode by default* to true, and restart KLayout.
-      On macOS click on KLayout on the top right conner click prefrences 
-      on application click Editing Mode then click on use editing mode by default.
+      On macOS click on KLayout and on the top right corner click 
+      *Preferences -> Application -> Editing Mode -> Use editing mode by default*.
       Then restart the KLayout program.
    #. In the *Libraries* panel on the bottom left, choose *Chip Library* and drag
       and drop the *Demo* chip from there to the layout.
