@@ -153,7 +153,7 @@ Optional scripts:
 
   Works only in HFSS.
 
-* `export_tdr.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_tdr.py>`
+* `export_tdr.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_tdr.py>`_
 
   No argument.
 
