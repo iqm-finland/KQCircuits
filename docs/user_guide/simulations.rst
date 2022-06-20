@@ -145,7 +145,7 @@ The optional scripts are listed below.
 Optional scripts:
 """""""""""""""""
 
-* `export_snp_no_deembed.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py>`
+* `export_snp_no_deembed.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py>`_
 
   No argument.
 
