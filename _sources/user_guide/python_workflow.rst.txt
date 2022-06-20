@@ -35,10 +35,10 @@ KQCircuits folder.
 Structure of  PCell code
 ------------------------
 
-Element class
-^^^^^^^^^^^^^
+:class:`.Element` class
+^^^^^^^^^^^^^^^^^^^^^^^
 
-Any KQCircuits PCells must be derived from the Element class, and we
+Any KQCircuits PCells must be derived from the :class:`.Element` class, and we
 call them "elements". For example, to define a new element ``MyElement`` you
 would start the code with::
 
@@ -99,8 +99,8 @@ The geometry for any KQCircuit element is created in the ``build`` method, so
 generally you should define at least that method in you element classes. See
 :ref:`architecture_elements` section for more details about how this works.
 
-Example of defining an Element
-------------------------------
+Example of defining an :class:`.Element` class
+----------------------------------------------
 
 Here is an example of defining a new element, with code comments explaining
 the different parts::
@@ -271,10 +271,8 @@ should go. You can connect a waveguide correctly by routing it from ``something_
 ``something_port_corner``, and then wherever you want to go (can't do more than 90 degree turns this
 way!). This point is also useful in simulations to pass to ``produce_waveguide_to_port()``.
 
-The `WaveguideComposite
-<../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite>`_
-element has some logic where you can insert arbitrary elements inside waveguides and it uses these
-points to align and connect them correctly.
+The :class:`.WaveguideComposite` element has some logic where you can insert arbitrary elements
+inside waveguides and it uses these points to align and connect them correctly.
 
 Refpoints are not visible by default in KLayout. Enable the ``texts/refpoints`` layer to see all
 refpoints. If there are many overlapping refpoints the texts can be hard to read. In this case, the
@@ -307,3 +305,17 @@ placed in::
     self.insert_cell(Launcher, face_ids=[self.face_ids[1]])
     # Placing a multi-face element with the parts in different faces swapped
     self.insert_cell(FlipChipConnectorRf, face_ids=[self.face_ids[1], self.face_ids[0]])
+
+
+Opening :class:`.Element` or :class:`.Chip` from an IDE
+-------------------------------------------------------
+
+You can use `create_element_from_path.py` in 
+`/klayout_package/python/scripts/ <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/create_element_from_path.py>`__
+to open an :class:`.Element` or :class:`.Chip` in KLayout from your IDE (or just straight from the command-line).
+The script is used as::
+    
+    klayout_app -e -rx -rm path/to/create_element_from_path.py -rd element_path=kqcircuits/chips/demo.py
+
+And can be easily incorporated as a macro to your IDE.
+Check the comments in the function on how to use it in PyCharm or Visual Studio Code. The ``element_path`` argument can strip a leading `*Circuits/klayout_package/python/` or `klayout_package/python/`, use what is easiest to implement for your workflow.

@@ -126,16 +126,17 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Python workflow tutorial</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#file-system-hierarchy">File system hierarchy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structure-of-pcell-code">Structure of  PCell code</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#element-class">Element class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#element-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#pcell-libraries">PCell Libraries</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#build">Build</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-an-element">Example of defining an Element</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="macro_workflow.html">Macro development</a><ul>
@@ -550,8 +551,8 @@ KQCircuits folder.</p>
 <div class="section" id="structure-of-pcell-code">
 <h2>Structure of  PCell code<a class="headerlink" href="#structure-of-pcell-code" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="element-class">
-<h3>Element class<a class="headerlink" href="#element-class" title="Permalink to this headline">¶</a></h3>
-<p>Any KQCircuits PCells must be derived from the Element class, and we
+<h3><a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#element-class" title="Permalink to this headline">¶</a></h3>
+<p>Any KQCircuits PCells must be derived from the <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class, and we
 call them “elements”. For example, to define a new element <code class="docutils literal notranslate"><span class="pre">MyElement</span></code> you
 would start the code with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
@@ -609,8 +610,8 @@ generally you should define at least that method in you element classes. See
 <a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a> section for more details about how this works.</p>
 </div>
 </div>
-<div class="section" id="example-of-defining-an-element">
-<h2>Example of defining an Element<a class="headerlink" href="#example-of-defining-an-element" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example-of-defining-an-element-class">
+<h2>Example of defining an <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#example-of-defining-an-element-class" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example of defining a new element, with code comments explaining
 the different parts:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import any modules, classes or functions used in our code.</span>
@@ -775,9 +776,8 @@ which is one corner-radius (<code class="docutils literal notranslate"><span cla
 should go. You can connect a waveguide correctly by routing it from <code class="docutils literal notranslate"><span class="pre">something_port</span></code> to
 <code class="docutils literal notranslate"><span class="pre">something_port_corner</span></code>, and then wherever you want to go (can’t do more than 90 degree turns this
 way!). This point is also useful in simulations to pass to <code class="docutils literal notranslate"><span class="pre">produce_waveguide_to_port()</span></code>.</p>
-<p>The <a class="reference external" href="../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite">WaveguideComposite</a>
-element has some logic where you can insert arbitrary elements inside waveguides and it uses these
-points to align and connect them correctly.</p>
+<p>The <a class="reference internal" href="../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite" title="kqcircuits.elements.waveguide_composite.WaveguideComposite"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveguideComposite</span></code></a> element has some logic where you can insert arbitrary elements
+inside waveguides and it uses these points to align and connect them correctly.</p>
 <p>Refpoints are not visible by default in KLayout. Enable the <code class="docutils literal notranslate"><span class="pre">texts/refpoints</span></code> layer to see all
 refpoints. If there are many overlapping refpoints the texts can be hard to read. In this case, the
 <code class="docutils literal notranslate"><span class="pre">texts/top</span> <span class="pre">refpoints</span></code> layer may be used to see only the top-level refpoints. For this choose a new
@@ -808,6 +808,18 @@ placed in:</p>
 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="opening-element-or-chip-from-an-ide">
+<h2>Opening <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> from an IDE<a class="headerlink" href="#opening-element-or-chip-from-an-ide" title="Permalink to this headline">¶</a></h2>
+<p>You can use <cite>create_element_from_path.py</cite> in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/create_element_from_path.py">/klayout_package/python/scripts/</a>
+to open an <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> in KLayout from your IDE (or just straight from the command-line).
+The script is used as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">klayout_app</span> <span class="o">-</span><span class="n">e</span> <span class="o">-</span><span class="n">rx</span> <span class="o">-</span><span class="n">rm</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">create_element_from_path</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">rd</span> <span class="n">element_path</span><span class="o">=</span><span class="n">kqcircuits</span><span class="o">/</span><span class="n">chips</span><span class="o">/</span><span class="n">demo</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>And can be easily incorporated as a macro to your IDE.
+Check the comments in the function on how to use it in PyCharm or Visual Studio Code. The <code class="docutils literal notranslate"><span class="pre">element_path</span></code> argument can strip a leading <cite>*Circuits/klayout_package/python/</cite> or <cite>klayout_package/python/</cite>, use what is easiest to implement for your workflow.</p>
 </div>
 </div>
 
