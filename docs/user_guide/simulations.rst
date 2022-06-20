@@ -89,7 +89,7 @@ Alternatively, you can call `export_ansys <https://github.com/iqm-finland/KQCirc
 Ansys scripts
 ^^^^^^^^^^^^^
 
-The folder `scripts/simulations/ansys/ <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys>` contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.
+The folder `scripts/simulations/ansys/ <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys>`_ contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.
 
 The scripts are developed and tested with Ansys Electronic Desktop 2021 R1 on Windows x64.
 
