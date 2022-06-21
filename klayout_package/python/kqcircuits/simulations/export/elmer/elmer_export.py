@@ -33,31 +33,26 @@ from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 default_gmsh_params = {
     'default_mesh_size': 100,  # Default size to be used where not defined
     'signal_min_mesh_size': 100,  # Minimum mesh size near signal region curves
-    'signal_max_mesh_size': 100,  # Maximum mesh size near signal region curves
     'signal_min_dist': 100,  # Mesh size will be the minimum size until this distance from the signal region curves
     'signal_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the signal region
                              # curves
     'signal_sampling': None,  # Number of points used for sampling each signal region curve
     'ground_min_mesh_size': 100,  # Minimum mesh size near ground region curves
-    'ground_max_mesh_size': 100,  # Maximum  mesh size near ground region curves
     'ground_min_dist': 100,  # Mesh size will be the minimum size until this distance from the ground region curves
     'ground_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the ground region
                              # curves
     'ground_sampling': None,  # Number of points used for sampling each ground region curve
     'ground_grid_min_mesh_size': 100,  # Minimum mesh size near ground_grid region curves
-    'ground_grid_max_mesh_size': 100,  # Maximum mesh size near ground_grid region curves
     'ground_grid_min_dist': 100,  # Mesh size will be the minimum size until this distance from the ground_grid region
                                   # curves
     'ground_grid_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the ground_
                                   # grid region curves
     'ground_grid_sampling': None,  # Number of points used for sampling each ground_grid region curve
     'gap_min_mesh_size': 100,  # Minimum mesh size near gap region curves
-    'gap_max_mesh_size': 100,  # Maximum mesh size near gap region curves
     'gap_min_dist': 100,  # Mesh size will be the minimum size until this distance from the gap region curves
     'gap_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the gap region curves
     'gap_sampling': None,  # Number of points used for sampling each gap region curve
     'port_min_mesh_size': 100,  # Minimum mesh size near port region curves
-    'port_max_mesh_size': 100,  # Maximum mesh size near port region curves
     'port_min_dist': 100,  # Mesh size will be the minimum size until this distance from the port region curves
     'port_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the port region
                            # curves

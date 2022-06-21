@@ -19,6 +19,8 @@
 import abc
 from typing import List
 
+from autologging import logged
+
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
@@ -31,6 +33,7 @@ from kqcircuits.simulations.export.util import get_enclosing_polygon
 from kqcircuits.util.groundgrid import make_grid
 
 
+@logged
 @add_parameters_from(Element)
 class Simulation:
     """Base class for simulation geometries.
@@ -471,44 +474,32 @@ class Simulation:
                         raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
 
                 elif isinstance(port, InternalPort):
-                    try:
-                        _, _, signal_edge = find_edge_from_point_in_cell(
-                            simulation.cell,
-                            simulation.get_layer('simulation_signal', port.face),
-                            port.signal_location,
-                            simulation.layout.dbu)
-                    except ValueError as e:
-                        raise ValueError('Signal edge of port {} on layer {} not found at \
-                                location ({:.3f}, {:.3f})'.format(
-                            port.number,
-                            simulation.get_layer('simulation_signal', port.face),
-                            port.signal_location.x,
-                            port.signal_location.y
-                        )) from e
+                    if hasattr(port, 'ground_location'):
+                        try:
+                            _, _, signal_edge = find_edge_from_point_in_cell(
+                                simulation.cell,
+                                simulation.get_layer('simulation_signal', port.face),
+                                port.signal_location,
+                                simulation.layout.dbu)
+                            _, _, ground_edge = find_edge_from_point_in_cell(
+                                simulation.cell,
+                                simulation.get_layer('simulation_ground', port.face),
+                                port.ground_location,
+                                simulation.layout.dbu)
 
-                    try:
-                        _, _, ground_edge = find_edge_from_point_in_cell(
-                            simulation.cell,
-                            simulation.get_layer('simulation_ground', port.face),
-                            port.ground_location,
-                            simulation.layout.dbu)
-                    except ValueError as e:
-                        raise ValueError('Ground edge of port {} on layer {} not found at \
-                                location ({:.3f}, {:.3f})'.format(
-                            port.number,
-                            simulation.get_layer('simulation_signal', port.face),
-                            port.signal_location.x,
-                            port.signal_location.y
-                        )) from e
-
-                    port_z = simulation.chip_distance if self.face_ids[port.face] == 't' else 0
-                    p_data['polygon'] = get_enclosing_polygon(
-                        [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
-                         [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])
-                    p_data['signal_edge'] = ((signal_edge.x1, signal_edge.y1, port_z),
-                                             (signal_edge.x2, signal_edge.y2, port_z))
-                    p_data['ground_edge'] = ((ground_edge.x1, ground_edge.y1, port_z),
-                                             (ground_edge.x2, ground_edge.y2, port_z))
+                            port_z = simulation.chip_distance if self.face_ids[port.face] == 't' else 0
+                            p_data['polygon'] = get_enclosing_polygon(
+                                [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
+                                 [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])
+                            p_data['signal_edge'] = ((signal_edge.x1, signal_edge.y1, port_z),
+                                                     (signal_edge.x2, signal_edge.y2, port_z))
+                            p_data['ground_edge'] = ((ground_edge.x1, ground_edge.y1, port_z),
+                                                     (ground_edge.x2, ground_edge.y2, port_z))
+                        except ValueError:
+                            self.__log.warning('Unable to create polygon for port {}, because either signal or ground '
+                                               'edge is not found.'.format(port.number))
+                        else:
+                            self.__log.warning('Ground location of port {} is not determined.'.format(port.number))
                 else:
                     raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
 
