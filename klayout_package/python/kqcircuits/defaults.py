@@ -316,6 +316,10 @@ default_netlist_breakdown = [
     "Meander",
 ]
 
+default_netlist_ignore_connections = [
+    ("drive", "drive"), # Don't connect two overlapping qubit drive ports
+]
+
 # default progress bar formatting with tqdm
 default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}' \
                      '{postfix}]'

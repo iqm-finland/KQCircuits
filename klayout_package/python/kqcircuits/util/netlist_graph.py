@@ -17,6 +17,7 @@
 
 import importlib
 import networkx as nx
+from kqcircuits.defaults import default_netlist_ignore_connections
 
 spec = importlib.util.find_spec("matplotlib")
 matplotlib_exists = spec is not None
@@ -53,9 +54,15 @@ def network_as_graph(network):
     # Add all edges from the netlist
     for net in network["nets"].values():
         if len(net) >= 2:
-            edges.append([net[0]["subcircuit_id"], net[1]["subcircuit_id"]])
-            used_subcircuit_ids.add(net[0]["subcircuit_id"])
-            used_subcircuit_ids.add(net[1]["subcircuit_id"])
+            for i,net_i in enumerate(net):
+                for net_j in net[i+1:]:
+                    reasons_to_ignore_connections = [(a,b) for a,b in default_netlist_ignore_connections
+                        if (net_i["pin"] == a and net_j["pin"] == b) or (net_i["pin"] == b and net_j["pin"] == a)]
+                    if len(reasons_to_ignore_connections) > 0:
+                        continue
+                    edges.append([net_i["subcircuit_id"], net_j["subcircuit_id"]])
+                    used_subcircuit_ids.add(net_i["subcircuit_id"])
+                    used_subcircuit_ids.add(net_j["subcircuit_id"])
     graph = nx.Graph()
     graph.add_edges_from(edges)
 
