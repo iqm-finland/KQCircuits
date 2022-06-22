@@ -1,0 +1,36 @@
+# This code is part of KQCircuits
+# Copyright (C) 2022 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+# Looks for Waveguides crossing anything in base_metal_gap_wo_grid.
+
+ERR_MARGIN = 0.01  # 10nm
+
+source($input)
+report("DRC report", $output)
+# To run this script in KLayout macro IDE, copy it to the KLayout drc folder, comment out the two lines above, and
+# uncomment the line below.
+#report("DRC report")
+
+b_waveguide_path = input(16, 0).sized(-ERR_MARGIN)
+b_metal_gap_wo_grid = input(11, 1)
+t_waveguide_path = input(46, 0).sized(-ERR_MARGIN)
+t_metal_gap_wo_grid = input(41, 1)
+
+b_waveguide_overlap_violations = b_waveguide_path & b_metal_gap_wo_grid
+b_waveguide_overlap_violations.output("Waveguide b", "Waveguide crosses other things")
+t_waveguide_overlap_violations = t_waveguide_path & t_metal_gap_wo_grid
+t_waveguide_overlap_violations.output("Waveguide t", "Waveguide crosses other things")

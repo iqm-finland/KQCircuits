@@ -62,7 +62,7 @@ layout = cell_view.layout()
 total_len = 0
 
 for obj in layout_view.object_selection:
-    length = get_object_path_length(obj, layout.layer(default_layers["waveguide_length"]))
+    length = get_object_path_length(obj)
     total_len += length
 
     if obj.is_cell_inst():

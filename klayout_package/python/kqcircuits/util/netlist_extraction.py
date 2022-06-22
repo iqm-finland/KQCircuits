@@ -187,6 +187,5 @@ def extract_circuits(cell_mapping, internal_cell, layout):
                 **circuit_for_export,
                 **pcell_parameters
             }
-        circuit_for_export["waveguide_length"] = \
-            get_cell_path_length(original_cell, layout.layer(default_layers["waveguide_length"]))
+        circuit_for_export["waveguide_length"] = get_cell_path_length(original_cell)
     return circuit_for_export

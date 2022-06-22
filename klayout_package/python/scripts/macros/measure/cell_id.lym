@@ -42,7 +42,6 @@ import pya
 
 from kqcircuits.defaults import default_layers
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.util.geometry_helper import get_object_path_length
 
 cell_view = KLayoutView.get_active_cell_view()
 layout_view = cell_view.view()

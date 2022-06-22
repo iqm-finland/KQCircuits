@@ -71,14 +71,14 @@ def test_continuity_90degree_turn():
     waveguide_cell = WaveguideCoplanar.create(layout,
         path=guideline
     )
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["waveguide_length"]),
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["b_waveguide_path"]),
                                            continuity_tolerance)
 
 
 def test_continuity_many_turns():
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 20, 40, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["waveguide_length"]),
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["b_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -88,7 +88,7 @@ def test_continuity_many_turns_with_zero_length_segments():
     """
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 30, 30, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["waveguide_length"]),
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["b_waveguide_path"]),
                                            continuity_tolerance)
 
 

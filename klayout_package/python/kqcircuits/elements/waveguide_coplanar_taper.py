@@ -17,7 +17,6 @@
 
 
 import math
-from math import ceil
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
@@ -63,14 +62,21 @@ class WaveguideCoplanarTaper(Element):
             pya.DPoint(0, self.a1 / 2 + self.b1 + self.m1)
         ]
         self.add_protection(pya.DPolygon(pts))
-        # Annotation
+        # Waveguide layer
+        pts = [
+            pya.DPoint(0, self.a1 / 2),
+            pya.DPoint(self.taper_length, self.a2 / 2),
+            pya.DPoint(self.taper_length, -self.a2 / 2),
+            pya.DPoint(0, -self.a1 / 2)
+        ]
+        shape = pya.DPolygon(pts)
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
         pts = [
             pya.DPoint(0, 0),
             pya.DPoint(self.taper_length, 0),
         ]
-        shape = pya.DPath(pts, ceil(self.a1 + 2 * self.b1))
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(shape)
+        shape = pya.DPath(pts, min(self.a1, self.a2))
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
         # refpoints for connecting to waveguides
         self.add_port("a", pya.DPoint(0, 0), pya.DVector(-1, 0))
         self.add_port("b", pya.DPoint(self.taper_length, 0), pya.DVector(1, 0))
-        # adds annotation based on refpoints calculated above

@@ -30,7 +30,6 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import to_module_name
 from kqcircuits.util.geometry_helper import vector_length_and_direction, point_shift_along_vector, \
     get_cell_path_length, get_angle, get_direction
-from kqcircuits.defaults import default_layers
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
@@ -247,8 +246,7 @@ class WaveguideComposite(Element):
         layout = cell.layout()
         # Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235
         child_cells = [layout.cell(inst.cell_index) for inst in cell.each_inst()]
-        annotation_layer = layout.layer(default_layers['waveguide_length'])
-        segment_lengths = [get_cell_path_length(child_cell, annotation_layer) for child_cell in child_cells
+        segment_lengths = [get_cell_path_length(child_cell) for child_cell in child_cells
                            if child_cell.name == "Waveguide Coplanar"]
         setattr(cell, "segment_lengths", lambda: segment_lengths)
 
@@ -762,8 +760,7 @@ def _length_of_var_length_bend(layout, library, corner_dist, point_a, point_a_co
 
     # Create waveguide and measure it's length
     cell = _var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges)
-    length = get_cell_path_length(cell, layout.layer(default_layers["waveguide_length"]))
-    return length
+    return get_cell_path_length(cell)
 
 
 def _var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges):

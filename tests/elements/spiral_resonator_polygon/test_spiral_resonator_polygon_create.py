@@ -172,7 +172,7 @@ def test_continuity_straight_last_segment():
         auto_spacing=False,
         manual_spacing=300,
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]), continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]), continuity_tolerance)
 
 
 def test_continuity_curved_last_segment():
@@ -185,7 +185,7 @@ def test_continuity_curved_last_segment():
         auto_spacing=False,
         manual_spacing=300,
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]), continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]), continuity_tolerance)
 
 
 def test_can_create_resonator_with_short_segment(capfd):
@@ -206,6 +206,6 @@ def _get_length_error(length, **parameters):
     """Returns the relative error of the spiral resonator length with the given parameters."""
     layout = pya.Layout()
     spiral_resonator_cell = SpiralResonatorPolygon.create(layout, length=length, **parameters)
-    true_length = get_cell_path_length(spiral_resonator_cell, layout.layer(default_layers["waveguide_length"]))
+    true_length = get_cell_path_length(spiral_resonator_cell)
     relative_error = abs(true_length - length) / length
     return relative_error

@@ -110,8 +110,7 @@ class Element(pya.PCellDeclarationHelper):
             **parameters: PCell parameters for the element as keyword arguments
         """
         cell = Element._create_cell(cls, layout, library, **parameters)
-        layer = layout.layer(default_layers['waveguide_length'])
-        setattr(cell, "length", lambda: get_cell_path_length(cell, layer))
+        setattr(cell, "length", lambda: get_cell_path_length(cell))
         return cell
 
     @classmethod

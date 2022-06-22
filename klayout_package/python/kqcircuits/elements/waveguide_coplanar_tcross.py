@@ -47,11 +47,9 @@ class WaveguideCoplanarTCross(Element):
         b = self.b
 
         # airbridge
-        pad_length = 14
-        pad_extra = 2
         self.ab_params = {
-            "pad_length": pad_length,
-            "pad_extra": pad_extra,
+            "pad_length": 14,
+            "pad_extra": 2,
         }
 
         port_l_location_x = -l - b2 - a2 / 2
@@ -108,13 +106,13 @@ class WaveguideCoplanarTCross(Element):
         self.add_port("right", pya.DPoint(port_r_location_x, 0), pya.DVector(1, 0))
         self.add_port("bottom", pya.DPoint(0, port_bottom_location_y), pya.DVector(0, -1))
 
-        # annotation path
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(
+        # Waveguide layer
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(
             pya.DPath([self.refpoints["port_left"], self.refpoints["base"]], self.a)
         )
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(
             pya.DPath([self.refpoints["port_right"], self.refpoints["base"]], self.a)
         )
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(
             pya.DPath([self.refpoints["port_bottom"], self.refpoints["base"]], self.a)
         )

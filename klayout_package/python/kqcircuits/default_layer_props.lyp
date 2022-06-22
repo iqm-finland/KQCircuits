@@ -119,6 +119,23 @@
    <source>'b base metal gap for EBL' 15/0@1</source>
   </group-members>
   <group-members>
+   <frame-color>#ffffff</frame-color>
+   <fill-color>#bb0b82</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I23</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'b waveguide path' 16/0@1</source>
+  </group-members>
+  <group-members>
    <frame-color>#0000ff</frame-color>
    <fill-color>#606060</fill-color>
    <frame-brightness>0</frame-brightness>
@@ -406,6 +423,23 @@
    <animation>0</animation>
    <name/>
    <source>'t base metal gap for EBL' 45/0@1</source>
+  </group-members>
+  <group-members>
+   <frame-color>#ffffff</frame-color>
+   <fill-color>#bb0b82</fill-color>
+   <frame-brightness>0</frame-brightness>
+   <fill-brightness>0</fill-brightness>
+   <dither-pattern>I23</dither-pattern>
+   <line-style/>
+   <valid>true</valid>
+   <visible>false</visible>
+   <transparent>false</transparent>
+   <width>1</width>
+   <marked>false</marked>
+   <xfill>false</xfill>
+   <animation>0</animation>
+   <name/>
+   <source>'t waveguide path' 46/0@1</source>
   </group-members>
   <group-members>
    <frame-color>#ff0000</frame-color>

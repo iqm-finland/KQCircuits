@@ -65,7 +65,7 @@ def test_length_with_different_spacing():
         y_spacing=40,
         auto_spacing=False
     ))
-    true_length = get_cell_path_length(spiral_resonator_cell, layout.layer(default_layers["waveguide_length"]))
+    true_length = get_cell_path_length(spiral_resonator_cell)
     relative_error = abs(true_length - length) / length
     assert relative_error < relative_length_tolerance
 
@@ -79,7 +79,7 @@ def test_continuity_medium_resonator():
         right_space=1100,
         auto_spacing=False
     ))
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -91,7 +91,7 @@ def test_continuity_long_resonator():
         below_space=600,
         right_space=1100
     ))
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -104,7 +104,7 @@ def test_continuity_short_segment_resonator():
         right_space=1000,
         auto_spacing=False
     ))
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["waveguide_length"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -119,6 +119,6 @@ def _get_length_error(length, above_space, below_space, right_space, bridges_top
         bridges_top=bridges_top,
         auto_spacing=False
     ))
-    true_length = get_cell_path_length(spiral_resonator_cell, layout.layer(default_layers["waveguide_length"]))
+    true_length = get_cell_path_length(spiral_resonator_cell)
     relative_error = abs(true_length - length) / length
     return relative_error

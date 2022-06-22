@@ -74,10 +74,10 @@ class WaveguideCoplanarCurved(Element):
         # Protection layer
         pts = left_protection_arc + right_protection_arc
         self.add_protection(pya.DPolygon(pts))
-        # Annotation
+        # Waveguide lenght
         pts = annotation_arc
-        shape = pya.DPath(pts, self.a + 2 * self.b)
-        self.cell.shapes(self.get_layer("waveguide_length")).insert(shape)
+        shape = pya.DPath(pts, self.a)
+        self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
 
     @staticmethod
     def create_curve_arcs(elem, angle):
