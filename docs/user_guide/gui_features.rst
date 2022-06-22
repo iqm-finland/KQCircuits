@@ -61,7 +61,7 @@ PCell shape is updated after each change in the parameters.
 Converting elements placed in GUI into code
 -------------------------------------------
 
-KQCircuits includes a macro ``export_cells_as_code.lym`` that can be used to
+KQCircuits includes a macro `export_cells_as_code.lym <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_cells_as_code.lym>`_ that can be used to
 convert elements placed in GUI into code that can be used in chip PCells. For
 more information, see the docstring and comments in the macro. The following
 animation demonstrates how a chip is modified by placing elements in the GUI
@@ -69,11 +69,11 @@ and how to use this macro to include those elements in PCell generation code:
 
 .. image:: ../images/gui_workflows/converting_gui_elements_to_code.gif
 
-The macro has special handling for waveguides (of ``WaveguideCoplanar`` type).
+The macro has special handling for waveguides (of `WaveguideCoplanar <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/waveguide_coplanar.py>`_ type).
 The code generated for them automatically detects nearby reference points of
 other elements, and uses these instead of hardcoded points as the positions
 of the waveguide nodes. See the :ref:`modifying_waveguides` section above for
-instructions on how to modify ``WaveguideCoplanar`` in GUI.
+instructions on how to modify `WaveguideCoplanar <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/waveguide_coplanar.py>`_ in GUI.
 
 In order to make waveguides connect "nicely" to ports of other elements, most
 ports in KQC elements have an additional "corner refpoint". To connect a
