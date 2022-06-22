@@ -625,8 +625,7 @@
 <span class="sd">            **parameters: PCell parameters for the element as keyword arguments</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
-        <span class="n">layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s1">&#39;waveguide_length&#39;</span><span class="p">])</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">))</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">cell</span></div>
 
 <div class="viewcode-block" id="Element.create_with_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_with_refpoints">[docs]</a>    <span class="nd">@classmethod</span>

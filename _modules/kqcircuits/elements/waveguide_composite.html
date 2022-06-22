@@ -545,7 +545,6 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">to_module_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">vector_length_and_direction</span><span class="p">,</span> <span class="n">point_shift_along_vector</span><span class="p">,</span> \
     <span class="n">get_cell_path_length</span><span class="p">,</span> <span class="n">get_angle</span><span class="p">,</span> <span class="n">get_direction</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridge_connection</span> <span class="kn">import</span> <span class="n">AirbridgeConnection</span>
@@ -762,8 +761,7 @@
         <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
         <span class="c1"># Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235</span>
         <span class="n">child_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">()]</span>
-        <span class="n">annotation_layer</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s1">&#39;waveguide_length&#39;</span><span class="p">])</span>
-        <span class="n">segment_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">child_cell</span><span class="p">,</span> <span class="n">annotation_layer</span><span class="p">)</span> <span class="k">for</span> <span class="n">child_cell</span> <span class="ow">in</span> <span class="n">child_cells</span>
+        <span class="n">segment_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">child_cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">child_cell</span> <span class="ow">in</span> <span class="n">child_cells</span>
                            <span class="k">if</span> <span class="n">child_cell</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Waveguide Coplanar&quot;</span><span class="p">]</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;segment_lengths&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">segment_lengths</span><span class="p">)</span>
 
@@ -1277,8 +1275,7 @@
 
     <span class="c1"># Create waveguide and measure it&#39;s length</span>
     <span class="n">cell</span> <span class="o">=</span> <span class="n">_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">)</span>
-    <span class="n">length</span> <span class="o">=</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;waveguide_length&quot;</span><span class="p">]))</span>
-    <span class="k">return</span> <span class="n">length</span>
+    <span class="k">return</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_var_length_bend</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">corner_dist</span><span class="p">,</span> <span class="n">point_a</span><span class="p">,</span> <span class="n">point_a_corner</span><span class="p">,</span> <span class="n">point_b</span><span class="p">,</span> <span class="n">point_b_corner</span><span class="p">,</span> <span class="n">bridges</span><span class="p">):</span>

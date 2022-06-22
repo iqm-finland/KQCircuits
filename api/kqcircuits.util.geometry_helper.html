@@ -563,13 +563,15 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_cell_path_length">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_cell_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_cell_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_cell_path_length" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_cell_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_cell_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_cell_path_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of the paths in the cell.</p>
+<p>Adding together the cell’s paths’ lengths in the “b_waveguide_path”, “t_waveguide_path” and
+“waveguide_length” layers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> – A cell object.</p></li>
-<li><p><strong>annotation_layer</strong> – An unsigned int representing the annotation_layer.</p></li>
+<li><p><strong>layer</strong> – None or an unsigned int to specify a non-standard layer</p></li>
 </ul>
 </dd>
 </dl>
@@ -577,13 +579,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_object_path_length">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_object_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_object_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_object_path_length" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_object_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_object_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_object_path_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns sum of lengths of all the paths in the object and its children</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> – ObjectInstPath object</p></li>
-<li><p><strong>layer</strong> – layer integer id in the database</p></li>
+<li><p><strong>layer</strong> – layer integer id in the database, waveguide layer by default</p></li>
 </ul>
 </dd>
 </dl>

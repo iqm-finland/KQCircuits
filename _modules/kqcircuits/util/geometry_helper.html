@@ -534,7 +534,7 @@
 <span class="sd">&quot;&quot;&quot;Helper module for general geometric functions&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">ceil</span>
-
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
@@ -578,38 +578,56 @@
     <span class="k">return</span> <span class="n">degrees</span><span class="p">(</span><span class="n">atan2</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">vector</span><span class="o">.</span><span class="n">x</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_cell_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_cell_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">annotation_layer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the length of the paths in the cell.</span>
+<div class="viewcode-block" id="get_cell_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_cell_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns the length of the paths in the cell.</span>
+
+<span class="sd">    Adding together the cell&#39;s paths&#39; lengths in the &quot;b_waveguide_path&quot;, &quot;t_waveguide_path&quot; and</span>
+<span class="sd">    &quot;waveguide_length&quot; layers.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cell: A cell object.</span>
-<span class="sd">        annotation_layer: An unsigned int representing the annotation_layer.</span>
-
+<span class="sd">        layer: None or an unsigned int to specify a non-standard layer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span>  <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
+
+    <span class="n">length</span>  <span class="o">=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;b_waveguide_path&quot;</span><span class="p">)</span>
+    <span class="n">length</span> <span class="o">+=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;t_waveguide_path&quot;</span><span class="p">)</span>
+    <span class="n">length</span> <span class="o">+=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;waveguide_length&quot;</span><span class="p">)</span>  <span class="c1"># AirbridgeConnection uses this</span>
+
+    <span class="k">return</span> <span class="n">length</span></div>
+
+
+<span class="k">def</span> <span class="nf">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get length of the paths in the cell in the specified layer.&quot;&quot;&quot;</span>
+
     <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">layer</span>
+
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>  <span class="c1"># over child cell instances, not instances of itself</span>
-        <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">annotation_layer</span><span class="p">)</span>
+        <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">at_end</span><span class="p">():</span>
             <span class="n">shape</span> <span class="o">=</span> <span class="n">shapes_iter</span><span class="o">.</span><span class="n">shape</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">shape</span><span class="o">.</span><span class="n">is_path</span><span class="p">():</span>
                 <span class="n">length</span> <span class="o">+=</span> <span class="n">shape</span><span class="o">.</span><span class="n">path_dlength</span><span class="p">()</span>
             <span class="n">shapes_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
     <span class="c1"># in case of waveguide, there are no shapes in the waveguide cell itself</span>
     <span class="c1"># but the following allows function reuse in other applications</span>
-    <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">annotation_layer</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">shape</span><span class="o">.</span><span class="n">is_path</span><span class="p">():</span>
             <span class="n">length</span> <span class="o">+=</span> <span class="n">shape</span><span class="o">.</span><span class="n">path_dlength</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="n">length</span></div>
+    <span class="k">return</span> <span class="n">length</span>
 
 
-<div class="viewcode-block" id="get_object_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_object_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_object_path_length</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+<div class="viewcode-block" id="get_object_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_object_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_object_path_length</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns sum of lengths of all the paths in the object and its children</span>
 
 <span class="sd">    Arguments:</span>
 <span class="sd">        obj: ObjectInstPath object</span>
-<span class="sd">        layer: layer integer id in the database</span>
+<span class="sd">        layer: layer integer id in the database, waveguide layer by default</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_cell_inst</span><span class="p">():</span>
