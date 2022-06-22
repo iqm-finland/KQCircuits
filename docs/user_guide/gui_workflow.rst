@@ -49,27 +49,27 @@ only after you know the API.
 
    #. Press ``F2`` to see the whole top cell.
    #. Locate the qubit in the top left part of the chip.
-   #. From the *Tools* panel select *Move*.
    #. Drag a selection box around the qubit.
+   #. From the *Tools* panel select *Move*.
+   #. Click on the selection box.
    #. Click on a new location for a qubit.
 
 #. **Disable a coupling port for the qubit.**
 
    #. From the *Tools* panel select *Select*.
-   #. Click once on the qubit.
+   #. Drag a selection box around the qubit.
    #. Click ``Shift+F2``
-   #. Double-click on the qubit.
+   #. Press ``q``.
    #. In the new *Instance Properties* window locate a tab *PCell
       parameters*.
-   #. Scroll down in the list of parameters to locate *Include coupler between qubits*.
-   #. Click on the box.
+   #. Scroll down in the list of parameters to locate *Coupler lengths*.
+   #. Change the value in the text box to ``100,160,0``.
    #. Click ``Ok``.
 
 #. **Create a new qubit.**
 
    #. Press ``F2`` to see the whole top cell.
-   #. From the *Tools* panel select *Instance*.
-   #. Double-click on the qubit.
+   #. From the toolbar select *Instance*.
    #. In the new *Editor Options* window locate *Library*.
    #. Using the drop-down menu select *Qubit Library*.
    #. Click on a button ``🔍`` a little bit to the left from the *Library* 
