@@ -277,9 +277,18 @@ class MaskLayout:
     def _mask_create_covered_region(self, maskextra_cell, region_covered, layers_dict):
         dbu = self.layout.dbu
 
+        leftmost_label_x = 1e10
+        label_insts = []
         for layer, postfix in layers_dict.items():
             inst = self._insert_mask_name_label(maskextra_cell, self.face()[layer], postfix)
+            inst_x = inst.dtrans.disp.x
+            if inst_x < leftmost_label_x:
+                leftmost_label_x = inst_x
             region_covered -= pya.Region(inst.bbox()).extents(1e3 / dbu)
+            label_insts.append(inst)
+        # align left edges of mask name labels in different layers
+        for inst in label_insts:
+            inst.dtrans = pya.DTrans(inst.dtrans.rot, inst.dtrans.is_mirror(), leftmost_label_x, inst.dtrans.disp.y)
 
         circle = pya.DTrans(self.wafer_center) * pya.DPath(
             [pya.DPoint(math.cos(a / 32 * math.pi) * self.wafer_rad, math.sin(a / 32 * math.pi) * self.wafer_rad)
