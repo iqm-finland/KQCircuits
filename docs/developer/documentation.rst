@@ -13,11 +13,11 @@ files first.
 The API documentation is generated from the ``.rst`` files in ``docs/api``
 folder, which are generated automatically by sphinx-apidoc when you run
 ``make html``. The template files used to generate these are in
-``docs/templates/apidoc``.
+`docs/templates/apidoc <https://github.com/iqm-finland/KQCircuits/tree/main/docs/templates/apidoc>`_.
 
 There are some custom Sphinx extensions used in the documentation generation,
-these are in the ``docs/sphinxext`` folder. Also the
-``docs/make_pcell_images.py`` script is used by ``make html`` to create a .png
+these are in the `docs/sphinxext <https://github.com/iqm-finland/KQCircuits/tree/main/docs/sphinxext>`_ folder. Also the
+`docs/make_pcell_images.py <https://github.com/iqm-finland/KQCircuits/blob/main/docs/make_pcell_images.py>`_ script is used by ``make html`` to create a .png
 image of every PCell into the pcell_images directory, these get included in the
 API documentation. Image generation may produce harmless error messages in
 Windows.

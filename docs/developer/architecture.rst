@@ -34,7 +34,7 @@ things should be taken into account when writing new elements:
     normal class, but instead use the ``add_element`` or ``create`` method of the
     element, which are wrappers for KLayout's ``layout.create_cell``.  These
     wrappers are used to validate the parameters using the ``Validator`` in
-    ``parameter_helper.py``. The C++-object is created properly only if you use
+    `parameter_helper.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/parameter_helper.py>`_. The C++-object is created properly only if you use
     these wrappers (or if a new PCell is added to a layout in KLayout GUI).
 
 #.  In code ``add_element`` or ``insert_cell`` is the preferred method of adding
@@ -57,14 +57,14 @@ The PCell parameters for KQCircuits elements are plain class attributes defined
 with the ``Param`` descriptor class. These can be used like normal instance
 variables. The values of these parameters can be set from the KLayout GUI, or in
 the ``create`` or ``add_element`` methods in code.  The parameters of a class
-are automatically merged with its parent's parameters (see ``element.py``), so
+are automatically merged with its parent's parameters (see `element.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py>`_), so
 an instance will contain the parameters of all its ancestors in the inheritance
 hierarchy. When building hierarchical elements the parameter values appropriate
 for a sub-element are transparently passed to it from the caller with
 ``add_element`` or ``insert_cell``.
 
 It is possible to change inherited parameters default values in a per class
-basis using the ``default_parameter_values`` section of the ``defaults.py``
+basis using the ``default_parameter_values`` section of the `defaults.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py>`_
 configuration file. Technically this creates a copy of the Param object with
 different default value.
 
@@ -134,11 +134,11 @@ available for all derived classes.
     "SQUID Library" -> "Qubit Library" -> "Chip Library"
 
 Libraries have a strict dependency order defined in ``kqc_library_names`` in
-``defaults.py``. KLayout loads them in this order. Classes *can not* use other
+`defaults.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py>`_. KLayout loads them in this order. Classes *can not* use other
 classes from other libraries downstream in the dependency graph.
 
 The elements in these libraries are automatically discovered and registered to
-KLayout by ``library_helper.py``. It finds all classes in KQCircuits
+KLayout by `library_helper.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py>`_. It finds all classes in KQCircuits
 directory which inherit from ``PCellDeclarationHelper``, and uses their
 ``LIBRARY_NAME`` attribute to register them to the correct library. Note
 that this requires all element classes to follow PascalCase naming
@@ -148,7 +148,7 @@ pya resolver
 ^^^^^^^^^^^^
 
 Any KLayout functions/classes/etc. should be imported using ``pya_resolver``
-(see ``pya_resolver.py``). For example, you should write
+(see `pya_resolver.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/pya_resolver.py>`_). For example, you should write
 ``from kqcircuits.pya_resolver import pya``, and **not** ``import pya`` or
 ``import klayout.db``. This ensures that KQCircuits works both with KLayout
 GUI and the standalone module.
