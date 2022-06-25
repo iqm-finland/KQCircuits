@@ -22,5 +22,5 @@ Chips consist of elements, and they are elements themselves. A default chip fram
 there are methods to place launchers and some test structures. After adding other elements to the chip, a ground grid
 which avoids the elements can be produced.
 
-See ``kqcircuits.elements`` documentation for a general description of elements.
+See `kqcircuits.elements <https://iqm-finland.github.io/KQCircuits/api/kqcircuits.elements.html>`_ documentation for a general description of elements.
 """
