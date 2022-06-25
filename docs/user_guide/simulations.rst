@@ -82,7 +82,7 @@ You can create a Windows batch file for running multiple simulations in a row by
 
     bat = export_ansys_bat([json], path)
 
-Alternatively, you can call `export_ansys <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_ansys.lym>`_ to cover last three steps. This exports multiple simulations that are stored in a list, copies the Ansys-scripts into the folder, and creates the Windows batch file::
+Alternatively, you can call ``export_ansys`` to cover last three steps. This exports multiple simulations that are stored in a list, copies the Ansys-scripts into the folder, and creates the Windows batch file::
 
     bat = export_ansys([simulation], path, ansys_tool='hfss')
 
