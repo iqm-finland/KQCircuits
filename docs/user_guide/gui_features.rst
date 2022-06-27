@@ -69,7 +69,7 @@ and how to use this macro to include those elements in PCell generation code:
 
 .. image:: ../images/gui_workflows/converting_gui_elements_to_code.gif
 
-The macro has special handling for waveguides (of `WaveguideCoplanar <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/waveguide_coplanar.py>`_ type).
+The macro has special handling for waveguides (of :class:`.WaveguideCoplanar` type).
 The code generated for them automatically detects nearby reference points of
 other elements, and uses these instead of hardcoded points as the positions
 of the waveguide nodes. See the :ref:`modifying_waveguides` section above for
