@@ -73,7 +73,7 @@ The macro has special handling for waveguides (of :class:`.WaveguideCoplanar` ty
 The code generated for them automatically detects nearby reference points of
 other elements, and uses these instead of hardcoded points as the positions
 of the waveguide nodes. See the :ref:`modifying_waveguides` section above for
-instructions on how to modify `WaveguideCoplanar <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/waveguide_coplanar.py>`_ in GUI.
+instructions on how to modify :class:`.WaveguideCoplanar` in GUI.
 
 In order to make waveguides connect "nicely" to ports of other elements, most
 ports in KQC elements have an additional "corner refpoint". To connect a
