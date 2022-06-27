@@ -534,8 +534,11 @@ only after you know the API.</p>
 <li><p>Run KLayout Editor. On Windows you should have separate shortcuts
 for KLayout Viewer and KLayout Editor. On Linux you may have to go
 to <em>File -&gt; Setup -&gt; Application -&gt; Editing Mode</em> and set <em>Use
-editing mode by default</em> to true, and restart KLayout.</p></li>
-<li><p>In the <em>Libraries</em> panel on the left, choose <em>Chip Library</em> and drag
+editing mode by default</em> to true, and restart KLayout.
+On macOS click on KLayout and on the top right corner click
+<em>Preferences -&gt; Application -&gt; Editing Mode -&gt; Use editing mode by default</em>.
+Then restart the KLayout program.</p></li>
+<li><p>In the <em>Libraries</em> panel on the bottom left, choose <em>Chip Library</em> and drag
 and drop the <em>Demo</em> chip from there to the layout.</p></li>
 <li><p>Click <em>Ok</em> in the <em>PCell parameters</em> window that opens.</p></li>
 </ol>
@@ -569,18 +572,19 @@ shape.</p></li>
 <ol class="arabic simple">
 <li><p>Press <code class="docutils literal notranslate"><span class="pre">F2</span></code> to see the whole top cell.</p></li>
 <li><p>Locate the qubit in the top left part of the chip.</p></li>
+<li><p>Drag a selection box around the qubit.</p></li>
 <li><p>From the <em>Tools</em> panel select <em>Move</em>.</p></li>
-<li><p>Click on the qubit.</p></li>
+<li><p>Click on the selection box.</p></li>
 <li><p>Click on a new location for a qubit.</p></li>
 </ol>
 </li>
 <li><p><strong>Disable a coupling port for the qubit.</strong></p>
 <ol class="arabic simple">
 <li><p>From the <em>Tools</em> panel select <em>Select</em>.</p></li>
-<li><p>Click once on the qubit.</p></li>
+<li><p>Drag a selection box around the qubit.</p></li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">Shift+F2</span></code></p></li>
-<li><p>Double-click on the qubit.</p></li>
-<li><p>In the new <em>Object Properties</em> window locate a tab <em>PCell
+<li><p>Press <code class="docutils literal notranslate"><span class="pre">q</span></code>.</p></li>
+<li><p>In the new <em>Instance Properties</em> window locate a tab <em>PCell
 parameters</em>.</p></li>
 <li><p>Scroll down in the list of parameters to locate <em>Coupler lengths</em>.</p></li>
 <li><p>Change the value in the text box to <code class="docutils literal notranslate"><span class="pre">100,160,0</span></code>.</p></li>
@@ -590,10 +594,11 @@ parameters</em>.</p></li>
 <li><p><strong>Create a new qubit.</strong></p>
 <ol class="arabic simple">
 <li><p>Press <code class="docutils literal notranslate"><span class="pre">F2</span></code> to see the whole top cell.</p></li>
-<li><p>From the <em>Tools</em> panel select <em>Instance</em>.</p></li>
-<li><p>In the new <em>Object Editor Options</em> window locate <em>Library</em>.</p></li>
-<li><p>Using the drop-down menu select <em>Element Library</em>.</p></li>
-<li><p>Click on a button <code class="docutils literal notranslate"><span class="pre">...</span></code> a little bit to the left from the
+<li><p>From the toolbar select <em>Instance</em>.</p></li>
+<li><p>In the new <em>Editor Options</em> window locate <em>Library</em>.</p></li>
+<li><p>Using the drop-down menu select <em>Qubit Library</em>.</p></li>
+<li><p>Click on a button <code class="docutils literal notranslate"><span class="pre">🔍</span></code> a little bit to the left from the <em>Library</em>
+for older versions click <code class="docutils literal notranslate"><span class="pre">...</span></code> a little bit to the left from the.
 <em>Library</em>.</p></li>
 <li><p>From the new <em>Select Cell</em> window select <em>Swissmon</em> and press
 <em>Ok</em>.</p></li>
@@ -605,7 +610,8 @@ parameters</em>.</p></li>
 <li><p><strong>Add the ground grid.</strong></p>
 <ol class="arabic simple">
 <li><p>In the top menu, navigate to <em>Edit-&gt;KQCircuits Library-&gt;Fill with ground
-plane grid</em>. It may take some time to generate.</p></li>
+plane grid</em>. It may take some time to generate.
+Unhide ground grid in layers list located in the top right.</p></li>
 </ol>
 </li>
 </ol>
