@@ -14,11 +14,11 @@ File system hierarchy
 ---------------------
 
 In the KQCircuits root folder the most important folder for most users is the
-``klayout_package`` folder, which is also all that is included in the Salt
+`klayout_package <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package>`_ folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
-KQCircuits code is divided into the ``kqcircuits`` and ``scripts`` folders in
-``klayout_package/python``. These two folders are also (after installation
-process) linked as symbolic links ``kqcircuits`` and ``kqcircuits_scripts``
+KQCircuits code is divided into the `kqcircuits <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits>`_ and `scripts <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts>`_ folders in
+`klayout_package/python <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python>`_. These two folders are also (after installation
+process) linked as symbolic links `kqcircuits <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits>`_ and `kqcircuits_scripts <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts>`_
 in the ``~/.klayout` or ``~/KLayout`` folder.
 
 The ``kqcircuits`` folder contains all the KQCircuits PCell classes and many
@@ -70,7 +70,8 @@ need to have::
 
 in a file ``my_qubit.py`` in ``kqcircuits/qubits`` folder. The registration
 of PCell classes to different libraries is handled by KQCircuits code in
-``library_helper.py`` and ``element.py``. For more information about PCell
+`library_helper.py
+<https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py>`_  and `element.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py>`_. For more information about PCell
 libraries see the KLayout documentation pages
 https://www.klayout.de/doc-qt5/about/about_libraries.html,
 https://www.klayout.de/doc-qt5/code/class_Library.html, and

@@ -552,8 +552,8 @@
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object is needed for Ansys export and Sonnet export (more details in following sections). Alternatively, run following macros in Klayout:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">scripts/macros/export/export_ansys.lym</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">scripts/macros/export/export_sonnet.lym</span></code></p></li>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_ansys.lym">scripts/macros/export/export_ansys.lym</a></p></li>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_sonnet.lym">scripts/macros/export/export_sonnet.lym</a></p></li>
 </ul>
 </div>
 <div class="section" id="geometry-from-kqcircuits-library">
@@ -581,7 +581,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">WaveguideSimulation</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class and it’s subclasses are located in folder <code class="docutils literal notranslate"><span class="pre">kqcircuits/simulations/</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class and it’s subclasses are located in folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits/simulations">kqcircuits/simulations/</a>.</p>
 </div>
 </div>
 <div class="section" id="ansys-export">
@@ -592,7 +592,7 @@
 <span class="n">json</span> <span class="o">=</span> <span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Performing simulations requires Ansys-scripts, which are located at <code class="docutils literal notranslate"><span class="pre">scripts/simulations/ansys/</span></code>. Usually, it’s convenient to copy this folder to the export path by calling <code class="docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory</span></code>:</p>
+<p>Performing simulations requires Ansys-scripts, which are located at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a>. Usually, it’s convenient to copy this folder to the export path by calling <code class="docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -606,7 +606,7 @@
 </div>
 <div class="section" id="ansys-scripts">
 <h3>Ansys scripts<a class="headerlink" href="#ansys-scripts" title="Permalink to this headline">¶</a></h3>
-<p>The folder <code class="docutils literal notranslate"><span class="pre">scripts/simulations/ansys/</span></code> contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.</p>
+<p>The folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.</p>
 <p>The scripts are developed and tested with Ansys Electronic Desktop 2021 R1 on Windows x64.</p>
 <p>The primary use case is to estimate capacitive couplings between different elements in the layout, where each element
 of interest has a port in the simulation. The capacitances are represented as a matrix, where the <em>Cij</em> is the
@@ -614,11 +614,11 @@ capacitance between two ports <em>i</em> and <em>j</em>, and <em>Cii</em> is the
 <div class="section" id="main-scripts">
 <h4>Main scripts:<a class="headerlink" href="#main-scripts" title="Permalink to this headline">¶</a></h4>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">import_simulation_geometry.py</span></code></p>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_simulation_geometry.py">import_simulation_geometry.py</a></p>
 <p>Argument: path to json file exported by <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code>.</p>
 <p>Creates a new project, imports the geometry, defines ports/nets and materials, and sets up the analysis setup.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">create_capacitive_pi_model.py</span></code></p>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/create_capacitive_pi_model.py">create_capacitive_pi_model.py</a></p>
 <p>No argument.</p>
 <p>Adds solution variables and reports for a PI model between all ports/nets in the current design.</p>
 <p>The variables <code class="docutils literal notranslate"><span class="pre">yy_i_j</span></code> give the scalar admittance between port <code class="docutils literal notranslate"><span class="pre">i</span></code> and <code class="docutils literal notranslate"><span class="pre">j</span></code>, or the admittance from port <code class="docutils literal notranslate"><span class="pre">i</span></code> to
@@ -626,19 +626,19 @@ ground if <code class="docutils literal notranslate"><span class="pre">i==j</spa
 <p>Similarly, the variables <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> give the capacitance between ports and from ports to ground,
 assuming a purely capacitive model. This assumption is valid as long as the resulting <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> are constant over frequency.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">export_solution_data.py</span></code></p>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_solution_data.py">export_solution_data.py</a></p>
 <p>No argument.</p>
 <p>Exports data from the solutions. <em>projectname_CMatrix.txt</em> contains the elements <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> in fF (at 1 GHz in HFSS).
 <em>projectname_results.json</em> contains all <code class="docutils literal notranslate"><span class="pre">C_i_j</span></code> and <code class="docutils literal notranslate"><span class="pre">yy_i_j</span></code> elements for all frequencies in the solution.
 In case of HFSS, <em>projectname_SMatrix.s2p</em> contains the S-parameters.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">import_and_simulate.py</span></code></p>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py">import_and_simulate.py</a></p>
 <p>Argument: path to json file exported by <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code>.</p>
 <p>Performs the full simulation sequence including running the three other scripts, saving the project, and running the simulation.</p>
 </li>
 </ul>
 <p>Additional scripts for use cases other than capacitive coupling exist.
-These are enabled in <code class="docutils literal notranslate"><span class="pre">import_and_simulate.py</span></code> with a list of strings as parameters to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>,
+These are enabled in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py">import_and_simulate.py</a> with a list of strings as parameters to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>,
 e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) files:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_ansys</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">export_processing</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tdr&#39;</span><span class="p">,</span> <span class="s1">&#39;snp_no_deembed&#39;</span><span class="p">])</span>
 </pre></div>
@@ -648,12 +648,12 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <div class="section" id="optional-scripts">
 <h4>Optional scripts:<a class="headerlink" href="#optional-scripts" title="Permalink to this headline">¶</a></h4>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">export_snp_no_deembed.py</span></code></p>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py">export_snp_no_deembed.py</a></p>
 <p>No argument.</p>
 <p>Disables de-embedding and exports the <span class="math notranslate nohighlight">\(S\)</span>-matrix network data to a Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) file.</p>
 <p>Works only in HFSS.</p>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">export_tdr.py</span></code></p>
+<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_tdr.py">export_tdr.py</a></p>
 <p>No argument.</p>
 <p>Creates a Time Domain Reflectometry report using <code class="docutils literal notranslate"><span class="pre">TDRZt(port)</span></code> for all ports and exports the data to a <code class="docutils literal notranslate"><span class="pre">.csv</span></code>.</p>
 <p>Works only in HFSS.</p>

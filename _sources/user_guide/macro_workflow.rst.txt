@@ -18,7 +18,7 @@ Basic workflow
 #. Select "Python"
 #. Open "[Local - python branch]", where you should see the "kqcircuits scripts"
    directory
-#. Open ``kqcircuits scripts/macros/generate/demo_placing_a_pcell``
+#. Open `kqcircuits scripts/macros/generate/demo_placing_a_pcell <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/demo_placing_a_pcell.lym>`_
 #. Click on the green play symbol with the exclamation mark ("Run script
    from the current tab"), or use Shift+F5.
 #. A chip cell should appear in the main KLayout window.
@@ -70,21 +70,21 @@ Reloading libraries
 
 - Even though you have changed some line inside a PCell file, if
   nothing changes on the generated design inside the editor, you have to re-run
-  the ``reload.lym`` file to be able to reload the library features for
+  the `reload.lym <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/reload.lym>`_ file to be able to reload the library features for
   changes to be updated. The reload macro can also be run from
   "Edit -> KQCircuits Library -> Reload libraries" in the main KLayout window
 
 - The libraries are automatically reloaded whenever you restart KLayout, so
-  in that case there is no need to run the ``reload`` macro to see changes.
+  in that case there is no need to run the `reload <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/reload.lym>`_ macro to see changes.
 
 Examples
 --------
 
-- Locate the ``demo_placing_a_pcell`` and ``demo_pya_basic`` tutorials
-  under ``kqcircuits/macros/generate`` directory. Use the tutorials to
+- Locate the `demo_placing_a_pcell <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/demo_placing_a_pcell.lym>`_ and `demo_pya_basic <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/demo_pya_basics.lym>`_ tutorials
+  under `kqcircuits/macros/generate <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/macros/generate>`_ directory. Use the tutorials to
   have basic understanding about KLayout Editor and macro generation
   concept.
 
-- Some other macros, such as ``test_waveguide_composite`` and
-  ``test_wgc_airbridge``, can be useful to learn more about specific KQC
+- Some other macros, such as `test_waveguide_composite <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/test_waveguide_composite.lym>`_ and
+  `test_wgc_airbridge <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/generate/test_wgc_airbridge.lym>`_, can be useful to learn more about specific KQC
   elements.

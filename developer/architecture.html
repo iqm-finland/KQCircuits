@@ -529,7 +529,7 @@
 <code class="docutils literal notranslate"><span class="pre">Element</span></code>, that in turn is derived from <a class="reference external" href="https://www.klayout.de/doc-qt4/code/class_PCellDeclarationHelper.html">PCellDeclarationHelper</a>.
 There exist also more specific base classes such as <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, <code class="docutils literal notranslate"><span class="pre">Qubit</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TestStructure</span></code>.</p>
-<div class="figure align-center" id="id1">
+<div class="figure align-center" id="id2">
 <div class="graphviz"><object data="../_images/graphviz-6ba9577865c634ada05d522b29574d4aee43eb20.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph {
     rankdir=&quot;LR&quot;
@@ -589,7 +589,7 @@ There exist also more specific base classes such as <code class="docutils litera
     FlipChipConnector -&gt; FlipChipConnectorDc
     Tsv -&gt; TsvEllipse
 }</p></object></div>
-<p class="caption"><span class="caption-text">Class Inheritance Diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Class Inheritance Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>All base classes (black) are shown, abstracts are ovals, concretes are
 rectangles. Only one example “leaf” class (green) is shown for each base class.
@@ -605,7 +605,7 @@ KLayout. This means that you should not instantiate any elements like a
 normal class, but instead use the <code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">create</span></code> method of the
 element, which are wrappers for KLayout’s <code class="docutils literal notranslate"><span class="pre">layout.create_cell</span></code>.  These
 wrappers are used to validate the parameters using the <code class="docutils literal notranslate"><span class="pre">Validator</span></code> in
-<code class="docutils literal notranslate"><span class="pre">parameter_helper.py</span></code>. The C++-object is created properly only if you use
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/parameter_helper.py">parameter_helper.py</a>. The C++-object is created properly only if you use
 these wrappers (or if a new PCell is added to a layout in KLayout GUI).</p></li>
 <li><p>In code <code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code> is the preferred method of adding
 a new (sub)cell. The <code class="docutils literal notranslate"><span class="pre">create</span></code> method is a <code class="docutils literal notranslate"><span class="pre">&#64;classmethod</span></code> that is useful
@@ -624,13 +624,13 @@ instance is then created or updated based on these new parameter values.</p></li
 with the <code class="docutils literal notranslate"><span class="pre">Param</span></code> descriptor class. These can be used like normal instance
 variables. The values of these parameters can be set from the KLayout GUI, or in
 the <code class="docutils literal notranslate"><span class="pre">create</span></code> or <code class="docutils literal notranslate"><span class="pre">add_element</span></code> methods in code.  The parameters of a class
-are automatically merged with its parent’s parameters (see <code class="docutils literal notranslate"><span class="pre">element.py</span></code>), so
+are automatically merged with its parent’s parameters (see <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>), so
 an instance will contain the parameters of all its ancestors in the inheritance
 hierarchy. When building hierarchical elements the parameter values appropriate
 for a sub-element are transparently passed to it from the caller with
 <code class="docutils literal notranslate"><span class="pre">add_element</span></code> or <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code>.</p>
 <p>It is possible to change inherited parameters default values in a per class
-basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <code class="docutils literal notranslate"><span class="pre">defaults.py</span></code>
+basis using the <code class="docutils literal notranslate"><span class="pre">default_parameter_values</span></code> section of the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
 configuration file. Technically this creates a copy of the Param object with
 different default value.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">add_parameters_from</span></code>  or <code class="docutils literal notranslate"><span class="pre">add_parameter</span></code> decorator functions add some other class’
@@ -686,20 +686,20 @@ class for all other classes in the library, for example all classes in the
 <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Library</span></code> inherit from the <code class="docutils literal notranslate"><span class="pre">Chip</span></code> base class. Each base class contains
 <code class="docutils literal notranslate"><span class="pre">LIBRARY_NAME</span></code> and <code class="docutils literal notranslate"><span class="pre">LIBRARY_DESCRIPTION</span></code> constants, so that these are
 available for all derived classes.</p>
-<div class="figure align-center" id="id2">
+<div class="figure align-center" id="id3">
 <div class="graphviz"><object data="../_images/graphviz-eafae24b3004a0deb055750c2e18d0c3591823b1.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph Libraries {
 &quot;Element Library&quot; -&gt; {&quot;SQUID Library&quot;, &quot;Qubit Library&quot;, &quot;Chip Library&quot;, &quot;TestStructure Library&quot;}
 &quot;SQUID Library&quot; -&gt; &quot;TestStructure Library&quot; -&gt; &quot;Chip Library&quot;
 &quot;SQUID Library&quot; -&gt; &quot;Qubit Library&quot; -&gt; &quot;Chip Library&quot;
 }</p></object></div>
-<p class="caption"><span class="caption-text">Library Dependency Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Library Dependency Diagram</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </div>
 <p>Libraries have a strict dependency order defined in <code class="docutils literal notranslate"><span class="pre">kqc_library_names</span></code> in
-<code class="docutils literal notranslate"><span class="pre">defaults.py</span></code>. KLayout loads them in this order. Classes <em>can not</em> use other
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>. KLayout loads them in this order. Classes <em>can not</em> use other
 classes from other libraries downstream in the dependency graph.</p>
 <p>The elements in these libraries are automatically discovered and registered to
-KLayout by <code class="docutils literal notranslate"><span class="pre">library_helper.py</span></code>. It finds all classes in KQCircuits
+KLayout by <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a>. It finds all classes in KQCircuits
 directory which inherit from <code class="docutils literal notranslate"><span class="pre">PCellDeclarationHelper</span></code>, and uses their
 <code class="docutils literal notranslate"><span class="pre">LIBRARY_NAME</span></code> attribute to register them to the correct library. Note
 that this requires all element classes to follow PascalCase naming
@@ -708,7 +708,7 @@ convention, as required by PEP-8.</p>
 <div class="section" id="pya-resolver">
 <h2>pya resolver<a class="headerlink" href="#pya-resolver" title="Permalink to this headline">¶</a></h2>
 <p>Any KLayout functions/classes/etc. should be imported using <code class="docutils literal notranslate"><span class="pre">pya_resolver</span></code>
-(see <code class="docutils literal notranslate"><span class="pre">pya_resolver.py</span></code>). For example, you should write
+(see <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/pya_resolver.py">pya_resolver.py</a>). For example, you should write
 <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">kqcircuits.pya_resolver</span> <span class="pre">import</span> <span class="pre">pya</span></code>, and <strong>not</strong> <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pya</span></code> or
 <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">klayout.db</span></code>. This ensures that KQCircuits works both with KLayout
 GUI and the standalone module.</p>

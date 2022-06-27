@@ -573,17 +573,17 @@ in the toolbar.</p>
 </div>
 <div class="section" id="converting-elements-placed-in-gui-into-code">
 <h2>Converting elements placed in GUI into code<a class="headerlink" href="#converting-elements-placed-in-gui-into-code" title="Permalink to this headline">¶</a></h2>
-<p>KQCircuits includes a macro <code class="docutils literal notranslate"><span class="pre">export_cells_as_code.lym</span></code> that can be used to
+<p>KQCircuits includes a macro <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_cells_as_code.lym">export_cells_as_code.lym</a> that can be used to
 convert elements placed in GUI into code that can be used in chip PCells. For
 more information, see the docstring and comments in the macro. The following
 animation demonstrates how a chip is modified by placing elements in the GUI
 and how to use this macro to include those elements in PCell generation code:</p>
 <img alt="../_images/converting_gui_elements_to_code.gif" src="../_images/converting_gui_elements_to_code.gif" />
-<p>The macro has special handling for waveguides (of <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> type).
+<p>The macro has special handling for waveguides (of <a class="reference internal" href="../api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar" title="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code></a> type).
 The code generated for them automatically detects nearby reference points of
 other elements, and uses these instead of hardcoded points as the positions
 of the waveguide nodes. See the <a class="reference internal" href="#modifying-waveguides"><span class="std std-ref">Modifying waveguides</span></a> section above for
-instructions on how to modify <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> in GUI.</p>
+instructions on how to modify <a class="reference internal" href="../api/kqcircuits.elements.waveguide_coplanar.html#kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar" title="kqcircuits.elements.waveguide_coplanar.WaveguideCoplanar"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code></a> in GUI.</p>
 <p>In order to make waveguides connect “nicely” to ports of other elements, most
 ports in KQC elements have an additional “corner refpoint”. To connect a
 waveguide to port “a” of instance “x”, you  should generally place its first
