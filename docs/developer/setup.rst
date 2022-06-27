@@ -107,7 +107,7 @@ To use KQCircuits in KLayout Editor, symlinks must be created from KLayout's
 python folder to your KQCircuits folder. Some Python packages must also be
 installed for KQCircuits to work. The details of these steps for different
 operating systems are explained in the following subsections. The script
-`setup_within_klayout.py <https://github.com/iqm-finland/KQCircuits/blob/main/startkl.py>`_ used in the previous section attempts to
+`setup_within_klayout.py <https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py>`_ used in the previous section attempts to
 automatically do the same steps as explained below.
 
 Linux or MacOS
