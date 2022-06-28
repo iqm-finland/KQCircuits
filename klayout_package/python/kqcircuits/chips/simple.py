@@ -22,7 +22,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 
@@ -49,11 +49,12 @@ class Simple(Chip):
         _, cap1_refs = self.insert_cell(cap_cell, pya.DTrans(5000.0, launchers["WN"][0].y), "C1")
         self.insert_cell(cap_cell, pya.DTrans(3, False, launchers["SE"][0].x, 5000.0), "C2")
 
-        # WaveguideCoplanarTCross
+        # WaveguideCoplanarSplitter
         _pos = pya.DTrans(launchers["SE"][0].x, launchers["WN"][0].y)
-        _, tcross_refs = self.insert_cell(WaveguideCoplanarTCross, _pos)
+        _, tcross_refs = self.insert_cell(WaveguideCoplanarSplitter, _pos, **t_cross_parameters(
+            a=self.a, b=self.b, a2=self.a, b2=self.b))
 
-        # Waveguides: WN -> Swissmon -> FingerCapacitorSquare -> WaveguideCoplanarTCross -> EN
+        # Waveguides: WN -> Swissmon -> FingerCapacitorSquare -> WaveguideCoplanarSplitter -> EN
         self.insert_cell(WaveguideCoplanar, path=pya.DPath([launchers["WN"][0], swissmon_refs["port_flux"]], 1))
         self.insert_cell(WaveguideCoplanar, path=pya.DPath([swissmon_refs["port_cplr1"], cap1_refs["port_a"]], 1))
         self.insert_cell(WaveguideCoplanar, path=pya.DPath([cap1_refs["port_b"], tcross_refs["port_left"]], 1))

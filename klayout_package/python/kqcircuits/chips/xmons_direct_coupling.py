@@ -23,7 +23,7 @@ from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
@@ -46,12 +46,11 @@ class XMonsDirectCoupling(Chip):
         taper_length = 100
 
         # T to PL
-        _, pl_cross_ref = self.insert_cell(WaveguideCoplanarTCross,
+        _, pl_cross_ref = self.insert_cell(WaveguideCoplanarSplitter,
             pya.DTrans(pos_start.x, end_y),
             inst_name=("RO{}".format(name) if name else None),
             label_trans=pya.DTrans.R90,
-            length_extra_side=20,
-            length_extra=0,
+            **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=20, length_extra=0)
         )
 
         # Finger cap
@@ -73,14 +72,14 @@ class XMonsDirectCoupling(Chip):
             taper_cell, pya.DTrans(cplr_ref["port_a"]-taper_ref_rel["port_b"])*pya.DTrans.R90)
 
         # T to tail and straight
-        rr_cross_cell = self.add_element(WaveguideCoplanarTCross,
+        rr_cross_cell = self.add_element(WaveguideCoplanarSplitter, **t_cross_parameters(
             length_extra_side=40,
             length_extra=0,
             a=ro_a,
             b=ro_b,
-            a3=ro_a,
-            b3=ro_b,
-        )
+            a2=ro_a,
+            b2=ro_b,
+        ))
         rr_cross_ref_rel = self.get_refpoints(rr_cross_cell, pya.DTrans.R90)
         _, rr_cross_ref = self.insert_cell(
             rr_cross_cell, pya.DTrans(taper_ref["port_a"]-rr_cross_ref_rel["port_right"])*pya.DTrans.R90)

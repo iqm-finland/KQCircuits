@@ -39,6 +39,7 @@ class WaveguideCoplanarSplitter(Element):
     b_list = Param(pdt.TypeList, "Gap widths", [], unit="[μm]",
                    docstring="List of gap widths for each port."
                              " If empty, self.b will be used for all ports instead. [μm]")
+    port_names = Param(pdt.TypeList, "Port names", ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'])
 
     def build(self):
 
@@ -53,8 +54,7 @@ class WaveguideCoplanarSplitter(Element):
         a_list = self.a_list if (len(self.a_list) > 0 and self.a_list[0] != "") else [self.a] * len(self.angles)
         b_list = self.b_list if (len(self.b_list) > 0 and self.b_list[0] != "") else [self.b] * len(self.angles)
 
-        port_names = ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
-        for length_str, angle_str, port_name, a, b in zip(self.lengths, self.angles, port_names, a_list, b_list):
+        for length_str, angle_str, port_name, a, b in zip(self.lengths, self.angles, self.port_names, a_list, b_list):
             angle_deg = float(angle_str)
             angle_rad = radians(angle_deg)
             length = float(length_str)
@@ -112,14 +112,53 @@ class WaveguideCoplanarSplitter(Element):
 
         r = width/2  # Radius of round cap
 
-        # Corner section
-        points = arc_points(r, angle_rad + pi / 2, angle_rad + 3 * pi / 2, self.n)
-
         # Straight section
-        points.append(pya.DPoint(length*cos(angle_rad) + r*cos(angle_rad - pi/2),
-                                 length*sin(angle_rad) + r*sin(angle_rad - pi/2)))
+        c = cos(angle_rad)
+        s = sin(angle_rad)
+        points = [pya.DPoint(length * c - r * s, length * s + r * c),
+                  pya.DPoint(length * c + r * s, length * s - r * c)]
 
-        points.append(pya.DPoint(length*cos(angle_rad) + r*cos(angle_rad + pi/2),
-                                 length*sin(angle_rad) + r*sin(angle_rad + pi/2)))
+        # Corner section
+        angles = [radians(float(angle)) for angle in self.angles]
+        prev_rad = min([2 * pi if a == angle_rad else (angle_rad - a) % (2 * pi) for a in angles])
+        next_rad = min([2 * pi if a == angle_rad else (a - angle_rad) % (2 * pi) for a in angles])
+        if prev_rad <= pi / 2:
+            dist = r * cos(prev_rad) / sin(prev_rad)
+            if length > dist:
+                points.append(pya.DPoint(dist * c + r * s, dist * s - r * c))
+        else:
+            points += arc_points(r, angle_rad - pi / 2, angle_rad - prev_rad, self.n)
+        points.append(pya.DPoint(0.0, 0.0))
+        if next_rad <= pi / 2:
+            dist = r * cos(next_rad) / sin(next_rad)
+            if length > dist:
+                points.append(pya.DPoint(dist * c - r * s, dist * s + r * c))
+        else:
+            points += arc_points(r, angle_rad + next_rad, angle_rad + pi / 2, self.n)
 
         return pya.DPolygon(points)
+
+
+def t_cross_parameters(a=Element.get_schema()["a"].default, b=Element.get_schema()["b"].default,
+                      a2=Element.a, b2=Element.b, length_extra=0, length_extra_side=0, **kwargs):
+    """A utility function to easily produce T-cross splitter (old WaveguideCoplanarTCross).
+
+    Args:
+        a: Width of center conductor
+        b: Width of gap
+        a2: Center conductor width of the side waveguide
+        b2: Gap of the side waveguide
+        length_extra: Extra length
+        length_extra_side: Extra length of the side waveguide
+
+    Returns:
+        dictionary of parameters for WaveguideCoplanarSplitter
+    """
+    length = a2 / 2 + b2 + length_extra
+    length2 = a / 2 + b + length_extra_side
+    return {'lengths': [length, length, length2],
+            'angles': [0, 180, 270],
+            'a_list': [a, a, a2],
+            'b_list': [b, b, b2],
+            'port_names': ['right', 'left', 'bottom'],
+            **kwargs}

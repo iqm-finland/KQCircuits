@@ -27,7 +27,7 @@ from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 
@@ -170,9 +170,10 @@ class Demo(Chip):
         _, cap_ref_abs = self.insert_cell(FingerCapacitorSquare, pya.DTrans(cap_rot), align_to=meander_end,
                                           align="port_a", finger_number=cap_finger_nr)
 
-        self.insert_cell(WaveguideCoplanarTCross, pya.DTrans(tcross_rot, False, 0, 0),inst_name="RO{}".format(qubit_nr),
+        self.insert_cell(WaveguideCoplanarSplitter, pya.DTrans(tcross_rot, False, 0, 0),
+                         inst_name="RO{}".format(qubit_nr),
                          label_trans=pya.DCplxTrans(0.2), align_to=cap_ref_abs["port_b"], align="port_bottom",
-                         length_extra_side=30)
+                         **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=30))
 
     def produce_probelines(self):
         self.produce_probeline("RO-A", 1, 2, False, 6)

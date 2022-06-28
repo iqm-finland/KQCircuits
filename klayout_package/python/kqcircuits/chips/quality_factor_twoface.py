@@ -20,7 +20,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.spiral_resonator_polygon import SpiralResonatorPolygon, rectangular_parameters
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.geometry_helper import point_shift_along_vector
@@ -89,9 +89,9 @@ class QualityFactorTwoface(Chip):
         tl_start = pya.DPoint(left_connector + self.spiral_box_width, mid_y)
         v_res_step = pya.DPoint(right_connector - left_connector - self.spiral_box_width, 0) * \
                      (1. / resonators)
-        cell_cross = self.add_element(WaveguideCoplanarTCross, length_extra_side=5 * self.a_capped,
-                                      a=self.a_capped, b=self.b_capped, a3=self.a_capped, b3=self.b_capped,
-                                      face_ids=face_config)
+        cell_cross = self.add_element(WaveguideCoplanarSplitter, **t_cross_parameters(
+            length_extra_side=5 * self.a_capped, a=self.a_capped, b=self.b_capped, a2=self.a_capped, b2=self.b_capped,
+            face_ids=face_config))
 
         for i in range(resonators):
             # Determine opposite face protection for capacitors and resonators

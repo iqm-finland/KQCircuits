@@ -16,8 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 import pytest
 
-from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -47,11 +46,14 @@ def nodes1():
         Node(pya.DPoint(1700, 0), FlipChipConnectorRf, face_id="b", connector_type="Single"),
         Node(pya.DPoint(1900, 0), AirbridgeConnection, with_side_airbridges=True),
         Node(pya.DPoint(2100, 0)),
-        Node(pya.DPoint(2150,0), WaveguideCoplanarTCross, align=("port_left", "port_right")),
+        Node(pya.DPoint(2150, 0), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
+             align=("port_left", "port_right")),
         Node(pya.DPoint(2350, 50)),
-        Node(pya.DPoint(2400, 50), WaveguideCoplanarTCross, align=("port_right", "port_left"), inst_name="second_tee"),
+        Node(pya.DPoint(2400, 50), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
+             align=("port_right", "port_left"), inst_name="second_tee"),
         Node(pya.DPoint(2500, 50)),
-        Node(pya.DPoint(2600, 50), WaveguideCoplanarTCross, align=("port_bottom", "port_right")),
+        Node(pya.DPoint(2600, 50), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
+             align=("port_bottom", "port_right")),
         Node(pya.DPoint(2700, -200)),
         Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="t", output_rotation=90),
         Node(pya.DPoint(2500, -400)),
@@ -75,11 +77,14 @@ def nodes2():
         Node((1700, 0), face_id="b", connector_type="Single"),
         Node((1900, 0), AirbridgeConnection),
         Node((2100, 0)),
-        Node(pya.DPoint(2150, 0), WaveguideCoplanarTCross, align=("port_left", "port_right")),
+        Node(pya.DPoint(2150, 0), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
+             align=("port_left", "port_right")),
         Node(pya.DPoint(2350, 50)),
-        Node(pya.DPoint(2400, 50), WaveguideCoplanarTCross, align=("port_right", "port_left"), inst_name="second_tee"),
+        Node(pya.DPoint(2400, 50), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
+             align=("port_right", "port_left"), inst_name="second_tee"),
         Node(pya.DPoint(2500, 50)),
-        Node(pya.DPoint(2600, 50), WaveguideCoplanarTCross, align=("port_bottom", "port_right")),
+        Node(pya.DPoint(2600, 50), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
+             align=("port_bottom", "port_right")),
         Node(pya.DPoint(2700, -200)),
         Node(pya.DPoint(2700, -500), face_id="t", output_rotation=90),
         Node(pya.DPoint(2500, -400)),

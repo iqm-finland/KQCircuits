@@ -209,7 +209,7 @@ WaveguideCoplanarTaper
 .. image:: ../images/elements/waveguide_taper.png
     :alt: waveguide_taper
 
-WaveguideCoplanarTCross
------------------------
+WaveguideCoplanarSplitter
+-------------------------
 
-.. kqc_elem_params:: kqcircuits.elements.waveguide_coplanar_tcross
+.. kqc_elem_params:: kqcircuits.elements.waveguide_coplanar_splitter

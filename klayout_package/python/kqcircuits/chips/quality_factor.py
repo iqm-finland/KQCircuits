@@ -21,7 +21,7 @@ from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.util.coupler_lib import cap_params
@@ -105,8 +105,8 @@ class QualityFactor(Chip):
 
         resonators = len(self.res_lengths)
         v_res_step = (tl_end - tl_start) * (1. / resonators)
-        cell_cross = self.add_element(WaveguideCoplanarTCross,
-            length_extra_side=2 * self.a, a3=self.a, b3=self.b)
+        cell_cross = self.add_element(WaveguideCoplanarSplitter, **t_cross_parameters(
+            length_extra_side=2 * self.a, a=self.a, b=self.b, a2=self.a, b2=self.b))
 
         # Airbridge crossing resonators
         cell_ab_crossing = self.add_element(Airbridge)
