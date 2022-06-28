@@ -93,8 +93,16 @@ class QualityFactorTwoface(MultiFace):
                                       face_ids=face_config)
 
         for i in range(resonators):
+            # Determine opposite face protection for capacitors and resonators
+            res_protect_opposite_face = self.protect_opposite_face
+            if self.resonator_types[i] in ["etched", "capped"]:
+                res_protect_opposite_face = False
+            elif self.resonator_types[i] == "solid":
+                res_protect_opposite_face = True
+
+            # Create capacitor
             cplr_params = cap_params(
-                n_fingers[i], l_fingers[i], type_coupler[i],
+                n_fingers[i], l_fingers[i], type_coupler[i], protect_opposite_face=res_protect_opposite_face,
                 face_ids=face_config, a=res_a[i], b=res_b[i], a2=self.a_capped, b2=self.b_capped)
             cplr = self.add_element(**cplr_params)
             cplr_refpoints_rel = self.get_refpoints(cplr)
@@ -132,6 +140,7 @@ class QualityFactorTwoface(MultiFace):
                 "a": res_a[i],
                 "b": res_b[i],
                 "r": self.r,
+                "protect_opposite_face": res_protect_opposite_face,
                 "face_ids": face_config,
                 "margin": self.margin}},
                                            trans=pya.DTrans(cplr_pos) * rotation)
@@ -163,19 +172,19 @@ class QualityFactorTwoface(MultiFace):
                                                a=res_a[i],
                                                b=res_b[i],
                                                face_ids=face_config,
+                                               protect_opposite_face=res_protect_opposite_face,
                                                **res_params),
                                            trans=pya.DTrans(pos_res_start) * rotation)
 
             # Top chip etching and grid avoidance above resonator
-            if self.resonator_types[i] in ["etched", "solid"]:
+            if self.resonator_types[i] == "etched":
                 l0 = self.get_layer("ground_grid_avoidance", int(self.resonator_faces[0]))
                 region = pya.Region(inst_res.cell.begin_shapes_rec(l0)).transformed(inst_res.trans)
                 region += pya.Region(inst_cpw.cell.begin_shapes_rec(l0)).transformed(inst_cpw.trans)
                 region += pya.Region(inst_cplr.cell.begin_shapes_rec(l0)).transformed(inst_cplr.trans)
                 opposite_face = int(self.resonator_faces[1])
                 self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face)).insert(region)
-                if self.resonator_types[i] == "etched":
-                    self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", opposite_face)).insert(region)
+                self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", opposite_face)).insert(region)
 
             # Feedline
             if i == 0:
