@@ -185,7 +185,7 @@ class SmoothCapacitor(Element):
         self.add_protection(region_protection)
 
         # Add size into annotation layer
-        self.cell.shapes(self.get_layer("annotations")).insert(pya.DText(str(self.finger_control), 0, 0))
+        self.cell.shapes(self.get_layer("annotations")).insert(pya.DText(str(round(self.finger_control, 5)), 0, 0))
 
         # Create ports
         self.add_port("a", pya.DPoint(-xport, 0), pya.DVector(-1, 0))
