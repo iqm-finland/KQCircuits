@@ -1,0 +1,10 @@
+kqcircuits.chips.quality\_factor\_twoface
+=========================================
+
+.. automodule:: kqcircuits.chips.quality_factor_twoface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.quality_factor_twoface
+.. image:: ../pcell_images/kqcircuits.chips.quality_factor_twoface.png

@@ -1,24 +1,25 @@
 kqcircuits.chips
 ================
 
-.. toctree::
-
-   kqcircuits.chips.multi_face
-
 
 .. toctree::
 
    kqcircuits.chips.airbridge_crossings
    kqcircuits.chips.airbridge_dc_test
    kqcircuits.chips.chip
+   kqcircuits.chips.crossing_twoface
+   kqcircuits.chips.daisy_woven
    kqcircuits.chips.dc_test
    kqcircuits.chips.demo
+   kqcircuits.chips.demo_twoface
    kqcircuits.chips.empty
    kqcircuits.chips.junction_test
    kqcircuits.chips.junction_test2
    kqcircuits.chips.launchers
    kqcircuits.chips.lithography_test
+   kqcircuits.chips.lithography_test_twoface
    kqcircuits.chips.quality_factor
+   kqcircuits.chips.quality_factor_twoface
    kqcircuits.chips.sample_holder_test
    kqcircuits.chips.shaping
    kqcircuits.chips.simple

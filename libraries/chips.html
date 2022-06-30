@@ -255,7 +255,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#junctiontest">JunctionTest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#junctiontest2">JunctionTest2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lithographytest">LithographyTest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#multiface">MultiFace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#crossingtwoface">CrossingTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#qualityfactortwoface">QualityFactorTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#qualityfactor">QualityFactor</a></li>
@@ -276,27 +275,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api/kqcircuits.html">API documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.chips.html">kqcircuits.chips</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.crossing_twoface.html">kqcircuits.chips.multi_face.crossing_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.daisy_woven.html">kqcircuits.chips.multi_face.daisy_woven</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.demo_twoface.html">kqcircuits.chips.multi_face.demo_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.lithography_test_twoface.html">kqcircuits.chips.multi_face.lithography_test_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.multi_face.html">kqcircuits.chips.multi_face.multi_face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.quality_factor_twoface.html">kqcircuits.chips.multi_face.quality_factor_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.html#module-kqcircuits.chips.multi_face">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.airbridge_crossings.html">kqcircuits.chips.airbridge_crossings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.airbridge_dc_test.html">kqcircuits.chips.airbridge_dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.chip.html">kqcircuits.chips.chip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.crossing_twoface.html">kqcircuits.chips.crossing_twoface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.daisy_woven.html">kqcircuits.chips.daisy_woven</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.dc_test.html">kqcircuits.chips.dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.demo.html">kqcircuits.chips.demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.demo_twoface.html">kqcircuits.chips.demo_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.empty.html">kqcircuits.chips.empty</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.junction_test.html">kqcircuits.chips.junction_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.junction_test2.html">kqcircuits.chips.junction_test2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.launchers.html">kqcircuits.chips.launchers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.lithography_test.html">kqcircuits.chips.lithography_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.lithography_test_twoface.html">kqcircuits.chips.lithography_test_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.quality_factor.html">kqcircuits.chips.quality_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.quality_factor_twoface.html">kqcircuits.chips.quality_factor_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.sample_holder_test.html">kqcircuits.chips.sample_holder_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.shaping.html">kqcircuits.chips.shaping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.simple.html">kqcircuits.chips.simple</a></li>
@@ -547,19 +541,32 @@ corners.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>merge_base_metal_gap</strong><em> (Boolean)</em><span> - Merge grid and other gaps into base_metal_gap layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>a_capped</strong><em> (Double)</em><span> - Width of center conductor in the capped region (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b_capped</strong><em> (Double)</em><span> - Width of gap in the capped region </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>with_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>tsv_grid_spacing</strong><em> (Double)</em><span> - TSV grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_edge_to_tsv_edge_separation</strong><em> (Double)</em><span> - Ground TSV clearance to manually placed TSVs (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">250</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_edge_to_nearest_element</strong><em> (Double)</em><span> - Ground TSV clearance to other elements (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>edge_from_tsv</strong><em> (Double)</em><span> - Ground TSV center clearance to chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>with_face1_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs on the top face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>with_gnd_bumps</strong><em> (Boolean)</em><span> - Make ground bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><strong>bump_grid_spacing</strong><em> (Double)</em><span> - Bump grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">120</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>bump_edge_to_bump_edge_separation</strong><em> (Double)</em><span> - In bump clearance to manually placed Bumps (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">95</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>edge_from_bump</strong><em> (Double)</em><span> - Spacing between bump and chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>frames_enabled</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0]</span></code></p></li>
+<li><p><strong>frames_marker_dist</strong><em> (List)</em><span> - Marker distance from edge for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>frames_diagonal_squares</strong><em> (List)</em><span> - Number of diagonal marker squares for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">2]</span></code></p></li>
+<li><p><strong>frames_mirrored</strong><em> (List)</em><span> - List of booleans specifying if the frame is mirrored for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[False,</span> <span class="pre">True]</span></code></p></li>
+<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fa903eef8b0&gt;]</span></code></p></li>
 <li><p><strong>with_grid</strong><em> (Boolean)</em><span> - Make ground plane grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>dice_width</strong><em> (Double)</em><span> - Dicing width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer for dicing edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M99</span></code></p></li>
 <li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">CTest</span></code></p></li>
 <li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
+<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>box</strong><em> (Shape)</em><span> - Bounding box of the chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
+<li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
 </ul>
 <p><strong>Origin:</strong> Center of the cross.</p>
 <img alt="chipbase" src="../_images/chipbase.png" />
@@ -569,6 +576,7 @@ corners.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">DC</span></code></p></li>
+<li><p><strong>frames_enabled</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
 </ul>
 <img alt="daisy_woven" src="../_images/daisy_woven.png" />
 </div>
@@ -617,30 +625,6 @@ corners.</p>
 <h2>LithographyTest<a class="headerlink" href="#lithographytest" title="Permalink to this headline">¶</a></h2>
 <img alt="lithography_test" src="../_images/lithography_test.png" />
 </div>
-<div class="section" id="multiface">
-<h2>MultiFace<a class="headerlink" href="#multiface" title="Permalink to this headline">¶</a></h2>
-<p>Base class for multi-face chips.</p>
-<p>Produces labels in pixel corners, dicing edge and markers for all chip faces. Optionally can also produce
-launchers in “b”-face, connectors between “b” and “t” faces, and default routing waveguides from the launchers to
-the connectors.</p>
-<strong>PCell parameters:</strong><div class="line"><br /></div>
-<ul class="simple">
-<li><p><strong>a_capped</strong><em> (Double)</em><span> - Width of center conductor in the capped region (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b_capped</strong><em> (Double)</em><span> - Width of gap in the capped region </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>with_face1_gnd_tsvs</strong><em> (Boolean)</em><span> - Make ground TSVs on the top face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>with_gnd_bumps</strong><em> (Boolean)</em><span> - Make ground bumps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>bump_grid_spacing</strong><em> (Double)</em><span> - Bump grid distance (center to center)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">120</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>bump_edge_to_bump_edge_separation</strong><em> (Double)</em><span> - In bump clearance to manually placed Bumps (edge to edge)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">95</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>edge_from_bump</strong><em> (Double)</em><span> - Spacing between bump and chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>chip_frame_faces</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
-<li><p><strong>chip_frame_marker_dist</strong><em> (List)</em><span> - Marker distance from edge for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>chip_frame_diagonal_squares</strong><em> (List)</em><span> - Number of diagonal marker squares for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">2]</span></code></p></li>
-<li><p><strong>chip_frame_mirrored</strong><em> (List)</em><span> - List of booleans specifying if the frame is mirrored for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[False,</span> <span class="pre">True]</span></code></p></li>
-<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f6bc4564670&gt;]</span></code></p></li>
-<li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
-<li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
-</ul>
-</div>
 <div class="section" id="crossingtwoface">
 <h2>CrossingTwoface<a class="headerlink" href="#crossingtwoface" title="Permalink to this headline">¶</a></h2>
 <p>Base class for CrossingTwoface chips. The left part of the chip has variable number of crossings between a transmission
@@ -652,6 +636,7 @@ represents non-crossing transmission lines.</p>
 <li><p><strong>crossing_length</strong><em> (Double)</em><span> - Length of the crossing on the top face (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>cross_talk_distance</strong><em> (Double)</em><span> - Distance between the right straight transmission line and meander on the right (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>meander_face</strong><em> (String)</em><span> - Meander face on right side</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">single</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'Two</span> <span class="pre">Face']</span></code></p></li>
+<li><p><strong>frames_enabled</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
 </ul>
 <img alt="quality_factor_twoface" src="../_images/crossing_twoface.png" />
 </div>
@@ -676,6 +661,7 @@ represents non-crossing transmission lines.</p>
 <li><p><strong>waveguide_indentation</strong><em> (Double)</em><span> - Waveguide indentation from top chip edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
 <li><p><strong>extra_resonator_avoidance</strong><em> (List)</em><span> - Added avoidance around resonators [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>bridge_spacing</strong><em> (Double)</em><span> - Airbridge spacing</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>frames_enabled</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
 </ul>
 <img alt="crossing_twoface" src="../_images/quality_factor_twoface.png" />
 </div>

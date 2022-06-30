@@ -32,9 +32,9 @@ corners.
 DaisyWoven
 ----------
 
-.. kqc_elem_params:: kqcircuits.chips.multi_face.daisy_woven
+.. kqc_elem_params:: kqcircuits.chips.daisy_woven
 
-.. image:: ../images/chips/multi_face/daisy_woven.png
+.. image:: ../images/chips/daisy_woven.png
     :alt: daisy_woven
 
 Demo
@@ -69,17 +69,6 @@ LithographyTest
 .. image:: ../images/chips/lithography_test.png
     :alt: lithography_test
 
-MultiFace
-------------------
-
-Base class for multi-face chips.
-
-Produces labels in pixel corners, dicing edge and markers for all chip faces. Optionally can also produce
-launchers in "b"-face, connectors between "b" and "t" faces, and default routing waveguides from the launchers to
-the connectors.
-
-.. kqc_elem_params:: kqcircuits.chips.multi_face.multi_face
-
 CrossingTwoface
 ----------------
 
@@ -87,9 +76,9 @@ Base class for CrossingTwoface chips. The left part of the chip has variable num
 line on the horizontal direction and top-face transmission line on vertical direction. The right part of the circuit
 represents non-crossing transmission lines.
 
-.. kqc_elem_params:: kqcircuits.chips.multi_face.crossing_twoface
+.. kqc_elem_params:: kqcircuits.chips.crossing_twoface
 
-.. image:: ../images/chips/multi_face/crossing_twoface.png
+.. image:: ../images/chips/crossing_twoface.png
     :alt: quality_factor_twoface
 
 QualityFactorTwoface
@@ -97,9 +86,9 @@ QualityFactorTwoface
 
 Base class for QualityFactorTwoface chips. Preliminary design which is going to be changed.
 
-.. kqc_elem_params:: kqcircuits.chips.multi_face.quality_factor_twoface
+.. kqc_elem_params:: kqcircuits.chips.quality_factor_twoface
 
-.. image:: ../images/chips/multi_face/quality_factor_twoface.png
+.. image:: ../images/chips/quality_factor_twoface.png
     :alt: crossing_twoface
 
 QualityFactor

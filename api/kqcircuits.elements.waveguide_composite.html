@@ -255,7 +255,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#junctiontest">JunctionTest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#junctiontest2">JunctionTest2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#lithographytest">LithographyTest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#multiface">MultiFace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#crossingtwoface">CrossingTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#qualityfactortwoface">QualityFactorTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#qualityfactor">QualityFactor</a></li>
@@ -276,27 +275,22 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.crossing_twoface.html">kqcircuits.chips.multi_face.crossing_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.daisy_woven.html">kqcircuits.chips.multi_face.daisy_woven</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.demo_twoface.html">kqcircuits.chips.multi_face.demo_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.lithography_test_twoface.html">kqcircuits.chips.multi_face.lithography_test_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.multi_face.html">kqcircuits.chips.multi_face.multi_face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.quality_factor_twoface.html">kqcircuits.chips.multi_face.quality_factor_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.html#module-kqcircuits.chips.multi_face">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.airbridge_crossings.html">kqcircuits.chips.airbridge_crossings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.airbridge_dc_test.html">kqcircuits.chips.airbridge_dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.chip.html">kqcircuits.chips.chip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.crossing_twoface.html">kqcircuits.chips.crossing_twoface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.daisy_woven.html">kqcircuits.chips.daisy_woven</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.dc_test.html">kqcircuits.chips.dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.demo.html">kqcircuits.chips.demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.demo_twoface.html">kqcircuits.chips.demo_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.empty.html">kqcircuits.chips.empty</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.junction_test.html">kqcircuits.chips.junction_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.junction_test2.html">kqcircuits.chips.junction_test2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.launchers.html">kqcircuits.chips.launchers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.lithography_test.html">kqcircuits.chips.lithography_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.lithography_test_twoface.html">kqcircuits.chips.lithography_test_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.quality_factor.html">kqcircuits.chips.quality_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.quality_factor_twoface.html">kqcircuits.chips.quality_factor_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.sample_holder_test.html">kqcircuits.chips.sample_holder_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.shaping.html">kqcircuits.chips.shaping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.simple.html">kqcircuits.chips.simple</a></li>
@@ -634,9 +628,6 @@ only be placed collinear with each other.</p>
 <p>Node parameters will be passed to the element. For convenience, empty nodes may also have
 parameters: <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> or <code class="docutils literal notranslate"><span class="pre">face_id</span></code>. They insert a WaveguideCoplanarTaper or a
 FlipChipConnector, respectively and change the defaults too.</p>
-<p>Using _a/_b sets a/b for the AirbridgeConnection but does not change the waveguide’s defaults.
-Used for directly setting the first airbridge in a waveguide or for circumventing scaling issues
-of AirbridgeConnection. See “test_wgc_airbridge.lym” for examples.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">ab_across=True</span></code> parameter places a single airbridge across the node. The <code class="docutils literal notranslate"><span class="pre">n_bridges=N</span></code>
 parameter puts N airbridges evenly distributed across the preceding edge.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">length_before</span></code> parameter of a node can be specified to automatically set the length of

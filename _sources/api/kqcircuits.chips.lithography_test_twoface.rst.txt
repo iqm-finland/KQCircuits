@@ -1,0 +1,10 @@
+kqcircuits.chips.lithography\_test\_twoface
+===========================================
+
+.. automodule:: kqcircuits.chips.lithography_test_twoface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.lithography_test_twoface
+.. image:: ../pcell_images/kqcircuits.chips.lithography_test_twoface.png

@@ -19,7 +19,7 @@ There exist also more specific base classes such as ``Chip``, ``Qubit`` or
     :align: center
 
 All base classes (black) are shown, abstracts are ovals, concretes are
-rectangles. Only one example "leaf" class (green) is shown for each base class.
+rectangles. Only one example "leaf" class (green) is shown for most base classes.
 The class hierarchy is relatively flat as PCells make it more natural to use
 composition than inheritance.
 

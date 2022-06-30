@@ -1,0 +1,10 @@
+kqcircuits.chips.daisy\_woven
+=============================
+
+.. automodule:: kqcircuits.chips.daisy_woven
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.daisy_woven
+.. image:: ../pcell_images/kqcircuits.chips.daisy_woven.png

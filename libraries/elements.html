@@ -255,7 +255,6 @@
 <li class="toctree-l3"><a class="reference internal" href="chips.html#junctiontest">JunctionTest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="chips.html#junctiontest2">JunctionTest2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="chips.html#lithographytest">LithographyTest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chips.html#multiface">MultiFace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="chips.html#crossingtwoface">CrossingTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="chips.html#qualityfactortwoface">QualityFactorTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="chips.html#qualityfactor">QualityFactor</a></li>
@@ -276,27 +275,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api/kqcircuits.html">API documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.chips.html">kqcircuits.chips</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.crossing_twoface.html">kqcircuits.chips.multi_face.crossing_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.daisy_woven.html">kqcircuits.chips.multi_face.daisy_woven</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.demo_twoface.html">kqcircuits.chips.multi_face.demo_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.lithography_test_twoface.html">kqcircuits.chips.multi_face.lithography_test_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.multi_face.html">kqcircuits.chips.multi_face.multi_face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.quality_factor_twoface.html">kqcircuits.chips.multi_face.quality_factor_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.html#module-kqcircuits.chips.multi_face">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.airbridge_crossings.html">kqcircuits.chips.airbridge_crossings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.airbridge_dc_test.html">kqcircuits.chips.airbridge_dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.chip.html">kqcircuits.chips.chip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.crossing_twoface.html">kqcircuits.chips.crossing_twoface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.daisy_woven.html">kqcircuits.chips.daisy_woven</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.dc_test.html">kqcircuits.chips.dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.demo.html">kqcircuits.chips.demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.demo_twoface.html">kqcircuits.chips.demo_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.empty.html">kqcircuits.chips.empty</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.junction_test.html">kqcircuits.chips.junction_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.junction_test2.html">kqcircuits.chips.junction_test2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.launchers.html">kqcircuits.chips.launchers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.lithography_test.html">kqcircuits.chips.lithography_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.lithography_test_twoface.html">kqcircuits.chips.lithography_test_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.quality_factor.html">kqcircuits.chips.quality_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.quality_factor_twoface.html">kqcircuits.chips.quality_factor_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.sample_holder_test.html">kqcircuits.chips.sample_holder_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.shaping.html">kqcircuits.chips.shaping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.simple.html">kqcircuits.chips.simple</a></li>
@@ -772,12 +766,9 @@ in a future release.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">31.41592653589793</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>a1</strong><em> (Double)</em><span> - Width of left waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b1</strong><em> (Double)</em><span> - Width of left waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>m1</strong><em> (Double)</em><span> - Margin of left waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>a2</strong><em> (Double)</em><span> - Width of right waveguide center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b2</strong><em> (Double)</em><span> - Width of right waveguide gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">12</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>m2</strong><em> (Double)</em><span> - Margin of right waveguide protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘a’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘b’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">12</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="waveguide_taper" src="../_images/waveguide_taper.png" />
 </div>
@@ -785,8 +776,8 @@ in a future release.</p>
 <h2>WaveguideCoplanarTCross<a class="headerlink" href="#waveguidecoplanartcross" title="Permalink to this headline">¶</a></h2>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>a2</strong><em> (Double)</em><span> - Width of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
-<li><p><strong>b2</strong><em> (Double)</em><span> - Gap of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code></p></li>
+<li><p><strong>a3</strong><em> (Double)</em><span> - Width of the side waveguide. (-1 for the default)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
+<li><p><strong>b3</strong><em> (Double)</em><span> - Gap of the side waveguidei. (-1 for the default)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
 <li><p><strong>length_extra</strong><em> (Double)</em><span> - Extra length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><strong>length_extra_side</strong><em> (Double)</em><span> - Extra length of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
 <li><p><strong>use_airbridges</strong><em> (Boolean)</em><span> - Use airbridges at a distance from the centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>

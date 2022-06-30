@@ -1,0 +1,10 @@
+kqcircuits.chips.demo\_twoface
+==============================
+
+.. automodule:: kqcircuits.chips.demo_twoface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.demo_twoface
+.. image:: ../pcell_images/kqcircuits.chips.demo_twoface.png

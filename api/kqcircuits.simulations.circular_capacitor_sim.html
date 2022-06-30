@@ -255,7 +255,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#junctiontest">JunctionTest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#junctiontest2">JunctionTest2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#lithographytest">LithographyTest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#multiface">MultiFace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#crossingtwoface">CrossingTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#qualityfactortwoface">QualityFactorTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#qualityfactor">QualityFactor</a></li>
@@ -276,27 +275,22 @@
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="kqcircuits.html">API documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.chips.html">kqcircuits.chips</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.crossing_twoface.html">kqcircuits.chips.multi_face.crossing_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.daisy_woven.html">kqcircuits.chips.multi_face.daisy_woven</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.demo_twoface.html">kqcircuits.chips.multi_face.demo_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.lithography_test_twoface.html">kqcircuits.chips.multi_face.lithography_test_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.multi_face.html">kqcircuits.chips.multi_face.multi_face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.quality_factor_twoface.html">kqcircuits.chips.multi_face.quality_factor_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.chips.multi_face.html#module-kqcircuits.chips.multi_face">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.airbridge_crossings.html">kqcircuits.chips.airbridge_crossings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.airbridge_dc_test.html">kqcircuits.chips.airbridge_dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.chip.html">kqcircuits.chips.chip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.crossing_twoface.html">kqcircuits.chips.crossing_twoface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.daisy_woven.html">kqcircuits.chips.daisy_woven</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.dc_test.html">kqcircuits.chips.dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.demo.html">kqcircuits.chips.demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.demo_twoface.html">kqcircuits.chips.demo_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.empty.html">kqcircuits.chips.empty</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.junction_test.html">kqcircuits.chips.junction_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.junction_test2.html">kqcircuits.chips.junction_test2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.launchers.html">kqcircuits.chips.launchers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.lithography_test.html">kqcircuits.chips.lithography_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.lithography_test_twoface.html">kqcircuits.chips.lithography_test_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.quality_factor.html">kqcircuits.chips.quality_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.quality_factor_twoface.html">kqcircuits.chips.quality_factor_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.sample_holder_test.html">kqcircuits.chips.sample_holder_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.shaping.html">kqcircuits.chips.shaping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.chips.simple.html">kqcircuits.chips.simple</a></li>
@@ -569,13 +563,13 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
 <li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 <li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - Add opposite face protection too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>a2</strong><em> (Double)</em><span> - Width of center conductor on the right side</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b2</strong><em> (Double)</em><span> - Width of gap on the right side</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>r_inner</strong><em> (Double)</em><span> - Radius of the outer edge of the center island (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>r_outer</strong><em> (Double)</em><span> - Radius of the external coupler island (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>swept_angle</strong><em> (Double)</em><span> - Angle covered by the external island in degrees</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code></p></li>
 <li><p><strong>outer_island_width</strong><em> (Double)</em><span> - Width of the external island (μm)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>ground_gap</strong><em> (Double)</em><span> - Ground plane padding</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">20</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>a2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘a’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>b2</strong><em> (Double)</em><span> - Non-physical value ‘-1’ means that the default size ‘b’ is used.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>fixed_length</strong><em> (Double)</em><span> - Fixed length of element, 0 for auto-length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.simulations.circular_capacitor_sim.png" src="../_images/kqcircuits.simulations.circular_capacitor_sim.png" />

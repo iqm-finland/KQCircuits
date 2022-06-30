@@ -1,0 +1,10 @@
+kqcircuits.chips.crossing\_twoface
+==================================
+
+.. automodule:: kqcircuits.chips.crossing_twoface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.chips.crossing_twoface
+.. image:: ../pcell_images/kqcircuits.chips.crossing_twoface.png

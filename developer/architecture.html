@@ -255,7 +255,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#junctiontest">JunctionTest</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#junctiontest2">JunctionTest2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#lithographytest">LithographyTest</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#multiface">MultiFace</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#crossingtwoface">CrossingTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#qualityfactortwoface">QualityFactorTwoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/chips.html#qualityfactor">QualityFactor</a></li>
@@ -276,27 +275,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api/kqcircuits.html">API documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.chips.html">kqcircuits.chips</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.html">kqcircuits.chips.multi_face</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.crossing_twoface.html">kqcircuits.chips.multi_face.crossing_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.daisy_woven.html">kqcircuits.chips.multi_face.daisy_woven</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.demo_twoface.html">kqcircuits.chips.multi_face.demo_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.lithography_test_twoface.html">kqcircuits.chips.multi_face.lithography_test_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.multi_face.html">kqcircuits.chips.multi_face.multi_face</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.quality_factor_twoface.html">kqcircuits.chips.multi_face.quality_factor_twoface</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.chips.multi_face.html#module-kqcircuits.chips.multi_face">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.airbridge_crossings.html">kqcircuits.chips.airbridge_crossings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.airbridge_dc_test.html">kqcircuits.chips.airbridge_dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.chip.html">kqcircuits.chips.chip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.crossing_twoface.html">kqcircuits.chips.crossing_twoface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.daisy_woven.html">kqcircuits.chips.daisy_woven</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.dc_test.html">kqcircuits.chips.dc_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.demo.html">kqcircuits.chips.demo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.demo_twoface.html">kqcircuits.chips.demo_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.empty.html">kqcircuits.chips.empty</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.junction_test.html">kqcircuits.chips.junction_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.junction_test2.html">kqcircuits.chips.junction_test2</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.launchers.html">kqcircuits.chips.launchers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.lithography_test.html">kqcircuits.chips.lithography_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.lithography_test_twoface.html">kqcircuits.chips.lithography_test_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.quality_factor.html">kqcircuits.chips.quality_factor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.quality_factor_twoface.html">kqcircuits.chips.quality_factor_twoface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.sample_holder_test.html">kqcircuits.chips.sample_holder_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.shaping.html">kqcircuits.chips.shaping</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.chips.simple.html">kqcircuits.chips.simple</a></li>
@@ -530,7 +524,7 @@
 There exist also more specific base classes such as <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, <code class="docutils literal notranslate"><span class="pre">Qubit</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TestStructure</span></code>.</p>
 <div class="figure align-center" id="id2">
-<div class="graphviz"><object data="../_images/graphviz-6ba9577865c634ada05d522b29574d4aee43eb20.svg" type="image/svg+xml" class="graphviz">
+<div class="graphviz"><object data="../_images/graphviz-403c757e58b86f704039425e98a81b0a7449d528.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph {
     rankdir=&quot;LR&quot;
 
@@ -558,16 +552,15 @@ There exist also more specific base classes such as <code class="docutils litera
     node [shape=&quot;rect&quot;]
 
     Chip [href=&quot;../api/kqcircuits.chips.chip.html&quot;, target=&quot;_top&quot;]
-    MultiFace [href=&quot;../api/kqcircuits.chips.multi_face.multi_face.html&quot;, target=&quot;_top&quot;]
 
-    Element -&gt; Chip -&gt; MultiFace
+    Element -&gt; Chip
 
     ## Concrete examples
     node [color=&quot;green&quot;]
 
     WaveguideCoplanar [href=&quot;../api/kqcircuits.elements.waveguide_coplanar.html&quot;, target=&quot;_top&quot;]
     Demo [href=&quot;../api/kqcircuits.chips.demo.html&quot;, target=&quot;_top&quot;]
-    DemoTwoface [href=&quot;../api/kqcircuits.chips.multi_face.demo_twoface.html&quot;, target=&quot;_top&quot;]
+    DemoTwoface [href=&quot;../api/kqcircuits.chips.demo_twoface.html&quot;, target=&quot;_top&quot;]
     Swissmon [href=&quot;../api/kqcircuits.qubits.swissmon.html&quot;, target=&quot;_top&quot;]
     Manhattan [href=&quot;../api/kqcircuits.squids.manhattan.html&quot;, target=&quot;_top&quot;]
     AirbridgeRectangular [href=&quot;../api/kqcircuits.elements.airbridges.airbridge_rectangular.html&quot;, target=&quot;_top&quot;]
@@ -579,7 +572,7 @@ There exist also more specific base classes such as <code class="docutils litera
 
     Element -&gt; WaveguideCoplanar
     Chip -&gt; Demo
-    MultiFace -&gt; DemoTwoface
+    Chip -&gt; DemoTwoface
     Qubit -&gt; Swissmon
     Squid -&gt; Manhattan
     Airbridge -&gt; AirbridgeRectangular
@@ -592,7 +585,7 @@ There exist also more specific base classes such as <code class="docutils litera
 <p class="caption"><span class="caption-text">Class Inheritance Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>All base classes (black) are shown, abstracts are ovals, concretes are
-rectangles. Only one example “leaf” class (green) is shown for each base class.
+rectangles. Only one example “leaf” class (green) is shown for most base classes.
 The class hierarchy is relatively flat as PCells make it more natural to use
 composition than inheritance.</p>
 <p>Elements in KQCircuits are PCells, see <a class="reference external" href="https://www.klayout.de/doc-qt5/about/about_pcells.html">KLayout documentation</a> for more information on PCells. Due to how
