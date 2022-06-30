@@ -108,7 +108,8 @@ class Manhattan(Squid):
         tp_shape = polygon_with_vsym(tp_pts_left)
         self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
         # add top pad to bottom shapes for multilayer manhattan
-        self._round_corners_and_append(tp_shape, junction_shapes_bottom, rounding_params)
+        if top_pad_layer != "SIS_junction":
+            self._round_corners_and_append(tp_shape, junction_shapes_bottom, rounding_params)
 
         tp_shadow_pts_left = [
             tp_pts_left[0] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
@@ -152,9 +153,13 @@ class Manhattan(Squid):
             tp_brim_left[1].x += finger_margin
             self._make_junctions(tp_brim_left[1], bp_height, finger_margin)
 
-        self._add_junction_and_shadow(junction_shapes_bottom, shadow_shapes, junction_layer="SIS_junction")
-        self._add_junction_and_shadow(junction_shapes_top, shadow_shapes, junction_layer=top_pad_layer)
+        self._add_shapes(junction_shapes_bottom, "SIS_junction")
+        self._add_shapes(junction_shapes_top, top_pad_layer)
+        self._add_shapes(shadow_shapes, "SIS_shadow")
+        self._produce_ground_metal_shapes()
         self._produce_ground_grid_avoidance()
+
+        self._add_refpoints()
 
     def _make_junctions(self, top_corner, b_corner_y, finger_margin=0):
         """Create junction fingers and add them to some SIS layer.
@@ -191,18 +196,13 @@ class Manhattan(Squid):
         self.refpoints["r"] = pya.DPoint(jx - fo - 2 * top_corner.x + self.finger_overshoot * squa,
                                          jy - fo + self.finger_overshoot * squa)
 
-    def _add_junction_and_shadow(self, junction_shapes, shadow_shapes,
-                                 junction_layer="SIS_junction", shadow_layer="SIS_shadow"):
-        """Add final shapes to junction and shadow layers."""
+    def _add_shapes(self, shapes, layer):
+        """Merge shapes into a region and add it to layer."""
+        region = pya.Region(shapes).merged()
+        self.cell.shapes(self.get_layer(layer)).insert(region)
 
-        # merge shapes in the same layers and insert to cell
-        junction_region = pya.Region(junction_shapes).merged()
-        shadow_region = pya.Region(shadow_shapes).merged()
-        self.cell.shapes(self.get_layer(junction_layer)).insert(junction_region)
-        self.cell.shapes(self.get_layer(shadow_layer)).insert(shadow_region)
-        self._produce_ground_metal_shapes()
-
-        # refpoints
+    def _add_refpoints(self):
+        """Adds the "origin_squid" refpoint and port "common"."""
         self.refpoints["origin_squid"] = pya.DPoint(0, 0)
         self.add_port("common", pya.DPoint(0, self.metal_gap_top_y))
 
