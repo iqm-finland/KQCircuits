@@ -32,7 +32,6 @@ class ChipFrame(Element):
 
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)),
         docstring="Bounding box of the chip frame")
-    with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="μm")
     dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100,
         docstring="Margin of the ground grid avoidance layer for dicing edge")

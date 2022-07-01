@@ -40,7 +40,7 @@ from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy",
-                     "with_grid", "dice_width", "dice_grid_margin", marker_types=[default_marker_type]*8)
+                     "dice_width", "dice_grid_margin", marker_types=[default_marker_type]*8)
 class Chip(Element):
     """Base PCell declaration for chips.
 
@@ -52,6 +52,7 @@ class Chip(Element):
     LIBRARY_DESCRIPTION = "Superconducting quantum circuit library for chips."
     LIBRARY_PATH = "chips"
 
+    with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     merge_base_metal_gap = Param(pdt.TypeBoolean, "Merge grid and other gaps into base_metal_gap layer", False)
     a_capped = Param(pdt.TypeDouble, "Capped center conductor width", 10, unit="μm",
                      docstring="Width of center conductor in the capped region (μm)")
@@ -186,9 +187,8 @@ class Chip(Element):
 
         This method is called in build(). Override this method to produce a different set of chip frames.
         """
-        for face, _ in enumerate(self.face_boxes):
-            if str(face) in self.frames_enabled:
-                self.produce_ground_on_face_grid(self.get_box(face), face)
+        for face in self.frames_enabled:
+            self.produce_ground_on_face_grid(self.get_box(int(face)), int(face))
 
     def produce_ground_on_face_grid(self, box, face_id):
         """Produces ground grid in the given face of the chip.
