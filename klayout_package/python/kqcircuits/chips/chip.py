@@ -39,7 +39,7 @@ from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector
 @logged
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
-@add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy",
+@add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand",
                      "dice_width", "dice_grid_margin", marker_types=[default_marker_type]*8)
 class Chip(Element):
     """Base PCell declaration for chips.

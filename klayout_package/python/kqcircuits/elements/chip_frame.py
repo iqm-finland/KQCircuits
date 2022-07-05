@@ -38,6 +38,7 @@ class ChipFrame(Element):
     name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
     name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
     name_copy = Param(pdt.TypeString, "Name of the copy", None)
+    name_brand = Param(pdt.TypeString, "Name of the brand", default_brand)
     text_margin = Param(pdt.TypeDouble, "Margin for labels", 100,
         docstring="Margin of the ground grid avoidance layer around the text")
     marker_dist = Param(pdt.TypeDouble, "Marker distance from edges", 1500,
@@ -56,7 +57,7 @@ class ChipFrame(Element):
     def _produce_labels(self):
         x_min, x_max, y_min, y_max = self._box_points()
         chip_name = self.face()["id"].upper() + self.name_chip if self.use_face_prefix else self.name_chip
-        labels = [self.name_mask, chip_name, self.name_copy, default_brand]
+        labels = [self.name_mask, chip_name, self.name_copy, self.name_brand]
         if self.name_mask:
             self._produce_label(labels[0], pya.DPoint(x_min, y_max), LabelOrigin.TOPLEFT)
         if self.name_chip:
