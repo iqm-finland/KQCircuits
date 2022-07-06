@@ -76,29 +76,29 @@ class QualityFactor(Chip):
 
         # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from top
         launchers = self.produce_n_launchers((0, 2, 0, 2), "RF", 300, 180, self.launcher_indent,
-                                             chip_side - 2 * self.launcher_top_dist, {4: "WN", 1: "EN"})
+                                             chip_side - 2 * self.launcher_top_dist, {4: "RO-1", 1: "RO-2"})
 
         # Define start and end of feedline
-        points_fl = [launchers["WN"][0]]
-        if abs(launchers["WN"][0].y - wg_top_y) > 1:
+        points_fl = [launchers["RO-1"][0]]
+        if abs(launchers["RO-1"][0].y - wg_top_y) > 1:
             # Bend in the feedline needed
             points_fl += [
-                launchers["WN"][0] + pya.DVector(self.r + self.marker_safety, 0),
-                pya.DPoint(launchers["WN"][0].x + self.r * 2 + self.marker_safety, wg_top_y)
+                launchers["RO-1"][0] + pya.DVector(self.r + self.marker_safety, 0),
+                pya.DPoint(launchers["RO-1"][0].x + self.r * 2 + self.marker_safety, wg_top_y)
             ]
             points_fl_end = [
-                pya.DPoint(launchers["EN"][0].x - self.r * 2 - self.marker_safety, wg_top_y),
-                launchers["EN"][0] + pya.DVector(-self.r - self.marker_safety, 0),
+                pya.DPoint(launchers["RO-2"][0].x - self.r * 2 - self.marker_safety, wg_top_y),
+                launchers["RO-2"][0] + pya.DVector(-self.r - self.marker_safety, 0),
             ]
         elif self.marker_safety > 0:
-            points_fl += [launchers["WN"][0] + pya.DVector(self.marker_safety, 0)]
+            points_fl += [launchers["RO-1"][0] + pya.DVector(self.marker_safety, 0)]
             points_fl_end = [
-                launchers["EN"][0] + pya.DVector(-self.marker_safety, 0),
+                launchers["RO-2"][0] + pya.DVector(-self.marker_safety, 0),
             ]
         else:
             points_fl_end = []
 
-        points_fl_end += [launchers["EN"][0]]
+        points_fl_end += [launchers["RO-2"][0]]
 
         tl_start = points_fl[-1]
         tl_end = points_fl_end[0]
