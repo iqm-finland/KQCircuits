@@ -29,7 +29,6 @@ kqcircuits.elements
    kqcircuits.elements.waveguide_coplanar_splitter
    kqcircuits.elements.waveguide_coplanar_straight
    kqcircuits.elements.waveguide_coplanar_taper
-   kqcircuits.elements.waveguide_coplanar_tcross
 
 Module contents
 ---------------

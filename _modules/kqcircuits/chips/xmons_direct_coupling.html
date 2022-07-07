@@ -240,7 +240,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../libraries/chips.html">Chips</a><ul>
@@ -344,7 +344,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -532,7 +531,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_taper</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTaper</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_tcross</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarTCross</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="n">t_cross_parameters</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.coupler_lib</span> <span class="kn">import</span> <span class="n">cap_params</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
@@ -555,12 +554,11 @@
         <span class="n">taper_length</span> <span class="o">=</span> <span class="mi">100</span>
 
         <span class="c1"># T to PL</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">pl_cross_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanarTCross</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pl_cross_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pos_start</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">end_y</span><span class="p">),</span>
             <span class="n">inst_name</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;RO</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="kc">None</span><span class="p">),</span>
             <span class="n">label_trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
-            <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-            <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">t_cross_parameters</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="c1"># Finger cap</span>
@@ -582,14 +580,14 @@
             <span class="n">taper_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">cplr_ref</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">taper_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_b&quot;</span><span class="p">])</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
 
         <span class="c1"># T to tail and straight</span>
-        <span class="n">rr_cross_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarTCross</span><span class="p">,</span>
+        <span class="n">rr_cross_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="o">**</span><span class="n">t_cross_parameters</span><span class="p">(</span>
             <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
             <span class="n">length_extra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">a</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
             <span class="n">b</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
-            <span class="n">a3</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
-            <span class="n">b3</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
-        <span class="p">)</span>
+            <span class="n">a2</span><span class="o">=</span><span class="n">ro_a</span><span class="p">,</span>
+            <span class="n">b2</span><span class="o">=</span><span class="n">ro_b</span><span class="p">,</span>
+        <span class="p">))</span>
         <span class="n">rr_cross_ref_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">rr_cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">rr_cross_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span>
             <span class="n">rr_cross_cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">taper_ref</span><span class="p">[</span><span class="s2">&quot;port_a&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">rr_cross_ref_rel</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">])</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">)</span>

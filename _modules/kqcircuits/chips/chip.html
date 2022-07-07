@@ -240,7 +240,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../libraries/chips.html">Chips</a><ul>
@@ -344,7 +344,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -548,7 +547,7 @@
 <div class="viewcode-block" id="Chip"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip">[docs]</a><span class="nd">@logged</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="s2">&quot;connector_type&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameter</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;name_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;name_chip&quot;</span><span class="p">,</span> <span class="s2">&quot;name_copy&quot;</span><span class="p">,</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;name_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;name_chip&quot;</span><span class="p">,</span> <span class="s2">&quot;name_copy&quot;</span><span class="p">,</span> <span class="s2">&quot;name_brand&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;dice_width&quot;</span><span class="p">,</span> <span class="s2">&quot;dice_grid_margin&quot;</span><span class="p">,</span> <span class="n">marker_types</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Chip</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base PCell declaration for chips.</span>

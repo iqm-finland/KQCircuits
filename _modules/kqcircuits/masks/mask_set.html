@@ -240,7 +240,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../libraries/chips.html">Chips</a><ul>
@@ -344,7 +344,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -535,7 +534,7 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">PY_PATH</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">PY_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
 
@@ -646,7 +645,8 @@
                     <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span>
 
             <span class="k">def</span> <span class="nf">_subprocess_worker</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-                <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span> <span class="k">as</span> <span class="n">proc</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                      <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span> <span class="k">as</span> <span class="n">proc</span><span class="p">:</span>
                     <span class="n">_</span><span class="p">,</span> <span class="n">errs</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
                     <span class="c1"># Process has error return code, return error stream</span>
                     <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>

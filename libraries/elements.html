@@ -242,7 +242,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="chips.html">Chips</a><ul>
@@ -346,7 +346,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -543,6 +542,7 @@ Refpoints “port_a” and “port_b” at top pad points closest to origin.</p>
 <li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M99</span></code></p></li>
 <li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">CTest</span></code></p></li>
 <li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>name_brand</strong><em> (String)</em><span> - Name of the brand</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">IQM</span></code></p></li>
 <li><p><strong>text_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer around the text</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>marker_dist</strong><em> (Double)</em><span> - Distance of markers from closest edges of the chip face</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1500</span></code></p></li>
 <li><p><strong>diagonal_squares</strong><em> (Int)</em><span> - Number of diagonal squares for the markers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
@@ -771,16 +771,17 @@ in a future release.</p>
 </ul>
 <img alt="waveguide_taper" src="../_images/waveguide_taper.png" />
 </div>
-<div class="section" id="waveguidecoplanartcross">
-<h2>WaveguideCoplanarTCross<a class="headerlink" href="#waveguidecoplanartcross" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="waveguidecoplanarsplitter">
+<h2>WaveguideCoplanarSplitter<a class="headerlink" href="#waveguidecoplanarsplitter" title="Permalink to this headline">¶</a></h2>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>a3</strong><em> (Double)</em><span> - Width of the side waveguide. (-1 for the default)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
-<li><p><strong>b3</strong><em> (Double)</em><span> - Gap of the side waveguidei. (-1 for the default)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">-1</span></code></p></li>
-<li><p><strong>length_extra</strong><em> (Double)</em><span> - Extra length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
-<li><p><strong>length_extra_side</strong><em> (Double)</em><span> - Extra length of the side waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><strong>lengths</strong><em> (List)</em><span> - Waveguide length per port, measured from origin</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[11,</span> <span class="pre">11,</span> <span class="pre">11]</span></code></p></li>
+<li><p><strong>angles</strong><em> (List)</em><span> - Angle of each port (degrees)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">120,</span> <span class="pre">240]</span></code></p></li>
 <li><p><strong>use_airbridges</strong><em> (Boolean)</em><span> - Use airbridges at a distance from the centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>bridge_distance</strong><em> (Double)</em><span> - Bridges distance from centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code></p></li>
+<li><p><strong>a_list</strong><em> (List)</em><span> - List of center conductor widths for each port. If empty, self.a will be used for all ports instead. [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>b_list</strong><em> (List)</em><span> - List of gap widths for each port. If empty, self.b will be used for all ports instead. [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>port_names</strong><em> (List)</em><span> - Port names</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['a',</span> <span class="pre">'b',</span> <span class="pre">'c',</span> <span class="pre">'d',</span> <span class="pre">'e',</span> <span class="pre">'f',</span> <span class="pre">'g',</span> <span class="pre">'h',</span> <span class="pre">'i',</span> <span class="pre">'j']</span></code></p></li>
 <li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular',</span> <span class="pre">'Airbridge</span> <span class="pre">Multi</span> <span class="pre">Face']</span></code></p></li>
 </ul>
 </div>

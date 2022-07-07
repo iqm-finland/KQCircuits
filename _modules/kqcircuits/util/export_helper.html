@@ -240,7 +240,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../libraries/elements.html#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../libraries/chips.html">Chips</a><ul>
@@ -344,7 +344,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -535,7 +534,7 @@
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">get_refpoints</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">default_probe_types</span><span class="p">,</span> <span class="n">default_probe_suffixes</span><span class="p">,</span> \
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">default_probe_types</span><span class="p">,</span> <span class="n">default_probe_suffixes</span><span class="p">,</span> \
     <span class="n">klayout_executable_command</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span><span class="p">,</span> <span class="n">MissingUILibraryException</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -661,7 +660,8 @@
 <span class="sd">    If git repository is not found in given path, no file is written.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;rev-parse&#39;</span><span class="p">,</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="s1">&#39;git&#39;</span><span class="p">,</span> <span class="s1">&#39;rev-parse&#39;</span><span class="p">,</span> <span class="s1">&#39;HEAD&#39;</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">,</span>
+                                         <span class="n">cwd</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;COMMIT_REFERENCE&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
@@ -684,7 +684,7 @@
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>  <span class="c1"># Windows</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>  <span class="c1"># macOS</span>
             <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">((</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># Linux</span>

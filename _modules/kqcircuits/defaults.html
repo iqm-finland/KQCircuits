@@ -240,7 +240,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../libraries/elements.html#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../libraries/elements.html#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../libraries/elements.html#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../libraries/elements.html#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../libraries/elements.html#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../libraries/chips.html">Chips</a><ul>
@@ -344,7 +344,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.waveguide_coplanar_splitter.html">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -550,6 +549,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -594,6 +594,12 @@
 <span class="n">SCRIPTS_PATH</span> <span class="o">=</span> <span class="n">PY_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;scripts&quot;</span><span class="p">)</span>
 <span class="n">ANSYS_SCRIPTS_PATH</span> <span class="o">=</span> <span class="n">SCRIPTS_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;simulations&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;ansys&quot;</span><span class="p">)</span>
 <span class="n">ELMER_SCRIPTS_PATH</span> <span class="o">=</span> <span class="n">SCRIPTS_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;simulations&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;elmer&quot;</span><span class="p">)</span>
+
+<span class="c1"># Given to subprocess.Popen calls, hides terminals on Windows</span>
+<span class="n">STARTUPINFO</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;nt&quot;</span><span class="p">:</span>
+    <span class="n">STARTUPINFO</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTUPINFO</span><span class="p">()</span>
+    <span class="n">STARTUPINFO</span><span class="o">.</span><span class="n">dwFlags</span> <span class="o">|=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STARTF_USESHOWWINDOW</span>
 
 <span class="c1"># printed to corners of all chips and top of all masks</span>
 <span class="c1"># could be for example &quot;IQM&quot; or &quot;A!&quot;</span>

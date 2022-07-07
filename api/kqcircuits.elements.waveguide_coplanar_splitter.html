@@ -242,7 +242,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../libraries/elements.html#waveguidecoplanarcurved">WaveguideCoplanarCurved</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/elements.html#waveguidecoplanarstraight">WaveguideCoplanarStraight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../libraries/elements.html#waveguidecoplanartaper">WaveguideCoplanarTaper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../libraries/elements.html#waveguidecoplanartcross">WaveguideCoplanarTCross</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../libraries/elements.html#waveguidecoplanarsplitter">WaveguideCoplanarSplitter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../libraries/chips.html">Chips</a><ul>
@@ -346,7 +346,6 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.elements.waveguide_coplanar_splitter</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_straight.html">kqcircuits.elements.waveguide_coplanar_straight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_taper.html">kqcircuits.elements.waveguide_coplanar_taper</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.waveguide_coplanar_tcross.html">kqcircuits.elements.waveguide_coplanar_tcross</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
@@ -532,6 +531,27 @@ parameter lists. Ports are labelled by letters starting from <code class="docuti
 
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.waveguide_coplanar_splitter.</span></span><span class="sig-name descname"><span class="pre">t_cross_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_extra</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length_extra_side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar_splitter.html#t_cross_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar_splitter.t_cross_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>A utility function to easily produce T-cross splitter (old WaveguideCoplanarTCross).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> – Width of center conductor</p></li>
+<li><p><strong>b</strong> – Width of gap</p></li>
+<li><p><strong>a2</strong> – Center conductor width of the side waveguide</p></li>
+<li><p><strong>b2</strong> – Gap of the side waveguide</p></li>
+<li><p><strong>length_extra</strong> – Extra length</p></li>
+<li><p><strong>length_extra_side</strong> – Extra length of the side waveguide</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of parameters for WaveguideCoplanarSplitter</p>
+</dd>
+</dl>
+</dd></dl>
+
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>lengths</strong><em> (List)</em><span> - Waveguide length per port, measured from origin</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[11,</span> <span class="pre">11,</span> <span class="pre">11]</span></code></p></li>
@@ -540,6 +560,7 @@ parameter lists. Ports are labelled by letters starting from <code class="docuti
 <li><p><strong>bridge_distance</strong><em> (Double)</em><span> - Bridges distance from centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code></p></li>
 <li><p><strong>a_list</strong><em> (List)</em><span> - List of center conductor widths for each port. If empty, self.a will be used for all ports instead. [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>b_list</strong><em> (List)</em><span> - List of gap widths for each port. If empty, self.b will be used for all ports instead. [μm]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>port_names</strong><em> (List)</em><span> - Port names</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['a',</span> <span class="pre">'b',</span> <span class="pre">'c',</span> <span class="pre">'d',</span> <span class="pre">'e',</span> <span class="pre">'f',</span> <span class="pre">'g',</span> <span class="pre">'h',</span> <span class="pre">'i',</span> <span class="pre">'j']</span></code></p></li>
 <li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular',</span> <span class="pre">'Airbridge</span> <span class="pre">Multi</span> <span class="pre">Face']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.waveguide_coplanar_splitter.png" src="../_images/kqcircuits.elements.waveguide_coplanar_splitter.png" />
