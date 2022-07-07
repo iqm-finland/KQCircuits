@@ -41,6 +41,7 @@ in ``mask_export_layers``.
 
 import os
 import platform
+import subprocess
 from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
@@ -85,6 +86,12 @@ TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
 ANSYS_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")
 ELMER_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")
+
+# Given to subprocess.Popen calls, hides terminals on Windows
+STARTUPINFO = None
+if os.name == "nt":
+    STARTUPINFO = subprocess.STARTUPINFO()
+    STARTUPINFO.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
 # printed to corners of all chips and top of all masks
 # could be for example "IQM" or "A!"

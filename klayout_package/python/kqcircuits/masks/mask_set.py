@@ -26,7 +26,7 @@ from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_bar_format, TMP_PATH, PY_PATH, klayout_executable_command
+from kqcircuits.defaults import default_bar_format, TMP_PATH, PY_PATH, STARTUPINFO, klayout_executable_command
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 
@@ -137,7 +137,8 @@ class MaskSet:
                     f'{os.linesep}{self.err}'
 
             def _subprocess_worker(args):
-                with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as proc:
+                with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                      startupinfo=STARTUPINFO) as proc:
                     _, errs = proc.communicate()
                     # Process has error return code, return error stream
                     if proc.returncode > 0:

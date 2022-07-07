@@ -27,6 +27,11 @@ else:
 
 STATIC_VERSION_FILE = "_static_version.py"
 
+startupinfo = None
+# Hide terminals on Windows
+if os.name == "nt":
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
 def get_version(version_file=STATIC_VERSION_FILE):
     version_info = get_static_version_info(version_file)
@@ -77,6 +82,7 @@ def get_version_from_git():
             cwd=distr_root,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            startupinfo=startupinfo
         )
     except OSError:
         return
@@ -93,6 +99,7 @@ def get_version_from_git():
                 cwd=distr_root,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
+                startupinfo=startupinfo
             )
         except OSError:
             return
@@ -124,7 +131,7 @@ def get_version_from_git():
         labels.append(git)
 
     try:
-        p = subprocess.Popen(["git", "diff", "--quiet"], cwd=distr_root)
+        p = subprocess.Popen(["git", "diff", "--quiet"], cwd=distr_root, startupinfo=startupinfo)
     except OSError:
         labels.append("confused")  # This should never happen.
     else:

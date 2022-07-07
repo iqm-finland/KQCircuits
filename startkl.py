@@ -33,10 +33,13 @@ if not os.path.exists(f"{configdir}/python/kqcircuits"):
     print("Not configured? Please run setup_within_klayout.py first.")
     sys.exit(-1)
 
+startupinfo = None
 if os.name == "nt":
     exe = os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
     exe = f'set "KLAYOUT_HOME={configdir}" & "{exe}"'
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 else:
     exe = f'KLAYOUT_HOME={configdir} klayout'
 
-subprocess.run(f'{exe} -e', shell=True, check=True)
+subprocess.run(f'{exe} -e', shell=True, check=True, startupinfo=startupinfo)

@@ -26,7 +26,7 @@ from pathlib import Path
 from autologging import logged
 
 from kqcircuits.elements.element import get_refpoints
-from kqcircuits.defaults import default_layers, TMP_PATH, default_probe_types, default_probe_suffixes, \
+from kqcircuits.defaults import default_layers, TMP_PATH, STARTUPINFO, default_probe_types, default_probe_suffixes, \
     klayout_executable_command
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya
@@ -152,7 +152,8 @@ def write_commit_reference_file(path: Path):
     If git repository is not found in given path, no file is written.
     """
     try:
-        output = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL, cwd=path)
+        output = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL,
+                                         cwd=path, startupinfo=STARTUPINFO)
     except subprocess.CalledProcessError:
         return
     with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
@@ -175,7 +176,7 @@ def open_with_klayout_or_default_application(filepath):
 
     try:
         if platform.system() == 'Windows':  # Windows
-            subprocess.call(filepath, shell=True)
+            subprocess.call(filepath, shell=True, startupinfo=STARTUPINFO)
         elif platform.system() == 'Darwin':  # macOS
             subprocess.call(('open', filepath))
         else:  # Linux

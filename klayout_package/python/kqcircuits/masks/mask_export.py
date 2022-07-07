@@ -25,7 +25,7 @@ from autologging import logged
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH, klayout_executable_command
+    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH, STARTUPINFO, klayout_executable_command
 from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
 from kqcircuits.pya_resolver import pya
@@ -342,12 +342,13 @@ def export_drc_report(name, path):
     input_file = os.path.join(path, f"{name}.oas")
     output_file = os.path.join(path, f"{name}_drc_report.lyrdb")
     export_drc_report._log.info("Exporting DRC report to %s", output_file)
+
     try:
         subprocess.run([klayout_executable_command(), "-b",
                         "-rm", drc_runset_path,
                         "-rd", f"input={input_file}",
                         "-rd", f"output={output_file}"
-                        ], check=True)
+                        ], check=True, startupinfo=STARTUPINFO)
     except subprocess.CalledProcessError as e:
         export_drc_report._log.error(e.output)
 

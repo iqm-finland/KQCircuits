@@ -23,7 +23,7 @@ import sys
 import subprocess
 from multiprocessing import Pool
 from kqcircuits.util.library_helper import _get_all_pcell_classes
-from kqcircuits.defaults import ROOT_PATH
+from kqcircuits.defaults import ROOT_PATH, STARTUPINFO
 
 
 kqc_root_path = sys.argv[1] if len(sys.argv) == 2 else str(ROOT_PATH)
@@ -50,7 +50,8 @@ def to_png(pcell):
     lib = pcell.__module__
     cls = pcell.__name__
     cmd = f'{exe} -z -nc -r {script} -rd lib_name={lib} -rd cls_name={cls} -rd dest_dir={DIR}'
-    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+    return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True,
+        universal_newlines=True, startupinfo=STARTUPINFO)
 
 
 if __name__ == "__main__":
