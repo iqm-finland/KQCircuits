@@ -25,6 +25,7 @@ qubits or junction test structures.
 squid_type_choices = [
     'NoSquid',
     'Manhattan',
+    'Manhattan Single Junction',
     'QCD1',
     'Sim',
     'SIM1',
