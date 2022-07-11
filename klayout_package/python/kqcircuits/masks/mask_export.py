@@ -64,11 +64,12 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
         chip_class = type(chip_cell.pcell_declaration())
         chip_params = chip_cell.pcell_parameters_by_name()
 
-    # export .oas file with pcells (except chip cell itself will be static)
-    # it seems like the full hierarchy of the chip is exported only if it is converted to static
-    # TODO this seems like a bug - check and report
+    # export .oas file with pcells (requires exporting a cell one hierarchy level above chip pcell)
+    dummy_cell = layout.create_cell(chip_name)
+    dummy_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), pya.DTrans()))
+    _export_cell(chip_dir/f"{chip_name}_with_pcells.oas", dummy_cell, "all")
+    dummy_cell.delete()
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
-    _export_cell(chip_dir/f"{chip_name}_with_pcells.oas", static_cell, "all")
 
     # save the chip .oas file with all layers and only containing static cells
     save_opts = pya.SaveLayoutOptions()
