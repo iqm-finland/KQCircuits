@@ -19,7 +19,7 @@ package. Other folders are mainly for automatic tests and documentation.
 KQCircuits code is divided into the :git_url:`kqcircuits <klayout_package/python/kqcircuits>` and
 :git_url:`scripts <klayout_package/python/scripts>` folders in :git_url:`klayout_package/python`.
 These two folders are also (after installation process) linked as symbolic links ``kqcircuits`` and
-``kqcircuits_scripts`` in the ``~/.klayout` or ``~/KLayout`` folder.
+``kqcircuits_scripts`` in the ``~/.klayout`` or ``~/KLayout`` folder.
 
 The ``kqcircuits`` folder contains all the KQCircuits PCell classes and many
 other modules used by them or by scripts. Folders directly under under
@@ -201,6 +201,36 @@ This code can be copied to a new Python-file ``new_chip1.py`` in the
 ``klayout_package/python/kqcircuits/chips`` folder to make it visible in the
 KQCircuits chip library.
 
+Defining sampleholder types
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the previous example we used::
+
+    self.produce_launchers("SMA8")
+
+to make the chip have the correct launchers and size for fitting in an
+"SMA8"-type sampleholder. The available sampleholder types are  defined in
+:git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`
+``default_sampleholders``. You can add new sampleholder types there, for
+example::
+
+    "RF16": {
+        "n": 16,
+        "launcher_type": "RF",
+        "launcher_width": 400,
+        "launcher_gap": 150,
+        "launcher_indent": 1000,
+        "pad_pitch": 2000,
+        "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(12000, 12000))
+    }
+
+This can then be used in a chip::
+
+    self.produce_launchers("RF16")
+
+A quick way to check all available sampleholder types is to use the
+:class:`.Launchers` chip and change its ``sampleholder_type`` parameter.
+
 Refpoints
 ---------
 
@@ -307,6 +337,41 @@ placed in::
     # Placing a multi-face element with the parts in different faces swapped
     self.insert_cell(FlipChipConnectorRf, face_ids=[self.face_ids[1], self.face_ids[0]])
 
+Adding a new face
+^^^^^^^^^^^^^^^^^
+
+New layers and new faces can be added in
+:git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`
+by modifying ``default_layers`` and ``default_faces``. As an example, let's
+add a new face ``x`` with some layers that are in KQCircuits default faces
+and one new layer::
+
+    default_layers["x_base_metal_gap_wo_grid"] = pya.LayerInfo(900, 1, "x_base_metal_gap_wo_grid")
+    default_layers["x_ground_grid_avoidance"] = pya.LayerInfo(903, 0, "x_ground_grid_avoidance")
+    default_layers["x_ports"] = pya.LayerInfo(928, 0, "x_ports")
+    default_layers["x_new_layer"] = pya.LayerInfo(999, 2, "x_new_layer")
+
+    default_faces["x"] = {
+        "id": "x",
+        "base_metal_gap_wo_grid": default_layers["x_base_metal_gap_wo_grid"],
+        "ground_grid_avoidance": default_layers["x_ground_grid_avoidance"],
+        "ports": default_layers["x_ports"],
+        "new_layer": default_layers["x_new_layer"],
+    }
+
+These lines should be added after the last line where ``default_layers`` or
+``default_faces`` are modified. Launching KLayout after these changes, you
+should see the new layers in the layers list. If you add for example
+:class:`.Launcher` element to the layout and modify its ``face_ids``
+parameter to have the value ``x``, it will then use the layers from the newly
+added face ``x``.
+
+To change the color of the layers and their organization in the layers list,
+:git_url:`default_layer_props.lyp <klayout_package/python/kqcircuits/default_layer_props.lyp>`
+must be modified or another layer properties file must be set as default in
+KLayout Setup menu. The layer properties file can be edited directly or by
+modifying the layers list in GUI and saving them using KLayout ``File -> Save
+Layer Properties``.
 
 Opening :class:`.Element` or :class:`.Chip` from an IDE
 -------------------------------------------------------

@@ -32,7 +32,11 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-# reload libraries
+"""Macro for reloading KQCircuits PCell libraries.
+
+Note that this does not reload the ``defaults`` file.
+"""
+
 from kqcircuits.util.library_helper import load_libraries
 load_libraries(flush=True)
 </text>
