@@ -5,6 +5,15 @@ Docker image
 
 A Docker image for CLI and CI usage is included in `ci/Dockerfile <https://github.com/iqm-finland/KQCircuits/blob/main/ci/Dockerfile>`_.
 
+The image can be built manually from the root of the repository with `-f ci/Dockerfile`.
+Additionally, the KLayout version can be specified with ``--build-arg`` options by
+providing the name of the KLayout package as ``KL_FILE`` and its MD5 hash as ``KL_HASH``::
+
+  docker build -t kqcircuits -f ci/Dockerfile --build-arg KL_FILE=klayout_0.27.10-1_amd64.deb --build-arg KL_HASH=8076dadfb1b790b75d284fdc9c90f70b .
+
+See possible versions and hashes for Ubuntu 20 in the `KLayout website <https://www.klayout.de/build.html>`_.
+
+
 CLI usage
 ---------
 
@@ -12,7 +21,6 @@ The image can be used to quickly generate files, such as masks and chips from Py
 For example, to run a script ``m00x.py`` from a local directory, do the following::
 
    docker run --volume ${PWD}:/kqc/tmp ghcr.io/iqm-finland/kqcircuits:main tmp/m00x.py
-
 
 This runs the script in a Docker container and on-default writes the output to ``/kqc/tmp``,
 which is mounted to the working directory with ``--volume``.

@@ -13,6 +13,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  KL_FILE: klayout_0.27.9-1_amd64.deb
+  KL_HASH: d0254078e04f49c7578bc9e577fe39cc
 
 jobs:
   build-and-push:
@@ -39,6 +41,9 @@ jobs:
         with:
           context: .
           file: ci/Dockerfile
+          build-args: |
+            KL_FILE=${{ env.KL_FILE }}
+            KL_HASH=${{ env.KL_HASH }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
