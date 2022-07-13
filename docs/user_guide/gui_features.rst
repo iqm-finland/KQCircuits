@@ -61,7 +61,7 @@ PCell shape is updated after each change in the parameters.
 Converting elements placed in GUI into code
 -------------------------------------------
 
-KQCircuits includes a macro `export_cells_as_code.lym <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_cells_as_code.lym>`_ that can be used to
+KQCircuits includes a macro :git_url:`export_cells_as_code.lym <klayout_package/python/scripts/macros/export/export_cells_as_code.lym>` that can be used to
 convert elements placed in GUI into code that can be used in chip PCells. For
 more information, see the docstring and comments in the macro. The following
 animation demonstrates how a chip is modified by placing elements in the GUI

@@ -14,12 +14,12 @@ File system hierarchy
 ---------------------
 
 In the KQCircuits root folder the most important folder for most users is the
-`klayout_package <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package>`_ folder, which is also all that is included in the Salt
+:git_url:`klayout_package` folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
-KQCircuits code is divided into the `kqcircuits <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits>`_ and `scripts <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts>`_ folders in
-`klayout_package/python <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python>`_. These two folders are also (after installation
-process) linked as symbolic links `kqcircuits <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits>`_ and `kqcircuits_scripts <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts>`_
-in the ``~/.klayout` or ``~/KLayout`` folder.
+KQCircuits code is divided into the :git_url:`kqcircuits <klayout_package/python/kqcircuits>` and
+:git_url:`scripts <klayout_package/python/scripts>` folders in :git_url:`klayout_package/python`.
+These two folders are also (after installation process) linked as symbolic links ``kqcircuits`` and
+``kqcircuits_scripts`` in the ``~/.klayout` or ``~/KLayout`` folder.
 
 The ``kqcircuits`` folder contains all the KQCircuits PCell classes and many
 other modules used by them or by scripts. Folders directly under under
@@ -70,9 +70,9 @@ need to have::
 
 in a file ``my_qubit.py`` in ``kqcircuits/qubits`` folder. The registration
 of PCell classes to different libraries is handled by KQCircuits code in
-`library_helper.py
-<https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py>`_  and `element.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py>`_. For more information about PCell
-libraries see the KLayout documentation pages
+:git_url:`library_helper.py <klayout_package/python/kqcircuits/util/library_helper.py>` and :git_url:`element.py
+<klayout_package/python/kqcircuits/elements/element.py>`. For more information about PCell libraries see the KLayout
+documentation pages
 https://www.klayout.de/doc-qt5/about/about_libraries.html,
 https://www.klayout.de/doc-qt5/code/class_Library.html, and
 https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426 (in Ruby).
@@ -311,11 +311,10 @@ placed in::
 Opening :class:`.Element` or :class:`.Chip` from an IDE
 -------------------------------------------------------
 
-You can use `create_element_from_path.py` in 
-`/klayout_package/python/scripts/ <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/create_element_from_path.py>`__
+You can use :git_url:`klayout_package/python/scripts/create_element_from_path.py`
 to open an :class:`.Element` or :class:`.Chip` in KLayout from your IDE (or just straight from the command-line).
 The script is used as::
-    
+
     klayout_app -e -rx -rm path/to/create_element_from_path.py -rd element_path=kqcircuits/chips/demo.py
 
 And can be easily incorporated as a macro to your IDE.

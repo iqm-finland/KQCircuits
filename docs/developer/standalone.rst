@@ -46,7 +46,7 @@ You can choose for which purposes you want to install the requirements by
 modifying the text in the square brackets. Note that there should not be any
 spaces within the brackets.
 
-The required packages are defined in `setup.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/setup.py>`_ (in KQCircuits `python` directory), so
+The required packages are defined in :git_url:`setup.py <klayout_package/python/setup.py>` (in KQCircuits `python` directory), so
 if there are problems with some specific package, you may try modifying it or
 install those packages manually.
 
@@ -58,13 +58,13 @@ KQCircuits fully within a Python IDE of your choice. For example, standalone
 debuggers and automated testing (see :ref:`testing`) can be done, which would
 not be possible without the standalone KLayout module.
 
-There is an example Jupyter notebook `viewer.ipynb <https://github.com/iqm-finland/KQCircuits/blob/main/notebooks/viewer.ipynb>`_ in the notebooks
+There is an example Jupyter notebook :git_url:`viewer.ipynb <notebooks/viewer.ipynb>` in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
 standalone KLayout module. Run it like::
 
     jupyter-notebook notebooks/viewer.ipynb
 
 Any other files in the notebooks folder will be ignored by git, so you can
-create your own notebooks based on `viewer.ipynb <https://github.com/iqm-finland/KQCircuits/blob/main/notebooks/viewer.ipynb>`_ in that folder. This
+create your own notebooks based on :git_url:`viewer.ipynb <notebooks/viewer.ipynb>` in that folder. This
 notebook requires that ``notebooks`` was specified as a feature during
 installation.

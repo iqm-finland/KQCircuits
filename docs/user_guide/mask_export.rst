@@ -16,7 +16,7 @@ Basic mask script and export
 
     #. Launch KLayout Editor and open the Macro IDE (F5).
 
-    #. Add the following script to the `kqcircuits_scripts/masks <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/masks>`_ folder in
+    #. Add the following script to the :git_url:`kqcircuits_scripts/masks <klayout_package/python/scripts/masks>` folder in
        the ``Python`` tab of the Macro IDE::
 
         # Imports required for any mask
@@ -72,7 +72,7 @@ Basic mask script and export
        beginning and end of the script (getting the view, and exporting the
        mask) are generally the same for any mask.
 
-    #. (Optional) Open `kqcircuits_scripts/macros/logging_setup <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/logging_setup.lym>`_ and run it.
+    #. (Optional) Open :git_url:`kqcircuits_scripts/macros/logging_setup <klayout_package/python/scripts/macros/logging_setup.lym>` and run it.
        This makes mask generation logs visible in the Macro console.
 
     #. With the mask script open, click "Run script from current tab"
@@ -126,7 +126,7 @@ The mask generated in the previous step contained "DemoTwoface" chips, which
 are supposed to have elements in two different chip faces for a flip-chip
 process. However, the generated mask only contained the parts in "bottom"
 face. To generate mask for also "top"-face chips, we need to add an
-additional `mask_layout <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/masks/mask_layout.py>`_
+additional :git_url:`mask_layout <klayout_package/python/kqcircuits/masks/mask_layout.py>`
 
 #. Add the following below the old ``add_mask_layout()`` call::
 

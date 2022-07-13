@@ -115,6 +115,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.graphviz',
     'kqc_elem_params',
+    'sphinx.ext.extlinks',
 ]
 
 todo_include_todos = True
@@ -194,3 +195,7 @@ rst_epilog = """
 """.format(
     url=os.environ.get('DOCS_GIT_CLONE_URL', f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}'),  # picks default if no ENV
 )
+
+# Base URL for files in the git repository
+github_url = f'https://github.com/{html_context["github_user"]}/{html_context["github_repo"]}/blob/{html_context["github_version"]}/'
+extlinks = {'git_url': (os.environ.get('DOCS_GIT_URL', github_url), '%s')}
