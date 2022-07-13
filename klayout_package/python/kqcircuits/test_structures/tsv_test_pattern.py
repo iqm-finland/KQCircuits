@@ -20,9 +20,10 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
+from kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse import TsvEllipse
 
 
-@add_parameters_from(Tsv, "*", tsv_diameter=10)
+@add_parameters_from(TsvEllipse, "*", tsv_diameter=10)
 class TsvTestPattern(TestStructure):
     """PCell declaration for TSV test structures which resembles a TSV fencing for a CPW transmission line.
 
