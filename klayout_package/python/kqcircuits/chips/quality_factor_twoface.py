@@ -25,8 +25,11 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.chips.quality_factor import QualityFactor
 
 
+@add_parameters_from(QualityFactor, "res_lengths", "n_fingers", "l_fingers", "type_coupler",
+                     res_a=[10, 10, 10, 20, 10, 5], res_b=[6, 6, 6, 12, 6, 3])
 @add_parameters_from(Chip, frames_enabled=[0, 1])
 @add_parameters_from(SpiralResonatorPolygon, "bridge_spacing")
 class QualityFactorTwoface(Chip):
@@ -35,18 +38,6 @@ class QualityFactorTwoface(Chip):
      Preliminary class for flip-chip resonators.
      """
 
-    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589], unit="[μm]",
-                        docstring="Physical length of resonators [μm]")
-    n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4],
-                      docstring="Fingers in planar capacitors")
-    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28], unit="[μm]",
-                      docstring="Length of the capacitor fingers [μm]")
-    type_coupler = Param(pdt.TypeList, "Coupler type",
-                         ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
-    res_a = Param(pdt.TypeList, "Resonator waveguide center conductor width", [10, 10, 10, 20, 10, 5], unit="[μm]",
-                  docstring="Width of the center conductor in the resonators [μm]")
-    res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [6, 6, 6, 12, 6, 3], unit="[μm]",
-                  docstring="Width of the gap in the resonators [μm]")
     resonator_types = Param(pdt.TypeList, "Resonator types (capped, twoface, etched, or solid)", ["capped"] * 6,
                             docstring="Choices: 'capped', 'twoface', 'etched', 'solid'")
     resonator_faces = Param(pdt.TypeList, "Resonator face order list", [0, 1])

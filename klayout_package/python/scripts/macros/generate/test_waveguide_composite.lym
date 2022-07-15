@@ -43,7 +43,7 @@ from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
-from kqcircuits.elements.waveguide_coplanar_tcross import WaveguideCoplanarTCross
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 
 (layout, layout_view, cell_view) = macroprep.prep_empty_layout()
 top_cell = layout.create_cell("Top Cell")
@@ -77,17 +77,17 @@ top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
 
 nodes = [
     Node(pya.DPoint(0, -800)),
-    Node(pya.DPoint(50,-800), WaveguideCoplanarTCross,
+    Node(pya.DPoint(50,-800), WaveguideCoplanarSplitter,
          align=("port_left", "port_right"),                # Specify input and output port to connect
-         length_extra_side=100),
+         length_extra_side=100, **t_cross_parameters(length_extra_side=100)),
 #    Node(pya.DPoint(150, 0)),                             # A bend is inserted towards the next point automatically
     Node(pya.DPoint(250, -750)),                           # Specify one point before the next TCross to define it's direction
-    Node(pya.DPoint(300, -750), WaveguideCoplanarTCross,
+    Node(pya.DPoint(300, -750), WaveguideCoplanarSplitter,
          align=("port_right", "port_left"),                # Reverse port order to change orientation
          inst_name="second_tee",                           # Specify instance name to export element refpoints
-         length_extra_side=100),
+         length_extra_side=100, **t_cross_parameters(length_extra_side=100)),
     Node(pya.DPoint(400, -750)),
-    Node(pya.DPoint(500, -750), WaveguideCoplanarTCross,
+    Node(pya.DPoint(500, -750), WaveguideCoplanarSplitter, **t_cross_parameters(),
          align=("port_bottom", "port_right")),             # Ports can be at arbitrary angles if they have corner refpoints
     Node(pya.DPoint(600, -1000)),
     Node(pya.DPoint(600, -1100), face_id="t",

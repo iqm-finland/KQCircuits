@@ -26,14 +26,13 @@ from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSpl
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.chips.demo import Demo
 
-@add_parameters_from(Chip, frames_enabled=[0, 1])
+@add_parameters_from(Demo, "readout_res_lengths", "include_couplers", frames_enabled=[0, 1])
 class DemoTwoface(Chip):
     """Demonstration chip for 3D-integration (multi-face) features."""
 
     name_chip = Param(pdt.TypeString, "Name of the chip", "DT")
-    readout_res_lengths = Param(pdt.TypeList, "Readout resonator lengths", [5000, 5100, 5200, 5300], unit="[μm]")
-    include_couplers = Param(pdt.TypeBoolean, "Include couplers between qubits", True)
 
     def build(self):
 

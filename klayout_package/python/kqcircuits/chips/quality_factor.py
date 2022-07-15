@@ -30,10 +30,13 @@ from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
 class QualityFactor(Chip):
     """The PCell declaration for a QualityFactor chip."""
-    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589])
-    n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4])
-    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28, 3])
-    type_coupler = Param(pdt.TypeList, "Coupler type",
+    res_lengths = Param(pdt.TypeList, "Resonator lengths", [5434, 5429, 5374, 5412, 5493, 5589], unit="[μm]",
+                        docstring="Physical length of resonators [μm]")
+    n_fingers = Param(pdt.TypeList, "Number of fingers of the coupler", [4, 4, 2, 4, 4, 4],
+                      docstring="Fingers in planar capacitors")
+    l_fingers = Param(pdt.TypeList, "Length of fingers", [23.1, 9.9, 14.1, 10, 21, 28], unit="[μm]",
+                      docstring="Length of the capacitor fingers [μm]")
+    type_coupler = Param(pdt.TypeList, "Coupler types",
                          ["interdigital", "interdigital", "interdigital", "gap", "gap", "gap"])
     n_ab = Param(pdt.TypeList, "Number of resonator airbridges", [5, 0, 5, 5, 5, 5])
     res_term = Param(pdt.TypeList, "Resonator termination type",

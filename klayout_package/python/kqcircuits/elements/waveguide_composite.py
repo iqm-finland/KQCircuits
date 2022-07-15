@@ -176,6 +176,7 @@ class Node:
         return [Node.deserialize(node) for node in node_list]
 
 
+@add_parameters_from(WaveguideCoplanarTaper, taper_length=100)
 @add_parameters_from(Airbridge, "airbridge_type")
 @add_parameters_from(FlipChipConnectorRf)
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
@@ -225,7 +226,6 @@ class WaveguideComposite(Element):
                      pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1))
     gui_path_shadow = Param(pdt.TypeShape, "Hidden path to detect GUI operations",
                             pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1), hidden=True)
-    taper_length = Param(pdt.TypeDouble, "Taper length", 100, unit="μm")
     tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
 
     @classmethod
