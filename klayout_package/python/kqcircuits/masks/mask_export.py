@@ -78,7 +78,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     static_cell.write(str(chip_dir/f"{chip_name}.oas"), save_opts)
 
     # export netlist
-    export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json")
+    export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json", chip_cell)
     # calculate flip-chip bump count
     bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
     # find layer areas and densities

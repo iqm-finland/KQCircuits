@@ -28,10 +28,11 @@ from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 log = logging.getLogger(__name__)
 
 
-def export_cell_netlist(cell, filename):
+def export_cell_netlist(cell, filename, pcell=None):
     """ Exports netlist into `filename` in JSON
 
-    The file will have three sections: ``{"nets": {...}, "subcircuits": {...}, "circuits": {...}}``
+    The file will have four sections:
+    ``{"nets": {...}, "subcircuits": {...}, "circuits": {...}, "chip": {...}}``
 
     KLayout's `terminology <https://www.klayout.de/doc-qt5/manual/lvs_overview.html>`__ differs
     from the one used in typical EDA tools where we have components (resistors, capacitors, etc.),
@@ -52,10 +53,16 @@ def export_cell_netlist(cell, filename):
 
     The ``circuits`` section maps ``cell_name`` to a dictionary of the named Element's parameters.
 
+    If the Cell object is a Chip, the ``chip`` section contains bounding boxes of each face in the chip.
+
     Args:
         cell: pya Cell object
         filename: absolute path as convertible to string
+        pcell: pya PCell object. If None, an attempt is made to treat cell as pcell
     """
+    if pcell is None:
+        pcell = cell
+
     # get LayoutToNetlist object
     layout = cell.layout()
     shapes_iter = pya.RecursiveShapeIterator(layout, cell, [layout.layer(default_layers["b_ports"]),
@@ -79,12 +86,12 @@ def export_cell_netlist(cell, filename):
     circuit = ltn.netlist().circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
     if circuit:
         log.info(f"Exporting netlist to {filename}")
-        export_netlist(circuit, filename, ltn.internal_layout(), layout, cm)
+        export_netlist(circuit, filename, ltn.internal_layout(), layout, cm, pcell)
     else:
         log.info(f"No circuit found for {cell.display_title()}")
 
 
-def export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping):
+def export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping, pcell=None):
     """ Exports `circuit` into `filename` in JSON
 
     Args:
@@ -93,6 +100,7 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         internal_layout: pya layout object where the netlist cells are registered
         original_layout: pya Layout object where the original cells and pcells are registered
         cell_mapping: CellMapping object as given by pya LayoutToNetlist object
+        pcell: pya PCell object from which circuit was extracted, if available
 
     """
     # first flatten subcircuits mentioned in elements to breakdown
@@ -150,9 +158,24 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
     for internal_cell in sorted(used_internal_cells, key=lambda cell: cell.name):
         circuits_for_export[internal_cell.name] = extract_circuits(cell_mapping, internal_cell, original_layout)
 
+    chip_for_export = {}
+    if pcell is not None and pcell.pcell_declaration() is not None:
+        chip_params = pcell.pcell_parameters_by_name()
+        if {'frames_enabled', 'face_boxes', 'face_ids', 'box'} <= set(chip_params.keys()):
+            for face in chip_params['frames_enabled']:
+                face_box = chip_params['face_boxes'][int(face)]
+                if face_box is None:
+                    face_box = chip_params['box']
+                face_id = chip_params['face_ids'][int(face)]
+                chip_for_export[f'{face_id}_face_dimensions'] = face_box
+
     with open(str(filename), 'w') as fp:
-        json.dump({"nets": nets_for_export, "subcircuits": subcircuits_for_export, "circuits": circuits_for_export}, fp,
-                  cls=GeometryJsonEncoder, indent=4)
+        json.dump({
+            "nets": nets_for_export,
+            "subcircuits": subcircuits_for_export,
+            "circuits": circuits_for_export,
+            "chip": chip_for_export
+        }, fp, cls=GeometryJsonEncoder, indent=4)
 
 
 def extract_nets(net):
