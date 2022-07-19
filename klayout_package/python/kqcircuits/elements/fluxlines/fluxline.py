@@ -20,7 +20,6 @@ from autologging import logged
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
 from kqcircuits.defaults import default_fluxline_type
 from kqcircuits.elements.fluxlines import fluxline_type_choices
@@ -30,39 +29,16 @@ from kqcircuits.elements.fluxlines import fluxline_type_choices
 class Fluxline(Element):
     """Base class for fluxline objects without actual produce function."""
 
-    fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_fluxline_type, choices=fluxline_type_choices)
+    default_type = default_fluxline_type
+
+    fluxline_type = Param(pdt.TypeString, "Fluxline Type", default_type, choices=fluxline_type_choices)
     fluxline_width = Param(pdt.TypeDouble, "Fluxline width", 18, unit="μm")
     fluxline_gap_width = Param(pdt.TypeDouble, "Fluxline gap width", 2, unit="μm")
 
     @classmethod
     def create(cls, layout, library=None, fluxline_type=None, **parameters):
-        """Create a Fluxline cell in layout.
-
-        If fluxline_type is unknown the default is returned.
-
-        Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.
-
-        Args:
-            layout: pya.Layout object where this cell is created
-            library: LIBRARY_NAME of the calling PCell instance
-            fluxline_type (str): name of the Fluxline subclass or manually designed cell
-            **parameters: PCell parameters for the element as keyword arguments
-
-        Returns:
-            the created fluxline cell
-        """
-
-        if fluxline_type is None:
-            fluxline_type = to_library_name(cls.__name__)
-
-        library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
-        if fluxline_type in library_layout.pcell_names():   #code generated
-            pcell_class = type(library_layout.pcell_declaration(fluxline_type))
-            return Element._create_cell(pcell_class, layout, library, **parameters)
-        elif library_layout.cell(fluxline_type):    # manually designed
-            return layout.create_cell(fluxline_type, cls.LIBRARY_NAME)
-        else:   # fallback is the default
-            return Fluxline.create(layout, library, fluxline_type=default_fluxline_type, **parameters)
+        """Create a Fluxline cell in layout."""
+        return cls.create_subtype(layout, library, fluxline_type, **parameters)[0]
 
     def _insert_fluxline_shapes(self, left_gap, right_gap):
         """Inserts the gap shapes to the cell.

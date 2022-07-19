@@ -19,7 +19,6 @@
 from autologging import logged
 
 from kqcircuits.elements.element import Element
-from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.defaults import default_squid_type
 from kqcircuits.squids import squid_type_choices
@@ -41,6 +40,8 @@ class Squid(Element):
     LIBRARY_DESCRIPTION = "Library for SQUIDs."
     LIBRARY_PATH = "squids"
 
+    default_type = default_squid_type
+
     squid_type = Param(pdt.TypeString, "SQUID Type", default_squid_type, choices=squid_type_choices)
     junction_width = Param(pdt.TypeDouble, "Junction width for code generated squids", 0.02, unit="μm",
                            docstring="Junction width (only used for code generated squids)")
@@ -48,36 +49,5 @@ class Squid(Element):
 
     @classmethod
     def create(cls, layout, library=None, squid_type=None, **parameters):
-        """Create cell for a squid in layout.
-
-        The squid cell is created either from a pcell class or a from a manual design file, depending on squid_type. If
-        squid_type does not correspond to any squid, an empty "NoSquid" squid is returned.
-
-        Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.
-
-        Args:
-            layout: pya.Layout object where this cell is created
-            library: LIBRARY_NAME of the calling PCell instance
-            squid_type (str): name of the squid class or of the manually designed squid cell
-            **parameters: PCell parameters for the element as keyword arguments
-
-        Returns:
-            the created squid cell
-        """
-
-        if squid_type is None:
-            squid_type = to_library_name(cls.__name__)
-
-        if squid_type:
-            squids_library = load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]
-            library_layout = squids_library.layout()
-            if squid_type in library_layout.pcell_names():
-                # if code-generated, create like a normal element
-                pcell_class = squids_library.layout().pcell_declaration(squid_type).__class__
-                return Element._create_cell(pcell_class, layout, library, **parameters)
-            elif library_layout.cell(squid_type):
-                # if manually designed squid, load from squids.oas
-                return layout.create_cell(squid_type, cls.LIBRARY_NAME)
-
-        # fallback to NoSquid if there is no squid corresponding to squid_type
-        return layout.create_cell("NoSquid", Squid.LIBRARY_NAME)
+        """Create cell for a squid in layout."""
+        return cls.create_subtype(layout, library, squid_type, **parameters)[0]

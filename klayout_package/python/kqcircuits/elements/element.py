@@ -114,6 +114,36 @@ class Element(pya.PCellDeclarationHelper):
         return cell
 
     @classmethod
+    def create_subtype(cls, layout, library=None, subtype=None, **parameters):
+        """Create cell from a base class using the specified sub-class type.
+
+        This is to be called from the ``create()`` function of base classes of other elements. It
+        takes care of creating a code generated or a file based cell.
+
+        Args:
+            layout: pya.Layout object where this cell is created
+            library: LIBRARY_NAME of the calling PCell instance
+            subtype: name (str) of the desired sub-class of ``cls``
+            **parameters: PCell parameters for the element as keyword arguments
+
+        Return:
+            tuple of the cell instance and a boolean indicating code generated cell
+        """
+
+        library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
+
+        if subtype is None:  # derive type from the class name
+            subtype = to_library_name(cls.__name__)
+
+        if subtype in library_layout.pcell_names():   # code generated
+            pcell_class = type(library_layout.pcell_declaration(subtype))
+            return Element._create_cell(pcell_class, layout, library, **parameters), True
+        elif library_layout.cell(subtype):    # manually designed
+            return layout.create_cell(subtype, cls.LIBRARY_NAME), False
+        else:   # fallback is the default
+            return cls.create_subtype(layout, library, cls.default_type, **parameters)
+
+    @classmethod
     def create_with_refpoints(cls, layout, library=None, refpoint_transform=pya.DTrans(), rec_levels=None,
                               **parameters):
         """Convenience function to create cell and return refpoints too.

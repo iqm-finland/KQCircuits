@@ -22,8 +22,6 @@ from kqcircuits.squids.squid import Squid
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.util.library_helper import load_libraries, to_library_name
-from kqcircuits.elements.element import Element
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
 
@@ -33,6 +31,8 @@ from kqcircuits.defaults import default_junction_test_pads_type
 @add_parameters_from(Qubit, "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
+
+    default_type = default_junction_test_pads_type
 
     pad_width = Param(pdt.TypeDouble, "Pad width", 500, unit="μm")
     area_height = Param(pdt.TypeDouble, "Area height", 1900, unit="μm")
@@ -50,33 +50,8 @@ class JunctionTestPads(TestStructure):
 
     @classmethod
     def create(cls, layout, library=None, junction_test_type=None, **parameters):
-        """Create a JunctionTestPads cell in layout.
-
-        If junction_test_type is unknown the default is returned.
-
-        Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.
-
-        Args:
-            layout: pya.Layout object where this cell is created
-            library: LIBRARY_NAME of the calling PCell instance
-            junction_test_type (str): name of the JunctionTestPads subclass
-            **parameters: PCell parameters for the element as keyword arguments
-
-        Returns:
-            the created JunctionTestPads cell
-        """
-
-        if junction_test_type is None:
-            junction_test_type = to_library_name(cls.__name__)
-
-        library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
-        if junction_test_type in library_layout.pcell_names():   #code generated
-            pcell_class = type(library_layout.pcell_declaration(junction_test_type))
-            return Element._create_cell(pcell_class, layout, library, **parameters)
-        elif library_layout.cell(junction_test_type):    # manually designed
-            return layout.create_cell(junction_test_type, cls.LIBRARY_NAME)
-        else:   # fallback is the default
-            return JunctionTestPads.create(layout, library, default_junction_test_pads_type, **parameters)
+        """Create a JunctionTestPads cell in layout."""
+        return cls.create_subtype(layout, library, junction_test_type, **parameters)[0]
 
     def _produce_impl(self):
 
@@ -181,7 +156,6 @@ class JunctionTestPads(TestStructure):
            arm_width: width of the arms
            only_arms: Boolean argument that allows to choose whether to create the arms and the squid device or
                             only the arms
-
         """
 
         extra_arm_length = self.extra_arm_length

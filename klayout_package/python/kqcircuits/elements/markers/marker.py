@@ -18,7 +18,6 @@
 
 from autologging import logged
 
-from kqcircuits.util.library_helper import load_libraries, to_library_name
 from kqcircuits.elements.element import Element
 from kqcircuits.defaults import default_marker_type
 
@@ -27,28 +26,9 @@ from kqcircuits.defaults import default_marker_type
 class Marker(Element):
     """Base Class for Markers."""
 
+    default_type = default_marker_type
+
     @classmethod
     def create(cls, layout, library=None, marker_type=None, **parameters):
-        """Create a Marker cell in layout.
-
-        Args:
-            layout: pya.Layout object where the cell is created
-            library: LIBRARY_NAME of the calling PCell instance
-            marker_type: (str): name of the Marker subclass
-            **parameters: PCell parameters as keyword arguments
-
-        Returns:
-            the created Marker cell
-        """
-
-        if marker_type is None:
-            marker_type = to_library_name(cls.__name__)
-
-        library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
-        if marker_type in library_layout.pcell_names():
-            pcell_class = type(library_layout.pcell_declaration(marker_type))
-            return Element._create_cell(pcell_class, layout, library, **parameters)
-        elif marker_type != default_marker_type:
-            return Marker.create(layout, library, marker_type=default_marker_type, **parameters)
-        else:
-            raise ValueError(f'Unknown Marker subclass "{marker_type}"!')
+        """Create a Marker cell in layout."""
+        return cls.create_subtype(layout, library, marker_type, **parameters)[0]

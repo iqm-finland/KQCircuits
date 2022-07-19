@@ -20,7 +20,6 @@ from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_angle
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.util.library_helper import load_libraries
 from kqcircuits.defaults import default_airbridge_type, default_layers
 from kqcircuits.elements.airbridges import airbridge_type_choices
 from kqcircuits.elements.element import Element, get_refpoints
@@ -43,40 +42,17 @@ class Airbridge(Element):
 
     @classmethod
     def create(cls, layout, library=None, airbridge_type=None, **parameters):
-        """Create cell for an airbridge in layout.
+        """Create cell for an airbridge in layout."""
+        cell, code_generated = cls.create_subtype(layout, library, airbridge_type, **parameters)
 
-        The cell is created either from a pcell class or a from a manual design file, depending on airbridge_type.
-        If airbridge_type is unknown the default is returned.
-
-        Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.
-
-        Args:
-            layout: pya.Layout object where this cell is created
-            library: LIBRARY_NAME of the calling PCell instance
-            airbridge_type (str): name of the Airbridge subclass or manually designed cell
-            **parameters: PCell parameters for the element as keyword arguments
-
-        Returns:
-            the created airbridge cell
-        """
-
-        if airbridge_type is None:
-            airbridge_type = cls.default_type
-
-        library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
-        if airbridge_type in library_layout.pcell_names():     # code generated, create like a normal element
-            pcell_class = type(library_layout.pcell_declaration(airbridge_type))
-            return Element._create_cell(pcell_class, layout, library, **parameters)
-        elif library_layout.cell(airbridge_type):              # manually designed, load from .oas
-            cell = layout.create_cell(airbridge_type, cls.LIBRARY_NAME)
-            # transform cell to have 'port_a' at (0, l/2) and 'port_b' at (0, -l/2), where l is distance between ports
+        # transform cell to have 'port_a' at (0, l/2) and 'port_b' at (0, -l/2), where l is distance between ports
+        if not code_generated:
             ref_points = get_refpoints(layout.layer(default_layers["refpoints"]), cell)
             center = (ref_points['port_a'] + ref_points['port_b']) / 2
             orientation = get_angle(ref_points['port_a'] - ref_points['port_b'])
             cell.transform(pya.DCplxTrans(1.0, 90 - orientation, False, -center))
-            return cell
-        else:                                               # fallback is the default
-            return Airbridge.create(layout, library, airbridge_type=cls.default_type, **parameters)
+
+        return cell
 
     def _produce_bottom_pads(self, pts):
         shape = pya.DPolygon(pts)
