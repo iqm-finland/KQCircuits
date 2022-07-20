@@ -14,10 +14,11 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
 import copy
 import os
-import string
 import subprocess
+from string import Template
 from inspect import isclass
 from multiprocessing.pool import ThreadPool
 from pathlib import Path
@@ -26,7 +27,7 @@ from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_bar_format, TMP_PATH, PY_PATH, STARTUPINFO, klayout_executable_command
+from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, klayout_executable_command
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 
@@ -79,7 +80,7 @@ class MaskSet:
         self.mask_layouts = []
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
-        self._thread_create_chip_template = PY_PATH / 'kqcircuits/util/create_chip_template.txt'
+        self.template_imports = []
         self._thread_create_chip_parameters = {}
 
     def add_mask_layout(self, chips_map, face_id="b", mask_layout_type=MaskLayout, **kwargs):
@@ -124,8 +125,7 @@ class MaskSet:
         else:
             print(f"Building chip variants in parallel using {threads} threads...")
 
-            with open(self._thread_create_chip_template, 'r') as f:
-                template = string.Template(f.read())
+            template = self._get_template()
 
             class ChipSubprocessException(Exception):
                 def __init__(self, err, chip_variant):
@@ -387,3 +387,57 @@ class MaskSet:
         load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
         self.layout.read(file_name, load_opts)
         self.chips_map_legend.update({variant_name: self.layout.top_cells()[-1]})
+
+    def _get_template(self):
+        """Returns an updated template string."""
+
+        temp = _CREATE_CHIP_TEMPLATE
+        for i in self.template_imports:
+            temp = temp.replace('#TEMPLATE_IMPORT#', i, 1)
+        return Template(temp)
+
+
+# Template for creating and exporting a chip during mask generation.
+#
+# This is used in _get_template() to create a template used in add_chips() to create chips in
+# parallel. The "#TEMPLATE_IMPORT#" strings in it will be replaced by "template_imports" elements
+# to update the template itself.
+
+_CREATE_CHIP_TEMPLATE = """
+
+import logging
+import sys
+import traceback
+#TEMPLATE_IMPORT#
+from pathlib import Path
+from kqcircuits.defaults import TMP_PATH
+from kqcircuits.masks.mask_export import export_chip
+from kqcircuits.pya_resolver import pya
+from kqcircuits.util import macro_prepare
+from kqcircuits.util.log_router import route_log
+${element_import}
+
+try:
+    logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
+    chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
+    route_log(filename=chip_path/"${variant_name}.log")
+
+    layout, _, _ = macro_prepare.prep_empty_layout()
+    top_cell = layout.create_cell("Top Cell")
+
+    # cell definition and arbitrary code here
+    ${create_element}
+
+    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+
+    # export chip files
+    export_chip(cell, "${variant_name}", chip_path, layout, ${export_drc})
+
+#TEMPLATE_IMPORT#
+
+except Exception as err:
+    print(traceback.format_exc(), file=sys.stderr)
+    pya.Application.instance().exit(1)
+pya.Application.instance().exit(0)
+
+"""
