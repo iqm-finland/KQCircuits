@@ -1,3 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Waveguides</description>
+ <version/>
+ <category>drc</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <group-name>drc_scripts</group-name>
+ <menu-path>tools_menu.drc.end</menu-path>
+ <interpreter>dsl</interpreter>
+ <dsl-interpreter-name>drc-dsl-xml</dsl-interpreter-name>
+ <text>
 # This code is part of KQCircuits
 # Copyright (C) 2022 IQM Finland Oy
 #
@@ -21,16 +38,15 @@ ERR_MARGIN = 0.01  # 10nm
 
 source($input)
 report("DRC report", $output)
-# To run this script in KLayout macro IDE, copy it to the KLayout drc folder, comment out the two lines above, and
-# uncomment the line below.
-#report("DRC report")
 
 b_waveguide_path = input(16, 0).sized(-ERR_MARGIN)
 b_metal_gap_wo_grid = input(11, 1)
 t_waveguide_path = input(46, 0).sized(-ERR_MARGIN)
 t_metal_gap_wo_grid = input(41, 1)
 
-b_waveguide_overlap_violations = b_waveguide_path & b_metal_gap_wo_grid
+b_waveguide_overlap_violations = b_waveguide_path &amp; b_metal_gap_wo_grid
 b_waveguide_overlap_violations.output("Waveguide b", "Waveguide crosses other things")
-t_waveguide_overlap_violations = t_waveguide_path & t_metal_gap_wo_grid
+t_waveguide_overlap_violations = t_waveguide_path &amp; t_metal_gap_wo_grid
 t_waveguide_overlap_violations.output("Waveguide t", "Waveguide crosses other things")
+</text>
+</klayout-macro>

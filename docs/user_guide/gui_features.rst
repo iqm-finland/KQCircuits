@@ -113,3 +113,8 @@ drop-down menu:
   illustrated in the end of previous section's video. Note that this macro does
   not reload the KQCircuits :git_url:`defaults <klayout_package/python/kqcircuits/defaults.py>`
   file.
+
+DRC scripts are accessible from KLayout's "**Tools -> DRC** drop-down menu:
+
+- **Area and Density** -- Calculate area and density for everything in view, in every layer.
+- **Waveguide** -- Detects Waveguides crossing anything in base_metal_gap_wo_grid layer.

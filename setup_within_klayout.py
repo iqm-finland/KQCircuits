@@ -60,6 +60,7 @@ if __name__ == "__main__":
     link_map = (
         ("klayout_package/python/kqcircuits", "kqcircuits"),
         ("klayout_package/python/scripts", "kqcircuits_scripts"),
+        ("klayout_package/python/drc/", "drc"),
     )
 
     configdir = klayout_configdir(kqc_root_path)

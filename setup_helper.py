@@ -31,8 +31,11 @@ def klayout_configdir(root_path, configdir=""):
             raise SystemError("Error: unsupported operating system")
         configdir = os.path.join(os.path.expanduser("~"), config_dir_name)
 
+    # Directories may not exist, create them, if needed.
+    if not os.path.exists(f"{configdir}/drc"):
+        os.makedirs(f"{configdir}/drc")
     klayout_python_path = f"{configdir}/python"
-    if not os.path.exists(klayout_python_path):  # directory does not exist, create it.
+    if not os.path.exists(klayout_python_path):
         os.makedirs(klayout_python_path)
         return configdir
 
@@ -50,11 +53,18 @@ def klayout_configdir(root_path, configdir=""):
 
 # This function createst KLayout symlinks. Used by setup_within_klayout.py.
 def setup_symlinks(root_path, configdir, link_map):
-    klayout_python_path = f"{configdir}/python"
-
     for target, name in link_map:
-        link_name = os.path.join(klayout_python_path, name)
         link_target = os.path.join(root_path, target)
+
+        if target.endswith("/"):  # link all files under "target" dir
+            for f in os.listdir(link_target):
+                link_name =  os.path.join(configdir, name, f)
+                if os.path.lexists(link_name):
+                    os.unlink(link_name)
+                os.symlink(os.path.join(link_target, f), link_name)
+            continue
+
+        link_name = os.path.join(configdir, 'python', name)
         if os.path.lexists(link_name):
             os.unlink(link_name)
         os.symlink(link_target, link_name, target_is_directory=True)
