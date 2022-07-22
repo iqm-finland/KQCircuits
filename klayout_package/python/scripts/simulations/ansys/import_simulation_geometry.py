@@ -447,7 +447,7 @@ if not use_ansys_project_template:
              "RangeStart:=", str(setup['sweep_start']) + setup['frequency_units'],
              "RangeEnd:=", str(setup['sweep_end']) + setup['frequency_units'],
              "RangeCount:=", setup['sweep_count'],
-             "Type:=", "Interpolating",
+             "Type:=", setup['sweep_type'],
              "SaveFields:=", False,
              "SaveRadFields:=", False,
              "InterpTolerance:=", 0.5,

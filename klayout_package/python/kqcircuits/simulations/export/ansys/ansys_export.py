@@ -42,7 +42,7 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
-                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101,
+                      sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                       export_processing=None, ansys_project_template=None):
     """
     Export Ansys simulation into json and gds files.
@@ -63,6 +63,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         sweep_start: The lowest frequency in the sweep.
         sweep_end: The highest frequency in the sweep.
         sweep_count: Number of frequencies in the sweep.
+        sweep_type: choices are "interpolating", "discrete" or "fast"
         export_processing: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
 
@@ -101,7 +102,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'sweep_enabled': sweep_enabled,
             'sweep_start': sweep_start,
             'sweep_end': sweep_end,
-            'sweep_count': sweep_count
+            'sweep_count': sweep_count,
+            'sweep_type': sweep_type,
         },
         'export_processing': export_processing
     }
@@ -178,7 +180,7 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folder='scripts', file_prefix='simulation',
                  frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                  maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
-                 sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101,
+                 sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                  exit_after_run=False, ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  use_rel_path=True, export_processing=None, ansys_project_template=None):
@@ -203,6 +205,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         sweep_start: The lowest frequency in the sweep.
         sweep_end: The highest frequency in the sweep.
         sweep_count: Number of frequencies in the sweep.
+        sweep_type: choices are "interpolating", "discrete" or "fast"
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
         ansys_executable: Path to the Ansys Electronics Desktop executable.
         import_script: Name of import script file.
@@ -226,6 +229,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                                 minimum_converged_passes=minimum_converged_passes,
                                                 sweep_enabled=sweep_enabled, sweep_start=sweep_start,
                                                 sweep_end=sweep_end, sweep_count=sweep_count,
+                                                sweep_type=sweep_type,
                                                 export_processing=export_processing,
                                                 ansys_project_template=ansys_project_template))
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
