@@ -522,7 +522,7 @@
 <code class="docutils literal notranslate"><span class="pre">Element</span></code>, that in turn is derived from <a class="reference external" href="https://www.klayout.de/doc-qt4/code/class_PCellDeclarationHelper.html">PCellDeclarationHelper</a>.
 There exist also more specific base classes such as <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, <code class="docutils literal notranslate"><span class="pre">Qubit</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TestStructure</span></code>.</p>
-<div class="figure align-center" id="id2">
+<div class="figure align-center" id="id1">
 <div class="graphviz"><object data="../_images/graphviz-403c757e58b86f704039425e98a81b0a7449d528.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph {
     rankdir=&quot;LR&quot;
@@ -581,7 +581,7 @@ There exist also more specific base classes such as <code class="docutils litera
     FlipChipConnector -&gt; FlipChipConnectorDc
     Tsv -&gt; TsvEllipse
 }</p></object></div>
-<p class="caption"><span class="caption-text">Class Inheritance Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Class Inheritance Diagram</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </div>
 <p>All base classes (black) are shown, abstracts are ovals, concretes are
 rectangles. Only one example “leaf” class (green) is shown for most base classes.
@@ -678,14 +678,14 @@ class for all other classes in the library, for example all classes in the
 <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Library</span></code> inherit from the <code class="docutils literal notranslate"><span class="pre">Chip</span></code> base class. Each base class contains
 <code class="docutils literal notranslate"><span class="pre">LIBRARY_NAME</span></code> and <code class="docutils literal notranslate"><span class="pre">LIBRARY_DESCRIPTION</span></code> constants, so that these are
 available for all derived classes.</p>
-<div class="figure align-center" id="id3">
+<div class="figure align-center" id="id2">
 <div class="graphviz"><object data="../_images/graphviz-eafae24b3004a0deb055750c2e18d0c3591823b1.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph Libraries {
 &quot;Element Library&quot; -&gt; {&quot;SQUID Library&quot;, &quot;Qubit Library&quot;, &quot;Chip Library&quot;, &quot;TestStructure Library&quot;}
 &quot;SQUID Library&quot; -&gt; &quot;TestStructure Library&quot; -&gt; &quot;Chip Library&quot;
 &quot;SQUID Library&quot; -&gt; &quot;Qubit Library&quot; -&gt; &quot;Chip Library&quot;
 }</p></object></div>
-<p class="caption"><span class="caption-text">Library Dependency Diagram</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p class="caption"><span class="caption-text">Library Dependency Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>
 <p>Libraries have a strict dependency order defined in <code class="docutils literal notranslate"><span class="pre">kqc_library_names</span></code> in
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>. KLayout loads them in this order. Classes <em>can not</em> use other

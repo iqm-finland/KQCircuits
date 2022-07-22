@@ -572,11 +572,12 @@
         <span class="n">chip_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">chip_cell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span>
         <span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
 
-    <span class="c1"># export .oas file with pcells (except chip cell itself will be static)</span>
-    <span class="c1"># it seems like the full hierarchy of the chip is exported only if it is converted to static</span>
-    <span class="c1"># TODO this seems like a bug - check and report</span>
+    <span class="c1"># export .oas file with pcells (requires exporting a cell one hierarchy level above chip pcell)</span>
+    <span class="n">dummy_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">chip_name</span><span class="p">)</span>
+    <span class="n">dummy_cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span>
+    <span class="n">_export_cell</span><span class="p">(</span><span class="n">chip_dir</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">_with_pcells.oas&quot;</span><span class="p">,</span> <span class="n">dummy_cell</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
+    <span class="n">dummy_cell</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
     <span class="n">static_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">convert_cell_to_static</span><span class="p">(</span><span class="n">chip_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()))</span>
-    <span class="n">_export_cell</span><span class="p">(</span><span class="n">chip_dir</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">_with_pcells.oas&quot;</span><span class="p">,</span> <span class="n">static_cell</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
 
     <span class="c1"># save the chip .oas file with all layers and only containing static cells</span>
     <span class="n">save_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">SaveLayoutOptions</span><span class="p">()</span>

@@ -525,12 +525,12 @@ writing Python code for new elements.</p>
 <div class="section" id="file-system-hierarchy">
 <h2>File system hierarchy<a class="headerlink" href="#file-system-hierarchy" title="Permalink to this headline">¶</a></h2>
 <p>In the KQCircuits root folder the most important folder for most users is the
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package">klayout_package</a> folder, which is also all that is included in the Salt
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package">klayout_package</a> folder, which is also all that is included in the Salt
 package. Other folders are mainly for automatic tests and documentation.
-KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits">kqcircuits</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts">scripts</a> folders in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python">klayout_package/python</a>. These two folders are also (after installation
-process) linked as symbolic links <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits">kqcircuits</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts">kqcircuits_scripts</a>
-in the <code class="docutils literal notranslate"><span class="pre">~/.klayout`</span> <span class="pre">or</span> <span class="pre">``~/KLayout</span></code> folder.</p>
+KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits">kqcircuits</a> and
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts">scripts</a> folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python">klayout_package/python</a>.
+These two folders are also (after installation process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and
+<code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout`</span> <span class="pre">or</span> <span class="pre">``~/KLayout</span></code> folder.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits PCell classes and many
 other modules used by them or by scripts. Folders directly under under
 <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> containing PCell classes correspond to different PCell
@@ -576,8 +576,8 @@ need to have:</p>
 </div>
 <p>in a file <code class="docutils literal notranslate"><span class="pre">my_qubit.py</span></code> in <code class="docutils literal notranslate"><span class="pre">kqcircuits/qubits</span></code> folder. The registration
 of PCell classes to different libraries is handled by KQCircuits code in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a>  and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>. For more information about PCell
-libraries see the KLayout documentation pages
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>. For more information about PCell libraries see the KLayout
+documentation pages
 <a class="reference external" href="https://www.klayout.de/doc-qt5/about/about_libraries.html">https://www.klayout.de/doc-qt5/about/about_libraries.html</a>,
 <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Library.html">https://www.klayout.de/doc-qt5/code/class_Library.html</a>, and
 <a class="reference external" href="https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426">https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426</a> (in Ruby).</p>
@@ -804,8 +804,7 @@ placed in:</p>
 </div>
 <div class="section" id="opening-element-or-chip-from-an-ide">
 <h2>Opening <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> from an IDE<a class="headerlink" href="#opening-element-or-chip-from-an-ide" title="Permalink to this headline">¶</a></h2>
-<p>You can use <cite>create_element_from_path.py</cite> in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/create_element_from_path.py">/klayout_package/python/scripts/</a>
+<p>You can use <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/create_element_from_path.py">klayout_package/python/scripts/create_element_from_path.py</a>
 to open an <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> in KLayout from your IDE (or just straight from the command-line).
 The script is used as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">klayout_app</span> <span class="o">-</span><span class="n">e</span> <span class="o">-</span><span class="n">rx</span> <span class="o">-</span><span class="n">rm</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">create_element_from_path</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">rd</span> <span class="n">element_path</span><span class="o">=</span><span class="n">kqcircuits</span><span class="o">/</span><span class="n">chips</span><span class="o">/</span><span class="n">demo</span><span class="o">.</span><span class="n">py</span>

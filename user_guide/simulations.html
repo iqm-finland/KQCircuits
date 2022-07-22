@@ -574,7 +574,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">WaveguideSimulation</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class and it’s subclasses are located in folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits/simulations">kqcircuits/simulations/</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class and it’s subclasses are located in folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/simulations">kqcircuits/simulations/</a>.</p>
 </div>
 </div>
 <div class="section" id="ansys-export">
@@ -585,7 +585,7 @@
 <span class="n">json</span> <span class="o">=</span> <span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Performing simulations requires Ansys-scripts, which are located at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a>. Usually, it’s convenient to copy this folder to the export path by calling <code class="docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory</span></code>:</p>
+<p>Performing simulations requires Ansys-scripts, which are located at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a>. Usually, it’s convenient to copy this folder to the export path by calling <code class="docutils literal notranslate"><span class="pre">copy_ansys_scripts_to_directory</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">copy_ansys_scripts_to_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -599,7 +599,7 @@
 </div>
 <div class="section" id="ansys-scripts">
 <h3>Ansys scripts<a class="headerlink" href="#ansys-scripts" title="Permalink to this headline">¶</a></h3>
-<p>The folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.</p>
+<p>The folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.</p>
 <p>The scripts are developed and tested with Ansys Electronic Desktop 2021 R1 on Windows x64.</p>
 <p>The primary use case is to estimate capacitive couplings between different elements in the layout, where each element
 of interest has a port in the simulation. The capacitances are represented as a matrix, where the <em>Cij</em> is the
@@ -673,7 +673,7 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <p>Usage of Gmsh and Elmer export is similar to Ansys export.
 The <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object can be used with function <code class="docutils literal notranslate"><span class="pre">export_elmer</span></code> to export all necessary files to produce Gmsh/Elmer
 simulations.</p>
-<p>There is an example at ‘klayout_package/python/scripts/simulations/waveguides_sim_compare.py’, which creates a simulation folder
+<p>There is an example at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/waveguides_sim_compare.py">klayout_package/python/scripts/simulations/waveguides_sim_compare.py</a>, which creates a simulation folder
 with simulation scripts. The folder is created to <cite>$TMP</cite> (usually <cite>kqcircuits/tmp</cite>). The contents of the folder is something like:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>waveguides_sim_elmer
 ├── COMMIT_REFERENCE

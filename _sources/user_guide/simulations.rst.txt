@@ -33,8 +33,8 @@ Create an instance of ``Simulation``::
 
 The ``simulation`` object is needed for Ansys export and Sonnet export (more details in following sections). Alternatively, run following macros in Klayout:
 
-* `scripts/macros/export/export_ansys.lym <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_ansys.lym>`_
-* `scripts/macros/export/export_sonnet.lym <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_sonnet.lym>`_
+* :git_url:`scripts/macros/export/export_ansys.lym <klayout_package/python/scripts/macros/export/export_ansys.lym>`
+* :git_url:`scripts/macros/export/export_sonnet.lym <klayout_package/python/scripts/macros/export/export_sonnet.lym>`
 
 Geometry from KQCircuits library
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,7 +63,7 @@ Create an instance of ``Simulation``::
 
     simulation = WaveguideSimulation(layout, name='Dev', box=pya.DBox(pya.DPoint(0, 0), pya.DPoint(500, 500)))
 
-``Simulation`` class and it's subclasses are located in folder `kqcircuits/simulations/ <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/kqcircuits/simulations>`_.
+``Simulation`` class and it's subclasses are located in folder :git_url:`kqcircuits/simulations/ <klayout_package/python/kqcircuits/simulations>`.
 
 Ansys export
 ------------
@@ -74,7 +74,7 @@ Once the ``simulation`` object is created, call function ``export_ansys_json`` t
     path = "C:\\Your\\Path\\Here\\"
     json = export_ansys_json(simulation, path, ansys_tool='hfss')
 
-Performing simulations requires Ansys-scripts, which are located at `scripts/simulations/ansys/ <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys>`_. Usually, it's convenient to copy this folder to the export path by calling ``copy_ansys_scripts_to_directory``::
+Performing simulations requires Ansys-scripts, which are located at :git_url:`scripts/simulations/ansys/ <klayout_package/python/scripts/simulations/ansys>`. Usually, it's convenient to copy this folder to the export path by calling ``copy_ansys_scripts_to_directory``::
 
     copy_ansys_scripts_to_directory(path)
 
@@ -89,7 +89,7 @@ Alternatively, you can call ``export_ansys`` to cover last three steps. This exp
 Ansys scripts
 ^^^^^^^^^^^^^
 
-The folder `scripts/simulations/ansys/ <https://github.com/iqm-finland/KQCircuits/tree/main/klayout_package/python/scripts/simulations/ansys>`_ contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.
+The folder :git_url:`scripts/simulations/ansys/ <klayout_package/python/scripts/simulations/ansys>` contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.
 
 The scripts are developed and tested with Ansys Electronic Desktop 2021 R1 on Windows x64.
 
@@ -101,13 +101,13 @@ capacitance between two ports *i* and *j*, and *Cii* is the capacitance between 
 Main scripts:
 """""""""""""
 
-* `import_simulation_geometry.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_simulation_geometry.py>`_
+* :git_url:`import_simulation_geometry.py <klayout_package/python/scripts/simulations/ansys/import_simulation_geometry.py>`
 
   Argument: path to json file exported by ``export_ansys_json``.
 
   Creates a new project, imports the geometry, defines ports/nets and materials, and sets up the analysis setup.
 
-* `create_capacitive_pi_model.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/create_capacitive_pi_model.py>`_
+* :git_url:`create_capacitive_pi_model.py <klayout_package/python/scripts/simulations/ansys/create_capacitive_pi_model.py>`
 
   No argument.
 
@@ -119,7 +119,7 @@ Main scripts:
   Similarly, the variables ``C_i_j`` give the capacitance between ports and from ports to ground,
   assuming a purely capacitive model. This assumption is valid as long as the resulting ``C_i_j`` are constant over frequency.
 
-* `export_solution_data.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_solution_data.py>`_
+* :git_url:`export_solution_data.py <klayout_package/python/scripts/simulations/ansys/export_solution_data.py>`
 
   No argument.
 
@@ -127,7 +127,7 @@ Main scripts:
   *projectname_results.json* contains all ``C_i_j`` and ``yy_i_j`` elements for all frequencies in the solution.
   In case of HFSS, *projectname_SMatrix.s2p* contains the S-parameters.
 
-* `import_and_simulate.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py>`_
+* :git_url:`import_and_simulate.py <klayout_package/python/scripts/simulations/ansys/import_and_simulate.py>`
 
   Argument: path to json file exported by ``export_ansys_json``.
 
@@ -135,7 +135,7 @@ Main scripts:
 
 
 Additional scripts for use cases other than capacitive coupling exist.
-These are enabled in `import_and_simulate.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py>`_ with a list of strings as parameters to ``export_ansys``,
+These are enabled in :git_url:`import_and_simulate.py <klayout_package/python/scripts/simulations/ansys/import_and_simulate.py>` with a list of strings as parameters to ``export_ansys``,
 e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (``.sNp``) files::
 
     export_ansys(..., export_processing=['tdr', 'snp_no_deembed'])
@@ -145,7 +145,7 @@ The optional scripts are listed below.
 Optional scripts:
 """""""""""""""""
 
-* `export_snp_no_deembed.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py>`_
+* :git_url:`export_snp_no_deembed.py <klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py>`
 
   No argument.
 
@@ -153,7 +153,7 @@ Optional scripts:
 
   Works only in HFSS.
 
-* `export_tdr.py <https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_tdr.py>`_
+* :git_url:`export_tdr.py <klayout_package/python/scripts/simulations/ansys/export_tdr.py>`
 
   No argument.
 
@@ -182,7 +182,7 @@ Usage of Gmsh and Elmer export is similar to Ansys export.
 The ``simulation`` object can be used with function ``export_elmer`` to export all necessary files to produce Gmsh/Elmer
 simulations.
 
-There is an example at 'klayout_package/python/scripts/simulations/waveguides_sim_compare.py', which creates a simulation folder
+There is an example at :git_url:`klayout_package/python/scripts/simulations/waveguides_sim_compare.py`, which creates a simulation folder
 with simulation scripts. The folder is created to `$TMP` (usually `kqcircuits/tmp`). The contents of the folder is something like::
 
     waveguides_sim_elmer

@@ -73,7 +73,7 @@ Update
 ------
 
 Updating an existing KQCircuits setup is easy. After updating KQCircuits code itself with ``git
-pull`` just run `setup_within_klayout.py <https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py>`_ again. This will take care of upgrading (or downgrading)
+pull`` just run :git_url:`setup_within_klayout.py` again. This will take care of upgrading (or downgrading)
 KQCircuit's Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits' dependencies in its own Python environment.
 
@@ -92,7 +92,7 @@ out KQCircuits under some different name::
 
     git clone https://github.com/iqm-finland/KQCircuits KQC_2nd
 
-KLayout needs to know about this secondary environment, run it with `startkl.py <https://github.com/iqm-finland/KQCircuits/blob/main/startkl.py>`_ or by manualy
+KLayout needs to know about this secondary environment, run it with :git_url:`startkl.py` or by manualy
 setting the environment variable ``KLAYOUT_HOME``::
 
     KLAYOUT_HOME=~/.klayout_alt/KQC_2nd klayout
@@ -107,7 +107,7 @@ To use KQCircuits in KLayout Editor, symlinks must be created from KLayout's
 python folder to your KQCircuits folder. Some Python packages must also be
 installed for KQCircuits to work. The details of these steps for different
 operating systems are explained in the following subsections. The script
-`setup_within_klayout.py <https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py>`_ used in the previous section attempts to
+:git_url:`setup_within_klayout.py` used in the previous section attempts to
 automatically do the same steps as explained below.
 
 Linux or MacOS
@@ -119,7 +119,7 @@ Create a symlink from KLayout to the kqcircuits package and scripts::
     ln -s /Path_to_KQCircuits/klayout_package/python/scripts ~/.klayout/python/kqcircuits_scripts
 
 To install the required packages, open a terminal in your KQCircuits folder
-(which contains `requirements_within_klayout_unix.txt <https://github.com/iqm-finland/KQCircuits/blob/main/requirements_within_klayout_unix.txt>`_), and write::
+(which contains :git_url:`requirements_within_klayout_unix.txt`), and write::
 
     pip3 install -r requirements_within_klayout_unix.txt
 
@@ -139,7 +139,7 @@ administrator privileges, and do::
     mklink /D 'kqcircuits_scripts' "Path_to_KQCircuits\klayout_package\python\scripts"
 
 Install the required packages by opening command prompt in your KQCircuits
-folder (which contains `requirements_within_klayout_windows.txt <https://github.com/iqm-finland/KQCircuits/blob/main/requirements_within_klayout_windows.txt>`_), and writing::
+folder (which contains :git_url:`requirements_within_klayout_windows.txt`), and writing::
 
     pip install -r requirements_within_klayout_windows.txt --target=%HOMEPATH%\AppData\Roaming\KLayout\lib\python3.7\site-packages
 
