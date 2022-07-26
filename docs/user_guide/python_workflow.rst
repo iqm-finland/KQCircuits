@@ -314,8 +314,8 @@ This can be very useful to see "chip-level" refpoints only.
 Faces
 -----
 
-Elements support a concept of faces, which is used for 3D-integrated chips to
-place shapes in layers belonging to a certain chip face. For example, an
+Elements support a concept of **faces**, used for 3D-integrated chips to place shapes in layers
+belonging to different sides of (possibly) different wafers. For example, an
 element may create shapes in face 0 and face 1, and the ``face_ids`` parameter
 of the element determines which actual chip faces the faces 0 and 1 refer to.
 By default, KQC elements have ``face_ids=["b","t","c"]``, so face 0 would be
@@ -373,14 +373,47 @@ KLayout Setup menu. The layer properties file can be edited directly or by
 modifying the layers list in GUI and saving them using KLayout ``File -> Save
 Layer Properties``.
 
+KQCircuit's Layers
+------------------
+
+KLayout's right panel shows a layer tree. Layers containing meaningful device geometry are grouped
+by faces: ``b-face``, ``t-face`` and ``c-face``. Other texts, annotations and miscellaneous things
+not strictly belonging to a particular face are under the ``texts`` layer group. Other layers used
+only for simulations are under the aptly named ``simulations`` layer group.
+
+Most layers have self-describing names like ``refpoints`` or ``instance names`` but others need a
+bit of explanation:
+
+- ``base metal gap`` -- Important layer with the final geometry of chips *in masks*. It has the
+  shapes of gaps (areas without metal) in the base metal layer that is laid out on a silicon
+  substrate.  Note that this layer is populated during mask export and therefore usually empty. It is hidden by default.
+
+- ``base metal gap wo grid`` -- Like above, it has the gaps around shapes "etched" into metal but
+  *without* the ground grid that is slow to produce.  This is the most used layer in elements.
+
+- ``groud grid`` -- This layer is auto generated if the "Make ground plane grid" PCell parameter is
+  enabled in a chip. It fills in the chip area *outside* of shapes in the ``ground grid avoidance``
+  layer with a metal grid.  Technically, this layer contains the square shaped gaps in the grid, not
+  the metal grid itself. Hidden by default.
+
+- ``base metal addition`` -- Puts back metal to places where it is already removed. This is a
+  technical layer helping us to construct the final shapes in a more elegant way, particularly here:
+  ``base_metal_gap = base_metal_gap_wo_grid + ground_grid - base_metal_addition``. It is also used
+  in ``base metal gap for EBL``, i.e. Electron Beam Litography.
+
+Find more details in `defaults.py <../api/kqcircuits.defaults.html>`_.
+
+
 Opening :class:`.Element` or :class:`.Chip` from an IDE
 -------------------------------------------------------
 
-You can use :git_url:`klayout_package/python/scripts/create_element_from_path.py`
-to open an :class:`.Element` or :class:`.Chip` in KLayout from your IDE (or just straight from the command-line).
-The script is used as::
+You can use :git_url:`klayout_package/python/scripts/create_element_from_path.py` to open an
+:class:`.Element` or :class:`.Chip` in KLayout from your IDE (or just straight from the
+command-line).  The script is used as::
 
     klayout_app -e -rx -rm path/to/create_element_from_path.py -rd element_path=kqcircuits/chips/demo.py
 
-And can be easily incorporated as a macro to your IDE.
-Check the comments in the function on how to use it in PyCharm or Visual Studio Code. The ``element_path`` argument can strip a leading `*Circuits/klayout_package/python/` or `klayout_package/python/`, use what is easiest to implement for your workflow.
+And can be easily incorporated as a macro to your IDE.  Check the comments in the function on how to
+use it in PyCharm or Visual Studio Code. The ``element_path`` argument can strip a leading
+`*Circuits/klayout_package/python/` or `klayout_package/python/`, use what is easiest to implement
+for your workflow.
