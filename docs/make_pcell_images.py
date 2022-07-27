@@ -46,10 +46,11 @@ else:
     exe = f'KLAYOUT_HOME={configdir} klayout'
 
 # TODO only calculate for changed files
-def to_png(pcell):
+def to_png(cell):
+    pcell = cell[0]
     lib = pcell.__module__
     cls = pcell.__name__
-    cmd = f'{exe} -z -nc -r {script} -rd lib_name={lib} -rd cls_name={cls} -rd dest_dir={DIR}'
+    cmd = f'{exe} -z -nc -r {script} -rd lib_name={lib} -rd cls_name={cls} -rd dest_dir={DIR} -rd cls_path={cell[1]}'
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True,
         universal_newlines=True, startupinfo=STARTUPINFO)
 

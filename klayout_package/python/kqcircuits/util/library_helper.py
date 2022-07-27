@@ -87,7 +87,7 @@ def load_libraries(flush=False, path=""):
 
     pcell_classes = _get_all_pcell_classes(flush, path)
 
-    for cls in pcell_classes:
+    for cls, _ in pcell_classes:
 
         library_name = cls.LIBRARY_NAME
         library_path = cls.LIBRARY_PATH
@@ -251,7 +251,7 @@ def _get_all_pcell_classes(reload=False, path=""):
         path: path (relative to SRC_PATH) from which the classes are searched
 
     Returns:
-        List of the PCell classes
+        List of the PCell (class, module path) tuples
     """
     pcell_classes = []
 
@@ -277,7 +277,10 @@ def _get_all_pcell_classes(reload=False, path=""):
                 if reload:
                     importlib.reload(module)
                     _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
-                pcell_classes += _get_pcell_classes(module)
+
+                classes = _get_pcell_classes(module)
+                if classes:
+                    pcell_classes.append((classes[-1], mp))  # touple of class and its file path
 
     return pcell_classes
 
