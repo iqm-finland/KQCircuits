@@ -107,7 +107,9 @@ class Manhattan(Squid):
         ]
         tp_shape = polygon_with_vsym(tp_pts_left)
         self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
-        # add top pad to bottom shapes for multilayer manhattan
+
+        # add top pad to bottom shapes in case another layer is used for the upper part of the squid
+
         if top_pad_layer != "SIS_junction":
             self._round_corners_and_append(tp_shape, junction_shapes_bottom, rounding_params)
 
@@ -128,7 +130,8 @@ class Manhattan(Squid):
                 pya.DPoint(-delta_j / 2 - finger_margin, small_loop_height + loop_bottom_y)
             ]
             junction_shapes_top.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
-            junction_shapes_bottom.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
+            if top_pad_layer != "SIS_junction":
+                junction_shapes_bottom.append(polygon_with_vsym(small_hat).to_itype(self.layout.dbu))
             small_hat_shadow = [
                 small_hat[0] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
                 small_hat[1] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
@@ -144,7 +147,8 @@ class Manhattan(Squid):
                 pya.DPoint(-delta_j / 2 - finger_margin, self.height - tp_height)
             ]
             junction_shapes_top.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
-            junction_shapes_bottom.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
+            if top_pad_layer != "SIS_junction":
+                junction_shapes_bottom.append(polygon_with_vsym(tp_brim_left).to_itype(self.layout.dbu))
             tp_brim_shadow_pts = [
                 tp_brim_left[0] + pya.DPoint(-self.shadow_margin, self.shadow_margin),
                 tp_brim_left[1] + pya.DPoint(-self.shadow_margin, -self.shadow_margin),
