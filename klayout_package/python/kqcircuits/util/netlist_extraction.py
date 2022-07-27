@@ -121,35 +121,81 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
 
     # selects last cell in the layout, which will contain all instances of all cells with user properties
     *_, last_cell = original_layout.each_cell()
-    original_instances = list(last_cell.each_inst())
+
+    # retrieve all instances in last_cell hierarchy
+    # instances in original layout are identified by cell index and transformation
+    # the concatenated transformation of instance's predecessors is stored as tuple's second element
+    original_instances = []
+    instance_queue = list(last_cell.each_inst())
+    instance_queue = [(instance, pya.DCplxTrans.R0) for instance in instance_queue]
+    while len(instance_queue) > 0:
+        instance, instance_trans = instance_queue.pop(0)
+        original_instances.append((instance, instance_trans))
+        for child in instance.cell.each_inst():
+            instance_queue.append((child, instance_trans * instance.dcplx_trans))
+
+    # Indexing as defined in default_layers is not consistent with layer indexing in original_layout
+    base_metal_gap_wo_grid_layer_idx_array = [idx for idx, li in
+        enumerate(original_layout.layer_infos()) if li.name.endswith('_base_metal_gap_wo_grid')]
 
     for subcircuit in circuit.each_subcircuit():
         internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
         if cell_mapping.has_mapping(internal_cell.cell_index()):
             original_cell_index = cell_mapping.cell_mapping(internal_cell.cell_index())
-            possible_instances = [i for i in original_instances if i.cell.cell_index() == original_cell_index]
+            possible_instances = [(i,i_trans) for i,i_trans in original_instances
+                                                if i.cell.cell_index() == original_cell_index]
         else:
+            log.warning(('%s element has no cell mapping in %s between circuit layout and orignal layout,'
+                    ' using subcircuit center point as subcircuit_location instead'), internal_cell.name, circuit.name)
             possible_instances = []
 
         used_internal_cells.add(internal_cell)
 
         if hasattr(subcircuit, "trans"):
-            subcircuit_origin = subcircuit.trans.disp
+            subcircuit_trans = subcircuit.trans
             subcircuit_location = (subcircuit.trans * subcircuit.circuit_ref().boundary).bbox().center()
         else:  # sane defaults for klayout 0.26 as it does not have `subcircuit.trans`
-            subcircuit_origin = [0.0, 0.0]
-            subcircuit_location = [0.0, 0.0]
+            subcircuit_trans = pya.DCplxTrans.R0
+            subcircuit_location = pya.DPoint(0.0, 0.0)
 
-        correct_instance = [i for i in possible_instances if i.has_prop_id() and (i.dtrans.disp == subcircuit_origin)]
-        if correct_instance:
-            property_dict = {key: value for (key, value) in original_layout.properties(correct_instance[0].prop_id)
-                             if key != "id"}
-        else:
-            property_dict = {}
+        instances_with_eq_trans = [(i, i_trans) for i, i_trans in possible_instances
+                                                if i_trans * i.dcplx_trans == subcircuit_trans]
+        property_dict = {}
+        correct_instance = None
+        if instances_with_eq_trans:
+            # Find property_dict if available
+            instances_with_property_dict = [(i, i_trans) for i, i_trans in instances_with_eq_trans if i.has_prop_id()]
+            if instances_with_property_dict:
+                correct_instance, correct_instance_trans = instances_with_property_dict[0]
+                property_dict = {key: value for (key, value) in
+                    original_layout.properties(correct_instance.prop_id) if key != "id"}
+            else:
+                correct_instance, correct_instance_trans = instances_with_eq_trans[0]
+            # Collect bounding boxes for all *_base_metal_gap_wo_grid layers
+            # then construct a bigger bounding box that envelops all of them
+            bboxes = []
+            for idx in base_metal_gap_wo_grid_layer_idx_array:
+                bbox = correct_instance.dbbox_per_layer(idx)
+                if not bbox.empty():
+                    bboxes.append(bbox)
+            if len(bboxes) > 0:
+                combined_bbox = pya.DBox(min([bbox.p1.x for bbox in bboxes]), min([bbox.p1.y for bbox in bboxes]),
+                                         max([bbox.p2.x for bbox in bboxes]), max([bbox.p2.y for bbox in bboxes]))
+                # subcircuit_location is the center of geometry of all *_base_metal_gap_wo_grid layers in the cell
+                # we also transform the point by instance's predecessors' transformation
+                subcircuit_location = correct_instance_trans * combined_bbox.center()
+            else:
+                log.warning(('%s element has no bounding boxes in *_base_metal_gap_wo_grid layers in %s,'
+                    ' using subcircuit center point as subcircuit_location instead'),
+                    internal_cell.name, circuit.name)
+        elif possible_instances:
+            log.warning(('Could not find a matching element for %s subcircuit in the orignal layout of %s,'
+                    ' using subcircuit center point as subcircuit_location instead'), internal_cell.name, circuit.name)
 
         subcircuits_for_export[subcircuit.id()] = {
             "cell_name": internal_cell.name,
-            "instance_name": correct_instance[0].property('id') if correct_instance else None,
+            "instance_name": correct_instance.property('id') if correct_instance else None,
+            "subcircuit_origin": subcircuit_trans.disp,
             "subcircuit_location": subcircuit_location,
             "properties": property_dict,
         }
