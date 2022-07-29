@@ -108,7 +108,7 @@ Follow the instructions in the `getting started documentation <https://iqm-finla
 Developer setup
 """""""""""""""
 
-`Install KLayout <https://www.klayout.de/build.html>`__ and run
+`Install KLayout <https://www.klayout.de/build.html>`__ and run:
 
 .. code-block:: console
 
