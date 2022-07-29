@@ -222,8 +222,8 @@ class WaveguideComposite(Element):
     """
 
     nodes = Param(pdt.TypeString, "List of Nodes for the waveguide", "(0, 0, 'Airbridge'), (200, 0)")
-    gui_path = Param(pdt.TypeShape, "Path for editing the waveguide in the KLayout GUI",
-                     pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1))
+    enable_gui_editing = Param(pdt.TypeBoolean, "Enable GUI editing of the waveguide path", True)
+    gui_path = Param(pdt.TypeShape, "", pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1))
     gui_path_shadow = Param(pdt.TypeShape, "Hidden path to detect GUI operations",
                             pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1), hidden=True)
     tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
@@ -231,10 +231,16 @@ class WaveguideComposite(Element):
     @classmethod
     def create(cls, layout, library=None, **parameters):
         # For code-generated cells, make sure the gui path matches te node definition.
-        if "nodes" in parameters:
-            path = pya.DPath([node.position for node in parameters["nodes"]], 1)
-            parameters["gui_path"] = path
-            parameters["gui_path_shadow"] = path
+        if parameters.get("enable_gui_editing", True):
+            if "nodes" in parameters:
+                path = pya.DPath([node.position for node in parameters["nodes"]], 1)
+                # Round to database units since the KLayout partial tool also works in database units
+                path = path.to_itype(layout.dbu).to_dtype(layout.dbu)
+                parameters["gui_path"] = path
+                parameters["gui_path_shadow"] = path
+        else:
+            parameters["gui_path"] = pya.DPath()
+            parameters["gui_path_shadow"] = pya.DPath()
 
         cell = super().create(layout, library, **parameters)
 
@@ -248,77 +254,78 @@ class WaveguideComposite(Element):
 
         return cell
 
+    def snap_point(self, point: pya.DPoint) -> pya.DPoint:  # pylint: disable=no-self-use
+        """
+        Interface to define snap behavior for GUI editing in derived classes.
+
+        Args:
+            point: DPoint that has been moved in the GUI
+
+        Returns: DPoint representing the snapped location for the input point. Return the point unmodified if no
+            snapping is required
+        """
+
+        # Default implementation always returns
+        return point
+
     def coerce_parameters_impl(self):
-        nodes = Node.nodes_from_string(self.nodes)
+        if self.enable_gui_editing:
+            nodes = Node.nodes_from_string(self.nodes)
 
-        # If gui_path was edited by the user, it is now different from gui_path_shadow. Detect changes
-        changed = self.gui_path != self.gui_path_shadow
+            # If gui_path was edited by the user, it is now different from gui_path_shadow. Detect changes
+            changed = self.gui_path != self.gui_path_shadow
 
-        if changed:
-            new_points = list(self.gui_path.each_point())
-            old_points = list(self.gui_path_shadow.each_point())
+            if changed:
+                new_points = list(self.gui_path.each_point())
+                old_points = list(self.gui_path_shadow.each_point())
 
-            # KLayout automatically removes "redundant" points from gui_path when moving any points around. These are
-            # any points that are exactly on the line between their neighbors. Here we detect such redundant points in
-            # old_points, and re-insert them in new_points.
-            for i in range(len(old_points) - 1):
-                # From point i, find greedily the list of consecutive points that are all on the same line
-                start_point = old_points[i]
-                i += 2
-                missing_points = []
-                while i < len(old_points):
-                    if old_points[i-1] not in new_points and \
-                            pya.DEdge(start_point, old_points[i]).contains(old_points[i-1]):
-                        missing_points.append(old_points[i-1])
-                        i += 1
-                    else:
-                        break
-                if len(missing_points) > 0:
-                    next_point = old_points[i - 1]
-                    if next_point in new_points and start_point in new_points and \
-                            new_points.index(next_point) - new_points.index(start_point) == 1:
-                        for p in missing_points:
-                            new_points.insert(new_points.index(next_point), p)
-
-            length_change = len(new_points) - len(old_points)
-            if length_change == 0:
-                # One or more points were moved; update all node positions
-                for node, new_position in zip(nodes, new_points):
-                    node.position = new_position
-                self.nodes = [str(node) for node in nodes]
-            elif length_change == 1:
-                # One node was added. Figure out which node it was.
-                added_index = None
-                added_point = None
-                for i, (new_point, old_point) in enumerate(zip_longest(new_points, old_points)):
-                    if old_point is None or new_point != old_point:
-                        added_index = i
-                        added_point = new_point
-                        break
-
-                if added_index is not None:
-                    nodes.insert(added_index, Node(added_point))
+                length_change = len(new_points) - len(old_points)
+                if length_change == 0:
+                    # One or more points were moved; update node positions of the moved points
+                    for node, new_position, old_position in zip(nodes, new_points, old_points):
+                        if new_position != old_position:
+                            new_position = self.snap_point(new_position)
+                            node.position = new_position
                     self.nodes = [str(node) for node in nodes]
-            elif length_change < 0 and self.gui_path.num_points() >= 2:
-                # One or more points deleted; delete corresponding nodes. We require at least two remaining nodes.
-                remaining_indices = []
-                new_indices = []
+                elif length_change == 1:
+                    # One node was added. Figure out which node it was.
+                    added_index = None
+                    added_point = None
+                    for i, (new_point, old_point) in enumerate(zip_longest(new_points, old_points)):
+                        if old_point is None or new_point != old_point:
+                            added_index = i
+                            added_point = new_point
+                            break
 
-                for i, old_point in enumerate(old_points):
-                    if old_point in new_points:
-                        remaining_indices.append(i)
-                        new_indices.append(new_points.index(old_point))
+                    if added_index is not None:
+                        nodes.insert(added_index, Node(added_point))
+                        self.nodes = [str(node) for node in nodes]
+                elif length_change < 0 and self.gui_path.num_points() >= 2:
+                    # One or more points deleted; delete corresponding nodes. We require at least two remaining nodes.
+                    remaining_indices = []
+                    new_indices = []
 
-                # Verify we found the right number of remaining indices, and the order is correct
-                new_indices_monotonic = all(i < j for i, j in zip(new_indices, new_indices[1:]))
-                if len(remaining_indices) == len(new_points) and new_indices_monotonic:
-                    nodes = [nodes[i] for i in remaining_indices]
-                    self.nodes = [str(node) for node in nodes]
+                    for i, old_point in enumerate(old_points):
+                        if old_point in new_points:
+                            remaining_indices.append(i)
+                            new_indices.append(new_points.index(old_point))
 
-        # After coerce the gui_path and gui_path_shadow should both match the nodes
-        new_path = pya.DPath([node.position for node in nodes], 1)
-        self.gui_path = new_path
-        self.gui_path_shadow = new_path
+                    # Verify we found the right number of remaining indices, and the order is correct
+                    new_indices_monotonic = all(i < j for i, j in zip(new_indices, new_indices[1:]))
+                    if len(remaining_indices) == len(new_points) and new_indices_monotonic:
+                        nodes = [nodes[i] for i in remaining_indices]
+                        self.nodes = [str(node) for node in nodes]
+
+            # After coerce the gui_path and gui_path_shadow should both match the nodes.
+            new_path = pya.DPath([node.position for node in nodes], 1)
+            # Force rounding to integer database units since the KLayout Partial tool also rounds to database units.
+            new_path = new_path.to_itype(self.layout.dbu).to_dtype(self.layout.dbu)
+            self.gui_path = new_path
+            self.gui_path_shadow = new_path
+        else:
+            # Use an empty path to disable editing with the Partial tool
+            self.gui_path = pya.DPath()
+            self.gui_path_shadow = pya.DPath()
 
         super().coerce_parameters_impl()
 

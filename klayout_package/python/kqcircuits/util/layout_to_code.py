@@ -156,7 +156,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
             y_snapped = grid_snap*round(path_point.y/grid_snap)
             node_params = ""
             if nodes is not None:
-                node_params, node_elem = _get_node_params(nodes[i])
+                node_params, node_elem = get_node_params(nodes[i])
                 if node_elem is not None and include_imports:
                     nonlocal element_imports
                     node_elem_import = f"from {node_elem.__module__} import {node_elem.__name__}\n"
@@ -348,7 +348,18 @@ def _move_to_end(instances, pcell_type):
     return instances
 
 
-def _get_node_params(node):
+def get_node_params(node: Node):
+    """
+    Generate a list of parameters for Node in string form
+
+    Args:
+        node: a Node to convert
+
+    Returns: a tuple (node_params, element) where
+        node_params: string of comma-separated key-value pairs that can be passed to the initializer of Node,
+        starting with ``", "``
+        element: class that implements the node's element, or None if the node has no element
+    """
     node_params = ""
     elem = None
     for k, v in vars(node).items():
@@ -356,9 +367,13 @@ def _get_node_params(node):
             node_params += f", {v.__name__}"
             elem = v
         elif (k == "inst_name" and v is not None) or \
-             (k == "align" and v != tuple()) or \
-             (k == "length_before" and v is not None) or \
-             (k == "length_increment" and v is not None) or \
-             (k == "parameters" and len(v) > 0):
+                (k == "align" and v != tuple()) or \
+                (k == "angle" and v is not None) or \
+                (k == "length_before" and v is not None) or \
+                (k == "length_increment" and v is not None):
             node_params += f", {k}={v}"
+        elif k == "params":
+            # Expand keyword arguments to Node
+            for kk, vv in v.items():
+                node_params += f", {kk}={repr(vv)}"
     return node_params, elem
