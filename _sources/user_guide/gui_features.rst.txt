@@ -1,6 +1,12 @@
 GUI Features
 ============
 
+The GUI usage of KQCircuits is mostly the same as in KLayout without KQCircuits,
+so it is recommended to read at least https://www.klayout.de/doc-qt5/manual/basic.html
+part of KLayout documentation. It explains for example cell hierarchy and
+other important concepts. In this section we explain KQCircuits-specific GUI
+features and highlight some useful features of the KLayout GUI.
+
 Useful hotkeys
 --------------
 - \* makes the full cell hierarchy visible. Otherwise only cell frames may be
@@ -104,4 +110,11 @@ drop-down menu:
 
 - **Reload libraries** -- Reloads KQCircuits code from storage making it possible to modify elements
   and see the change without having to restart KLayout and reload the edited elements. This is
-  illustrated in the end of previous section's video.
+  illustrated in the end of previous section's video. Note that this macro does
+  not reload the KQCircuits :git_url:`defaults <klayout_package/python/kqcircuits/defaults.py>`
+  file.
+
+DRC scripts are accessible from KLayout's "**Tools -> DRC** drop-down menu:
+
+- **Area and Density** -- Calculate area and density for everything in view, in every layer.
+- **Waveguide** -- Detects Waveguides crossing anything in base_metal_gap_wo_grid layer.

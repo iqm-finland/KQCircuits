@@ -133,9 +133,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -522,6 +528,11 @@
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.test_structures.junction_test_pads.</span></span><span class="sig-name descname"><span class="pre">JunctionTestPads</span></span><a class="reference internal" href="../_modules/kqcircuits/test_structures/junction_test_pads.html#JunctionTestPads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.JunctionTestPads" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure" title="kqcircuits.test_structures.test_structure.TestStructure"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.test_structures.test_structure.TestStructure</span></code></a></p>
 <p>Base class for junction test structures.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.test_structures.junction_test_pads.JunctionTestPads.default_type">
+<span class="sig-name descname"><span class="pre">default_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple'</span></em><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.default_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.test_structures.junction_test_pads.JunctionTestPads.produce_squid">
 <span class="sig-name descname"><span class="pre">produce_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_arms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.produce_squid" title="Permalink to this definition">¶</a></dt>
@@ -550,21 +561,6 @@ the arms</p></li>
 <dt class="sig sig-object py" id="kqcircuits.test_structures.junction_test_pads.JunctionTestPads.create">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_test_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/junction_test_pads.html#JunctionTestPads.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a JunctionTestPads cell in layout.</p>
-<p>If junction_test_type is unknown the default is returned.</p>
-<p>Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
-<li><p><strong>library</strong> – LIBRARY_NAME of the calling PCell instance</p></li>
-<li><p><strong>junction_test_type</strong> (<em>str</em>) – name of the JunctionTestPads subclass</p></li>
-<li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the created JunctionTestPads cell</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>

@@ -131,9 +131,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -522,10 +528,11 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
+
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">string</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
 <span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -534,7 +541,7 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">PY_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
 
@@ -587,7 +594,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span> <span class="o">=</span> <span class="n">mask_export_layers</span> <span class="k">if</span> <span class="n">mask_export_layers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_template</span> <span class="o">=</span> <span class="n">PY_PATH</span> <span class="o">/</span> <span class="s1">&#39;kqcircuits/util/create_chip_template.txt&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_imports</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_parameters</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -632,8 +639,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building chip variants in parallel using </span><span class="si">{</span><span class="n">threads</span><span class="si">}</span><span class="s2"> threads...&quot;</span><span class="p">)</span>
 
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_template</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">template</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">Template</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_template</span><span class="p">()</span>
 
             <span class="k">class</span> <span class="nc">ChipSubprocessException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
                 <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">chip_variant</span><span class="p">):</span>
@@ -894,7 +900,61 @@
         <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
         <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">variant_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">variant_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span>
+
+    <span class="k">def</span> <span class="nf">_get_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns an updated template string.&quot;&quot;&quot;</span>
+
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">_CREATE_CHIP_TEMPLATE</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_imports</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#TEMPLATE_IMPORT#&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span></div>
+
+
+<span class="c1"># Template for creating and exporting a chip during mask generation.</span>
+<span class="c1">#</span>
+<span class="c1"># This is used in _get_template() to create a template used in add_chips() to create chips in</span>
+<span class="c1"># parallel. The &quot;#TEMPLATE_IMPORT#&quot; strings in it will be replaced by &quot;template_imports&quot; elements</span>
+<span class="c1"># to update the template itself.</span>
+
+<span class="n">_CREATE_CHIP_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">import logging</span>
+<span class="s2">import sys</span>
+<span class="s2">import traceback</span>
+<span class="s2">#TEMPLATE_IMPORT#</span>
+<span class="s2">from pathlib import Path</span>
+<span class="s2">from kqcircuits.defaults import TMP_PATH</span>
+<span class="s2">from kqcircuits.masks.mask_export import export_chip</span>
+<span class="s2">from kqcircuits.pya_resolver import pya</span>
+<span class="s2">from kqcircuits.util import macro_prepare</span>
+<span class="s2">from kqcircuits.util.log_router import route_log</span>
+<span class="s2">$</span><span class="si">{element_import}</span><span class="s2"></span>
+
+<span class="s2">try:</span>
+<span class="s2">    logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used</span>
+<span class="s2">    chip_path = Path(TMP_PATH / &quot;$</span><span class="si">{name_mask}</span><span class="s2">_v$</span><span class="si">{version_mask}</span><span class="s2">&quot; / &quot;Chips&quot; / &quot;$</span><span class="si">{variant_name}</span><span class="s2">&quot;)</span>
+<span class="s2">    route_log(filename=chip_path/&quot;$</span><span class="si">{variant_name}</span><span class="s2">.log&quot;)</span>
+
+<span class="s2">    layout, _, _ = macro_prepare.prep_empty_layout()</span>
+<span class="s2">    top_cell = layout.create_cell(&quot;Top Cell&quot;)</span>
+
+<span class="s2">    # cell definition and arbitrary code here</span>
+<span class="s2">    $</span><span class="si">{create_element}</span><span class="s2"></span>
+
+<span class="s2">    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))</span>
+
+<span class="s2">    # export chip files</span>
+<span class="s2">    export_chip(cell, &quot;$</span><span class="si">{variant_name}</span><span class="s2">&quot;, chip_path, layout, $</span><span class="si">{export_drc}</span><span class="s2">)</span>
+
+<span class="s2">#TEMPLATE_IMPORT#</span>
+
+<span class="s2">except Exception as err:</span>
+<span class="s2">    print(traceback.format_exc(), file=sys.stderr)</span>
+<span class="s2">    pya.Application.instance().exit(1)</span>
+<span class="s2">pya.Application.instance().exit(0)</span>
+
+<span class="s2">&quot;&quot;&quot;</span>
 </pre></div>
 
            </div>

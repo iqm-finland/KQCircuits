@@ -131,9 +131,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -620,6 +626,36 @@
         <span class="n">cell</span> <span class="o">=</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">cell</span></div>
+
+<div class="viewcode-block" id="Element.create_subtype"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_subtype">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create_subtype</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create cell from a base class using the specified sub-class type.</span>
+
+<span class="sd">        This is to be called from the ``create()`` function of base classes of other elements. It</span>
+<span class="sd">        takes care of creating a code generated or a file based cell.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            layout: pya.Layout object where this cell is created</span>
+<span class="sd">            library: LIBRARY_NAME of the calling PCell instance</span>
+<span class="sd">            subtype: name (str) of the desired sub-class of ``cls``</span>
+<span class="sd">            **parameters: PCell parameters for the element as keyword arguments</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            tuple of the cell instance and a boolean indicating code generated cell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">library_layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)[</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">])</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">subtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># derive type from the class name</span>
+            <span class="n">subtype</span> <span class="o">=</span> <span class="n">to_library_name</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">subtype</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>   <span class="c1"># code generated</span>
+            <span class="n">pcell_class</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">subtype</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">),</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">subtype</span><span class="p">):</span>    <span class="c1"># manually designed</span>
+            <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">subtype</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">),</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>   <span class="c1"># fallback is the default</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create_subtype</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">default_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Element.create_with_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_with_refpoints">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create_with_refpoints</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">refpoint_transform</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>

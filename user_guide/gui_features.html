@@ -133,9 +133,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -515,6 +521,11 @@
             
   <div class="section" id="gui-features">
 <h1>GUI Features<a class="headerlink" href="#gui-features" title="Permalink to this headline">¶</a></h1>
+<p>The GUI usage of KQCircuits is mostly the same as in KLayout without KQCircuits,
+so it is recommended to read at least <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/basic.html">https://www.klayout.de/doc-qt5/manual/basic.html</a>
+part of KLayout documentation. It explains for example cell hierarchy and
+other important concepts. In this section we explain KQCircuits-specific GUI
+features and highlight some useful features of the KLayout GUI.</p>
 <div class="section" id="useful-hotkeys">
 <h2>Useful hotkeys<a class="headerlink" href="#useful-hotkeys" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -601,7 +612,14 @@ assigned layers by default. This macro helps to create a more useful new layout 
 top-cell and the default KQCircuits layers.</p></li>
 <li><p><strong>Reload libraries</strong> – Reloads KQCircuits code from storage making it possible to modify elements
 and see the change without having to restart KLayout and reload the edited elements. This is
-illustrated in the end of previous section’s video.</p></li>
+illustrated in the end of previous section’s video. Note that this macro does
+not reload the KQCircuits <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults</a>
+file.</p></li>
+</ul>
+<p>DRC scripts are accessible from KLayout’s “<strong>Tools -&gt; DRC</strong> drop-down menu:</p>
+<ul class="simple">
+<li><p><strong>Area and Density</strong> – Calculate area and density for everything in view, in every layer.</p></li>
+<li><p><strong>Waveguide</strong> – Detects Waveguides crossing anything in base_metal_gap_wo_grid layer.</p></li>
 </ul>
 </div>
 </div>

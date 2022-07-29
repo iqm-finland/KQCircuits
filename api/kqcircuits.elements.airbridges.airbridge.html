@@ -133,9 +133,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -535,22 +541,6 @@
 <dt class="sig sig-object py" id="kqcircuits.elements.airbridges.airbridge.Airbridge.create">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airbridge_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/airbridges/airbridge.html#Airbridge.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.airbridges.airbridge.Airbridge.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create cell for an airbridge in layout.</p>
-<p>The cell is created either from a pcell class or a from a manual design file, depending on airbridge_type.
-If airbridge_type is unknown the default is returned.</p>
-<p>Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>layout</strong> – pya.Layout object where this cell is created</p></li>
-<li><p><strong>library</strong> – LIBRARY_NAME of the calling PCell instance</p></li>
-<li><p><strong>airbridge_type</strong> (<em>str</em>) – name of the Airbridge subclass or manually designed cell</p></li>
-<li><p><strong>**parameters</strong> – PCell parameters for the element as keyword arguments</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the created airbridge cell</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>

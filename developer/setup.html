@@ -133,9 +133,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -630,16 +636,19 @@ have to create a symlink to there.</p>
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
 <p>Create a symlink from KLayout to kqcircuits by opening a command prompt with
 administrator privileges, and do:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">KLayout</span>\<span class="n">klayout_package</span>\<span class="n">python</span>
-<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\kqcircuits&quot;</span>
-<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="s1">&#39;kqcircuits_scripts&#39;</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\scripts&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">KLayout</span>\<span class="n">python</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="n">kqcircuits</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\kqcircuits&quot;</span>
+<span class="n">mklink</span> <span class="o">/</span><span class="n">D</span> <span class="n">kqcircuits_scripts</span> <span class="s2">&quot;Path_to_KQCircuits\klayout_package\python\scripts&quot;</span>
 </pre></div>
 </div>
+<p>(In PowerShell replace the first line by <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">~\KLayout\python</span></code>)</p>
 <p>Install the required packages by opening command prompt in your KQCircuits
 folder (which contains <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/requirements_within_klayout_windows.txt">requirements_within_klayout_windows.txt</a>), and writing:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements_within_klayout_windows</span><span class="o">.</span><span class="n">txt</span> <span class="o">--</span><span class="n">target</span><span class="o">=%</span><span class="n">HOMEPATH</span><span class="o">%</span>\<span class="n">AppData</span>\<span class="n">Roaming</span>\<span class="n">KLayout</span>\<span class="n">lib</span>\<span class="n">python3</span><span class="mf">.7</span>\<span class="n">site</span><span class="o">-</span><span class="n">packages</span>
 </pre></div>
 </div>
+<p>(replace <code class="docutils literal notranslate"><span class="pre">python3.7</span></code> in this path by the python version used by your KLayout
+version)</p>
 <p>The previous command installs the packages to KLayout’s embedded Python
 environment, which is where KLayout looks for packages on Windows. If you
 want to install the packages in another environment instead, you have to

@@ -133,9 +133,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -530,7 +536,7 @@ package. Other folders are mainly for automatic tests and documentation.
 KQCircuits code is divided into the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits">kqcircuits</a> and
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts">scripts</a> folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python">klayout_package/python</a>.
 These two folders are also (after installation process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and
-<code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout`</span> <span class="pre">or</span> <span class="pre">``~/KLayout</span></code> folder.</p>
+<code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> or <code class="docutils literal notranslate"><span class="pre">~/KLayout</span></code> folder.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits PCell classes and many
 other modules used by them or by scripts. Folders directly under under
 <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> containing PCell classes correspond to different PCell
@@ -701,6 +707,35 @@ element created in the previous section into a new chip:</p>
 <p>This code can be copied to a new Python-file <code class="docutils literal notranslate"><span class="pre">new_chip1.py</span></code> in the
 <code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/chips</span></code> folder to make it visible in the
 KQCircuits chip library.</p>
+<div class="section" id="defining-sampleholder-types">
+<h3>Defining sampleholder types<a class="headerlink" href="#defining-sampleholder-types" title="Permalink to this headline">¶</a></h3>
+<p>In the previous example we used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;SMA8&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>to make the chip have the correct launchers and size for fitting in an
+“SMA8”-type sampleholder. The available sampleholder types are  defined in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+<code class="docutils literal notranslate"><span class="pre">default_sampleholders</span></code>. You can add new sampleholder types there, for
+example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;RF16&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="s2">&quot;launcher_type&quot;</span><span class="p">:</span> <span class="s2">&quot;RF&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;launcher_width&quot;</span><span class="p">:</span> <span class="mi">400</span><span class="p">,</span>
+    <span class="s2">&quot;launcher_gap&quot;</span><span class="p">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="s2">&quot;launcher_indent&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;pad_pitch&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="s2">&quot;chip_box&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">12000</span><span class="p">,</span> <span class="mi">12000</span><span class="p">))</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This can then be used in a chip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">produce_launchers</span><span class="p">(</span><span class="s2">&quot;RF16&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A quick way to check all available sampleholder types is to use the
+<a class="reference internal" href="../api/kqcircuits.chips.launchers.html#kqcircuits.chips.launchers.Launchers" title="kqcircuits.chips.launchers.Launchers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Launchers</span></code></a> chip and change its <code class="docutils literal notranslate"><span class="pre">sampleholder_type</span></code> parameter.</p>
+</div>
 </div>
 <div class="section" id="refpoints">
 <h2>Refpoints<a class="headerlink" href="#refpoints" title="Permalink to this headline">¶</a></h2>
@@ -800,6 +835,40 @@ placed in:</p>
 <span class="c1"># Placing a multi-face element with the parts in different faces swapped</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
+</div>
+<div class="section" id="adding-a-new-face">
+<h3>Adding a new face<a class="headerlink" href="#adding-a-new-face" title="Permalink to this headline">¶</a></h3>
+<p>New layers and new faces can be added in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+by modifying <code class="docutils literal notranslate"><span class="pre">default_layers</span></code> and <code class="docutils literal notranslate"><span class="pre">default_faces</span></code>. As an example, let’s
+add a new face <code class="docutils literal notranslate"><span class="pre">x</span></code> with some layers that are in KQCircuits default faces
+and one new layer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_base_metal_gap_wo_grid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x_base_metal_gap_wo_grid&quot;</span><span class="p">)</span>
+<span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_ground_grid_avoidance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="mi">903</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;x_ground_grid_avoidance&quot;</span><span class="p">)</span>
+<span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_ports&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="mi">928</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;x_ports&quot;</span><span class="p">)</span>
+<span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_new_layer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="mi">999</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;x_new_layer&quot;</span><span class="p">)</span>
+
+<span class="n">default_faces</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_base_metal_gap_wo_grid&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_ground_grid_avoidance&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;ports&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_ports&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;new_layer&quot;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;x_new_layer&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>These lines should be added after the last line where <code class="docutils literal notranslate"><span class="pre">default_layers</span></code> or
+<code class="docutils literal notranslate"><span class="pre">default_faces</span></code> are modified. Launching KLayout after these changes, you
+should see the new layers in the layers list. If you add for example
+<a class="reference internal" href="../api/kqcircuits.elements.launcher.html#kqcircuits.elements.launcher.Launcher" title="kqcircuits.elements.launcher.Launcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">Launcher</span></code></a> element to the layout and modify its <code class="docutils literal notranslate"><span class="pre">face_ids</span></code>
+parameter to have the value <code class="docutils literal notranslate"><span class="pre">x</span></code>, it will then use the layers from the newly
+added face <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p>To change the color of the layers and their organization in the layers list,
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/default_layer_props.lyp">default_layer_props.lyp</a>
+must be modified or another layer properties file must be set as default in
+KLayout Setup menu. The layer properties file can be edited directly or by
+modifying the layers list in GUI and saving them using KLayout <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Save</span>
+<span class="pre">Layer</span> <span class="pre">Properties</span></code>.</p>
 </div>
 </div>
 <div class="section" id="opening-element-or-chip-from-an-ide">

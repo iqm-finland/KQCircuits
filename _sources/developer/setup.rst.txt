@@ -134,14 +134,19 @@ Windows
 Create a symlink from KLayout to kqcircuits by opening a command prompt with
 administrator privileges, and do::
 
-    cd %HOMEPATH%\KLayout\klayout_package\python
-    mklink /D 'kqcircuits' "Path_to_KQCircuits\klayout_package\python\kqcircuits"
-    mklink /D 'kqcircuits_scripts' "Path_to_KQCircuits\klayout_package\python\scripts"
+    cd %HOMEPATH%\KLayout\python
+    mklink /D kqcircuits "Path_to_KQCircuits\klayout_package\python\kqcircuits"
+    mklink /D kqcircuits_scripts "Path_to_KQCircuits\klayout_package\python\scripts"
+
+(In PowerShell replace the first line by ``cd ~\KLayout\python``)
 
 Install the required packages by opening command prompt in your KQCircuits
 folder (which contains :git_url:`requirements_within_klayout_windows.txt`), and writing::
 
     pip install -r requirements_within_klayout_windows.txt --target=%HOMEPATH%\AppData\Roaming\KLayout\lib\python3.7\site-packages
+
+(replace ``python3.7`` in this path by the python version used by your KLayout
+version)
 
 The previous command installs the packages to KLayout's embedded Python
 environment, which is where KLayout looks for packages on Windows. If you

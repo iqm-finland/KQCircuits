@@ -131,9 +131,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -615,7 +621,9 @@
         <span class="p">]</span>
         <span class="n">tp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_pts_left</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_top</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
-        <span class="c1"># add top pad to bottom shapes for multilayer manhattan</span>
+
+        <span class="c1"># add top pad to bottom shapes in case another layer is used for the upper part of the squid</span>
+
         <span class="k">if</span> <span class="n">top_pad_layer</span> <span class="o">!=</span> <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
 
@@ -636,7 +644,8 @@
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">delta_j</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="n">small_loop_height</span> <span class="o">+</span> <span class="n">loop_bottom_y</span><span class="p">)</span>
             <span class="p">]</span>
             <span class="n">junction_shapes_top</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">small_hat</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
-            <span class="n">junction_shapes_bottom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">small_hat</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">top_pad_layer</span> <span class="o">!=</span> <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span>
+                <span class="n">junction_shapes_bottom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">small_hat</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
             <span class="n">small_hat_shadow</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">small_hat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
                 <span class="n">small_hat</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
@@ -652,7 +661,8 @@
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">delta_j</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">finger_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">)</span>
             <span class="p">]</span>
             <span class="n">junction_shapes_top</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_brim_left</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
-            <span class="n">junction_shapes_bottom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_brim_left</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">top_pad_layer</span> <span class="o">!=</span> <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span>
+                <span class="n">junction_shapes_bottom</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_brim_left</span><span class="p">)</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
             <span class="n">tp_brim_shadow_pts</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">tp_brim_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
                 <span class="n">tp_brim_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>

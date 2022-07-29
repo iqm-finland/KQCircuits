@@ -131,9 +131,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -817,10 +823,10 @@
 </li>
       <li><a href="api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.convert_cells_to_static">convert_cells_to_static() (in module kqcircuits.util.replace_squids)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.copy_ansys_scripts_to_directory">copy_ansys_scripts_to_directory() (in module kqcircuits.simulations.export.ansys.ansys_export)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.copy_elmer_scripts_to_directory">copy_elmer_scripts_to_directory() (in module kqcircuits.simulations.export.elmer.elmer_export)</a>
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.copy_port">copy_port() (kqcircuits.elements.element.Element method)</a>
@@ -865,6 +871,8 @@
       </ul></li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.create_simulation_layers">create_simulation_layers() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
+      <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_subtype">create_subtype() (kqcircuits.elements.element.Element class method)</a>
+</li>
       <li><a href="api/kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html#kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.TsvEllipse.create_tsv_connector">create_tsv_connector() (kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.TsvEllipse method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_with_refpoints">create_with_refpoints() (kqcircuits.elements.element.Element class method)</a>
@@ -902,11 +910,21 @@
 </li>
         <li><a href="api/kqcircuits.elements.airbridges.airbridge_rectangular.html#kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular.default_type">(kqcircuits.elements.airbridges.airbridge_rectangular.AirbridgeRectangular attribute)</a>
 </li>
-      </ul></li>
-      <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_all_libraries">delete_all_libraries() (in module kqcircuits.util.library_helper)</a>
+        <li><a href="api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.default_type">(kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv attribute)</a>
 </li>
+        <li><a href="api/kqcircuits.elements.fluxlines.fluxline.html#kqcircuits.elements.fluxlines.fluxline.Fluxline.default_type">(kqcircuits.elements.fluxlines.fluxline.Fluxline attribute)</a>
+</li>
+        <li><a href="api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker.default_type">(kqcircuits.elements.markers.marker.Marker attribute)</a>
+</li>
+        <li><a href="api/kqcircuits.squids.squid.html#kqcircuits.squids.squid.Squid.default_type">(kqcircuits.squids.squid.Squid attribute)</a>
+</li>
+        <li><a href="api/kqcircuits.test_structures.junction_test_pads.html#kqcircuits.test_structures.junction_test_pads.JunctionTestPads.default_type">(kqcircuits.test_structures.junction_test_pads.JunctionTestPads attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_all_libraries">delete_all_libraries() (in module kqcircuits.util.library_helper)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances">delete_instances() (kqcircuits.simulations.simulation.Simulation static method)</a>
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_library">delete_library() (in module kqcircuits.util.library_helper)</a>

@@ -131,9 +131,15 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-an-element-class">Example of defining an <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#example-of-defining-a-chip-and-inserting-elements-into-it">Example of defining a Chip and inserting elements into it</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#defining-sampleholder-types">Defining sampleholder types</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -527,7 +533,6 @@
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_squid_type</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
@@ -549,6 +554,8 @@
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Library for SQUIDs.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;squids&quot;</span>
 
+    <span class="n">default_type</span> <span class="o">=</span> <span class="n">default_squid_type</span>
+
     <span class="n">squid_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;SQUID Type&quot;</span><span class="p">,</span> <span class="n">default_squid_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">squid_type_choices</span><span class="p">)</span>
     <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width for code generated squids&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
                            <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Junction width (only used for code generated squids)&quot;</span><span class="p">)</span>
@@ -556,39 +563,8 @@
 
 <div class="viewcode-block" id="Squid.create"><a class="viewcode-back" href="../../../api/kqcircuits.squids.squid.html#kqcircuits.squids.squid.Squid.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create cell for a squid in layout.</span>
-
-<span class="sd">        The squid cell is created either from a pcell class or a from a manual design file, depending on squid_type. If</span>
-<span class="sd">        squid_type does not correspond to any squid, an empty &quot;NoSquid&quot; squid is returned.</span>
-
-<span class="sd">        Overrides Element.create(), so that functions like add_element() and insert_cell() will call this instead.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            layout: pya.Layout object where this cell is created</span>
-<span class="sd">            library: LIBRARY_NAME of the calling PCell instance</span>
-<span class="sd">            squid_type (str): name of the squid class or of the manually designed squid cell</span>
-<span class="sd">            **parameters: PCell parameters for the element as keyword arguments</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the created squid cell</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">squid_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">squid_type</span> <span class="o">=</span> <span class="n">to_library_name</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">squid_type</span><span class="p">:</span>
-            <span class="n">squids_library</span> <span class="o">=</span> <span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)[</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">]</span>
-            <span class="n">library_layout</span> <span class="o">=</span> <span class="n">squids_library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">squid_type</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>
-                <span class="c1"># if code-generated, create like a normal element</span>
-                <span class="n">pcell_class</span> <span class="o">=</span> <span class="n">squids_library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">squid_type</span><span class="p">)</span><span class="o">.</span><span class="vm">__class__</span>
-                <span class="k">return</span> <span class="n">Element</span><span class="o">.</span><span class="n">_create_cell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">squid_type</span><span class="p">):</span>
-                <span class="c1"># if manually designed squid, load from squids.oas</span>
-                <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">squid_type</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span>
-
-        <span class="c1"># fallback to NoSquid if there is no squid corresponding to squid_type</span>
-        <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="s2">&quot;NoSquid&quot;</span><span class="p">,</span> <span class="n">Squid</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">)</span></div></div>
+        <span class="sd">&quot;&quot;&quot;Create cell for a squid in layout.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create_subtype</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>
