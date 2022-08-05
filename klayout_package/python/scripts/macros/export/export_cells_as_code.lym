@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
- <description/>
+ <description>Convert layout to Python code</description>
  <version/>
  <category>pymacros</category>
  <prolog/>
@@ -50,7 +50,7 @@ Usage:
 
 4. Place any cells in the layout, or modify cells already existing under the top cell.
 5. Select in GUI the cell instances that you want to export as code, or select nothing to export all instances under the top cell.
-6. Run the macro. This prints out the Python code for creating the cell instances. 
+6. Run the macro. This prints out the Python code for creating the cell instances.
 
 """
 
