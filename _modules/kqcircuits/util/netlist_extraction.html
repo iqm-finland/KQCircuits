@@ -542,10 +542,11 @@
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="export_cell_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_cell_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_cell_netlist</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="export_cell_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_cell_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_cell_netlist</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pcell</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Exports netlist into `filename` in JSON</span>
 
-<span class="sd">    The file will have three sections: ``{&quot;nets&quot;: {...}, &quot;subcircuits&quot;: {...}, &quot;circuits&quot;: {...}}``</span>
+<span class="sd">    The file will have four sections:</span>
+<span class="sd">    ``{&quot;nets&quot;: {...}, &quot;subcircuits&quot;: {...}, &quot;circuits&quot;: {...}, &quot;chip&quot;: {...}}``</span>
 
 <span class="sd">    KLayout&#39;s `terminology &lt;https://www.klayout.de/doc-qt5/manual/lvs_overview.html&gt;`__ differs</span>
 <span class="sd">    from the one used in typical EDA tools where we have components (resistors, capacitors, etc.),</span>
@@ -566,10 +567,16 @@
 
 <span class="sd">    The ``circuits`` section maps ``cell_name`` to a dictionary of the named Element&#39;s parameters.</span>
 
+<span class="sd">    If the Cell object is a Chip, the ``chip`` section contains bounding boxes of each face in the chip.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        cell: pya Cell object</span>
 <span class="sd">        filename: absolute path as convertible to string</span>
+<span class="sd">        pcell: pya PCell object. If None, an attempt is made to treat cell as pcell</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pcell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pcell</span> <span class="o">=</span> <span class="n">cell</span>
+
     <span class="c1"># get LayoutToNetlist object</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
     <span class="n">shapes_iter</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">RecursiveShapeIterator</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">]),</span>
@@ -593,12 +600,12 @@
     <span class="n">circuit</span> <span class="o">=</span> <span class="n">ltn</span><span class="o">.</span><span class="n">netlist</span><span class="p">()</span><span class="o">.</span><span class="n">circuit_by_cell_index</span><span class="p">(</span><span class="n">reverse_cell_map</span><span class="p">[</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()])</span>
     <span class="k">if</span> <span class="n">circuit</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting netlist to </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ltn</span><span class="o">.</span><span class="n">internal_layout</span><span class="p">(),</span> <span class="n">layout</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span>
+        <span class="n">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">ltn</span><span class="o">.</span><span class="n">internal_layout</span><span class="p">(),</span> <span class="n">layout</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">pcell</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No circuit found for </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">display_title</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">internal_layout</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">,</span> <span class="n">cell_mapping</span><span class="p">):</span>
+<div class="viewcode-block" id="export_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">internal_layout</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">,</span> <span class="n">cell_mapping</span><span class="p">,</span> <span class="n">pcell</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Exports `circuit` into `filename` in JSON</span>
 
 <span class="sd">    Args:</span>
@@ -607,6 +614,7 @@
 <span class="sd">        internal_layout: pya layout object where the netlist cells are registered</span>
 <span class="sd">        original_layout: pya Layout object where the original cells and pcells are registered</span>
 <span class="sd">        cell_mapping: CellMapping object as given by pya LayoutToNetlist object</span>
+<span class="sd">        pcell: pya PCell object from which circuit was extracted, if available</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># first flatten subcircuits mentioned in elements to breakdown</span>
@@ -664,9 +672,24 @@
     <span class="k">for</span> <span class="n">internal_cell</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">used_internal_cells</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">cell</span><span class="p">:</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
         <span class="n">circuits_for_export</span><span class="p">[</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">)</span>
 
+    <span class="n">chip_for_export</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">pcell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">pcell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">chip_params</span> <span class="o">=</span> <span class="n">pcell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">{</span><span class="s1">&#39;frames_enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;face_boxes&#39;</span><span class="p">,</span> <span class="s1">&#39;face_ids&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">}</span> <span class="o">&lt;=</span> <span class="nb">set</span><span class="p">(</span><span class="n">chip_params</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="k">for</span> <span class="n">face</span> <span class="ow">in</span> <span class="n">chip_params</span><span class="p">[</span><span class="s1">&#39;frames_enabled&#39;</span><span class="p">]:</span>
+                <span class="n">face_box</span> <span class="o">=</span> <span class="n">chip_params</span><span class="p">[</span><span class="s1">&#39;face_boxes&#39;</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">face_box</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">face_box</span> <span class="o">=</span> <span class="n">chip_params</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span>
+                <span class="n">face_id</span> <span class="o">=</span> <span class="n">chip_params</span><span class="p">[</span><span class="s1">&#39;face_ids&#39;</span><span class="p">][</span><span class="nb">int</span><span class="p">(</span><span class="n">face</span><span class="p">)]</span>
+                <span class="n">chip_for_export</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face_id</span><span class="si">}</span><span class="s1">_face_dimensions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">face_box</span>
+
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span><span class="s2">&quot;nets&quot;</span><span class="p">:</span> <span class="n">nets_for_export</span><span class="p">,</span> <span class="s2">&quot;subcircuits&quot;</span><span class="p">:</span> <span class="n">subcircuits_for_export</span><span class="p">,</span> <span class="s2">&quot;circuits&quot;</span><span class="p">:</span> <span class="n">circuits_for_export</span><span class="p">},</span> <span class="n">fp</span><span class="p">,</span>
-                  <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span>
+            <span class="s2">&quot;nets&quot;</span><span class="p">:</span> <span class="n">nets_for_export</span><span class="p">,</span>
+            <span class="s2">&quot;subcircuits&quot;</span><span class="p">:</span> <span class="n">subcircuits_for_export</span><span class="p">,</span>
+            <span class="s2">&quot;circuits&quot;</span><span class="p">:</span> <span class="n">circuits_for_export</span><span class="p">,</span>
+            <span class="s2">&quot;chip&quot;</span><span class="p">:</span> <span class="n">chip_for_export</span>
+        <span class="p">},</span> <span class="n">fp</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">GeometryJsonEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="extract_nets"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_nets">[docs]</a><span class="k">def</span> <span class="nf">extract_nets</span><span class="p">(</span><span class="n">net</span><span class="p">):</span>
