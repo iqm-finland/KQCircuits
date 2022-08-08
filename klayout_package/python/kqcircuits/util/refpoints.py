@@ -62,6 +62,10 @@ class Refpoints:
         """The [] operator to return position for given reference point text."""
         return self.dict()[item]
 
+    def __setitem__(self, item, value):
+        """The [] operator to set a new reference point."""
+        self.dict()[item] = value
+
     def items(self):
         """Returns a list of text-position pairs."""
         return self.dict().items()

@@ -23,6 +23,7 @@ from kqcircuits.test_structures.junction_test_pads.junction_test_pads import Jun
 from kqcircuits.squids.squid import Squid
 
 
+@add_parameters_from(JunctionTestPads, "junction_test_pads_type", "test_junctions")
 @add_parameters_from(Squid, "squid_type")
 @add_parameters_from(ChipFrame, "marker_types")
 class JunctionTest2(Chip):
@@ -31,7 +32,6 @@ class JunctionTest2(Chip):
     pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="μm")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 200, unit="μm")
-    junction_type = Param(pdt.TypeString, "Junction type", "SQUID")
     small_loop_area = Param(pdt.TypeDouble, "Test SQUIDs small loop area",
                                  default=80, unit="μm")
     large_loop_area = Param(pdt.TypeDouble, "Test SQUIDs large loop area",
@@ -90,7 +90,6 @@ class JunctionTest2(Chip):
                                 junction_width_steps=junction_width_steps,
                                 loop_area =loop_area,
                                 only_arms=True,
-                                junction_type=self.junction_type,
                                 )
             self.insert_cell(cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]),
                              name + "_{}".format(j+1))

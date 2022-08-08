@@ -47,7 +47,9 @@ class Qubit(Element):
         """Produces the squid.
 
         Creates the squid cell and inserts it with the given transformation as a subcell. Also inserts the squid parts
-        in "base_metal_gap_wo_grid"-layer to "base_metal_gap_for_EBL"-layer.
+        in "base_metal_gap_wo_grid"-layer to "base_metal_gap_for_EBL"-layer. It also returns a ``right_side`` refpoint,
+        calculated from base_metal_gap_wo_grid layer's bounding box to help with arm_length calculation in
+        JunctionTestPads.
 
         Args:
             transf (DCplxTrans): squid transformation
@@ -61,6 +63,9 @@ class Qubit(Element):
         """
         cell = self.add_element(Squid, squid_type=self.squid_type, **parameters)
         refpoints_rel = self.get_refpoints(cell)
+        mwidth = cell.dbbox_per_layer(self.get_layer("base_metal_gap_wo_grid")).width()
+        if mwidth > 0.0:
+            refpoints_rel['right_side'] = pya.DPoint(mwidth / 2, 0.0)
         squid_transf = transf * pya.DTrans.M90 if self.mirror_squid else transf
 
         if "squid_index" in parameters:

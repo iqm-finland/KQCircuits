@@ -30,5 +30,4 @@ class JunctionTestPadsSimple(JunctionTestPads):
     def build(self):
 
         self.junction_spacing = 0
-        self.extra_arm_length = 0
         super()._produce_impl()

@@ -24,6 +24,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
+from kqcircuits.test_structures.junction_test_pads import junction_test_pads_type_choices
 
 
 @add_parameters_from(Squid, "squid_type")
@@ -37,6 +38,7 @@ class JunctionTestPads(TestStructure):
     pad_width = Param(pdt.TypeDouble, "Pad width", 500, unit="μm")
     area_height = Param(pdt.TypeDouble, "Area height", 1900, unit="μm")
     area_width = Param(pdt.TypeDouble, "Area width", 1300, unit="μm")
+    test_junctions = Param(pdt.TypeString, "Junction type", "SQUID")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="μm")
     only_pads = Param(pdt.TypeBoolean, "Only produce pads, no junctions", False)
@@ -45,21 +47,21 @@ class JunctionTestPads(TestStructure):
                                  unit="μm, μm")
     junction_widths = Param(pdt.TypeList, "Optional junction widths for individual junctions", [],
                             docstring="Override the junction widths with these values.")
+    junction_test_pads_type = Param(pdt.TypeString, "Type of junction test pads", default_type,
+                                    choices=junction_test_pads_type_choices)
 
     produce_squid = Qubit.produce_squid
 
     @classmethod
-    def create(cls, layout, library=None, junction_test_type=None, **parameters):
+    def create(cls, layout, library=None, junction_test_pads_type=None, **parameters):
         """Create a JunctionTestPads cell in layout."""
-        return cls.create_subtype(layout, library, junction_test_type, **parameters)[0]
+        return cls.create_subtype(layout, library, junction_test_pads_type, **parameters)[0]
 
     def _produce_impl(self):
-
         if self.pad_configuration == "2-port":
             self._produce_two_port_junction_tests()
         if self.pad_configuration == "4-port":
             self._produce_four_port_junction_tests()
-
 
     def _next_junction_width(self, idx):
         """Get the next junction width
@@ -158,18 +160,23 @@ class JunctionTestPads(TestStructure):
                             only the arms
         """
 
-        extra_arm_length = self.extra_arm_length
+        arm_length = 11
         junction_spacing = self.junction_spacing
 
+        # squid
+        trans = pya.DCplxTrans(x, y - junction_spacing)
+        if not self.junctions_horizontal:
+            trans = pya.DCplxTrans(x - junction_spacing, y)
+        squid_ref_rel = self.produce_squid(trans, only_arms=only_arms, junction_width=self._next_width,
+                                           squid_index=index, loop_area=self.loop_area)
+        if "right_side" in squid_ref_rel:
+            arm_length = squid_ref_rel["right_side"].x - 0.5
+        pos_rel_squid_top = squid_ref_rel["port_common"]
+
         if self.junctions_horizontal:
-            # squid
-            trans = pya.DCplxTrans(x, y - junction_spacing)
-            squid_ref_rel = self.produce_squid(trans, only_arms=only_arms, junction_width=self._next_width,
-                                               squid_index=index, loop_area=self.loop_area)
-            pos_rel_squid_top = squid_ref_rel["port_common"]
             # arm below
             arm1 = pya.DBox(
-                pya.DPoint(x + 11 + extra_arm_length, y - junction_spacing),
+                pya.DPoint(x + arm_length, y - junction_spacing),
                 pya.DPoint(x - self.pad_spacing / 2, y - arm_width - junction_spacing),
             )
             pads_region.insert(arm1.to_itype(self.layout.dbu))
@@ -180,15 +187,10 @@ class JunctionTestPads(TestStructure):
             )
             pads_region.insert(arm2.to_itype(self.layout.dbu))
         else:
-            # squid
-            trans = pya.DCplxTrans(x - junction_spacing, y)
-            squid_ref_rel = self.produce_squid(trans, junction_width=self._next_width,
-                                only_arms=only_arms, squid_index=index, loop_area=self.loop_area)
-            pos_rel_squid_top = squid_ref_rel["port_common"]
             # arm below
             arm1 = pya.DBox(
-                pya.DPoint(x + 11 + extra_arm_length - junction_spacing, y),
-                pya.DPoint(x - 11 - extra_arm_length - junction_spacing, y - arm_width),
+                pya.DPoint(x + arm_length - junction_spacing, y),
+                pya.DPoint(x - arm_length - junction_spacing, y - arm_width),
             )
             pads_region.insert(arm1.to_itype(self.layout.dbu))
             arm2 = pya.DBox(

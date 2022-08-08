@@ -17,3 +17,7 @@
 
 
 """PCell classes for junction test pads."""
+
+junction_test_pads_type_choices = [
+    "Junction Test Pads Simple",
+]
