@@ -43,8 +43,9 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                      max_delta_f=0.1, n_modes=2, simulation_flags=None, ansys_project_template=None):
-    """
+                      max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0, surface_loss_tangent=0,
+                      simulation_flags=None, ansys_project_template=None):
+    r"""
     Export Ansys simulation into json and gds files.
 
     Arguments:
@@ -66,6 +67,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         sweep_type: choices are "interpolating", "discrete" or "fast"
         max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
         n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'pyepr'.
+        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
+        surface_loss_tangent: Surface loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
         simulation_flags: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
 
@@ -109,6 +112,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'max_delta_f': max_delta_f,
             'n_modes': n_modes,
         },
+        'substrate_loss_tangent': substrate_loss_tangent,
+        'surface_loss_tangent': surface_loss_tangent,
         'simulation_flags': simulation_flags
     }
 
@@ -185,11 +190,11 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
                  maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                 max_delta_f=0.1, n_modes=2, exit_after_run=False,
+                 max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0, surface_loss_tangent=0, exit_after_run=False,
                  ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  use_rel_path=True, simulation_flags=None, ansys_project_template=None):
-    """
+    r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
     Arguments:
@@ -213,6 +218,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         sweep_type: choices are "interpolating", "discrete" or "fast"
         max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
         n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'eigenmode'.
+        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
+        surface_loss_tangent: Surface loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
         ansys_executable: Path to the Ansys Electronics Desktop executable.
         import_script: Name of import script file.
@@ -237,6 +244,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                                 sweep_enabled=sweep_enabled, sweep_start=sweep_start,
                                                 sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
                                                 max_delta_f=max_delta_f, n_modes=n_modes,
+                                                substrate_loss_tangent=substrate_loss_tangent,
+                                                surface_loss_tangent=surface_loss_tangent,
                                                 simulation_flags=simulation_flags,
                                                 ansys_project_template=ansys_project_template))
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,

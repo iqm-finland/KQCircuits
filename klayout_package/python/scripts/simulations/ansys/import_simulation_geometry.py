@@ -46,9 +46,11 @@ gds_file = data['gds_file']
 signal_layer = data['signal_layer']
 ground_layer = data['ground_layer']
 substrate_height = data['substrate_height']
-airbridge_height = data['airbridge_height'] if 'airbridge_height' in data else 0
+airbridge_height = data.get('airbridge_height', 0)
 box_height = data['box_height']
 permittivity = data['permittivity']
+substrate_loss_tangent = data.get('substrate_loss_tangent', 0)
+surface_loss_tangent = data.get('surface_loss_tangent', 0)
 units = data['units']
 wafer_stack_type = data['stack_type']
 vacuum_box_height = box_height
@@ -131,15 +133,18 @@ oDefinitionManager.AddMaterial(
      "CoordinateSystemType:=", "Cartesian",
      "BulkOrSurfaceType:=", 1,
      ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
-     "permittivity:=", str(permittivity)
-     ])
+     "permittivity:=", str(permittivity),
+     ] + (["dielectric_loss_tangent:=", str(substrate_loss_tangent)] if substrate_loss_tangent != 0 else [])
+)
+
 oDefinitionManager.AddMaterial(
     ["NAME:sc_metal",
      "CoordinateSystemType:=", "Cartesian",
      "BulkOrSurfaceType:=", 1,
      ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
-     "conductivity:=", "1e+30"
-     ])
+     "conductivity:=", "1e+30",
+     ] + (["dielectric_loss_tangent:=", str(surface_loss_tangent)] if surface_loss_tangent != 0 else [])
+)
 
 # Import GDSII geometry
 order_map = ["entry:=", ["order:=", 0, "layer:=", "Signal"],
@@ -292,8 +297,8 @@ if airbridge_flyover_objects:
 for port in data['ports']:
     # Compute the signal location of the port
     if ansys_tool == 'q3d' and 'ground_location' in port:
-            # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
-            port['signal_location'] = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
+        # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
+        port['signal_location'] = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
     else:
         port['signal_location'] = list(port['signal_location'])
     z_component = [chip_distance if port['face'] == 1 else 0.0]
