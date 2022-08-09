@@ -18,6 +18,7 @@
 import copy
 import os
 import subprocess
+from time import perf_counter
 from string import Template
 from inspect import isclass
 from multiprocessing.pool import ThreadPool
@@ -71,6 +72,7 @@ class MaskSet:
             self.__log.exception(error_text, exc_info=error)
             raise error
 
+        self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0,  "BUILD": 0, 'EXPORT': 0, 'END': 0}
         self.layout = layout
         self.name = name
         self.version = version
@@ -116,6 +118,8 @@ class MaskSet:
             It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.
             The same applies for exporting large and complex geometry.
         """
+        self._time['ADD_CHIPS'] = perf_counter()
+
         if threads is None:
             threads = os.cpu_count()
         if threads <= 1:
@@ -275,6 +279,7 @@ class MaskSet:
             remove_guiding_shapes (Boolean): determines if the guiding shapes are removed
 
         """
+        self._time['BUILD'] = perf_counter()
         # build mask layouts (without chip copy labels)
         for mask_layout in self.mask_layouts:
             # include face_id in mask_layout.name only for multi-face masks
@@ -351,8 +356,18 @@ class MaskSet:
             view: KLayout view object
 
         """
+        self._time['EXPORT'] = perf_counter()
+
         print("Exporting mask set...")
         export_mask_set(self, path, view)
+
+        self._time['END'] = perf_counter()
+
+        def tdiff(a, b):  # get elapsed time from "a" to "b"
+            return round(self._time[b] - self._time[a], 1) if self._time[a] and self._time[b] else 'n/a'
+
+        print(f"Runtime: {tdiff('INIT', 'END')} (add chips: {tdiff('ADD_CHIPS', 'BUILD')}, "
+              f"build: {tdiff('BUILD', 'EXPORT')}, export: {tdiff('EXPORT', 'END')})")
 
     @staticmethod
     def chips_map_from_box_map(box_map, mask_map):
