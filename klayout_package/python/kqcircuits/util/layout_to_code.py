@@ -61,6 +61,9 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         include_imports: If true, then import statements for all used elements are included in the generated code
         use_create_with_refpoints: If true, then create_with_refpoints() is used instead of create(). Only used when
             output_format is "create" or "create+macro". Required if you want to use refpoints as waveguide points.
+
+    Returns:
+        str: The generated Python code. This is also printed.
     """
 
     layout = top_cell.layout()
@@ -298,7 +301,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
     else:
         full_code = start_code + instances_code
 
-    print(full_code)
+    return full_code
 
 
 def _get_cell(inst):

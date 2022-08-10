@@ -80,8 +80,11 @@ include_imports = True
 use_create_with_refpoints = True
 
 top_cell = KLayoutView.get_active_cell()
-convert_cells_to_code(top_cell, print_waveguides_as_composite, add_instance_names, refpoint_snap, grid_snap,
-                      output_format, include_imports, use_create_with_refpoints)
-
-</text>
+# the code is returned by the function
+full_code = convert_cells_to_code(top_cell, print_waveguides_as_composite, add_instance_names, refpoint_snap,
+                                  grid_snap, output_format, include_imports, use_create_with_refpoints)
+print(full_code)
+# capturing to clipboard can be done for example with Pandas as follows:
+# import pandas as pd
+# pd.DataFrame([full_code]).to_clipboard(index=False, header=False)</text>
 </klayout-macro>
