@@ -19,7 +19,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.chips.chip import Chip
 from kqcircuits.pya_resolver import pya
-from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
+from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.squids.squid import Squid
 
 

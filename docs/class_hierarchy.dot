@@ -6,10 +6,10 @@ digraph {
     Squid [href="../api/kqcircuits.squids.squid.html", target="_top"]
     Airbridge [href="../api/kqcircuits.elements.airbridges.airbridge.html", target="_top"]
     TestStructure [href="../api/kqcircuits.test_structures.test_structure.html", target="_top"]
-    FlipChipConnector [href="../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html", target="_top"]
+    FlipChipConnector [href="../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html", target="_top"]
     Fluxline [href="../api/kqcircuits.elements.fluxlines.fluxline.html", target="_top"]
     Marker [href="../api/kqcircuits.elements.markers.marker.html", target="_top"]
-    Tsv [href="../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html", target="_top"]
+    Tsv [href="../api/kqcircuits.elements.tsvs.tsv.html", target="_top"]
 
     ## Base classes
     Element -> Qubit
@@ -40,8 +40,8 @@ digraph {
     FluxlineStraight [href="../api/kqcircuits.elements.fluxlines.fluxline_straight.html", target="_top"]
     MarkerStandard [href="../api/kqcircuits.elements.markers.marker_standard.html", target="_top"]
     AirbridgeDC [href="../api/kqcircuits.test_structures.airbridge_dc.html", target="_top"]
-    FlipChipConnectorDc [href="../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc.html", target="_top"]
-    TsvEllipse [href="../api/kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html", target="_top"]
+    FlipChipConnectorDc [href="../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html", target="_top"]
+    TsvEllipse [href="../api/kqcircuits.elements.tsvs.tsv_ellipse.html", target="_top"]
 
     Element -> WaveguideCoplanar
     Chip -> Demo

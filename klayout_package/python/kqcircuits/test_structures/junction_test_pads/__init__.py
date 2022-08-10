@@ -15,19 +15,5 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
-from kqcircuits.util.geometry_helper import circle_polygon
 
-
-class TsvStandard(Tsv):
-    """Connector between faces of two sides of a substrate.
-
-    Origin is at the geometric center. Geometry es circular.
-    """
-
-    def build(self):
-        tsv = circle_polygon(self.tsv_diameter / 2)
-        self.cell.shapes(self.get_layer("through_silicon_via")).insert(tsv)
-        margin = circle_polygon(self.tsv_diameter / 2 + self.margin)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(margin)
-        del self.refpoints['base']
+"""PCell classes for junction test pads."""

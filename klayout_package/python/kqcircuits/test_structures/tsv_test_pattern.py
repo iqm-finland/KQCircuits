@@ -19,8 +19,8 @@
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.test_structures.test_structure import TestStructure
-from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
-from kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse import TsvEllipse
+from kqcircuits.elements.tsvs.tsv import Tsv
+from kqcircuits.elements.tsvs.tsv_ellipse import TsvEllipse
 
 
 @add_parameters_from(TsvEllipse, "*", tsv_diameter=10)

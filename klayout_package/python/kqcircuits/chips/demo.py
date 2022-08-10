@@ -28,7 +28,7 @@ from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
-from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
+from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.util.geometry_helper import point_shift_along_vector
 
 

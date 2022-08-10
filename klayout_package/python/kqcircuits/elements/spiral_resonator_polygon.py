@@ -21,7 +21,7 @@ from math import pi, tan, degrees, atan2, sqrt
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridges.airbridge_multi_face import AirbridgeMultiFace
 from kqcircuits.elements.element import Element
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 from kqcircuits.pya_resolver import pya

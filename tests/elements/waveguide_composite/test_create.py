@@ -25,7 +25,7 @@ from kqcircuits.elements.airbridges.airbridge_rectangular import AirbridgeRectan
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 
 
 @pytest.fixture

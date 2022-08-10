@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
+from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 
 
 class JunctionTestPadsSimple(JunctionTestPads):

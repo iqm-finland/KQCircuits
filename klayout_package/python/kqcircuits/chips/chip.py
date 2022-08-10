@@ -28,12 +28,12 @@ from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import region_with_merged_polygons
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
-from kqcircuits.test_structures.junction_test_pads import JunctionTestPads
+from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.groundgrid import make_grid
-from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
+from kqcircuits.elements.tsvs.tsv import Tsv
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 
 
 @logged

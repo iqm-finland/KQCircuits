@@ -17,7 +17,7 @@
 
 
 from autologging import logged
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector import FlipChipConnector
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
 
 @logged
 class FlipChipConnectorDc(FlipChipConnector):

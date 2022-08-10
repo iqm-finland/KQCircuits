@@ -18,9 +18,9 @@
 
 from autologging import logged
 
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors import connector_type_choices
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector import FlipChipConnector
-from kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
+from kqcircuits.elements.flip_chip_connectors import connector_type_choices
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChipConnector
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt

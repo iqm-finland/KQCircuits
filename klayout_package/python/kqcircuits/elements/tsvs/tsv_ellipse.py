@@ -19,7 +19,7 @@ import math
 import numpy
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.elements.f2f_connectors.tsvs.tsv import Tsv
+from kqcircuits.elements.tsvs.tsv import Tsv
 
 
 class TsvEllipse(Tsv):
