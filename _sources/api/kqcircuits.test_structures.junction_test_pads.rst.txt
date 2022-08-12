@@ -1,10 +1,15 @@
 kqcircuits.test\_structures.junction\_test\_pads
 ================================================
 
+
+.. toctree::
+
+   kqcircuits.test_structures.junction_test_pads.junction_test_pads
+
+Module contents
+---------------
+
 .. automodule:: kqcircuits.test_structures.junction_test_pads
    :members:
    :undoc-members:
    :show-inheritance:
-
-.. kqc_elem_params:: kqcircuits.test_structures.junction_test_pads
-.. image:: ../pcell_images/kqcircuits.test_structures.junction_test_pads.png

@@ -9,7 +9,7 @@ AirbridgeDC
 JunctionTestPads
 ----------------
 
-.. kqc_elem_params:: kqcircuits.test_structures.junction_test_pads
+.. kqc_elem_params:: kqcircuits.test_structures.junction_test_pads.junction_test_pads
 
 TsvTestPattern
 --------------

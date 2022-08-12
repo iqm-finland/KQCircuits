@@ -4,9 +4,10 @@ kqcircuits.elements
 .. toctree::
 
    kqcircuits.elements.airbridges
-   kqcircuits.elements.f2f_connectors
+   kqcircuits.elements.flip_chip_connectors
    kqcircuits.elements.fluxlines
    kqcircuits.elements.markers
+   kqcircuits.elements.tsvs
 
 
 .. toctree::

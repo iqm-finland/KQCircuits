@@ -21,3 +21,8 @@ these are in the :git_url:`docs/sphinxext` folder. Also the
 image of every PCell into the pcell_images directory, these get included in the
 API documentation. Image generation may produce harmless error messages in
 Windows.
+
+The docstring of PCell classes may contain a ``.. MARKERS_FOR_PNG x,y x2,y2,
+...`` line that will annotate the generated .png image with "rulers"
+documenting the important dimensions of the design.  The rulers are placed
+according to KLayout's rules going through the specified ``x, y`` coordinates.

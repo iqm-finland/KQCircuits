@@ -1,0 +1,10 @@
+kqcircuits.elements.tsvs.tsv
+============================
+
+.. automodule:: kqcircuits.elements.tsvs.tsv
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.tsvs.tsv
+.. image:: ../pcell_images/kqcircuits.elements.tsvs.tsv.png

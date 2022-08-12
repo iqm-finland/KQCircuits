@@ -1,0 +1,17 @@
+kqcircuits.elements.flip\_chip\_connectors
+==========================================
+
+
+.. toctree::
+
+   kqcircuits.elements.flip_chip_connectors.flip_chip_connector
+   kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc
+   kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.elements.flip_chip_connectors
+   :members:
+   :undoc-members:
+   :show-inheritance:

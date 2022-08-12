@@ -1,12 +1,15 @@
 kqcircuits.test\_structures
 ===========================
 
+.. toctree::
+
+   kqcircuits.test_structures.junction_test_pads
+
 
 .. toctree::
 
    kqcircuits.test_structures.airbridge_dc
    kqcircuits.test_structures.cross_test
-   kqcircuits.test_structures.junction_test_pads
    kqcircuits.test_structures.junction_test_pads_simple
    kqcircuits.test_structures.stripes_test
    kqcircuits.test_structures.test_structure

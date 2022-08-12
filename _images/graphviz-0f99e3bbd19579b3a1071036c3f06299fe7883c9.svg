@@ -81,7 +81,7 @@
 <!-- FlipChipConnector -->
 <g id="node6" class="node">
 <title>FlipChipConnector</title>
-<g id="a_node6"><a xlink:href="../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector.html" xlink:title="FlipChipConnector" target="_top">
+<g id="a_node6"><a xlink:href="../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html" xlink:title="FlipChipConnector" target="_top">
 <ellipse fill="none" stroke="black" cx="234.23" cy="-288" rx="98.28" ry="18"/>
 <text text-anchor="middle" x="234.23" y="-284.3" font-family="Times,serif" font-size="14.00">FlipChipConnector</text>
 </a>
@@ -126,7 +126,7 @@
 <!-- Tsv -->
 <g id="node9" class="node">
 <title>Tsv</title>
-<g id="a_node9"><a xlink:href="../api/kqcircuits.elements.f2f_connectors.tsvs.tsv.html" xlink:title="Tsv" target="_top">
+<g id="a_node9"><a xlink:href="../api/kqcircuits.elements.tsvs.tsv.html" xlink:title="Tsv" target="_top">
 <ellipse fill="none" stroke="black" cx="234.23" cy="-126" rx="27" ry="18"/>
 <text text-anchor="middle" x="234.23" y="-122.3" font-family="Times,serif" font-size="14.00">Tsv</text>
 </a>
@@ -231,7 +231,7 @@
 <!-- FlipChipConnectorDc -->
 <g id="node20" class="node">
 <title>FlipChipConnectorDc</title>
-<g id="a_node20"><a xlink:href="../api/kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc.html" xlink:title="FlipChipConnectorDc" target="_top">
+<g id="a_node20"><a xlink:href="../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html" xlink:title="FlipChipConnectorDc" target="_top">
 <polygon fill="none" stroke="green" points="538.87,-306 368.87,-306 368.87,-270 538.87,-270 538.87,-306"/>
 <text text-anchor="middle" x="453.87" y="-284.3" font-family="Times,serif" font-size="14.00">FlipChipConnectorDc</text>
 </a>
@@ -276,7 +276,7 @@
 <!-- TsvEllipse -->
 <g id="node21" class="node">
 <title>TsvEllipse</title>
-<g id="a_node21"><a xlink:href="../api/kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html" xlink:title="TsvEllipse" target="_top">
+<g id="a_node21"><a xlink:href="../api/kqcircuits.elements.tsvs.tsv_ellipse.html" xlink:title="TsvEllipse" target="_top">
 <polygon fill="none" stroke="green" points="498.37,-144 409.37,-144 409.37,-108 498.37,-108 498.37,-144"/>
 <text text-anchor="middle" x="453.87" y="-122.3" font-family="Times,serif" font-size="14.00">TsvEllipse</text>
 </a>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.elements.f2f_connectors.tsvs.tsv &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.elements.tsvs.tsv_ellipse &mdash; KQCircuits  documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse" href="kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html" />
-    <link rel="prev" title="kqcircuits.elements.f2f_connectors.tsvs" href="kqcircuits.elements.f2f_connectors.tsvs.html" /> 
+    <link rel="next" title="kqcircuits.elements.tsvs.tsv_standard" href="kqcircuits.elements.tsvs.tsv_standard.html" />
+    <link rel="prev" title="kqcircuits.elements.tsvs.tsv" href="kqcircuits.elements.tsvs.tsv.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -142,6 +142,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -315,10 +316,11 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.airbridges.html#module-kqcircuits.elements.airbridges">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.flip_chip_connectors.html">kqcircuits.elements.f2f_connectors.flip_chip_connectors</a></li>
-<li class="toctree-l4 current"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.tsvs.html">kqcircuits.elements.f2f_connectors.tsvs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.f2f_connectors.html#module-kqcircuits.elements.f2f_connectors">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.flip_chip_connectors.html">kqcircuits.elements.flip_chip_connectors</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html">kqcircuits.elements.flip_chip_connectors.flip_chip_connector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc.html">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.html">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.flip_chip_connectors.html#module-kqcircuits.elements.flip_chip_connectors">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.fluxlines.html">kqcircuits.elements.fluxlines</a><ul>
@@ -332,6 +334,13 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.markers.marker.html">kqcircuits.elements.markers.marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.markers.marker_standard.html">kqcircuits.elements.markers.marker_standard</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.markers.html#module-kqcircuits.elements.markers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.elements.tsvs.html">kqcircuits.elements.tsvs</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.tsvs.tsv.html">kqcircuits.elements.tsvs.tsv</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.elements.tsvs.tsv_ellipse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.tsvs.tsv_standard.html">kqcircuits.elements.tsvs.tsv_standard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.tsvs.html#module-kqcircuits.elements.tsvs">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
@@ -399,9 +408,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
@@ -500,18 +513,16 @@
         
           <li><a href="kqcircuits.elements.html">kqcircuits.elements</a> &raquo;</li>
         
-          <li><a href="kqcircuits.elements.f2f_connectors.html">kqcircuits.elements.f2f_connectors</a> &raquo;</li>
+          <li><a href="kqcircuits.elements.tsvs.html">kqcircuits.elements.tsvs</a> &raquo;</li>
         
-          <li><a href="kqcircuits.elements.f2f_connectors.tsvs.html">kqcircuits.elements.f2f_connectors.tsvs</a> &raquo;</li>
-        
-      <li>kqcircuits.elements.f2f_connectors.tsvs.tsv</li>
+      <li>kqcircuits.elements.tsvs.tsv_ellipse</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.elements.f2f_connectors.tsvs.tsv.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.elements.tsvs.tsv_ellipse.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -525,32 +536,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-kqcircuits.elements.f2f_connectors.tsvs.tsv">
-<span id="kqcircuits-elements-f2f-connectors-tsvs-tsv"></span><h1>kqcircuits.elements.f2f_connectors.tsvs.tsv<a class="headerlink" href="#module-kqcircuits.elements.f2f_connectors.tsvs.tsv" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-kqcircuits.elements.tsvs.tsv_ellipse">
+<span id="kqcircuits-elements-tsvs-tsv-ellipse"></span><h1>kqcircuits.elements.tsvs.tsv_ellipse<a class="headerlink" href="#module-kqcircuits.elements.tsvs.tsv_ellipse" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.f2f_connectors.tsvs.tsv.</span></span><span class="sig-name descname"><span class="pre">Tsv</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/tsvs/tsv.html#Tsv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
-<p>Base Class for TSVs.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.default_type">
-<span class="sig-name descname"><span class="pre">default_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Tsv</span> <span class="pre">Standard'</span></em><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.default_type" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.tsvs.tsv_ellipse.</span></span><span class="sig-name descname"><span class="pre">TsvEllipse</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/tsvs/tsv_ellipse.html#TsvEllipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.tsvs.tsv.html#kqcircuits.elements.tsvs.tsv.Tsv" title="kqcircuits.elements.tsvs.tsv.Tsv"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.tsvs.tsv.Tsv</span></code></a></p>
+<p>Connector between faces of two sides of a substrate.</p>
+<p>Origin is at the geometric center. Geometry is elliptical.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse.produce_impl">
+<span class="sig-name descname"><span class="pre">produce_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/tsvs/tsv_ellipse.html#TsvEllipse.produce_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse.produce_impl" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method builds the PCell.</p>
+<p>Adds all refpoints to user properties and draws their names to the annotation layer.</p>
+</dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.create">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tsv_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/f2f_connectors/tsvs/tsv.html#Tsv.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.f2f_connectors.tsvs.tsv.Tsv.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a TSV cell in layout.</p>
+<dt class="sig sig-object py" id="kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse.create_tsv_connector">
+<span class="sig-name descname"><span class="pre">create_tsv_connector</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/tsvs/tsv_ellipse.html#TsvEllipse.create_tsv_connector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse.create_tsv_connector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate elliptical TSV</p>
 </dd></dl>
 
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>tsv_type</strong><em> (String)</em><span> - TSV type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Tsv</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Tsv</span> <span class="pre">Standard',</span> <span class="pre">'Tsv</span> <span class="pre">Ellipse']</span></code></p></li>
-<li><p><strong>tsv_diameter</strong><em> (Double)</em><span> - TSV diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>tsv_elliptical_width</strong><em> (Double)</em><span> - TSV elliptical width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
-<img alt="../_images/kqcircuits.elements.f2f_connectors.tsvs.tsv.png" src="../_images/kqcircuits.elements.f2f_connectors.tsvs.tsv.png" />
+<img alt="../_images/kqcircuits.elements.tsvs.tsv_ellipse.png" src="../_images/kqcircuits.elements.tsvs.tsv_ellipse.png" />
 </div>
 
 
@@ -559,8 +572,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse.html" class="btn btn-neutral float-right" title="kqcircuits.elements.f2f_connectors.tsvs.tsv_ellipse" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kqcircuits.elements.f2f_connectors.tsvs.html" class="btn btn-neutral float-left" title="kqcircuits.elements.f2f_connectors.tsvs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.elements.tsvs.tsv_standard.html" class="btn btn-neutral float-right" title="kqcircuits.elements.tsvs.tsv_standard" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.elements.tsvs.tsv.html" class="btn btn-neutral float-left" title="kqcircuits.elements.tsvs.tsv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

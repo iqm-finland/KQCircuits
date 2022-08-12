@@ -63,7 +63,7 @@ Flip chip connector
 
 Dc connectors for flip-chip
 
-.. kqc_elem_params:: kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_dc
+.. kqc_elem_params:: kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc
 
 .. image:: ../images/elements/flip_chip_dc.png
     :alt: flip_chip_dc
@@ -73,7 +73,7 @@ Flip chip connector Rf
 
 Radio frequency connectors for flip-chip
 
-.. kqc_elem_params:: kqcircuits.elements.f2f_connectors.flip_chip_connectors.flip_chip_connector_rf
+.. kqc_elem_params:: kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf
 
 .. image:: ../images/elements/flip_chip_rf.png
     :alt: flip_chip_rf
@@ -83,7 +83,7 @@ TSV connector
 
 Through silicon via geometry
 
-.. kqc_elem_params:: kqcircuits.elements.f2f_connectors.tsvs.tsv
+.. kqc_elem_params:: kqcircuits.elements.tsvs.tsv
 
 .. image:: ../images/elements/tsv.png
     :alt: tsv

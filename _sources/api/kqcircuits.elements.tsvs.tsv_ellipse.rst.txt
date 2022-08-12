@@ -1,0 +1,10 @@
+kqcircuits.elements.tsvs.tsv\_ellipse
+=====================================
+
+.. automodule:: kqcircuits.elements.tsvs.tsv_ellipse
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.tsvs.tsv_ellipse
+.. image:: ../pcell_images/kqcircuits.elements.tsvs.tsv_ellipse.png

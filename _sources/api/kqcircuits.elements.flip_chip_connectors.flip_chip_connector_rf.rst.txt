@@ -1,0 +1,10 @@
+kqcircuits.elements.flip\_chip\_connectors.flip\_chip\_connector\_rf
+====================================================================
+
+.. automodule:: kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf
+.. image:: ../pcell_images/kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf.png
