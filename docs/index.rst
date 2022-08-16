@@ -49,7 +49,6 @@ Documentation
    support
    user_guide/index
    developer/index
-   libraries/index
    api/kqcircuits
    citing
    trademarks

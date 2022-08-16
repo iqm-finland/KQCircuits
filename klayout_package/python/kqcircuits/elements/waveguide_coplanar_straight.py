@@ -22,7 +22,10 @@ from kqcircuits.util.parameters import Param, pdt
 
 
 class WaveguideCoplanarStraight(Element):
-    """The PCell declaration of a straight segment of a coplanar waveguide."""
+    """The PCell declaration of a straight segment of a coplanar waveguide.
+
+   .. MARKERS_FOR_PNG 15,8 15,0
+    """
 
     l = Param(pdt.TypeDouble, "Length", 30)
 

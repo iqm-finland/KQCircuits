@@ -40,6 +40,8 @@ class Meander(Element):
     By default, the number of meanders is automatically chosen to minimize the area taken by bounding box of
     the meander. Uses the same bending radius as the underlying waveguide. Equidistant airbridges can be placed in the
     meander using ``n_bridges`` parameter.
+
+       .. MARKERS_FOR_PNG 0,0
     """
     start = Param(pdt.TypeShape, "Start", pya.DPoint(-600, 0))
     end = Param(pdt.TypeShape, "End", pya.DPoint(600, 0))

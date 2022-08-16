@@ -31,6 +31,8 @@ class Swissmon(Qubit):
     Option of having fluxline.  Refpoints for 3 couplers, fluxline position and chargeline position.
     Length between the ports is from waveguide port to the rectangular part of the launcher pad.
     Length of the fingers is also used for the length of the launcher pad.
+
+    .. MARKERS_FOR_PNG 56,-61 140,0 0,175 -64,117
     """
 
     arm_length = Param(pdt.TypeList, "Arm length (um, WNES))", [300. / 2] * 4)

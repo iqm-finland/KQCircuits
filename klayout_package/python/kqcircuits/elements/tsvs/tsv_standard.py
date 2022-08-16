@@ -23,6 +23,8 @@ class TsvStandard(Tsv):
     """Connector between faces of two sides of a substrate.
 
     Origin is at the geometric center. Geometry es circular.
+
+    .. MARKERS_FOR_PNG 0,0
     """
 
     def build(self):

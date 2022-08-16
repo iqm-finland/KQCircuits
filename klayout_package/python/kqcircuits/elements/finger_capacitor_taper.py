@@ -25,6 +25,8 @@ class FingerCapacitorTaper(Element):
     """The PCell declaration for a tapered finger capacitor.
 
     Two ports with reference points. Ground plane gap is automatically adjusted to maintain the a/b ratio.
+
+    .. MARKERS_FOR_PNG 2.76,0 10,16 3.6,-30 11.3,0,71.3,0
     """
 
     finger_number = Param(pdt.TypeInt, "Number of fingers", 5)

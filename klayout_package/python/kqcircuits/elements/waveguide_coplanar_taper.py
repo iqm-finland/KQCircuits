@@ -26,7 +26,10 @@ from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 
 @add_parameters_from(FingerCapacitorSquare, a2=Element.a*2, b2=Element.b*2)
 class WaveguideCoplanarTaper(Element):
-    """The PCell declaration of a taper segment of a coplanar waveguide."""
+    """The PCell declaration of a taper segment of a coplanar waveguide.
+
+    .. MARKERS_FOR_PNG 0,0,31.2,0 0,5,0,-5 31.2,-10,31.2,10
+    """
 
     taper_length = Param(pdt.TypeDouble, "Taper length", 10 * math.pi, unit="μm")
     m2 = Param(pdt.TypeDouble, "Margin of right waveguide protection layer", 5 * 2, unit="μm")

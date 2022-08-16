@@ -27,7 +27,10 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 @add_parameters_from(Airbridge)
 @add_parameters_from(WaveguideCoplanarTaper, "*", m2=5)
 class AirbridgeConnection(Element):
-    """The PCell declaration of an Airbridge with tapered waveguides in both ends."""
+    """The PCell declaration of an Airbridge with tapered waveguides in both ends.
+
+     .. MARKERS_FOR_PNG 0,20 23,26 14,-15
+    """
 
     bridge_gap_width = Param(pdt.TypeDouble, "Width of waveguide gap around the Airbridge", 12, unit="μm")
     with_side_airbridges = Param(pdt.TypeBoolean, "With airbridges on the sides", True)

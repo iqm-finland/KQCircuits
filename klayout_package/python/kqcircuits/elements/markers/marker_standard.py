@@ -22,7 +22,10 @@ from kqcircuits.elements.markers.marker import Marker
 
 
 class MarkerStandard(Marker):
-    """The PCell declaration for the Standard Marker."""
+    """The PCell declaration for the Standard Marker.
+
+    .. MARKERS_FOR_PNG 48,-60 0,0 56,-130 178,121 250,250
+    """
 
     diagonal_squares = Param(pdt.TypeInt, "Number of diagonal squares in the marker", 10)
     window = Param(pdt.TypeBoolean, "Window in airbridge flyover and UBM layer", False)

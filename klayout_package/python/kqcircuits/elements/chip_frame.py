@@ -28,6 +28,8 @@ class ChipFrame(Element):
     """The PCell declaration for a chip frame.
 
     The chip frame consists of a dicing edge, and labels and markers in the corners.
+
+     .. MARKERS_FOR_PNG 0,5000,10000,5000 5000,0,5000,10000
     """
 
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)),

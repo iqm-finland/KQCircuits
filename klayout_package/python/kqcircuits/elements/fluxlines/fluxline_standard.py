@@ -24,7 +24,10 @@ from kqcircuits.elements.fluxlines.fluxline import Fluxline
 
 @logged
 class FluxlineStandard(Fluxline):
-    """Fluxline variant "standard"."""
+    """Fluxline variant "standard".
+
+     .. MARKERS_FOR_PNG 9,-21 11,-17 -10,-9.7
+    """
 
     def build(self):
         # shorthands

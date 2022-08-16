@@ -31,6 +31,8 @@ class AirbridgeRectangular(Airbridge):
 
     Bottom parts of pads in bottom layer, bridge and top parts of pads in top layer. Pads and bridge are rectangular.
     Refpoints "port_a" and "port_b" at top pad points closest to origin.
+
+    .. MARKERS_FOR_PNG 0,30 0,1 -10,30 -2,14
     """
 
     default_type = "Airbridge Rectangular"

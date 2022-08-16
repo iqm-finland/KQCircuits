@@ -28,6 +28,8 @@ class Launcher(Element):
     scaling the gap if ``a_launcher`` and ``b_launcher`` are not specified. Taper length is from
     waveguide port to the rectangular part of the launcher pad. Pad width is also used for the
     length of the launcher pad.
+
+     .. MARKERS_FOR_PNG 460,54 410,200 677,46 0,0,300,0
     """
 
     s = Param(pdt.TypeDouble, "Pad width", 300, unit="μm")

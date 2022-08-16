@@ -41,6 +41,8 @@ class WaveguideCoplanar(Element):
     Warning:
         Arbitrary angle bents can have very small gaps between bends and straight segments due to
         precision of arithmetic. Small positive value of corner_safety_overlap can avoid these gaps.
+
+    .. MARKERS_FOR_PNG 20,-10 50,0
     """
 
     path = Param(pdt.TypeShape, "TLine", pya.DPath([pya.DPoint(0, 0), pya.DPoint(100, 0)], 0))

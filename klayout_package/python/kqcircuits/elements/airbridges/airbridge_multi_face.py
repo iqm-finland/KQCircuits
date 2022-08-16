@@ -33,6 +33,8 @@ class AirbridgeMultiFace(Airbridge):
     Origin is at the geometric center. The airbridge is in vertical direction.
 
     Adds base metal on the second face and optionally creates bumps at both ends.
+
+    .. MARKERS_FOR_PNG 6,0 0,3 0,42 15.5,41.984755
     """
 
     default_type = "Airbridge Multi Face"

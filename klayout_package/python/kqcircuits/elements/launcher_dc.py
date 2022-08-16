@@ -22,7 +22,10 @@ from kqcircuits.util.parameters import Param, pdt
 
 
 class LauncherDC(Element):
-    """The PCell declaration for a DC launcher for connecting wirebonds."""
+    """The PCell declaration for a DC launcher for connecting wirebonds.
+
+    .. MARKERS_FOR_PNG 0,0 80,0 -278,-70
+    """
 
     width = Param(pdt.TypeDouble, "Pad width", 500, unit="μm")
 

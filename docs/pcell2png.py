@@ -29,11 +29,13 @@
 from importlib import import_module
 from pathlib import Path
 
+from kqcircuits.defaults import default_layers
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.pya_resolver import pya
 
 
 # Ruler places are specified as space delimited x,y coordinate pairs after a "MARKERS_FOR_PNG" tag.
+# Ruler places can also be added manually using x1,y1,x2,y2 format.
 def add_rulers(path, view):
     if path == "":
         return
@@ -45,19 +47,30 @@ def add_rulers(path, view):
              if a:
                 rulers += a[0].split(' ')
 
+    #Check for autoruler in x,y format or manual ruler in x1,y1,x2,y2 format
     for ruler in rulers:
-        x, y = [float(x) for x in ruler.split(',')]
-        view.layout_view.create_measure_ruler(pya.DPoint(x, y))
+        markers = [float(x) for x in ruler.split(',')]
+        if len(markers) == 2:
+            ant = view.layout_view.create_measure_ruler(pya.DPoint(markers[0], markers[1]))
+            ant.fmt = "$(sprintf('%.1f',D))"
+        elif len(markers) == 4:
+            ant = pya.Annotation()
+            ant.p1 = pya.DPoint(markers[0],markers[1])
+            ant.p2 = pya.DPoint(markers[2],markers[3])
+            ant.style = pya.Annotation.StyleRuler
+            ant.fmt = "$(sprintf('%.1f',D))"
+            view.layout_view.insert_annotation(ant)
 
 
 module = import_module(lib_name)
 cls = getattr(module, cls_name)
 path = Path(dest_dir)
 cls_path = cls_path if "cls_path" in locals() else ""
-
 layout = KLayoutView.get_active_layout()
 top = layout.create_cell("top")
 cell = cls.create(layout)
+
+#Insert the element to the layout
 top.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
 
 # save the element as static .oas file
@@ -67,9 +80,14 @@ save_opts.format = "OASIS"
 save_opts.write_context_info = False  # to save all cells as static cells
 static_cell.write(f"{path}/{cls.__module__}.oas", save_opts)
 
-# export as .png file
 view = KLayoutView(current=True)
+
+#Hides specified layers before saving png - improves readability and rulers
+layers_to_remove = ['refpoints','b_ports','b_ground_grid_avoidance', 't_ground_grid_avoidance']
+for layer in layers_to_remove: layout.delete_layer(layout.layer(default_layers[layer]))
 view.focus(top)
+
+# export as .png file
 add_rulers(cls_path, view)
 size = 1000 if lib_name.find(".chips.") != -1 else 500
 view.export_pcell_png(path, top, cls.__module__, max_size=size)

@@ -26,6 +26,8 @@ class TsvEllipse(Tsv):
     """Connector between faces of two sides of a substrate.
 
     Origin is at the geometric center. Geometry is elliptical.
+
+   .. MARKERS_FOR_PNG -0.2,0
     """
 
     tsv_elliptical_width = Param(pdt.TypeDouble, "TSV elliptical width", 30, unit="μm")

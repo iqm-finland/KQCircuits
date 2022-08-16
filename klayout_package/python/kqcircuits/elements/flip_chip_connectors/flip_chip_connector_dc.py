@@ -21,7 +21,10 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector import FlipChi
 
 @logged
 class FlipChipConnectorDc(FlipChipConnector):
-    """PCell declaration for an inter-chip dc connector."""
+    """PCell declaration for an inter-chip dc connector.
+
+    .. MARKERS_FOR_PNG 0,0 0,15
+    """
 
     def build(self):
         self.create_bump_connector()

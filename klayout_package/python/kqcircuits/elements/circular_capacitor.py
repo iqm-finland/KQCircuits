@@ -31,6 +31,8 @@ class CircularCapacitor(Element):
     An outer semi-circular island with an inside circular island. Fixed-length capacitor is supported and different line
     impedance on each side can be used.
     Two ports with reference points. The feedline has the same length as the width of the ground gap around the coupler.
+
+     .. MARKERS_FOR_PNG 30,0 -56,0 86,0
     """
 
     r_inner = Param(pdt.TypeDouble, "Internal island radius", 20, unit="μm",

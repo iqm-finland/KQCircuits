@@ -32,6 +32,8 @@ def arc(r, start, stop, n):
         start: begin angle in radians
         stop: end angle in radians
         n: number of corners in full circle
+
+    .. MARKERS_FOR_PNG 0,91 0,100
     """
     n_steps = max(round(abs(stop - start) * n / (2 * pi)), 1)
     step = (stop - start) / n_steps

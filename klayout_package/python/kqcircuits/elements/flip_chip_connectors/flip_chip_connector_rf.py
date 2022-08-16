@@ -37,6 +37,8 @@ class FlipChipConnectorRf(FlipChipConnector):
         * ``Single``: the bump connects the two sides
         * ``GSG``: ground-signal-ground indium bumps
         * ``Coax``: signal transmitting bump is surrounded by four ground bumps
+
+    .. MARKERS_FOR_PNG 0,0 15,0 0,-40 -28,0
     """
 
     connector_type = Param(pdt.TypeString, "Connector type", "Coax", choices=connector_type_choices)
