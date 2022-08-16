@@ -70,6 +70,10 @@ class SpiralResonatorPolygon(Element):
                            docstring="Negative value means single face resonator without connector.")
 
     def build(self):
+        if isinstance(self.input_path, list):
+            self.input_path = pya.DPath(self.input_path, 1)
+        if isinstance(self.poly_path, list):
+            self.poly_path = pya.DPath(self.poly_path, 1)
 
         if self.auto_spacing:
             self._produce_resonator_automatic_spacing()
