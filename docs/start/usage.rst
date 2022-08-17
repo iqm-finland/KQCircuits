@@ -35,7 +35,7 @@ embedded macro editor. This copy may be freely changed with the macro editor. Fi
 would be to rename the chip. This is still not part of KQC. To
 make it visible in KLayout we need to create a *symbolic link* to it from the designated chip folder
 in ``[Package KQCircuits]/kqcircuits/chips/``. Finally, KLayout should re-read the now update KQC
-library, this may be achieved by restarting or with the ``Edit -> KQCircuits Library -> Reload
+library, this may be achieved by restarting or with the ``KQCircuits -> Reload
 libraries`` menu entry.
 
 It may take a bit of effort to find where these folders are in a particular OS, in Linux::

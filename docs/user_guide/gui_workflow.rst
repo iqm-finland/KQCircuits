@@ -83,6 +83,5 @@ only after you know the API.
 
 #. **Add the ground grid.**
 
-   #. In the top menu, navigate to *Edit->KQCircuits Library->Fill with ground
-      plane grid*. It may take some time to generate.
+   #. In the top menu, navigate to *KQCircuits -> Fill with ground plane grid*. It may take some time to generate.
       Unhide ground grid in layers list located in the top right.

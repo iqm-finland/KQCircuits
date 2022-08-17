@@ -12,7 +12,7 @@
  <show-in-menu>false</show-in-menu>
  <group-name>KQCircuit</group-name>
  <menu-path>
-edit_menu.my_group&gt;end("KQCircuits Library").end</menu-path>
+kqcircuits_menu&gt;end("&amp;KQCircuits").end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text># This code is part of KQCircuits
