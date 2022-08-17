@@ -83,7 +83,6 @@ check_confidential_strings:
     FILTER_BRANCH_SQUELCH_WARNING: 1
   script:
     - pip install nbconvert
-    - git checkout "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
     # go through relevant history and clear output from notebooks
     - >
       git filter-branch --tree-filter
@@ -92,7 +91,7 @@ check_confidential_strings:
     - python3 -m nbconvert --clear-output --inplace notebooks/*.ipynb
     - >
       bash ci/check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
-      "remotes/origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+      "remotes/origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" "remotes/origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
   only:
     refs:
       - merge_requests
