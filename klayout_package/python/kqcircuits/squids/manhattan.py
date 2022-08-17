@@ -33,10 +33,12 @@ class Manhattan(Squid):
 
     finger_overshoot = Param(pdt.TypeDouble, "Length of fingers after the junction.", 1.0, unit="μm")
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer", True)
-    shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads", 0.5, unit="μm")
+    shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads", 1.0, unit="μm")
     compact_geometry = Param(pdt.TypeBoolean, "Compact geometry for metal addition.", False)
     separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", False)
-    finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 1.0, unit="μm")
+    offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
+    mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
+    finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 0.2, unit="μm")
 
     def build(self):
         self.produce_manhattan_squid(top_pad_layer="SIS_junction")
@@ -172,22 +174,30 @@ class Manhattan(Squid):
         """
         jx = top_corner.x - (top_corner.y - b_corner_y) / 2
         jy = (top_corner.y + b_corner_y) / 2
-        dd = self.junction_width * sqrt(0.5)
+        ddb = self.junction_width * sqrt(0.5)
+        ddt = self.junction_width * sqrt(0.5)
+        if self.mirror_offset:
+            ddt += self.offset_compensation * sqrt(0.5)
+        else:
+            ddb += self.offset_compensation * sqrt(0.5)
         fo = self.finger_overshoot * sqrt(0.5)
         pl = self.finger_overlap * sqrt(0.5)  # plus length to connect despite of rounding
 
-        finger_points = [
-            pya.DPoint(top_corner.x + pl, top_corner.y + dd + pl),
-            pya.DPoint(top_corner.x + dd + pl, top_corner.y + pl),
-            pya.DPoint(jx - fo, jy - fo - dd),
-            pya.DPoint(jx - fo - dd, jy - fo),
-        ]
-        finger = pya.DTrans(-jx, -jy) * pya.DPolygon(finger_points)
+        def finger_points(size):
+            return [
+                pya.DPoint(top_corner.x + pl, top_corner.y + size + pl),
+                pya.DPoint(top_corner.x + size + pl, top_corner.y + pl),
+                pya.DPoint(jx - fo, jy - fo - size),
+                pya.DPoint(jx - fo - size, jy - fo),
+            ]
 
-        junction_shapes = [(pya.DTrans(jx - finger_margin, jy) * finger).to_itype(self.layout.dbu),
-                           (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger).to_itype(self.layout.dbu),
-                           (pya.DTrans(3, False, jx - finger_margin, jy) * finger).to_itype(self.layout.dbu),
-                           (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger).to_itype(self.layout.dbu)]
+        finger_bottom = pya.DTrans(-jx, -jy) * pya.DPolygon(finger_points(ddb))
+        finger_top = pya.DTrans(-jx, -jy) * pya.DPolygon(finger_points(ddt))
+
+        junction_shapes = [(pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
+                           (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
+                           (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
+                           (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger_bottom).to_itype(self.layout.dbu)]
 
         junction_region = pya.Region(junction_shapes).merged()
         layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
