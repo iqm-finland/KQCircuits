@@ -42,7 +42,7 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
 
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
-                      maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
+                      gap_max_element_length=None, maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                       max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0, surface_loss_tangent=0,
                       simulation_flags=None, ansys_project_template=None):
@@ -58,6 +58,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         max_delta_s: Stopping criterion in HFSS simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
+        gap_max_element_length: Largest mesh length allowed in the gaps given in "um"
+            (if None is given, then the mesh size is not restricted in the gap).
         maximum_passes: Maximum number of iterations in simulation.
         minimum_passes: Minimum number of iterations in simulation.
         minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.
@@ -84,11 +86,13 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     # select layers
     layers = ["b_simulation_signal",
               "b_simulation_ground",
+              "b_simulation_gap",
               "b_simulation_airbridge_flyover",
               "b_simulation_airbridge_pads"]
     if simulation.wafer_stack_type == "multiface":
         layers += ["t_simulation_signal",
                    "t_simulation_ground",
+                   "t_simulation_gap",
                    "b_simulation_indium_bump"]
 
     # collect data for .json file
@@ -102,6 +106,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'max_delta_s': max_delta_s,  # stopping criterion for HFSS
             'percent_error': percent_error,  # stopping criterion for Q3D
             'percent_refinement': percent_refinement,
+            'gap_max_element_length': gap_max_element_length,
             'maximum_passes': maximum_passes,
             'minimum_passes': minimum_passes,
             'minimum_converged_passes': minimum_converged_passes,
@@ -203,7 +208,7 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 
 def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folder='scripts', file_prefix='simulation',
                  frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
-                 maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
+                 gap_max_element_length=None, maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                  max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0, surface_loss_tangent=0, exit_after_run=False,
                  ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
@@ -224,6 +229,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         max_delta_s: Stopping criterion in HFSS simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
+        gap_max_element_length: Largest mesh length allowed in the gaps given in "um"
+            (if None is given, then the mesh size is not restricted in the gap).
         maximum_passes: Maximum number of iterations in simulation.
         minimum_passes: Minimum number of iterations in simulation.
         minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.
@@ -260,6 +267,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         json_filenames.append(export_ansys_json(simulation, path, ansys_tool=ansys_tool,
                                                 frequency_units=frequency_units, frequency=frequency,
                                                 max_delta_s=max_delta_s, percent_error=percent_error,
+                                                gap_max_element_length=gap_max_element_length,
                                                 percent_refinement=percent_refinement,
                                                 maximum_passes=maximum_passes, minimum_passes=minimum_passes,
                                                 minimum_converged_passes=minimum_converged_passes,

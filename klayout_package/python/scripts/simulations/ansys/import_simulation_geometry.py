@@ -45,6 +45,7 @@ simulation_flags = data['simulation_flags']
 gds_file = data['gds_file']
 signal_layer = data['signal_layer']
 ground_layer = data['ground_layer']
+gap_layer = data['gap_layer']
 substrate_height = data['substrate_height']
 airbridge_height = data.get('airbridge_height', 0)
 box_height = data['box_height']
@@ -76,7 +77,8 @@ if wafer_stack_type == "multiface":
                          ]]
     entry_option = [
         "entry:=", ["order:=", 2, "layer:=", "t_Signal"],
-        "entry:=", ["order:=", 3, "layer:=", "t_Ground"]]
+        "entry:=", ["order:=", 3, "layer:=", "t_Ground"],
+        "entry:=", ["order:=", 8, "layer:=", "t_Gap"]]
     vacuum_box_height = chip_distance
     if 'indium_bump_layer' in data:
         entry_option += [
@@ -149,6 +151,7 @@ oDefinitionManager.AddMaterial(
 # Import GDSII geometry
 order_map = ["entry:=", ["order:=", 0, "layer:=", "Signal"],
              "entry:=", ["order:=", 1, "layer:=", "Ground"],
+             "entry:=", ["order:=", 7, "layer:=", "Gap"],
              ] + entry_option
 
 layer_map = ["NAME:LayerMap",
@@ -161,6 +164,11 @@ layer_map = ["NAME:LayerMap",
               "LayerNum:=", ground_layer,
               "DestLayer:=", "Ground",
               "layer_type:=", "signal"
+              ],
+             ["NAME:LayerMapInfo",
+              "LayerNum:=", gap_layer,
+              "DestLayer:=", "Gap",
+              "layer_type:=", "gap"
               ],
              ] + layer_map_option
 
@@ -183,6 +191,7 @@ oEditor.ImportGDSII(
 # Get lists of imported objects (= 2D chip geometry)
 signal_objects = oEditor.GetMatchedObjectName('Signal_*')  # all signal objects (also t_signal_objects from top-chip)
 ground_objects = oEditor.GetMatchedObjectName('Ground_*')  # all ground objects (also t_ground_objects from top-chip)
+gap_objects = oEditor.GetMatchedObjectName('Gap_*')  # all ground objects (also t_gap_objects from top-chip)
 airbridge_pads_objects = oEditor.GetMatchedObjectName('Airbridge_Pads_*')
 airbridge_flyover_objects = oEditor.GetMatchedObjectName('Airbridge_Flyover_*')
 
@@ -215,8 +224,10 @@ if wafer_stack_type == 'multiface':
     # Assign metalization
     t_signal_objects = oEditor.GetMatchedObjectName('t_Signal_*')
     t_ground_objects = oEditor.GetMatchedObjectName('t_Ground_*')
+    t_gap_objects = oEditor.GetMatchedObjectName('t_Ground_*')
     signal_objects += t_signal_objects
     ground_objects += t_ground_objects
+    gap_objects += t_gap_objects
     if ansys_tool in {'hfss', 'eigenmode'}:
         oBoundarySetup.AssignPerfectE(
             ["NAME:PerfE2",
@@ -658,6 +669,20 @@ else:
     oEditor = oDesign.SetActiveEditor("3D Modeler")
     oEditor.Paste()
     oDesktop.CloseProject(build_geom_name)
+
+if setup.get('gap_max_element_length', None) is not None:
+    oMeshSetup = oDesign.GetModule("MeshSetup")
+    oMeshSetup.AssignLengthOp(
+            [
+                "NAME:GapLength",
+                "RefineInside:=", False,
+                "Enabled:=", True,
+                "Objects:=", gap_objects,
+                "RestrictElem:=", False,
+                # "NumMaxElem:=", 100000
+                "RestrictLength:=", True,
+                "MaxLength:=", str(setup['gap_max_element_length'])+"um"
+            ])
 
 # Fit window to objects
 oEditor.FitAll()
