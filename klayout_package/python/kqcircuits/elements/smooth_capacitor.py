@@ -128,9 +128,9 @@ class SmoothCapacitor(Element):
             return pya.Region(pya.DPolygon([pya.DPoint(-x, y), pya.DPoint(l - x, y),
                                             pya.DPoint(x, -y), pya.DPoint(x - l, -y)]).to_itype(self.layout.dbu))
 
-        def super_smoothen_region(reg, r):
-            reg.size(r / self.layout.dbu, r / self.layout.dbu, 1)
-            reg.size(-r / self.layout.dbu, -r / self.layout.dbu, 1)
+        def super_smoothen_region(reg, r, cutoff=(1, 1)):
+            reg.size(r / self.layout.dbu, r / self.layout.dbu, cutoff[0])
+            reg.size(-r / self.layout.dbu, -r / self.layout.dbu, cutoff[1])
             reg.round_corners(r / self.layout.dbu, 0, self.n)
 
         # List of finger polygons
@@ -157,7 +157,7 @@ class SmoothCapacitor(Element):
         b2 = self.b if self.b2 < 0 else self.b2
         region_ground += wg_joint(xport, x_mid - self.ground_gap, b2 + a2/2)
         region_ground += wg_joint(-xport, -x_mid + self.ground_gap, self.b + self.a/2)
-        super_smoothen_region(region_ground, self.finger_gap + self.ground_gap)
+        super_smoothen_region(region_ground, self.finger_gap + self.ground_gap, (1, 2))
 
         # Finalize finger pad regions
         right_fingers += wg_joint(xport, x_mid, a2/2)
