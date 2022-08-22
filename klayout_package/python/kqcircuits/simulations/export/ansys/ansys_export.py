@@ -138,7 +138,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
 def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_after_run=False,
                      ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
                      import_script_folder='scripts', import_script='import_and_simulate.py',
-                     post_process_script='export_batch_results.py', use_rel_path=True):
+                     post_process_script='export_batch_results.py', intermediate_processing_command=None,
+                     use_rel_path=True):
     """
     Create a batch file for running one or more already exported simulations.
 
@@ -151,6 +152,12 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
         import_script_folder: Path to the Ansys-scripts folder.
         import_script: Name of import script file.
         post_process_script: Name of post processing script file.
+        intermediate_processing_command: Command for intermediate steps between simulations.
+            Default is None, which doesn't enable any processing. An example argument is ``python scripts/script.py``,
+            which runs in the `.bat` as::
+
+                python scripts/script.py json_filename.json
+
         use_rel_path: Determines if to use relative paths.
 
     Returns:
@@ -175,6 +182,13 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
                 run_cmd,
                 str(Path(import_script_folder).joinpath(import_script)))
             file.write(command)
+            # Possible processing between simulations
+            if intermediate_processing_command is not None:
+                command = '{} "{}"\n'.format(
+                    intermediate_processing_command,
+                    str(Path(json_filename).relative_to(path))
+                )
+                file.write(command)
 
         # Post-process command
         command = '"{}" -{} "{}"\n'.format(
@@ -193,7 +207,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0, surface_loss_tangent=0, exit_after_run=False,
                  ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
-                 use_rel_path=True, simulation_flags=None, ansys_project_template=None):
+                 intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
+                 ansys_project_template=None):
     r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -224,6 +239,12 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         ansys_executable: Path to the Ansys Electronics Desktop executable.
         import_script: Name of import script file.
         post_process_script: Name of post processing script file.
+        intermediate_processing_command: Command for intermediate steps between simulations.
+            Default is None, which doesn't enable any processing. An example argument is ``python scripts/script.py``,
+            which runs in the `.bat` as::
+
+                python scripts/script.py json_filename.json
+
         use_rel_path: Determines if to use relative paths.
         simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
         ansys_project_template: path to the simulation template
@@ -251,4 +272,5 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
                             ansys_executable=ansys_executable, import_script_folder=import_script_folder,
                             import_script=import_script, post_process_script=post_process_script,
+                            intermediate_processing_command=intermediate_processing_command,
                             use_rel_path=use_rel_path)
