@@ -581,6 +581,23 @@ output_format is “create” or “create+macro”. Required if you want to use
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.get_node_params">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">get_node_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node" title="kqcircuits.elements.waveguide_composite.Node"><span class="pre">kqcircuits.elements.waveguide_composite.Node</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#get_node_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.get_node_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a list of parameters for Node in string form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node</strong> – a Node to convert</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns: a tuple (node_params, element) where</dt><dd><p>node_params: string of comma-separated key-value pairs that can be passed to the initializer of Node,
+starting with <code class="docutils literal notranslate"><span class="pre">&quot;,</span> <span class="pre">&quot;</span></code>
+element: class that implements the node’s element, or None if the node has no element</p>
+</dd>
+</dl>
+</dd></dl>
+
 <img alt="../_images/kqcircuits.util.layout_to_code.png" src="../_images/kqcircuits.util.layout_to_code.png" />
 </div>
 

@@ -72,7 +72,7 @@ Reloading libraries
   nothing changes on the generated design inside the editor, you have to re-run
   the :git_url:`reload.lym <klayout_package/python/scripts/macros/reload.lym>` file to be able to reload the library features for
   changes to be updated. The reload macro can also be run from
-  "Edit -> KQCircuits Library -> Reload libraries" in the main KLayout window
+  "KQCircuits -> Reload libraries" in the main KLayout window
 
 - The libraries are automatically reloaded whenever you restart KLayout, so
   in that case there is no need to run the :git_url:`reload <klayout_package/python/scripts/macros/reload.lym>` macro to see changes.

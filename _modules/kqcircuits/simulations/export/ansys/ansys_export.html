@@ -570,8 +570,9 @@
                       <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                       <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                      <span class="n">export_processing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                      <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulation into json and gds files.</span>
 
 <span class="sd">    Arguments:</span>
@@ -591,7 +592,11 @@
 <span class="sd">        sweep_end: The highest frequency in the sweep.</span>
 <span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
-<span class="sd">        export_processing: Optional export processing, given as list of strings</span>
+<span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
+<span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;pyepr&#39;.</span>
+<span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
+<span class="sd">        surface_loss_tangent: Surface loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
+<span class="sd">        simulation_flags: Optional export processing, given as list of strings</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
 
 <span class="sd">    Returns:</span>
@@ -599,8 +604,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">export_processing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">export_processing</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">simulation_flags</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">simulation_flags</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="c1"># select layers</span>
     <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">,</span>
@@ -631,8 +636,12 @@
             <span class="s1">&#39;sweep_end&#39;</span><span class="p">:</span> <span class="n">sweep_end</span><span class="p">,</span>
             <span class="s1">&#39;sweep_count&#39;</span><span class="p">:</span> <span class="n">sweep_count</span><span class="p">,</span>
             <span class="s1">&#39;sweep_type&#39;</span><span class="p">:</span> <span class="n">sweep_type</span><span class="p">,</span>
+            <span class="s1">&#39;max_delta_f&#39;</span><span class="p">:</span> <span class="n">max_delta_f</span><span class="p">,</span>
+            <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="n">n_modes</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;export_processing&#39;</span><span class="p">:</span> <span class="n">export_processing</span>
+        <span class="s1">&#39;substrate_loss_tangent&#39;</span><span class="p">:</span> <span class="n">substrate_loss_tangent</span><span class="p">,</span>
+        <span class="s1">&#39;surface_loss_tangent&#39;</span><span class="p">:</span> <span class="n">surface_loss_tangent</span><span class="p">,</span>
+        <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">ansys_project_template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -708,16 +717,17 @@
                  <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                 <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
+                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                  <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
-                 <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">export_processing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+                 <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
 
 <span class="sd">    Arguments:</span>
 <span class="sd">        simulations: List of simulations to be exported.</span>
 <span class="sd">        path: Location where to write export files.</span>
-<span class="sd">        ansys_tool: Determines whether to use HFSS (&#39;hfss&#39;) or Q3D Extractor (&#39;q3d&#39;).</span>
+<span class="sd">        ansys_tool: Determines whether to use HFSS (&#39;hfss&#39;), Q3D Extractor (&#39;q3d&#39;) or HFSS eigenmode (&#39;eigenmode&#39;).</span>
 <span class="sd">        import_script_folder: Path to the Ansys-scripts folder.</span>
 <span class="sd">        file_prefix: Name of the batch file to be created.</span>
 <span class="sd">        frequency_units: Units of frequency.</span>
@@ -733,12 +743,16 @@
 <span class="sd">        sweep_end: The highest frequency in the sweep.</span>
 <span class="sd">        sweep_count: Number of frequencies in the sweep.</span>
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
+<span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
+<span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;eigenmode&#39;.</span>
+<span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
+<span class="sd">        surface_loss_tangent: Surface loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
 <span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
 <span class="sd">        ansys_executable: Path to the Ansys Electronics Desktop executable.</span>
 <span class="sd">        import_script: Name of import script file.</span>
 <span class="sd">        post_process_script: Name of post processing script file.</span>
 <span class="sd">        use_rel_path: Determines if to use relative paths.</span>
-<span class="sd">        export_processing: Optional export processing, given as list of strings</span>
+<span class="sd">        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
 
 <span class="sd">    Returns:</span>
@@ -755,9 +769,11 @@
                                                 <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
                                                 <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
                                                 <span class="n">sweep_enabled</span><span class="o">=</span><span class="n">sweep_enabled</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="n">sweep_start</span><span class="p">,</span>
-                                                <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span>
-                                                <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
-                                                <span class="n">export_processing</span><span class="o">=</span><span class="n">export_processing</span><span class="p">,</span>
+                                                <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
+                                                <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
+                                                <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="n">substrate_loss_tangent</span><span class="p">,</span>
+                                                <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="n">surface_loss_tangent</span><span class="p">,</span>
+                                                <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
                                                 <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
                             <span class="n">ansys_executable</span><span class="o">=</span><span class="n">ansys_executable</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">,</span>

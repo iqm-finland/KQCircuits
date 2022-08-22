@@ -598,7 +598,8 @@
 </div>
 <div class="section" id="ansys-export">
 <h2>Ansys export<a class="headerlink" href="#ansys-export" title="Permalink to this headline">¶</a></h2>
-<p>Once the <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object is created, call function <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code> to export the geometry as GDSII file and meta-data in json format. Parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool</span></code> determines whether to use HFSS (‘hfss’) or Q3D Extractor (‘q3d’):</p>
+<p>Once the <code class="docutils literal notranslate"><span class="pre">simulation</span></code> object is created, call function <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code> to export the geometry as GDSII file and meta-data in json format. Parameter <code class="docutils literal notranslate"><span class="pre">ansys_tool</span></code> determines whether to use HFSS (‘hfss’) or Q3D Extractor (‘q3d’).
+HFSS eigenmode simulations are done with ‘eigenmode’, this is used for <a class="reference internal" href="#py-epr"><span class="std std-ref">pyEPR</span></a> as well:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.ansys.ansys_export</span> <span class="kn">import</span> <span class="n">export_ansys_json</span><span class="p">,</span> <span class="n">copy_ansys_scripts_to_directory</span><span class="p">,</span> <span class="n">export_ansys_bat</span><span class="p">,</span> <span class="n">export_ansys</span>
 <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;C:</span><span class="se">\\</span><span class="s2">Your</span><span class="se">\\</span><span class="s2">Path</span><span class="se">\\</span><span class="s2">Here</span><span class="se">\\</span><span class="s2">&quot;</span>
 <span class="n">json</span> <span class="o">=</span> <span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">)</span>
@@ -652,7 +653,7 @@ In case of HFSS, <em>projectname_SMatrix.s2p</em> contains the S-parameters.</p>
 <p>Additional scripts for use cases other than capacitive coupling exist.
 These are enabled in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_and_simulate.py">import_and_simulate.py</a> with a list of strings as parameters to <code class="docutils literal notranslate"><span class="pre">export_ansys</span></code>,
 e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded Touchstone (<code class="docutils literal notranslate"><span class="pre">.sNp</span></code>) files:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_ansys</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">export_processing</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tdr&#39;</span><span class="p">,</span> <span class="s1">&#39;snp_no_deembed&#39;</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export_ansys</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;tdr&#39;</span><span class="p">,</span> <span class="s1">&#39;snp_no_deembed&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>The optional scripts are listed below.</p>
@@ -671,6 +672,13 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <p>Works only in HFSS.</p>
 </li>
 </ul>
+</div>
+<div class="section" id="pyepr">
+<span id="py-epr"></span><h4>pyEPR<a class="headerlink" href="#pyepr" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference external" href="https://github.com/zlatko-minev/pyEPR">pyEPR</a> is supported for HFSS eigenmode simulations.
+A simulation needs to be created with <code class="docutils literal notranslate"><span class="pre">ansys_tool=eigenmode</span></code> and <code class="docutils literal notranslate"><span class="pre">simulation_flags=['pyepr']</span></code>.
+An example simulation is found at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py">klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py</a>.
+See <code class="docutils literal notranslate"><span class="pre">notebooks\pyEPR_example.ipynb</span></code> for an example on using pyEPR itself.</p>
 </div>
 </div>
 </div>
@@ -730,7 +738,7 @@ see <a class="reference external" href="https://github.com/ElmerCSC/elmerfem">ht
 <li><p>Paraview
 <a class="reference external" href="https://www.paraview.org/">https://www.paraview.org/</a></p></li>
 </ul>
-<p>Gmsh api suffices if one needs to generate the mesh only.</p>
+<p>Gmsh API suffices if one needs to only generate the mesh.</p>
 </div>
 </div>
 

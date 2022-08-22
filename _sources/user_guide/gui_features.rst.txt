@@ -93,7 +93,7 @@ the direction of the first waveguide segment aligned with the port.
 Useful Menu Commands
 --------------------
 
-Several very useful macros are directly accessible from KLayout's "**Edit -> KQCircuits Library**"
+Several very useful macros are directly accessible from KLayout's "**KQCircuits**"
 drop-down menu:
 
 - **Fill with ground plane grid** -- Creates a ground plane grid covering the top cell bounding box,

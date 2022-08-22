@@ -675,6 +675,21 @@ flip chip, taper or any custom element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">
+<span class="sig-name descname"><span class="pre">snap_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">klayout.dbcore.DPoint</span></span></span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.snap_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface to define snap behavior for GUI editing in derived classes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>point</strong> – DPoint that has been moved in the GUI</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns: DPoint representing the snapped location for the input point. Return the point unmodified if no</dt><dd><p>snapping is required</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl">
 <span class="sig-name descname"><span class="pre">coerce_parameters_impl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.coerce_parameters_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.coerce_parameters_impl" title="Permalink to this definition">¶</a></dt>
 <dd><p>default implementation</p>
@@ -719,7 +734,8 @@ inserted after if the next Node is not collinear.</p>
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>nodes</strong><em> (String)</em><span> - List of Nodes for the waveguide</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">'Airbridge'),</span> <span class="pre">(200,</span> <span class="pre">0)</span></code></p></li>
-<li><p><strong>gui_path</strong><em> (Shape)</em><span> - Path for editing the waveguide in the KLayout GUI</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
+<li><p><strong>enable_gui_editing</strong><em> (Boolean)</em><span> - Enable GUI editing of the waveguide path</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>gui_path</strong><em> (Shape)</em><span> - </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>gui_path_shadow</strong><em> (Shape)</em><span> - Hidden path to detect GUI operations</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>tight_routing</strong><em> (Boolean)</em><span> - Tight routing for corners</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>

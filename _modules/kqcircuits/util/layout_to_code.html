@@ -683,7 +683,7 @@
             <span class="n">y_snapped</span> <span class="o">=</span> <span class="n">grid_snap</span><span class="o">*</span><span class="nb">round</span><span class="p">(</span><span class="n">path_point</span><span class="o">.</span><span class="n">y</span><span class="o">/</span><span class="n">grid_snap</span><span class="p">)</span>
             <span class="n">node_params</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">if</span> <span class="n">nodes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">node_params</span><span class="p">,</span> <span class="n">node_elem</span> <span class="o">=</span> <span class="n">_get_node_params</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">node_params</span><span class="p">,</span> <span class="n">node_elem</span> <span class="o">=</span> <span class="n">get_node_params</span><span class="p">(</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">node_elem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">include_imports</span><span class="p">:</span>
                     <span class="k">nonlocal</span> <span class="n">element_imports</span>
                     <span class="n">node_elem_import</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;from </span><span class="si">{</span><span class="n">node_elem</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2"> import </span><span class="si">{</span><span class="n">node_elem</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -875,7 +875,18 @@
     <span class="k">return</span> <span class="n">instances</span>
 
 
-<span class="k">def</span> <span class="nf">_get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+<div class="viewcode-block" id="get_node_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params">[docs]</a><span class="k">def</span> <span class="nf">get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate a list of parameters for Node in string form</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        node: a Node to convert</span>
+
+<span class="sd">    Returns: a tuple (node_params, element) where</span>
+<span class="sd">        node_params: string of comma-separated key-value pairs that can be passed to the initializer of Node,</span>
+<span class="sd">        starting with ``&quot;, &quot;``</span>
+<span class="sd">        element: class that implements the node&#39;s element, or None if the node has no element</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">node_params</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="n">elem</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -883,12 +894,16 @@
             <span class="n">node_params</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">elem</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">elif</span> <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;inst_name&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> \
-             <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;align&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">())</span> <span class="ow">or</span> \
-             <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;length_before&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> \
-             <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;length_increment&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> \
-             <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;parameters&quot;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;align&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">())</span> <span class="ow">or</span> \
+                <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;angle&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;length_before&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> \
+                <span class="p">(</span><span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;length_increment&quot;</span> <span class="ow">and</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">node_params</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="n">node_params</span><span class="p">,</span> <span class="n">elem</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="o">==</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span>
+            <span class="c1"># Expand keyword arguments to Node</span>
+            <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">node_params</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">kk</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">node_params</span><span class="p">,</span> <span class="n">elem</span></div>
 </pre></div>
 
            </div>

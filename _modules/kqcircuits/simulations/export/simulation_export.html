@@ -545,6 +545,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 
 
@@ -572,7 +573,11 @@
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">param</span><span class="p">]:</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">sim_parameters</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
-                          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sim_parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)}</span>
+                          <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">sim_parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                            <span class="n">param</span><span class="p">,</span>
+                            <span class="n">value</span>
+                          <span class="p">)}</span>
             <span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sim_class</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">simulations</span></div>
 
