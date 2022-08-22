@@ -243,6 +243,14 @@ class WaveguideComposite(Element):
             parameters["gui_path_shadow"] = pya.DPath()
 
         cell = super().create(layout, library, **parameters)
+        setattr(cell, "segment_lengths", lambda: WaveguideComposite.get_segment_lengths(cell))
+
+        return cell
+
+    @staticmethod
+    def get_segment_lengths(cell):
+        """ Retreives the segment lengths of each waveguide segment in a WaveguideComposite cell
+        """
 
         # Measure segment lengths, counting only "regular waveguides"
         layout = cell.layout()
@@ -250,9 +258,8 @@ class WaveguideComposite(Element):
         child_cells = [layout.cell(inst.cell_index) for inst in cell.each_inst()]
         segment_lengths = [get_cell_path_length(child_cell) for child_cell in child_cells
                            if child_cell.name == "Waveguide Coplanar"]
-        setattr(cell, "segment_lengths", lambda: segment_lengths)
 
-        return cell
+        return segment_lengths
 
     def snap_point(self, point: pya.DPoint) -> pya.DPoint:  # pylint: disable=no-self-use
         """
