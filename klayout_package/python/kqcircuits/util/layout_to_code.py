@@ -371,7 +371,7 @@ def get_node_params(node: Node):
                 (k == "angle" and v is not None) or \
                 (k == "length_before" and v is not None) or \
                 (k == "length_increment" and v is not None):
-            node_params += f", {k}={v}"
+            node_params += f", {k}={repr(v)}"
         elif k == "params":
             # Expand keyword arguments to Node
             for kk, vv in v.items():
