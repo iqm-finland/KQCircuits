@@ -33,6 +33,10 @@
 
 import pya
 import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits_scripts.util.edit_node_plugin import EditNodePluginFactory
+
+# Register the Edit Node plugin
+EditNodePluginFactory()
 
 # Create a new, empty layout if there is no active LayoutView yet
 if pya.LayoutView.current() is None:

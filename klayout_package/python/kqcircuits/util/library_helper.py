@@ -150,6 +150,26 @@ def delete_library(name=None):
         raise SystemError("Failed to delete library '[]'.".format(name))
 
 
+def element_by_class_name(class_name: str, library_path: str = "elements", library_name: str = "Element Library"):
+    """
+    Find Element class by class name from a library
+
+    Args:
+        class_name: Class name to look up
+        library_path: Path to pass to load_libraries
+        library_name: Name of the library
+
+    Returns: Class of the element, or None if the element is not in the library
+    """
+    layout = load_libraries(path=library_path)[library_name].layout()
+    for pcell_id in layout.pcell_ids():
+        pcell_class = layout.pcell_declaration(pcell_id).__class__
+        if pcell_class.__name__ == class_name:
+            return pcell_class
+
+    return None
+
+
 @logged
 def to_module_name(class_name=None):
     """Converts class name to module name.

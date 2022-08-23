@@ -17,7 +17,6 @@
 
 
 import ast
-from importlib import import_module
 from itertools import zip_longest
 from typing import Tuple
 from math import pi, tan
@@ -27,7 +26,7 @@ from scipy.optimize import root_scalar
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.util.library_helper import to_module_name
+from kqcircuits.util.library_helper import element_by_class_name
 from kqcircuits.util.geometry_helper import vector_length_and_direction, point_shift_along_vector, \
     get_cell_path_length, get_angle, get_direction
 from kqcircuits.elements.element import Element
@@ -129,7 +128,7 @@ class Node:
         Returns: a Node
 
         """
-        x, y = node[0:2]
+        x, y = float(node[0]), float(node[1])
         element = None
         params = {}
         if len(node) > 2:
@@ -144,19 +143,15 @@ class Node:
             if element in globals():
                 element = globals()[element]
             else:
-                name = to_module_name(element)
-                path = "kqcircuits.elements."
-                if name.startswith("airbridge") and element != "AirbridgeConnection":
-                    path += "airbridges."
-                module = import_module(path + name)
-                element = getattr(module, element)
-            # TODO improve library_helper to get Element by name?
+                element = element_by_class_name(element)
 
         # re-create DPoint from tuple
         magic_params = ('align', 'inst_name', 'angle')
         for pn, pv in params.items():
             if isinstance(pv, tuple) and pn not in magic_params:
-                params[pn] = pya.DPoint(pv[0], pv[1])
+                if len(pv) < 2:
+                    raise ValueError(f'Point parameter {pn} should have two elements')
+                params[pn] = pya.DPoint(float(pv[0]), float(pv[1]))
 
         return cls(pya.DPoint(x, y), element, **params)
 
