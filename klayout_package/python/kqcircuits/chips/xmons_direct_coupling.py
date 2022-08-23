@@ -48,7 +48,7 @@ class XMonsDirectCoupling(Chip):
         # T to PL
         _, pl_cross_ref = self.insert_cell(WaveguideCoplanarSplitter,
             pya.DTrans(pos_start.x, end_y),
-            inst_name=("RO{}".format(name) if name else None),
+            inst_name=("PL{}".format(name) if name else None),
             label_trans=pya.DTrans.R90,
             **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=20, length_extra=0)
         )
@@ -223,18 +223,18 @@ class XMonsDirectCoupling(Chip):
         ])
         self.insert_cell(WaveguideComposite, nodes=[
             Node(self.refpoints["IN_port_b"]),
-            Node(self.refpoints["RO1_port_left"], n_bridges=1),
+            Node(self.refpoints["PL1_port_left"], n_bridges=1),
         ])
         self.insert_cell(WaveguideComposite, nodes=[
-            Node(self.refpoints["RO1_port_right"]),
-            Node(self.refpoints["RO2_port_left"], n_bridges=1),
+            Node(self.refpoints["PL1_port_right"]),
+            Node(self.refpoints["PL2_port_left"], n_bridges=1),
         ])
         self.insert_cell(WaveguideComposite, nodes=[
-            Node(self.refpoints["RO2_port_right"]),
-            Node(self.refpoints["RO3_port_left"], n_bridges=1),
+            Node(self.refpoints["PL2_port_right"]),
+            Node(self.refpoints["PL3_port_left"], n_bridges=1),
         ])
         self.insert_cell(WaveguideComposite, nodes=[
-            Node(self.refpoints["RO3_port_right"]),
+            Node(self.refpoints["PL3_port_right"]),
             Node((self.refpoints["NE_port"].x, height_rr_feedline), n_bridges=4),
             Node(self.refpoints["NE_port"]),
         ])

@@ -194,31 +194,31 @@ class QualityFactorTwoface(Chip):
             right_point = cross_refpoints_abs["port_right"]
 
         # Launchers
-        self.produce_launchers("SMA8", launcher_assignments={8: "RO-1", 3: "RO-2"})
+        self.produce_launchers("SMA8", launcher_assignments={8: "PL-IN", 3: "PL-OUT"})
 
         # Waveguides to the launchers
         if self.waveguide_indentation > 0.0:
-            nodes_left = [Node(self.refpoints["RO-1_port"]),
-                          Node((face1_box.p1.x, self.refpoints["RO-1_port"].y), a=self.a_capped, b=self.b_capped),
-                          Node((left_x, self.refpoints["RO-1_port"].y)),
+            nodes_left = [Node(self.refpoints["PL-IN_port"]),
+                          Node((face1_box.p1.x, self.refpoints["PL-IN_port"].y), a=self.a_capped, b=self.b_capped),
+                          Node((left_x, self.refpoints["PL-IN_port"].y)),
                           Node((left_x, mid_y)),
                           Node((left_connector, mid_y), face_id=face_config[0]),
                           Node(left_point)]
-            nodes_right = [Node(self.refpoints["RO-2_port"]),
-                           Node((face1_box.p2.x, self.refpoints["RO-2_port"].y), a=self.a_capped, b=self.b_capped),
-                           Node((right_x, self.refpoints["RO-2_port"].y)),
+            nodes_right = [Node(self.refpoints["PL-OUT_port"]),
+                           Node((face1_box.p2.x, self.refpoints["PL-OUT_port"].y), a=self.a_capped, b=self.b_capped),
+                           Node((right_x, self.refpoints["PL-OUT_port"].y)),
                            Node((right_x, mid_y)),
                            Node((right_connector, mid_y), face_id=face_config[0]),
                            Node(right_point)]
         else:
-            nodes_left = [Node(self.refpoints["RO-1_port"]),
-                          Node((left_x, self.refpoints["RO-1_port"].y)),
+            nodes_left = [Node(self.refpoints["PL-IN_port"]),
+                          Node((left_x, self.refpoints["PL-IN_port"].y)),
                           Node((left_x, mid_y)),
                           Node((face1_box.p1.x, mid_y), a=self.a_capped, b=self.b_capped),
                           Node((left_connector, mid_y), face_id=face_config[0]),
                           Node(left_point)]
-            nodes_right = [Node(self.refpoints["RO-2_port"]),
-                           Node((right_x, self.refpoints["RO-2_port"].y)),
+            nodes_right = [Node(self.refpoints["PL-OUT_port"]),
+                           Node((right_x, self.refpoints["PL-OUT_port"].y)),
                            Node((right_x, mid_y)),
                            Node((face1_box.p2.x, mid_y), a=self.a_capped, b=self.b_capped),
                            Node((right_connector, mid_y), face_id=face_config[0]),
