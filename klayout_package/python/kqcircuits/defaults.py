@@ -89,8 +89,8 @@ else:
 
 TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
-ANSYS_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")
-ELMER_SCRIPTS_PATH = SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")
+ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]
+ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")]
 
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None

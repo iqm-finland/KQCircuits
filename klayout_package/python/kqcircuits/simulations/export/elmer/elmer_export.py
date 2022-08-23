@@ -24,7 +24,7 @@ from distutils.dir_util import copy_tree
 
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
-from kqcircuits.defaults import ELMER_SCRIPTS_PATH, default_layers
+from kqcircuits.defaults import ELMER_SCRIPT_PATHS, default_layers
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
@@ -87,7 +87,8 @@ def copy_elmer_scripts_to_directory(path: Path):
         path: Location where to copy scripts folder.
     """
     if path.exists() and path.is_dir():
-        copy_tree(str(ELMER_SCRIPTS_PATH), str(path))
+        for script_path in ELMER_SCRIPT_PATHS:
+            copy_tree(str(script_path), str(path), update=1)
 
 
 def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance', gmsh_params=None, workflow=None):

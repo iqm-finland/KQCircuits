@@ -17,13 +17,13 @@
 
 
 import json
-import shutil
+from distutils.dir_util import copy_tree
 from pathlib import Path
 
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
-from kqcircuits.defaults import default_layers, ANSYS_SCRIPTS_PATH
+from kqcircuits.defaults import default_layers, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 
 
@@ -36,7 +36,8 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
         import_script_folder: Name of the folder in its new location.
     """
     if path.exists() and path.is_dir():
-        shutil.copytree(ANSYS_SCRIPTS_PATH, path.joinpath(import_script_folder))
+        for script_path in ANSYS_SCRIPT_PATHS:
+            copy_tree(str(script_path), str(path.joinpath(import_script_folder)), update=1)
 
 
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
