@@ -202,9 +202,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../developer/docker_image.html">Docker image</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/docker_image.html#cli-usage">CLI usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/docker_image.html#ci-usage">CI usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../developer/containers.html">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/containers.html#cli-usage">CLI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/containers.html#docker-ci-usage">Docker CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/containers.html#singularity-usage">Singularity usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/architecture.html">Architecture</a><ul>
@@ -408,12 +409,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
@@ -588,6 +589,10 @@
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The [] operator to return position for given reference point text.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The [] operator to set a new reference point.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Refpoints.items"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.items">[docs]</a>    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns a list of text-position pairs.&quot;&quot;&quot;</span>

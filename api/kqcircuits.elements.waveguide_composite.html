@@ -204,9 +204,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../developer/docker_image.html">Docker image</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../developer/docker_image.html#cli-usage">CLI usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../developer/docker_image.html#ci-usage">CI usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#cli-usage">CLI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#docker-ci-usage">Docker CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#singularity-usage">Singularity usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html">Architecture</a><ul>
@@ -410,12 +411,12 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
@@ -672,6 +673,12 @@ flip chip, taper or any custom element.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_segment_lengths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.get_segment_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retreives the segment lengths of each waveguide segment in a WaveguideComposite cell</p>
 </dd></dl>
 
 <dl class="py method">

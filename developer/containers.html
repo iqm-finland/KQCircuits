@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Docker image &mdash; KQCircuits  documentation</title>
+  <title>Containers &mdash; KQCircuits  documentation</title>
   
 
   
@@ -204,9 +204,10 @@
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Docker image</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Containers</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#cli-usage">CLI usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ci-usage">CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-ci-usage">Docker CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#singularity-usage">Singularity usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html">Architecture</a><ul>
@@ -410,12 +411,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../api/kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
@@ -511,14 +512,14 @@
         
           <li><a href="index.html">Developer Guide</a> &raquo;</li>
         
-      <li>Docker image</li>
+      <li>Containers</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/developer/docker_image.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/developer/containers.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -532,8 +533,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="docker-image">
-<span id="id1"></span><h1>Docker image<a class="headerlink" href="#docker-image" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="containers">
+<span id="docker-image"></span><h1>Containers<a class="headerlink" href="#containers" title="Permalink to this headline">¶</a></h1>
 <p>A Docker image for CLI and CI usage is included in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/ci/Dockerfile">ci/Dockerfile</a>.</p>
 <p>The image can be built manually from the root of the repository with <cite>-f ci/Dockerfile</cite>.
 Additionally, the KLayout version can be specified with <code class="docutils literal notranslate"><span class="pre">--build-arg</span></code> options by
@@ -567,12 +568,67 @@ To this end, simply mount <code class="docutils literal notranslate"><span class
 See <a class="reference external" href="https://docs.docker.com/config/containers/resource_constraints/#limit-a-containers-access-to-memory">Docker Runtime options with Memory</a> for details.</p>
 <p>To override <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/ci/run_script.sh">ci/run_script.sh</a> entirely, you can use the <a class="reference external" href="https://docs.docker.com/engine/reference/run/#entrypoint-default-command-to-execute-at-runtime">Docker entrypoint argument</a>.</p>
 </div>
-<div class="section" id="ci-usage">
-<span id="docker-ci-usage"></span><h2>CI usage<a class="headerlink" href="#ci-usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="docker-ci-usage">
+<span id="id1"></span><h2>Docker CI usage<a class="headerlink" href="#docker-ci-usage" title="Permalink to this headline">¶</a></h2>
 <p>The image is built and published automatically in the release workflow on version tags and pushes to the main branch.
 It is then used to run all the tests in the CI pipeline.</p>
 <p>Pull requests build the image but do not push it to the registry so that the changes may be tested to see
 whether they break the image.</p>
+</div>
+<div class="section" id="singularity-usage">
+<span id="singularity-image"></span><h2>Singularity usage<a class="headerlink" href="#singularity-usage" title="Permalink to this headline">¶</a></h2>
+<p>Singularity images are like docker images (<a class="reference external" href="https://sylabs.io/guides/3.0/user-guide/quick_start.html">https://sylabs.io/guides/3.0/user-guide/quick_start.html</a>) that work better than
+docker images in HPC environments (<a class="reference external" href="https://singularity-tutorial.github.io/">https://singularity-tutorial.github.io/</a>)
+The image may take a long time to build and can be built in <cite>singularity</cite> folder by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">singularity</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>You can now run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>in order to get the executables for using the software in the image (instead of in your own system)</p>
+<p>Among other executables, the image contains the following executables that are needed for the simulation workflow:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXECUTABLES</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;ElmerSolver&quot;</span> <span class="s2">&quot;ElmerSolver_mpi&quot;</span> <span class="s2">&quot;ElmerGrid&quot;</span> <span class="s2">&quot;klayout&quot;</span> <span class="s2">&quot;kqclib&quot;</span> <span class="s2">&quot;paraview&quot;</span> <span class="s2">&quot;python&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You could add your own executable in the list in <cite>create_links.sh</cite> (it is just a symbolic link
+named like the executable that then needs to be found in the image).
+Remember to add <cite>path-to-your-KQCircuits/singularity/bin</cite> to your <cite>$PATH</cite> environment variable.</p>
+<p>You can now prepare KQC simulations using the image:
+For example go to <cite>path-to-your-KQCircuits/klayout_package/python/scripts/simulations/</cite>
+And run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqclib</span> <span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>path-to-your-KQCircuits/python waveguides_sim_compare.py (make sure python is run from $PWD)
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>python is not put in $PWD/bin such that it does not over-ride the system python even if the
+folder is added to PATH environment variable”</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In <cite>waveguides_sim_compare.py</cite>, one has to set <cite>workflow[‘python_executable’]=’kqclib’</cite> or in
+workflow[‘python_executable’]=’path-to-your-KQCircuits/singularity/python’ (in order to use
+the singularity image or over-ride the system python with the latter executable, by moving it
+to path-to-your-KQCircuits/singularity/bin).</p>
+</div>
+<p>The simulation scripts are then prepared in a subfolder (for example <cite>$KQC_TMP_PATH/waveguides_sim_elmer</cite> in the
+affore mentioned example. The <cite>$KQC_TMP_PATH</cite> folder (is normally in <cite>../tmp/</cite>, remember to set it! If you do not,
+you might get a read-only error when the singularity image tries to write to the image tmp folder that is
+<em>read-only</em>)</p>
+<p>In order to run the actual simulations, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">simulation</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>note that now Gmsh and Elmer are run in the container so no need to install the software.</p>
+</div>
 </div>
 </div>
 

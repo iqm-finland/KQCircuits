@@ -202,9 +202,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../../../developer/docker_image.html">Docker image</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/docker_image.html#cli-usage">CLI usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/docker_image.html#ci-usage">CI usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../developer/containers.html">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/containers.html#cli-usage">CLI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/containers.html#docker-ci-usage">Docker CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/containers.html#singularity-usage">Singularity usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/architecture.html">Architecture</a><ul>
@@ -408,12 +409,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
@@ -574,7 +575,9 @@
         <span class="sd">&quot;&quot;&quot;Produces the squid.</span>
 
 <span class="sd">        Creates the squid cell and inserts it with the given transformation as a subcell. Also inserts the squid parts</span>
-<span class="sd">        in &quot;base_metal_gap_wo_grid&quot;-layer to &quot;base_metal_gap_for_EBL&quot;-layer.</span>
+<span class="sd">        in &quot;base_metal_gap_wo_grid&quot;-layer to &quot;base_metal_gap_for_EBL&quot;-layer. It also returns a ``right_side`` refpoint,</span>
+<span class="sd">        calculated from base_metal_gap_wo_grid layer&#39;s bounding box to help with arm_length calculation in</span>
+<span class="sd">        JunctionTestPads.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            transf (DCplxTrans): squid transformation</span>
@@ -588,6 +591,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">squid_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
         <span class="n">refpoints_rel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_refpoints</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">mwidth</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">dbbox_per_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">mwidth</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">refpoints_rel</span><span class="p">[</span><span class="s1">&#39;right_side&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">mwidth</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="n">squid_transf</span> <span class="o">=</span> <span class="n">transf</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">M90</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mirror_squid</span> <span class="k">else</span> <span class="n">transf</span>
 
         <span class="k">if</span> <span class="s2">&quot;squid_index&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>

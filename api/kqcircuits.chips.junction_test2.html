@@ -204,9 +204,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../developer/docker_image.html">Docker image</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../developer/docker_image.html#cli-usage">CLI usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../developer/docker_image.html#ci-usage">CI usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#cli-usage">CLI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#docker-ci-usage">Docker CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#singularity-usage">Singularity usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html">Architecture</a><ul>
@@ -410,12 +411,12 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
@@ -554,7 +555,6 @@
 <li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad Width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>junctions_horizontal</strong><em> (Boolean)</em><span> - Horizontal (True) or vertical (False) junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">SQUID</span></code></p></li>
 <li><p><strong>small_loop_area</strong><em> (Double)</em><span> - Test SQUIDs small loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>large_loop_area</strong><em> (Double)</em><span> - Test SQUIDs large loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">130</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>junction_width_small</strong><em> (Double)</em><span> - Test SQUIDs Junction finger width starting value (small loop)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.15</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
@@ -564,6 +564,8 @@
 <li><p><strong>pads_loop</strong><em> (List)</em><span> - Select large or small loop area for each central test pad</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['large',</span> <span class="pre">'large',</span> <span class="pre">'small',</span> <span class="pre">'small',</span> <span class="pre">'small',</span> <span class="pre">'large']</span></code></p></li>
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
+<li><p><strong>test_junctions</strong><em> (String)</em><span> - Junction type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">SQUID</span></code></p></li>
+<li><p><strong>junction_test_pads_type</strong><em> (String)</em><span> - Type of junction test pads</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.junction_test2.png" src="../_images/kqcircuits.chips.junction_test2.png" />
 </div>

@@ -46,7 +46,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.test_structures.airbridge_dc" href="kqcircuits.test_structures.airbridge_dc.html" />
+    <link rel="next" title="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html" />
     <link rel="prev" title="kqcircuits.test_structures.junction_test_pads" href="kqcircuits.test_structures.junction_test_pads.html" /> 
 </head>
 
@@ -204,9 +204,10 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../developer/docker_image.html">Docker image</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../developer/docker_image.html#cli-usage">CLI usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../developer/docker_image.html#ci-usage">CI usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#cli-usage">CLI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#docker-ci-usage">Docker CI usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/containers.html#singularity-usage">Singularity usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/architecture.html">Architecture</a><ul>
@@ -410,12 +411,12 @@
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html">kqcircuits.test_structures.junction_test_pads</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.test_structures.junction_test_pads.junction_test_pads</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads.html#module-kqcircuits.test_structures.junction_test_pads">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.junction_test_pads_simple.html">kqcircuits.test_structures.junction_test_pads_simple</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
@@ -553,7 +554,9 @@
 <span class="sig-name descname"><span class="pre">produce_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_arms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads.produce_squid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces the squid.</p>
 <p>Creates the squid cell and inserts it with the given transformation as a subcell. Also inserts the squid parts
-in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer.</p>
+in “base_metal_gap_wo_grid”-layer to “base_metal_gap_for_EBL”-layer. It also returns a <code class="docutils literal notranslate"><span class="pre">right_side</span></code> refpoint,
+calculated from base_metal_gap_wo_grid layer’s bounding box to help with arm_length calculation in
+JunctionTestPads.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -574,7 +577,7 @@ the arms</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads.create">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_test_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/junction_test_pads/junction_test_pads.html#JunctionTestPads.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads.create" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_test_pads_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/test_structures/junction_test_pads/junction_test_pads.html#JunctionTestPads.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.test_structures.junction_test_pads.junction_test_pads.JunctionTestPads.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a JunctionTestPads cell in layout.</p>
 </dd></dl>
 
@@ -585,12 +588,14 @@ the arms</p></li>
 <li><p><strong>pad_width</strong><em> (Double)</em><span> - Pad width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>area_height</strong><em> (Double)</em><span> - Area height</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1900</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>area_width</strong><em> (Double)</em><span> - Area width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>test_junctions</strong><em> (String)</em><span> - Junction type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">SQUID</span></code></p></li>
 <li><p><strong>junctions_horizontal</strong><em> (Boolean)</em><span> - Horizontal (True) or vertical (False) junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>pad_spacing</strong><em> (Double)</em><span> - Spacing between different pad pairs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>only_pads</strong><em> (Boolean)</em><span> - Only produce pads, no junctions</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>pad_configuration</strong><em> (String)</em><span> - Pad configuration</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2-port</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['2-port',</span> <span class="pre">'4-port']</span></code></p></li>
 <li><p><strong>junction_width_steps</strong><em> (List)</em><span> - Automatically generate junction widths [start, step]</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm,</span> <span class="pre">μm</span></code></p></li>
 <li><p><strong>junction_widths</strong><em> (List)</em><span> - Override the junction widths with these values.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
+<li><p><strong>junction_test_pads_type</strong><em> (String)</em><span> - Type of junction test pads</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple']</span></code></p></li>
 <li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>loop_area</strong><em> (Double)</em><span> - Loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm^2</span></code></p></li>
@@ -605,7 +610,7 @@ the arms</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.test_structures.airbridge_dc.html" class="btn btn-neutral float-right" title="kqcircuits.test_structures.airbridge_dc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html" class="btn btn-neutral float-right" title="kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kqcircuits.test_structures.junction_test_pads.html" class="btn btn-neutral float-left" title="kqcircuits.test_structures.junction_test_pads" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
