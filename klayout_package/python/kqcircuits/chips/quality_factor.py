@@ -78,8 +78,8 @@ class QualityFactor(Chip):
             wg_top_y = (chip_side + max_res_len) / 2
 
         # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from top
-        launchers = self.produce_n_launchers((0, 2, 0, 2), "RF", 300, 180, self.launcher_indent,
-                                             chip_side - 2 * self.launcher_top_dist, {4: "PL-IN", 1: "PL-OUT"})
+        launchers = self.produce_n_launchers(8, "RF", 300, 180, self.launcher_indent,
+                                             chip_side - 2 * self.launcher_top_dist, {8: "PL-IN", 3: "PL-OUT"})
 
         # Define start and end of feedline
         points_fl = [launchers["PL-IN"][0]]
