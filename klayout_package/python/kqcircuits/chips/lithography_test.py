@@ -34,11 +34,11 @@ class LithographyTest(Chip):
         cell_horizontal_1, cell_vertical_1, cell_diagonal_1 = self.create_pattern(num_stripes=20, length=100,
                                                                                   min_width=1,
                                                                                   max_width=15, step=1, spacing=1,
-                                                                                  face_id=['b'])
+                                                                                  face_id=self.face_ids[0])
         cell_horizontal_2, cell_vertical_2, cell_diagonal_2 = self.create_pattern(num_stripes=20, length=100,
                                                                                   min_width=1,
                                                                                   max_width=15, step=1, spacing=5,
-                                                                                  face_id=['b'])
+                                                                                  face_id=self.face_ids[0])
         self.insert_cell(cell_horizontal_1, pya.DCplxTrans(1, 0, False, 2000, 6500))
         self.insert_cell(cell_horizontal_1, pya.DCplxTrans(1, 0, False, 3000, 6500))
         self.insert_cell(cell_horizontal_2, pya.DCplxTrans(1, 0, False, 4000, 6500))
@@ -60,7 +60,7 @@ class LithographyTest(Chip):
 
         for i, width in enumerate(numpy.arange(min_width, max_width + 0.1 * step, step)):
             stripes_cell = self.add_element(StripesTest, num_stripes=num_stripes, stripe_width=width,
-                                            stripe_length=length, stripe_spacing=spacing * width, face_ids=face_id)
+                                            stripe_length=length, stripe_spacing=spacing * width, face_ids=[face_id])
 
             # calculate the number of cross alignment marker
             if (num_stripes*(width + spacing * width) - spacing * width - 45) % 100 < 50:
@@ -68,7 +68,8 @@ class LithographyTest(Chip):
             else:
                 num_crosses = (num_stripes * (width + spacing * width) - spacing * width - 45)//100 + 2
 
-            cross_cell = self.add_element(CrossTest, num_crosses=int(num_crosses), cross_spacing=100)
+            cross_cell = self.add_element(CrossTest, num_crosses=int(num_crosses), cross_spacing=100,
+                                          face_ids=[face_id])
 
             # horizontal
             cell_horizontal.insert(pya.DCellInstArray(stripes_cell.cell_index(),
