@@ -22,7 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.chips.chip import Chip
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.meander import Meander
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.squid import Squid
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters

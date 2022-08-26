@@ -152,7 +152,7 @@ class XMonsDirectCouplingFullChipSim(Simulation):
         # Finnmon
         qubit_props_common = {
             "fluxline_type": "Fluxline Standard" if self.enable_flux_lines else "none",
-            "squid_type": 'SIM1',
+            "junction_type": 'SIM1',
             "arm_length": [146] * 4,
             "island_r": 2,
             "cpl_length": [0, 140, 0],

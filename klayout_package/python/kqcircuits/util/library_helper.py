@@ -54,6 +54,7 @@ _excluded_module_names = (
     "airbridge",
     "test_structure",
     "flip_chip_connector",
+    "junction",
     "squid",
     "fluxline",
     "marker",

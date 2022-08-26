@@ -16,13 +16,13 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-"""PCell declaration classes for SQUIDs.
+"""PCell declaration classes for junctions.
 
-SQUIDs can be either code-generated or loaded from manual designs in squids.oas file. They are typically included in
+Junctions can be either code-generated or loaded from manual design files. They are typically included in
 qubits or junction test structures.
 """
 
-squid_type_choices = [
+junction_type_choices = [
     'NoSquid',
     'Manhattan',
     'Manhattan Single Junction',

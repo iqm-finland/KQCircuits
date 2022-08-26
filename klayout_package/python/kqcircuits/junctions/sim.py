@@ -19,12 +19,12 @@
 from autologging import logged
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.junction import Junction
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
 
 @logged
-class Sim(Squid):
+class Sim(Junction):
     """The PCell declaration for a simulation type SQUID.
 
     Origin at the center of junction layer bottom edge.

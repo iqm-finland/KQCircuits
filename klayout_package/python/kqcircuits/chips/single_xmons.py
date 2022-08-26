@@ -26,7 +26,7 @@ from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSpl
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.junction import Junction
 
 
 def _get_num_meanders(meander_length, turn_radius, meander_min_width):
@@ -35,7 +35,7 @@ def _get_num_meanders(meander_length, turn_radius, meander_min_width):
     return int((meander_length - turn_radius * (pi - 2)) / (meander_min_width + turn_radius * (pi - 2)))
 
 
-@add_parameters_from(Squid, "squid_type")
+@add_parameters_from(Junction, "junction_type")
 class SingleXmons(Chip):
     """The PCell declaration for a SingleXmons chip.
 
@@ -65,7 +65,7 @@ class SingleXmons(Chip):
     def build(self):
         """Produces a SingleXmons PCell."""
 
-        self.produce_junction_tests(self.squid_type)
+        self.produce_junction_tests(self.junction_type)
         self.launchers = self.produce_launchers("SMA8")
         self.qubits_refpoints = self._produce_qubits()
 

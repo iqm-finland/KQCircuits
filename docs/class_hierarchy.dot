@@ -3,7 +3,7 @@ digraph {
 
     Element [href="../api/kqcircuits.elements.element.html", target="_top"]
     Qubit [href="../api/kqcircuits.qubits.qubit.html", target="_top"]
-    Squid [href="../api/kqcircuits.squids.squid.html", target="_top"]
+    Junction [href="../api/kqcircuits.junctions.junction.html", target="_top"]
     Airbridge [href="../api/kqcircuits.elements.airbridges.airbridge.html", target="_top"]
     TestStructure [href="../api/kqcircuits.test_structures.test_structure.html", target="_top"]
     FlipChipConnector [href="../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html", target="_top"]
@@ -13,7 +13,7 @@ digraph {
 
     ## Base classes
     Element -> Qubit
-    Element -> Squid
+    Element -> Junction -> Squid
     Element -> Airbridge
     Element -> TestStructure
     Element -> FlipChipConnector
@@ -35,7 +35,7 @@ digraph {
     Demo [href="../api/kqcircuits.chips.demo.html", target="_top"]
     DemoTwoface [href="../api/kqcircuits.chips.demo_twoface.html", target="_top"]
     Swissmon [href="../api/kqcircuits.qubits.swissmon.html", target="_top"]
-    Manhattan [href="../api/kqcircuits.squids.manhattan.html", target="_top"]
+    Manhattan [href="../api/kqcircuits.junctions.manhattan.html", target="_top"]
     AirbridgeRectangular [href="../api/kqcircuits.elements.airbridges.airbridge_rectangular.html", target="_top"]
     FluxlineStraight [href="../api/kqcircuits.elements.fluxlines.fluxline_straight.html", target="_top"]
     MarkerStandard [href="../api/kqcircuits.elements.markers.marker_standard.html", target="_top"]

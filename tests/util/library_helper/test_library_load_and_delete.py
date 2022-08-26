@@ -52,7 +52,7 @@ def test_load_all():
     assert "Element Library" in pya.Library.library_names()
     assert "Chip Library" in pya.Library.library_names()
     assert "Test Structure Library" in pya.Library.library_names()
-    assert "SQUID Library" in pya.Library.library_names()
+    assert "Junction Library" in pya.Library.library_names()
 
 
 @pytest.mark.slow

@@ -29,7 +29,7 @@ from kqcircuits.util.coupler_lib import cap_params
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
-@add_parameters_from(Qubit, "squid_type", "fluxline_type")
+@add_parameters_from(Qubit, "junction_type", "fluxline_type")
 class XMonsDirectCoupling(Chip):
     """The PCell declaration for an XMonsDirectCoupling chip."""
 
@@ -124,7 +124,7 @@ class XMonsDirectCoupling(Chip):
         * qubit_spacing
         * fluxline_type
         * rr_cpl_width
-        * squid_type
+        * junction_type
         * layout
         * insert_cell
         """
@@ -188,7 +188,7 @@ class XMonsDirectCoupling(Chip):
     def build(self):
 
         self.produce_launchers("SMA8")
-        self.produce_junction_tests(squid_type=self.squid_type)
+        self.produce_junction_tests(junction_type=self.junction_type)
         self.produce_qubits()
 
         # Readout resonators

@@ -22,11 +22,11 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.squid import Squid
 
 
 @add_parameters_from(Fluxline, "fluxline_gap_width", "fluxline_type")
-@add_parameters_from(Squid, "junction_width", "loop_area", "squid_type")
+@add_parameters_from(Squid, "junction_width", "loop_area", "junction_type")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
 
@@ -61,7 +61,7 @@ class Qubit(Element):
             (dict): Relative refpoints for the squid
 
         """
-        cell = self.add_element(Squid, squid_type=self.squid_type, **parameters)
+        cell = self.add_element(Squid, junction_type=self.junction_type, **parameters)
         refpoints_rel = self.get_refpoints(cell)
         mwidth = cell.dbbox_per_layer(self.get_layer("base_metal_gap_wo_grid")).width()
         if mwidth > 0.0:

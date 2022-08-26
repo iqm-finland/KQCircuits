@@ -28,13 +28,13 @@
 from os import path
 from autologging import logged
 from kqcircuits.pya_resolver import pya
-from kqcircuits.squids import squid_type_choices
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions import junction_type_choices
+from kqcircuits.junctions.junction import Junction
 from kqcircuits.chips.chip import Chip
 
 
 @logged
-def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
+def replace_squids(cell, junction_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
     """Replaces squids by code generated squids with the given parameter sweep.
 
     All squids below top_cell in the cell hierarchy are removed. The number of code
@@ -42,7 +42,7 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
 
     Args:
         cell (Cell): The cell where the squids to be replaced are
-        squid_type: class name of the code generated squid that replaces the other squids
+        junction_type: class name of the code generated squid that replaces the other squids
         parameter_name (str): Name of the parameter to be swept
         parameter_start: Start value of the parameter
         parameter_step: Parameter value increment step
@@ -52,7 +52,7 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
     """
     layout = cell.layout()
     parameter_value = parameter_start
-    squid_types = [choice if isinstance(choice, str) else choice[1] for choice in squid_type_choices]
+    junction_types = [choice if isinstance(choice, str) else choice[1] for choice in junction_type_choices]
 
     old_squids = []  # list of tuples (squid instance, squid dtrans with respect to cell, old name)
 
@@ -63,13 +63,13 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
         top_cell = layout.cell(top_cell_inst.cell_index)
         for subcell_inst in top_cell.each_inst():
             subcell_name = subcell_inst.cell.name
-            if subcell_name in squid_types:
+            if subcell_name in junction_types:
                 old_squids.append((subcell_inst, combined_dtrans*subcell_inst.dtrans, subcell_name))
             else:
                 recursive_replace_squids(subcell_inst, combined_dtrans*subcell_inst.dtrans)
 
     for inst in cell.each_inst():
-        if inst.cell.name in squid_types:
+        if inst.cell.name in junction_types:
             old_squids.append((inst, inst.dtrans, inst.cell.name))
         recursive_replace_squids(inst, inst.dtrans)
 
@@ -80,27 +80,27 @@ def replace_squids(cell, squid_type, parameter_name, parameter_start, parameter_
         if (parameter_end is None) or (parameter_value <= parameter_end):
             # create new squid at old squid's position
             parameters = {parameter_name: parameter_value}
-            squid_cell = Squid.create(layout, squid_type=squid_type, face_ids=inst.pcell_parameter("face_ids"),
+            squid_cell = Junction.create(layout, junction_type=junction_type, face_ids=inst.pcell_parameter("face_ids"),
                                       **parameters)
             cell.insert(pya.DCellInstArray(squid_cell.cell_index(), dtrans))
             replace_squids._log.info("Replaced squid \"{}\" with dtrans={} by a squid \"{}\" with {}={}."
-                                     .format(name, dtrans, squid_type, parameter_name, parameter_value))
+                                     .format(name, dtrans, junction_type, parameter_name, parameter_value))
             parameter_value += parameter_step
         # delete old squid
         inst.delete()
 
 @logged
-def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, **params):
+def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=0, **params):
     """Replaces a SQUID by the requested alternative in the named instance.
 
     Replaces the SQUID(s) in the sub-element(s) named ``inst_name`` with other SQUID(s) of
-    ``squid_type``. The necessary SQUID parameters are specified in ``params``. If ``inst_name`` is
+    ``junction_type``. The necessary SQUID parameters are specified in ``params``. If ``inst_name`` is
     a Test Structure then ``squid_index`` specifies which SQUID to change.
 
     Args:
         top_cell: The top cell with SQUIDs to be replaced
         inst_name: Instance name of PCell containing the SQUID to be replaced
-        squid_type: Name of SQUID Class or .gds/.oas file
+        junction_type: Name of SQUID Class or .gds/.oas file
         mirror: Mirror the SQUID along its vertical axis
         squid_index: Index of the SQUID to be replaced within a Test Structure
         **params: Extra parameters for the new SQUID
@@ -123,15 +123,15 @@ def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, 
 
     layout = top_cell.layout()
     file_cell = None
-    if squid_type.endswith(".oas") or squid_type.endswith(".gds"):  # try to load from file
-        if not path.exists(squid_type):
-            replace_squid._log.warn(f"No file found at '{path.realpath(squid_type)}!")
+    if junction_type.endswith(".oas") or junction_type.endswith(".gds"):  # try to load from file
+        if not path.exists(junction_type):
+            replace_squid._log.warn(f"No file found at '{path.realpath(junction_type)}!")
             return
         load_opts = pya.LoadLayoutOptions()
         load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-        layout.read(squid_type, load_opts)
+        layout.read(junction_type, load_opts)
         file_cell = layout.top_cells()[-1]
-        file_cell.name = f"SQUID Library.{file_cell.name}"
+        file_cell.name = f"Junction Library.{file_cell.name}"
 
     for (chip, inst) in cells:
         orig_trans = inst.dcplx_trans
@@ -144,7 +144,7 @@ def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, 
             chip.insert(pya.DCellInstArray(dup.cell_index(), orig_trans), dup.prop_id)
             ccell = dup
 
-        squids = [sq for sq in ccell.each_inst() if sq.cell.qname().find("SQUID Library") != -1]
+        squids = [sq for sq in ccell.each_inst() if sq.cell.qname().find("Junction Library") != -1]
         squids.sort(key=lambda q: q.property("squid_index"))
         if not squids or squid_index >= len(squids) or squid_index < 0:
             replace_squid._log.warn(f"No SQUID found in '{inst_name}' or squid_index={squid_index} is out of range!")
@@ -154,12 +154,12 @@ def replace_squid(top_cell, inst_name, squid_type, mirror=False, squid_index=0, 
             params = {"face_ids": old_squid.pcell_parameter("face_ids"), **params}
         trans = old_squid.dcplx_trans * pya.DCplxTrans.M90 if mirror else old_squid.dcplx_trans
         squid_pos = (orig_trans * trans).disp
-        replace_squid._log.info(f"Replaced SQUID of '{inst_name}' with {squid_type} at {squid_pos}.")
+        replace_squid._log.info(f"Replaced SQUID of '{inst_name}' with {junction_type} at {squid_pos}.")
         old_squid.delete()
         if file_cell:
             new_squid = ccell.insert(pya.DCellInstArray(file_cell.cell_index(), trans))
         else:
-            new_squid = Squid.create(layout, squid_type=squid_type, **params)
+            new_squid = Junction.create(layout, junction_type=junction_type, **params)
             new_squid = ccell.insert(pya.DCellInstArray(new_squid.cell_index(), trans))
         new_squid.set_property("squid_index", squid_index)
 

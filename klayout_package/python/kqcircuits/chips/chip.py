@@ -19,7 +19,7 @@
 import numpy
 from autologging import logged
 
-from kqcircuits.defaults import default_layers, default_squid_type, default_sampleholders, default_mask_parameters, \
+from kqcircuits.defaults import default_layers, default_junction_type, default_sampleholders, default_mask_parameters, \
                                 default_bump_parameters, default_marker_type
 from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element
@@ -120,11 +120,11 @@ class Chip(Element):
 
         return launcher_assignments
 
-    def produce_junction_tests(self, squid_type=default_squid_type):
+    def produce_junction_tests(self, junction_type=default_junction_type):
         """Produces junction test pads in the chip.
 
         Args:
-            squid_type: A string defining the type of SQUIDs used in the test pads.
+            junction_type: A string defining the type of junction used in the test pads.
 
         """
         junction_tests_w = self.add_element(JunctionTestPads,
@@ -132,7 +132,7 @@ class Chip(Element):
                                             area_height=1300,
                                             area_width=2500,
                                             junctions_horizontal=True,
-                                            squid_type=squid_type,
+                                            junction_type=junction_type,
                                             display_name="JunctionTestsHorizontal",
                                             )
         junction_tests_h = self.add_element(JunctionTestPads,
@@ -140,7 +140,7 @@ class Chip(Element):
                                             area_height=2500,
                                             area_width=1300,
                                             junctions_horizontal=True,
-                                            squid_type=squid_type,
+                                            junction_type=junction_type,
                                             display_name="JunctionTestsVertical",
                                             )
         self.insert_cell(junction_tests_h, pya.DTrans(0, False, .35e3, (10e3 - 2.5e3) / 2), "testarray_w")

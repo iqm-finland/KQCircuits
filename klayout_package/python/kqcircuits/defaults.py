@@ -123,7 +123,7 @@ _common_b_t_layers = {
     "base_metal_gap_for_EBL": (15, 0),  # Features of layer 41 that are needed for EBL
     "waveguide_path": (16, 0),  # Waveguide's metal part, used with waveguide length and DRC calculations
 
-    # SQUID layer
+    # Junction layer
     "SIS_junction": (17, 2),  # Josephson junction
     "SIS_shadow": (18, 2),  # Ghost layer required for Josephson junction
     "SIS_junction_2": (20, 2),
@@ -311,7 +311,7 @@ default_mask_parameters = {
     }
 }
 
-default_squid_type = "Manhattan"
+default_junction_type = "Manhattan"
 default_airbridge_type = "Airbridge Rectangular"
 default_fluxline_type = "Fluxline Standard"
 default_marker_type = "Marker Standard"
@@ -345,7 +345,7 @@ default_probe_suffixes = ("_c", "_l")
 # Library names in dependency order. Every library should have its dependencies before its own entry.
 kqc_library_names = (
     'Element Library',
-    'SQUID Library',
+    'Junction Library',
     'Test Structure Library',
     'Qubit Library',
     'Chip Library',

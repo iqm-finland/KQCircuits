@@ -22,9 +22,9 @@ from kqcircuits.test_structures.junction_test_pads.junction_test_pads import Jun
 class JunctionTestPadsSimple(JunctionTestPads):
     """Junction test structures.
 
-    Produces an array of junction test structures within the given area. Each structure consists of a SQUID,
-    which is connected to pads. There can be either 2 or 4 pads per SQUID, depending on the configuration.
-    Optionally, it is possible to produce only pads without any SQUIDs.
+    Produces an array of junction test structures within the given area. Each structure consists of a Junction,
+    which is connected to pads. There can be either 2 or 4 pads per Junction, depending on the configuration.
+    Optionally, it is possible to produce only pads without any Junctions.
     """
 
     def build(self):

@@ -20,12 +20,12 @@ from math import sqrt
 from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.junction import Junction
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
 
 @logged
-class ManhattanSingleJunction(Squid):
+class ManhattanSingleJunction(Junction):
     """The PCell declaration for a Manhattan style single junction.
     """
 
@@ -40,9 +40,9 @@ class ManhattanSingleJunction(Squid):
     width = Param(pdt.TypeDouble, "Width of the junction element.", 22.0, unit="μm")
 
     def build(self):
-        self.produce_manhattan_squid()
+        self.produce_manhattan_junction()
 
-    def produce_manhattan_squid(self):
+    def produce_manhattan_junction(self):
 
         # geometry constants
         p_height = 6  # pad height

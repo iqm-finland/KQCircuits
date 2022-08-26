@@ -22,10 +22,10 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.chips.xmons_direct_coupling import XMonsDirectCoupling
 from kqcircuits.simulations.port import InternalPort
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.junction import Junction
 
 
-@add_parameters_from(Squid, squid_type="SIM1")
+@add_parameters_from(Junction, junction_type="SIM1")
 @add_parameters_from(Fluxline, fluxline_type="none")
 @add_parameters_from(XMonsDirectCoupling, "arm_width_a", "rr_cpl_width")
 class XMonsDirectCouplingSim(Simulation):

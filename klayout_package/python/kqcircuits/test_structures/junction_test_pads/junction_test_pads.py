@@ -18,7 +18,6 @@
 
 import numpy
 
-from kqcircuits.squids.squid import Squid
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
@@ -27,9 +26,7 @@ from kqcircuits.defaults import default_junction_test_pads_type
 from kqcircuits.test_structures.junction_test_pads import junction_test_pads_type_choices
 
 
-@add_parameters_from(Squid, "squid_type")
-@add_parameters_from(Qubit, "junction_width", "loop_area")
-@add_parameters_from(Qubit, "mirror_squid")
+@add_parameters_from(Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
 

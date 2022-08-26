@@ -20,7 +20,7 @@ from math import sqrt
 from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.squid import Squid
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
 

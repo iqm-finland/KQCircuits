@@ -20,11 +20,11 @@ from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.chips.chip import Chip
 from kqcircuits.pya_resolver import pya
 from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
-from kqcircuits.squids.squid import Squid
+from kqcircuits.junctions.junction import Junction
 
 
 @add_parameters_from(JunctionTestPads, "junction_test_pads_type", "test_junctions")
-@add_parameters_from(Squid, "squid_type")
+@add_parameters_from(Junction, "junction_type")
 @add_parameters_from(ChipFrame, "marker_types")
 class JunctionTest2(Chip):
     """The PCell declaration for a JunctionTest2 chip."""
