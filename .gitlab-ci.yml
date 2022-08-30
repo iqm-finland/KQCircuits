@@ -51,7 +51,7 @@ static_analysis:
 shell_check:
   stage: test
   script:
-    - shellcheck ./**/*.sh
+    - find . -type f \( -name '*.sh' \) | xargs shellcheck
   only:
     - master
     - merge_requests
