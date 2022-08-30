@@ -152,7 +152,7 @@ Simulations
    :alt: Animation of simulations
    :width: 350
 
-KQC currently supports exporting to **Ansys HFSS/Q3D**, **Sonnet**, and **Elmer**.
+KQC currently supports exporting to **Ansys HFSS/Q3D (also with pyEPR)**, **Sonnet**, and **Elmer**.
 
 Parameter sweeps are easy to implement, for example
 
