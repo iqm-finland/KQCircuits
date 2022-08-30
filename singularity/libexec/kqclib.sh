@@ -6,5 +6,5 @@ if [ "$(basename "$0")" = "kqclib" ]; then
 else
 	cmd=$(basename "$0")
 fi
-echo running: singularity exec --home $HOME "${dir}/${img}" "$cmd" "$@"
-singularity exec --home $HOME "${dir}/${img}" "$cmd" "$@"
+echo running: singularity exec --home "$HOME" "${dir}/${img}" "$cmd" "$@"
+singularity exec --home "$HOME" "${dir}/${img}" "$cmd" "$@"
