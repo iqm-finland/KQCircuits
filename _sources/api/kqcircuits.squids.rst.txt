@@ -5,6 +5,7 @@ kqcircuits.squids
 .. toctree::
 
    kqcircuits.squids.manhattan
+   kqcircuits.squids.manhattan_single_junction
    kqcircuits.squids.sim
    kqcircuits.squids.squid
 
