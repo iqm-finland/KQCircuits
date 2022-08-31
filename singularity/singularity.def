@@ -2,10 +2,16 @@ BootStrap: debootstrap
 OSVersion: focal
 MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
+%help
+    This container can be used to run Elmer simulations for KQCircuits simulations
+
+%labels
+    org.opencontainers.image.authors "IQM"
+    org.opencontainers.image.source "https://github.com/iqm-finland/KQCircuits"
+    org.opencontainers.image.description "This container can be used to run Elmer simulations for KQCircuits simulations"
 
 %runscript
     echo "There is no runscript at the moment."
-
 
 %post
     sed -i 's/$/ universe/' /etc/apt/sources.list
@@ -25,5 +31,5 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
     git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits && \
     python -m pip install -e klayout_package/python
-    pip install gmsh
+    python -m pip install gmsh
     ln -s /usr/bin/python /usr/bin/kqclib

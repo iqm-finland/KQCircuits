@@ -59,17 +59,22 @@ whether they break the image.
 Singularity usage
 -----------------
 
-Singularity images are like docker images (https://sylabs.io/guides/3.0/user-guide/quick_start.html) that work better than 
-docker images in HPC environments (https://singularity-tutorial.github.io/)
-The image may take a long time to build and can be built in `singularity` folder by running::
+Singularity images are like docker images (https://sylabs.io/guides/3.0/user-guide/quick_start.html) that work better 
+in HPC environments (https://singularity-tutorial.github.io/).
+The latest image can be downloaded from the GitHub Container registry. It should be downloaded to a `libexec` folder
+under :git_url:`singularity` with the name `kqclib`. This is performed as follows at the root of the repo::
+
+   singularity pull singularity/libexec/kqclib oras://ghcr.io/iqm-finland/kqcircuits:main-singularity
+
+The image can also be built manually in the :git_url:`singularity` folder by running::
 
    ./singularity.sh
 
-You can now run::
+After pulling or building, you can now run (again, in the :git_url:`singularity` folder)::
 
    ./create_links.sh
 
-in order to get the executables for using the software in the image (instead of in your own system)
+in order to get the executables for using the software in the image (instead of in your own system).
 
 Among other executables, the image contains the following executables that are needed for the simulation workflow::
 
@@ -94,9 +99,9 @@ or::
    folder is added to PATH environment variable"
 
 .. note::
-   In `waveguides_sim_compare.py`, one has to set `workflow['python_executable']='kqclib'` or in
-   workflow['python_executable']='path-to-your-KQCircuits/singularity/python' (in order to use
-   the singularity image or over-ride the system python with the latter executable, by moving it
+   In `waveguides_sim_compare.py`, one has to set ``workflow['python_executable']='kqclib'`` or 
+   ``workflow['python_executable']='path-to-your-KQCircuits/singularity/python'`` (in order to use
+   the singularity image or override the system python with the latter executable, by moving it
    to path-to-your-KQCircuits/singularity/bin). 
 
 The simulation scripts are then prepared in a subfolder (for example `\$KQC_TMP_PATH/waveguides_sim_elmer` in the
@@ -109,4 +114,4 @@ In order to run the actual simulations, run::
   ./simulation.sh
 
 .. note::
-    note that now Gmsh and Elmer are run in the container so no need to install the software.
+    Note that now Gmsh and Elmer are run in the container so no need to install the software.

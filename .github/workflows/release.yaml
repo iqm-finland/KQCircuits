@@ -1,4 +1,4 @@
-name: Build image
+name: CD
 
 on:
   push:
@@ -17,8 +17,8 @@ env:
   KL_HASH: d0254078e04f49c7578bc9e577fe39cc
 
 jobs:
-  build-and-push:
-    name: Build and push image
+  build-and-push-docker:
+    name: Docker
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,3 +47,33 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  build-and-push-singularity:
+    name: Singularity
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/singularity/singularity:v3.10.2
+      options: --privileged
+    permissions:
+      contents: read
+      packages: write
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      - name: Install dependencies
+        run: apk update && apk add debootstrap perl
+      - name: Build Container
+        run: |
+          cd singularity && ./singularity.sh
+          echo "Tag is ${{ steps.meta.outputs.tags }}."
+      - name: Login and Deploy Container
+        working-directory: ./singularity/libexec
+        run: |         
+          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -i -u ${{ github.repository_owner }} \
+            --password-stdin oras://ghcr.io
+          singularity push -U kqclib "oras://${{ steps.meta.outputs.tags }}-singularity"

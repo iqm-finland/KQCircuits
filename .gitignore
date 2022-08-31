@@ -148,3 +148,8 @@ docs/pcell_images
 # Sonnet files
 *.son
 /sondata
+
+# Singularity files
+kqclib
+singularity/python
+singularity/bin
