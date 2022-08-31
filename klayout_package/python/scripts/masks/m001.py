@@ -83,7 +83,7 @@ top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
 save_opts = pya.SaveLayoutOptions()
 save_opts.write_context_info = True
 file_name = str(TMP_PATH / "m001_QDD.gds")
-cell.write(file_name, save_opts)
+top_cell.write(file_name, save_opts)
 pya.MainWindow.instance().close_current_view()
 
 # Load the cell from a file

@@ -126,7 +126,8 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
         export_drc_report(chip_name, chip_dir)
 
     # delete the static cell which was only needed for export
-    layout.delete_cell_rec(static_cell.cell_index())
+    if static_cell.cell_index() != chip_cell.cell_index():
+        layout.delete_cell_rec(static_cell.cell_index())
 
 
 def export_masks_of_face(export_dir, mask_layout, mask_set):
