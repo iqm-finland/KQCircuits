@@ -72,7 +72,7 @@ class JunctionTestPads(TestStructure):
         start, step = [float(x) for x in self.junction_width_steps]
         if idx < len(self.junction_widths) and self.junction_widths[idx] != '':
             return float(self.junction_widths[idx])
-        elif step:
+        elif not (start == 0 and step == 0):
             return start + idx * step
         return self.junction_width
 
