@@ -172,7 +172,8 @@ def test_continuity_straight_last_segment():
         auto_spacing=False,
         manual_spacing=300,
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]), continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
+                                           continuity_tolerance)
 
 
 def test_continuity_curved_last_segment():
@@ -185,7 +186,8 @@ def test_continuity_curved_last_segment():
         auto_spacing=False,
         manual_spacing=300,
     )
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]), continuity_tolerance)
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
+                                           continuity_tolerance)
 
 
 def test_can_create_resonator_with_short_segment(capfd):

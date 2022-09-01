@@ -131,7 +131,7 @@ class DemoTwoface(Chip):
         waveguide_inst, _ = self.insert_cell(WaveguideComposite, nodes=[
             Node(point_1),
             Node(point_2),
-            Node(point_3, face_id="t"),
+            Node(point_3, face_id=self.face_ids[1]),
             Node(point_4),
         ])
         length_nonmeander = waveguide_inst.cell.length()
@@ -191,7 +191,7 @@ class DemoTwoface(Chip):
             Node(self.refpoints["{}-IN_port_corner".format(probeline_name)] + pya.DPoint(0, -1000)),
             Node((self.refpoints["PL{}_port_left".format(qubit_a_nr)].x,
                   self.refpoints["{}-IN_port_corner".format(probeline_name)].y - 1000)),
-            Node(cap_ref_abs["port_a"] + pya.DPoint(0, 700), face_id="t"),
+            Node(cap_ref_abs["port_a"] + pya.DPoint(0, 700), face_id=self.face_ids[1]),
             Node(cap_ref_abs["port_a"]),
         ])
 
@@ -216,6 +216,6 @@ class DemoTwoface(Chip):
             Node(self.refpoints["{}-OUT_port_corner".format(probeline_name)] + pya.DPoint(0, 1000)),
             Node((self.refpoints["PL{}_port_right".format(qubit_b_nr)].x,
                   self.refpoints["{}-OUT_port_corner".format(probeline_name)].y + 1000)),
-            Node(self.refpoints["PL{}_port_right".format(qubit_b_nr)] + pya.DPoint(0, -1400), face_id="t"),
+            Node(self.refpoints["PL{}_port_right".format(qubit_b_nr)] + pya.DPoint(0, -1400), face_id=self.face_ids[1]),
             Node(self.refpoints["PL{}_port_{}".format(qubit_b_nr, port_2_side)]),
         ])

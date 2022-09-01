@@ -35,7 +35,7 @@ kqcircuits_menu&gt;end("&amp;KQCircuits").end</menu-path>
 
 """
 Creates a ground plane grid covering the top cell bounding box, except the parts in grid avoidance layer. Requires at
-least one cell to exist in the current layout. Only creates the grid for "b"-face.
+least one cell to exist in the current layout. Only creates the grid for "1t1"-face.
 """
 
 from kqcircuits.defaults import default_layers
@@ -48,13 +48,13 @@ if not cell:
   raise ValueError('Create a cell first')
 
 layout = cell.layout()
-grid_area = cell.bbox_per_layer(layout.layer(default_layers["b_ground_grid_avoidance"]))
-protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()
+grid_area = cell.bbox_per_layer(layout.layer(default_layers["1t1_ground_grid_avoidance"]))
+protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()
 
 grid_mag_factor = 1
 region_ground_grid = make_grid(grid_area, protection,
   grid_step = 10*(1/layout.dbu)*grid_mag_factor,
   grid_size = 5*(1/layout.dbu)*grid_mag_factor )
 
-cell.shapes(layout.layer(default_layers["b_ground_grid"])).insert(region_ground_grid)</text>
+cell.shapes(layout.layer(default_layers["1t1_ground_grid"])).insert(region_ground_grid)</text>
 </klayout-macro>

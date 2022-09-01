@@ -35,7 +35,7 @@ def nodes1():
         Node(pya.DPoint(0, 0)),
         Node(pya.DPoint(200, 0), AirbridgeConnection, airbridge_type="Airbridge Rectangular",
              with_side_airbridges=False, b=4, a=5),
-        Node(pya.DPoint(400, 0), FlipChipConnectorRf, face_id="t"),
+        Node(pya.DPoint(400, 0), FlipChipConnectorRf, face_id="2b1"),
         Node(pya.DPoint(600, 0), AirbridgeConnection, with_side_airbridges=False),
         Node(pya.DPoint(800, 0), FingerCapacitorSquare),
         Node(pya.DPoint(1000, 100)),
@@ -43,7 +43,7 @@ def nodes1():
         Node(pya.DPoint(1100, 100), WaveguideCoplanarTaper, a=10, b=5),
         Node(pya.DPoint(1300, 100)),
         Node(pya.DPoint(1400, 0), n_bridges=3),
-        Node(pya.DPoint(1700, 0), FlipChipConnectorRf, face_id="b", connector_type="Single"),
+        Node(pya.DPoint(1700, 0), FlipChipConnectorRf, face_id="1t1", connector_type="Single"),
         Node(pya.DPoint(1900, 0), AirbridgeConnection, with_side_airbridges=True),
         Node(pya.DPoint(2100, 0)),
         Node(pya.DPoint(2150, 0), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
@@ -55,7 +55,7 @@ def nodes1():
         Node(pya.DPoint(2600, 50), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
              align=("port_bottom", "port_right")),
         Node(pya.DPoint(2700, -200)),
-        Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="t", output_rotation=90),
+        Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="2b1", output_rotation=90),
         Node(pya.DPoint(2500, -400)),
     ]
 
@@ -66,7 +66,7 @@ def nodes2():
     return [
         Node((0, 0)),
         Node((200, 0), AirbridgeRectangular, a=5, b=4),
-        Node((400, 0), face_id="t"),
+        Node((400, 0), face_id="2b1"),
         Node((600, 0), Airbridge),
         Node((800, 0), FingerCapacitorSquare),
         Node((1000, 100)),
@@ -74,7 +74,7 @@ def nodes2():
         Node((1100, 100), a=10, b=5),
         Node((1300, 100)),
         Node((1400, 0), n_bridges=3),
-        Node((1700, 0), face_id="b", connector_type="Single"),
+        Node((1700, 0), face_id="1t1", connector_type="Single"),
         Node((1900, 0), AirbridgeConnection),
         Node((2100, 0)),
         Node(pya.DPoint(2150, 0), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
@@ -86,7 +86,7 @@ def nodes2():
         Node(pya.DPoint(2600, 50), WaveguideCoplanarSplitter, **t_cross_parameters(a=10, b=5),
              align=("port_bottom", "port_right")),
         Node(pya.DPoint(2700, -200)),
-        Node(pya.DPoint(2700, -500), face_id="t", output_rotation=90),
+        Node(pya.DPoint(2700, -500), face_id="2b1", output_rotation=90),
         Node(pya.DPoint(2500, -400)),
     ]
 

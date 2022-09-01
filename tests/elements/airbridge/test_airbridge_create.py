@@ -52,11 +52,11 @@ def test_wrong_type_override():
     assert cell.name == Airbridge.default_type
 
 def test_bridge_length_rectangular():
-    pad_1, pad_2 = _get_pad_boxes("Airbridge Rectangular", "b_airbridge_pads", bridge_length=101)
+    pad_1, pad_2 = _get_pad_boxes("Airbridge Rectangular", "1t1_airbridge_pads", bridge_length=101)
     assert min(abs(pad_1.top - pad_2.bottom), abs(pad_2.top - pad_1.bottom)) == 101
 
 def test_pad_dimensions_rectangular():
-    pad_1, pad_2 = _get_pad_boxes("Airbridge Rectangular", "b_airbridge_pads",
+    pad_1, pad_2 = _get_pad_boxes("Airbridge Rectangular", "1t1_airbridge_pads",
                                   bridge_width=19, pad_extra=1, pad_length=33)
     assert pad_1.width() == 21
     assert pad_2.width() == 21

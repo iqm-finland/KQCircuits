@@ -80,7 +80,7 @@ class JunctionTestPads(TestStructure):
         arm_width = 8
 
         junction_idx = 0
-        y_flip = -1 if self.face_ids[0] == 't' else 1
+        y_flip = -1 if self.face_ids[0] == '2b1' else 1
         if self.junctions_horizontal:
             for x in numpy.arange(self.pad_spacing*1.5 + self.pad_width, self.area_width - pad_step, 2*pad_step,
                                   dtype=numpy.double):

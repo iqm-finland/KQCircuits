@@ -79,7 +79,7 @@ def test_continuity_medium_resonator():
         right_space=1100,
         auto_spacing=False
     ))
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -91,7 +91,7 @@ def test_continuity_long_resonator():
         below_space=600,
         right_space=1100
     ))
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -104,7 +104,7 @@ def test_continuity_short_segment_resonator():
         right_space=1000,
         auto_spacing=False
     ))
-    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 

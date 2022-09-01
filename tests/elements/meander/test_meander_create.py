@@ -77,7 +77,7 @@ def test_continuity_short_meander():
         meanders=4,
         r=50
     )
-    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -90,7 +90,7 @@ def test_continuity_long_meander():
         meanders=15,
         r=50
     )
-    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(meander_cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 

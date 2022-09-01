@@ -60,14 +60,14 @@ nodes = [
     Node((700, -200)),                                                  # Waveguides bend after Elements, if needed.
     Node((500, -200), AirbridgeConnection, a=2, b=2),                   # Airbridges can automatically "taper" if needed.
     Node((400, -200), a=12, b=6),                                       # Empty node does a taper if a and/or b is set.
-    Node((300, -200), face_id="t"),                                     # Similary, face_id parameter inserts an "FC-bump".
+    Node((300, -200), face_id="2b1"),                                   # Similary, face_id parameter inserts an "FC-bump".
     Node((200, -200)),                                                  # Elements take orientation from previous node, see next one.
     Node((100, -250), FingerCapacitorSquare, finger_number=4),          # Other elements (with port_a/b) are also supported.
     Node((0, -300), a=6, b=2),                                          # Elements have to be colinear if placed back-to-back!
     Node((-100, -600)),                                                 # Be mindful of geometry: Try -500 here!
     Node((100, -500), FingerCapacitorTaper),                            # Arbitrary future elements also supported.
     Node((300, -400), n_bridges=1, bridge_length=100),                  # Note that all these are in top face.
-    Node((400, -400), face_id="b", connector_type="Single"),            # Elements are positioned at the Nodes coordinates.
+    Node((400, -400), face_id="1t1", connector_type="Single"),          # Elements are positioned at the Nodes coordinates.
     Node((600, -400), n_bridges=2),                                     # n_bridges places that many airbridges across
     Node((800, -400), Airbridge, a=20, b=12),                           # first and last element "kisses" Node, i.e. aligned to the edge.
 ]
@@ -90,7 +90,7 @@ nodes = [
     Node(pya.DPoint(500, -750), WaveguideCoplanarSplitter, **t_cross_parameters(),
          align=("port_bottom", "port_right")),             # Ports can be at arbitrary angles if they have corner refpoints
     Node(pya.DPoint(600, -1000)),
-    Node(pya.DPoint(600, -1100), face_id="t",
+    Node(pya.DPoint(600, -1100), face_id="2b1",
          output_rotation=90),                              # Flip chip connectors can also make corners
     Node(pya.DPoint(400, -1000)),
 ]

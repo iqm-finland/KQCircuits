@@ -32,9 +32,9 @@ def test_nodes():
     return [
         Node(pya.DPoint(0, 0)),
         Node(pya.DPoint(800, 0), FingerCapacitorSquare),
-        Node(pya.DPoint(400, 0), FlipChipConnectorRf, face_id="t"),
-        Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="t", output_rotation=90),
-        Node(pya.DPoint(400, 0), face_id="t"),
+        Node(pya.DPoint(400, 0), FlipChipConnectorRf, face_id="2b1"),
+        Node(pya.DPoint(2700, -500), FlipChipConnectorRf, face_id="2b1", output_rotation=90),
+        Node(pya.DPoint(400, 0), face_id="2b1"),
         Node(pya.DPoint(400, 0), Airbridge),
         Node(pya.DPoint(200, 0), AirbridgeConnection, airbridge_type="Airbridge Rectangular",
              with_side_airbridges=False, b=4, a=5),

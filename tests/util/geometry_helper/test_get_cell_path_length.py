@@ -28,7 +28,7 @@ relative_length_tolerance = 2e-4
 
 def test_get_length_simple_path():
     layout = pya.Layout()
-    path_layer = layout.layer(default_layers["b_waveguide_path"])
+    path_layer = layout.layer(default_layers["1t1_waveguide_path"])
     cell = layout.create_cell("test")
     shape = pya.DPath([
         pya.DPoint(0, 0),

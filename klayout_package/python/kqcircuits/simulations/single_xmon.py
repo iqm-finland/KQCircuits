@@ -24,7 +24,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 @add_parameters_from(Swissmon)
 class SingleXmon(Simulation):
 
-    qubit_face = Param(pdt.TypeList, "Bottom or top face qubit position", ['t', 'b'])
+    qubit_face = Param(pdt.TypeList, "Bottom or top face qubit position", ['2b1', '1t1'])
     junction_inductance = Param(pdt.TypeList, "Qubit junction inductance",
                                 11.497e-9, unit="H")
     junction_capacitance = Param(pdt.TypeList, "Qubit junction capacitance",

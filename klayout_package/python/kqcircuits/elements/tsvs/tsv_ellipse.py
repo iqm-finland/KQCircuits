@@ -59,6 +59,6 @@ class TsvEllipse(Tsv):
             a in (x / 32 * math.pi for x in range(0, 65))]
 
         shape = pya.DPolygon(tsv_pts_avoidance)
-        # ground avoidance layer b face
+        # ground avoidance layer 1t1 face
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
-        self.cell.shapes(self.get_layer("through_silicon_via")).insert(pya.DPolygon(tsv_pts))  # TSV only on b face
+        self.cell.shapes(self.get_layer("through_silicon_via")).insert(pya.DPolygon(tsv_pts))  # TSV only on 1t1 face

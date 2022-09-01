@@ -83,7 +83,7 @@ static_cell.write(f"{path}/{cls.__module__}.oas", save_opts)
 view = KLayoutView(current=True)
 
 #Hides specified layers before saving png - improves readability and rulers
-layers_to_remove = ['refpoints','b_ports','b_ground_grid_avoidance', 't_ground_grid_avoidance']
+layers_to_remove = ['refpoints','1t1_ports','1t1_ground_grid_avoidance', '2b1_ground_grid_avoidance']
 for layer in layers_to_remove: layout.delete_layer(layout.layer(default_layers[layer]))
 view.focus(top)
 

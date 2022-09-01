@@ -19,7 +19,7 @@
 """Helper module for general geometric functions"""
 
 from math import cos, sin, radians, atan2, degrees, pi, ceil
-from kqcircuits.defaults import default_layers
+from kqcircuits.defaults import default_layers, default_path_length_layers
 from kqcircuits.pya_resolver import pya
 
 
@@ -66,7 +66,7 @@ def get_angle(vector):
 def get_cell_path_length(cell, layer=None):
     """Returns the length of the paths in the cell.
 
-    Adding together the cell's paths' lengths in the "b_waveguide_path", "t_waveguide_path" and
+    Adding together the cell's paths' lengths in the "1t1_waveguide_path", "2b1_waveguide_path" and
     "waveguide_length" layers.
 
     Args:
@@ -74,12 +74,12 @@ def get_cell_path_length(cell, layer=None):
         layer: None or an unsigned int to specify a non-standard layer
     """
 
-    if layer is not  None:
+    if layer is not None:
         return _get_length_per_layer(cell, layer)
 
-    length  = _get_length_per_layer(cell, "b_waveguide_path")
-    length += _get_length_per_layer(cell, "t_waveguide_path")
-    length += _get_length_per_layer(cell, "waveguide_length")  # AirbridgeConnection uses this
+    length = 0
+    for path_layer in default_path_length_layers:
+        length += _get_length_per_layer(cell, path_layer)
 
     return length
 

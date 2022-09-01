@@ -61,7 +61,7 @@ class Element(pya.PCellDeclarationHelper):
     n = Param(pdt.TypeInt, "Number of points on turns", 64)
     r = Param(pdt.TypeDouble, "Turn radius", 100, unit="μm")
     margin = Param(pdt.TypeDouble, "Margin of the protection layer", 5, unit="μm")
-    face_ids = Param(pdt.TypeList, "Chip face IDs, list of b | t | c", ["b", "t", "c"])
+    face_ids = Param(pdt.TypeList, "Chip face IDs list", ["1t1", "2b1", "2t1"])
     display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
     protect_opposite_face = Param(pdt.TypeBoolean, "Add opposite face protection too", False)
 
@@ -75,17 +75,12 @@ class Element(pya.PCellDeclarationHelper):
             self._param_value_map[name] = len(self._param_decls)
             # Override default value based on default_parameter_values if needed.
             mro = type(self).__mro__
-            for i, cls in enumerate(mro):
+            for cls in mro:
                 cls_name = cls.__qualname__
                 if cls_name in default_parameter_values and name in default_parameter_values[cls_name]:
                     # Ensure that the `cls` default overrides the value only if it is not overridden
                     # by another class below `cls` in the hierarchy.
-                    override = True
-                    for cls2 in mro[:i]:
-                        if name in cls2.__dict__:
-                            override = False
-                            break
-                    if not override:
+                    if cls != type(self) and cls.__dict__[name] != p:
                         break
                     # We need to redefine the Param object, because multiple classes may refer to the same Param object
                     # due to inheritance, so modifying the existing Param object could affect other classes.

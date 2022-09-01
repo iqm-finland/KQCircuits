@@ -71,14 +71,14 @@ def test_continuity_90degree_turn():
     waveguide_cell = WaveguideCoplanar.create(layout,
         path=guideline
     )
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 
 def test_continuity_many_turns():
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 20, 40, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -88,7 +88,7 @@ def test_continuity_many_turns_with_zero_length_segments():
     """
     layout = pya.Layout()
     waveguide_cell = _create_waveguide_many_turns(layout, 30, 30, 5)
-    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["b_waveguide_path"]),
+    assert WaveguideCoplanar.is_continuous(waveguide_cell, layout.layer(default_layers["1t1_waveguide_path"]),
                                            continuity_tolerance)
 
 
@@ -129,7 +129,7 @@ def assert_perfect_waveguide_continuity(cell, layout, expected_shapes):
     #   expected_shapes: number of non-overlapping shapes expected. Should be 2 for an open-ended waveguide,
     #       and 1 for a waveguide with one or more termination.
     test_region = pya.Region(cell.begin_shapes_rec(
-            layout.layer(default_faces['b']["base_metal_gap_wo_grid"])
+            layout.layer(default_faces['1t1']["base_metal_gap_wo_grid"])
         )).merged()
     number_of_shapes = len([x for x in test_region.each()])
     assert(number_of_shapes == expected_shapes)

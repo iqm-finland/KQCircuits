@@ -34,7 +34,7 @@ def test_straight_continuous():
     points2 = [pya.DPoint(100, 0), pya.DPoint(200, 0)]
     shape1 = pya.DPath(points1, 1)
     shape2 = pya.DPath(points2, 1)
-    annotation_layer = layout.layer(default_layers["b_waveguide_path"])
+    annotation_layer = layout.layer(default_layers["1t1_waveguide_path"])
     cell.shapes(annotation_layer).insert(shape1)
     cell.shapes(annotation_layer).insert(shape2)
 
@@ -49,7 +49,7 @@ def test_straight_not_continuous():
     points2 = [pya.DPoint(100 + 2*tolerance, 0), pya.DPoint(200, 0)]
     shape1 = pya.DPath(points1, 1)
     shape2 = pya.DPath(points2, 1)
-    annotation_layer = layout.layer(default_layers["b_waveguide_path"])
+    annotation_layer = layout.layer(default_layers["1t1_waveguide_path"])
     cell.shapes(annotation_layer).insert(shape1)
     cell.shapes(annotation_layer).insert(shape2)
 
@@ -64,7 +64,7 @@ def test_corner_continuous():
     points2 = [pya.DPoint(50, 0), pya.DPoint(50, 50)]
     shape1 = pya.DPath(points1, 1)
     shape2 = pya.DPath(points2, 1)
-    annotation_layer = layout.layer(default_layers["b_waveguide_path"])
+    annotation_layer = layout.layer(default_layers["1t1_waveguide_path"])
     cell.shapes(annotation_layer).insert(shape1)
     cell.shapes(annotation_layer).insert(shape2)
 
@@ -79,7 +79,7 @@ def test_corner_not_continuous():
     points2 = [pya.DPoint(0, 50 + 2*tolerance), pya.DPoint(50, 50)]
     shape1 = pya.DPath(points1, 1)
     shape2 = pya.DPath(points2, 1)
-    annotation_layer = layout.layer(default_layers["b_waveguide_path"])
+    annotation_layer = layout.layer(default_layers["1t1_waveguide_path"])
     cell.shapes(annotation_layer).insert(shape1)
     cell.shapes(annotation_layer).insert(shape2)
 

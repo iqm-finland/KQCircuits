@@ -85,16 +85,16 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         simulation_flags = []
 
     # select layers
-    layers = ["b_simulation_signal",
-              "b_simulation_ground",
-              "b_simulation_gap",
-              "b_simulation_airbridge_flyover",
-              "b_simulation_airbridge_pads"]
+    layers = ["1t1_simulation_signal",
+              "1t1_simulation_ground",
+              "1t1_simulation_gap",
+              "1t1_simulation_airbridge_flyover",
+              "1t1_simulation_airbridge_pads"]
     if simulation.wafer_stack_type == "multiface":
-        layers += ["t_simulation_signal",
-                   "t_simulation_ground",
-                   "t_simulation_gap",
-                   "b_simulation_indium_bump"]
+        layers += ["2b1_simulation_signal",
+                   "2b1_simulation_ground",
+                   "2b1_simulation_gap",
+                   "1t1_simulation_indium_bump"]
 
     # collect data for .json file
     json_data = {

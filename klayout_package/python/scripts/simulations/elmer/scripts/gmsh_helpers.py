@@ -163,7 +163,7 @@ def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z
     Args:
         cell(pya.Cell): 2-dimensional geometry as pya.Cell object
         layer_map(dict): map from full layer name to layer number
-        face(str): face abbreviation (for example in flip chip, 'b' is the bottom and 't' is the top).
+        face(str): face abbreviation (for example in flip chip, '1t1' is the bottom and '2b1' is the top).
         layer(str): layer name (for example 'simulation_ground')
         z_level(float): the z-coordinate of the layer.
         mesh_size(float): mesh size can be given to the points (note that these points are not used in the final mesh in
@@ -203,7 +203,7 @@ def create_face(cell: pya.Cell, layer_map: dict, face: str, z_level: float, mesh
     Args:
         cell(pya.Cell): 2-dimensional geometry as pya.Cell object
         layer_map(dict): map from full layer name to layer number
-        face(str): face abbreviation (for example in flip chip, 'b' is the bottom and 't' is the top).
+        face(str): face abbreviation (for example in flip chip, '1t1' is the bottom and '2b1' is the top).
         z_level(float): set the z-coordinate of the chip face.
         mesh_sizes(dict): a mesh size can be given to the points:
 
@@ -799,8 +799,8 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
 
     port_data_gmsh = sim_data['ports']
     faces = [0] if params['wafer_stack_type'] == 'planar' else [0, 1]
-    face_z_levels = [0 if params['face_ids'][face] == 'b' else params['chip_distance'] for face in faces]
-    chip_dzs = [-params['substrate_height'] if params['face_ids'][face] == 'b' else params['substrate_height_top']
+    face_z_levels = [0 if params['face_ids'][face] == '1t1' else params['chip_distance'] for face in faces]
+    chip_dzs = [-params['substrate_height'] if params['face_ids'][face] == '1t1' else params['substrate_height_top']
                 for face in faces]
 
     # Produce shapes

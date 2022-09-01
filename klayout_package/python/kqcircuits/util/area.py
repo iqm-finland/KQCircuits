@@ -62,6 +62,7 @@ def get_area_and_density(cell: pya.Cell):
     layer_bboxes = [AreaReceiver() for _ in layer_names]
 
     for i, name, area_receiver, bbox_receiver in zip(layout.layer_indexes(), layer_names, layer_areas, layer_bboxes):
+        name = f"_{name}"  # if `name` starts with a number, tp.execute() fails, so we add an underscore to avoid that
         area, bbox = name + '_area', name + '_bbox'
         tp.input(name, cell.begin_shapes_rec(i))
         tp.output(area, area_receiver)

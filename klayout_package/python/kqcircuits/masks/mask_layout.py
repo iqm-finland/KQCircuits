@@ -40,7 +40,7 @@ class MaskLayout:
         name: Name of the mask
         version: Mask version
         with_grid: Boolean determining if ground grid is generated
-        face_id: face_id of this mask layout, "b" | "t" | "c"
+        face_id: face_id of this mask layout, "1t1" | "2b1" | "2t1"
         layers_to_mask: dictionary of layers with mask label postfix for mask label and mask covered region creation
         covered_region_excluded_layers: list of layers in `layers_to_mask` for which mask covered region is not created
         chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)

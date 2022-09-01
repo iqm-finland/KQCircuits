@@ -33,9 +33,9 @@ from kqcircuits.pya_resolver import pya
 
 
 @logged
-def generate_probepoints_json(cell, face='b'):
+def generate_probepoints_json(cell, face='1t1'):
     # make autoprober json string for cell with reference points with magical names
-    if cell is None or face not in ['b', 't']:
+    if cell is None or face not in ['1t1', '2b1']:
         error_text = f"Invalid face '{face}' or 'nil' cell ."
         error = ValueError(error_text)
         generate_probepoints_json._log.exception(error_text, exc_info=error)
@@ -53,8 +53,8 @@ def generate_probepoints_json(cell, face='b'):
         return {}
 
     # flip top-markers back to top side
-    if face == 't':
-        origin = refpoints["b_marker_se"]
+    if face == '2b1':
+        origin = refpoints["1t1_marker_se"]
         markers = {k: flip(v, origin) for k, v in markers.items()}
 
     eu = 1e-3  # export unit
@@ -79,7 +79,7 @@ def generate_probepoints_json(cell, face='b'):
         # does the name correspond to a probepoint?
         if name_type in default_probe_types.keys() and probepoint_name.endswith(default_probe_suffixes):
 
-            if face == 't':
+            if face == '2b1':
                 probepoint = flip(probepoint, origin)
 
             best_distance = 1e99

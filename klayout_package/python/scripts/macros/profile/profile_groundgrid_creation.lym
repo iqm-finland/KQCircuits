@@ -47,7 +47,7 @@ import kqcircuits.util.macro_prepare as macroprep
 cell = Demo.create(layout) # A new cell into the layout
 cell_view.cell_name=cell.name     # Shows the new cell
 
-protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()
+protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()
 cell.shapes(layout.layer(default_layers["annotations"])).insert(protection)
 
 def empty_regions(protection, box, deph=0, n = 3, debuglayer=-99):
@@ -67,7 +67,7 @@ def empty_regions(protection, box, deph=0, n = 3, debuglayer=-99):
         subbox = pya.Box(pya.Point(x,y), pya.Point(x+box.width()/n,y+box.height()/n))
         empty_regions(protection, subbox,deph-1, n, debuglayer)
 
-#fill_grid(pya.DBox(cell.bbox().p1*layout.dbu,cell.bbox().p2*layout.dbu),layout.layer(default_layers["b_ground_grid"]))
+#fill_grid(pya.DBox(cell.bbox().p1*layout.dbu,cell.bbox().p2*layout.dbu),layout.layer(default_layers["1t1_ground_grid"]))
 
 if False:
   start = time.time()
@@ -75,7 +75,7 @@ if False:
   empty_regions(protection, pya.Box(cell.bbox().p1,cell.bbox().p2),
     deph=2,
     n=2,
-    debuglayer=layout.layer(default_layers["b_SIS_junction"])
+    debuglayer=layout.layer(default_layers["1t1_SIS_junction"])
     )
 
   end = time.time()
@@ -87,7 +87,7 @@ if False:
   empty_regions(protection, pya.Box(cell.bbox().p1,cell.bbox().p2),
     deph=1,
     n=8,
-    debuglayer=layout.layer(default_layers["b_SIS_shadow"]))
+    debuglayer=layout.layer(default_layers["1t1_SIS_shadow"]))
   end = time.time()
   print("Elapsed time: {} s".format(end - start))
 
@@ -96,15 +96,15 @@ grid_mag_factor = 1
 if True:
   start = time.time()
   grid_area = pya.Box(cell.bbox().p1, cell.bbox().p2)
-  protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()
+  protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()
 
   region_ground_grid = make_grid(grid_area, protection, grid_step = 10*(1/layout.dbu)*grid_mag_factor, grid_size = 5*(1/layout.dbu)*grid_mag_factor )
 
   cell.shapes(layout.layer(default_layers["annotations"])).insert(protection)
-  cell.shapes(layout.layer(default_layers["b_ground_grid"])).insert(region_ground_grid)
+  cell.shapes(layout.layer(default_layers["1t1_ground_grid"])).insert(region_ground_grid)
 
   end = time.time()
   print("Elapsed time: {} s".format(end - start))
 
-#protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()</text>
+#protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()</text>
 </klayout-macro>

@@ -108,15 +108,15 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
         raise ValueError("Cannot export without simulation")
 
     # select layers
-    layers = ["b_simulation_signal",
-              "b_simulation_ground",
-              "b_simulation_gap",
-              "b_ground_grid"]
+    layers = ["1t1_simulation_signal",
+              "1t1_simulation_ground",
+              "1t1_simulation_gap",
+              "1t1_ground_grid"]
     if simulation.wafer_stack_type == "multiface":
-        layers += ["t_simulation_signal",
-                   "t_simulation_ground",
-                   "t_simulation_gap",
-                   "t_ground_grid"]
+        layers += ["2b1_simulation_signal",
+                   "2b1_simulation_ground",
+                   "2b1_simulation_gap",
+                   "2b1_ground_grid"]
 
     # collect data for .json file
     json_data = {

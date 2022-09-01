@@ -124,8 +124,8 @@ Multi-face masks
 
 The mask generated in the previous step contained "DemoTwoface" chips, which
 are supposed to have elements in two different chip faces for a flip-chip
-process. However, the generated mask only contained the parts in "bottom"
-face. To generate mask for also "top"-face chips, we need to add an
+process. However, the generated mask only contained the parts in "1t1"-face.
+To generate mask for also "2b1"-face chips, we need to add an
 additional :git_url:`mask_layout <klayout_package/python/kqcircuits/masks/mask_layout.py>`
 
 #. Add the following below the old ``add_mask_layout()`` call::
@@ -152,15 +152,15 @@ additional :git_url:`mask_layout <klayout_package/python/kqcircuits/masks/mask_l
         ["---", "---", "---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---", "---", "---"],
         ["---", "---", "---", "---", "---", "---", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "DT1", "---", "---", "---", "---", "---", "---"],
         ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---"],
-    ], "t")
+    ], "2b1")
 
-   Notice the "t" argument after the actual mask layout. This means that only
-   elements which are in chip face "t" will be included in this mask layout.
-   By default, the mask layout will use elements in chip face "b", which is
+   Notice the "2b1" argument after the actual mask layout. This means that only
+   elements which are in chip face "2b1" will be included in this mask layout.
+   By default, the mask layout will use elements in chip face "1t1", which is
    the case for the first mask layout in this script.
 
-#. Generate the mask. In KLayout cell hierarchy, you should see both "Test b"
-   and "Test t" cells. You can right click them and select "Show as new
-   top" to verify that "Test b" contains the parts of DemoTwoface in "b"-face
-   and "Test t" contains the parts of DemoTwoface in "t"-face (with proper
-   mirroring and rotation).
+#. Generate the mask. In KLayout cell hierarchy, you should see both "Test 1t1"
+   and "Test 2b1" cells. You can right click them and select "Show as new
+   top" to verify that "Test 1t1" contains the parts of DemoTwoface in
+   "1t1"-face and "Test 2b1" contains the parts of DemoTwoface in "2b1"-face
+   (with proper mirroring and rotation).

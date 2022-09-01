@@ -21,7 +21,7 @@ from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.markers.marker import Marker
-from kqcircuits.defaults import default_brand, default_marker_type
+from kqcircuits.defaults import default_brand, default_marker_type, default_chip_label_face_prefixes
 
 
 class ChipFrame(Element):
@@ -58,7 +58,14 @@ class ChipFrame(Element):
 
     def _produce_labels(self):
         x_min, x_max, y_min, y_max = self._box_points()
-        chip_name = self.face()["id"].upper() + self.name_chip if self.use_face_prefix else self.name_chip
+        if self.use_face_prefix:
+            face_id = self.face()["id"]
+            face_prefix = default_chip_label_face_prefixes[face_id].upper() \
+                if default_chip_label_face_prefixes and (face_id in default_chip_label_face_prefixes)\
+                else face_id.upper()
+            chip_name = face_prefix + self.name_chip
+        else:
+            chip_name = self.name_chip
         labels = [self.name_mask, chip_name, self.name_copy, self.name_brand]
         if self.name_mask:
             self._produce_label(labels[0], pya.DPoint(x_min, y_max), LabelOrigin.TOPLEFT)

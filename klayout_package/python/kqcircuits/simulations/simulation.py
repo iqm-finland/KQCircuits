@@ -489,7 +489,7 @@ class Simulation:
                                 port.ground_location,
                                 simulation.layout.dbu)
 
-                            port_z = simulation.chip_distance if self.face_ids[port.face] == 't' else 0
+                            port_z = simulation.chip_distance if self.face_ids[port.face] == '2b1' else 0
                             p_data['polygon'] = get_enclosing_polygon(
                                 [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
                                  [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])

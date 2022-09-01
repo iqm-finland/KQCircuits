@@ -28,7 +28,7 @@ from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, klayout_executable_command
+from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, klayout_executable_command, default_face_id
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 
@@ -85,7 +85,7 @@ class MaskSet:
         self.template_imports = []
         self._thread_create_chip_parameters = {}
 
-    def add_mask_layout(self, chips_map, face_id="b", mask_layout_type=MaskLayout, **kwargs):
+    def add_mask_layout(self, chips_map, face_id=default_face_id, mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
 
         Args:

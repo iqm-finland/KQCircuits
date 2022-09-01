@@ -90,13 +90,13 @@ class CrossingTwoface(Chip):
 
         for i in range(crossings):
             nodes.append(Node((ref_x - wiggle, last_y)))
-            nodes.append(Node((ref_x_1, last_y), face_id="t"))
-            nodes.append(Node((ref_x_2, last_y), face_id="b"))
+            nodes.append(Node((ref_x_1, last_y), face_id=self.face_ids[1]))
+            nodes.append(Node((ref_x_2, last_y), face_id=self.face_ids[0]))
             nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step
             nodes.append(Node((ref_x + wiggle, last_y)))
-            nodes.append(Node((ref_x_2, last_y), face_id="t"))
-            nodes.append(Node((ref_x_1, last_y), face_id="b"))
+            nodes.append(Node((ref_x_2, last_y), face_id=self.face_ids[1]))
+            nodes.append(Node((ref_x_1, last_y), face_id=self.face_ids[0]))
             nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
         nodes.append(Node((face1_box.p1.x + 100, self.refpoints["WS_port"].y), a=self.a, b=self.b))
@@ -114,14 +114,14 @@ class CrossingTwoface(Chip):
         for i in range(crossings):
             if i == 0 and self.meander_face == "Two Face":
                 nodes.append(
-                    Node((ref_x + wiggle, last_y), face_id="t"))
+                    Node((ref_x + wiggle, last_y), face_id=self.face_ids[1]))
             else:
                 nodes.append(Node((ref_x + wiggle, last_y)))
             nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
             nodes.append(Node((ref_x - wiggle, last_y)))
             if i == range(crossings)[-1] and self.meander_face == "Two Face":
-                nodes.append(Node((ref_x + wiggle, last_y), face_id="b"))
+                nodes.append(Node((ref_x + wiggle, last_y), face_id=self.face_ids[0]))
             else:
                 nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step

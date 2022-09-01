@@ -78,10 +78,10 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
     def get_sonnet_strings(material_type, grid_size, symmetry):
         layout = simulation.cell.layout()
         dbu = layout.dbu
-        layer_pad = layout.layer(default_layers["b_simulation_airbridge_pads"])
-        layer_bridge = layout.layer(default_layers["b_simulation_airbridge_flyover"])
-        layer_son = layout.layer(default_layers["b_simulation_signal"])
-        layer_son_ground = layout.layer(default_layers["b_simulation_ground"])
+        layer_pad = layout.layer(default_layers["1t1_simulation_airbridge_pads"])
+        layer_bridge = layout.layer(default_layers["1t1_simulation_airbridge_flyover"])
+        layer_son = layout.layer(default_layers["1t1_simulation_signal"])
+        layer_son_ground = layout.layer(default_layers["1t1_simulation_ground"])
 
         simpolygons = [p.polygon for p in simulation.cell.shapes(layer_son).each()] + \
                       [p.polygon for p in simulation.cell.shapes(layer_son_ground).each()]
@@ -151,7 +151,7 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
 
     # detect airbridges
     shapes_in_air = simulation.layout.begin_shapes(simulation.cell, simulation.layout.layer(
-        default_layers["b_airbridge_flyover"]))
+        default_layers["1t1_airbridge_flyover"]))
     materials_type = "Si+Al" if not shapes_in_air.shape().is_null() else "Si BT"
 
     sonnet_strings = get_sonnet_strings(materials_type, 1, False)

@@ -44,6 +44,7 @@ _excluded_paths = (
     "util",
     "simulations",
     "masks",
+    "layer_config",
 )
 
 # modules NOT to be included in the library, (python file names without extension)

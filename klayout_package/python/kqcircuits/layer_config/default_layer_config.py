@@ -1,0 +1,280 @@
+# This code is part of KQCircuits
+# Copyright (C) 2022 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+"""Default layer configuration file for KQCircuits.
+
+Defines default values related to layers and faces.
+
+Layers have a name, ID and data type. For example ``"annotations": (220, 1)``.
+
+KQCircuit layers are grouped by faces and functionality. The face-numbering system works as follows.
+Each face-id consists of a number, the letter "b" or "t", and another number, for example "2b1". In
+a multi-chip stack, we can have more than one chip, bonded on top of each other, and the first
+number denotes which of these chips it refers to. The letter "b" or "t" means that the layer is
+located at either the "bottom" or "top" of that chip (in the final place after full manufacturing
+process). The last number is an additional index that can be used if necessary, in case multiple
+deposition layers and etching processes are needed.
+
+The main geometry containing layer groups are currently: "1t1" (top of lowest chip) 10-39, "2b1"
+(bottom of second-lowest chip) 40-69 and "2t1" (top of second-lowest chip) 70-89. Simulation 90-99,
+layers are in either "1t1" or "2b1" faces. Layer ID's 100-219 are reserved. Auxiliary layers 220-229
+are not face dependent, they contain annotations, refpoints and other text fields.
+
+In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
+layer views are hidden by default. See https://www.klayout.de/doc-qt5/manual/layer_source.html
+
+``default_layers`` is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.
+While ``default_faces`` is a dictionary mapping '1t1', '2b1', '2t1' etc. to an other dictionary, a subset of
+``default_layers`` in the given face. With a minor twist: in these "face-dictionaries" the keys do not
+start with the face id, for example "1t1_base_metal_gap" becomes "base_metal_gap".
+
+Layer names should not start with ``-``, this is reserved for marking exported layers to be inverted
+in ``mask_export_layers``.
+"""
+
+from pathlib import Path
+
+from kqcircuits.pya_resolver import pya
+from kqcircuits.layer_cluster import LayerCluster
+
+# These layers are present in all faces. Layer id will have +30 for '1t1' and +60 for '2t1'
+_common_layers = {
+    # Metal etching layers for front face (facing towards bottom chip)
+    "base_metal_gap": (10, 1),
+
+    # merged etching layer with grid  (layers 11 & 13) that defines microscopic structures such as waveguides, launchers
+    "base_metal_gap_wo_grid": (11, 1),  # etching layer without grid
+    "base_metal_addition": (12, 0),  # Features subtracted from layer 11 , only used during the design.
+    "ground_grid": (13, 0),  # A subset of structures combined into layer 10 (e.g. ground plane perforations)
+
+    # Occupy the area where there should be no grids, only used during the design.
+    "ground_grid_avoidance": (14, 0),
+}
+
+# common layers in b and t
+_common_b_t_layers = {
+    **_common_layers,
+
+    "base_metal_gap_for_EBL": (15, 0),  # Features of layer 41 that are needed for EBL
+    "waveguide_path": (16, 0),  # Waveguide's metal part, used with waveguide length and DRC calculations
+
+    # Junction layer
+    "SIS_junction": (17, 2),  # Josephson junction evaporation opening
+    "SIS_shadow": (18, 2),  # Josephson junction resist undercut
+    "SIS_junction_2": (20, 2),
+
+    # Airbridge layers -- potentially obsolete
+    "airbridge_pads": (28, 3),  #
+    "airbridge_flyover": (29, 3),  #
+
+    # 3D integration layers
+    "underbump_metallization": (32, 4),  # flip-chip bonding
+    "indium_bump": (33, 4),  # flip-chip bonding
+    "through_silicon_via": (34, 4),  # TSV
+    "through_silicon_via_avoidance": (35, 4),  # TSV
+
+    # Netlist
+    "ports": (39, 0),  # Considered conductive in the netlist extraction
+}
+
+_face_layers = {}   # layer descriptions per every chip face
+
+# Bottom face layers
+_face_layers['1t1'] = {
+    **_common_b_t_layers,
+
+    # Simulation faces [Layer 90-99]
+    "simulation_signal": (90, 0),
+    "simulation_ground": (91, 0),
+    "simulation_gap": (96, 0),
+    "simulation_airbridge_flyover": (94, 0),
+    "simulation_airbridge_pads": (95, 0),
+    "simulation_indium_bump": (98, 0),
+}
+
+
+def _shift_layers(layers, shift):
+    """Add a number to replicate a group of layers on a different face.
+
+    This is a helper function so we don't have to copy-paste similar groups of layers to several
+    faces. It returns a new layer group where every layer id is increased by the number ``shift``.
+    """
+    return {n: (v[0] + shift, v[1]) for n, v in layers.items()}
+
+
+# Top face layers
+_face_layers['2b1'] = {
+    **_shift_layers(_common_b_t_layers, 30),    # common layers at the "top"
+
+    # Simulation faces
+    "simulation_signal": (92, 0),
+    "simulation_ground": (93, 0),
+    "simulation_gap": (97, 0),
+}
+
+# Ceiling face layers
+_face_layers['2t1'] = {
+    **_shift_layers(_common_layers, 60),     # same common layers at the "ceiling"
+}
+
+# Other auxiliary layers [Layer 220-229]
+_aux_layers_dict = {
+    "annotations": (220, 0),
+    "annotations_2": (221, 0),
+    "instance_names": (222, 0),
+    "mask_graphical_rep": (223, 0),
+    "waveguide_length": (224, 0),  # Length only, no DRC. When Waveguide leves its layer, e.g. Airbridge.
+    "refpoints": (225, 0),
+}
+
+# default_faces[face_id] contains the face dictionary for the face determined by face_id.
+#
+# Each face dictionary should contain:
+#   - key "id" with value face_id (string)
+#   - for all the available layers in that face: key "Layer_name", value pya.LayerInfo object for that layer
+#
+default_faces = {}
+for f in ('1t1', '2b1', '2t1'):
+    default_faces[f] = {n: pya.LayerInfo(i[0], i[1], f'{f}_{n}') for n, i in _face_layers[f].items()}
+
+# pya layer information
+default_layers = {n: pya.LayerInfo(i[0], i[1], n) for n, i in _aux_layers_dict.items()}
+for face, layers in default_faces.items():
+    default_layers.update({f'{face}_{name}': li for name, li in layers.items()})
+
+for f in ('1t1', '2b1', '2t1'):
+    default_faces[f]['id'] = f
+
+default_face_id = "1t1"  # face_id of the face that is used by default in some contexts
+
+# Layer names (without face prefix) for layers exported as individual .oas files during mask layout export.
+default_mask_export_layers = [
+    "base_metal_gap",
+    "base_metal_gap_wo_grid",
+    "airbridge_pads",
+    "airbridge_flyover",
+]
+
+# Layer names (without face prefix) with mask label postfix for mask label and mask covered region creation.
+default_layers_to_mask = {
+    "base_metal_gap_wo_grid": "1",
+    "airbridge_pads": "2",
+    "airbridge_flyover": "3"
+}
+
+# Layer names (without face prefix) in `layers_to_mask` for which mask covered region is not created.
+default_covered_region_excluded_layers = [
+    "indium_bump",
+]
+
+# Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not
+# apply to individual pixels).
+mask_bitmap_export_layers = [
+    # "base_metal_gap_wo_grid",
+    "mask_graphical_rep",
+]
+
+# Layers to hide when exporting a bitmap with "all" layers.
+all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + [
+    default_layers["1t1_ports"],
+    default_layers["1t1_base_metal_gap"],
+    default_layers["1t1_ground_grid"],
+    default_layers["1t1_ground_grid_avoidance"],
+    default_layers["1t1_waveguide_path"],
+    default_layers["2b1_ports"],
+    default_layers["2b1_base_metal_gap"],
+    default_layers["2b1_ground_grid"],
+    default_layers["2b1_ground_grid_avoidance"],
+    default_layers["2b1_waveguide_path"],
+    default_layers["2b1_base_metal_gap"],
+    default_layers["2b1_ground_grid"],
+    default_layers["2b1_ground_grid_avoidance"],
+]
+
+# Layer clusters used for exporting only certain layers together in the same file, when exporting individual chips
+# during mask layout export.
+# Dictionary with items "cluster name: LayerCluster".
+chip_export_layer_clusters = {
+    # 1t1-face
+    "SIS 1t1": LayerCluster(["1t1_SIS_junction", "1t1_SIS_shadow", "1t1_SIS_junction_2"],
+                            ["1t1_base_metal_gap_for_EBL"], "1t1"),
+    "airbridges 1t1": LayerCluster(["1t1_airbridge_pads", "1t1_airbridge_flyover"],
+                                   ["1t1_base_metal_gap_wo_grid"], "1t1"),
+    # 2b1-face
+    "SIS 2b1": LayerCluster(["2b1_SIS_junction", "2b1_SIS_shadow", "2b1_SIS_junction_2"],
+                            ["2b1_base_metal_gap_for_EBL"], "2b1"),
+    "airbridges 2b1": LayerCluster(["2b1_airbridge_pads", "2b1_airbridge_flyover"],
+                                   ["2b1_base_metal_gap_wo_grid"], "2b1"),
+}
+
+# default layers to use for calculating cell path lengths with get_cell_path_length()
+default_path_length_layers = [
+    "1t1_waveguide_path",
+    "2b1_waveguide_path",
+    "waveguide_length"  # AirbridgeConnection uses this
+]
+
+# default mask parameters for each face
+# dict of face_id: parameters
+default_mask_parameters = {
+    "1t1": {
+        "wafer_rad": 76200,
+        "chips_map_offset": pya.DVector(-1200, 1200),
+        "chip_size": 10000,
+        "chip_box_offset": pya.DVector(0, 0),
+        "chip_trans": pya.DTrans(),
+        "dice_width": 200,
+        "text_margin": 100,
+        "mask_text_scale": 1.0,
+        "mask_marker_offset": 50000,
+        "mask_name_offset": pya.DPoint(0, -7200),
+    },
+    "2b1": {
+        "wafer_rad": 76200,
+        "chips_map_offset": pya.DVector(-2700, 2700),
+        "chip_size": 7000,
+        "chip_box_offset": pya.DVector(1500, 1500),
+        "chip_trans": pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans().M90,
+        "dice_width": 140,
+        "text_margin": 100,
+        "mask_text_scale": 0.7,
+        "mask_marker_offset": 50000,
+        "mask_name_offset": pya.DPoint(0, -6500),
+    },
+    "2t1": {
+        "wafer_rad": 76200,
+        "chips_map_offset": pya.DVector(-2700, 2700),
+        "chip_size": 7000,
+        "chip_box_offset": pya.DVector(1500, 1500),
+        "chip_trans": pya.DTrans(pya.DPoint(10000, 0)) * pya.DTrans().M90,
+        "dice_width": 140,
+        "text_margin": 100,
+        "mask_text_scale": 0.7,
+        "mask_marker_offset": 50000,
+        "mask_name_offset": pya.DPoint(0, -6500),
+    }
+}
+
+default_parameter_values = {}
+
+default_layer_props = str(Path(__file__).resolve().parent.parent/"layer_config"/"default_layer_props.lyp")
+
+default_chip_label_face_prefixes = {
+    "1t1": "b",
+    "2b1": "t",
+    "2t1": "c",
+}

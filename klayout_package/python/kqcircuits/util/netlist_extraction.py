@@ -20,7 +20,7 @@ import json
 import logging
 from os import cpu_count
 
-from kqcircuits.defaults import default_layers, default_netlist_breakdown
+from kqcircuits.defaults import default_layers, default_netlist_breakdown, default_faces
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
@@ -65,18 +65,18 @@ def export_cell_netlist(cell, filename, pcell=None):
 
     # get LayoutToNetlist object
     layout = cell.layout()
-    shapes_iter = pya.RecursiveShapeIterator(layout, cell, [layout.layer(default_layers["b_ports"]),
-                                                            layout.layer(default_layers["t_ports"])])
+    faces_with_ports = [face_id for face_id in default_faces if f"{face_id}_ports" in default_layers]
+    port_layers = [layout.layer(default_layers[f"{face_id}_ports"]) for face_id in faces_with_ports]
+    shapes_iter = pya.RecursiveShapeIterator(layout, cell, port_layers)
     ltn = pya.LayoutToNetlist(shapes_iter)
     # text_enlargement>0 converts the texts into boxes so that their overlaps are detected as connections
     ltn.dss().text_enlargement = 1
     # parallel processing
     ltn.threads = cpu_count()
     # select conducting layers
-    connector_region_b = ltn.make_layer(layout.layer(default_layers["b_ports"]), "connector_b")
-    connector_region_t = ltn.make_layer(layout.layer(default_layers["t_ports"]), "connector_t")
-    ltn.connect(connector_region_b)
-    ltn.connect(connector_region_t)
+    for face_id in faces_with_ports:
+        connector_region = ltn.make_layer(layout.layer(default_layers[f"{face_id}_ports"]), f"connector_{face_id}")
+        ltn.connect(connector_region)
     # extract netlist for the cell
     ltn.extract_netlist()
     # extract cell to circuit map for finding the netlist of interest

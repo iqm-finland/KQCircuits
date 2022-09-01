@@ -30,8 +30,8 @@ class FlipChipConnectorSim(Simulation):
         transf = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
         _, refp = self.insert_cell(fcc_cell, transf)
 
-        self.produce_waveguide_to_port(refp["b_port"], refp["b_port_corner"], 1, 'left', face=0)
+        self.produce_waveguide_to_port(refp["1t1_port"], refp["1t1_port_corner"], 1, 'left', face=0)
         diff_to_rotation = lambda x: abs(x - (self.output_rotation % 360))
         port_dir = {0: 'left', 90: 'bottom', 180: 'right', 270: 'top', 360: 'left'}\
             .get(min([0, 90, 180, 270, 360], key=diff_to_rotation))
-        self.produce_waveguide_to_port(refp["t_port"], refp["t_port_corner"], 2, port_dir, face=1)
+        self.produce_waveguide_to_port(refp["2b1_port"], refp["2b1_port_corner"], 2, port_dir, face=1)

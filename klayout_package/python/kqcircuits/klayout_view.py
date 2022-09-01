@@ -21,7 +21,7 @@ from autologging import logged
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bitmap_export_layers, \
-    all_layers_bitmap_hide_layers, default_faces, SRC_PATHS
+    all_layers_bitmap_hide_layers, default_faces, default_layer_props
 
 
 @logged
@@ -94,7 +94,8 @@ class KLayoutView():
         for layer in default_layers.values():
             layout.layer(layer)
         self.layout_view.add_missing_layers()
-        self.layout_view.load_layer_props(str(SRC_PATHS[-1].joinpath("default_layer_props.lyp")), True)
+        if default_layer_props:
+            self.layout_view.load_layer_props(default_layer_props, True)
 
     def export_layers_bitmaps(self, path, cell, filename="", layers_set=mask_bitmap_export_layers,
                               face_id=None):

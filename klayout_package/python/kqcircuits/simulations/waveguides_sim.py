@@ -28,7 +28,7 @@ class WaveGuidesSim(Simulation):
     cpw_length = Param(pdt.TypeDouble, "Waveguide length", 100, unit="μm")
     n_guides = Param(pdt.TypeInt, "Number of guides", 5, unit="μm")
     spacing = Param(pdt.TypeDouble, "Parallel spacing", 100, unit="μm")
-    guide_face_id = Param(pdt.TypeString, "Guide face id b|t", 'b', unit="μm")
+    guide_face_id = Param(pdt.TypeString, "Guide face id", '1t1', unit="μm")
     add_bumps = Param(pdt.TypeBoolean, "Add ground bumps", False)
     port_termination_end = Param(pdt.TypeBoolean, "Port termination end", True)
     use_edge_ports = Param(pdt.TypeBoolean, "Use edge ports", True)
@@ -47,8 +47,8 @@ class WaveGuidesSim(Simulation):
         tot_y = (n_guides-1)*spacing
         guide_face_id = self.guide_face_id
         face_id = {
-            'b': 0,
-            't': 1
+            '1t1': 0,
+            '2b1': 1
         }
 
         for i in range(n_guides):
