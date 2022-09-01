@@ -295,15 +295,17 @@ if airbridge_flyover_objects:
 
 # Add safe margin to port signal locations, used for Q3D
 for port in data['ports']:
+    is_wave_port = port['type'] == 'EdgePort'
     # Compute the signal location of the port
-    if ansys_tool == 'q3d' and 'ground_location' in port:
+    if ansys_tool == 'q3d' and not is_wave_port:
         # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
         port['signal_location'] = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
     else:
         port['signal_location'] = list(port['signal_location'])
     z_component = [chip_distance if port['face'] == 1 else 0.0]
     port['signal_location'] += z_component
-    port['ground_location'] += z_component
+    if not is_wave_port:
+        port['ground_location'] += z_component
 
 # Create ports or nets
 if ansys_tool in {'hfss', 'eigenmode'}:
