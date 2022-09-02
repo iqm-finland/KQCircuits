@@ -48,9 +48,9 @@ nodes = [[ # K 1
         Node(s*pya.DPoint(-50,0)),
         Node(s*pya.DPoint(-50,h))
     ], [ # K 1
-        Node(s*pya.DPoint(110,0)),
+        Node(s*pya.DPoint(110,h*0.037)),
         Node(s*pya.DPoint(30-50,h*.55)),
-        Node(s*pya.DPoint(110,h))
+        Node(s*pya.DPoint(110,h*0.959))
     ],  [ # Q
         Node(s*pya.DPoint(k-50,h/8)),
         Node(s*pya.DPoint(k-100,h/4)),
@@ -61,12 +61,12 @@ nodes = [[ # K 1
         Node(s*pya.DPoint(k,0), n_bridges=1),
         Node(s*pya.DPoint(k-50,h/8)),
     ], [ # C
-        Node(s*pya.DPoint(k*2+80,h/4)),
-        Node(s*pya.DPoint(k*2,0)),
-        Node(s*pya.DPoint(k*2-100,h/4)),
-        Node(s*pya.DPoint(k*2-100,h*3/4)),
-        Node(s*pya.DPoint(k*2,h)),
-        Node(s*pya.DPoint(k*2+80,h*3/4)),
+        Node(s*pya.DPoint(k*2.07+100,h/4)),
+        Node(s*pya.DPoint(k*2.07,0)),
+        Node(s*pya.DPoint(k*2.07-100,h/4)),
+        Node(s*pya.DPoint(k*2.07-100,h*3/4)),
+        Node(s*pya.DPoint(k*2.07,h*1.00)),
+        Node(s*pya.DPoint(k*2.07+100,h*3/4)),
     ]
 ]
 
@@ -86,7 +86,7 @@ print("GDS written to {}".format(gds_path))
 
 """
 
-# use gdsspy in anouther py env to generate svg
+# use gdspy in another pyenv to generate svg
 
 import gdspy
 gdspy_library = gdspy.GdsLibrary(infile=str("logo.gds"))
@@ -95,12 +95,56 @@ gdspy_library.cells["logo"].write_svg("logo.svg")
 # replace css style in svg to make use of IQM colours
 
 &lt;style type="text/css"&gt;
-.l11d1 {stroke: none; fill: #09b8c6;}
-.l14d0 {stroke: none; fill: none;}
-.l85d0 {stroke: none; fill: none; fill-opacity: 0.5;}
-.l29d3 {stroke: none; fill: #00e397;fill-opacity: 0.5;}
-.l28d3 {stroke: none; fill: #00e397;fill-opacity: 0.5;}
-.l85t0 {stroke: none; fill: none;}
+	/* CPW centre */
+	.l16d0 {
+		fill: none;
+	}
+	/* Airbridge */
+	.l29d3 {
+		fill: #666;
+		fill-opacity: 0.5;
+	}
+	/* Airbridge pads */
+	.l28d3 {
+		fill: #7b7c7f;
+		fill-opacity: 0.5;
+	}
+	/* Background */
+	rect {
+		fill: none;
+	}
+
+	@media (prefers-color-scheme: dark) {
+		/* CPW gap */
+		.l11d1 {
+			fill: white;
+		}
+		/* Airbridge pads */
+		.l28d3 {
+			fill: #fafcf5;
+			fill-opacity: 0.5;
+		}
+		/* Airbridge */
+		.l29d3 {
+			fill: #d1d1d1;
+			fill-opacity: 0.5;
+		}
+	}
+
+	/* NOT SHOWN */
+
+	/* CPW avoidance */
+	.l14d0 {
+		fill-opacity: 0.0;
+	}
+	/* CPW refpoints */
+	.l39t0 {
+		fill-opacity: 0.0;
+	}
+	/* Text */
+	.l225t0 {
+		fill-opacity: 0.0;
+	}
 &lt;/style&gt;
 
 """</text>
