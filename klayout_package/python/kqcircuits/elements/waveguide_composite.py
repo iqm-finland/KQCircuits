@@ -254,7 +254,7 @@ class WaveguideComposite(Element):
         # Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235
         child_cells = [layout.cell(inst.cell_index) for inst in cell.each_inst()]
         segment_lengths = [get_cell_path_length(child_cell) for child_cell in child_cells
-                           if child_cell.name == "Waveguide Coplanar"]
+                           if child_cell.name.split('$')[0] == "Waveguide Coplanar"]
 
         return segment_lengths
 
