@@ -48,7 +48,7 @@ if not cell:
   raise ValueError('Create a cell first')
 
 layout = cell.layout()
-grid_area = cell.bbox()
+grid_area = cell.bbox_per_layer(layout.layer(default_layers["b_ground_grid_avoidance"]))
 protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["b_ground_grid_avoidance"]))).merged()
 
 grid_mag_factor = 1
