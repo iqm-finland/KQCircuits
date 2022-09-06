@@ -287,7 +287,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                             surface_loss_tangent=surface_loss_tangent,
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template))
-        except (IndexError, Exception) as e:  # TODO gather all 'allowed' error types  # pylint: disable=broad-except
+        except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(
                     f'Simulation {simulation.name} skipped due to {e.args}. '\
@@ -295,7 +295,11 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                     'Disable `skip_errors` to see the full traceback.'
                 )
             else:
-                raise e
+                raise UserWarning(
+                    'Generating simulation failed. You can discard the errors using `skip_errors` in `export_ansys`. '\
+                    'Moreover, `skip_errors` enables visual inspection of failed and successful simulation '\
+                    'geometry files.'
+                ) from e
 
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
                             ansys_executable=ansys_executable, import_script_folder=import_script_folder,

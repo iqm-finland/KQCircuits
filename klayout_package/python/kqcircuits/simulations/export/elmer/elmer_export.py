@@ -304,7 +304,7 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='s
     for simulation in simulations:
         try:
             json_filenames.append(export_elmer_json(simulation, path, tool, gmsh_params, workflow))
-        except (IndexError, Exception) as e:  # TODO gather all 'allowed' error types  # pylint: disable=broad-except
+        except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(
                     f'Simulation {simulation.name} skipped due to {e.args}. '\
@@ -312,6 +312,10 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='s
                     'Disable `skip_errors` to see the full traceback.'
                 )
             else:
-                raise e
+                raise UserWarning(
+                    'Generating simulation failed. You can discard the errors using `skip_errors` in `export_elmer`. '\
+                    'Moreover, `skip_errors` enables visual inspection of failed and successful simulation '\
+                    'geometry files.'
+                ) from e
 
     return export_elmer_script(json_filenames, path, workflow, file_prefix=file_prefix, script_file=script_file)
