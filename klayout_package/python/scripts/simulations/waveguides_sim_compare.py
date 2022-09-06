@@ -52,8 +52,18 @@ use_sbatch = False
 wave_equation = False
 multiface = True
 sweep_parameters = {
-    'n_guides': range(1, 3)
+    'n_guides': range(2, 3)
 }
+
+cpw_length = 100
+
+if edge_ports:
+    box_size_x = 100
+    box_size_y = 1000
+    cpw_length = box_size_x
+else:
+    box_size_x = 1000
+    box_size_y = 1000
 
 if use_elmer:
     if wave_equation:
@@ -67,13 +77,6 @@ else:
     else:
         path = create_or_empty_tmp_directory("waveguides_sim_q3d")
 
-if edge_ports:
-    box_size_x = 100
-    box_size_y = 1000
-else:
-    box_size_x = 1000
-    box_size_y = 1000
-
 sim_parameters = {
     'name': 'waveguides',
     'use_internal_ports': True,
@@ -81,7 +84,7 @@ sim_parameters = {
     'port_termination_end': False,
     'use_ports': True,
     'box': pya.DBox(pya.DPoint(-box_size_x/2., -box_size_y/2.), pya.DPoint(box_size_x/2., box_size_y/2.)),
-    'cpw_length': 100,  # if edge_ports then this has to be box_size_x
+    'cpw_length': cpw_length,  # if edge_ports then this has to be box_size_x
     'a': 10,
     'b': 6,
     'add_bumps': False,
@@ -116,6 +119,8 @@ if use_elmer:
         export_parameters_elmer = {
             'path': path,
             'tool': 'capacitance',
+            'linear_system_method': 'mg',
+            'p_element_order': 3,
         }
 
     workflow = {

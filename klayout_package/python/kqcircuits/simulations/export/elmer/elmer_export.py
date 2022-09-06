@@ -87,8 +87,14 @@ def copy_elmer_scripts_to_directory(path: Path):
             copy_tree(str(script_path), str(path), update=1)
 
 
-def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
-                      frequency=5, gmsh_params=None, workflow=None):
+def export_elmer_json(simulation: Simulation,
+                      path: Path,
+                      tool='capacitance',
+                      linear_system_method='bicgstab',
+                      p_element_order=1,
+                      frequency=5,
+                      gmsh_params=None,
+                      workflow=None):
     """
     Export Elmer simulation into json and gds files.
 
@@ -96,6 +102,8 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
         simulation: The simulation to be exported.
         path: Location where to write json.
         tool(str): Available: "capacitance" and "wave_equation" (Default: capacitance)
+        linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
+        p_element_order(int): polynomial order of p-elements (Default: 1)
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         gmsh_params(dict): Parameters for Gmsh
         workflow(dict): Parameters for simulation workflow
@@ -110,6 +118,8 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
     layers = simulation.get_layers()
     json_data = {
         'tool': tool,
+        'linear_system_method': linear_system_method,
+        'p_element_order': p_element_order,
         **simulation.get_simulation_data(),
         'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'gmsh_params': default_gmsh_params if gmsh_params is None else {**default_gmsh_params, **gmsh_params},
@@ -267,8 +277,17 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
     return main_script_filename
 
 
-def export_elmer(simulations: [], path: Path, tool='capacitance', frequency=5, file_prefix='simulation',
-                 script_file='scripts/run.py', gmsh_params=None, workflow=None, skip_errors=False):
+def export_elmer(simulations: [],
+                 path: Path,
+                 tool='capacitance',
+                 linear_system_method='bicgstab',
+                 p_element_order=1,
+                 frequency=5,
+                 file_prefix='simulation',
+                 script_file='scripts/run.py',
+                 gmsh_params=None,
+                 workflow=None,
+                 skip_errors=False):
     """
     Exports an elmer simulation model to the simulation path.
 
@@ -277,6 +296,8 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', frequency=5, f
         simulations(list(Simulation)): list of all the simulations
         path(Path): Location where to output the simulation model
         tool(str): Available: "capacitance" and "wave_equation" (Default: capacitance)
+        linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
+        p_element_order(int): polynomial order of p-elements (Default: 1)
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.
@@ -298,7 +319,8 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', frequency=5, f
     json_filenames = []
     for simulation in simulations:
         try:
-            json_filenames.append(export_elmer_json(simulation, path, tool, frequency, gmsh_params, workflow))
+            json_filenames.append(export_elmer_json(simulation, path, tool, linear_system_method,
+                                                    p_element_order, frequency, gmsh_params, workflow))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

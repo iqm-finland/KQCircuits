@@ -12,34 +12,11 @@ Constants
 End
 Equation 1
   Active Solvers(2) = 1 2
-  Calculate Electric Energy = True
+!  Calculate Electric Energy = True
 End
-Solver 1
-  Equation = Stat Elec Solver
-  Variable = Potential
-  Variable DOFs = 1
-  Procedure = "StatElecSolve" "StatElecSolver"
-  Calculate Electric Field = False
-  Calculate Electric Flux = False
-  Calculate Capacitance Matrix = True
-  Capacitance Matrix Filename = "#FILEPATHSTEM/CapacitanceMatrix.dat"
-  Potential Difference = 1.0e6
-  Linear System Solver = Iterative
-  Linear System Iterative Method = BiCGStab
-  Linear System Max Iterations = 200
-  Linear System Convergence Tolerance = 1.0e-07
-  Linear System Preconditioning = ILU1
-  Linear System ILUT Tolerance = 1.0e-03
-  Nonlinear System Max Iterations = 1
-  Nonlinear System Convergence Tolerance = 1.0e-4
-  Nonlinear System Newton After Tolerance = 1.0e-3
-  Nonlinear System Newton After Iterations = 10
-  Nonlinear System Relaxation Factor = 1
-  Steady State Convergence Tolerance = 1.0e-4
-  Nonlinear Post Solvers(1) = 2
-End
+#SOLVER1
 Solver 2  !---- ResultOutputSolve, ResultOutputSolver
-   Exec Solver = Never
+   Exec Solver = #EXEC_RESULTOUTPUT
    Equation = "ResultOutput"
    Procedure = "ResultOutputSolve" "ResultOutputSolver"
    Output File Name = "#FILEPATHSTEM"

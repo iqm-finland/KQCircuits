@@ -79,12 +79,13 @@ if use_elmer:
     export_parameters = {
         'path': dir_path,
         'tool': 'capacitance',
+        'linear_system_method': 'mg',
     }
     mesh_parameters = {
-        'default_mesh_size': 100.,
+        'default_mesh_size': 200.,
         'gap_min_mesh_size': 2.,
-        'gap_min_dist': 4.,
-        'gap_max_dist': 200.,
+        'gap_min_dist': 1.,
+        'gap_max_dist': 500.,
         'algorithm': 5,
     }
     workflow = {

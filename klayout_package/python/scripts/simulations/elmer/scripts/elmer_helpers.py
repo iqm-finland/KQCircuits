@@ -19,6 +19,62 @@ import json
 import shutil
 from pathlib import Path
 
+def get_electrostatics_solver(method='mg', p_element_order=3):
+    solver = 'Solver 1\n'
+    solver += '\n'
+    solver += '  Equation = Electro Statics\n'
+    solver += '  Procedure = "StatElecSolveVec" "StatElecSolver"\n'
+    solver += '  Variable = Potential\n'
+    solver += '\n'
+    solver += '  Calculate Capacitance Matrix = True\n'
+    solver += '  Capacitance Matrix Filename = #FILEPATHSTEM/CapacitanceMatrix.dat\n'
+    solver += '\n'
+    solver += '  Nonlinear System Max Iterations = 1\n'
+    solver += '  Nonlinear System Consistent Norm = True\n'
+    solver += '\n'
+    solver += '$pn={}\n'.format(p_element_order)
+    solver += '\n'
+
+    if method == 'bicgstab':
+        solver += '  Linear System Solver = Iterative\n'
+        solver += '  Linear System Iterative Method = BiCGStab\n'
+        solver += '  Linear System Max Iterations = 200\n'
+        solver += '  Linear System Convergence Tolerance = 1.0e-09\n'
+        solver += '  Linear System Preconditioning = ILU1\n'
+        solver += '  Linear System ILUT Tolerance = 1.0e-03\n'
+    elif method == 'mg':
+        solver += '! Outer iteration\n'
+        solver += '  Linear System Solver = Iterative\n'
+        solver += '  Linear System Iterative Method = GCR \n'
+        solver += '  Linear System Max Iterations = 30\n'
+        solver += '  Linear System Convergence Tolerance = 1.0e-9\n'
+        solver += '  Linear System Abort Not Converged = False\n'
+        solver += '  Linear System Residual Output = 10\n'
+        solver += '\n'
+        solver += '! You can edit here to compare to something more simple\n'
+        solver += '  Linear System Preconditioning = multigrid !ILU2\n'
+        solver += '  Linear System Refactorize = False\n'
+        solver += '\n'
+        solver += '! Settings for multigrid method\n'
+        solver += '  MG Method = p\n'
+        solver += '  MG Levels = $pn\n'
+        solver += '  MG Smoother = SGS ! cg\n'
+        solver += '  MG Pre Smoothing iterations = 2\n'
+        solver += '  MG Post Smoothing Iterations = 2\n'
+        solver += '  MG Lowest Linear Solver = iterative\n'
+        solver += '\n'
+        solver += '  mglowest: Linear System Scaling = False\n'
+        solver += '  mglowest: Linear System Iterative Method = CG !BiCGStabl\n'
+        solver += '  mglowest: Linear System Preconditioning = none !ILU0\n'
+        solver += '  mglowest: Linear System Max Iterations = 100\n'
+        solver += '  mglowest: Linear System Convergence Tolerance = 1.0e-3\n'
+
+    solver += '\n'
+    solver += '  Vector Assembly = True\n'
+    solver += '  Element = p:$pn\n'
+    solver += 'End\n'
+
+    return solver
 
 def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
     """
@@ -82,7 +138,7 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
         n_ground = len(model_data['ground_names'])
         s += 'Boundary Condition 1\n'
         s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(model_data['ground_names'])
-        s += '\n  Capacitance Body = 0\n'
+        s += '\n  Potential = 0.0\n'
         s += 'End\n'
         n_boundaries += 1
 
@@ -95,7 +151,15 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
 
         shutil.copy(path.joinpath('sif/CapacitanceMatrix.sif'), sif_filepath)
         with open(sif_filepath, 'r+') as f:
-            content = f.read().replace('#FILEPATHSTEM', sif_filepath.stem)
+            exec_output = "Always"
+            content = replace_strings(f.read(),
+                    {
+                        '#SOLVER1': get_electrostatics_solver(method=model_data['linear_system_method'],
+                                                              p_element_order=model_data['p_element_order']),
+                        '#FILEPATHSTEM': sif_filepath.stem,
+                        '#EXEC_RESULTOUTPUT': exec_output,
+                    }
+                    )
             f.seek(0, 0)
             f.write(begin + content + s)
 
@@ -156,6 +220,10 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
 
     return sif_filepath
 
+def replace_strings(content, replace_dict):
+    for key in replace_dict.keys():
+        content = content.replace(key, replace_dict[key])
+    return content
 
 def calculate_total_capacitance_to_ground(c_matrix):
     """Returns total capacitance to ground for each column of c_matrix."""

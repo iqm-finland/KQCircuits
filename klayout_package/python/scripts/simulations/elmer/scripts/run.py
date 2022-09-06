@@ -89,6 +89,7 @@ if args.skip_paraview:
 if args.q:
     workflow['run_paraview'] = False
     workflow['run_gmsh_gui'] = False
+    json_data['gmsh_params']['show'] = False
 
 # Set number of processes for elmer
 elmer_n_processes = workflow['elmer_n_processes']
@@ -106,6 +107,7 @@ if tool == 'cross-section':
     if workflow['run_elmergrid']:
         run_elmer_grid(msh_file, elmer_n_processes, path)
     if workflow['run_elmer']:
+        # TODO: here we should also use p-elements and the vectorized Elmer
         sif_files = produce_cross_section_sif_files(json_data, path.joinpath(name))
         for sif_file in sif_files:
             run_elmer_solver(name.joinpath(sif_file), elmer_n_processes, path)
@@ -126,6 +128,8 @@ else:
             gmsh_params['gmsh_n_threads'] = workflow['gmsh_n_threads']
         msh_filepath, model_data = export_gmsh_msh(json_data, path, **gmsh_params)
         model_data['frequency'] = json_data['frequency']
+        model_data['linear_system_method'] = json_data['linear_system_method']
+        model_data['p_element_order'] = json_data['p_element_order']
         sif_filepath = export_elmer_sif(path, msh_filepath, model_data)
     else:
         msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
