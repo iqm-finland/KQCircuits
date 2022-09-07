@@ -120,7 +120,8 @@ if workflow['run_elmergrid']:
 if workflow['run_elmer']:
     if shutil.which('ElmerSolver') is not None:
         if elmer_n_processes > 1:
-            subprocess.check_call(['mpirun', '-np', '{}'.format(elmer_n_processes), 'ElmerSolver_mpi',
+            mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
+            subprocess.check_call([mpi_command, '-np', '{}'.format(elmer_n_processes), 'ElmerSolver_mpi',
                                    'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
         else:
             subprocess.check_call(['ElmerSolver', 'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
