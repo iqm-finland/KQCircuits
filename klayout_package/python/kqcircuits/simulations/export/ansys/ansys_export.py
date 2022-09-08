@@ -17,6 +17,8 @@
 
 
 import json
+import logging
+
 from distutils.dir_util import copy_tree
 from pathlib import Path
 
@@ -214,7 +216,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  ansys_executable=r"%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
-                 ansys_project_template=None):
+                 ansys_project_template=None, skip_errors=False):
     r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -256,6 +258,12 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         use_rel_path: Determines if to use relative paths.
         simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
         ansys_project_template: path to the simulation template
+        skip_errors: Skip simulations that cause errors. Default is False.
+
+            .. warning::
+
+               **Use this carefully**, some of your simulations might not make sense physically and
+               you might end up wasting time on bad simulations.
 
     Returns:
         Path to exported bat file.
@@ -264,20 +272,31 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
     copy_ansys_scripts_to_directory(path, import_script_folder=import_script_folder)
     json_filenames = []
     for simulation in simulations:
-        json_filenames.append(export_ansys_json(simulation, path, ansys_tool=ansys_tool,
-                                                frequency_units=frequency_units, frequency=frequency,
-                                                max_delta_s=max_delta_s, percent_error=percent_error,
-                                                gap_max_element_length=gap_max_element_length,
-                                                percent_refinement=percent_refinement,
-                                                maximum_passes=maximum_passes, minimum_passes=minimum_passes,
-                                                minimum_converged_passes=minimum_converged_passes,
-                                                sweep_enabled=sweep_enabled, sweep_start=sweep_start,
-                                                sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
-                                                max_delta_f=max_delta_f, n_modes=n_modes,
-                                                substrate_loss_tangent=substrate_loss_tangent,
-                                                surface_loss_tangent=surface_loss_tangent,
-                                                simulation_flags=simulation_flags,
-                                                ansys_project_template=ansys_project_template))
+        try:
+            json_filenames.append(export_ansys_json(simulation, path, ansys_tool=ansys_tool,
+                                            frequency_units=frequency_units, frequency=frequency,
+                                            max_delta_s=max_delta_s, percent_error=percent_error,
+                                            gap_max_element_length=gap_max_element_length,
+                                            percent_refinement=percent_refinement,
+                                            maximum_passes=maximum_passes, minimum_passes=minimum_passes,
+                                            minimum_converged_passes=minimum_converged_passes,
+                                            sweep_enabled=sweep_enabled, sweep_start=sweep_start,
+                                            sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
+                                            max_delta_f=max_delta_f, n_modes=n_modes,
+                                            substrate_loss_tangent=substrate_loss_tangent,
+                                            surface_loss_tangent=surface_loss_tangent,
+                                            simulation_flags=simulation_flags,
+                                            ansys_project_template=ansys_project_template))
+        except (IndexError, Exception) as e:  # TODO gather all 'allowed' error types  # pylint: disable=broad-except
+            if skip_errors:
+                logging.warning(
+                    f'Simulation {simulation.name} skipped due to {e.args}. '\
+                    'Some of your other simulations might not make sense geometrically. '\
+                    'Disable `skip_errors` to see the full traceback.'
+                )
+            else:
+                raise e
+
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
                             ansys_executable=ansys_executable, import_script_folder=import_script_folder,
                             import_script=import_script, post_process_script=post_process_script,

@@ -18,8 +18,10 @@
 
 import os
 import stat
-from pathlib import Path
+import logging
 import json
+
+from pathlib import Path
 from distutils.dir_util import copy_tree
 
 from kqcircuits.simulations.export.util import export_layers
@@ -158,20 +160,20 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
 
         Path of exported main script file
     """
-    if 'sbatch_parameters' in workflow:
-        sbatch = True
+    sbatch = 'sbatch_parameters' in workflow
+    if sbatch:
         sbatch_parameters = workflow['sbatch_parameters']
         elmer_n_processes = sbatch_parameters['--ntasks']
-    else:
-        sbatch = False
+    python_executable = workflow.get('python_executable', 'python')
+    parallelize_workload = 'n_workers' in workflow
 
-    if 'python_executable' in workflow:
-        python_executable = workflow['python_executable']
-    else:
-        python_executable = 'python'
 
     main_script_filename = str(path.joinpath(file_prefix + '.sh'))
     with open(main_script_filename, 'w') as main_file:
+
+        if parallelize_workload and not sbatch:
+            main_file.write('{} scripts/simple_workload_manager.py {}'.format(python_executable, workflow['n_workers']))
+
         script_filenames = []
         for i, json_filename in enumerate(json_filenames):
             with open(json_filename) as f:
@@ -259,6 +261,10 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
                         .format(i + 1, len(json_filenames)))
                 main_file.write('echo "--------------------------------------------"\n')
                 main_file.write('sbatch {}\n'.format(Path(script_filename).relative_to(path)))
+            elif parallelize_workload:
+                main_file.write(' ./{}'.format(
+                    Path(script_filename).relative_to(path))
+                )
             else:
                 main_file.write('echo "Submitting the main script of simulation {}/{}"\n'
                         .format(i + 1, len(json_filenames)))
@@ -273,7 +279,7 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
 
 
 def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='simulation',
-                 script_file='scripts/run.py', gmsh_params=None, workflow=None):
+                 script_file='scripts/run.py', gmsh_params=None, workflow=None, skip_errors=False):
     """
     Exports an elmer simulation model to the simulation path.
 
@@ -286,6 +292,12 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='s
         script_file: Name of the script file to run.
         gmsh_params(dict): Parameters for Gmsh
         workflow(dict): Parameters for simulation workflow
+        skip_errors(bool): Skip simulations that cause errors. (Default: False)
+
+            .. warning::
+
+               **Use this carefully**, some of your simulations might not make sense physically and
+               you might end up wasting time on bad simulations.
 
     Returns:
 
@@ -295,6 +307,16 @@ def export_elmer(simulations: [], path: Path, tool='capacitance', file_prefix='s
     copy_elmer_scripts_to_directory(path)
     json_filenames = []
     for simulation in simulations:
-        json_filenames.append(export_elmer_json(simulation, path, tool, gmsh_params, workflow))
+        try:
+            json_filenames.append(export_elmer_json(simulation, path, tool, gmsh_params, workflow))
+        except (IndexError, Exception) as e:  # TODO gather all 'allowed' error types  # pylint: disable=broad-except
+            if skip_errors:
+                logging.warning(
+                    f'Simulation {simulation.name} skipped due to {e.args}. '\
+                    'Some of your other simulations might not make sense geometrically. '\
+                    'Disable `skip_errors` to see the full traceback.'
+                )
+            else:
+                raise e
 
     return export_elmer_script(json_filenames, path, workflow, file_prefix=file_prefix, script_file=script_file)

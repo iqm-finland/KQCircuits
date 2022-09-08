@@ -26,3 +26,4 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits && \
     python -m pip install -e klayout_package/python
     pip install gmsh
+    ln -s /usr/bin/python /usr/bin/kqclib

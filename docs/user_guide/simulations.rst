@@ -227,12 +227,14 @@ capacitance matrix), and visualizes the results using Paraview.
 
 `simulation.sh` is a shell script for running all simulations at once.
 The simulations are executed by running the `.sh` file in the output folder (here `waveguides_sim_elmer`).
+By default, the simulations are run sequentially, but simple first-level parallelization can be enabled with ``n_workers`` in the `workflow` settings of :py:func:`.export_elmer`
+Additionally, Slurm is supported for cluster computing and should be used whenever possible, as proper scheduling has many benefits for, e.g., handling the meshing and Elmer simulation separately.
 
 Please note that running the example requires the installation of
 
-* gmsh python api
+* Gmsh python API
   ``pip install gmsh``
-* Elmerfem solver
+* Elmerfem solver,
   see https://github.com/ElmerCSC/elmerfem
 * Paraview
   https://www.paraview.org/
