@@ -313,6 +313,15 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -347,14 +356,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul class="current">
@@ -546,9 +547,9 @@ the arms</p></li>
 <li><p><strong>junction_widths</strong><em> (List)</em><span> - Override the junction widths with these values.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
 <li><p><strong>junction_test_pads_type</strong><em> (String)</em><span> - Type of junction test pads</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Junction</span> <span class="pre">Test</span> <span class="pre">Pads</span> <span class="pre">Simple']</span></code></p></li>
 <li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated squids)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
+<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated element)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>loop_area</strong><em> (Double)</em><span> - Loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm^2</span></code></p></li>
-<li><p><strong>squid_type</strong><em> (String)</em><span> - SQUID Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.test_structures.junction_test_pads.junction_test_pads.png" src="../_images/kqcircuits.test_structures.junction_test_pads.junction_test_pads.png" />
 </div>

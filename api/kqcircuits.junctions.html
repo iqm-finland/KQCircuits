@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.squids &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.junctions &mdash; KQCircuits  documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.squids.manhattan" href="kqcircuits.squids.manhattan.html" />
-    <link rel="prev" title="kqcircuits.simulations.xmons_direct_coupling_sim" href="kqcircuits.simulations.xmons_direct_coupling_sim.html" /> 
+    <link rel="next" title="kqcircuits.junctions.junction" href="kqcircuits.junctions.junction.html" />
+    <link rel="prev" title="kqcircuits.elements.waveguide_coplanar_taper" href="kqcircuits.elements.waveguide_coplanar_taper.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -313,6 +313,15 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -347,14 +356,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -461,14 +462,14 @@
         
           <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
         
-      <li>kqcircuits.squids</li>
+      <li>kqcircuits.junctions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.squids.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.junctions.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -482,20 +483,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="kqcircuits-squids">
-<h1>kqcircuits.squids<a class="headerlink" href="#kqcircuits-squids" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="kqcircuits-junctions">
+<h1>kqcircuits.junctions<a class="headerlink" href="#kqcircuits-junctions" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l1"><a class="reference internal" href="kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 </ul>
 </div>
-<div class="section" id="module-kqcircuits.squids">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.squids" title="Permalink to this headline">¶</a></h2>
-<p>PCell declaration classes for SQUIDs.</p>
-<p>SQUIDs can be either code-generated or loaded from manual designs in squids.oas file. They are typically included in
+<div class="section" id="module-kqcircuits.junctions">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-kqcircuits.junctions" title="Permalink to this headline">¶</a></h2>
+<p>PCell declaration classes for junctions.</p>
+<p>Junctions can be either code-generated or loaded from manual design files. They are typically included in
 qubits or junction test structures.</p>
 </div>
 </div>
@@ -506,8 +508,8 @@ qubits or junction test structures.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.squids.manhattan.html" class="btn btn-neutral float-right" title="kqcircuits.squids.manhattan" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kqcircuits.simulations.xmons_direct_coupling_sim.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.xmons_direct_coupling_sim" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.junctions.junction.html" class="btn btn-neutral float-right" title="kqcircuits.junctions.junction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.elements.waveguide_coplanar_taper.html" class="btn btn-neutral float-left" title="kqcircuits.elements.waveguide_coplanar_taper" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

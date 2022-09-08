@@ -311,6 +311,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../api/kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -345,14 +354,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../api/kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -499,9 +500,9 @@
 <div class="viewcode-block" id="JunctionTestPadsSimple"><a class="viewcode-back" href="../../../../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html#kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.JunctionTestPadsSimple">[docs]</a><span class="k">class</span> <span class="nc">JunctionTestPadsSimple</span><span class="p">(</span><span class="n">JunctionTestPads</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Junction test structures.</span>
 
-<span class="sd">    Produces an array of junction test structures within the given area. Each structure consists of a SQUID,</span>
-<span class="sd">    which is connected to pads. There can be either 2 or 4 pads per SQUID, depending on the configuration.</span>
-<span class="sd">    Optionally, it is possible to produce only pads without any SQUIDs.</span>
+<span class="sd">    Produces an array of junction test structures within the given area. Each structure consists of a Junction,</span>
+<span class="sd">    which is connected to pads. There can be either 2 or 4 pads per Junction, depending on the configuration.</span>
+<span class="sd">    Optionally, it is possible to produce only pads without any Junctions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="JunctionTestPadsSimple.build"><a class="viewcode-back" href="../../../../api/kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.html#kqcircuits.test_structures.junction_test_pads.junction_test_pads_simple.JunctionTestPadsSimple.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

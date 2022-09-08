@@ -313,6 +313,15 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -347,14 +356,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -495,7 +496,7 @@
 </div>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.replace_squids.replace_squids">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_squids.</span></span><span class="sig-name descname"><span class="pre">replace_squids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squid_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_squids.html#replace_squids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_squids.replace_squids" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_squids.</span></span><span class="sig-name descname"><span class="pre">replace_squids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_squids.html#replace_squids"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_squids.replace_squids" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replaces squids by code generated squids with the given parameter sweep.</p>
 <p>All squids below top_cell in the cell hierarchy are removed. The number of code
 generated squids may be limited by the value of parameter_end.</p>
@@ -503,7 +504,7 @@ generated squids may be limited by the value of parameter_end.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> (<em>Cell</em>) – The cell where the squids to be replaced are</p></li>
-<li><p><strong>squid_type</strong> – class name of the code generated squid that replaces the other squids</p></li>
+<li><p><strong>junction_type</strong> – class name of the code generated squid that replaces the other squids</p></li>
 <li><p><strong>parameter_name</strong> (<em>str</em>) – Name of the parameter to be swept</p></li>
 <li><p><strong>parameter_start</strong> – Start value of the parameter</p></li>
 <li><p><strong>parameter_step</strong> – Parameter value increment step</p></li>
@@ -516,17 +517,17 @@ squids are replaced</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.replace_squids.replace_squid">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_squids.</span></span><span class="sig-name descname"><span class="pre">replace_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squid_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squid_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_squids.html#replace_squid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_squids.replace_squid" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.replace_squids.</span></span><span class="sig-name descname"><span class="pre">replace_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">squid_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/replace_squids.html#replace_squid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.replace_squids.replace_squid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Replaces a SQUID by the requested alternative in the named instance.</p>
 <p>Replaces the SQUID(s) in the sub-element(s) named <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> with other SQUID(s) of
-<code class="docutils literal notranslate"><span class="pre">squid_type</span></code>. The necessary SQUID parameters are specified in <code class="docutils literal notranslate"><span class="pre">params</span></code>. If <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> is
+<code class="docutils literal notranslate"><span class="pre">junction_type</span></code>. The necessary SQUID parameters are specified in <code class="docutils literal notranslate"><span class="pre">params</span></code>. If <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> is
 a Test Structure then <code class="docutils literal notranslate"><span class="pre">squid_index</span></code> specifies which SQUID to change.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>top_cell</strong> – The top cell with SQUIDs to be replaced</p></li>
 <li><p><strong>inst_name</strong> – Instance name of PCell containing the SQUID to be replaced</p></li>
-<li><p><strong>squid_type</strong> – Name of SQUID Class or .gds/.oas file</p></li>
+<li><p><strong>junction_type</strong> – Name of SQUID Class or .gds/.oas file</p></li>
 <li><p><strong>mirror</strong> – Mirror the SQUID along its vertical axis</p></li>
 <li><p><strong>squid_index</strong> – Index of the SQUID to be replaced within a Test Structure</p></li>
 <li><p><strong>**params</strong> – Extra parameters for the new SQUID</p></li>

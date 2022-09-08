@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.squids.manhattan &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.junctions.junction &mdash; KQCircuits  documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.squids.manhattan_single_junction" href="kqcircuits.squids.manhattan_single_junction.html" />
-    <link rel="prev" title="kqcircuits.squids" href="kqcircuits.squids.html" /> 
+    <link rel="next" title="kqcircuits.junctions.manhattan" href="kqcircuits.junctions.manhattan.html" />
+    <link rel="prev" title="kqcircuits.junctions" href="kqcircuits.junctions.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -313,6 +313,15 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.junctions.html">kqcircuits.junctions</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -347,14 +356,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2 current"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -461,16 +462,16 @@
         
           <li><a href="kqcircuits.html">API documentation</a> &raquo;</li>
         
-          <li><a href="kqcircuits.squids.html">kqcircuits.squids</a> &raquo;</li>
+          <li><a href="kqcircuits.junctions.html">kqcircuits.junctions</a> &raquo;</li>
         
-      <li>kqcircuits.squids.manhattan</li>
+      <li>kqcircuits.junctions.junction</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.squids.manhattan.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.junctions.junction.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -484,39 +485,54 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-kqcircuits.squids.manhattan">
-<span id="kqcircuits-squids-manhattan"></span><h1>kqcircuits.squids.manhattan<a class="headerlink" href="#module-kqcircuits.squids.manhattan" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-kqcircuits.junctions.junction">
+<span id="kqcircuits-junctions-junction"></span><h1>kqcircuits.junctions.junction<a class="headerlink" href="#module-kqcircuits.junctions.junction" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.squids.manhattan.Manhattan">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.squids.manhattan.</span></span><span class="sig-name descname"><span class="pre">Manhattan</span></span><a class="reference internal" href="../_modules/kqcircuits/squids/manhattan.html#Manhattan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.squids.manhattan.Manhattan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="kqcircuits.squids.squid.html#kqcircuits.squids.squid.Squid" title="kqcircuits.squids.squid.Squid"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.squids.squid.Squid</span></code></a></p>
-<p>The PCell declaration for a Manhattan style SQUID.</p>
-<p>This SQUID has two distinct sub-types automatically selected by loop-area.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.squids.manhattan.Manhattan.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/squids/manhattan.html#Manhattan.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.squids.manhattan.Manhattan.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Child classes re-define this method to build the PCell.</p>
-</dd></dl>
+<dt class="sig sig-object py" id="kqcircuits.junctions.junction.Junction">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.junctions.junction.</span></span><span class="sig-name descname"><span class="pre">Junction</span></span><a class="reference internal" href="../_modules/kqcircuits/junctions/junction.html#Junction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.junctions.junction.Junction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.elements.element.Element</span></code></a></p>
+<p>Base class for junctions without actual produce function.</p>
+<p>This class can represent both code generated and manually designed junctions. Thus, any junction
+can be created using code like</p>
+<blockquote>
+<div><p><cite>self.add_element(Junction, junction_type=”JunctionName”, **parameters)</cite>,</p>
+</div></blockquote>
+<p>where “JunctionName” is either a specific junction class name or name of a manually designed
+junction cell.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.junctions.junction.Junction.LIBRARY_NAME">
+<span class="sig-name descname"><span class="pre">LIBRARY_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Junction</span> <span class="pre">Library'</span></em><a class="headerlink" href="#kqcircuits.junctions.junction.Junction.LIBRARY_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.junctions.junction.Junction.LIBRARY_DESCRIPTION">
+<span class="sig-name descname"><span class="pre">LIBRARY_DESCRIPTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Library</span> <span class="pre">for</span> <span class="pre">junctions.'</span></em><a class="headerlink" href="#kqcircuits.junctions.junction.Junction.LIBRARY_DESCRIPTION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.junctions.junction.Junction.LIBRARY_PATH">
+<span class="sig-name descname"><span class="pre">LIBRARY_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'junctions'</span></em><a class="headerlink" href="#kqcircuits.junctions.junction.Junction.LIBRARY_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.junctions.junction.Junction.default_type">
+<span class="sig-name descname"><span class="pre">default_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Manhattan'</span></em><a class="headerlink" href="#kqcircuits.junctions.junction.Junction.default_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.squids.manhattan.Manhattan.produce_manhattan_squid">
-<span class="sig-name descname"><span class="pre">produce_manhattan_squid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_pad_layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/squids/manhattan.html#Manhattan.produce_manhattan_squid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.squids.manhattan.Manhattan.produce_manhattan_squid" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="kqcircuits.junctions.junction.Junction.create">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/junctions/junction.html#Junction.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.junctions.junction.Junction.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create cell for a junction in layout.</p>
+</dd></dl>
 
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>finger_overshoot</strong><em> (Double)</em><span> - Length of fingers after the junction.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>include_base_metal_gap</strong><em> (Boolean)</em><span> - Include base metal gap layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>shadow_margin</strong><em> (Double)</em><span> - Shadow layer margin near the the pads</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>compact_geometry</strong><em> (Boolean)</em><span> - Compact geometry for metal addition.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>separate_junctions</strong><em> (Boolean)</em><span> - Junctions to separate layer.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>offset_compensation</strong><em> (Double)</em><span> - Junction lead offset from junction width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>mirror_offset</strong><em> (Boolean)</em><span> - Move the junction lead offset to the other lead</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>finger_overlap</strong><em> (Double)</em><span> - Length of fingers inside the pads.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
+<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated element)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
-<img alt="../_images/kqcircuits.squids.manhattan.png" src="../_images/kqcircuits.squids.manhattan.png" />
+<img alt="../_images/kqcircuits.junctions.junction.png" src="../_images/kqcircuits.junctions.junction.png" />
 </div>
 
 
@@ -525,8 +541,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.squids.manhattan_single_junction.html" class="btn btn-neutral float-right" title="kqcircuits.squids.manhattan_single_junction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kqcircuits.squids.html" class="btn btn-neutral float-left" title="kqcircuits.squids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.junctions.manhattan.html" class="btn btn-neutral float-right" title="kqcircuits.junctions.manhattan" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.junctions.html" class="btn btn-neutral float-left" title="kqcircuits.junctions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -1,0 +1,10 @@
+kqcircuits.junctions.squid
+==========================
+
+.. automodule:: kqcircuits.junctions.squid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.junctions.squid
+.. image:: ../pcell_images/kqcircuits.junctions.squid.png

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.squids.sim &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.junctions.junction &mdash; KQCircuits  documentation</title>
   
 
   
@@ -311,6 +311,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -345,14 +354,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -459,7 +460,7 @@
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
-      <li>kqcircuits.squids.sim</li>
+      <li>kqcircuits.junctions.junction</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -474,9 +475,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for kqcircuits.squids.sim</h1><div class="highlight"><pre>
+  <h1>Source code for kqcircuits.junctions.junction</h1><div class="highlight"><pre>
 <span></span><span class="c1"># This code is part of KQCircuits</span>
-<span class="c1"># Copyright (C) 2021 IQM Finland Oy</span>
+<span class="c1"># Copyright (C) 2022 IQM Finland Oy</span>
 <span class="c1">#</span>
 <span class="c1"># This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public</span>
 <span class="c1"># License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later</span>
@@ -495,55 +496,39 @@
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.symmetric_polygons</span> <span class="kn">import</span> <span class="n">polygon_with_vsym</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_junction_type</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.junctions</span> <span class="kn">import</span> <span class="n">junction_type_choices</span>
 
 
-<div class="viewcode-block" id="Sim"><a class="viewcode-back" href="../../../api/kqcircuits.squids.sim.html#kqcircuits.squids.sim.Sim">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">Sim</span><span class="p">(</span><span class="n">Squid</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The PCell declaration for a simulation type SQUID.</span>
+<div class="viewcode-block" id="Junction"><a class="viewcode-back" href="../../../api/kqcircuits.junctions.junction.html#kqcircuits.junctions.junction.Junction">[docs]</a><span class="nd">@logged</span>
+<span class="k">class</span> <span class="nc">Junction</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for junctions without actual produce function.</span>
 
-<span class="sd">    Origin at the center of junction layer bottom edge.</span>
+<span class="sd">    This class can represent both code generated and manually designed junctions. Thus, any junction</span>
+<span class="sd">    can be created using code like</span>
 
+<span class="sd">        `self.add_element(Junction, junction_type=&quot;JunctionName&quot;, **parameters)`,</span>
+
+<span class="sd">    where &quot;JunctionName&quot; is either a specific junction class name or name of a manually designed</span>
+<span class="sd">    junction cell.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Sim.build"><a class="viewcode-back" href="../../../api/kqcircuits.squids.sim.html#kqcircuits.squids.sim.Sim.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">LIBRARY_NAME</span> <span class="o">=</span> <span class="s2">&quot;Junction Library&quot;</span>
+    <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Library for junctions.&quot;</span>
+    <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;junctions&quot;</span>
 
-        <span class="n">trans</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_metal_shapes</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
-        <span class="c1"># refpoints</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;origin_squid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;port_squid_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;port_squid_b&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;port_common&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">33</span><span class="p">)</span></div>
+    <span class="n">default_type</span> <span class="o">=</span> <span class="n">default_junction_type</span>
 
+    <span class="n">junction_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Junction Type&quot;</span><span class="p">,</span> <span class="n">default_junction_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">junction_type_choices</span><span class="p">)</span>
+    <span class="n">junction_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Junction width for code generated element&quot;</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">,</span>
+                           <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;Junction width (only used for code generated element)&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_produce_ground_metal_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces hardcoded shapes in metal gap and metal addition layers.&quot;&quot;&quot;</span>
-        <span class="c1"># metal additions bottom</span>
-        <span class="n">bottom_pts</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bottom_pts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span>
-        <span class="c1"># metal additions top</span>
-        <span class="n">top_pts</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">33</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">top_pts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span><span class="o">*</span><span class="n">shape</span><span class="p">)</span>
-        <span class="c1"># add ground grid avoidance</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
-        <span class="n">protection</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="o">-</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">h</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">trans</span><span class="o">*</span><span class="n">protection</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Junction.create"><a class="viewcode-back" href="../../../api/kqcircuits.junctions.junction.html#kqcircuits.junctions.junction.Junction.create">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create cell for a junction in layout.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create_subtype</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>

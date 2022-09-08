@@ -311,6 +311,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -345,14 +354,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -494,13 +495,13 @@
 
 
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">copy_tree</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">ANSYS_SCRIPTS_PATH</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">ANSYS_SCRIPT_PATHS</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
 
@@ -513,12 +514,13 @@
 <span class="sd">        import_script_folder: Name of the folder in its new location.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">copytree</span><span class="p">(</span><span class="n">ANSYS_SCRIPTS_PATH</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">))</span></div>
+        <span class="k">for</span> <span class="n">script_path</span> <span class="ow">in</span> <span class="n">ANSYS_SCRIPT_PATHS</span><span class="p">:</span>
+            <span class="n">copy_tree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">script_path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)),</span> <span class="n">update</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span>
                       <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                      <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
                       <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                       <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -534,6 +536,8 @@
 <span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
 <span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
 <span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
+<span class="sd">        gap_max_element_length: Largest mesh length allowed in the gaps given in &quot;um&quot;</span>
+<span class="sd">            (if None is given, then the mesh size is not restricted in the gap).</span>
 <span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
 <span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
 <span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
@@ -560,11 +564,13 @@
     <span class="c1"># select layers</span>
     <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;b_simulation_signal&quot;</span><span class="p">,</span>
               <span class="s2">&quot;b_simulation_ground&quot;</span><span class="p">,</span>
+              <span class="s2">&quot;b_simulation_gap&quot;</span><span class="p">,</span>
               <span class="s2">&quot;b_simulation_airbridge_flyover&quot;</span><span class="p">,</span>
               <span class="s2">&quot;b_simulation_airbridge_pads&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
         <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;t_simulation_signal&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;t_simulation_ground&quot;</span><span class="p">,</span>
+                   <span class="s2">&quot;t_simulation_gap&quot;</span><span class="p">,</span>
                    <span class="s2">&quot;b_simulation_indium_bump&quot;</span><span class="p">]</span>
 
     <span class="c1"># collect data for .json file</span>
@@ -578,6 +584,7 @@
             <span class="s1">&#39;max_delta_s&#39;</span><span class="p">:</span> <span class="n">max_delta_s</span><span class="p">,</span>  <span class="c1"># stopping criterion for HFSS</span>
             <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>  <span class="c1"># stopping criterion for Q3D</span>
             <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="n">percent_refinement</span><span class="p">,</span>
+            <span class="s1">&#39;gap_max_element_length&#39;</span><span class="p">:</span> <span class="n">gap_max_element_length</span><span class="p">,</span>
             <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
             <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
             <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="n">minimum_converged_passes</span><span class="p">,</span>
@@ -615,7 +622,8 @@
 <div class="viewcode-block" id="export_ansys_bat"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                      <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                      <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span>
-                     <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                     <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span> <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a batch file for running one or more already exported simulations.</span>
 
@@ -628,6 +636,12 @@
 <span class="sd">        import_script_folder: Path to the Ansys-scripts folder.</span>
 <span class="sd">        import_script: Name of import script file.</span>
 <span class="sd">        post_process_script: Name of post processing script file.</span>
+<span class="sd">        intermediate_processing_command: Command for intermediate steps between simulations.</span>
+<span class="sd">            Default is None, which doesn&#39;t enable any processing. An example argument is ``python scripts/script.py``,</span>
+<span class="sd">            which runs in the `.bat` as::</span>
+
+<span class="sd">                python scripts/script.py json_filename.json</span>
+
 <span class="sd">        use_rel_path: Determines if to use relative paths.</span>
 
 <span class="sd">    Returns:</span>
@@ -652,6 +666,13 @@
                 <span class="n">run_cmd</span><span class="p">,</span>
                 <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">import_script</span><span class="p">)))</span>
             <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="c1"># Possible processing between simulations</span>
+            <span class="k">if</span> <span class="n">intermediate_processing_command</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">intermediate_processing_command</span><span class="p">,</span>
+                    <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">json_filename</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
 
         <span class="c1"># Post-process command</span>
         <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; -</span><span class="si">{}</span><span class="s1"> &quot;</span><span class="si">{}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -665,12 +686,13 @@
 
 <div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
                  <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                 <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
                  <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                  <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
-                 <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
 
@@ -685,6 +707,8 @@
 <span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
 <span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
 <span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
+<span class="sd">        gap_max_element_length: Largest mesh length allowed in the gaps given in &quot;um&quot;</span>
+<span class="sd">            (if None is given, then the mesh size is not restricted in the gap).</span>
 <span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
 <span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
 <span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
@@ -701,6 +725,12 @@
 <span class="sd">        ansys_executable: Path to the Ansys Electronics Desktop executable.</span>
 <span class="sd">        import_script: Name of import script file.</span>
 <span class="sd">        post_process_script: Name of post processing script file.</span>
+<span class="sd">        intermediate_processing_command: Command for intermediate steps between simulations.</span>
+<span class="sd">            Default is None, which doesn&#39;t enable any processing. An example argument is ``python scripts/script.py``,</span>
+<span class="sd">            which runs in the `.bat` as::</span>
+
+<span class="sd">                python scripts/script.py json_filename.json</span>
+
 <span class="sd">        use_rel_path: Determines if to use relative paths.</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
@@ -715,6 +745,7 @@
         <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="n">ansys_tool</span><span class="p">,</span>
                                                 <span class="n">frequency_units</span><span class="o">=</span><span class="n">frequency_units</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
                                                 <span class="n">max_delta_s</span><span class="o">=</span><span class="n">max_delta_s</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
+                                                <span class="n">gap_max_element_length</span><span class="o">=</span><span class="n">gap_max_element_length</span><span class="p">,</span>
                                                 <span class="n">percent_refinement</span><span class="o">=</span><span class="n">percent_refinement</span><span class="p">,</span>
                                                 <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
                                                 <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
@@ -728,6 +759,7 @@
     <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
                             <span class="n">ansys_executable</span><span class="o">=</span><span class="n">ansys_executable</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">,</span>
                             <span class="n">import_script</span><span class="o">=</span><span class="n">import_script</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="n">post_process_script</span><span class="p">,</span>
+                            <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="n">intermediate_processing_command</span><span class="p">,</span>
                             <span class="n">use_rel_path</span><span class="o">=</span><span class="n">use_rel_path</span><span class="p">)</span></div>
 </pre></div>
 

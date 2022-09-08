@@ -119,7 +119,7 @@ Libraries
 ^^^^^^^^^
 
 The PCells in KQCircuits are divided into libraries such as ``Element
-Library``, ``Chip Library`` or ``SQUID Library``. Each library contains a base
+Library``, ``Chip Library`` or ``Junction Library``. Each library contains a base
 class for all other classes in the library, for example all classes in the
 ``Chip Library`` inherit from the ``Chip`` base class. Each base class contains
 ``LIBRARY_NAME`` and ``LIBRARY_DESCRIPTION`` constants, so that these are
@@ -129,9 +129,9 @@ available for all derived classes.
     :caption: Library Dependency Diagram
     :align: center
 
-    "Element Library" -> {"SQUID Library", "Qubit Library", "Chip Library", "TestStructure Library"}
-    "SQUID Library" -> "TestStructure Library" -> "Chip Library"
-    "SQUID Library" -> "Qubit Library" -> "Chip Library"
+    "Element Library" -> {"Junction Library", "Qubit Library", "Chip Library", "TestStructure Library"}
+    "Junction Library" -> "TestStructure Library" -> "Chip Library"
+    "Junction Library" -> "Qubit Library" -> "Chip Library"
 
 Libraries have a strict dependency order defined in ``kqc_library_names`` in
 :git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`. KLayout loads them in this order. Classes *can not* use other

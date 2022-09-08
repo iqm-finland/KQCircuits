@@ -1,0 +1,10 @@
+kqcircuits.junctions.manhattan\_single\_junction
+================================================
+
+.. automodule:: kqcircuits.junctions.manhattan_single_junction
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.junctions.manhattan_single_junction
+.. image:: ../pcell_images/kqcircuits.junctions.manhattan_single_junction.png

@@ -313,6 +313,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -347,14 +356,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -492,13 +493,13 @@
 There exist also more specific base classes such as <code class="docutils literal notranslate"><span class="pre">Chip</span></code>, <code class="docutils literal notranslate"><span class="pre">Qubit</span></code> or
 <code class="docutils literal notranslate"><span class="pre">TestStructure</span></code>.</p>
 <div class="figure align-center" id="id1">
-<div class="graphviz"><object data="../_images/graphviz-0f99e3bbd19579b3a1071036c3f06299fe7883c9.svg" type="image/svg+xml" class="graphviz">
+<div class="graphviz"><object data="../_images/graphviz-72356c3ad59fdfa56456501f725ef7f22e8789f5.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph {
     rankdir=&quot;LR&quot;
 
     Element [href=&quot;../api/kqcircuits.elements.element.html&quot;, target=&quot;_top&quot;]
     Qubit [href=&quot;../api/kqcircuits.qubits.qubit.html&quot;, target=&quot;_top&quot;]
-    Squid [href=&quot;../api/kqcircuits.squids.squid.html&quot;, target=&quot;_top&quot;]
+    Junction [href=&quot;../api/kqcircuits.junctions.junction.html&quot;, target=&quot;_top&quot;]
     Airbridge [href=&quot;../api/kqcircuits.elements.airbridges.airbridge.html&quot;, target=&quot;_top&quot;]
     TestStructure [href=&quot;../api/kqcircuits.test_structures.test_structure.html&quot;, target=&quot;_top&quot;]
     FlipChipConnector [href=&quot;../api/kqcircuits.elements.flip_chip_connectors.flip_chip_connector.html&quot;, target=&quot;_top&quot;]
@@ -508,7 +509,7 @@ There exist also more specific base classes such as <code class="docutils litera
 
     ## Base classes
     Element -&gt; Qubit
-    Element -&gt; Squid
+    Element -&gt; Junction -&gt; Squid
     Element -&gt; Airbridge
     Element -&gt; TestStructure
     Element -&gt; FlipChipConnector
@@ -530,7 +531,7 @@ There exist also more specific base classes such as <code class="docutils litera
     Demo [href=&quot;../api/kqcircuits.chips.demo.html&quot;, target=&quot;_top&quot;]
     DemoTwoface [href=&quot;../api/kqcircuits.chips.demo_twoface.html&quot;, target=&quot;_top&quot;]
     Swissmon [href=&quot;../api/kqcircuits.qubits.swissmon.html&quot;, target=&quot;_top&quot;]
-    Manhattan [href=&quot;../api/kqcircuits.squids.manhattan.html&quot;, target=&quot;_top&quot;]
+    Manhattan [href=&quot;../api/kqcircuits.junctions.manhattan.html&quot;, target=&quot;_top&quot;]
     AirbridgeRectangular [href=&quot;../api/kqcircuits.elements.airbridges.airbridge_rectangular.html&quot;, target=&quot;_top&quot;]
     FluxlineStraight [href=&quot;../api/kqcircuits.elements.fluxlines.fluxline_straight.html&quot;, target=&quot;_top&quot;]
     MarkerStandard [href=&quot;../api/kqcircuits.elements.markers.marker_standard.html&quot;, target=&quot;_top&quot;]
@@ -642,17 +643,17 @@ the other way around.</p>
 <div class="section" id="libraries">
 <h2>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h2>
 <p>The PCells in KQCircuits are divided into libraries such as <code class="docutils literal notranslate"><span class="pre">Element</span>
-<span class="pre">Library</span></code>, <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Library</span></code> or <code class="docutils literal notranslate"><span class="pre">SQUID</span> <span class="pre">Library</span></code>. Each library contains a base
+<span class="pre">Library</span></code>, <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Library</span></code> or <code class="docutils literal notranslate"><span class="pre">Junction</span> <span class="pre">Library</span></code>. Each library contains a base
 class for all other classes in the library, for example all classes in the
 <code class="docutils literal notranslate"><span class="pre">Chip</span> <span class="pre">Library</span></code> inherit from the <code class="docutils literal notranslate"><span class="pre">Chip</span></code> base class. Each base class contains
 <code class="docutils literal notranslate"><span class="pre">LIBRARY_NAME</span></code> and <code class="docutils literal notranslate"><span class="pre">LIBRARY_DESCRIPTION</span></code> constants, so that these are
 available for all derived classes.</p>
 <div class="figure align-center" id="id2">
-<div class="graphviz"><object data="../_images/graphviz-eafae24b3004a0deb055750c2e18d0c3591823b1.svg" type="image/svg+xml" class="graphviz">
+<div class="graphviz"><object data="../_images/graphviz-bb3c3a8dc6fc468acbf05261516b1f195457190b.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">digraph Libraries {
-&quot;Element Library&quot; -&gt; {&quot;SQUID Library&quot;, &quot;Qubit Library&quot;, &quot;Chip Library&quot;, &quot;TestStructure Library&quot;}
-&quot;SQUID Library&quot; -&gt; &quot;TestStructure Library&quot; -&gt; &quot;Chip Library&quot;
-&quot;SQUID Library&quot; -&gt; &quot;Qubit Library&quot; -&gt; &quot;Chip Library&quot;
+&quot;Element Library&quot; -&gt; {&quot;Junction Library&quot;, &quot;Qubit Library&quot;, &quot;Chip Library&quot;, &quot;TestStructure Library&quot;}
+&quot;Junction Library&quot; -&gt; &quot;TestStructure Library&quot; -&gt; &quot;Chip Library&quot;
+&quot;Junction Library&quot; -&gt; &quot;Qubit Library&quot; -&gt; &quot;Chip Library&quot;
 }</p></object></div>
 <p class="caption"><span class="caption-text">Library Dependency Diagram</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </div>

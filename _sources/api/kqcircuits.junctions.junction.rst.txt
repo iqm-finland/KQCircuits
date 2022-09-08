@@ -1,0 +1,10 @@
+kqcircuits.junctions.junction
+=============================
+
+.. automodule:: kqcircuits.junctions.junction
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.junctions.junction
+.. image:: ../pcell_images/kqcircuits.junctions.junction.png

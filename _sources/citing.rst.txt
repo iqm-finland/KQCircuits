@@ -22,7 +22,7 @@ the following ``.bib`` file can be used::
                      Ockeloen-Korppi, Caspar and
                      Räbinä, Jukka and
                      Savola, Niko},
-     title        = {KQCircuits},
+     title        = {{KQCircuits}},
      month        = jun,
      year         = 2021,
      publisher    = {Zenodo},

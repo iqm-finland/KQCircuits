@@ -311,6 +311,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -345,14 +354,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -505,13 +506,13 @@
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.squids</span> <span class="kn">import</span> <span class="n">squid_type_choices</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.squids.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.junctions</span> <span class="kn">import</span> <span class="n">junction_type_choices</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.junctions.junction</span> <span class="kn">import</span> <span class="n">Junction</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 
 
 <div class="viewcode-block" id="replace_squids"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squids">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Replaces squids by code generated squids with the given parameter sweep.</span>
 
 <span class="sd">    All squids below top_cell in the cell hierarchy are removed. The number of code</span>
@@ -519,7 +520,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        cell (Cell): The cell where the squids to be replaced are</span>
-<span class="sd">        squid_type: class name of the code generated squid that replaces the other squids</span>
+<span class="sd">        junction_type: class name of the code generated squid that replaces the other squids</span>
 <span class="sd">        parameter_name (str): Name of the parameter to be swept</span>
 <span class="sd">        parameter_start: Start value of the parameter</span>
 <span class="sd">        parameter_step: Parameter value increment step</span>
@@ -529,7 +530,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
     <span class="n">parameter_value</span> <span class="o">=</span> <span class="n">parameter_start</span>
-    <span class="n">squid_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">choice</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">choice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">squid_type_choices</span><span class="p">]</span>
+    <span class="n">junction_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">choice</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">choice</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">choice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">choice</span> <span class="ow">in</span> <span class="n">junction_type_choices</span><span class="p">]</span>
 
     <span class="n">old_squids</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of tuples (squid instance, squid dtrans with respect to cell, old name)</span>
 
@@ -540,13 +541,13 @@
         <span class="n">top_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">subcell_inst</span> <span class="ow">in</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
             <span class="n">subcell_name</span> <span class="o">=</span> <span class="n">subcell_inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span>
-            <span class="k">if</span> <span class="n">subcell_name</span> <span class="ow">in</span> <span class="n">squid_types</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">subcell_name</span> <span class="ow">in</span> <span class="n">junction_types</span><span class="p">:</span>
                 <span class="n">old_squids</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">subcell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="o">*</span><span class="n">subcell_inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">,</span> <span class="n">subcell_name</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">recursive_replace_squids</span><span class="p">(</span><span class="n">subcell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="o">*</span><span class="n">subcell_inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">squid_types</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">junction_types</span><span class="p">:</span>
             <span class="n">old_squids</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">inst</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
         <span class="n">recursive_replace_squids</span><span class="p">(</span><span class="n">inst</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">)</span>
 
@@ -557,27 +558,27 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">parameter_end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">parameter_value</span> <span class="o">&lt;=</span> <span class="n">parameter_end</span><span class="p">):</span>
             <span class="c1"># create new squid at old squid&#39;s position</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="n">parameter_name</span><span class="p">:</span> <span class="n">parameter_value</span><span class="p">}</span>
-            <span class="n">squid_cell</span> <span class="o">=</span> <span class="n">Squid</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">squid_type</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span>
+            <span class="n">squid_cell</span> <span class="o">=</span> <span class="n">Junction</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="n">junction_type</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span>
                                       <span class="o">**</span><span class="n">parameters</span><span class="p">)</span>
             <span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">squid_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">dtrans</span><span class="p">))</span>
             <span class="n">replace_squids</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Replaced squid </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with dtrans=</span><span class="si">{}</span><span class="s2"> by a squid </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2"> with </span><span class="si">{}</span><span class="s2">=</span><span class="si">{}</span><span class="s2">.&quot;</span>
-                                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_value</span><span class="p">))</span>
+                                     <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_value</span><span class="p">))</span>
             <span class="n">parameter_value</span> <span class="o">+=</span> <span class="n">parameter_step</span>
         <span class="c1"># delete old squid</span>
         <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="replace_squid"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squid">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">squid_type</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squid_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squid_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Replaces a SQUID by the requested alternative in the named instance.</span>
 
 <span class="sd">    Replaces the SQUID(s) in the sub-element(s) named ``inst_name`` with other SQUID(s) of</span>
-<span class="sd">    ``squid_type``. The necessary SQUID parameters are specified in ``params``. If ``inst_name`` is</span>
+<span class="sd">    ``junction_type``. The necessary SQUID parameters are specified in ``params``. If ``inst_name`` is</span>
 <span class="sd">    a Test Structure then ``squid_index`` specifies which SQUID to change.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        top_cell: The top cell with SQUIDs to be replaced</span>
 <span class="sd">        inst_name: Instance name of PCell containing the SQUID to be replaced</span>
-<span class="sd">        squid_type: Name of SQUID Class or .gds/.oas file</span>
+<span class="sd">        junction_type: Name of SQUID Class or .gds/.oas file</span>
 <span class="sd">        mirror: Mirror the SQUID along its vertical axis</span>
 <span class="sd">        squid_index: Index of the SQUID to be replaced within a Test Structure</span>
 <span class="sd">        **params: Extra parameters for the new SQUID</span>
@@ -600,15 +601,15 @@
 
     <span class="n">layout</span> <span class="o">=</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
     <span class="n">file_cell</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="k">if</span> <span class="n">squid_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.oas&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">squid_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gds&quot;</span><span class="p">):</span>  <span class="c1"># try to load from file</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">squid_type</span><span class="p">):</span>
-            <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No file found at &#39;</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">squid_type</span><span class="p">)</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">junction_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.oas&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">junction_type</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.gds&quot;</span><span class="p">):</span>  <span class="c1"># try to load from file</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">junction_type</span><span class="p">):</span>
+            <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No file found at &#39;</span><span class="si">{</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">junction_type</span><span class="p">)</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
         <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">squid_type</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">junction_type</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
         <span class="n">file_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">file_cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SQUID Library.</span><span class="si">{</span><span class="n">file_cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">file_cell</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Junction Library.</span><span class="si">{</span><span class="n">file_cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">for</span> <span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst</span><span class="p">)</span> <span class="ow">in</span> <span class="n">cells</span><span class="p">:</span>
         <span class="n">orig_trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
@@ -621,7 +622,7 @@
             <span class="n">chip</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">dup</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">orig_trans</span><span class="p">),</span> <span class="n">dup</span><span class="o">.</span><span class="n">prop_id</span><span class="p">)</span>
             <span class="n">ccell</span> <span class="o">=</span> <span class="n">dup</span>
 
-        <span class="n">squids</span> <span class="o">=</span> <span class="p">[</span><span class="n">sq</span> <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="n">ccell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">()</span> <span class="k">if</span> <span class="n">sq</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">qname</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;SQUID Library&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">squids</span> <span class="o">=</span> <span class="p">[</span><span class="n">sq</span> <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="n">ccell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">()</span> <span class="k">if</span> <span class="n">sq</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">qname</span><span class="p">()</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Junction Library&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">squids</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">q</span><span class="p">:</span> <span class="n">q</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;squid_index&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">squids</span> <span class="ow">or</span> <span class="n">squid_index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">squids</span><span class="p">)</span> <span class="ow">or</span> <span class="n">squid_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No SQUID found in &#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s2">&#39; or squid_index=</span><span class="si">{</span><span class="n">squid_index</span><span class="si">}</span><span class="s2"> is out of range!&quot;</span><span class="p">)</span>
@@ -631,12 +632,12 @@
             <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;face_ids&quot;</span><span class="p">:</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;face_ids&quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">params</span><span class="p">}</span>
         <span class="n">trans</span> <span class="o">=</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">dcplx_trans</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="o">.</span><span class="n">M90</span> <span class="k">if</span> <span class="n">mirror</span> <span class="k">else</span> <span class="n">old_squid</span><span class="o">.</span><span class="n">dcplx_trans</span>
         <span class="n">squid_pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">orig_trans</span> <span class="o">*</span> <span class="n">trans</span><span class="p">)</span><span class="o">.</span><span class="n">disp</span>
-        <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replaced SQUID of &#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s2">&#39; with </span><span class="si">{</span><span class="n">squid_type</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">squid_pos</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">replace_squid</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Replaced SQUID of &#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s2">&#39; with </span><span class="si">{</span><span class="n">junction_type</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">squid_pos</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="n">old_squid</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">file_cell</span><span class="p">:</span>
             <span class="n">new_squid</span> <span class="o">=</span> <span class="n">ccell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">file_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">trans</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">new_squid</span> <span class="o">=</span> <span class="n">Squid</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">squid_type</span><span class="o">=</span><span class="n">squid_type</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">new_squid</span> <span class="o">=</span> <span class="n">Junction</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="n">junction_type</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
             <span class="n">new_squid</span> <span class="o">=</span> <span class="n">ccell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">new_squid</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">trans</span><span class="p">))</span>
         <span class="n">new_squid</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;squid_index&quot;</span><span class="p">,</span> <span class="n">squid_index</span><span class="p">)</span></div>
 

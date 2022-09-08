@@ -5,27 +5,27 @@
  -->
 <!-- Title: Libraries Pages: 1 -->
 <svg width="412pt" height="260pt"
- viewBox="0.00 0.00 412.49 260.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ viewBox="0.00 0.00 412.42 260.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 256)">
 <title>Libraries</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-256 408.49,-256 408.49,4 -4,4"/>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-256 408.42,-256 408.42,4 -4,4"/>
 <!-- Element Library -->
 <g id="node1" class="node">
 <title>Element Library</title>
-<ellipse fill="none" stroke="black" cx="235.44" cy="-234" rx="87.18" ry="18"/>
-<text text-anchor="middle" x="235.44" y="-230.3" font-family="Times,serif" font-size="14.00">Element Library</text>
+<ellipse fill="none" stroke="black" cx="244.44" cy="-234" rx="87.18" ry="18"/>
+<text text-anchor="middle" x="244.44" y="-230.3" font-family="Times,serif" font-size="14.00">Element Library</text>
 </g>
-<!-- SQUID Library -->
+<!-- Junction Library -->
 <g id="node2" class="node">
-<title>SQUID Library</title>
-<ellipse fill="none" stroke="black" cx="181.44" cy="-162" rx="79.89" ry="18"/>
-<text text-anchor="middle" x="181.44" y="-158.3" font-family="Times,serif" font-size="14.00">SQUID Library</text>
+<title>Junction Library</title>
+<ellipse fill="none" stroke="black" cx="187.44" cy="-162" rx="85.59" ry="18"/>
+<text text-anchor="middle" x="187.44" y="-158.3" font-family="Times,serif" font-size="14.00">Junction Library</text>
 </g>
-<!-- Element Library&#45;&gt;SQUID Library -->
+<!-- Element Library&#45;&gt;Junction Library -->
 <g id="edge1" class="edge">
-<title>Element Library&#45;&gt;SQUID Library</title>
-<path fill="none" stroke="black" d="M222.37,-216.05C215.87,-207.63 207.89,-197.28 200.7,-187.97"/>
-<polygon fill="black" stroke="black" points="203.27,-185.57 194.39,-179.79 197.73,-189.84 203.27,-185.57"/>
+<title>Element Library&#45;&gt;Junction Library</title>
+<path fill="none" stroke="black" d="M230.65,-216.05C223.71,-207.54 215.18,-197.07 207.54,-187.68"/>
+<polygon fill="black" stroke="black" points="210.14,-185.33 201.11,-179.79 204.71,-189.75 210.14,-185.33"/>
 </g>
 <!-- Qubit Library -->
 <g id="node3" class="node">
@@ -36,8 +36,8 @@
 <!-- Element Library&#45;&gt;Qubit Library -->
 <g id="edge2" class="edge">
 <title>Element Library&#45;&gt;Qubit Library</title>
-<path fill="none" stroke="black" d="M167.92,-222.54C140.84,-215.03 111.58,-202.13 92.44,-180 77.79,-163.06 73.54,-137.59 72.66,-118.24"/>
-<polygon fill="black" stroke="black" points="76.16,-118.14 72.48,-108.2 69.16,-118.27 76.16,-118.14"/>
+<path fill="none" stroke="black" d="M173.14,-223.64C144.27,-216.32 112.96,-203.26 92.44,-180 77.63,-163.2 73.39,-137.72 72.57,-118.32"/>
+<polygon fill="black" stroke="black" points="76.07,-118.21 72.41,-108.26 69.07,-118.32 76.07,-118.21"/>
 </g>
 <!-- Chip Library -->
 <g id="node4" class="node">
@@ -48,7 +48,7 @@
 <!-- Element Library&#45;&gt;Chip Library -->
 <g id="edge3" class="edge">
 <title>Element Library&#45;&gt;Chip Library</title>
-<path fill="none" stroke="black" d="M271.29,-217.55C310.76,-198.33 372.1,-161.41 398.44,-108 405.52,-93.65 407.2,-85.39 398.44,-72 385.65,-52.44 363.87,-40.05 342.28,-32.23"/>
+<path fill="none" stroke="black" d="M277.71,-217.36C315.02,-197.74 373.57,-160.23 398.44,-108 405.32,-93.55 407.2,-85.39 398.44,-72 385.65,-52.44 363.87,-40.05 342.28,-32.23"/>
 <polygon fill="black" stroke="black" points="343.33,-28.89 332.74,-29.04 341.12,-35.53 343.33,-28.89"/>
 </g>
 <!-- TestStructure Library -->
@@ -60,20 +60,20 @@
 <!-- Element Library&#45;&gt;TestStructure Library -->
 <g id="edge4" class="edge">
 <title>Element Library&#45;&gt;TestStructure Library</title>
-<path fill="none" stroke="black" d="M249.86,-216.04C257.38,-206.18 265.93,-193.14 270.44,-180 277.28,-160.12 278.83,-136.33 278.79,-118.34"/>
-<polygon fill="black" stroke="black" points="282.29,-118.17 278.59,-108.24 275.29,-118.31 282.29,-118.17"/>
+<path fill="none" stroke="black" d="M260.91,-215.92C269.1,-206.22 278.15,-193.37 282.44,-180 288.9,-159.92 287.06,-136.01 283.94,-118.02"/>
+<polygon fill="black" stroke="black" points="287.37,-117.33 282,-108.19 280.5,-118.68 287.37,-117.33"/>
 </g>
-<!-- SQUID Library&#45;&gt;Qubit Library -->
+<!-- Junction Library&#45;&gt;Qubit Library -->
 <g id="edge7" class="edge">
-<title>SQUID Library&#45;&gt;Qubit Library</title>
-<path fill="none" stroke="black" d="M156.39,-144.76C141.67,-135.22 122.88,-123.04 106.9,-112.68"/>
-<polygon fill="black" stroke="black" points="108.65,-109.65 98.36,-107.15 104.84,-115.52 108.65,-109.65"/>
+<title>Junction Library&#45;&gt;Qubit Library</title>
+<path fill="none" stroke="black" d="M161,-144.76C145.21,-135.07 124.97,-122.64 107.93,-112.17"/>
+<polygon fill="black" stroke="black" points="109.7,-109.16 99.35,-106.91 106.04,-115.12 109.7,-109.16"/>
 </g>
-<!-- SQUID Library&#45;&gt;TestStructure Library -->
+<!-- Junction Library&#45;&gt;TestStructure Library -->
 <g id="edge5" class="edge">
-<title>SQUID Library&#45;&gt;TestStructure Library</title>
-<path fill="none" stroke="black" d="M204.19,-144.41C216.78,-135.24 232.59,-123.7 246.3,-113.71"/>
-<polygon fill="black" stroke="black" points="248.51,-116.43 254.52,-107.71 244.38,-110.78 248.51,-116.43"/>
+<title>Junction Library&#45;&gt;TestStructure Library</title>
+<path fill="none" stroke="black" d="M208.77,-144.41C220.46,-135.32 235.12,-123.92 247.89,-113.99"/>
+<polygon fill="black" stroke="black" points="250.21,-116.61 255.96,-107.71 245.91,-111.09 250.21,-116.61"/>
 </g>
 <!-- Qubit Library&#45;&gt;Chip Library -->
 <g id="edge8" class="edge">

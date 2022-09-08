@@ -313,6 +313,15 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -347,14 +356,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -545,11 +546,11 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_junction_tests">
-<span class="sig-name descname"><span class="pre">produce_junction_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">squid_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Manhattan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">produce_junction_tests</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">junction_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Manhattan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_junction_tests"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_junction_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces junction test pads in the chip.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>squid_type</strong> – A string defining the type of SQUIDs used in the test pads.</p>
+<dd class="field-odd"><p><strong>junction_type</strong> – A string defining the type of junction used in the test pads.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -760,7 +761,7 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>frames_marker_dist</strong><em> (List)</em><span> - Marker distance from edge for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>frames_diagonal_squares</strong><em> (List)</em><span> - Number of diagonal marker squares for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">2]</span></code></p></li>
 <li><p><strong>frames_mirrored</strong><em> (List)</em><span> - List of booleans specifying if the frame is mirrored for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[False,</span> <span class="pre">True]</span></code></p></li>
-<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f50e33f58b0&gt;]</span></code></p></li>
+<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f7e9039d5e0&gt;]</span></code></p></li>
 <li><p><strong>dice_width</strong><em> (Double)</em><span> - Dicing width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer for dicing edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M99</span></code></p></li>

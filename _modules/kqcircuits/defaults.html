@@ -311,6 +311,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.html#module-kqcircuits.elements">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.junctions.html">kqcircuits.junctions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -345,14 +354,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.xmons_direct_coupling_sim.html">kqcircuits.simulations.xmons_direct_coupling_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.html#module-kqcircuits.simulations">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.squids.html">kqcircuits.squids</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.squids.manhattan.html">kqcircuits.squids.manhattan</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.squids.manhattan_single_junction.html">kqcircuits.squids.manhattan_single_junction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.squids.sim.html">kqcircuits.squids.sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.squids.squid.html">kqcircuits.squids.squid</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.squids.html#module-kqcircuits.squids">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.test_structures.html">kqcircuits.test_structures</a><ul>
@@ -566,8 +567,8 @@
 
 <span class="n">TMP_PATH</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">SCRIPTS_PATH</span> <span class="o">=</span> <span class="n">PY_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;scripts&quot;</span><span class="p">)</span>
-<span class="n">ANSYS_SCRIPTS_PATH</span> <span class="o">=</span> <span class="n">SCRIPTS_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;simulations&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;ansys&quot;</span><span class="p">)</span>
-<span class="n">ELMER_SCRIPTS_PATH</span> <span class="o">=</span> <span class="n">SCRIPTS_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;simulations&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;elmer&quot;</span><span class="p">)</span>
+<span class="n">ANSYS_SCRIPT_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="n">SCRIPTS_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;simulations&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;ansys&quot;</span><span class="p">)]</span>
+<span class="n">ELMER_SCRIPT_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="n">SCRIPTS_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;simulations&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;elmer&quot;</span><span class="p">)]</span>
 
 <span class="c1"># Given to subprocess.Popen calls, hides terminals on Windows</span>
 <span class="n">STARTUPINFO</span> <span class="o">=</span> <span class="kc">None</span>
@@ -600,7 +601,7 @@
     <span class="s2">&quot;base_metal_gap_for_EBL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Features of layer 41 that are needed for EBL</span>
     <span class="s2">&quot;waveguide_path&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Waveguide&#39;s metal part, used with waveguide length and DRC calculations</span>
 
-    <span class="c1"># SQUID layer</span>
+    <span class="c1"># Junction layer</span>
     <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Josephson junction</span>
     <span class="s2">&quot;SIS_shadow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Ghost layer required for Josephson junction</span>
     <span class="s2">&quot;SIS_junction_2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
@@ -788,7 +789,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">default_squid_type</span> <span class="o">=</span> <span class="s2">&quot;Manhattan&quot;</span>
+<span class="n">default_junction_type</span> <span class="o">=</span> <span class="s2">&quot;Manhattan&quot;</span>
 <span class="n">default_airbridge_type</span> <span class="o">=</span> <span class="s2">&quot;Airbridge Rectangular&quot;</span>
 <span class="n">default_fluxline_type</span> <span class="o">=</span> <span class="s2">&quot;Fluxline Standard&quot;</span>
 <span class="n">default_marker_type</span> <span class="o">=</span> <span class="s2">&quot;Marker Standard&quot;</span>
@@ -822,7 +823,7 @@
 <span class="c1"># Library names in dependency order. Every library should have its dependencies before its own entry.</span>
 <span class="n">kqc_library_names</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s1">&#39;Element Library&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;SQUID Library&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Junction Library&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Test Structure Library&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Qubit Library&#39;</span><span class="p">,</span>
     <span class="s1">&#39;Chip Library&#39;</span><span class="p">,</span>

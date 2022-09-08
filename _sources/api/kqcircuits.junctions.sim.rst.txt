@@ -1,0 +1,10 @@
+kqcircuits.junctions.sim
+========================
+
+.. automodule:: kqcircuits.junctions.sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.junctions.sim
+.. image:: ../pcell_images/kqcircuits.junctions.sim.png
