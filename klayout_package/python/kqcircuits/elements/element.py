@@ -205,7 +205,7 @@ class Element(pya.PCellDeclarationHelper):
         if trans is None:
             trans = pya.DTrans()
         if (align_to and align) is not None:
-            align = self.get_refpoints(cell, trans)[align]
+            align = self.get_refpoints(cell, trans, rec_levels=rec_levels)[align]
             if isinstance(align_to, str):
                 align_to = self.refpoints[align_to]
             trans = pya.DCplxTrans(align_to - align) * trans
