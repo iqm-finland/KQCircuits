@@ -196,32 +196,32 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
                     file.write('export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK\n')
                     file.write('\n')
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 {2} {0} {1} --only-gmsh -q 2>&1 >> {1}_Gmsh.log\n'.format(
+                    file.write('srun -n 1 {2} "{0}" "{1}" --only-gmsh -q 2>&1 >> "{1}_Gmsh.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable)
                         )
                     file.write('echo "Simulation {}/{} ElmerGrid"\n'.format(i + 1, len(json_filenames)))
-                    file.write('ElmerGrid 14 2 {0} 2>&1 >> {1}_ElmerGrid.log\n'.format(
+                    file.write('ElmerGrid 14 2 "{0}" 2>&1 >> "{1}_ElmerGrid.log"\n'.format(
                         simulation_name + ".msh",
                         Path(json_filename).relative_to(path))
                     )
-                    file.write('ElmerGrid 2 2 {0} 2>&1 -metis {1} 4 --partdual --removeunused >> '\
-                            '{2}_ElmerGrid_part.log\n'.format(
+                    file.write('ElmerGrid 2 2 "{0}" 2>&1 -metis {1} 4 --partdual --removeunused >> '\
+                            '"{2}_ElmerGrid_part.log"\n'.format(
                         simulation_name,
                         str(elmer_n_processes),
                         Path(json_filename).relative_to(path))
                     )
 
                     file.write('echo "Simulation {}/{} Elmer"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun --cpu-bind none -n {} ElmerSolver_mpi sif/{}.sif 2>&1 >> '\
-                            '{}_Elmer.log\n'.format(
+                    file.write('srun --cpu-bind none -n {} ElmerSolver_mpi "sif/{}.sif" 2>&1 >> '\
+                            '"{}_Elmer.log"\n'.format(
                                 elmer_n_processes,
                                 simulation_name,
                                 Path(json_filename).relative_to(path)
                                 ))
                     file.write('echo "Simulation {}/{} write results json"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 {2} {0} {1} --write-project-results 2>&1 >> '\
+                    file.write('srun -n 1 {2} "{0}" "{1}" --write-project-results 2>&1 >> '\
                             '{1}_write_project_results.log\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
@@ -229,25 +229,25 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
                     )
                 else:
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
-                    file.write('{2} {0} {1} --only-gmsh 2>&1 >> {1}_Gmsh.log\n'.format(
+                    file.write('{2} "{0}" "{1}" --only-gmsh 2>&1 >> "{1}_Gmsh.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
                     file.write('echo "Simulation {}/{} ElmerGrid"\n'.format(i + 1, len(json_filenames)))
-                    file.write('{2} {0} {1} --only-elmergrid 2>&1 >> {1}_ElmerGrid.log\n'.format(
+                    file.write('{2} "{0}" "{1}" --only-elmergrid 2>&1 >> "{1}_ElmerGrid.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
                     file.write('echo "Simulation {}/{} Elmer"\n'.format(i + 1, len(json_filenames)))
-                    file.write('{2} {0} {1} --only-elmer 2>&1 >> {1}_Elmer.log\n'.format(
+                    file.write('{2} "{0}" "{1}" --only-elmer 2>&1 >> "{1}_Elmer.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
                     file.write('echo "Simulation {}/{} Paraview"\n'.format(i + 1, len(json_filenames)))
-                    file.write('{2} {0} {1} --only-paraview\n'.format(
+                    file.write('{2} "{0}" "{1}" --only-paraview\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable)
@@ -260,16 +260,16 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
                 main_file.write('echo "Submitting the main script of simulation {}/{}"\n'
                         .format(i + 1, len(json_filenames)))
                 main_file.write('echo "--------------------------------------------"\n')
-                main_file.write('sbatch {}\n'.format(Path(script_filename).relative_to(path)))
+                main_file.write('sbatch "{}"\n'.format(Path(script_filename).relative_to(path)))
             elif parallelize_workload:
-                main_file.write(' ./{}'.format(
+                main_file.write(' "./{}"'.format(
                     Path(script_filename).relative_to(path))
                 )
             else:
                 main_file.write('echo "Submitting the main script of simulation {}/{}"\n'
                         .format(i + 1, len(json_filenames)))
                 main_file.write('echo "--------------------------------------------"\n')
-                main_file.write('./{}\n'.format(Path(script_filename).relative_to(path)))
+                main_file.write('"./{}"\n'.format(Path(script_filename).relative_to(path)))
 
 
     # change permission
