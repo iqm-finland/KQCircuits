@@ -32,7 +32,7 @@ class WaveguideCoplanarSplitter(Element):
     .. MARKERS_FOR_PNG -15.1,3.96,-9.91,6.96 -5.85,0,2.8,4.93
     """
     lengths = Param(pdt.TypeList, "Waveguide length per port, measured from origin", [11, 11, 11])
-    angles = Param(pdt.TypeList, "Angle of each port (degrees)", [0, 120, 240])
+    angles = Param(pdt.TypeList, "Angle of each port (degrees)", [0, 180, 270])
     use_airbridges = Param(pdt.TypeBoolean, "Use airbridges at a distance from the centre", False)
     bridge_distance = Param(pdt.TypeDouble, "Bridges distance from centre", 80)
     a_list = Param(pdt.TypeList, "Center conductor widths", [], unit="[μm]",
