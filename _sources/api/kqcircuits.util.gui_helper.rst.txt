@@ -1,0 +1,10 @@
+kqcircuits.util.gui\_helper
+===========================
+
+.. automodule:: kqcircuits.util.gui_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.gui_helper
+.. image:: ../pcell_images/kqcircuits.util.gui_helper.png

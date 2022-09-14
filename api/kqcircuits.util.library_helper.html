@@ -115,9 +115,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../user_guide/index.html">User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/gui_features.html">GUI Features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-hotkeys">Useful hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#introduction-to-elements">Introduction to Elements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#placing-elements">Placing Elements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#editing-waveguidecomposite-nodes">Editing WaveguideComposite Nodes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
 </ul>
@@ -383,6 +385,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.util.library_helper</a></li>
@@ -530,6 +533,22 @@ library as a dependency.</p>
 <dd class="field-odd"><p><strong>name</strong> – name of the library</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.library_helper.element_by_class_name">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.library_helper.</span></span><span class="sig-name descname"><span class="pre">element_by_class_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">class_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'elements'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'Element</span> <span class="pre">Library'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/library_helper.html#element_by_class_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.library_helper.element_by_class_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find Element class by class name from a library</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>class_name</strong> – Class name to look up</p></li>
+<li><p><strong>library_path</strong> – Path to pass to load_libraries</p></li>
+<li><p><strong>library_name</strong> – Name of the library</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: Class of the element, or None if the element is not in the library</p>
 </dd></dl>
 
 <dl class="py function">

@@ -2,28 +2,54 @@ GUI Features
 ============
 
 The GUI usage of KQCircuits is mostly the same as in KLayout without KQCircuits,
-so it is recommended to read at least https://www.klayout.de/doc-qt5/manual/basic.html
-part of KLayout documentation. It explains for example cell hierarchy and
-other important concepts. In this section we explain KQCircuits-specific GUI
-features and highlight some useful features of the KLayout GUI.
+so it is recommended to read the section `KLayout Basics <https://www.klayout.de/doc-qt5/manual/basic.html>`_ of the
+KLayout documentation. It explains for example cell hierarchy and other important concepts. In this section we explain
+KQCircuits-specific GUI features and highlight some useful features of the KLayout GUI.
 
 Useful hotkeys
 --------------
-- \* makes the full cell hierarchy visible. Otherwise only cell frames may be
-  visible. Also accessible from "Display -> Full hierarchy" in the top menu.
-- F2 centers the view on the top cell.
-- Shift+F2 centers the view on the selected cell.
+
+Use the following hotkeys to navigate around, and if not all parts of the geometry are visible:
+
+- ``*`` makes the full cell hierarchy visible. Otherwise only cell frames may be
+  visible. Also accessible from *Display* -> *Full hierarchy* in the top menu.
+- ``F2`` zooms to show the full layout (from the current top cell)
+- ``Shift+F2`` zooms to show the currently selected cell
+
+Introduction to Elements
+------------------------
+
+KQCircuits provides a collection of ``Elements``, which are building blocks for creating complex designs. The elements
+are grouped into several **Libraries**, including the following:
+
+- The ``Element Library`` contains basic elements such as waveguides, capacitors and connectors
+- The ``Qubit Library`` contains qubit shapes
+- The ``Chip Library`` contains example chip designs, which are also elements
+
+Internally, elements are built on the KLayout concept of PCells, short for *parametric cells*. Each element has a set of
+parameters, which can be changed to modify the shape or other features.
+
+An important concept in KLayout is the distinction between cells and instances. When you place an element, KLayout first
+generates the corresponding PCell, and then places an **Instance** of that PCell in the current top cell. There can be
+multiple instances of the same cell, each with the exact same geometry but different location, size and magnification.
+
+In most cases, you want to work with cell instances. This can be done in the main panel, for example clicking an
+element with the *Select* tool selects the corresponding cell instance.
+
+PCells can internally include other PCells, and many KQC elements consist of other elements. This creates a hierarchy
+of cells in KLayout. The cell hierarchy is visible in KLayout in the **Cells** toolbox. To choose which cell is shown as
+**Top cell** in the main window, right-click a cell and select *Show As New Top*. The top cell is shown in bold.
 
 Placing Elements
 ----------------
 
-KQC ``Elements`` are implemented as KLayout PCells. There are two ways to insert ``Elements`` into the layout:
+There are two ways to insert an ``Element`` into the layout:
 
 #. dragging from **Libraries** toolbox
 
 #. using "instance" tool from the toolbar
 
-Either of these makes KLayout ask for a corresponding **PCell** instance from the **Library**.
+Either of these will generate the corresponding **PCell** and allows you to place an **Instance** of the PCell in
 If the corresponding **PCell instance** does not yet exist, corresponding code from the KQC library is evoked.
 
 Here is an animation demonstrating dragging from the **Libraries** toolbox
@@ -33,36 +59,66 @@ Here is an animation demonstrating dragging from the **Libraries** toolbox
 Modifying Element parameters
 ----------------------------
 
-If an ``Element`` is in the layout, one can change its **parameters** by double clicking the ``Element`` which should make
-**Object properties** window appear. In the window there is a **PCell parameters** tab. Changes in the parameters
-take effect when one clicks **Ok** or **Apply**.
-At this event, corresponding **PCell** instance is created or reused from the **Library**.
+If an ``Element`` is in the layout, one can change its **parameters** by double clicking the ``Element`` which brings up
+the **Object properties** window. In the window there is a **PCell parameters** tab, where parameters can be changed.
 
 .. image:: ../images/gui_workflows/modifying_pcell.gif
 
-Due to the non-intuitive way KLayout is implemented there are a few common mistakes which prevent one from getting
-**Object properties** window when double clicking the element.
+Note that there are a few situations where the *Object properties* window doesn't appear when double clicking:
 
-* One is clicking on a ``Box`` instead of a ``PCell instance``. Some PCells have boxes around them and selecting a box has a higher importance than selecting an instance. One can see which is selected from the bottom edge of the screen. One can disable selecting boxes from "Edit -> Select" dropdown menu.
-* The ``Element`` is no longer a PCell. If the PCell has been "turned static" it is no longer generated by code and parameters cannot be changed.
-* The ``Element`` is inside another PCell. One can only change parameters of the top level Element. If one desires to change parameters of the sub-elements, the top level element should be turned static before.
+* The ``Element`` is inside another PCell. One can only change parameters of the top level Element. If one desires to
+  change parameters of the sub-elements, the top level element should be turned static before by selecting the top
+  level element and clicking *Edit* -> *Selection* -> *Convert To Static Cell*. Then, the cell can be set as new top
+  in the Cells toolbox.
+* Once an ``Element`` is converted to a static cell, the parameters can no longer be changed.
+* Some elements have guiding shapes such as boxes or paths, which take priority in selection. To avoid selecting these
+  by accident, one can disable each type under *Edit* -> *Select*.
 
 .. _modifying_waveguides:
 
 Modifying waveguides
 --------------------
 
-Some PCell parameters are geometric objects. For example, ``Coplanar Waveguide`` has a "guide path" parameter. In the
-cell view window it is displayed as a black `Path` object. The geometric parameters can be changed using `Partial` tool
-in the toolbar.
+For some elements, the shape can be edited directly in the GUI. For example, ``Waveguide Coplanar``,
+``Waveguide Composite`` and ``Spiral Resonator Polygon`` have paths that can be edited with the **Partial** tool.
 
-* Double clicking a path creates additional nodes.
-* Dragging edges shifts the edge and adds orthogonal segments to keep the path connected.
-* Dragging nodes shifts the nodes.
+The following operations are supported:
 
-PCell shape is updated after each change in the parameters.
+* Drag a node to move it, or click to select, move, click to confirm.
+* Double click on an edge to create an additional node.
+* Click to select a node and press the ``Del`` key to delete a node.
+* Drag edges to shift the edge; the neighboring nodes adjust to keep the path connected.
+
+The following video shows these operations for a waveguide:
 
 .. image:: ../images/gui_workflows/modifying_waveguide.gif
+
+If the GUI paths are not visible, make sure that the option *Show PCell guiding and error shapes* is enabled under
+*Display* -> *Cells* in the KLayout setup.
+
+Editing WaveguideComposite Nodes
+--------------------------------
+
+``Waveguide Composite`` is a very flexible element, that can be used to route complex waveguides. It can include other
+elements that are automatically connected correctly inline with the waveguide, can insert meandering segments to
+meet a specific waveguide length, and can include airbridge crossings or flip-chip connectors to route signals in a
+3D integrated design.
+
+A ``Waveguide Composite`` can be inserted like any other element, and the path it follows can be edited with the
+*Partial* tool like other waveguides, as described above. However, to edit the advanced properties of each individual
+``Node``, use the ``Edit Node`` tool in the toolbar.
+
+With ``Edit Node`` selected, click on any node to bring up the ``Edit Node`` dialog. The currently selected node is
+highlighted by a dashed rectangle. Note that only waveguide nodes that are directly under the current top cell can be
+edited, and only ``Waveguide Composite`` nodes.
+
+In the ``Edit Node`` dialog box, the position, length, and other properties can be edited. Changes are updated when
+*Apply* is clicked. If an inline element is chosen, the element's properties can be entered as ``key=value`` pairs, each
+on a separate line. See the API documentation for the PCell parameters supported by each element.
+
+The following video shows the workflow with the ``Edit Node`` tool:
+
+.. image:: ../images/gui_workflows/edit_node.gif
 
 Converting elements placed in GUI into code
 -------------------------------------------

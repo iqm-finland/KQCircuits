@@ -113,9 +113,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../user_guide/index.html">User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/gui_features.html">GUI Features</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#useful-hotkeys">Useful hotkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#introduction-to-elements">Introduction to Elements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#placing-elements">Placing Elements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#modifying-element-parameters">Modifying Element parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#modifying-waveguides">Modifying waveguides</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#editing-waveguidecomposite-nodes">Editing WaveguideComposite Nodes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#converting-elements-placed-in-gui-into-code">Converting elements placed in GUI into code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/gui_features.html#useful-menu-commands">Useful Menu Commands</a></li>
 </ul>
@@ -381,6 +383,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -495,7 +498,6 @@
 
 
 <span class="kn">import</span> <span class="nn">ast</span>
-<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">tan</span>
@@ -505,7 +507,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">to_module_name</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">element_by_class_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">vector_length_and_direction</span><span class="p">,</span> <span class="n">point_shift_along_vector</span><span class="p">,</span> \
     <span class="n">get_cell_path_length</span><span class="p">,</span> <span class="n">get_angle</span><span class="p">,</span> <span class="n">get_direction</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
@@ -607,7 +609,7 @@
 <span class="sd">        Returns: a Node</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">element</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -622,19 +624,15 @@
             <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
                 <span class="n">element</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="n">element</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">to_module_name</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-                <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;kqcircuits.elements.&quot;</span>
-                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;airbridge&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element</span> <span class="o">!=</span> <span class="s2">&quot;AirbridgeConnection&quot;</span><span class="p">:</span>
-                    <span class="n">path</span> <span class="o">+=</span> <span class="s2">&quot;airbridges.&quot;</span>
-                <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="n">name</span><span class="p">)</span>
-                <span class="n">element</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">element</span><span class="p">)</span>
-            <span class="c1"># TODO improve library_helper to get Element by name?</span>
+                <span class="n">element</span> <span class="o">=</span> <span class="n">element_by_class_name</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 
         <span class="c1"># re-create DPoint from tuple</span>
         <span class="n">magic_params</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;align&#39;</span><span class="p">,</span> <span class="s1">&#39;inst_name&#39;</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">pn</span><span class="p">,</span> <span class="n">pv</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pv</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="n">pn</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">magic_params</span><span class="p">:</span>
-                <span class="n">params</span><span class="p">[</span><span class="n">pn</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Point parameter </span><span class="si">{</span><span class="n">pn</span><span class="si">}</span><span class="s1"> should have two elements&#39;</span><span class="p">)</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">pn</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">pv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">element</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span></div>
 
@@ -737,7 +735,7 @@
         <span class="c1"># Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235</span>
         <span class="n">child_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">()]</span>
         <span class="n">segment_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">child_cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">child_cell</span> <span class="ow">in</span> <span class="n">child_cells</span>
-                           <span class="k">if</span> <span class="n">child_cell</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Waveguide Coplanar&quot;</span><span class="p">]</span>
+                           <span class="k">if</span> <span class="n">child_cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Waveguide Coplanar&quot;</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">segment_lengths</span></div>
 
