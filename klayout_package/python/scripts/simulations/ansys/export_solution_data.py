@@ -69,7 +69,7 @@ eig_filename = os.path.join(path, basename + '_modes.eig')
 
 # Export solution data separately for HFSS and Q3D
 design_type = oDesign.GetDesignType()
-if design_type == "HFSS" and oDesign.GetSolutionType() == "DrivenTerminal":
+if design_type == "HFSS" and oDesign.GetSolutionType() == "HFSS Terminal Network":
 
     freq = '1GHz'  # export frequency
     (setup, sweep) = get_enabled_setup_and_sweep(oDesign)

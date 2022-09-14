@@ -44,7 +44,7 @@ design_type = oDesign.GetDesignType()
 if design_type in {"HFSS", "Q3D Extractor"}:
     oDesktop.AddMessage("", "", 0, "Creating PI model for all ports (%s)" % time.asctime(time.localtime()))
 
-    if design_type == "HFSS" and oDesign.GetSolutionType() == "DrivenTerminal":
+    if design_type == "HFSS" and oDesign.GetSolutionType() == "HFSS Terminal Network":
         (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
         solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
         context = [] if sweep is None else ["Domain:=", "Sweep"]

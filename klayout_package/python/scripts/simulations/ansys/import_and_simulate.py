@@ -27,7 +27,7 @@ ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
 scriptpath = os.path.dirname(__file__)
 
 jsonfile = ScriptArgument
-path = os.path.dirname(jsonfile)
+path = os.path.abspath(os.path.dirname(jsonfile))
 basename = os.path.splitext(os.path.basename(jsonfile))[0]
 
 # Read simulation_flags settings from .json

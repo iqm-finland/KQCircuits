@@ -110,7 +110,7 @@ oProject = oDesktop.NewProject()
 oDefinitionManager = oProject.GetDefinitionManager()
 
 if ansys_tool == 'hfss':
-    oProject.InsertDesign("HFSS", "HFSSDesign1", "DrivenTerminal", "")
+    oProject.InsertDesign("HFSS", "HFSSDesign1", "HFSS Terminal Network", "")
     oDesign = oProject.SetActiveDesign("HFSSDesign1")
 elif ansys_tool == 'eigenmode':
     oProject.InsertDesign("HFSS", "HFSSDesign1", "Eigenmode", "")
