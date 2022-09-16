@@ -721,6 +721,9 @@ def get_parent_body(dim_tag, body_dim_tags):
 
     return found_dim_tag
 
+def set_physical_name(dim_tag, name):
+    gmsh.model.addPhysicalGroup(dim_tag[0], [dim_tag[1]], name=name)
+
 def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, signal_min_mesh_size: float = 100,
                     signal_min_dist: float = 100, signal_max_dist: float = 100,
                     signal_sampling: float = None, ground_min_mesh_size: float = 100,
@@ -835,6 +838,8 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     all_dim_tags_new, dim_tags_map_imp = gmsh.model.occ.fragment(all_dim_tags, [], removeTool=False)
     dim_tags_map = dict(zip(all_dim_tags, dim_tags_map_imp))
     face_port_dim_tags = [[t for tag in tags for t in dim_tags_map[tag]] for tags in face_port_dim_tags]
+    new_ground_dim_tags = [new_tag for old_tag in ground_dim_tags for new_tag in dim_tags_map[old_tag] ]
+
     face_dim_tag_dicts = [{k: [t for tag in d[k] for t in dim_tags_map[tag]] for k in d} for d in face_dim_tag_dicts]
     chips = [t for tag in chips for t in dim_tags_map[tag]]
     vacuum = dim_tags_map[vacuum][0]
@@ -872,7 +877,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
             if gmsh.model.isInside(*dim_tag, signal_location):
                 port['signal_dim_tag'] = dim_tag
                 port['signal_physical_name'] = 'signal_' + str(port['number'])
-                gmsh.model.setPhysicalName(*dim_tag, port['signal_physical_name'])
+                set_physical_name(dim_tag, port['signal_physical_name'])
 
     for _ in face_dim_tag_dicts:
         body_dim_tags = gmsh.model.getEntities(3)
@@ -902,11 +907,11 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
         if port['type'] == 'EdgePort':
             port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
             for i, dim_tag in enumerate(port['dim_tags']):
-                gmsh.model.setPhysicalName(*dim_tag, 'port_{}_{}'.format(port['number'], i))
+                set_physical_name(dim_tag, 'port_{}_{}'.format(port['number'], i))
 
     for face in faces:
-        gmsh.model.setPhysicalName(*chips[face], 'chip_{}'.format(face))
-    gmsh.model.setPhysicalName(*vacuum, 'vacuum')
+        set_physical_name(chips[face], 'chip_{}'.format(face))
+    set_physical_name(vacuum, 'vacuum')
 
     # Find all the extreme boundaries and add physical names to them
     bbox_all = bounding_box_from_dim_tags(all_dim_tags_new)
@@ -914,12 +919,12 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     for side_name in ['xmin', 'ymin', 'zmin', 'xmax', 'ymax', 'zmax']:
         bbox_all_dim_tags = get_entities_in_bounding_boxes([bbox_all_sides[side_name]], 2)
         for i, dim_tag in enumerate(bbox_all_dim_tags):
-            gmsh.model.setPhysicalName(*dim_tag, '{}_{}'.format(side_name, i))
+            set_physical_name(dim_tag, '{}_{}'.format(side_name, i))
 
     ground_names = []
-    for i, dim_tag in enumerate(ground_dim_tags):
+    for i, dim_tag in enumerate(new_ground_dim_tags):
         ground_name = 'ground_{}'.format(i)
-        gmsh.model.setPhysicalName(*dim_tag, ground_name)
+        set_physical_name(dim_tag, ground_name)
         ground_names.append(ground_name)
 
     background_field_id = gmsh.model.mesh.field.add("Min")
