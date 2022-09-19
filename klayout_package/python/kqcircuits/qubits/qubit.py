@@ -23,10 +23,12 @@ from kqcircuits.elements.fluxlines.fluxline import Fluxline
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.junctions.squid import Squid
+from kqcircuits.junctions.sim import Sim
 
 
 @add_parameters_from(Fluxline, "fluxline_gap_width", "fluxline_type")
 @add_parameters_from(Squid, "junction_width", "loop_area", "junction_type")
+@add_parameters_from(Sim, "junction_total_length")
 class Qubit(Element):
     """Base class for qubit objects without actual produce function.
 

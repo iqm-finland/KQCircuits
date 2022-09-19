@@ -31,10 +31,12 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
 from kqcircuits.simulations.export.util import get_enclosing_polygon
 from kqcircuits.util.groundgrid import make_grid
+from kqcircuits.junctions.sim import Sim
 
 
 @logged
 @add_parameters_from(Element)
+@add_parameters_from(Sim, "junction_total_length")
 class Simulation:
     """Base class for simulation geometries.
 

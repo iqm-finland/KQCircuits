@@ -19,6 +19,7 @@
 from autologging import logged
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.junctions.junction import Junction
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
@@ -28,8 +29,9 @@ class Sim(Junction):
     """The PCell declaration for a simulation type SQUID.
 
     Origin at the center of junction layer bottom edge.
-
     """
+
+    junction_total_length = Param(pdt.TypeDouble, "Simulation junction total length", 33, unit='µm')
 
     def build(self):
 
@@ -37,9 +39,9 @@ class Sim(Junction):
         self._produce_ground_metal_shapes(trans)
         # refpoints
         self.refpoints["origin_squid"] = pya.DPoint(0, 0)
-        self.refpoints["port_squid_a"] = pya.DPoint(0, 20)
+        self.refpoints["port_squid_a"] = pya.DPoint(0, self.junction_total_length - 13)
         self.refpoints["port_squid_b"] = pya.DPoint(0, 12)
-        self.refpoints["port_common"] = pya.DPoint(0, 33)
+        self.refpoints["port_common"] = pya.DPoint(0, self.junction_total_length)
 
 
     def _produce_ground_metal_shapes(self, trans):
@@ -55,10 +57,10 @@ class Sim(Junction):
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(trans*shape)
         # metal additions top
         top_pts = [
-            pya.DPoint(-4, 20),
-            pya.DPoint(-4, 33),
-            pya.DPoint(4, 33),
-            pya.DPoint(4, 20)
+            pya.DPoint(-4, self.junction_total_length - 13),
+            pya.DPoint(-4, self.junction_total_length),
+            pya.DPoint(4, self.junction_total_length),
+            pya.DPoint(4, self.junction_total_length - 13)
         ]
         shape = polygon_with_vsym(top_pts)
         self.cell.shapes(self.get_layer("base_metal_addition")).insert(trans*shape)
