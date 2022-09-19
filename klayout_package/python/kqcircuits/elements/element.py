@@ -274,7 +274,7 @@ class Element(pya.PCellDeclarationHelper):
         if direction:
             self.refpoints[port_name+"_corner"] = pos+direction/direction.length()*self.r
 
-    def copy_port(self, name, cell_inst, new_name = None):
+    def copy_port(self, name, cell_inst, new_name=None):
         """ Copy a port definition from a different cell and instance; typically used to expose a specific subcell port.
 
         Args:
@@ -295,8 +295,11 @@ class Element(pya.PCellDeclarationHelper):
         for i in range(len(self.face_ids)):
             if "ports" in self.face(i):
                 if name in get_refpoints(self.get_layer("ports", i), cell, cell_inst.dcplx_trans):
-                    self.add_port(copy_name, cell_refpoints[port_name],
-                                  cell_refpoints[port_corner_name] - cell_refpoints[port_name], i)
+                    if port_corner_name in cell_refpoints:
+                        self.add_port(copy_name, cell_refpoints[port_name],
+                                      cell_refpoints[port_corner_name] - cell_refpoints[port_name], i)
+                    else:
+                        self.add_port(copy_name, cell_refpoints[port_name], face_id=i)
                     break
 
     @classmethod
