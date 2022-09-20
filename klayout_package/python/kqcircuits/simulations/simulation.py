@@ -498,8 +498,8 @@ class Simulation:
                         except ValueError:
                             self.__log.warning('Unable to create polygon for port {}, because either signal or ground '
                                                'edge is not found.'.format(port.number))
-                        else:
-                            self.__log.warning('Ground location of port {} is not determined.'.format(port.number))
+                    else:
+                        self.__log.warning('Ground location of port {} is not determined.'.format(port.number))
                 else:
                     raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
 
