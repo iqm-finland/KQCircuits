@@ -364,7 +364,7 @@ class MaskSet:
         self._time['END'] = perf_counter()
 
         def tdiff(a, b):  # get elapsed time from "a" to "b"
-            return round(self._time[b] - self._time[a], 1) if self._time[a] and self._time[b] else 'n/a'
+            return f'{self._time[b] - self._time[a]:.1f}s' if self._time[a] and self._time[b] else 'n/a'
 
         print(f"Runtime: {tdiff('INIT', 'END')} (add chips: {tdiff('ADD_CHIPS', 'BUILD')}, "
               f"build: {tdiff('BUILD', 'EXPORT')}, export: {tdiff('EXPORT', 'END')})")
