@@ -61,7 +61,6 @@ export_parameters_ansys = {
     'n_modes': 1,  # eigenmodes to solve
     'frequency': 10,  # minimum allowed eigenmode frequency
     'substrate_loss_tangent': 1e-6,  # Loss tangents for estimating quality factor
-    'surface_loss_tangent': 1e-3
 }
 
 # Get layout

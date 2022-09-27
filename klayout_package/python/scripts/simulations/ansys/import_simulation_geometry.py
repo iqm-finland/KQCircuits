@@ -51,7 +51,6 @@ airbridge_height = data.get('airbridge_height', 0)
 box_height = data['box_height']
 permittivity = data['permittivity']
 substrate_loss_tangent = data.get('substrate_loss_tangent', 0)
-surface_loss_tangent = data.get('surface_loss_tangent', 0)
 units = data['units']
 wafer_stack_type = data['stack_type']
 vacuum_box_height = box_height
@@ -144,8 +143,8 @@ oDefinitionManager.AddMaterial(
      "CoordinateSystemType:=", "Cartesian",
      "BulkOrSurfaceType:=", 1,
      ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
-     "conductivity:=", "1e+30",
-     ] + (["dielectric_loss_tangent:=", str(surface_loss_tangent)] if surface_loss_tangent != 0 else [])
+     "conductivity:=", "1e+30"
+     ]
 )
 
 # Import GDSII geometry
