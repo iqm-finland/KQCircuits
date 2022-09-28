@@ -51,6 +51,8 @@ airbridge_height = data.get('airbridge_height', 0)
 box_height = data['box_height']
 permittivity = data['permittivity']
 substrate_loss_tangent = data.get('substrate_loss_tangent', 0)
+participation_sheet_distance = data.get('participation_sheet_distance', None)
+thicken_participation_sheet_distance = data.get('thicken_participation_sheet_distance', None)
 units = data['units']
 wafer_stack_type = data['stack_type']
 vacuum_box_height = box_height
@@ -60,7 +62,11 @@ use_ansys_project_template = 'ansys_project_template' in data \
     and not data['ansys_project_template'] == ''
 vertical_over_etching = data.get('vertical_over_etching', 0)
 gap_max_element_length = data.get('gap_max_element_length', None)
-export_gaps = vertical_over_etching > 0 or gap_max_element_length is not None
+export_gaps = any((
+    vertical_over_etching > 0,
+    gap_max_element_length is not None,
+    participation_sheet_distance is not None
+))
 
 if wafer_stack_type == "multiface":
     substrate_height_top = data['substrate_height_top']
@@ -198,9 +204,9 @@ oEditor.ImportGDSII(
      ])
 
 # Get lists of imported objects (= 2D chip geometry)
-signal_objects = oEditor.GetMatchedObjectName('Signal_*')  # all signal objects (also t_signal_objects from top-chip)
-ground_objects = oEditor.GetMatchedObjectName('Ground_*')  # all ground objects (also t_ground_objects from top-chip)
-gap_objects = oEditor.GetMatchedObjectName('Gap_*')  # all gap objects (also t_gap_objects from top-chip)
+signal_objects = oEditor.GetMatchedObjectName('Signal_*')  # all signal objects (t_signal_objects from top-chip later)
+ground_objects = oEditor.GetMatchedObjectName('Ground_*')  # all ground objects (t_ground_objects from top-chip later)
+gap_objects = oEditor.GetMatchedObjectName('Gap_*')  # all gap objects (t_gap_objects from top-chip later)
 airbridge_pads_objects = oEditor.GetMatchedObjectName('Airbridge_Pads_*')
 airbridge_flyover_objects = oEditor.GetMatchedObjectName('Airbridge_Flyover_*')
 
@@ -451,6 +457,117 @@ elif ansys_tool == 'q3d':
              "Objects:=", [ground_object]
              ])
     oBoundarySetup.AutoIdentifyNets()  # Combine Nets by conductor connections. Order: GroundNet, SignalNet, FloatingNet
+
+
+# Create (floating) sheets modelling participation surfaces
+if participation_sheet_distance is not None:
+
+    multiface = wafer_stack_type == 'multiface'
+    t_MA_interfaces = t_signal_objects + t_ground_objects if multiface else []
+    t_MS_interfaces = t_signal_objects + t_ground_objects if multiface else []
+    t_SA_interfaces = t_gap_objects if multiface else []
+    b_MA_interfaces = signal_objects + ground_objects
+    b_MS_interfaces = signal_objects + ground_objects
+    b_SA_interfaces = gap_objects
+    if multiface:
+        b_MA_interfaces = set(b_MA_interfaces).difference(t_MA_interfaces)
+        b_MS_interfaces = set(b_MS_interfaces).difference(t_MS_interfaces)
+        b_SA_interfaces = set(b_SA_interfaces).difference(t_SA_interfaces)
+
+
+    # for each interface to model, create an infinitesimally thin sheet in which |E|^2 integral is subsequently computed
+    def _duplicate_non_model_sheets(obj, distance, distance_sign):
+        """Duplicate object and move `distance` in the z-direction. Return name of `obj` duplicate."""
+        oEditor.DuplicateAlongLine(
+            ["NAME:Selections",
+                "Selections:=", obj,
+                "NewPartsModelFlag:=", "Model"
+            ],
+            ["NAME:DuplicateToAlongLineParameters",
+                "CreateNewObjects:=", True,
+                "XComponent:=", "0um",
+                "YComponent:=", "0um",
+                "ZComponent:=", "{} {}".format(distance_sign * distance, units),
+                "NumClones:=", "2"  # 2 means one duplicate
+            ],
+            ["NAME:Options",
+                "DuplicateAssignments:=", False
+            ],
+            ["CreateGroupsForNewObjects:=", False]
+        )
+        obj_copy = oEditor.GetMatchedObjectName(obj + '_*')[-1]  # infer duplicate name
+        oEditor.ChangeProperty(
+            ["NAME:AllTabs",
+                ["NAME:Geometry3DAttributeTab",
+                    ["NAME:PropServers", obj_copy],
+                    ["NAME:ChangedProps",
+                        ["NAME:Model",
+                            "Value:=", False  # non-modelled sheet
+                        ],
+                        ["NAME:Color",
+                            "R:=", 197, "G:=", 197, "B:=", 197  # grey
+                        ]
+                    ]
+                ]
+            ])
+        return obj_copy
+
+    for layer, b_objects, t_objects, distance in (
+        ('layerMA', b_MA_interfaces, t_MA_interfaces, participation_sheet_distance),  # metal-air (vacuum)
+        ('layerMS', b_MS_interfaces, t_MS_interfaces, -participation_sheet_distance),  # metal-substrate
+        ('layerSA', b_SA_interfaces, t_SA_interfaces, participation_sheet_distance),  # substrate-air (vacuum)
+    ):
+        if not (b_objects or t_objects):  # skip if no objects given
+            continue
+
+        # bottom chip
+        b_objects_copy = []
+        for obj in b_objects:
+            b_objects_copy.append(
+                _duplicate_non_model_sheets(obj, distance, distance_sign=1)
+            )
+
+        # (possible) top chip
+        t_objects_copy = []
+        for obj in t_objects:
+            t_objects_copy.append(
+                _duplicate_non_model_sheets(obj, distance, distance_sign=-1)
+            )
+
+        # combine objects to just `layer`
+        objects_copy = b_objects_copy + t_objects_copy
+        if len(objects_copy) > 1:  # unite fails for only one selected object
+            oEditor.Unite(
+                ["NAME:Selections",
+                    "Selections:=", ','.join(objects_copy)
+                ],
+                ["NAME:UniteParameters",
+                    "KeepOriginals:=", False
+                ])
+        oEditor.ChangeProperty(
+            ["NAME:AllTabs",
+                ["NAME:Geometry3DAttributeTab",
+                    ["NAME:PropServers",
+                        (objects_copy)[0]  # combined object takes name of first
+                    ],
+                    ["NAME:ChangedProps",
+                        ["NAME:Name",
+                            "Value:=", layer
+                        ]
+                    ]
+                ]
+            ])
+
+        if thicken_participation_sheet_distance:
+            oEditor.ThickenSheet(
+                ["NAME:Selections",
+                    "Selections:=", layer,
+                    "NewPartsModelFlag:=", "Model"
+                ],
+                ["NAME:SheetThickenParameters",
+                    "Thickness:=", "{} {}".format(thicken_participation_sheet_distance, units),
+                    "BothSides:=", True
+                ])
 
 
 if not use_ansys_project_template:
