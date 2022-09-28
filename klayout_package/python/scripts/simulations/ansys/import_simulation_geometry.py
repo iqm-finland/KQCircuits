@@ -58,12 +58,14 @@ layer_map_option = []
 entry_option = []
 use_ansys_project_template = 'ansys_project_template' in data \
     and not data['ansys_project_template'] == ''
+export_gaps = data.get('gap_max_element_length', None) is not None
 
 if wafer_stack_type == "multiface":
     substrate_height_top = data['substrate_height_top']
     chip_distance = data['chip_distance']
     t_signal_layer = data['t_signal_layer']
     t_ground_layer = data['t_ground_layer']
+    t_gap_layer = data['t_gap_layer']
     layer_map_option = [["NAME:LayerMapInfo",
                          "LayerNum:=", t_signal_layer,
                          "DestLayer:=", "t_Signal",
@@ -76,8 +78,13 @@ if wafer_stack_type == "multiface":
                          ]]
     entry_option = [
         "entry:=", ["order:=", 2, "layer:=", "t_Signal"],
-        "entry:=", ["order:=", 3, "layer:=", "t_Ground"],
-        "entry:=", ["order:=", 8, "layer:=", "t_Gap"]]
+        "entry:=", ["order:=", 3, "layer:=", "t_Ground"]]
+    if export_gaps:
+        layer_map_option += [["NAME:LayerMapInfo",
+                              "LayerNum:=", t_gap_layer,
+                              "DestLayer:=", "t_Gap",
+                              "layer_type:=", "gap"]]
+        entry_option += ["entry:=", ["order:=", 8, "layer:=", "t_Gap"]]
     vacuum_box_height = chip_distance
     if 'indium_bump_layer' in data:
         entry_option += [
@@ -150,7 +157,6 @@ oDefinitionManager.AddMaterial(
 # Import GDSII geometry
 order_map = ["entry:=", ["order:=", 0, "layer:=", "Signal"],
              "entry:=", ["order:=", 1, "layer:=", "Ground"],
-             "entry:=", ["order:=", 7, "layer:=", "Gap"],
              ] + entry_option
 
 layer_map = ["NAME:LayerMap",
@@ -164,12 +170,14 @@ layer_map = ["NAME:LayerMap",
               "DestLayer:=", "Ground",
               "layer_type:=", "signal"
               ],
-             ["NAME:LayerMapInfo",
-              "LayerNum:=", gap_layer,
-              "DestLayer:=", "Gap",
-              "layer_type:=", "gap"
-              ],
              ] + layer_map_option
+
+if export_gaps:
+    layer_map += [["NAME:LayerMapInfo",
+                   "LayerNum:=", gap_layer,
+                   "DestLayer:=", "Gap",
+                   "layer_type:=", "gap"]]
+    order_map += ["entry:=", ["order:=", 7, "layer:=", "Gap"]]
 
 oEditor.ImportGDSII(
     ["NAME:options",
@@ -223,7 +231,7 @@ if wafer_stack_type == 'multiface':
     # Assign metalization
     t_signal_objects = oEditor.GetMatchedObjectName('t_Signal_*')
     t_ground_objects = oEditor.GetMatchedObjectName('t_Ground_*')
-    t_gap_objects = oEditor.GetMatchedObjectName('t_Ground_*')
+    t_gap_objects = oEditor.GetMatchedObjectName('t_Gap_*')
     signal_objects += t_signal_objects
     ground_objects += t_ground_objects
     gap_objects += t_gap_objects
@@ -669,7 +677,7 @@ else:
     oEditor.Paste()
     oDesktop.CloseProject(build_geom_name)
 
-if setup.get('gap_max_element_length', None) is not None:
+if export_gaps:
     oMeshSetup = oDesign.GetModule("MeshSetup")
     oMeshSetup.AssignLengthOp(
             [
@@ -680,7 +688,7 @@ if setup.get('gap_max_element_length', None) is not None:
                 "RestrictElem:=", False,
                 # "NumMaxElem:=", 100000
                 "RestrictLength:=", True,
-                "MaxLength:=", str(setup['gap_max_element_length'])+"um"
+                "MaxLength:=", str(data['gap_max_element_length']) + units
             ])
 
 # Fit window to objects

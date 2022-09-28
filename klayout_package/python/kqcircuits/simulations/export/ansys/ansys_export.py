@@ -44,9 +44,9 @@ def copy_ansys_scripts_to_directory(path: Path, import_script_folder='scripts'):
 
 def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
-                      gap_max_element_length=None, maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
+                      maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                      max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0,
+                      max_delta_f=0.1, n_modes=2, gap_max_element_length=None, substrate_loss_tangent=0,
                       simulation_flags=None, ansys_project_template=None):
     r"""
     Export Ansys simulation into json and gds files.
@@ -60,8 +60,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         max_delta_s: Stopping criterion in HFSS simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
-        gap_max_element_length: Largest mesh length allowed in the gaps given in "um"
-            (if None is given, then the mesh size is not restricted in the gap).
         maximum_passes: Maximum number of iterations in simulation.
         minimum_passes: Minimum number of iterations in simulation.
         minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.
@@ -72,6 +70,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         sweep_type: choices are "interpolating", "discrete" or "fast"
         max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
         n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'pyepr'.
+        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units
+            (if None is given, then the mesh element size is not restricted in the gap).
         substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
         simulation_flags: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
@@ -107,7 +107,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'max_delta_s': max_delta_s,  # stopping criterion for HFSS
             'percent_error': percent_error,  # stopping criterion for Q3D
             'percent_refinement': percent_refinement,
-            'gap_max_element_length': gap_max_element_length,
             'maximum_passes': maximum_passes,
             'minimum_passes': minimum_passes,
             'minimum_converged_passes': minimum_converged_passes,
@@ -119,6 +118,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
             'max_delta_f': max_delta_f,
             'n_modes': n_modes,
         },
+        'gap_max_element_length': gap_max_element_length,
         'substrate_loss_tangent': substrate_loss_tangent,
         'simulation_flags': simulation_flags
     }
@@ -208,10 +208,10 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 
 def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folder='scripts', file_prefix='simulation',
                  frequency_units="GHz", frequency=5, max_delta_s=0.1, percent_error=1, percent_refinement=30,
-                 gap_max_element_length=None, maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
+                 maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
-                 max_delta_f=0.1, n_modes=2, substrate_loss_tangent=0, exit_after_run=False,
-                 ansys_executable=r"%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe",
+                 max_delta_f=0.1, n_modes=2, gap_max_element_length=None, substrate_loss_tangent=0,
+                 exit_after_run=False, ansys_executable=r"%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
                  ansys_project_template=None, skip_errors=False):
@@ -229,8 +229,6 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         max_delta_s: Stopping criterion in HFSS simulation.
         percent_error: Stopping criterion in Q3D simulation.
         percent_refinement: Percentage of mesh refinement on each iteration.
-        gap_max_element_length: Largest mesh length allowed in the gaps given in "um"
-            (if None is given, then the mesh size is not restricted in the gap).
         maximum_passes: Maximum number of iterations in simulation.
         minimum_passes: Minimum number of iterations in simulation.
         minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.
@@ -241,6 +239,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         sweep_type: choices are "interpolating", "discrete" or "fast"
         max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.
         n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is 'eigenmode'.
+        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units
+            (if None is given, then the mesh element size is not restricted in the gap).
         substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
         ansys_executable: Path to the Ansys Electronics Desktop executable.
@@ -273,13 +273,13 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
             json_filenames.append(export_ansys_json(simulation, path, ansys_tool=ansys_tool,
                                             frequency_units=frequency_units, frequency=frequency,
                                             max_delta_s=max_delta_s, percent_error=percent_error,
-                                            gap_max_element_length=gap_max_element_length,
                                             percent_refinement=percent_refinement,
                                             maximum_passes=maximum_passes, minimum_passes=minimum_passes,
                                             minimum_converged_passes=minimum_converged_passes,
                                             sweep_enabled=sweep_enabled, sweep_start=sweep_start,
                                             sweep_end=sweep_end, sweep_count=sweep_count, sweep_type=sweep_type,
                                             max_delta_f=max_delta_f, n_modes=n_modes,
+                                            gap_max_element_length=gap_max_element_length,
                                             substrate_loss_tangent=substrate_loss_tangent,
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template))
