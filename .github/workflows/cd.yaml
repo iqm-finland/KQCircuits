@@ -73,7 +73,11 @@ jobs:
           echo "Tag is ${{ steps.meta.outputs.tags }}."
       - name: Login and Deploy Container
         working-directory: ./singularity/libexec
+        shell: bash
         run: |         
           echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -i -u ${{ github.repository_owner }} \
             --password-stdin oras://ghcr.io
-          singularity push -U kqclib "oras://${{ steps.meta.outputs.tags }}-singularity"
+          # loop over tags separated with newlines
+          while IFS= read -r remote; do
+            singularity push -U kqclib "oras://${remote}-singularity"
+          done <<< "${{ steps.meta.outputs.tags }}"
