@@ -332,6 +332,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.qubits.html#module-kqcircuits.qubits">Module contents</a></li>
@@ -353,6 +354,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -530,17 +532,22 @@ whether they break the image.</p>
 </div>
 <div class="section" id="singularity-usage">
 <span id="singularity-image"></span><h2>Singularity usage<a class="headerlink" href="#singularity-usage" title="Permalink to this headline">¶</a></h2>
-<p>Singularity images are like docker images (<a class="reference external" href="https://sylabs.io/guides/3.0/user-guide/quick_start.html">https://sylabs.io/guides/3.0/user-guide/quick_start.html</a>) that work better than
-docker images in HPC environments (<a class="reference external" href="https://singularity-tutorial.github.io/">https://singularity-tutorial.github.io/</a>)
-The image may take a long time to build and can be built in <cite>singularity</cite> folder by running:</p>
+<p>Singularity images are like docker images (<a class="reference external" href="https://sylabs.io/guides/3.0/user-guide/quick_start.html">https://sylabs.io/guides/3.0/user-guide/quick_start.html</a>) that work better
+in HPC environments (<a class="reference external" href="https://singularity-tutorial.github.io/">https://singularity-tutorial.github.io/</a>).
+The latest image can be downloaded from the GitHub Container registry. It should be downloaded to a <cite>libexec</cite> folder
+under <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> with the name <cite>kqclib</cite>. This is performed as follows at the root of the repo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">singularity</span> <span class="n">pull</span> <span class="n">singularity</span><span class="o">/</span><span class="n">libexec</span><span class="o">/</span><span class="n">kqclib</span> <span class="n">oras</span><span class="p">:</span><span class="o">//</span><span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">iqm</span><span class="o">-</span><span class="n">finland</span><span class="o">/</span><span class="n">kqcircuits</span><span class="p">:</span><span class="n">main</span><span class="o">-</span><span class="n">singularity</span>
+</pre></div>
+</div>
+<p>The image can also be built manually in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> folder by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">singularity</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
-<p>You can now run:</p>
+<p>After pulling or building, you can now run (again, in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> folder):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
-<p>in order to get the executables for using the software in the image (instead of in your own system)</p>
+<p>in order to get the executables for using the software in the image (instead of in your own system).</p>
 <p>Among other executables, the image contains the following executables that are needed for the simulation workflow:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">EXECUTABLES</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;ElmerSolver&quot;</span> <span class="s2">&quot;ElmerSolver_mpi&quot;</span> <span class="s2">&quot;ElmerGrid&quot;</span> <span class="s2">&quot;klayout&quot;</span> <span class="s2">&quot;kqclib&quot;</span> <span class="s2">&quot;paraview&quot;</span> <span class="s2">&quot;python&quot;</span><span class="p">)</span>
 </pre></div>
@@ -565,9 +572,9 @@ folder is added to PATH environment variable”</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>In <cite>waveguides_sim_compare.py</cite>, one has to set <cite>workflow[‘python_executable’]=’kqclib’</cite> or in
-workflow[‘python_executable’]=’path-to-your-KQCircuits/singularity/python’ (in order to use
-the singularity image or over-ride the system python with the latter executable, by moving it
+<p>In <cite>waveguides_sim_compare.py</cite>, one has to set <code class="docutils literal notranslate"><span class="pre">workflow['python_executable']='kqclib'</span></code> or
+<code class="docutils literal notranslate"><span class="pre">workflow['python_executable']='path-to-your-KQCircuits/singularity/python'</span></code> (in order to use
+the singularity image or override the system python with the latter executable, by moving it
 to path-to-your-KQCircuits/singularity/bin).</p>
 </div>
 <p>The simulation scripts are then prepared in a subfolder (for example <cite>$KQC_TMP_PATH/waveguides_sim_elmer</cite> in the
@@ -580,7 +587,7 @@ you might get a read-only error when the singularity image tries to write to the
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>note that now Gmsh and Elmer are run in the container so no need to install the software.</p>
+<p>Note that now Gmsh and Elmer are run in the container so no need to install the software.</p>
 </div>
 </div>
 </div>

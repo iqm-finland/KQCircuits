@@ -1,0 +1,10 @@
+kqcircuits.qubits.double\_pads
+==============================
+
+.. automodule:: kqcircuits.qubits.double_pads
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.qubits.double_pads
+.. image:: ../pcell_images/kqcircuits.qubits.double_pads.png

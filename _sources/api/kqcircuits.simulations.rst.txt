@@ -15,6 +15,7 @@ kqcircuits.simulations
    kqcircuits.simulations.flip_chip_connector_sim
    kqcircuits.simulations.port
    kqcircuits.simulations.simulation
+   kqcircuits.simulations.single_xmon
    kqcircuits.simulations.single_xmons_full_chip_sim
    kqcircuits.simulations.waveguides_sim
    kqcircuits.simulations.xmons_direct_coupling_full_chip_sim

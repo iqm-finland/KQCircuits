@@ -4,6 +4,7 @@ kqcircuits.qubits
 
 .. toctree::
 
+   kqcircuits.qubits.double_pads
    kqcircuits.qubits.qubit
    kqcircuits.qubits.swissmon
 

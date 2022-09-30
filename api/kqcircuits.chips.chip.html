@@ -332,6 +332,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.html#module-kqcircuits.qubits">Module contents</a></li>
@@ -353,6 +354,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -764,7 +766,7 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>frames_marker_dist</strong><em> (List)</em><span> - Marker distance from edge for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>frames_diagonal_squares</strong><em> (List)</em><span> - Number of diagonal marker squares for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">2]</span></code></p></li>
 <li><p><strong>frames_mirrored</strong><em> (List)</em><span> - List of booleans specifying if the frame is mirrored for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[False,</span> <span class="pre">True]</span></code></p></li>
-<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fad261414c0&gt;]</span></code></p></li>
+<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7ff4709355e0&gt;]</span></code></p></li>
 <li><p><strong>dice_width</strong><em> (Double)</em><span> - Dicing width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer for dicing edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M99</span></code></p></li>

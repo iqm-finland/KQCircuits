@@ -330,6 +330,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.qubits.html#module-kqcircuits.qubits">Module contents</a></li>
@@ -351,6 +352,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -525,9 +527,9 @@
 
 <div class="viewcode-block" id="export_ansys_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_json">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span>
                       <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                      <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                       <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulation into json and gds files.</span>
@@ -541,8 +543,6 @@
 <span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
 <span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
 <span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
-<span class="sd">        gap_max_element_length: Largest mesh length allowed in the gaps given in &quot;um&quot;</span>
-<span class="sd">            (if None is given, then the mesh size is not restricted in the gap).</span>
 <span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
 <span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
 <span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
@@ -553,8 +553,9 @@
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
 <span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
 <span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;pyepr&#39;.</span>
+<span class="sd">        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units</span>
+<span class="sd">            (if None is given, then the mesh element size is not restricted in the gap).</span>
 <span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
-<span class="sd">        surface_loss_tangent: Surface loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
 
@@ -589,7 +590,6 @@
             <span class="s1">&#39;max_delta_s&#39;</span><span class="p">:</span> <span class="n">max_delta_s</span><span class="p">,</span>  <span class="c1"># stopping criterion for HFSS</span>
             <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>  <span class="c1"># stopping criterion for Q3D</span>
             <span class="s1">&#39;percent_refinement&#39;</span><span class="p">:</span> <span class="n">percent_refinement</span><span class="p">,</span>
-            <span class="s1">&#39;gap_max_element_length&#39;</span><span class="p">:</span> <span class="n">gap_max_element_length</span><span class="p">,</span>
             <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
             <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
             <span class="s1">&#39;minimum_converged_passes&#39;</span><span class="p">:</span> <span class="n">minimum_converged_passes</span><span class="p">,</span>
@@ -601,8 +601,8 @@
             <span class="s1">&#39;max_delta_f&#39;</span><span class="p">:</span> <span class="n">max_delta_f</span><span class="p">,</span>
             <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="n">n_modes</span><span class="p">,</span>
         <span class="p">},</span>
+        <span class="s1">&#39;gap_max_element_length&#39;</span><span class="p">:</span> <span class="n">gap_max_element_length</span><span class="p">,</span>
         <span class="s1">&#39;substrate_loss_tangent&#39;</span><span class="p">:</span> <span class="n">substrate_loss_tangent</span><span class="p">,</span>
-        <span class="s1">&#39;surface_loss_tangent&#39;</span><span class="p">:</span> <span class="n">surface_loss_tangent</span><span class="p">,</span>
         <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span>
     <span class="p">}</span>
 
@@ -625,7 +625,7 @@
 
 
 <div class="viewcode-block" id="export_ansys_bat"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys_bat">[docs]</a><span class="k">def</span> <span class="nf">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                     <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
+                     <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                      <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span>
                      <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span> <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -691,10 +691,10 @@
 
 <div class="viewcode-block" id="export_ansys"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys">[docs]</a><span class="k">def</span> <span class="nf">export_ansys</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="s1">&#39;hfss&#39;</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="s1">&#39;scripts&#39;</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
                  <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
-                 <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v221\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
+                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                  <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
                  <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -712,8 +712,6 @@
 <span class="sd">        max_delta_s: Stopping criterion in HFSS simulation.</span>
 <span class="sd">        percent_error: Stopping criterion in Q3D simulation.</span>
 <span class="sd">        percent_refinement: Percentage of mesh refinement on each iteration.</span>
-<span class="sd">        gap_max_element_length: Largest mesh length allowed in the gaps given in &quot;um&quot;</span>
-<span class="sd">            (if None is given, then the mesh size is not restricted in the gap).</span>
 <span class="sd">        maximum_passes: Maximum number of iterations in simulation.</span>
 <span class="sd">        minimum_passes: Minimum number of iterations in simulation.</span>
 <span class="sd">        minimum_converged_passes: Determines how many iterations have to meet the stopping criterion to stop simulation.</span>
@@ -724,8 +722,9 @@
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
 <span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
 <span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;eigenmode&#39;.</span>
+<span class="sd">        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units</span>
+<span class="sd">            (if None is given, then the mesh element size is not restricted in the gap).</span>
 <span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
-<span class="sd">        surface_loss_tangent: Surface loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
 <span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
 <span class="sd">        ansys_executable: Path to the Ansys Electronics Desktop executable.</span>
 <span class="sd">        import_script: Name of import script file.</span>
@@ -757,18 +756,17 @@
             <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_ansys_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">ansys_tool</span><span class="o">=</span><span class="n">ansys_tool</span><span class="p">,</span>
                                             <span class="n">frequency_units</span><span class="o">=</span><span class="n">frequency_units</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
                                             <span class="n">max_delta_s</span><span class="o">=</span><span class="n">max_delta_s</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
-                                            <span class="n">gap_max_element_length</span><span class="o">=</span><span class="n">gap_max_element_length</span><span class="p">,</span>
                                             <span class="n">percent_refinement</span><span class="o">=</span><span class="n">percent_refinement</span><span class="p">,</span>
                                             <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
                                             <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="n">minimum_converged_passes</span><span class="p">,</span>
                                             <span class="n">sweep_enabled</span><span class="o">=</span><span class="n">sweep_enabled</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="n">sweep_start</span><span class="p">,</span>
                                             <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
                                             <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
+                                            <span class="n">gap_max_element_length</span><span class="o">=</span><span class="n">gap_max_element_length</span><span class="p">,</span>
                                             <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="n">substrate_loss_tangent</span><span class="p">,</span>
-                                            <span class="n">surface_loss_tangent</span><span class="o">=</span><span class="n">surface_loss_tangent</span><span class="p">,</span>
                                             <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
                                             <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">))</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># TODO gather all &#39;allowed&#39; error types  # pylint: disable=broad-except</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s1">&#39;Simulation </span><span class="si">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> skipped due to </span><span class="si">{</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="si">}</span><span class="s1">. &#39;</span>\
@@ -776,7 +774,11 @@
                     <span class="s1">&#39;Disable `skip_errors` to see the full traceback.&#39;</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">e</span>
+                <span class="k">raise</span> <span class="ne">UserWarning</span><span class="p">(</span>
+                    <span class="s1">&#39;Generating simulation failed. You can discard the errors using `skip_errors` in `export_ansys`. &#39;</span>\
+                    <span class="s1">&#39;Moreover, `skip_errors` enables visual inspection of failed and successful simulation &#39;</span>\
+                    <span class="s1">&#39;geometry files.&#39;</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
     <span class="k">return</span> <span class="n">export_ansys_bat</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="n">file_prefix</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="n">exit_after_run</span><span class="p">,</span>
                             <span class="n">ansys_executable</span><span class="o">=</span><span class="n">ansys_executable</span><span class="p">,</span> <span class="n">import_script_folder</span><span class="o">=</span><span class="n">import_script_folder</span><span class="p">,</span>

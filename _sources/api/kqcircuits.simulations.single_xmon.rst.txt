@@ -1,0 +1,10 @@
+kqcircuits.simulations.single\_xmon
+===================================
+
+.. automodule:: kqcircuits.simulations.single_xmon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.single_xmon
+.. image:: ../pcell_images/kqcircuits.simulations.single_xmon.png
