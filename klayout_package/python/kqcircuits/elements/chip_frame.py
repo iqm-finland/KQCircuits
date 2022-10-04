@@ -37,7 +37,7 @@ class ChipFrame(Element):
     dice_width = Param(pdt.TypeDouble, "Dicing width", 200, unit="μm")
     dice_grid_margin = Param(pdt.TypeDouble, "Margin between dicing edge and ground grid", 100,
         docstring="Margin of the ground grid avoidance layer for dicing edge")
-    name_mask = Param(pdt.TypeString, "Name of the mask", "M99")
+    name_mask = Param(pdt.TypeString, "Name of the mask", "M000")
     name_chip = Param(pdt.TypeString, "Name of the chip", "CTest")
     name_copy = Param(pdt.TypeString, "Name of the copy", None)
     name_brand = Param(pdt.TypeString, "Name of the brand", default_brand)
