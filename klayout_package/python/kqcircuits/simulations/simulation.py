@@ -77,6 +77,7 @@ class Simulation:
     waveguide_length = Param(pdt.TypeDouble,
                              "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
     over_etching = Param(pdt.TypeDouble, "Expansion of metal gaps (negative to shrink the gaps).", 0, unit="μm")
+    vertical_over_etching = Param(pdt.TypeDouble, "Vertical over-etching into substrates at gaps.", 0, unit="μm")
 
     minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent points in polygon", 0.01)
     polygon_tolerance = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent polygons in a layer", 0.004)
@@ -523,6 +524,7 @@ class Simulation:
                     * airbridge_height(float): self.airbridge_height,
                     * box_height(float): self.box_height,
                     * permittivity(float): self.permittivity,
+                    * vertical_over_etching(float): self.vertical_over_etching
                     * box(pya.DBox): self.box,
                     * ports(list): dictionary (see `self.get_port_data`)
                     * parameters(dict): dictionary (see `self.get_parameters`),
@@ -541,6 +543,7 @@ class Simulation:
             'airbridge_height': self.airbridge_height,
             'box_height': self.box_height,
             'permittivity': self.permittivity,
+            'vertical_over_etching': self.vertical_over_etching,
             'box': self.box,
             'ports': self.get_port_data(),
             'parameters': self.get_parameters(),

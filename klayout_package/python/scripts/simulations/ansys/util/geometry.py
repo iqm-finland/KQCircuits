@@ -121,3 +121,37 @@ def create_box(oEditor, name, x, y, z, sx, sy, sz, material, units):
          "UseMaterialAppearance:=", False,
          "IsLightweight:=", False
          ])
+
+
+def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_inside=None):
+    """Thickens sheet to solid with given thickness and material"""
+    if objects:
+        oEditor.SweepAlongVector(
+            ["NAME:Selections",
+             "Selections:=", ",".join(objects),
+             "NewPartsModelFlag:=", "Model"
+             ],
+            ["NAME:VectorSweepParameters",
+             "DraftAngle:=", "0deg",
+             "DraftType:=", "Round",
+             "CheckFaceFaceIntersection:=", False,
+             "SweepVectorX:=", "0um",
+             "SweepVectorY:=", "0um",
+             "SweepVectorZ:=", "{} {}".format(thickness, units)
+             ])
+        if solve_inside is not None:
+            oEditor.ChangeProperty(
+                ["NAME:AllTabs",
+                 ["NAME:Geometry3DAttributeTab",
+                  ["NAME:PropServers"] + objects,
+                  ["NAME:ChangedProps",
+                   ["NAME:Solve Inside", "Value:=", solve_inside]
+                   ]]])
+        if material is not None:
+            oEditor.ChangeProperty(
+                ["NAME:AllTabs",
+                 ["NAME:Geometry3DAttributeTab",
+                  ["NAME:PropServers"] + objects,
+                  ["NAME:ChangedProps",
+                   ["NAME:Material", "Value:=", '"{}"'.format(material)]
+                   ]]])

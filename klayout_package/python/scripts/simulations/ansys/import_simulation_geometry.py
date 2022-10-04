@@ -25,7 +25,7 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from geometry import create_box, create_polygon  # pylint: disable=wrong-import-position
+from geometry import create_box, create_polygon, thicken_sheet  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -58,7 +58,9 @@ layer_map_option = []
 entry_option = []
 use_ansys_project_template = 'ansys_project_template' in data \
     and not data['ansys_project_template'] == ''
-export_gaps = data.get('gap_max_element_length', None) is not None
+vertical_over_etching = data.get('vertical_over_etching', 0)
+gap_max_element_length = data.get('gap_max_element_length', None)
+export_gaps = vertical_over_etching > 0 or gap_max_element_length is not None
 
 if wafer_stack_type == "multiface":
     substrate_height_top = data['substrate_height_top']
@@ -198,7 +200,7 @@ oEditor.ImportGDSII(
 # Get lists of imported objects (= 2D chip geometry)
 signal_objects = oEditor.GetMatchedObjectName('Signal_*')  # all signal objects (also t_signal_objects from top-chip)
 ground_objects = oEditor.GetMatchedObjectName('Ground_*')  # all ground objects (also t_ground_objects from top-chip)
-gap_objects = oEditor.GetMatchedObjectName('Gap_*')  # all ground objects (also t_gap_objects from top-chip)
+gap_objects = oEditor.GetMatchedObjectName('Gap_*')  # all gap objects (also t_gap_objects from top-chip)
 airbridge_pads_objects = oEditor.GetMatchedObjectName('Airbridge_Pads_*')
 airbridge_flyover_objects = oEditor.GetMatchedObjectName('Airbridge_Flyover_*')
 
@@ -251,53 +253,10 @@ if wafer_stack_type == 'multiface':
 
     # Indium bumps
     bump_objects = oEditor.GetMatchedObjectName('Indium_Bumps_*')
-
-    if bump_objects:
-        oEditor.SweepAlongVector(
-            ["NAME:Selections",
-             "Selections:=", ",".join(bump_objects),
-             "NewPartsModelFlag:=", "Model"],
-            ["NAME:VectorSweepParameters",
-             "DraftAngle:=", "0deg",
-             "DraftType:=", "Round",
-             "CheckFaceFaceIntersection:=", False,
-             "SweepVectorX:=", "0um",
-             "SweepVectorY:=", "0um",
-             "SweepVectorZ:=", "{} {}".format(chip_distance, units)
-             ])
-        oEditor.ChangeProperty(
-            ["NAME:AllTabs",
-             ["NAME:Geometry3DAttributeTab",
-              ["NAME:PropServers"] + bump_objects,
-              ["NAME:ChangedProps",
-               ["NAME:Material", "Value:=", "\"sc_metal\""]
-               ]
-              ]
-             ])
+    thicken_sheet(oEditor, bump_objects, chip_distance, units, "sc_metal")
 
 # Process airbridge geometry
-if airbridge_pads_objects:
-    oEditor.SweepAlongVector(
-        ["NAME:Selections",
-         "Selections:=", ",".join(airbridge_pads_objects),
-         "NewPartsModelFlag:=", "Model"],
-        ["NAME:VectorSweepParameters",
-         "DraftAngle:=", "0deg",
-         "DraftType:=", "Round",
-         "CheckFaceFaceIntersection:=", False,
-         "SweepVectorX:=", "0um",
-         "SweepVectorY:=", "0um",
-         "SweepVectorZ:=", "{} {}".format(airbridge_height, units)
-         ])
-    oEditor.ChangeProperty(
-        ["NAME:AllTabs",
-         ["NAME:Geometry3DAttributeTab",
-          ["NAME:PropServers"] + airbridge_pads_objects,
-          ["NAME:ChangedProps",
-           ["NAME:Material", "Value:=", "\"sc_metal\""]
-           ]
-          ]
-         ])
+thicken_sheet(oEditor, airbridge_pads_objects, airbridge_height, units, "sc_metal")
 
 if airbridge_flyover_objects:
     oEditor.Move(
@@ -677,7 +636,20 @@ else:
     oEditor.Paste()
     oDesktop.CloseProject(build_geom_name)
 
-if export_gaps:
+if vertical_over_etching > 0:
+    # In case of vertical over-etching, solids of vacuum are created inside substrates (overrides substrate material).
+    # Solve Inside parameter must be set in 'hfss' and 'eigenmode' simulations to avoid warnings.
+    # Solve Inside doesn't exists in 'q3d', so we use None in thicken_sheet function to ignore the parameter.
+    solve_inside = True if ansys_tool in ['hfss', 'eigenmode'] else None
+    if wafer_stack_type == 'multiface':
+        b_gap_objects = [o for o in gap_objects if o not in t_gap_objects]
+        thicken_sheet(oEditor, b_gap_objects, -vertical_over_etching, units, "vacuum", solve_inside)
+        thicken_sheet(oEditor, t_gap_objects, vertical_over_etching, units, "vacuum", solve_inside)
+    else:
+        thicken_sheet(oEditor, gap_objects, -vertical_over_etching, units, "vacuum", solve_inside)
+
+if gap_max_element_length is not None:
+    # Manual mesh refinement on gap sheets (or solids in case of vertical over-etching)
     oMeshSetup = oDesign.GetModule("MeshSetup")
     oMeshSetup.AssignLengthOp(
             [
@@ -688,7 +660,7 @@ if export_gaps:
                 "RestrictElem:=", False,
                 # "NumMaxElem:=", 100000
                 "RestrictLength:=", True,
-                "MaxLength:=", str(data['gap_max_element_length']) + units
+                "MaxLength:=", str(gap_max_element_length) + units
             ])
 
 # Fit window to objects
