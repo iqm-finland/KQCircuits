@@ -78,10 +78,11 @@ class CrossSectionSimulation:
             else:
                 setattr(self, parameter, item.default)
 
-        self.cell = layout.create_cell(self.name)
+        self.cell = kwargs['cell'] if 'cell' in kwargs else layout.create_cell(self.name)
 
         self.layer_dict = dict()
         self.permittivity_dict = dict()
+        self.units = kwargs.get('units', 'um')
         self.build()
 
     # Inherit specific methods from Element
@@ -95,10 +96,35 @@ class CrossSectionSimulation:
         """
         return
 
+    def register_cell_layers_as_sim_layers(self):
+        """Takes all layers that contain any geometry and registers them as simulation layers
+
+        This method resets the internal simulation layer dictionary.
+        """
+        self.layer_dict = dict()
+        self.permittivity_dict = dict()
+        for l in self.layout.layer_infos():
+            if len(list(self.cell.each_shape(self.layout.layer(l)))) > 0:
+                self.layer_dict[l.name] = l
+
     def get_sim_layer(self, layer_name):
         """Returns layer of given name. If layer doesn't exist, a new layer is created."""
         if layer_name not in self.layer_dict:
-            self.layer_dict[layer_name] = pya.LayerInfo(len(self.layer_dict) + 1, 0, layer_name)
+            layer_info = None
+            reserved_layer_ids = []
+            for l in self.layout.layer_infos():
+                if l.datatype == 0:
+                    reserved_layer_ids.append(l.layer)
+                    # If there is a layer with layer_name in layout (used by other cell), reuse that
+                    if l.name == layer_name:
+                        layer_info = l
+            if layer_info is None:
+                # Find unused slot of layers
+                layer_id = 1
+                while layer_id in reserved_layer_ids:
+                    layer_id += 1
+                layer_info = pya.LayerInfo(layer_id, 0, layer_name)
+            self.layer_dict[layer_name] = layer_info
         return self.layout.layer(self.layer_dict[layer_name])
 
     def set_permittivity(self, layer_name, permittivity):
@@ -117,7 +143,7 @@ class CrossSectionSimulation:
         """
         simulation_data = {
             'gds_file': self.name + '.gds',
-            'units': 'um',
+            'units': self.units,
             'box': self.box,
             "london_penetration_depth": self.london_penetration_depth,
             **{'{}_permittivity'.format(k): v for k, v in self.permittivity_dict.items()},

@@ -78,7 +78,7 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
         'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'mesh_size': mesh_size if mesh_size is not None else dict(),
         'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
-        'dielectric_surfaces': dielectric_surfaces,
+        **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
         'linear_system_method': linear_system_method,
         'p_element_order': p_element_order,
         'is_axisymmetric': is_axisymmetric,

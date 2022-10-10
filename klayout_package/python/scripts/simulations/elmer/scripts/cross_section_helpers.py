@@ -127,7 +127,7 @@ def produce_cross_section_mesh(json_data, msh_file):
         gmsh.model.addPhysicalGroup(2, [t[1] for t in new_tags[n]], name=n)
     metals = [n for n in new_tags if 'signal' in n or 'ground' in n]
     for n in metals:
-        metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=True)
+        metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=False)
         gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name=f'{n}_boundary')
 
     # Generate and save mesh

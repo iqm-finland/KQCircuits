@@ -106,7 +106,7 @@ class Simulation:
                              docstring="Set > 0 to start face counting from substrate bottom layer.")
     face_stack = Param(pdt.TypeList, "Face IDs for substrate faces from bottom to top", ["1t1"],
                       docstring="Use empty string to not have metal on the face.")
-    substrate_height = Param(pdt.TypeList, "Height of the substrates", [550.0, 375.0], unit="µm",
+    substrate_height = Param(pdt.TypeList, "Height of the substrates", [550.0, 375.0], unit="[µm]",
                              docstring="The value can be scalar or list of scalars. Set as list to use individual "
                                        "substrate heights from bottom to top.")
     substrate_material = Param(pdt.TypeList, "Material of the substrates.", ['silicon'],
@@ -115,20 +115,22 @@ class Simulation:
     material_dict = Param(pdt.TypeString, "Dictionary of dielectric materials", "{'silicon': {'permittivity': 11.45}}",
                           docstring="Material property keywords follow Ansys Electromagnetics property names. "
                                     "For example 'permittivity', 'dielectric_loss_tangent', etc.")
-    chip_distance = Param(pdt.TypeList, "Height of vacuum between two substrates", [8.0], unit="µm",
+    chip_distance = Param(pdt.TypeList, "Height of vacuum between two substrates", [8.0], unit="[µm]",
                           docstring="The value can be scalar or list of scalars. Set as list to use individual chip "
                                     "distances from bottom to top.")
+    ground_metal_height = Param(pdt.TypeDouble, "Height of the grounded metal", 0.2, unit="µm")
+    signal_metal_height = Param(pdt.TypeDouble, "Height of the trace metal", 0.2, unit="µm")
 
     airbridge_height = Param(pdt.TypeDouble, "Height of airbridges.", 3.4, unit="µm")
 
     waveguide_length = Param(pdt.TypeDouble,
-                             "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
+        "Length of waveguide stubs or distance between couplers and waveguide turning point", 100, unit="µm")
     over_etching = Param(pdt.TypeDouble, "Expansion of metal gaps (negative to shrink the gaps).", 0, unit="μm")
     vertical_over_etching = Param(pdt.TypeDouble, "Vertical over-etching into substrates at gaps.", 0, unit="μm")
     hollow_tsv = Param(pdt.TypeBoolean, "Make TSVs hollow with vacuum inside and thin metal boundary.", False)
 
-    minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent points in polygon", 0.01)
-    polygon_tolerance = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent polygons in a layer", 0.004)
+    minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance for merging adjacent points in polygon", 0.01, unit="µm")
+    polygon_tolerance = Param(pdt.TypeDouble, "Tolerance for merging adjacent polygons in a layer", 0.004, unit="µm")
 
     def __init__(self, layout, **kwargs):
         """Initialize a Simulation.

@@ -26,9 +26,9 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import Flip
 class WaveGuidesSim(Simulation):
 
     cpw_length = Param(pdt.TypeDouble, "Waveguide length", 100, unit="μm")
-    n_guides = Param(pdt.TypeInt, "Number of guides", 5, unit="μm")
+    n_guides = Param(pdt.TypeInt, "Number of guides", 5)
     spacing = Param(pdt.TypeDouble, "Parallel spacing", 100, unit="μm")
-    guide_face_id = Param(pdt.TypeString, "Guide face id", '1t1', unit="μm")
+    guide_face_id = Param(pdt.TypeString, "Guide face id", '1t1')
     add_bumps = Param(pdt.TypeBoolean, "Add ground bumps", False)
     port_termination_end = Param(pdt.TypeBoolean, "Port termination end", True)
     use_edge_ports = Param(pdt.TypeBoolean, "Use edge ports", True)

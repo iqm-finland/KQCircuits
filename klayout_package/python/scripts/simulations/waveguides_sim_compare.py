@@ -31,7 +31,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # There are equal length parallel waveguides with open termination build with KQC.
 # There is also a possibility to produce wave guides with so called wave ports
 # (set edge_ports True).
-# The quides are at the top face of a flip chip type structure.
+# The guides are at the top face of a flip chip type structure.
 # The number of guides and length can be altered.
 #
 # The model mesh and physics definitions added using Gmsh. The mesh is exported to Elmer format

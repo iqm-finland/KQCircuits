@@ -70,6 +70,7 @@ TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]
 ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")]
+XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
 
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None
