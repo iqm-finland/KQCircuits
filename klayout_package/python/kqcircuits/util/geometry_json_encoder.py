@@ -15,14 +15,16 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
 import json
+
 from kqcircuits.pya_resolver import pya
 
 
 class GeometryJsonEncoder(json.JSONEncoder):
     """JSON encoder that converts several pya D* types into nested lists."""
-    def default(self, o):
+
+    @staticmethod
+    def encode_geometry(o):
         if isinstance(o, (pya.DPoint, pya.DVector)):
             return [o.x, o.y]
         if isinstance(o, pya.DBox):
@@ -31,6 +33,8 @@ class GeometryJsonEncoder(json.JSONEncoder):
             return o.layer
         if isinstance(o, pya.DPath):
             return [(p.x, p.y) for p in o.each_point()]
+        return None
 
+    def default(self, o):
         # Use the default JSON encoder for any other types
-        return json.JSONEncoder.default(self, o)
+        return GeometryJsonEncoder.encode_geometry(o) or json.JSONEncoder.default(self, o)
