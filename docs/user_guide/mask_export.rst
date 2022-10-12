@@ -7,6 +7,10 @@ mask and the parameters of those chips. These scripts will export
 as well as auxiliary files such as netlists, images and automatic mask
 documentation. The mask scripts can be run either from the macro editor or
 from the command line using ``klayout -z -r ./scripts/masks/maskname.py``.
+Masks also accept an optional ``-d`` switch to build the mask without KLayout
+and in a single process thus facilitating debugging mask issues. Please note
+that debug mode lacks certain features that are tied to the presence of
+KLayout.
 
 Tutorial
 --------
@@ -22,19 +26,15 @@ Basic mask script and export
         # Imports required for any mask
         from kqcircuits.defaults import TMP_PATH
         from kqcircuits.masks.mask_set import MaskSet
-        from kqcircuits.klayout_view import KLayoutView
         # Import chips required for this mask
         from kqcircuits.chips.demo import Demo
 
-        # Get current view and layout
-        view = KLayoutView(current=True, initialize=True)
-        layout = KLayoutView.get_active_layout()
 
         # Initialize mask object.
         # "name" and "version" will be displayed in labels inside the mask
         # and in the names of the exported files.
         # "with_grid" determines if the ground plane grid is created.
-        test_mask = MaskSet(layout, name="Test", version=1, with_grid=False)
+        test_mask = MaskSet(name="Test", version=1, with_grid=False)
 
         # Add mask layouts.
         # A mask layout determines which chip is at each position. The chips are
@@ -66,10 +66,10 @@ Basic mask script and export
         # ``add_mask_layout()`` and ``add_chip()`.
         test_mask.build()
         # Export the mask files to TMP_PATH
-        test_mask.export(TMP_PATH, view)
+        test_mask.export(TMP_PATH)
 
        Any mask script should follow roughly the same structure. The
-       beginning and end of the script (getting the view, and exporting the
+       beginning and end of the script (creating the MaskSet object, and exporting the
        mask) are generally the same for any mask.
 
     #. (Optional) Open :git_url:`kqcircuits_scripts/macros/logging_setup <klayout_package/python/scripts/macros/logging_setup.lym>` and run it.
@@ -90,7 +90,7 @@ The generated masks can include a ground plane grid, which automatically
 avoids other elements. To generate it, use ``with_grid=True`` in the mask object
 initialization::
 
-    test_mask = MaskSet(layout, name="Test", version=1, with_grid=True)
+    test_mask = MaskSet(name="Test", version=1, with_grid=True)
 
 Because the grid generation is slow, it is recommended to keep
 ``with_grid=False`` when testing masks, and only use ``with_grid=True`` for

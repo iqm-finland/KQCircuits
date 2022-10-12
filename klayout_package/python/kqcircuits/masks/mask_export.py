@@ -27,7 +27,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
     default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH, STARTUPINFO, klayout_executable_command
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
-from kqcircuits.klayout_view import KLayoutView, resolve_default_layer_info
+from kqcircuits.klayout_view import resolve_default_layer_info
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.area import get_area_and_density
 from kqcircuits.util.count_instances import count_instances_in_cell
@@ -54,7 +54,7 @@ def export_designs(mask_set, export_dir):
         export_masks_of_face(export_dir, mask_layout, mask_set)
 
 
-def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
+def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, debug=False):
     """Exports a chip used in a maskset."""
 
     is_pcell = chip_cell.pcell_declaration() is not None
@@ -78,14 +78,16 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     static_cell.write(str(chip_dir/f"{chip_name}.oas"), save_opts)
 
     # export netlist
-    export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json", chip_cell)
+    if not debug:
+        export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json", chip_cell)
     # calculate flip-chip bump count
     bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
     # find layer areas and densities
     layer_areas_and_densities = {}
-    for layer, area, density in zip(*get_area_and_density(static_cell)):
-        if area != 0.0:
-            layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
+    if not debug:
+        for layer, area, density in zip(*get_area_and_density(static_cell)):
+            if area != 0.0:
+                layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
 
     # save auxiliary chip data into json-file
     chip_json = {
@@ -316,26 +318,25 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
 def export_bitmaps(mask_set, export_dir, view, spec_layers=mask_bitmap_export_layers):
     """Exports bitmaps for the mask_set."""
     # pylint: disable=dangerous-default-value
-    if view is None or not isinstance(view, KLayoutView):
-        error_text = "Cannot export bitmap of mask with invalid or nil view."
-        error = ValueError(error_text)
-        export_bitmaps.__log.exception(error_text, exc_info=error)
-        raise error
+
     # export bitmaps for mask layouts
     for mask_layout in mask_set.mask_layouts:
         mask_layout_dir_name = _get_mask_layout_full_name(mask_set, mask_layout)
         mask_layout_dir = _get_directory(export_dir/str(mask_layout_dir_name))
         filename = _get_mask_layout_full_name(mask_set, mask_layout)
-        view.focus(mask_layout.top_cell)
-        view.export_all_layers_bitmap(mask_layout_dir, mask_layout.top_cell, filename=filename)
-        view.export_layers_bitmaps(mask_layout_dir, mask_layout.top_cell, filename=filename,
-                                   layers_set=spec_layers, face_id=mask_layout.face_id)
+        if view:
+            view.focus(mask_layout.top_cell)
+            view.export_all_layers_bitmap(mask_layout_dir, mask_layout.top_cell, filename=filename)
+            view.export_layers_bitmaps(mask_layout_dir, mask_layout.top_cell, filename=filename,
+                                       layers_set=spec_layers, face_id=mask_layout.face_id)
     # export bitmaps for chips
     chips_dir = _get_directory(export_dir/"Chips")
     for name, cell in mask_set.used_chips.items():
         chip_dir = _get_directory(chips_dir/name)
-        view.export_all_layers_bitmap(chip_dir, cell, filename=name)
-    view.focus(mask_set.mask_layouts[0].top_cell)
+        if view:
+            view.export_all_layers_bitmap(chip_dir, cell, filename=name)
+    if view:
+        view.focus(mask_set.mask_layouts[0].top_cell)
 
 
 @logged
@@ -379,7 +380,7 @@ def _export_cell(path, cell=None, layers_to_export=None):
         svopt.clear_cells()
         svopt.add_cell(cell.cell_index())
         for _, layer in items:
-            layer_info = cell.layout().layer_infos()[layer]
+            layer_info = layout.layer_infos()[layer]
             svopt.add_layer(layer, layer_info)
         svopt.write_context_info = False
         layout.write(str(path), svopt)

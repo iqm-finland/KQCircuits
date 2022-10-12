@@ -17,6 +17,7 @@
 
 import copy
 import os
+import sys
 import subprocess
 from time import perf_counter
 from string import Template
@@ -31,6 +32,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, klayout_executable_command, default_face_id
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
+from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 
 
 @logged
@@ -64,16 +66,30 @@ class MaskSet:
 
     """
 
-    def __init__(self, layout, name="MaskSet", version=1, with_grid=False, export_drc=False, mask_export_layers=None):
+    def __init__(self, layout=None, name="MaskSet", version=1, with_grid=False, export_drc=False,
+                 mask_export_layers=None, debug=False):
         super().__init__()
-        if layout is None or not isinstance(layout, pya.Layout):
-            error_text = "Cannot create mask with invalid or nil layout."
-            error = ValueError(error_text)
-            self.__log.exception(error_text, exc_info=error)
-            raise error
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0,  "BUILD": 0, 'EXPORT': 0, 'END': 0}
         self.layout = layout
+        self.debug = debug
+
+        if debug or '-d' in sys.argv:  # Stand-alone debug mode, without klayout. Single process.
+            print("Running without KLayout. Some features for mask export have been limited.")
+            self.debug = True
+            self.view = None
+            self.layout = pya.Layout()
+        else:  # Normal mode, multiple processes run klayout in the background
+            try:
+                self.view = KLayoutView(current=True, initialize=True)
+                self.layout = KLayoutView.get_active_layout()
+            except MissingUILibraryException:
+                print("KLayout application not detected! Most likely the mask export was attempted externally.")
+                print("Try: 'klayout -z -r masks/demo.py' ")
+                print("Alternatively, you may export the mask without KLayout but with limited features.")
+                print("To do this use the debug mode switch '-d': 'python masks/demo.py -d'")
+                sys.exit()
+
         self.name = name
         self.version = version
         self.with_grid = with_grid
@@ -122,7 +138,10 @@ class MaskSet:
 
         if threads is None:
             threads = os.cpu_count()
-        if threads <= 1:
+        if threads is None or threads < 1 or self.debug:
+            threads = 1
+
+        if threads == 1:
             for chip_class, variant_name, *params in tqdm(chips, desc='Building variants',
                                                           bar_format=default_bar_format):
                 self.add_chip(chip_class, variant_name, **(params[0] if params else {}))
@@ -237,10 +256,10 @@ class MaskSet:
 
         if isclass(chip):
             cell = self.variant_definition(chip, variant_name, **kwargs)[variant_name]
-            export_chip(cell, variant_name, chip_path, self.layout, self.export_drc)
+            export_chip(cell, variant_name, chip_path, self.layout, self.export_drc, debug=self.debug)
             self.layout.delete_cell_rec(cell.cell_index())
         else:
-            export_chip(chip, variant_name, chip_path, self.layout, self.export_drc)
+            export_chip(chip, variant_name, chip_path, self.layout, self.export_drc, debug=self.debug)
 
         self._load_chip_into_mask(str(chip_path / f"{variant_name}.oas"), variant_name)
 
@@ -346,7 +365,7 @@ class MaskSet:
         if remove_guiding_shapes and self.layout.is_valid_layer(self.layout.guiding_shape_layer()):
             self.layout.delete_layer(self.layout.guiding_shape_layer())
 
-    def export(self, path, view):
+    def export(self, path, view=None):  # pylint: disable=unused-argument
         """Exports designs, bitmaps and documentation of this mask set.
 
         Assumes that self.build() has been called before.
@@ -359,7 +378,7 @@ class MaskSet:
         self._time['EXPORT'] = perf_counter()
 
         print("Exporting mask set...")
-        export_mask_set(self, path, view)
+        export_mask_set(self, path, self.view)
 
         self._time['END'] = perf_counter()
 

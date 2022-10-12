@@ -30,13 +30,9 @@ from kqcircuits.chips.stripes import Stripes
 from kqcircuits.chips.demo_twoface import DemoTwoface
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_set import MaskSet
-from kqcircuits.klayout_view import KLayoutView
 
 
-view = KLayoutView(current=True, initialize=True)
-layout = KLayoutView.get_active_layout()
-
-mdemo = MaskSet(layout, name="Demo", version=1, with_grid=False,
+mdemo = MaskSet(name="Demo", version=1, with_grid=False,
                 mask_export_layers=["base_metal_gap", "base_metal_gap_wo_grid", "underbump_metallization",
                                     "indium_bump"]
                 )
@@ -109,4 +105,4 @@ mdemo.add_chips([
 ])
 
 mdemo.build()
-mdemo.export(TMP_PATH, view)
+mdemo.export(TMP_PATH)
