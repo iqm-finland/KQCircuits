@@ -23,7 +23,7 @@ from kqcircuits.elements.chip_frame import ChipFrame
 from kqcircuits.elements.element import Element, get_refpoints
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
-from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.parameters import pdt
 from kqcircuits.pya_resolver import pya
 
 
@@ -89,8 +89,8 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
             pcell_classes.add(pcell_decl.__class__)
 
     # If some instances are selected, then we are only going to export code for them
-    layout_view = KLayoutView.get_active_cell_view().view()
-    if len(layout_view.object_selection) > 0:
+    layout_view = pya.CellView.active().view() if hasattr(pya, "CellView") else None
+    if layout_view and len(layout_view.object_selection) > 0:
         for obj in layout_view.object_selection:
             if obj.is_cell_inst():
                 add_instance(obj.inst())
@@ -143,12 +143,18 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
 
         wg_points = []
         nodes = None
+        _params = inst.pcell_parameters_by_name()
         if type(inst.pcell_declaration()).__name__ == "WaveguideCoplanar":
-            wg_points = inst.pcell_parameter("path").each_point()
+            wg_points = _params.pop("path").each_point()
         else:
-            nodes = Node.nodes_from_string(inst.pcell_parameter("nodes"))
+            nodes = Node.nodes_from_string(_params.pop("nodes"))
             for node in nodes:
                 wg_points.append(node.position)
+
+        wg_params = ""  # non-default parameters of the cell
+        for k, v in inst.pcell_declaration().get_schema().items():
+            if k in _params and v.data_type != pdt.TypeShape and _params[k] != v.default:
+                wg_params += f",  {k}={_params[k]}"
 
         for i, path_point in enumerate(wg_points):
             path_point += inst.dtrans.disp
@@ -188,7 +194,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
             else:
                 path_str += f"{point_prefix}({x_snapped}, {y_snapped}){node_params}{point_postfix}, "
         path_str = path_str[:-2]  # Remove extra comma and space
-        path_str += postfix
+        path_str += postfix + wg_params
         if output_format.startswith("insert_cell"):
             return f"self.insert_cell({pcell_type}, {path_str})\n"
         else:

@@ -68,7 +68,6 @@ class Validator():
     """
 
     def __init__(self, schema):
-        super().__init__()
         self.schema = schema
         self.__validate_schema()
 

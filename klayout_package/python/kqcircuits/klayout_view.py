@@ -47,7 +47,6 @@ class KLayoutView():
     """KLayout layout view wrapper with helper methods."""
 
     def __init__(self, view=None, current=False, initialize=False):
-        super().__init__()
         if not hasattr(pya, "Application"):
             error = MissingUILibraryException()
             raise error

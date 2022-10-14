@@ -15,7 +15,6 @@
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>
-
 # This code is part of KQCircuits
 # Copyright (C) 2021 IQM Finland Oy
 #
@@ -110,6 +109,8 @@ top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
 
 
 # Show all hierarchy levels and zoom to fit window
-layout_view.max_hier()
-layout_view.zoom_fit()</text>
+if layout_view:
+    layout_view.max_hier()
+    layout_view.zoom_fit()
+</text>
 </klayout-macro>

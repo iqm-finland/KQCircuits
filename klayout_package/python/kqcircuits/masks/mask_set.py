@@ -68,7 +68,6 @@ class MaskSet:
 
     def __init__(self, layout=None, name="MaskSet", version=1, with_grid=False, export_drc=False,
                  mask_export_layers=None, debug=False):
-        super().__init__()
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0,  "BUILD": 0, 'EXPORT': 0, 'END': 0}
         self.layout = layout
