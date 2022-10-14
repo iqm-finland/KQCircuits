@@ -100,7 +100,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     json_data = {
         'ansys_tool': ansys_tool,
         **simulation.get_simulation_data(),
-        **{(r[13:] if r.startswith('b_') else r[:2] + r[13:]) + '_layer': default_layers[r] for r in layers},
+        **{(r[15:] if r.startswith('1t1_') else "t_" + r[15:]) + '_layer': default_layers[r] for r in layers},
         'analysis_setup': {
             'frequency_units': frequency_units,
             'frequency': frequency,
