@@ -139,6 +139,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -322,6 +323,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -386,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -511,7 +518,7 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span><span class="p">,</span> <span class="n">default_face_id</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
 
@@ -568,7 +575,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">template_imports</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_parameters</span> <span class="o">=</span> <span class="p">{}</span>
 
-<div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">default_face_id</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Creates a mask layout from chips_map and adds it to self.mask_layouts.</span>
 
 <span class="sd">        Args:</span>

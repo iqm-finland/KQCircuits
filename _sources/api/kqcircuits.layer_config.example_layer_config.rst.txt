@@ -1,0 +1,10 @@
+kqcircuits.layer\_config.example\_layer\_config
+===============================================
+
+.. automodule:: kqcircuits.layer_config.example_layer_config
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.layer_config.example_layer_config
+.. image:: ../pcell_images/kqcircuits.layer_config.example_layer_config.png

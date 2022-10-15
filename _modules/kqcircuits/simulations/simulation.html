@@ -139,6 +139,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -322,6 +323,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -386,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -560,6 +567,7 @@
     <span class="n">waveguide_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span>
                              <span class="s2">&quot;Length of waveguide stubs or distance between couplers and waveguide turning point&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
     <span class="n">over_etching</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Expansion of metal gaps (negative to shrink the gaps).&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">vertical_over_etching</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Vertical over-etching into substrates at gaps.&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
     <span class="n">minimum_point_spacing</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance (um) for merging adjacent points in polygon&quot;</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
     <span class="n">polygon_tolerance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance (um) for merging adjacent polygons in a layer&quot;</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">)</span>
@@ -972,7 +980,7 @@
                                 <span class="n">port</span><span class="o">.</span><span class="n">ground_location</span><span class="p">,</span>
                                 <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
 
-                            <span class="n">port_z</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;t&#39;</span> <span class="k">else</span> <span class="mi">0</span>
+                            <span class="n">port_z</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">chip_distance</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">port</span><span class="o">.</span><span class="n">face</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;2b1&#39;</span> <span class="k">else</span> <span class="mi">0</span>
                             <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;polygon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_enclosing_polygon</span><span class="p">(</span>
                                 <span class="p">[[</span><span class="n">signal_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">signal_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span> <span class="p">[</span><span class="n">signal_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">signal_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span>
                                  <span class="p">[</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">],</span> <span class="p">[</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">]])</span>
@@ -1006,6 +1014,7 @@
 <span class="sd">                    * airbridge_height(float): self.airbridge_height,</span>
 <span class="sd">                    * box_height(float): self.box_height,</span>
 <span class="sd">                    * permittivity(float): self.permittivity,</span>
+<span class="sd">                    * vertical_over_etching(float): self.vertical_over_etching</span>
 <span class="sd">                    * box(pya.DBox): self.box,</span>
 <span class="sd">                    * ports(list): dictionary (see `self.get_port_data`)</span>
 <span class="sd">                    * parameters(dict): dictionary (see `self.get_parameters`),</span>
@@ -1024,6 +1033,7 @@
             <span class="s1">&#39;airbridge_height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_height</span><span class="p">,</span>
             <span class="s1">&#39;box_height&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">box_height</span><span class="p">,</span>
             <span class="s1">&#39;permittivity&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permittivity</span><span class="p">,</span>
+            <span class="s1">&#39;vertical_over_etching&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">vertical_over_etching</span><span class="p">,</span>
             <span class="s1">&#39;box&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span>
             <span class="s1">&#39;ports&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_port_data</span><span class="p">(),</span>
             <span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">(),</span>

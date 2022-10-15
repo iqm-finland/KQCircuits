@@ -141,6 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -324,6 +325,11 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -388,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -533,7 +540,7 @@
 <dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.get_cell_path_length">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">get_cell_path_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#get_cell_path_length"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.get_cell_path_length" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the length of the paths in the cell.</p>
-<p>Adding together the cell’s paths’ lengths in the “b_waveguide_path”, “t_waveguide_path” and
+<p>Adding together the cell’s paths’ lengths in the “1t1_waveguide_path”, “2b1_waveguide_path” and
 “waveguide_length” layers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

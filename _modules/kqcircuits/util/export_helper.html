@@ -139,6 +139,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -322,6 +323,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -386,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -516,9 +523,9 @@
 
 
 <div class="viewcode-block" id="generate_probepoints_json"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.generate_probepoints_json">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">generate_probepoints_json</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">generate_probepoints_json</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="s1">&#39;1t1&#39;</span><span class="p">):</span>
     <span class="c1"># make autoprober json string for cell with reference points with magical names</span>
-    <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">face</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">face</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1t1&#39;</span><span class="p">,</span> <span class="s1">&#39;2b1&#39;</span><span class="p">]:</span>
         <span class="n">error_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Invalid face &#39;</span><span class="si">{</span><span class="n">face</span><span class="si">}</span><span class="s2">&#39; or &#39;nil&#39; cell .&quot;</span>
         <span class="n">error</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_text</span><span class="p">)</span>
         <span class="n">generate_probepoints_json</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_text</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
@@ -536,8 +543,8 @@
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="c1"># flip top-markers back to top side</span>
-    <span class="k">if</span> <span class="n">face</span> <span class="o">==</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span>
-        <span class="n">origin</span> <span class="o">=</span> <span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;b_marker_se&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">face</span> <span class="o">==</span> <span class="s1">&#39;2b1&#39;</span><span class="p">:</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;1t1_marker_se&quot;</span><span class="p">]</span>
         <span class="n">markers</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">flip</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">markers</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
     <span class="n">eu</span> <span class="o">=</span> <span class="mf">1e-3</span>  <span class="c1"># export unit</span>
@@ -562,7 +569,7 @@
         <span class="c1"># does the name correspond to a probepoint?</span>
         <span class="k">if</span> <span class="n">name_type</span> <span class="ow">in</span> <span class="n">default_probe_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="ow">and</span> <span class="n">probepoint_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">default_probe_suffixes</span><span class="p">):</span>
 
-            <span class="k">if</span> <span class="n">face</span> <span class="o">==</span> <span class="s1">&#39;t&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">face</span> <span class="o">==</span> <span class="s1">&#39;2b1&#39;</span><span class="p">:</span>
                 <span class="n">probepoint</span> <span class="o">=</span> <span class="n">flip</span><span class="p">(</span><span class="n">probepoint</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
 
             <span class="n">best_distance</span> <span class="o">=</span> <span class="mf">1e99</span>

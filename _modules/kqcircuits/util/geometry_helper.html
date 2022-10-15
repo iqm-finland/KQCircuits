@@ -139,6 +139,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -322,6 +323,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -386,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -502,7 +509,7 @@
 <span class="sd">&quot;&quot;&quot;Helper module for general geometric functions&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">ceil</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_path_length_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
@@ -549,7 +556,7 @@
 <div class="viewcode-block" id="get_cell_path_length"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.get_cell_path_length">[docs]</a><span class="k">def</span> <span class="nf">get_cell_path_length</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns the length of the paths in the cell.</span>
 
-<span class="sd">    Adding together the cell&#39;s paths&#39; lengths in the &quot;b_waveguide_path&quot;, &quot;t_waveguide_path&quot; and</span>
+<span class="sd">    Adding together the cell&#39;s paths&#39; lengths in the &quot;1t1_waveguide_path&quot;, &quot;2b1_waveguide_path&quot; and</span>
 <span class="sd">    &quot;waveguide_length&quot; layers.</span>
 
 <span class="sd">    Args:</span>
@@ -557,12 +564,12 @@
 <span class="sd">        layer: None or an unsigned int to specify a non-standard layer</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span>  <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">)</span>
 
-    <span class="n">length</span>  <span class="o">=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;b_waveguide_path&quot;</span><span class="p">)</span>
-    <span class="n">length</span> <span class="o">+=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;t_waveguide_path&quot;</span><span class="p">)</span>
-    <span class="n">length</span> <span class="o">+=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="s2">&quot;waveguide_length&quot;</span><span class="p">)</span>  <span class="c1"># AirbridgeConnection uses this</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">path_layer</span> <span class="ow">in</span> <span class="n">default_path_length_layers</span><span class="p">:</span>
+        <span class="n">length</span> <span class="o">+=</span> <span class="n">_get_length_per_layer</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">path_layer</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">length</span></div>
 

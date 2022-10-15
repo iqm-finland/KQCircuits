@@ -1,0 +1,10 @@
+kqcircuits.util.import\_helper
+==============================
+
+.. automodule:: kqcircuits.util.import_helper
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.import_helper
+.. image:: ../pcell_images/kqcircuits.util.import_helper.png

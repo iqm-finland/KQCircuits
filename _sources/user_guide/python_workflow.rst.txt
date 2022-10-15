@@ -314,12 +314,18 @@ This can be very useful to see "chip-level" refpoints only.
 Faces
 -----
 
+KQCircuit layers are grouped by faces and functionality. A chip's "face" intuitively means the
+bottom or top sides of it. To identify faces in multi chip configurations we number the chips from
+"1". For technical reasons we permit multiple faces in a particular side. For example "2b1" denotes
+the bottom face of the 2nd chip in a typical flip-chip configuration. See more details in
+:git_url:`default_layer_config.py <klayout_package/python/kqcircuits/layer_config/default_layer_config.py>`.
+
 Elements support a concept of **faces**, used for 3D-integrated chips to place shapes in layers
 belonging to different sides of (possibly) different wafers. For example, an
 element may create shapes in face 0 and face 1, and the ``face_ids`` parameter
-of the element determines which actual chip faces the faces 0 and 1 refer to.
-By default, KQC elements have ``face_ids=["b","t","c"]``, so face 0 would be
-"b" and face 1 would be "t".
+of the element determines which actual chip faces ``0`` and ``1`` refer to.
+By default, KQC elements have ``face_ids=["1t1","2b1","2t1"]``, so face 0 would be
+"1t1" and face 1 would be "2b1".
 
 To choose which face/layer a shape is placed in, you can use the ``face_id``
 argument of ``self.get_layer``::
@@ -336,6 +342,27 @@ placed in::
     self.insert_cell(Launcher, face_ids=[self.face_ids[1]])
     # Placing a multi-face element with the parts in different faces swapped
     self.insert_cell(FlipChipConnectorRf, face_ids=[self.face_ids[1], self.face_ids[0]])
+
+Layer configuration files
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Layer configuration files are used to define the names of layers and faces, and
+many other values related to them. The ``layer_config_path`` variable in
+:git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`
+controls which layer configuration file is used, so you can define your own
+layer configuration with completely different layer names etc. and use it by
+changing ``layer_config_path``.
+
+For more information on what to include in these layer configuration files, see
+the comments in :git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`
+and the layer configuration files in
+:git_url:`layer_config <klayout_package/python/kqcircuits/layer_config>`
+directory. Currently included are
+:git_url:`default_layer_config.py <klayout_package/python/kqcircuits/layer_config/default_layer_config.py>`
+(used by default in KQC) and a simpler
+:git_url:`example_layer_config.py <klayout_package/python/kqcircuits/layer_config/example_layer_config.py>`
+which may be useful as a starting point to define your own layer
+configuration file.
 
 Adding a new face
 ^^^^^^^^^^^^^^^^^
@@ -360,26 +387,29 @@ and one new layer::
     }
 
 These lines should be added after the last line where ``default_layers`` or
-``default_faces`` are modified. Launching KLayout after these changes, you
+``default_faces`` are modified. It is best to do these changes in the layer
+configuration file (see previous section), although it can also be done in
+`defaults.py` directly. Launching KLayout after these changes, you
 should see the new layers in the layers list. If you add for example
 :class:`.Launcher` element to the layout and modify its ``face_ids``
 parameter to have the value ``x``, it will then use the layers from the newly
 added face ``x``.
 
 To change the color of the layers and their organization in the layers list,
-:git_url:`default_layer_props.lyp <klayout_package/python/kqcircuits/default_layer_props.lyp>`
-must be modified or another layer properties file must be set as default in
-KLayout Setup menu. The layer properties file can be edited directly or by
-modifying the layers list in GUI and saving them using KLayout ``File -> Save
-Layer Properties``.
+the layer properties file (determined by ``default_layer_props`` in the layer
+configuration file) must be modified or another layer properties file must be
+set as default in KLayout Setup menu. The layer properties file can be edited
+directly or by modifying the layers list in GUI and saving them using KLayout
+``File -> Save Layer Properties``.
 
 KQCircuit's Layers
 ------------------
 
 KLayout's right panel shows a layer tree. Layers containing meaningful device geometry are grouped
-by faces: ``b-face``, ``t-face`` and ``c-face``. Other texts, annotations and miscellaneous things
-not strictly belonging to a particular face are under the ``texts`` layer group. Other layers used
-only for simulations are under the aptly named ``simulations`` layer group.
+by faces: ``1t1-face``, ``2b1-face`` and ``2t1-face``. Other texts, annotations
+and miscellaneous things not strictly belonging to a particular face are
+under the ``texts`` layer group. Other layers used only for simulations are
+under the aptly named ``simulations`` layer group.
 
 Most layers have self-describing names like ``refpoints`` or ``instance names`` but others need a
 bit of explanation:

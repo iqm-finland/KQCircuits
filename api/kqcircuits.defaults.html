@@ -141,6 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -324,6 +325,11 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -388,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -491,20 +498,7 @@
   <div class="section" id="module-kqcircuits.defaults">
 <span id="kqcircuits-defaults"></span><h1>kqcircuits.defaults<a class="headerlink" href="#module-kqcircuits.defaults" title="Permalink to this headline">¶</a></h1>
 <p>Configuration file for KQCircuits.</p>
-<p>Defines values for things such as default layers, paths, and layers used for different exports.</p>
-<p>Layers have a name, ID and data type. For example <code class="docutils literal notranslate"><span class="pre">&quot;annotations&quot;:</span> <span class="pre">(220,</span> <span class="pre">1)</span></code>.</p>
-<p>KQCircuit layers are grouped by faces and functionality. The main geometry containing layer groups
-are: bottom 10-39, top 40-69 and ceiling 70-89. Simulation 90-99, layers are in either top or bottom
-faces. Layer ID’s 100-219 are reserved. Auxiliary layers 220-229 are not face dependent, they
-contain annotations, refpoints and other text fields.</p>
-<p>In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
-layer views are hidden by default. See <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/layer_source.html">https://www.klayout.de/doc-qt5/manual/layer_source.html</a></p>
-<p><code class="docutils literal notranslate"><span class="pre">default_layers</span></code> is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.
-While <code class="docutils literal notranslate"><span class="pre">default_faces</span></code> is a dictionary mapping ‘b’, ‘t’ and ‘c’ to an other dictionary, a subset of
-<code class="docutils literal notranslate"><span class="pre">default_layers</span></code> in the given face. With a minor twist: in these “face-dictionaries” the keys do not
-start with the face id, for example “b_base_metal_gap” becomes “base_metal_gap”.</p>
-<p>Layer names should not start with <code class="docutils literal notranslate"><span class="pre">-</span></code>, this is reserved for marking exported layers to be inverted
-in <code class="docutils literal notranslate"><span class="pre">mask_export_layers</span></code>.</p>
+<p>Defines values for things such as default layers, paths, and default sub-element types.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.defaults.klayout_executable_command">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.defaults.</span></span><span class="sig-name descname"><span class="pre">klayout_executable_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/defaults.html#klayout_executable_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.defaults.klayout_executable_command" title="Permalink to this definition">¶</a></dt>

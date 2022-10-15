@@ -154,7 +154,7 @@ drop-down menu:
 
 - **Fill with ground plane grid** -- Creates a ground plane grid covering the top cell bounding box,
   except the parts in grid avoidance layer. Requires at least one cell to exist in the current
-  layout. Only creates the grid for "b"-face.  Remember to unhide the b_ground_grid layer to make it
+  layout. Only creates the grid for "1t1"-face. Remember to unhide the 1t1_ground_grid layer to make it
   visible.
 
 - **All chips in the library** -- Opens a new layout and puts all available chips there arranged in

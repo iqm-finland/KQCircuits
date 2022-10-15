@@ -141,6 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -324,6 +325,11 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -388,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -800,6 +807,7 @@ This function must be used when initializing InternalPort.</p>
 <li><p>airbridge_height(float): self.airbridge_height,</p></li>
 <li><p>box_height(float): self.box_height,</p></li>
 <li><p>permittivity(float): self.permittivity,</p></li>
+<li><p>vertical_over_etching(float): self.vertical_over_etching</p></li>
 <li><p>box(pya.DBox): self.box,</p></li>
 <li><p>ports(list): dictionary (see <cite>self.get_port_data</cite>)</p></li>
 <li><p>parameters(dict): dictionary (see <cite>self.get_parameters</cite>),</p></li>
@@ -847,6 +855,7 @@ access more than one sub-cell sharing the same ‘name’, but with different ap
 <li><p><strong>airbridge_height</strong><em> (Double)</em><span> - Height (um) of airbridges.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3.4</span></code></p></li>
 <li><p><strong>waveguide_length</strong><em> (Double)</em><span> - Length of waveguide stubs or distance between couplers and waveguide turning point</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>over_etching</strong><em> (Double)</em><span> - Expansion of metal gaps (negative to shrink the gaps).</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>vertical_over_etching</strong><em> (Double)</em><span> - Vertical over-etching into substrates at gaps.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>minimum_point_spacing</strong><em> (Double)</em><span> - Tolerance (um) for merging adjacent points in polygon</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></li>
 <li><p><strong>polygon_tolerance</strong><em> (Double)</em><span> - Tolerance (um) for merging adjacent polygons in a layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.004</span></code></p></li>
 <li><p><strong>junction_total_length</strong><em> (Double)</em><span> - Simulation junction total length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">33</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
@@ -855,7 +864,7 @@ access more than one sub-cell sharing the same ‘name’, but with different ap
 <li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
 <li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs, list of b | t | c</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['b',</span> <span class="pre">'t',</span> <span class="pre">'c']</span></code></p></li>
+<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs list</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1',</span> <span class="pre">'2b1',</span> <span class="pre">'2t1']</span></code></p></li>
 <li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
 <li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - Add opposite face protection too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>

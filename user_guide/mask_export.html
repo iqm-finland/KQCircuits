@@ -141,6 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -324,6 +325,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -388,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -612,8 +619,8 @@ defined in the previous step.</p></li>
 <h3>Multi-face masks<a class="headerlink" href="#multi-face-masks" title="Permalink to this headline">¶</a></h3>
 <p>The mask generated in the previous step contained “DemoTwoface” chips, which
 are supposed to have elements in two different chip faces for a flip-chip
-process. However, the generated mask only contained the parts in “bottom”
-face. To generate mask for also “top”-face chips, we need to add an
+process. However, the generated mask only contained the parts in “1t1”-face.
+To generate mask for also “2b1”-face chips, we need to add an
 additional <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/masks/mask_layout.py">mask_layout</a></p>
 <ol class="arabic">
 <li><p>Add the following below the old <code class="docutils literal notranslate"><span class="pre">add_mask_layout()</span></code> call:</p>
@@ -639,19 +646,19 @@ additional <a class="reference external" href="https://github.com/iqm-finland/KQ
     <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
     <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
     <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
-<span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">)</span>
+<span class="p">],</span> <span class="s2">&quot;2b1&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Notice the “t” argument after the actual mask layout. This means that only
-elements which are in chip face “t” will be included in this mask layout.
-By default, the mask layout will use elements in chip face “b”, which is
+<p>Notice the “2b1” argument after the actual mask layout. This means that only
+elements which are in chip face “2b1” will be included in this mask layout.
+By default, the mask layout will use elements in chip face “1t1”, which is
 the case for the first mask layout in this script.</p>
 </li>
-<li><p>Generate the mask. In KLayout cell hierarchy, you should see both “Test b”
-and “Test t” cells. You can right click them and select “Show as new
-top” to verify that “Test b” contains the parts of DemoTwoface in “b”-face
-and “Test t” contains the parts of DemoTwoface in “t”-face (with proper
-mirroring and rotation).</p></li>
+<li><p>Generate the mask. In KLayout cell hierarchy, you should see both “Test 1t1”
+and “Test 2b1” cells. You can right click them and select “Show as new
+top” to verify that “Test 1t1” contains the parts of DemoTwoface in
+“1t1”-face and “Test 2b1” contains the parts of DemoTwoface in “2b1”-face
+(with proper mirroring and rotation).</p></li>
 </ol>
 </div>
 </div>

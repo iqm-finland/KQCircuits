@@ -141,6 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -324,6 +325,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -388,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -783,12 +790,17 @@ This can be very useful to see “chip-level” refpoints only.</p>
 </div>
 <div class="section" id="faces">
 <h2>Faces<a class="headerlink" href="#faces" title="Permalink to this headline">¶</a></h2>
+<p>KQCircuit layers are grouped by faces and functionality. A chip’s “face” intuitively means the
+bottom or top sides of it. To identify faces in multi chip configurations we number the chips from
+“1”. For technical reasons we permit multiple faces in a particular side. For example “2b1” denotes
+the bottom face of the 2nd chip in a typical flip-chip configuration. See more details in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/default_layer_config.py">default_layer_config.py</a>.</p>
 <p>Elements support a concept of <strong>faces</strong>, used for 3D-integrated chips to place shapes in layers
 belonging to different sides of (possibly) different wafers. For example, an
 element may create shapes in face 0 and face 1, and the <code class="docutils literal notranslate"><span class="pre">face_ids</span></code> parameter
-of the element determines which actual chip faces the faces 0 and 1 refer to.
-By default, KQC elements have <code class="docutils literal notranslate"><span class="pre">face_ids=[&quot;b&quot;,&quot;t&quot;,&quot;c&quot;]</span></code>, so face 0 would be
-“b” and face 1 would be “t”.</p>
+of the element determines which actual chip faces <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code> refer to.
+By default, KQC elements have <code class="docutils literal notranslate"><span class="pre">face_ids=[&quot;1t1&quot;,&quot;2b1&quot;,&quot;2t1&quot;]</span></code>, so face 0 would be
+“1t1” and face 1 would be “2b1”.</p>
 <p>To choose which face/layer a shape is placed in, you can use the <code class="docutils literal notranslate"><span class="pre">face_id</span></code>
 argument of <code class="docutils literal notranslate"><span class="pre">self.get_layer</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># (the face_id passed to self.get_layer is actually an index to self.face_ids)</span>
@@ -804,6 +816,25 @@ placed in:</p>
 <span class="c1"># Placing a multi-face element with the parts in different faces swapped</span>
 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 </pre></div>
+</div>
+<div class="section" id="layer-configuration-files">
+<h3>Layer configuration files<a class="headerlink" href="#layer-configuration-files" title="Permalink to this headline">¶</a></h3>
+<p>Layer configuration files are used to define the names of layers and faces, and
+many other values related to them. The <code class="docutils literal notranslate"><span class="pre">layer_config_path</span></code> variable in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+controls which layer configuration file is used, so you can define your own
+layer configuration with completely different layer names etc. and use it by
+changing <code class="docutils literal notranslate"><span class="pre">layer_config_path</span></code>.</p>
+<p>For more information on what to include in these layer configuration files, see
+the comments in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>
+and the layer configuration files in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config">layer_config</a>
+directory. Currently included are
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/default_layer_config.py">default_layer_config.py</a>
+(used by default in KQC) and a simpler
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/layer_config/example_layer_config.py">example_layer_config.py</a>
+which may be useful as a starting point to define your own layer
+configuration file.</p>
 </div>
 <div class="section" id="adding-a-new-face">
 <h3>Adding a new face<a class="headerlink" href="#adding-a-new-face" title="Permalink to this headline">¶</a></h3>
@@ -827,25 +858,28 @@ and one new layer:</p>
 </pre></div>
 </div>
 <p>These lines should be added after the last line where <code class="docutils literal notranslate"><span class="pre">default_layers</span></code> or
-<code class="docutils literal notranslate"><span class="pre">default_faces</span></code> are modified. Launching KLayout after these changes, you
+<code class="docutils literal notranslate"><span class="pre">default_faces</span></code> are modified. It is best to do these changes in the layer
+configuration file (see previous section), although it can also be done in
+<cite>defaults.py</cite> directly. Launching KLayout after these changes, you
 should see the new layers in the layers list. If you add for example
 <a class="reference internal" href="../api/kqcircuits.elements.launcher.html#kqcircuits.elements.launcher.Launcher" title="kqcircuits.elements.launcher.Launcher"><code class="xref py py-class docutils literal notranslate"><span class="pre">Launcher</span></code></a> element to the layout and modify its <code class="docutils literal notranslate"><span class="pre">face_ids</span></code>
 parameter to have the value <code class="docutils literal notranslate"><span class="pre">x</span></code>, it will then use the layers from the newly
 added face <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
 <p>To change the color of the layers and their organization in the layers list,
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/default_layer_props.lyp">default_layer_props.lyp</a>
-must be modified or another layer properties file must be set as default in
-KLayout Setup menu. The layer properties file can be edited directly or by
-modifying the layers list in GUI and saving them using KLayout <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Save</span>
-<span class="pre">Layer</span> <span class="pre">Properties</span></code>.</p>
+the layer properties file (determined by <code class="docutils literal notranslate"><span class="pre">default_layer_props</span></code> in the layer
+configuration file) must be modified or another layer properties file must be
+set as default in KLayout Setup menu. The layer properties file can be edited
+directly or by modifying the layers list in GUI and saving them using KLayout
+<code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Save</span> <span class="pre">Layer</span> <span class="pre">Properties</span></code>.</p>
 </div>
 </div>
 <div class="section" id="kqcircuit-s-layers">
 <h2>KQCircuit’s Layers<a class="headerlink" href="#kqcircuit-s-layers" title="Permalink to this headline">¶</a></h2>
 <p>KLayout’s right panel shows a layer tree. Layers containing meaningful device geometry are grouped
-by faces: <code class="docutils literal notranslate"><span class="pre">b-face</span></code>, <code class="docutils literal notranslate"><span class="pre">t-face</span></code> and <code class="docutils literal notranslate"><span class="pre">c-face</span></code>. Other texts, annotations and miscellaneous things
-not strictly belonging to a particular face are under the <code class="docutils literal notranslate"><span class="pre">texts</span></code> layer group. Other layers used
-only for simulations are under the aptly named <code class="docutils literal notranslate"><span class="pre">simulations</span></code> layer group.</p>
+by faces: <code class="docutils literal notranslate"><span class="pre">1t1-face</span></code>, <code class="docutils literal notranslate"><span class="pre">2b1-face</span></code> and <code class="docutils literal notranslate"><span class="pre">2t1-face</span></code>. Other texts, annotations
+and miscellaneous things not strictly belonging to a particular face are
+under the <code class="docutils literal notranslate"><span class="pre">texts</span></code> layer group. Other layers used only for simulations are
+under the aptly named <code class="docutils literal notranslate"><span class="pre">simulations</span></code> layer group.</p>
 <p>Most layers have self-describing names like <code class="docutils literal notranslate"><span class="pre">refpoints</span></code> or <code class="docutils literal notranslate"><span class="pre">instance</span> <span class="pre">names</span></code> but others need a
 bit of explanation:</p>
 <ul class="simple">

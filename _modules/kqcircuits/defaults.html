@@ -139,6 +139,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -322,6 +323,11 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -386,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -501,25 +508,7 @@
 
 <span class="sd">&quot;&quot;&quot;Configuration file for KQCircuits.</span>
 
-<span class="sd">Defines values for things such as default layers, paths, and layers used for different exports.</span>
-
-<span class="sd">Layers have a name, ID and data type. For example ``&quot;annotations&quot;: (220, 1)``.</span>
-
-<span class="sd">KQCircuit layers are grouped by faces and functionality. The main geometry containing layer groups</span>
-<span class="sd">are: bottom 10-39, top 40-69 and ceiling 70-89. Simulation 90-99, layers are in either top or bottom</span>
-<span class="sd">faces. Layer ID&#39;s 100-219 are reserved. Auxiliary layers 220-229 are not face dependent, they</span>
-<span class="sd">contain annotations, refpoints and other text fields.</span>
-
-<span class="sd">In Klayout GUI these layers are organised in view groups according to faces. Simulation and text</span>
-<span class="sd">layer views are hidden by default. See https://www.klayout.de/doc-qt5/manual/layer_source.html</span>
-
-<span class="sd">``default_layers`` is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.</span>
-<span class="sd">While ``default_faces`` is a dictionary mapping &#39;b&#39;, &#39;t&#39; and &#39;c&#39; to an other dictionary, a subset of</span>
-<span class="sd">``default_layers`` in the given face. With a minor twist: in these &quot;face-dictionaries&quot; the keys do not</span>
-<span class="sd">start with the face id, for example &quot;b_base_metal_gap&quot; becomes &quot;base_metal_gap&quot;.</span>
-
-<span class="sd">Layer names should not start with ``-``, this is reserved for marking exported layers to be inverted</span>
-<span class="sd">in ``mask_export_layers``.</span>
+<span class="sd">Defines values for things such as default layers, paths, and default sub-element types.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -528,7 +517,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.layer_cluster</span> <span class="kn">import</span> <span class="n">LayerCluster</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.import_helper</span> <span class="kn">import</span> <span class="n">module_from_file</span>
 
 
 <div class="viewcode-block" id="klayout_executable_command"><a class="viewcode-back" href="../../api/kqcircuits.defaults.html#kqcircuits.defaults.klayout_executable_command">[docs]</a><span class="k">def</span> <span class="nf">klayout_executable_command</span><span class="p">():</span>
@@ -585,214 +574,11 @@
 <span class="c1"># could be for example &quot;IQM&quot; or &quot;A!&quot;</span>
 <span class="n">default_brand</span> <span class="o">=</span> <span class="s2">&quot;IQM&quot;</span>
 
-<span class="c1"># These layers are present in all faces. Layer id will have +30 for &#39;b&#39; and +60 for &#39;c&#39;</span>
-<span class="n">_common_layers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="c1"># Metal etching (Nb or TiN) layers for front face (facing towards bottom chip)</span>
-    <span class="s2">&quot;base_metal_gap&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-
-    <span class="c1"># merged etching layer with grid  (layers 11 &amp; 13) that defines microscopic structures such as waveguides, launchers</span>
-    <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c1"># etching layer without grid</span>
-    <span class="s2">&quot;base_metal_addition&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Features subtracted from layer 11 , only used during the design.</span>
-    <span class="s2">&quot;ground_grid&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># A subset of structures combined into layer 10 (e.g. ground plane perforations)</span>
-
-    <span class="c1"># Occupy the area where there should be no grids, only used during the design.</span>
-    <span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">}</span>
-
-<span class="c1"># common layers in b and t</span>
-<span class="n">_common_b_t_layers</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="o">**</span><span class="n">_common_layers</span><span class="p">,</span>
-
-    <span class="s2">&quot;base_metal_gap_for_EBL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Features of layer 41 that are needed for EBL</span>
-    <span class="s2">&quot;waveguide_path&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Waveguide&#39;s metal part, used with waveguide length and DRC calculations</span>
-
-    <span class="c1"># Junction layer</span>
-    <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Josephson junction</span>
-    <span class="s2">&quot;SIS_shadow&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>  <span class="c1"># Ghost layer required for Josephson junction</span>
-    <span class="s2">&quot;SIS_junction_2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
-
-    <span class="c1"># Airbridge layers -- potentially obsolete</span>
-    <span class="s2">&quot;airbridge_pads&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>  <span class="c1">#</span>
-    <span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>  <span class="c1">#</span>
-
-    <span class="c1"># 3D integration layers</span>
-    <span class="s2">&quot;underbump_metallization&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>  <span class="c1"># flip-chip bonding</span>
-    <span class="s2">&quot;indium_bump&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>  <span class="c1"># flip-chip bonding</span>
-    <span class="s2">&quot;through_silicon_via&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>  <span class="c1"># TSV</span>
-    <span class="s2">&quot;through_silicon_via_avoidance&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>  <span class="c1"># TSV</span>
-
-    <span class="c1"># Netlist</span>
-    <span class="s2">&quot;ports&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Considered conductive in the netlist extraction</span>
-<span class="p">}</span>
-
-<span class="n">_face_layers</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c1"># layer descriptions per every chip face</span>
-
-<span class="c1"># Bottom face layers</span>
-<span class="n">_face_layers</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="o">**</span><span class="n">_common_b_t_layers</span><span class="p">,</span>
-
-    <span class="c1"># Simulation faces [Layer 90-99]</span>
-    <span class="s2">&quot;simulation_signal&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_ground&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_gap&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_airbridge_flyover&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_airbridge_pads&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_indium_bump&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">}</span>
-
-
-<span class="k">def</span> <span class="nf">_shift_layers</span><span class="p">(</span><span class="n">layers</span><span class="p">,</span> <span class="n">shift</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Add a constant &#39;shift&#39; to all layer indexes and return the dictionary.&quot;&quot;&quot;</span>
-
-    <span class="k">return</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">shift</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-
-<span class="c1"># Top face layers</span>
-<span class="n">_face_layers</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="o">**</span><span class="n">_shift_layers</span><span class="p">(</span><span class="n">_common_b_t_layers</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>    <span class="c1"># same common layers shifted 30 levels down</span>
-
-    <span class="c1"># Simulation faces</span>
-    <span class="s2">&quot;simulation_signal&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_ground&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;simulation_gap&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">}</span>
-
-<span class="c1"># Ceiling face layers</span>
-<span class="n">_face_layers</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="o">**</span><span class="n">_shift_layers</span><span class="p">(</span><span class="n">_common_layers</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span>     <span class="c1"># same common layers shifted 60 levels down</span>
-<span class="p">}</span>
-
-<span class="c1"># Other auxiliary layers [Layer 220-229]</span>
-<span class="n">_aux_layers_dict</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;annotations&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">220</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;annotations_2&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">221</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;instance_names&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">222</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;mask_graphical_rep&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">223</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-    <span class="s2">&quot;waveguide_length&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">224</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>  <span class="c1"># Length only, no DRC. When Waveguide leves its layer, e.g. Airbridge.</span>
-    <span class="s2">&quot;refpoints&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">225</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">}</span>
-
-<span class="c1"># default_faces[face_id] contains the face dictionary for the face determined by face_id.</span>
-<span class="c1">#</span>
-<span class="c1"># Each face dictionary should contain:</span>
-<span class="c1">#   - key &quot;id&quot; with value face_id (string)</span>
-<span class="c1">#   - for all the available layers in that face: key &quot;Layer_name&quot;, value pya.LayerInfo object for that layer</span>
-<span class="c1">#</span>
-<span class="n">default_faces</span> <span class="o">=</span> <span class="p">{}</span>
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">):</span>
-    <span class="n">default_faces</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_face_layers</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-<span class="c1"># pya layer information</span>
-<span class="n">default_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_aux_layers_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-<span class="k">for</span> <span class="n">face</span><span class="p">,</span> <span class="n">layers</span> <span class="ow">in</span> <span class="n">default_faces</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">default_layers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">face</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">:</span> <span class="n">li</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">li</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
-
-<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">):</span>
-    <span class="n">default_faces</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span>
-
 <span class="c1"># default output format and extension</span>
 <span class="n">default_output_format</span> <span class="o">=</span> <span class="s2">&quot;OASIS&quot;</span>
 
 <span class="c1"># default bitmap dimensions</span>
 <span class="n">default_png_dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
-
-<span class="c1"># Layer names (without face prefix) for layers exported as individual .oas files during mask layout export.</span>
-<span class="n">default_mask_export_layers</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;base_metal_gap&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;airbridge_pads&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
-<span class="c1"># Layer names (without face prefix) with mask label postfix for mask label and mask covered region creation.</span>
-<span class="n">default_layers_to_mask</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;airbridge_pads&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;airbridge_flyover&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span>
-<span class="p">}</span>
-
-<span class="c1"># Layer names (without face prefix) in `layers_to_mask` for which mask covered region is not created.</span>
-<span class="n">default_covered_region_excluded_layers</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s2">&quot;indium_bump&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
-<span class="c1"># Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not</span>
-<span class="c1"># apply to individual pixels).</span>
-<span class="n">mask_bitmap_export_layers</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="c1"># &quot;base_metal_gap_wo_grid&quot;,</span>
-    <span class="s2">&quot;mask_graphical_rep&quot;</span><span class="p">,</span>
-<span class="p">]</span>
-
-<span class="c1"># Layers to hide when exporting a bitmap with &quot;all&quot; layers.</span>
-<span class="n">all_layers_bitmap_hide_layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">default_layers</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">_aux_layers_dict</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ports&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_base_metal_gap&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ground_grid&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_ground_grid_avoidance&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;b_waveguide_path&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_ports&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_base_metal_gap&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_ground_grid&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_ground_grid_avoidance&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;t_waveguide_path&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;c_base_metal_gap&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;c_ground_grid&quot;</span><span class="p">],</span>
-    <span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;c_ground_grid_avoidance&quot;</span><span class="p">],</span>
-<span class="p">]</span>
-
-<span class="c1"># Layer clusters used for exporting only certain layers together in the same file, when exporting individual chips</span>
-<span class="c1"># during mask layout export.</span>
-<span class="c1"># Dictionary with items &quot;cluster name: LayerCluster&quot;.</span>
-<span class="n">chip_export_layer_clusters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="c1"># b-face</span>
-    <span class="s2">&quot;SIS b&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;b_SIS_junction&quot;</span><span class="p">,</span> <span class="s2">&quot;b_SIS_shadow&quot;</span><span class="p">,</span> <span class="s2">&quot;b_SIS_junction_2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;b_base_metal_gap_for_EBL&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
-    <span class="s2">&quot;airbridges b&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;b_airbridge_pads&quot;</span><span class="p">,</span> <span class="s2">&quot;b_airbridge_flyover&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;b_base_metal_gap_wo_grid&quot;</span><span class="p">],</span> <span class="s2">&quot;b&quot;</span><span class="p">),</span>
-    <span class="c1"># t-face</span>
-    <span class="s2">&quot;SIS t&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;t_SIS_junction&quot;</span><span class="p">,</span> <span class="s2">&quot;t_SIS_shadow&quot;</span><span class="p">,</span> <span class="s2">&quot;t_SIS_junction_2&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;t_base_metal_gap_for_EBL&quot;</span><span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">),</span>
-    <span class="s2">&quot;airbridges t&quot;</span><span class="p">:</span> <span class="n">LayerCluster</span><span class="p">([</span><span class="s2">&quot;t_airbridge_pads&quot;</span><span class="p">,</span> <span class="s2">&quot;t_airbridge_flyover&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;t_base_metal_gap_wo_grid&quot;</span><span class="p">],</span> <span class="s2">&quot;t&quot;</span><span class="p">),</span>
-<span class="p">}</span>
-
-
-<span class="c1"># default mask parameters for each face</span>
-<span class="c1"># dict of face_id: parameters</span>
-<span class="n">default_mask_parameters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;wafer_rad&quot;</span><span class="p">:</span> <span class="mi">76200</span><span class="p">,</span>
-        <span class="s2">&quot;chips_map_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">1200</span><span class="p">,</span> <span class="mi">1200</span><span class="p">),</span>
-        <span class="s2">&quot;chip_size&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
-        <span class="s2">&quot;chip_box_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-        <span class="s2">&quot;chip_trans&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span>
-        <span class="s2">&quot;dice_width&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
-        <span class="s2">&quot;text_margin&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="s2">&quot;mask_text_scale&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-        <span class="s2">&quot;mask_marker_offset&quot;</span><span class="p">:</span> <span class="mi">50000</span><span class="p">,</span>
-        <span class="s2">&quot;mask_name_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">7200</span><span class="p">),</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;wafer_rad&quot;</span><span class="p">:</span> <span class="mi">76200</span><span class="p">,</span>
-        <span class="s2">&quot;chips_map_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">2700</span><span class="p">,</span> <span class="mi">2700</span><span class="p">),</span>
-        <span class="s2">&quot;chip_size&quot;</span><span class="p">:</span> <span class="mi">7000</span><span class="p">,</span>
-        <span class="s2">&quot;chip_box_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span>
-        <span class="s2">&quot;chip_trans&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()</span><span class="o">.</span><span class="n">M90</span><span class="p">,</span>
-        <span class="s2">&quot;dice_width&quot;</span><span class="p">:</span> <span class="mi">140</span><span class="p">,</span>
-        <span class="s2">&quot;text_margin&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="s2">&quot;mask_text_scale&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
-        <span class="s2">&quot;mask_marker_offset&quot;</span><span class="p">:</span> <span class="mi">50000</span><span class="p">,</span>
-        <span class="s2">&quot;mask_name_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">6500</span><span class="p">),</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;wafer_rad&quot;</span><span class="p">:</span> <span class="mi">76200</span><span class="p">,</span>
-        <span class="s2">&quot;chips_map_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="o">-</span><span class="mi">2700</span><span class="p">,</span> <span class="mi">2700</span><span class="p">),</span>
-        <span class="s2">&quot;chip_size&quot;</span><span class="p">:</span> <span class="mi">7000</span><span class="p">,</span>
-        <span class="s2">&quot;chip_box_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span>
-        <span class="s2">&quot;chip_trans&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">10000</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()</span><span class="o">.</span><span class="n">M90</span><span class="p">,</span>
-        <span class="s2">&quot;dice_width&quot;</span><span class="p">:</span> <span class="mi">140</span><span class="p">,</span>
-        <span class="s2">&quot;text_margin&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="s2">&quot;mask_text_scale&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
-        <span class="s2">&quot;mask_marker_offset&quot;</span><span class="p">:</span> <span class="mi">50000</span><span class="p">,</span>
-        <span class="s2">&quot;mask_name_offset&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">6500</span><span class="p">),</span>
-    <span class="p">}</span>
-<span class="p">}</span>
 
 <span class="n">default_junction_type</span> <span class="o">=</span> <span class="s2">&quot;Manhattan&quot;</span>
 <span class="n">default_airbridge_type</span> <span class="o">=</span> <span class="s2">&quot;Airbridge Rectangular&quot;</span>
@@ -802,7 +588,6 @@
 <span class="n">default_tsv_type</span> <span class="o">=</span> <span class="s2">&quot;Tsv Standard&quot;</span>
 
 <span class="n">default_drc_runset</span> <span class="o">=</span> <span class="s2">&quot;example.drc&quot;</span>
-
 
 <span class="c1"># default elements to breakdown before netlist export</span>
 <span class="c1"># list of strings</span>
@@ -898,6 +683,52 @@
     <span class="s1">&#39;Airbridge&#39;</span><span class="p">,</span> <span class="s1">&#39;AirbridgeConnection&#39;</span><span class="p">,</span> <span class="s1">&#39;AirbridgeMultiFace&#39;</span><span class="p">,</span> <span class="s1">&#39;AirbridgeRectangular&#39;</span><span class="p">,</span> <span class="s1">&#39;CircularCapacitor&#39;</span><span class="p">,</span>
     <span class="s1">&#39;FingerCapacitorSquare&#39;</span><span class="p">,</span> <span class="s1">&#39;FingerCapacitorTaper&#39;</span><span class="p">,</span> <span class="s1">&#39;FlipChipConnectorRf&#39;</span><span class="p">,</span> <span class="s1">&#39;SmoothCapacitor&#39;</span><span class="p">,</span>
     <span class="s1">&#39;WaveguideCoplanarSplitter&#39;</span><span class="p">]</span>
+
+<span class="c1"># Path to the layer configuration file, which defines layer/face related defaults.</span>
+<span class="c1"># The path can be either absolute or relative.</span>
+<span class="n">layer_config_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">/</span><span class="s2">&quot;layer_config&quot;</span><span class="o">/</span><span class="s2">&quot;default_layer_config.py&quot;</span>
+
+<span class="c1"># Load layer/face related defaults from the layer config file</span>
+
+<span class="n">layer_config_module</span> <span class="o">=</span> <span class="n">module_from_file</span><span class="p">(</span><span class="n">layer_config_path</span><span class="p">)</span>
+<span class="c1"># pya layer information</span>
+<span class="n">default_layers</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_layers</span>
+<span class="c1"># default_faces[face_id] contains the face dictionary for the face determined by face_id.</span>
+<span class="c1">#</span>
+<span class="c1"># Each face dictionary should contain:</span>
+<span class="c1">#   - key &quot;id&quot; with value face_id (string)</span>
+<span class="c1">#   - for all the available layers in that face: key &quot;Layer_name&quot;, value pya.LayerInfo object for that layer</span>
+<span class="n">default_faces</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_faces</span>
+<span class="c1"># face_id of the face that is used by default in some contexts</span>
+<span class="n">default_face_id</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_face_id</span>
+<span class="c1"># Layer names (without face prefix) for layers exported as individual .oas files during mask layout export</span>
+<span class="n">default_mask_export_layers</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_mask_export_layers</span>
+<span class="c1"># Layer names (without face prefix) with mask label postfix for mask label and mask covered region creation</span>
+<span class="n">default_layers_to_mask</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_layers_to_mask</span>
+<span class="c1"># Layer names (without face prefix) in `layers_to_mask` for which mask covered region is not created</span>
+<span class="n">default_covered_region_excluded_layers</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_covered_region_excluded_layers</span>
+<span class="c1"># Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not</span>
+<span class="c1"># apply to individual pixels)</span>
+<span class="n">mask_bitmap_export_layers</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">mask_bitmap_export_layers</span>
+<span class="c1"># Layers to hide when exporting a bitmap with &quot;all&quot; layers</span>
+<span class="n">all_layers_bitmap_hide_layers</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">all_layers_bitmap_hide_layers</span>
+<span class="c1"># Layer clusters used for exporting only certain layers together in the same file, when exporting individual chips</span>
+<span class="c1"># during mask layout export (dict with items `cluster name: LayerCluster`)</span>
+<span class="n">chip_export_layer_clusters</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">chip_export_layer_clusters</span>
+<span class="c1"># Default layers to use for calculating cell path lengths with get_cell_path_length()</span>
+<span class="n">default_path_length_layers</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_path_length_layers</span>
+<span class="c1"># Default mask parameters for each face (dict with items `face_id: parameters`)</span>
+<span class="n">default_mask_parameters</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_mask_parameters</span>
+<span class="c1"># Path to layer properties file</span>
+<span class="n">default_layer_props</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_layer_props</span>
+<span class="c1"># Prefixes to use in chip name labels for different faces (dict with items `face_id: label_prefix`)</span>
+<span class="n">default_chip_label_face_prefixes</span> <span class="o">=</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_chip_label_face_prefixes</span>
+<span class="c1"># Update default_parameter_values based on layer config file</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layer_config_module</span><span class="o">.</span><span class="n">default_parameter_values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">default_parameter_values</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">default_parameter_values</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k2</span><span class="p">,</span> <span class="n">v2</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">params</span><span class="p">[</span><span class="n">k2</span><span class="p">]</span> <span class="o">=</span> <span class="n">v2</span>
+    <span class="n">default_parameter_values</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
 </pre></div>
 
            </div>

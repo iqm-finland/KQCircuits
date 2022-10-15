@@ -141,6 +141,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#refpoints">Refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/python_workflow.html#faces">Faces</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
@@ -324,6 +325,11 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
@@ -388,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.groundgrid.html">kqcircuits.util.groundgrid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.gui_helper.html">kqcircuits.util.gui_helper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.import_helper.html">kqcircuits.util.import_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.label.html">kqcircuits.util.label</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
@@ -766,10 +773,10 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>frames_marker_dist</strong><em> (List)</em><span> - Marker distance from edge for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[1500,</span> <span class="pre">1000]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>frames_diagonal_squares</strong><em> (List)</em><span> - Number of diagonal marker squares for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">2]</span></code></p></li>
 <li><p><strong>frames_mirrored</strong><em> (List)</em><span> - List of booleans specifying if the frame is mirrored for each chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[False,</span> <span class="pre">True]</span></code></p></li>
-<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7ff4709355e0&gt;]</span></code></p></li>
+<li><p><strong>face_boxes</strong><em> (Shape)</em><span> - List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">&lt;klayout.dbcore.DBox</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fd033b0b040&gt;]</span></code></p></li>
 <li><p><strong>dice_width</strong><em> (Double)</em><span> - Dicing width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">200</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>dice_grid_margin</strong><em> (Double)</em><span> - Margin of the ground grid avoidance layer for dicing edge</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
-<li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M99</span></code></p></li>
+<li><p><strong>name_mask</strong><em> (String)</em><span> - Name of the mask</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">M000</span></code></p></li>
 <li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">CTest</span></code></p></li>
 <li><p><strong>name_copy</strong><em> (String)</em><span> - Name of the copy</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 <li><p><strong>name_brand</strong><em> (String)</em><span> - Name of the brand</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">IQM</span></code></p></li>
