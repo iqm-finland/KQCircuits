@@ -23,6 +23,7 @@ from kqcircuits.defaults import default_faces
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
+from kqcircuits.elements.tsvs.tsv_standard import TsvStandard
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas
@@ -41,6 +42,7 @@ class TutorialSim(Simulation):
     - FlipChipConnectorRf (an element with shapes on two faces and indium bumps in between)
     - AirbridgeConnection (an element on single face with airbridges)
     - Text shape (just a simple shape without ports)
+    - TsvStandard (an element with shapes on two faces of the same substrate and through silicon via in between)
     """
 
     capacitor_faces = Param(pdt.TypeList, "Face IDs for capacitor elements", [],
@@ -51,10 +53,12 @@ class TutorialSim(Simulation):
                             docstring="Leave empty to not include airbridge")
     text_faces = Param(pdt.TypeList, "Face IDs for IQM texts", [],
                        docstring="Leave empty to not include text")
+    tsv_faces = Param(pdt.TypeList, "Face IDs for through silicon via elements", [],
+                      docstring="Leave empty to not include TSVs")
 
     def build(self):
         number_of_elements = len(self.capacitor_faces) + len(self.connector_faces) + len(self.airbridge_faces) + \
-                             len(self.text_faces)
+                             len(self.text_faces) + len(self.tsv_faces)
         element_y = self.box.bottom + self.box.height() / (number_of_elements + 1)
         port_count = 1
 
@@ -102,6 +106,15 @@ class TutorialSim(Simulation):
             self.insert_cell(text_cell, pya.DTrans(self.box.center().x - text_center.x, element_y - text_center.y))
             element_y += self.box.height() / (number_of_elements + 1)
 
+        # create through silicon via
+        for faces in self.tsv_faces:
+            for face in faces:
+                cell = self.add_element(TsvStandard, face_ids=[face])
+                trans = pya.DTrans(0, False, self.box.center().x, element_y)
+                _, refp = self.insert_cell(cell, trans)
+            element_y += self.box.height() / (number_of_elements + 1)
+
+
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -139,10 +152,11 @@ simulations = [
               connector_faces=[['1t1', '2b1']], text_faces=['2t1']),
     # a flip-chip simulation taking into account the vacuum boxes above and below wafers
     sim_class(layout, **sim_parameters, name='04-four_face', face_stack=['1b1', '1t1', '2b1', '2t1'],
-              airbridge_faces=['1t1'], capacitor_faces=['1b1', '2b1'], text_faces=['2t1'], lower_box_height=1000),
+              airbridge_faces=['1t1'], capacitor_faces=['1b1', '2b1'], text_faces=['2t1'], tsv_faces=[['1b1', '1t1']],
+              lower_box_height=1000),
     # a three-wafer simulation with alternative face order, also emphasize individual chip distance and substrate height
     sim_class(layout, **sim_parameters, name='05-four_face_inverse', face_stack=['2t1', '2b1', '1t1', '1b1'],
-              airbridge_faces=['1t1'], capacitor_faces=['1b1', '2b1'], text_faces=['2t1'],
+              airbridge_faces=['1t1'], capacitor_faces=['1b1', '2b1'], text_faces=['2t1'], tsv_faces=[['1b1', '1t1']],
               chip_distance=[10.0, 20.0], substrate_height=[100., 200., 300.]),
     # a simulation with two wafers pressed together without a gap between them
     sim_class(layout, **sim_parameters, name='06-zero_chip_distance', face_stack=['1t1', '', '2t1'],

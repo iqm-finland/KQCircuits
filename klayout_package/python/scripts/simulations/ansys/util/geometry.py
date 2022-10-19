@@ -195,3 +195,19 @@ def copy_paste(oEditor, objects):
         return oEditor.Paste()
     else:
         return []
+
+
+def objects_from_sheet_edges(oEditor, objects):
+    """ Creates boundary objects for each sheet and returns object names in list. """
+    edges = []
+    for o in objects:
+        boundary_ids = [int(i) for i in oEditor.GetEdgeIDsFromObject(o)]
+        edge_list = oEditor.CreateObjectFromEdges(
+            ["NAME:Selections", "Selections:=", o, "NewPartsModelFlag:=", "Model"],
+            ["NAME:Parameters", ["NAME:BodyFromEdgeToParameters", "Edges:=", boundary_ids]],
+            ["CreateGroupsForNewObjects:=", False])
+        oEditor.Unite(
+            ["NAME:Selections", "Selections:=", ','.join(edge_list)],
+            ["NAME:UniteParameters", "KeepOriginals:=", False])
+        edges.append(edge_list[0])
+    return edges

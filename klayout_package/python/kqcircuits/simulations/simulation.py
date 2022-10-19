@@ -119,6 +119,7 @@ class Simulation:
                              "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
     over_etching = Param(pdt.TypeDouble, "Expansion of metal gaps (negative to shrink the gaps).", 0, unit="μm")
     vertical_over_etching = Param(pdt.TypeDouble, "Vertical over-etching into substrates at gaps.", 0, unit="μm")
+    hollow_tsv = Param(pdt.TypeBoolean, "Make TSVs hollow with vacuum inside and thin metal boundary.", False)
 
     minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent points in polygon", 0.01)
     polygon_tolerance = Param(pdt.TypeDouble, "Tolerance (um) for merging adjacent polygons in a layer", 0.004)
@@ -333,6 +334,8 @@ class Simulation:
                                face_id, "simulation_airbridge_pads")
             self.insert_region(self.merged_region_from_layer(face_id, "indium_bump") & ground_box_region,
                                face_id, "simulation_indium_bump")
+            self.insert_region(self.merged_region_from_layer(face_id, "through_silicon_via") & ground_box_region,
+                               face_id, "simulation_tsv")
 
     def ground_grid_region(self, face_id):
         """Returns region of ground grid for the given face id."""
@@ -592,6 +595,7 @@ class Simulation:
             'permittivity': self.permittivity,
             'airbridge_height': self.airbridge_height,
             'vertical_over_etching': self.vertical_over_etching,
+            'hollow_tsv': self.hollow_tsv,
             'box': self.box,
             'ports': self.get_port_data(),
             'parameters': self.get_parameters(),
@@ -600,7 +604,7 @@ class Simulation:
     def get_layers(self):
         """ Returns simulation layers and layer numbers in dictionary form. Only return layers that are in use. """
         sim_layer_names = ['simulation_signal', 'simulation_ground', 'simulation_gap', 'simulation_airbridge_flyover',
-                           'simulation_airbridge_pads', 'simulation_indium_bump']
+                           'simulation_airbridge_pads', 'simulation_indium_bump', 'simulation_tsv']
         return {'{}_{}'.format(f, n): l
                 for f in self.face_stack if f in default_faces
                 for n, l in default_faces[f].items() if n in sim_layer_names}

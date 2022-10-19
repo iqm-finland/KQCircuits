@@ -26,7 +26,7 @@ import ScriptEnv
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
 from geometry import create_box, create_polygon, thicken_sheet, add_layer, move_vertically, \
-    copy_paste  # pylint: disable=wrong-import-position
+    copy_paste, objects_from_sheet_edges  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -50,6 +50,7 @@ face_stack = data['face_stack']
 z_levels = data['z_levels']
 permittivity = data['permittivity']
 airbridge_height = data.get('airbridge_height', 0)
+hollow_tsv = data.get('hollow_tsv', False)
 
 substrate_loss_tangent = data.get('substrate_loss_tangent', 0)
 participation_sheet_distance = data.get('participation_sheet_distance', None)
@@ -110,7 +111,7 @@ oDefinitionManager.AddMaterial(
 
 # Import GDSII geometry
 layers = data['layers']
-layer_names = ['signal', 'ground', 'airbridge_flyover', 'airbridge_pads', 'indium_bump']
+layer_names = ['signal', 'ground', 'airbridge_flyover', 'airbridge_pads', 'indium_bump', 'tsv']
 if export_gaps:
     layer_names += ['gap']
 
@@ -147,6 +148,7 @@ oEditor.ImportGDSII(
 # Create 3D geometry
 import_bounding_box = oEditor.GetModelBoundingBox()
 objects = {}
+pec_sheets = []
 for i, face in enumerate(face_stack):
     if not face:
         continue
@@ -160,13 +162,21 @@ for i, face in enumerate(face_stack):
     move_vertically(oEditor, face_objects, z_levels[i + 1], units)
     move_vertically(oEditor, objects[face]['airbridge_flyover'], z_levels[i + 1] + sign * airbridge_height, units)
 
-    # Thicken airbridge pads and indium bumps
+    # Thicken airbridge pads, indium bumps, and TSVs
     thicken_sheet(oEditor, objects[face]['airbridge_pads'], sign * airbridge_height, units, "sc_metal")
     signed_vacuum_thickness = z_levels[i + 1 + sign] - z_levels[i + 1]
     thicken_sheet(oEditor, objects[face]['indium_bump'], signed_vacuum_thickness, units, "sc_metal")
+    signed_substrate_thickness = z_levels[i + 1 - sign] - z_levels[i + 1]
+    if hollow_tsv:
+        edges = objects_from_sheet_edges(oEditor, objects[face]['tsv'])
+        thicken_sheet(oEditor, edges, signed_substrate_thickness, units)
+        pec_sheets += edges
+        thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "vacuum", True)
+    else:
+        thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "sc_metal")
 
 # Assign perfect electric conductor to imported objects
-pec_sheets = [o for f in face_stack if f for n in ['signal', 'ground', 'airbridge_flyover'] for o in objects[f][n]]
+pec_sheets += [o for f in face_stack if f for n in ['signal', 'ground', 'airbridge_flyover'] for o in objects[f][n]]
 if ansys_tool in {'hfss', 'eigenmode'}:
     oBoundarySetup.AssignPerfectE(
         ["NAME:PerfE1",
