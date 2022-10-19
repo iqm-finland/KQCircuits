@@ -41,9 +41,7 @@ from kqcircuits.defaults import default_bar_format
 libname = Chip.LIBRARY_NAME
 library = pya.Library.library_by_name(libname)
 
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
-top_cell = layout.create_cell("Top Cell")
-cell_view.cell_name = top_cell.name  # Shows the new cell
+(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
 
 columns = 5
 chip_step_x = pya.DVector(2.5e3, 0)

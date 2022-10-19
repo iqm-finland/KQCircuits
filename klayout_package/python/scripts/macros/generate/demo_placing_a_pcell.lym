@@ -49,21 +49,11 @@ Preparing an empty layout:
 
 layout : This variable helps to communicate with the cells and structures inside the layout.
 layout_view : This variable helps to control the visual features inside KLayout Editor such as the zooming to a specific place.
+top_cell: is a container that can contain other cells inside. It is the highest level container in KQCircuit structure.
 cell_view : This variable helps to control the cell_view tab on the left side of the KLayout Editor such as selecting a specific cell as a top.
 
 """
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
-
-"""
-A top cell is a container that can contain other cells inside. It is the highest level container in KQCircuit structure.
-"""
-top_cell = layout.create_cell("EXM")
-
-"""
-This line shows us our top_cell in Editor.
-"""
-cell_view.cell_name = top_cell.name
-
+(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout("EXM")
 
 """
 Creating an example basic cell in the layout:

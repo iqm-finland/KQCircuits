@@ -290,9 +290,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         start_code += "from kqcircuits.pya_resolver import pya\n"
         start_code += "import kqcircuits.util.macro_prepare as macroprep\n\n"
         start_code += element_imports + "\n"
-        start_code += "(layout, layout_view, cell_view) = macroprep.prep_empty_layout()\n"
-        start_code += "top_cell = layout.create_cell(\"Top Cell\")\n"
-        start_code += "cell_view.cell_name=top_cell.name\n\n"
+        start_code += "(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()\n\n"
     else:
         start_code += element_imports + "\n"
 

@@ -41,7 +41,7 @@ from kqcircuits.chips.demo import Demo
 from kqcircuits.util.groundgrid import make_grid
 import kqcircuits.util.macro_prepare as macroprep
 
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
+(layout, _, layout_view, cell_view) = macroprep.prep_empty_layout()
 
 # Top cell
 cell = Demo.create(layout) # A new cell into the layout

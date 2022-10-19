@@ -37,9 +37,7 @@ from kqcircuits.pya_resolver import pya
 import kqcircuits.util.macro_prepare as macroprep
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
-top_cell = layout.create_cell("logo")
-cell_view.cell_name=top_cell.name     # Shows the new cell
+(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout("logo")
 
 h = 300 # height
 k = 250 # kernel

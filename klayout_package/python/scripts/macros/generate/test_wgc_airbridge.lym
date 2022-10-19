@@ -42,9 +42,7 @@ from kqcircuits.elements.airbridges.airbridge import Airbridge
 
 
 
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
-top_cell = layout.create_cell("Top Cell")
-cell_view.cell_name=top_cell.name     # Shows the new cell
+(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
 
 def show(nodes, a, b):
     wg = WaveguideComposite.create(layout, nodes=nodes, a=a, b=b, term1=5, term2=10)

@@ -456,8 +456,7 @@ try:
     chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
     route_log(filename=chip_path/"${variant_name}.log")
 
-    layout, _, _ = macro_prepare.prep_empty_layout()
-    top_cell = layout.create_cell("Top Cell")
+    layout, top_cell, _, _ = macro_prepare.prep_empty_layout()
 
     # cell definition and arbitrary code here
     ${create_element}

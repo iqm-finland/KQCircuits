@@ -42,8 +42,8 @@ import numpy
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 
-# Usually the layout, layout_view and cell_view are generated using kqcircuits.util.macro_prepare.prep_empty_layout,
-# but here we show how to create them explicitly.
+# Usually the layout, top_cell, layout_view and cell_view are generated using
+# kqcircuits.util.macro_prepare.prep_empty_layout, but here we show how to create them explicitly.
 
 app = pya.Application.instance()
 mw = app.main_window()

@@ -75,8 +75,7 @@ parameters_qs = {
 
 # We demonstrate how to add chips from different files to a mask
 # Create an empty layout with top cell and generate and export cell to file
-layout_2, _, _ = macro_prepare.prep_empty_layout()
-top_cell = layout_2.create_cell("Another file")
+layout_2, top_cell, _, _ = macro_prepare.prep_empty_layout("Another file")
 cell = QualityFactor.create(layout_2, name_chip="QDD", name_mask="M001",
                             **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
 top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))

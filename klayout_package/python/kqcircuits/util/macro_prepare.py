@@ -16,33 +16,40 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from kqcircuits.pya_resolver import pya
-
+from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.klayout_view import KLayoutView
 
 
 # This script has multiple sideeffects
 
-def prep_empty_layout():
+def prep_empty_layout(top_name="Top Cell"):
     """Creates an empty layout with default layers.
+
+    Args:
+        top_name: Name of the top cell
 
     Returns:
         A tuple ``(layout, layout_view, cell_view)``
 
         * ``layout``:  the created layout
+        * ``top_cell``: the top cell in the layout
         * ``layout_view``: layout view for the layout
         * ``cell_view``: cell view for the layout
     """
 
-    view = KLayoutView(current=False, initialize=True)
-    layout = KLayoutView.get_active_layout()
-    layout_view = view.layout_view
-    cell_view = view.get_active_cell_view()
+    layout, top_cell, layout_view, cell_view = None, None, None, None
 
-    return layout, layout_view, cell_view
+    if is_standalone_session():
+        layout = pya.Layout()
+    else:
+        view = KLayoutView(current=False, initialize=True)
+        layout = KLayoutView.get_active_layout()
 
+    top_cell = layout.create_cell(top_name)
 
-def get_layout_top_cell():
-    cell_view = pya.CellView.active()
-    layout = cell_view.layout()
-    return layout.top_cell()
+    if not is_standalone_session():
+        layout_view = view.layout_view
+        cell_view = view.get_active_cell_view()
+        cell_view.cell_name = top_cell.name  # Shows the new cell
+
+    return layout, top_cell, layout_view, cell_view

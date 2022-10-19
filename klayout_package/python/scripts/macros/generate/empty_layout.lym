@@ -34,8 +34,6 @@
 
 import kqcircuits.util.macro_prepare as macroprep
 
-(layout, layout_view, cell_view) = macroprep.prep_empty_layout()
-
-cell = layout.create_cell("Top Cell")
-cell_view.cell_name=cell.name     # Shows the new cell</text>
+(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
+</text>
 </klayout-macro>

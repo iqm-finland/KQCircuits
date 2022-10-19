@@ -116,9 +116,7 @@ else:
     raise ValueError("Expecting exactly one class in the module to run.")
 
 # Create an empty layout with top cell
-layout, layout_view, cell_view = macro_prepare.prep_empty_layout()
-top_cell = layout.create_cell("Top Cell")
-cell_view.cell_name = top_cell.name  # Set our cell as top cell
+layout, top_cell, layout_view, cell_view = macro_prepare.prep_empty_layout()
 
 cell = cls.create(layout)
 top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
