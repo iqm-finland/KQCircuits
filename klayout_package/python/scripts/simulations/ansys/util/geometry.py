@@ -211,3 +211,16 @@ def objects_from_sheet_edges(oEditor, objects):
             ["NAME:UniteParameters", "KeepOriginals:=", False])
         edges.append(edge_list[0])
     return edges
+
+
+def add_material(oDefinitionManager, name, **parameters):
+    """Adds material with given name and parameters."""
+    param_list = [
+        "NAME:" + name,
+        "CoordinateSystemType:=", "Cartesian",
+        "BulkOrSurfaceType:=", 1,
+        ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]]
+    ]
+    for key, value in parameters.items():
+        param_list += ["{}:=".format(key), str(value)]
+    oDefinitionManager.AddMaterial(param_list)

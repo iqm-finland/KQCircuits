@@ -950,6 +950,6 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
         'body_dim_tags': body_dim_tags,
         'body_materials': body_materials,
         'ground_names': ground_names,
-        'substrate_permittivity': params['permittivity'],
+        'substrate_permittivity': sim_data['material_dict'][sim_data['substrate_material'][0]]['permittivity'],
     }
     return Path(filepath), model_data

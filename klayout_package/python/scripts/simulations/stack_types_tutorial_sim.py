@@ -144,9 +144,11 @@ layout = get_active_or_new_layout()
 simulations = [
     # simple single-face simulation (old wafer_stack_type='planar')
     sim_class(layout, **sim_parameters, name='01-single_face', face_stack=['1t1'], airbridge_faces=['1t1']),
-    # a flip-chip simulation (old wafer_stack_type='multiface'), using wave ports
+    # a flip-chip simulation (old wafer_stack_type='multiface'), using wave ports and custom substrate materials
     sim_class(layout, **sim_parameters, name='02-two_face', face_stack=['1t1', '2b1'], connector_faces=[['1t1', '2b1']],
-              use_internal_ports=False),
+              use_internal_ports=False, substrate_material=['silicon', 'sapphire'],
+              material_dict={'silicon': {'permittivity': 11.45},
+                             'sapphire': {'permittivity': 9.3, 'dielectric_loss_tangent': 2e-5}}),
     # a flip-chip simulation taking into account the vacuum box above the top wafer
     sim_class(layout, **sim_parameters, name='03-three_face', face_stack=['1t1', '2b1', '2t1'],
               connector_faces=[['1t1', '2b1']], text_faces=['2t1']),

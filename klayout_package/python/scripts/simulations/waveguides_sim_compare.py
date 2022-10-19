@@ -89,7 +89,6 @@ sim_parameters = {
     'n_guides': 1,
     'chip_distance': 8,
     'port_size': 50,
-    'permittivity': 11.45
 }
 
 if use_elmer:

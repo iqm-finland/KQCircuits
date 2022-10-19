@@ -63,7 +63,7 @@ sim_parameters = {
     "b": 6,
     "n": 256,
     "length": 3000,
-    "permittivity": 11.43
+    "material_dict": {'silicon': {'permittivity': 11.43}}
 }
 use_elmer = True
 

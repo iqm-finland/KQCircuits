@@ -17,6 +17,7 @@
 
 
 import abc
+import ast
 from typing import List
 
 from autologging import logged
@@ -108,7 +109,12 @@ class Simulation:
     substrate_height = Param(pdt.TypeList, "Height of the substrates", [550.0, 375.0], unit="µm",
                              docstring="The value can be scalar or list of scalars. Set as list to use individual "
                                        "substrate heights from bottom to top.")
-    permittivity = Param(pdt.TypeDouble, "Permittivity of the substrates.", 11.45)
+    substrate_material = Param(pdt.TypeList, "Material of the substrates.", ['silicon'],
+                               docstring="Value can be string or list of strings. Use only keywords introduced in "
+                                         "material_dict. Set as list to use individual materials from bottom to top.")
+    material_dict = Param(pdt.TypeString, "Dictionary of dielectric materials", "{'silicon': {'permittivity': 11.45}}",
+                          docstring="Material property keywords follow Ansys Electromagnetics property names. "
+                                    "For example 'permittivity', 'dielectric_loss_tangent', etc.")
     chip_distance = Param(pdt.TypeList, "Height of vacuum between two substrates", [8.0], unit="µm",
                           docstring="The value can be scalar or list of scalars. Set as list to use individual chip "
                                     "distances from bottom to top.")
@@ -584,7 +590,8 @@ class Simulation:
             * gds_file: name of gds file to include geometry layers,
             * units: length unit in simulations, 'um',
             * lower_box_height: Height of vacuum below bottom substrate,
-            * permittivity: Permittivity of the substrates,
+            * substrate_material: Materials of the substrates from bottom to top,
+            * material_dict: Dictionary of dielectric materials,
             * face_stack: Face IDs for substrate faces from bottom to top,
             * z_levels: Ascending list of face heights,
             * airbridge_height: Height of airbridges,
@@ -593,13 +600,28 @@ class Simulation:
             * ports: Port data in dictionary form, see self.get_port_data(),
             * parameters: All Simulation class parameters in dictionary form,
         """
+        # create complete substrate material list
+        number_of_substrates = (len(self.face_stack) + 2 - int(self.lower_box_height > 0)) // 2
+        if isinstance(self.substrate_material, list):
+            substrate_material = [self.substrate_material[i if i < len(self.substrate_material) else -1]
+                                  for i in range(number_of_substrates)]
+        else:
+            substrate_material = [self.substrate_material] * number_of_substrates
+
+        # check that materials are defined in material_dict
+        mater_dict = ast.literal_eval(self.material_dict) if isinstance(self.material_dict, str) else self.material_dict
+        for name in substrate_material:
+            if name not in mater_dict:
+                raise ValueError("Material '{}' used but not defined in Simulation.material_dict".format(name))
+
         return {
             'gds_file': self.name + '.gds',
             'units': 'um',  # hardcoded assumption in multiple places
             'lower_box_height': self.lower_box_height,
             'face_stack': self.face_stack,
             'z_levels': self.face_z_levels(),
-            'permittivity': self.permittivity,
+            'substrate_material': substrate_material,
+            'material_dict': mater_dict,
             'airbridge_height': self.airbridge_height,
             'vertical_over_etching': self.vertical_over_etching,
             'hollow_tsv': self.hollow_tsv,

@@ -26,7 +26,7 @@ import ScriptEnv
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
 from geometry import create_box, create_polygon, thicken_sheet, add_layer, move_vertically, \
-    copy_paste, objects_from_sheet_edges  # pylint: disable=wrong-import-position
+    copy_paste, objects_from_sheet_edges, add_material  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -48,11 +48,11 @@ units = data.get('units', 'um')
 lower_box_height = data.get('lower_box_height', 0)
 face_stack = data['face_stack']
 z_levels = data['z_levels']
-permittivity = data['permittivity']
+substrate_material = data['substrate_material']
+material_dict = data.get('material_dict')
 airbridge_height = data.get('airbridge_height', 0)
 hollow_tsv = data.get('hollow_tsv', False)
 
-substrate_loss_tangent = data.get('substrate_loss_tangent', 0)
 participation_sheet_distance = data.get('participation_sheet_distance', None)
 thicken_participation_sheet_distance = data.get('thicken_participation_sheet_distance', None)
 use_ansys_project_template = 'ansys_project_template' in data \
@@ -91,23 +91,8 @@ oReportSetup = oDesign.GetModule("ReportSetup")
 oEditor.SetModelUnits(['NAME:Units Parameter', 'Units:=', units, 'Rescale:=', False])
 
 # Add materials
-oDefinitionManager.AddMaterial(
-    ["NAME:si",
-     "CoordinateSystemType:=", "Cartesian",
-     "BulkOrSurfaceType:=", 1,
-     ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
-     "permittivity:=", str(permittivity),
-     ] + (["dielectric_loss_tangent:=", str(substrate_loss_tangent)] if substrate_loss_tangent != 0 else [])
-)
-
-oDefinitionManager.AddMaterial(
-    ["NAME:sc_metal",
-     "CoordinateSystemType:=", "Cartesian",
-     "BulkOrSurfaceType:=", 1,
-     ["NAME:PhysicsTypes", "set:=", ["Electromagnetic"]],
-     "conductivity:=", "1e+30"
-     ]
-)
+for name, params in material_dict.items():
+    add_material(oDefinitionManager, name, **params)
 
 # Import GDSII geometry
 layers = data['layers']
@@ -163,9 +148,9 @@ for i, face in enumerate(face_stack):
     move_vertically(oEditor, objects[face]['airbridge_flyover'], z_levels[i + 1] + sign * airbridge_height, units)
 
     # Thicken airbridge pads, indium bumps, and TSVs
-    thicken_sheet(oEditor, objects[face]['airbridge_pads'], sign * airbridge_height, units, "sc_metal")
+    thicken_sheet(oEditor, objects[face]['airbridge_pads'], sign * airbridge_height, units, "pec")
     signed_vacuum_thickness = z_levels[i + 1 + sign] - z_levels[i + 1]
-    thicken_sheet(oEditor, objects[face]['indium_bump'], signed_vacuum_thickness, units, "sc_metal")
+    thicken_sheet(oEditor, objects[face]['indium_bump'], signed_vacuum_thickness, units, "pec")
     signed_substrate_thickness = z_levels[i + 1 - sign] - z_levels[i + 1]
     if hollow_tsv:
         edges = objects_from_sheet_edges(oEditor, objects[face]['tsv'])
@@ -173,7 +158,7 @@ for i, face in enumerate(face_stack):
         pec_sheets += edges
         thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "vacuum", True)
     else:
-        thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "sc_metal")
+        thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "pec")
 
 # Assign perfect electric conductor to imported objects
 pec_sheets += [o for f in face_stack if f for n in ['signal', 'ground', 'airbridge_flyover'] for o in objects[f][n]]
@@ -425,7 +410,7 @@ if not use_ansys_project_template:
             float(import_bounding_box[3]) - float(import_bounding_box[0]),
             float(import_bounding_box[4]) - float(import_bounding_box[1]),
             z_levels[i + 1] - z_levels[i],
-            "vacuum" if is_vacuum else "si",
+            "vacuum" if is_vacuum else substrate_material[i // 2],
             units)
 
     # Insert analysis setup
