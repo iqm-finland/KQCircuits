@@ -48,7 +48,7 @@ sim_parameters = {
     'use_ports': True,
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(500, 500)),
     'waveguide_length': 10,
-    'wafer_stack_type': "multiface",  # chip distance default at 8um
+    'face_stack': ['1t1', '2b1'],  # chip distance default at 8um
     'a': 3.5, #readout structure a in flip chip
     'b': 32  #readout structure b in flip chip
 }

@@ -38,7 +38,7 @@ sim_parameters = {
     'use_ports': True,
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
     'port_size': 200,
-    'wafer_stack_type': 'planar',
+    'face_stack': ['1t1'],
     'corner_r': 2,
     'chip_distance': 8,
 
@@ -100,7 +100,7 @@ for ab in ab_single:
 
 for ab in ab_multi:
     simulations += cross_sweep_simulation(layout, sim_class,
-        {**sim_parameters, 'wafer_stack_type': "multiface"}, {
+        {**sim_parameters, 'face_stack': ['1t1', '2b1']}, {
         'chip_distance': chip_distances,
         'r_inner': r_inner,
         'swept_angle': swept_angle,

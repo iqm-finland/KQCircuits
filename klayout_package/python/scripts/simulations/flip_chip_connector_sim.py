@@ -42,7 +42,7 @@ sim_parameters = {
     'b': 10,
     'port_size': 200,
     'output_rotation': 180,
-    'wafer_stack_type': "multiface"
+    'face_stack': ['1t1', '2b1']
 }
 export_parameters = {
     'path': dir_path,

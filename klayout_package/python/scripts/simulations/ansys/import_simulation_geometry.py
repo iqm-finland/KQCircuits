@@ -25,7 +25,8 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from geometry import create_box, create_polygon, thicken_sheet  # pylint: disable=wrong-import-position
+from geometry import create_box, create_polygon, thicken_sheet, add_layer, move_vertically, \
+    copy_paste  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -39,25 +40,20 @@ with open(jsonfile, 'r') as fjsonfile:
     data = json.load(fjsonfile)
 
 
-ansys_tool = data['ansys_tool'] if 'ansys_tool' in data else 'hfss'
+ansys_tool = data.get('ansys_tool', 'hfss')
 
 simulation_flags = data['simulation_flags']
 gds_file = data['gds_file']
-signal_layer = data['signal_layer']
-ground_layer = data['ground_layer']
-gap_layer = data['gap_layer']
-substrate_height = data['substrate_height']
-airbridge_height = data.get('airbridge_height', 0)
-box_height = data['box_height']
+units = data.get('units', 'um')
+lower_box_height = data.get('lower_box_height', 0)
+face_stack = data['face_stack']
+z_levels = data['z_levels']
 permittivity = data['permittivity']
+airbridge_height = data.get('airbridge_height', 0)
+
 substrate_loss_tangent = data.get('substrate_loss_tangent', 0)
 participation_sheet_distance = data.get('participation_sheet_distance', None)
 thicken_participation_sheet_distance = data.get('thicken_participation_sheet_distance', None)
-units = data['units']
-wafer_stack_type = data['stack_type']
-vacuum_box_height = box_height
-layer_map_option = []
-entry_option = []
 use_ansys_project_template = 'ansys_project_template' in data \
     and not data['ansys_project_template'] == ''
 vertical_over_etching = data.get('vertical_over_etching', 0)
@@ -67,56 +63,6 @@ export_gaps = any((
     gap_max_element_length is not None,
     participation_sheet_distance is not None
 ))
-
-if wafer_stack_type == "multiface":
-    substrate_height_top = data['substrate_height_top']
-    chip_distance = data['chip_distance']
-    t_signal_layer = data['t_signal_layer']
-    t_ground_layer = data['t_ground_layer']
-    t_gap_layer = data['t_gap_layer']
-    layer_map_option = [["NAME:LayerMapInfo",
-                         "LayerNum:=", t_signal_layer,
-                         "DestLayer:=", "t_Signal",
-                         "layer_type:=", "signal"
-                         ],
-                        ["NAME:LayerMapInfo",
-                         "LayerNum:=", t_ground_layer,
-                         "DestLayer:=", "t_Ground",
-                         "layer_type:=", "signal"
-                         ]]
-    entry_option = [
-        "entry:=", ["order:=", 2, "layer:=", "t_Signal"],
-        "entry:=", ["order:=", 3, "layer:=", "t_Ground"]]
-    if export_gaps:
-        layer_map_option += [["NAME:LayerMapInfo",
-                              "LayerNum:=", t_gap_layer,
-                              "DestLayer:=", "t_Gap",
-                              "layer_type:=", "gap"]]
-        entry_option += ["entry:=", ["order:=", 8, "layer:=", "t_Gap"]]
-    vacuum_box_height = chip_distance
-    if 'indium_bump_layer' in data:
-        entry_option += [
-            "entry:=", ["order:=", 4, "layer:=", "Indium_Bumps"]]
-        layer_map_option += [["NAME:LayerMapInfo",
-                              "LayerNum:=", data['indium_bump_layer'],
-                              "DestLayer:=", "Indium_Bumps",
-                              "layer_type:=", "signal"
-                              ]]
-
-if 'airbridge_pads_layer' in data:
-    entry_option += [
-        "entry:=", ["order:=", 5, "layer:=", "Airbridge_Flyover"],
-        "entry:=", ["order:=", 6, "layer:=", "Airbridge_Pads"]]
-    layer_map_option += [["NAME:LayerMapInfo",
-                          "LayerNum:=", data['airbridge_flyover_layer'],
-                          "DestLayer:=", "Airbridge_Flyover",
-                          "layer_type:=", "signal"
-                          ],
-                         ["NAME:LayerMapInfo",
-                          "LayerNum:=", data['airbridge_pads_layer'],
-                          "DestLayer:=", "Airbridge_Pads",
-                          "layer_type:=", "signal"
-                          ]]
 
 # Create project
 oDesktop.RestoreWindow()
@@ -163,29 +109,24 @@ oDefinitionManager.AddMaterial(
 )
 
 # Import GDSII geometry
-order_map = ["entry:=", ["order:=", 0, "layer:=", "Signal"],
-             "entry:=", ["order:=", 1, "layer:=", "Ground"],
-             ] + entry_option
-
-layer_map = ["NAME:LayerMap",
-             ["NAME:LayerMapInfo",
-              "LayerNum:=", signal_layer,
-              "DestLayer:=", "Signal",
-              "layer_type:=", "signal"
-              ],
-             ["NAME:LayerMapInfo",
-              "LayerNum:=", ground_layer,
-              "DestLayer:=", "Ground",
-              "layer_type:=", "signal"
-              ],
-             ] + layer_map_option
-
+layers = data['layers']
+layer_names = ['signal', 'ground', 'airbridge_flyover', 'airbridge_pads', 'indium_bump']
 if export_gaps:
-    layer_map += [["NAME:LayerMapInfo",
-                   "LayerNum:=", gap_layer,
-                   "DestLayer:=", "Gap",
-                   "layer_type:=", "gap"]]
-    order_map += ["entry:=", ["order:=", 7, "layer:=", "Gap"]]
+    layer_names += ['gap']
+
+order_map = []
+layer_map = ["NAME:LayerMap"]
+order = 0
+for face in face_stack:
+    if not face:
+        continue
+
+    for layer_name in layer_names:
+        full_layer_name = face + '_simulation_' + layer_name
+        if full_layer_name in layers:
+            dest_name = face + '_' + layer_name
+            add_layer(layer_map, order_map, layers[full_layer_name], dest_name, order)
+            order += 1
 
 oEditor.ImportGDSII(
     ["NAME:options",
@@ -203,99 +144,55 @@ oEditor.ImportGDSII(
       ]
      ])
 
-# Get lists of imported objects (= 2D chip geometry)
-signal_objects = oEditor.GetMatchedObjectName('Signal_*')  # all signal objects (t_signal_objects from top-chip later)
-ground_objects = oEditor.GetMatchedObjectName('Ground_*')  # all ground objects (t_ground_objects from top-chip later)
-gap_objects = oEditor.GetMatchedObjectName('Gap_*')  # all gap objects (t_gap_objects from top-chip later)
-airbridge_pads_objects = oEditor.GetMatchedObjectName('Airbridge_Pads_*')
-airbridge_flyover_objects = oEditor.GetMatchedObjectName('Airbridge_Flyover_*')
+# Create 3D geometry
+import_bounding_box = oEditor.GetModelBoundingBox()
+objects = {}
+for i, face in enumerate(face_stack):
+    if not face:
+        continue
+
+    # Get lists of imported objects (2d sheets)
+    objects[face] = {n: oEditor.GetMatchedObjectName(face + '_' + n + '_*') for n in layer_names}
+
+    # Move all sheets to correct z-level
+    sign = (-1) ** (i + int(lower_box_height > 0))
+    face_objects = [o for n in layer_names if n != 'airbridge_flyover' for o in objects[face][n]]
+    move_vertically(oEditor, face_objects, z_levels[i + 1], units)
+    move_vertically(oEditor, objects[face]['airbridge_flyover'], z_levels[i + 1] + sign * airbridge_height, units)
+
+    # Thicken airbridge pads and indium bumps
+    thicken_sheet(oEditor, objects[face]['airbridge_pads'], sign * airbridge_height, units, "sc_metal")
+    signed_vacuum_thickness = z_levels[i + 1 + sign] - z_levels[i + 1]
+    thicken_sheet(oEditor, objects[face]['indium_bump'], signed_vacuum_thickness, units, "sc_metal")
 
 # Assign perfect electric conductor to imported objects
+pec_sheets = [o for f in face_stack if f for n in ['signal', 'ground', 'airbridge_flyover'] for o in objects[f][n]]
 if ansys_tool in {'hfss', 'eigenmode'}:
     oBoundarySetup.AssignPerfectE(
         ["NAME:PerfE1",
-         "Objects:=", signal_objects + ground_objects + airbridge_flyover_objects,
+         "Objects:=", pec_sheets,
          "InfGroundPlane:=", False
          ])
 elif ansys_tool == 'q3d':
     oBoundarySetup.AssignThinConductor(
         [
             "NAME:ThinCond1",
-            "Objects:=", signal_objects + ground_objects + airbridge_flyover_objects,
+            "Objects:=", pec_sheets,
             "Material:=", "pec",
             "Thickness:=", "1nm"  # thickness does not matter when material is pec
         ])
 
-if wafer_stack_type == 'multiface':
-    # move all top-chip elements to the top face
-    top_objects = oEditor.GetMatchedObjectName('t_*')
-    for selection in top_objects:
-        oEditor.Move(["NAME:Selections", "Selections:=", selection],
-                     ["NAME:TranslateParameters",
-                      "TranslateVectorX:=", "0 um",
-                      "TranslateVectorY:=", "0 um",
-                      "TranslateVectorZ:=", "{} {}".format(chip_distance, units)])
-
-    # Assign metalization
-    t_signal_objects = oEditor.GetMatchedObjectName('t_Signal_*')
-    t_ground_objects = oEditor.GetMatchedObjectName('t_Ground_*')
-    t_gap_objects = oEditor.GetMatchedObjectName('t_Gap_*')
-    signal_objects += t_signal_objects
-    ground_objects += t_ground_objects
-    gap_objects += t_gap_objects
-    if ansys_tool in {'hfss', 'eigenmode'}:
-        oBoundarySetup.AssignPerfectE(
-            ["NAME:PerfE2",
-             "Objects:=", t_ground_objects + t_signal_objects,
-             "InfGroundPlane:=", False
-             ])
-    elif ansys_tool == 'q3d':
-        oBoundarySetup.AssignThinConductor(
-            ["NAME:ThinCond2",
-             "Objects:=", t_ground_objects + t_signal_objects,
-             "Material:=", "pec",
-             "Thickness:=", "1nm"  # thickness does not matter when material is pec
-             ])
-
-    # Indium bumps
-    bump_objects = oEditor.GetMatchedObjectName('Indium_Bumps_*')
-    thicken_sheet(oEditor, bump_objects, chip_distance, units, "sc_metal")
-
-# Process airbridge geometry
-thicken_sheet(oEditor, airbridge_pads_objects, airbridge_height, units, "sc_metal")
-
-if airbridge_flyover_objects:
-    oEditor.Move(
-        ["NAME:Selections",
-         "Selections:=", ",".join(airbridge_flyover_objects),
-         "NewPartsModelFlag:=", "Model"
-         ],
-        ["NAME:TranslateParameters",
-         "TranslateVectorX:=", "0um",
-         "TranslateVectorY:=", "0um",
-         "TranslateVectorZ:=", "{} {}".format(airbridge_height, units)
-         ])
-
-# Add safe margin to port signal locations, used for Q3D
-for port in data['ports']:
-    is_wave_port = port['type'] == 'EdgePort'
-    # Compute the signal location of the port
-    if ansys_tool == 'q3d' and not is_wave_port:
-        # Use 1e-2 safe margin to ensure that signal_location is in the signal polygon:
-        port['signal_location'] = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
-    else:
-        port['signal_location'] = list(port['signal_location'])
-    z_component = [chip_distance if port['face'] == 1 else 0.0]
-    port['signal_location'] += z_component
-    if not is_wave_port:
-        port['ground_location'] += z_component
-
 # Create ports or nets
+signal_objects = [o for f in face_stack if f for o in objects[f]['signal']]
+ground_objects = [o for f in face_stack if f for o in objects[f]['ground']]
 if ansys_tool in {'hfss', 'eigenmode'}:
     ports = sorted(data['ports'], key=lambda k: k['number'])
     for port in ports:
         is_wave_port = port['type'] == 'EdgePort'
         if not is_wave_port or not use_ansys_project_template:
+            if 'polygon' not in port:
+                continue
+
             polyname = 'Port%d' % port['number']
 
             # Create polygon spanning the two edges
@@ -389,9 +286,9 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                             ["NAME:PolylineXSection",
                             "XSectionType:=", "None",
                             "XSectionOrient:=", "Auto",
-                            "XSectionWidth:=", "0um",
-                            "XSectionTopWidth:=", "0um",
-                            "XSectionHeight:=", "0um",
+                            "XSectionWidth:=", "0" + units,
+                            "XSectionTopWidth:=", "0" + units,
+                            "XSectionHeight:=", "0" + units,
                             "XSectionNumSegments:=", "0",
                             "XSectionBendType:=", "Corner"]],
                         ["NAME:Attributes",
@@ -405,7 +302,7 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                         "SurfaceMaterialValue:=", "\"\"",
                         "SolveInside:=", True,
                         "ShellElement:=", False,
-                        "ShellElementThickness:=", "0um",
+                        "ShellElementThickness:=", "0" + units,
                         "IsMaterialEditable:="	, True,
                         "UseMaterialAppearance:=", False,
                         "IsLightweight:="	, False
@@ -428,11 +325,15 @@ elif ansys_tool == 'q3d':
     port_objects = []  # signal objects to be assigned as SignalNets
     ports = sorted(data['ports'], key=lambda k: k['number'])
     for port in ports:
+        signal_location = port['signal_location']
+        if 'ground_location' in port:
+            # Use 1e-2 safe margin to ensure that signal_location is inside the signal polygon:
+            signal_location = [x + 1e-2 * (x - y) for x, y in zip(signal_location, port['ground_location'])]
         port_object = oEditor.GetBodyNamesByPosition(
             ["NAME:Parameters",
-             "XPosition:=", str(port['signal_location'][0]) + units,
-             "YPosition:=", str(port['signal_location'][1]) + units,
-             "ZPosition:=", str(port['signal_location'][2]) + units
+             "XPosition:=", str(signal_location[0]) + units,
+             "YPosition:=", str(signal_location[1]) + units,
+             "ZPosition:=", str(signal_location[2]) + units
              ])
 
         if len(port_object) == 1 and port_object[0] not in port_objects and port_object[0] in signal_objects:
@@ -461,145 +362,60 @@ elif ansys_tool == 'q3d':
 
 # Create (floating) sheets modelling participation surfaces
 if participation_sheet_distance is not None:
-
-    multiface = wafer_stack_type == 'multiface'
-    t_MA_interfaces = t_signal_objects + t_ground_objects if multiface else []
-    t_MS_interfaces = t_signal_objects + t_ground_objects if multiface else []
-    t_SA_interfaces = t_gap_objects if multiface else []
-    b_MA_interfaces = signal_objects + ground_objects
-    b_MS_interfaces = signal_objects + ground_objects
-    b_SA_interfaces = gap_objects
-    if multiface:
-        b_MA_interfaces = set(b_MA_interfaces).difference(t_MA_interfaces)
-        b_MS_interfaces = set(b_MS_interfaces).difference(t_MS_interfaces)
-        b_SA_interfaces = set(b_SA_interfaces).difference(t_SA_interfaces)
-
-
-    # for each interface to model, create an infinitesimally thin sheet in which |E|^2 integral is subsequently computed
-    def _duplicate_non_model_sheets(obj, distance, distance_sign):
-        """Duplicate object and move `distance` in the z-direction. Return name of `obj` duplicate."""
-        oEditor.DuplicateAlongLine(
-            ["NAME:Selections",
-                "Selections:=", obj,
-                "NewPartsModelFlag:=", "Model"
-            ],
-            ["NAME:DuplicateToAlongLineParameters",
-                "CreateNewObjects:=", True,
-                "XComponent:=", "0um",
-                "YComponent:=", "0um",
-                "ZComponent:=", "{} {}".format(distance_sign * distance, units),
-                "NumClones:=", "2"  # 2 means one duplicate
-            ],
-            ["NAME:Options",
-                "DuplicateAssignments:=", False
-            ],
-            ["CreateGroupsForNewObjects:=", False]
-        )
-        obj_copy = oEditor.GetMatchedObjectName(obj + '_*')[-1]  # infer duplicate name
-        oEditor.ChangeProperty(
-            ["NAME:AllTabs",
-                ["NAME:Geometry3DAttributeTab",
-                    ["NAME:PropServers", obj_copy],
-                    ["NAME:ChangedProps",
-                        ["NAME:Model",
-                            "Value:=", False  # non-modelled sheet
-                        ],
-                        ["NAME:Color",
-                            "R:=", 197, "G:=", 197, "B:=", 197  # grey
-                        ]
-                    ]
-                ]
-            ])
-        return obj_copy
-
-    for layer, b_objects, t_objects, distance in (
-        ('layerMA', b_MA_interfaces, t_MA_interfaces, participation_sheet_distance),  # metal-air (vacuum)
-        ('layerMS', b_MS_interfaces, t_MS_interfaces, -participation_sheet_distance),  # metal-substrate
-        ('layerSA', b_SA_interfaces, t_SA_interfaces, participation_sheet_distance),  # substrate-air (vacuum)
+    for layer, src_names, side, height in (
+            ('layerMA', ['signal', 'ground'], 1, 0),  # metal-air (vacuum)
+            ('layerMS', ['signal', 'ground'], -1, 0),  # metal-substrate
+            ('layerSA', ['gap'], 1, -vertical_over_etching),  # substrate-air (vacuum)
     ):
-        if not (b_objects or t_objects):  # skip if no objects given
-            continue
+        layer_objs = []
+        for i, face in enumerate(face_stack):
+            if not face:
+                continue
 
-        # bottom chip
-        b_objects_copy = []
-        for obj in b_objects:
-            b_objects_copy.append(
-                _duplicate_non_model_sheets(obj, distance, distance_sign=1)
-            )
+            sign = (-1) ** (i + int(lower_box_height > 0))
+            objs = [o for n in src_names for o in objects[face][n]]
+            if not objs:  # skip if no objects given
+                continue
 
-        # (possible) top chip
-        t_objects_copy = []
-        for obj in t_objects:
-            t_objects_copy.append(
-                _duplicate_non_model_sheets(obj, distance, distance_sign=-1)
-            )
+            # duplicate objs and transform
+            objs_copy = copy_paste(oEditor, objs)
+            move_vertically(oEditor, objs_copy, sign * (side * participation_sheet_distance + height), units)
+            if thicken_participation_sheet_distance:
+                thicken_sheet(oEditor, objs_copy, sign * side * thicken_participation_sheet_distance, units)
+            layer_objs += objs_copy
 
         # combine objects to just `layer`
-        objects_copy = b_objects_copy + t_objects_copy
-        if len(objects_copy) > 1:  # unite fails for only one selected object
+        if len(layer_objs) > 1:  # unite fails for only one selected object
             oEditor.Unite(
-                ["NAME:Selections",
-                    "Selections:=", ','.join(objects_copy)
-                ],
-                ["NAME:UniteParameters",
-                    "KeepOriginals:=", False
-                ])
+                ["NAME:Selections", "Selections:=", ','.join(layer_objs)],
+                ["NAME:UniteParameters", "KeepOriginals:=", False]
+            )
         oEditor.ChangeProperty(
             ["NAME:AllTabs",
-                ["NAME:Geometry3DAttributeTab",
-                    ["NAME:PropServers",
-                        (objects_copy)[0]  # combined object takes name of first
-                    ],
-                    ["NAME:ChangedProps",
-                        ["NAME:Name",
-                            "Value:=", layer
-                        ]
-                    ]
-                ]
-            ])
-
-        if thicken_participation_sheet_distance:
-            oEditor.ThickenSheet(
-                ["NAME:Selections",
-                    "Selections:=", layer,
-                    "NewPartsModelFlag:=", "Model"
-                ],
-                ["NAME:SheetThickenParameters",
-                    "Thickness:=", "{} {}".format(thicken_participation_sheet_distance, units),
-                    "BothSides:=", True
-                ])
-
+             ["NAME:Geometry3DAttributeTab",
+              ["NAME:PropServers", layer_objs[0]],
+              ["NAME:ChangedProps",
+               ["NAME:Model", "Value:=", False],  # non-modelled sheet
+               ["NAME:Color", "R:=", 197, "G:=", 197, "B:=", 197],  # grey
+               ["NAME:Name", "Value:=", layer]
+               ]
+              ]
+             ])
 
 if not use_ansys_project_template:
     # Create substrate and vacuum boxes
     import_bounding_box = oEditor.GetModelBoundingBox()
 
-    create_box(
-        oEditor, "Box",
-        float(import_bounding_box[0]), float(import_bounding_box[1]), 0,
-        float(import_bounding_box[3]) - float(import_bounding_box[0]),
-        float(import_bounding_box[4]) - float(import_bounding_box[1]),
-        vacuum_box_height,
-        "vacuum",
-        units)
-
-    create_box(
-        oEditor, "Substrate",
-        float(import_bounding_box[0]), float(import_bounding_box[1]), 0,
-        float(import_bounding_box[3]) - float(import_bounding_box[0]),
-        float(import_bounding_box[4]) - float(import_bounding_box[1]),
-        -substrate_height,
-        "si",
-        units)
-
-    if wafer_stack_type == 'multiface':
+    for i in range(len(z_levels) - 1):
+        is_vacuum = bool((i + int(lower_box_height > 0)) % 2)
+        box_name = "Vacuum" if is_vacuum else "Substrate"
         create_box(
-            oEditor, "Top_chip",
-            float(import_bounding_box[0]), float(import_bounding_box[1]), chip_distance,
+            oEditor, box_name if i < 2 else '{}_{}'.format(box_name, i // 2),
+            float(import_bounding_box[0]), float(import_bounding_box[1]), z_levels[i],
             float(import_bounding_box[3]) - float(import_bounding_box[0]),
             float(import_bounding_box[4]) - float(import_bounding_box[1]),
-            substrate_height_top,
-            "si",
+            z_levels[i + 1] - z_levels[i],
+            "vacuum" if is_vacuum else "si",
             units)
 
     # Insert analysis setup
@@ -758,15 +574,17 @@ if vertical_over_etching > 0:
     # Solve Inside parameter must be set in 'hfss' and 'eigenmode' simulations to avoid warnings.
     # Solve Inside doesn't exists in 'q3d', so we use None in thicken_sheet function to ignore the parameter.
     solve_inside = True if ansys_tool in ['hfss', 'eigenmode'] else None
-    if wafer_stack_type == 'multiface':
-        b_gap_objects = [o for o in gap_objects if o not in t_gap_objects]
-        thicken_sheet(oEditor, b_gap_objects, -vertical_over_etching, units, "vacuum", solve_inside)
-        thicken_sheet(oEditor, t_gap_objects, vertical_over_etching, units, "vacuum", solve_inside)
-    else:
-        thicken_sheet(oEditor, gap_objects, -vertical_over_etching, units, "vacuum", solve_inside)
+    for i, face in enumerate(face_stack):
+        if not face:
+            continue
+
+        sign = (-1) ** (i + int(lower_box_height > 0))
+        gap_objects = objects[face]['gap']
+        thicken_sheet(oEditor, gap_objects, -sign * vertical_over_etching, units, "vacuum", solve_inside)
 
 if gap_max_element_length is not None:
     # Manual mesh refinement on gap sheets (or solids in case of vertical over-etching)
+    gap_objects = [o for f in face_stack if f for o in objects[f]['gap']]
     oMeshSetup = oDesign.GetModule("MeshSetup")
     oMeshSetup.AssignLengthOp(
             [

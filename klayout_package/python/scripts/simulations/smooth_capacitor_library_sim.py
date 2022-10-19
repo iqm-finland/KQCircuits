@@ -38,10 +38,10 @@ class SmoothCapacitorSim(Simulation):
 
     def build(self):
         if self.chip_distance == inf:
-            self.wafer_stack_type = 'planar'
+            self.face_stack = ['1t1']
             self.chip_distance = 1e30
         else:
-            self.wafer_stack_type = 'multiface'
+            self.face_stack = ['1t1', '2b1']
         capacitor_cell = self.add_element(SmoothCapacitor, **{**self.get_parameters()})
 
         cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)

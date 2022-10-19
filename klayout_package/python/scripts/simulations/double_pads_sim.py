@@ -38,7 +38,7 @@ sim_parameters = {
     'name': 'double_pads',
     'use_internal_ports': True,
     'use_ports': True,
-    'wafer_stack_type': 'planar',
+    'face_stack': ['1t1'],
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
 
     'internal_island_ports': True  # DoublePads specific

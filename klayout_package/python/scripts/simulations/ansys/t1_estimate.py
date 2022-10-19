@@ -58,12 +58,12 @@ try:
 
     ## Set dissipative elements
     # Ansys solids
-    pinfo.dissipative['dielectrics_bulk'] = ['Substrate'] + (['Top_chip'] if data['stack_type'] == "multiface" else [])
+    pinfo.dissipative['dielectrics_bulk'] = [e for e in pinfo.get_all_object_names() if e.startswith("Substrate")]
     if data.get('dielectric_surfaces', None) is None:
-        pinfo.dissipative['dielectric_surfaces'] = [  # Ansys sheets
+        pinfo.dissipative['dielectric_surfaces'] = [  # Ansys sheets (exclude 3D volumes, ports, and junctions)
             e for e in pinfo.get_all_object_names()
-            if e not in {'Box', 'Substrate', 'Top_chip'} |  # exclude 3D volumes, ports, and junctions
-                {item for t in ((f'Port{i}', f'Junction{i}') for i in junction_numbers) for item in t}
+            if not (e.startswith('Vacuum') or e.startswith("Substrate") or
+                    any(e in [f'Port{i}', f'Junction{i}'] for i in junction_numbers))
         ]
     else:
         pinfo.dissipative['dielectric_surfaces'] = data['dielectric_surfaces']
@@ -108,10 +108,10 @@ try:
             'Q_total': (1 / (1 / data['sol'].filter(regex='^Q(dielectric|surf).*')).sum(axis=1)).values.flatten(),
 
             # Substrate quality factor and participation
-            **{(Q_bulk := data['sol'].filter(regex=bulk)).columns[0]: Q_bulk.values.flatten()
+            **{(Q_bulk := data['sol'].filter(regex=bulk+'$')).columns[0]: Q_bulk.values.flatten()
                 for bulk in pinfo.dissipative['dielectrics_bulk']},
             **{f'p_dielectric_{bulk}': (1 / (
-                    data['sol'].filter(regex=bulk) * epr.config['dissipation']['tan_delta_sapp']
+                    data['sol'].filter(regex=bulk+'$') * epr.config['dissipation']['tan_delta_sapp']
                 )).values.flatten()
                 for bulk in pinfo.dissipative['dielectrics_bulk']},
 

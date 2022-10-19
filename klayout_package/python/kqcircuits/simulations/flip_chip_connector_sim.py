@@ -22,6 +22,7 @@ from kqcircuits.util.parameters import add_parameters_from
 
 
 @add_parameters_from(FlipChipConnectorRf)
+@add_parameters_from(Simulation, face_stack=['1t1', '2b1'])
 class FlipChipConnectorSim(Simulation):
 
     def build(self):

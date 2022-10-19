@@ -26,7 +26,7 @@ from distutils.dir_util import copy_tree
 
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
-from kqcircuits.defaults import ELMER_SCRIPT_PATHS, default_layers
+from kqcircuits.defaults import ELMER_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
@@ -106,22 +106,12 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
     if simulation is None or not isinstance(simulation, Simulation):
         raise ValueError("Cannot export without simulation")
 
-    # select layers
-    layers = ["1t1_simulation_signal",
-              "1t1_simulation_ground",
-              "1t1_simulation_gap",
-              "1t1_ground_grid"]
-    if simulation.wafer_stack_type == "multiface":
-        layers += ["2b1_simulation_signal",
-                   "2b1_simulation_ground",
-                   "2b1_simulation_gap",
-                   "2b1_ground_grid"]
-
     # collect data for .json file
+    layers = simulation.get_layers()
     json_data = {
         'tool': tool,
         **simulation.get_simulation_data(),
-        'layers': {r: (default_layers[r].layer, default_layers[r].datatype) for r in layers},
+        'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'gmsh_params': default_gmsh_params if gmsh_params is None else {**default_gmsh_params, **gmsh_params},
         'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
         'frequency': frequency,
@@ -135,7 +125,7 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
     # write .gds file
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
     export_layers(gds_filename, simulation.layout, [simulation.cell], output_format='GDS2',
-                  layers={default_layers[r] for r in layers})
+                  layers=layers.values())
 
     return json_filename
 

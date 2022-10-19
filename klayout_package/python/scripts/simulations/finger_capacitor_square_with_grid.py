@@ -60,7 +60,7 @@ sim_parameters = {
     "b2": 32,
     "ground_padding": 10,
     'port_size': 200,
-    'wafer_stack_type': "multiface",
+    'face_stack': ['1t1', '2b1'],
     'corner_r': 2,
     'chip_distance': 8,
     'with_grid': with_grid,

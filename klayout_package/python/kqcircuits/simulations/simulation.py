@@ -21,6 +21,7 @@ from typing import List
 
 from autologging import logged
 
+from kqcircuits.defaults import default_faces
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
@@ -45,7 +46,44 @@ class Simulation:
 
     A convenience class method `Simulation.from_cell` is provided to create a Simulation from an
     existing cell. In this case no ports will be added.
+
+    Basically, 3D layout is built of substrates, which are separated from each other by vacuum boxes, however, this rule
+    is modifiable by setting substrate and vacuum thicknesses to zero. In princible, one can set a face on any of the
+    imaginable vacuum-substrate interfaces. If substrate or vacuum thickness is set to zero, then there can be two
+    overlapping faces with just different orientation for airbridges, indium bumbs and other non-flat objects.
+
+    Number of substrate and vacuum boxes are determined with parameters face_stack and lower_box_height:
+    - If lower_box_height > 0, there will be a vacuum box below the lowest substrate, and the counting of faces will
+    start from the bottom face of the lowest substrate. Otherwise, the lowest substrate will be below the lowest vacuum
+    box, and the counting of faces will start from the top face of the lowest substrate.
+    - Length of face_stack list describes how many faces are taken into account in the simulation.
+
+    The terms in the face_stack indicate, in which order the klayout faces are stacked in the 3D layout.
+    Faces are counted from the lowest substrate face to the highest.
+    One can use empty string in face_stack to leave certain face without metallization.
+    Notice that simulation layers must be introduced for indicated faces in default_faces.
+
+    Heights of substrates (substrate_height) and vacuum boxes between faces (chip_distance) can be determined
+    individually from bottom to top or with single value. Any of the heights can be left zero, to indicate that there
+    is no vacuum between the substrates or substrate between the vacuum boxes.
     """
+    # The samples below show, how the layout is changed according to the parameters. Number of faces is unlimited:
+    #
+    # len(face_stack) = 1             len(face_stack) = 2             len(face_stack) = 2
+    # lower_box_height = 0            lower_box_height = 0            lower_box_height > 0
+    # |-------------------------|     |-------------------------|     |-------------------------|
+    # |                         |     |/////////////////////////|     |                         |
+    # |                         |     |///substrate_height[1]///|     |    upper_box_height     |
+    # |    upper_box_height     |     |/////////////////////////|     |                         |
+    # |                         |     |----- face_stack[1] -----|     |----- face_stack[1] -----|
+    # |                         |     |                         |     |/////////////////////////|
+    # |----- face_stack[0] -----|     |    chip_distance[0]     |     |///substrate_height[0]///|
+    # |/////////////////////////|     |                         |     |/////////////////////////|
+    # |/////////////////////////|     |----- face_stack[0] -----|     |----- face_stack[0] -----|
+    # |///substrate_height[0]///|     |/////////////////////////|     |                         |
+    # |/////////////////////////|     |///substrate_height[0]///|     |    lower_box_height     |
+    # |/////////////////////////|     |/////////////////////////|     |                         |
+    # |-------------------------|     |-------------------------|     |-------------------------|
 
     LIBRARY_NAME = None  # This is needed by some methods inherited from Element.
 
@@ -53,7 +91,7 @@ class Simulation:
     ports: List[Port]
 
     # Parameters
-    box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
+    box = Param(pdt.TypeShape, "Boundary box", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
     ground_grid_box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
     with_grid = Param(pdt.TypeBoolean, "Make ground plane grid", False)
     name = Param(pdt.TypeString, "Name of the simulation", "Simulation")
@@ -62,17 +100,20 @@ class Simulation:
     use_internal_ports = Param(pdt.TypeBoolean, "Use internal (lumped) ports. The alternative is wave ports.", True)
     port_size = Param(pdt.TypeDouble, "Width (um) of wave ports", 400.0)
 
-    box_height = Param(pdt.TypeDouble, "Height (um) of vacuum above chip in case of single chip.", 1000.0)
-    substrate_height = Param(pdt.TypeDouble, "Height (um) of the bottom substrate.", 550.0)
+    upper_box_height = Param(pdt.TypeDouble, "Height of vacuum above top substrate", 1000.0, unit="µm")
+    lower_box_height = Param(pdt.TypeDouble, "Height of vacuum below bottom substrate", 0, unit="µm",
+                             docstring="Set > 0 to start face counting from substrate bottom layer.")
+    face_stack = Param(pdt.TypeList, "Face IDs for substrate faces from bottom to top", ["1t1"],
+                      docstring="Use empty string to not have metal on the face.")
+    substrate_height = Param(pdt.TypeList, "Height of the substrates", [550.0, 375.0], unit="µm",
+                             docstring="The value can be scalar or list of scalars. Set as list to use individual "
+                                       "substrate heights from bottom to top.")
     permittivity = Param(pdt.TypeDouble, "Permittivity of the substrates.", 11.45)
+    chip_distance = Param(pdt.TypeList, "Height of vacuum between two substrates", [8.0], unit="µm",
+                          docstring="The value can be scalar or list of scalars. Set as list to use individual chip "
+                                    "distances from bottom to top.")
 
-    wafer_stack_type = Param(pdt.TypeDouble,
-                             "Defines whether to use single chip ('planar') or flip chip ('multiface').", 'planar')
-    chip_distance = Param(pdt.TypeDouble, "Height (um) of vacuum between two chips in case of flip chip.", 8.0)
-    substrate_height_top = Param(pdt.TypeDouble,
-                                 "Height (um) of the substrate of the top chip in case of flip chip.", 375.0)
-
-    airbridge_height = Param(pdt.TypeDouble, "Height (um) of airbridges.", 3.4)
+    airbridge_height = Param(pdt.TypeDouble, "Height of airbridges.", 3.4, unit="µm")
 
     waveguide_length = Param(pdt.TypeDouble,
                              "Length of waveguide stubs or distance between couplers and waveguide turning point", 100)
@@ -175,6 +216,50 @@ class Simulation:
     get_layer = Element.get_layer
     pcell_params_by_name = Element.pcell_params_by_name
 
+    def face_z_levels(self):
+        """ Returns ascending list of face heights.
+        Faces include bottom domain boundary, substrate faces from bottom to top, and top domain boundary.
+        The level z=0 is at lowest substrate top face.
+        """
+        def ith_float_value(list_or_scalar, i):
+            """ Helper function to return float number from list or scalar corresponding to the ordinal number i.
+            Too short lists are extended by duplicating the last value of the list."""
+            if isinstance(list_or_scalar, list):
+                if i < len(list_or_scalar):
+                    return float(list_or_scalar[i])  # return ith term of the list
+                return float(list_or_scalar[-1])  # return last term of the list
+            return float(list_or_scalar)  # return scalar value
+
+        # Terms below z=0 level
+        substrate_bottom = -ith_float_value(self.substrate_height, 0)
+        z_levels = [substrate_bottom - self.lower_box_height] if self.lower_box_height > 0 else []
+        z_levels += [substrate_bottom, 0.0]
+
+        # Terms above z=0 level
+        remaining_substrates = (len(self.face_stack) + 2 - len(z_levels)) // 2
+        for s in range(remaining_substrates):
+            z_levels.append(z_levels[-1] + ith_float_value(self.chip_distance, s))
+            z_levels.append(z_levels[-1] + ith_float_value(self.substrate_height, s + 1))
+        if len(z_levels) < len(self.face_stack) + 2:
+            z_levels.append(z_levels[-1] + self.upper_box_height)
+        return z_levels
+
+    def merged_region_from_layer(self, face_id, layer_name, expansion=0.0):
+        """ Returns a `Region` containing all geometry from a specified layer merged together """
+        face_layers = default_faces[face_id] if face_id in default_faces else dict()
+        if layer_name in face_layers:
+            return region_with_merged_polygons(
+                pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face_layers[layer_name]))),
+                tolerance=self.polygon_tolerance / self.layout.dbu, expansion=expansion / self.layout.dbu)
+        return pya.Region()
+
+    def insert_region(self, region, face_id, layer_name):
+        """Merges points in the `region` and inserts the result in a target layer."""
+        face_layers = default_faces[face_id] if face_id in default_faces else dict()
+        if layer_name in face_layers:
+            self.cell.shapes(self.layout.layer(face_layers[layer_name])).insert(
+                region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
+
     def create_simulation_layers(self):
         """Create the layers used for simulation export.
 
@@ -183,7 +268,7 @@ class Simulation:
         This method is called from `__init__` after `build`, and should not be called directly.
 
         Geometry is added to the following layers:
-            - For each face ``b`` and ``t``, the inverse of ``base_metal_gap_wo_grid`` is divided into
+            - For each face, the inverse of ``base_metal_gap_wo_grid`` is divided into
 
                 - ``simulation_ground``, containing any metalization not galvanically connected to a port
                 - ``simulation_signal``, containing the remaining metalization.
@@ -193,25 +278,14 @@ class Simulation:
         In the simulation layers, all geometry has been merged and converted to simple polygons
         (that is, polygons without holes).
         """
-        def merged_region_from_layer(face_id, layer_name, expansion=0.0):
-            """ Returns a `Region` containing all geometry from a specified layer merged together """
-            return region_with_merged_polygons(
-                pya.Region(self.cell.begin_shapes_rec(self.layout.layer(self.face(face_id)[layer_name]))),
-                tolerance=self.polygon_tolerance / self.layout.dbu, expansion=expansion / self.layout.dbu)
 
-        def insert_region(region, face_id, layer_name):
-            """Merges points in the `region` and inserts the result in a target layer."""
-            if layer_name in self.face(face_id):
-                self.cell.shapes(self.layout.layer(self.face(face_id)[layer_name])).insert(
-                   region_with_merged_points(region, tolerance=self.minimum_point_spacing / self.layout.dbu))
-
-        for face_id in [0, 1]:
-            if self.with_grid:
-                self.produce_ground_on_face_grid(self.ground_grid_box, face_id)
+        for face_id in self.face_stack:
+            if face_id not in default_faces:
+                continue  # do nothing if the face doesn't exist
 
             ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
-            lithography_region = merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching) - \
-                merged_region_from_layer(face_id, "base_metal_addition", -self.over_etching)
+            lithography_region = self.merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching) - \
+                self.merged_region_from_layer(face_id, "base_metal_addition", -self.over_etching)
             tolerance=self.minimum_point_spacing / self.layout.dbu
 
             if lithography_region.is_empty():
@@ -228,7 +302,7 @@ class Simulation:
                 # Now, remove all edge polygons which are also a port
                 if self.use_ports:
                     for port in self.ports:
-                        if port.face == face_id:
+                        if self.face_ids[port.face] == face_id:
                             if hasattr(port, 'ground_location'):
                                 v_unit = port.signal_location-port.ground_location
                                 v_unit = v_unit/v_unit.abs()
@@ -244,40 +318,31 @@ class Simulation:
                 ground_region.merge()
                 sim_region -= ground_region
 
+            sim_gap_region = ground_box_region - sim_region - ground_region
             if self.with_grid:
-                region_ground_grid = merged_region_from_layer(face_id,"ground_grid", self.over_etching)
-                sim_gap_region = ground_box_region - sim_region - ground_region
-                ground_region -= region_ground_grid
-            else:
-                sim_gap_region = ground_box_region - sim_region - ground_region
+                ground_region -= self.ground_grid_region(face_id)
 
-            insert_region(sim_region, face_id, "simulation_signal")
-            insert_region(ground_region, face_id, "simulation_ground")
-            insert_region(sim_gap_region, face_id, "simulation_gap")
+            self.insert_region(sim_region, face_id, "simulation_signal")
+            self.insert_region(ground_region, face_id, "simulation_ground")
+            self.insert_region(sim_gap_region, face_id, "simulation_gap")
 
             # Export airbridge and indium bump regions as merged simple polygons
-            insert_region(merged_region_from_layer(face_id, "airbridge_flyover") & ground_box_region,
-                          face_id, "simulation_airbridge_flyover")
-            insert_region(merged_region_from_layer(face_id, "airbridge_pads") & ground_box_region,
-                          face_id, "simulation_airbridge_pads")
-            insert_region(merged_region_from_layer(face_id, "indium_bump") & ground_box_region,
-                          face_id, "simulation_indium_bump")
+            self.insert_region(self.merged_region_from_layer(face_id, "airbridge_flyover") & ground_box_region,
+                               face_id, "simulation_airbridge_flyover")
+            self.insert_region(self.merged_region_from_layer(face_id, "airbridge_pads") & ground_box_region,
+                               face_id, "simulation_airbridge_pads")
+            self.insert_region(self.merged_region_from_layer(face_id, "indium_bump") & ground_box_region,
+                               face_id, "simulation_indium_bump")
 
-    def produce_ground_on_face_grid(self, box, face_id):
-        """Produces ground grid in the given face of the chip.
-
-        Args:
-            box: pya.DBox within which the grid is created
-            face_id (str): ID of the face where the grid is created
-
-        """
+    def ground_grid_region(self, face_id):
+        """Returns region of ground grid for the given face id."""
+        box = self.ground_grid_box & self.box  # restrict self.ground_grid_box inside self.box
         grid_area = box * (1 / self.layout.dbu)
-        protection = pya.Region(self.cell.begin_shapes_rec(self.get_layer("ground_grid_avoidance", face_id))).merged()
+        protection = self.merged_region_from_layer(face_id, "ground_grid_avoidance")
         grid_mag_factor = 1
-        region_ground_grid = make_grid(grid_area, protection,
-                                       grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
-                                       grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor)
-        self.cell.shapes(self.get_layer("ground_grid", face_id)).insert(region_ground_grid)
+        return make_grid(grid_area, protection,
+                         grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
+                         grid_size=5 * (1 / self.layout.dbu) * grid_mag_factor)
 
     def produce_waveguide_to_port(self, location, towards, port_nr, side=None,
                                   use_internal_ports=None, waveguide_length=None,
@@ -421,58 +486,46 @@ class Simulation:
         return [p1 - d, p2 + d]
 
     def get_port_data(self):
-        """
-            Return the port data in dictionary form and add the information of port polygon
+        """ Return the port data in dictionary form and add the information of port polygon. Includes following:
 
-            Returns:
-                port_data(list): list of port data dictionaries
-
-                    * Items from `Port` instance
-                    * polygon: point coordinates of the port polygon
-                    * signal_edge: point coordinates of the signal edge
-                    * ground_edge: point coordinates of the ground edge
+            * Items from `Port` instance
+            * polygon: point coordinates of the port polygon
+            * signal_edge: point coordinates of the signal edge
+            * ground_edge: point coordinates of the ground edge
         """
         simulation = self
+        z_levels = self.face_z_levels()
         # gather port data
         port_data = []
         if simulation.use_ports:
             for port in simulation.ports:
                 # Basic data from Port
                 p_data = port.as_dict()
+                face_num = self.face_stack.index(self.face_ids[port.face])
 
                 # Define a 3D polygon for each port
                 if isinstance(port, EdgePort):
 
-                    if simulation.wafer_stack_type == "multiface":
-                        port_top_height = simulation.substrate_height_top + simulation.chip_distance
-                    else:
-                        port_top_height = simulation.box_height
+                    port_top_z = z_levels[face_num + 2]
+                    port_bottom_z = z_levels[face_num]
 
                     # Determine which edge this port is on
                     if (port.signal_location.x == simulation.box.left
                             or port.signal_location.x == simulation.box.right):
                         p_data['polygon'] = [
-                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
-                             -simulation.substrate_height],
-                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2,
-                             -simulation.substrate_height],
-                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2,
-                                port_top_height],
-                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
-                                port_top_height]
+                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2, port_bottom_z],
+                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2, port_bottom_z],
+                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2, port_top_z],
+                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2, port_top_z]
                         ]
 
                     elif (port.signal_location.y == simulation.box.top
                           or port.signal_location.y == simulation.box.bottom):
                         p_data['polygon'] = [
-                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
-                             -simulation.substrate_height],
-                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y,
-                             -simulation.substrate_height],
-                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y,
-                                port_top_height],
-                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
-                                port_top_height]
+                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y, port_bottom_z],
+                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y, port_bottom_z],
+                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y, port_top_z],
+                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y, port_top_z]
                         ]
 
                     else:
@@ -492,7 +545,7 @@ class Simulation:
                                 port.ground_location,
                                 simulation.layout.dbu)
 
-                            port_z = simulation.chip_distance if self.face_ids[port.face] == '2b1' else 0
+                            port_z = z_levels[face_num + 1]
                             p_data['polygon'] = get_enclosing_polygon(
                                 [[signal_edge.x1, signal_edge.y1, port_z], [signal_edge.x2, signal_edge.y2, port_z],
                                  [ground_edge.x1, ground_edge.y1, port_z], [ground_edge.x2, ground_edge.y2, port_z]])
@@ -503,61 +556,54 @@ class Simulation:
                         except ValueError:
                             self.__log.warning('Unable to create polygon for port {}, because either signal or ground '
                                                'edge is not found.'.format(port.number))
-                    else:
-                        self.__log.warning('Ground location of port {} is not determined.'.format(port.number))
                 else:
                     raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
+
+                # Change signal and ground location from DVector to list and add z-component as third term
+                for location in ['signal_location', 'ground_location']:
+                    if location in p_data:
+                        p_data[location] = [p_data[location].x, p_data[location].y, z_levels[face_num + 1]]
 
                 port_data.append(p_data)
 
         return port_data
 
     def get_simulation_data(self):
+        """ Return the simulation data in dictionary form. Contains following:
+
+            * gds_file: name of gds file to include geometry layers,
+            * units: length unit in simulations, 'um',
+            * lower_box_height: Height of vacuum below bottom substrate,
+            * permittivity: Permittivity of the substrates,
+            * face_stack: Face IDs for substrate faces from bottom to top,
+            * z_levels: Ascending list of face heights,
+            * airbridge_height: Height of airbridges,
+            * vertical_over_etching: Vertical over-etching into substrates at gaps,
+            * box: Boundary box,
+            * ports: Port data in dictionary form, see self.get_port_data(),
+            * parameters: All Simulation class parameters in dictionary form,
         """
-            Return the simulation data in dictionary form.
-
-            Returns:
-                dict: simulation_data
-
-                    * gds_file(str): self.name + '.gds',
-                    * stack_type(str): self.wafer_stack_type,
-                    * units(str): 'um',  # hardcoded assumption in multiple places
-                    * substrate_height(float): self.substrate_height,
-                    * airbridge_height(float): self.airbridge_height,
-                    * box_height(float): self.box_height,
-                    * permittivity(float): self.permittivity,
-                    * vertical_over_etching(float): self.vertical_over_etching
-                    * box(pya.DBox): self.box,
-                    * ports(list): dictionary (see `self.get_port_data`)
-                    * parameters(dict): dictionary (see `self.get_parameters`),
-
-                if wafer stack type is 'multiface data', simulation_data contains also
-
-                    * substrate_height_top(float): simulation.substrate_height_top,
-                    * chip_distance(float): simulation.chip_distance,
-
-        """
-        simulation_data = {
+        return {
             'gds_file': self.name + '.gds',
-            'stack_type': self.wafer_stack_type,
             'units': 'um',  # hardcoded assumption in multiple places
-            'substrate_height': self.substrate_height,
-            'airbridge_height': self.airbridge_height,
-            'box_height': self.box_height,
+            'lower_box_height': self.lower_box_height,
+            'face_stack': self.face_stack,
+            'z_levels': self.face_z_levels(),
             'permittivity': self.permittivity,
+            'airbridge_height': self.airbridge_height,
             'vertical_over_etching': self.vertical_over_etching,
             'box': self.box,
             'ports': self.get_port_data(),
             'parameters': self.get_parameters(),
         }
 
-        if self.wafer_stack_type == "multiface":
-            simulation_data = {**simulation_data,
-                               "substrate_height_top": self.substrate_height_top,
-                               "chip_distance": self.chip_distance,
-                               }
-
-        return simulation_data
+    def get_layers(self):
+        """ Returns simulation layers and layer numbers in dictionary form. Only return layers that are in use. """
+        sim_layer_names = ['simulation_signal', 'simulation_ground', 'simulation_gap', 'simulation_airbridge_flyover',
+                           'simulation_airbridge_pads', 'simulation_indium_bump']
+        return {'{}_{}'.format(f, n): l
+                for f in self.face_stack if f in default_faces
+                for n, l in default_faces[f].items() if n in sim_layer_names}
 
     @staticmethod
     def delete_instances(cell, name, index=(0,)):

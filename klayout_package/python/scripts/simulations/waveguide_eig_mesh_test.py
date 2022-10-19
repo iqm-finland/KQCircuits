@@ -45,7 +45,7 @@ sim_parameters = {
     'a': 10,
     'b': 6,
     'add_bumps': False,
-    'wafer_stack_type': "planar",
+    'face_stack': ['1t1'],
     'n_guides': 1,
     'port_size': 50,
 }

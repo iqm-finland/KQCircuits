@@ -154,10 +154,17 @@ def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z
             * tag(int): the id of the entity
     """
     layout = cell.layout()
-    shapes = cell.shapes(layout.layer(*layer_map[face + "_" + layer]))
+    if layer == 'ground_grid':
+        # Use of ground_grid layer is deprecated. ground_grid shapes are obtained as bbox-ground-signal-gap.
+        reg_signal = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_simulation_signal"])))
+        reg_ground = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_simulation_ground"])))
+        reg_gap = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_simulation_gap"])))
+        reg = pya.Region(reg_ground.bbox()) - reg_signal - reg_ground - reg_gap
+    else:
+        reg = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_" + layer])))
     dim_tags = []
-    for shape in shapes.each():
-        poly = separated_hull_and_holes(shape.polygon)
+    for spoly in reg.each():
+        poly = separated_hull_and_holes(spoly)
         hull_point_coordinates = [(point.x * layout.dbu, point.y * layout.dbu, z_level)
                                   for point in poly.each_point_hull()]
         _, _, _, hull_plane_surface_id = add_polygon_with_splines(hull_point_coordinates, mesh_size)
@@ -781,9 +788,9 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     cell = layout.top_cell()
 
     port_data_gmsh = sim_data['ports']
-    faces = [0] if params['wafer_stack_type'] == 'planar' else [0, 1]
+    faces = [0] if len(params['face_stack']) == 1 else [0, 1]
     face_z_levels = [0 if params['face_ids'][face] == '1t1' else params['chip_distance'] for face in faces]
-    chip_dzs = [-params['substrate_height'] if params['face_ids'][face] == '1t1' else params['substrate_height_top']
+    chip_dzs = [-params['substrate_height'][0] if params['face_ids'][face] == '1t1' else params['substrate_height'][1]
                 for face in faces]
 
     # Produce shapes
@@ -810,7 +817,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
         face_dim_tags.append(face_tag_dict_to_list(face_dim_tag_dicts[face]))
 
     ground_dim_tags = [v for f in face_dim_tag_dicts for v in f['ground']]
-    vacuum = box_volume(ground_dim_tags, params['box_height'] if params['wafer_stack_type'] == 'planar' else None)
+    vacuum = box_volume(ground_dim_tags, params['upper_box_height'] if len(params['face_stack']) == 1 else None)
 
     # Finalize geometry using fragment -> dim_tags need to be updated
     all_dim_tags = chips + [vacuum] + [a for b in face_dim_tags for a in b] + [a for b in face_port_dim_tags for a in
@@ -851,7 +858,6 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
             signal_location = [x + 1e-2 * (x - y) for x, y in zip(port['signal_location'], port['ground_location'])]
         else:
             signal_location = list(port['signal_location'])
-        signal_location += [params['chip_distance'] if face == 1 else 0.0]  # z-component
 
         for dim_tag in face_dim_tag_dicts[face]['signal']:
             if gmsh.model.isInside(*dim_tag, signal_location):
@@ -923,7 +929,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     gmsh.finalize()
 
     # TODO: make more intelligent material selector
-    if params['wafer_stack_type'] == 'planar':
+    if len(params['face_stack']) == 1:
         body_materials = {
                 (3, 1): "dielectric",
                 (3, 2): "vacuum",

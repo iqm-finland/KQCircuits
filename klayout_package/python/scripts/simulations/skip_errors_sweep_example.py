@@ -35,7 +35,7 @@ sim_parameters = {
     'name': 'single_xmon_sim',
     'use_internal_ports': True,
     'use_ports': True,
-    'wafer_stack_type': "multiface",
+    'face_stack': ['1t1', '2b1'],
     'chip_distance': 5.5,
     'box': pya.DBox(pya.DPoint(0,0), pya.DPoint(3000, 3000)),
 }

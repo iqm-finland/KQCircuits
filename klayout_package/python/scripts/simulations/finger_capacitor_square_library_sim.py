@@ -46,7 +46,7 @@ sim_parameters = {
     "finger_length": 20,
     "ground_padding": 10,
     'port_size': 200,
-    'wafer_stack_type': "multiface",
+    'face_stack': ['1t1', '2b1'],
     'corner_r': 2,
     'chip_distance': 8
 }
@@ -106,7 +106,7 @@ simulations += cross_sweep_simulation(
     {
         **sim_parameters,
         'name': sim_parameters['name'] + '_singleface',
-        'wafer_stack_type': 'planar',
+        'face_stack': ['1t1'],
     }, {
         'finger_number': finger_numbers,
         'finger_length': finger_lengths,
@@ -118,7 +118,7 @@ simulations += cross_sweep_simulation(
     {
         **sim_parameters,
         'name': sim_parameters['name'] + '_singleface_gap',
-        'wafer_stack_type': 'planar',
+        'face_stack': ['1t1'],
         **gap_parameters,
     },
     {

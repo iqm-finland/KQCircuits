@@ -25,7 +25,7 @@ from pathlib import Path
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
-from kqcircuits.defaults import default_layers, ANSYS_SCRIPT_PATHS
+from kqcircuits.defaults import ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 
 
@@ -105,23 +105,12 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     if simulation_flags is None:
         simulation_flags = []
 
-    # select layers
-    layers = ["1t1_simulation_signal",
-              "1t1_simulation_ground",
-              "1t1_simulation_gap",
-              "1t1_simulation_airbridge_flyover",
-              "1t1_simulation_airbridge_pads"]
-    if simulation.wafer_stack_type == "multiface":
-        layers += ["2b1_simulation_signal",
-                   "2b1_simulation_ground",
-                   "2b1_simulation_gap",
-                   "1t1_simulation_indium_bump"]
-
     # collect data for .json file
+    layers = simulation.get_layers()
     json_data = {
         'ansys_tool': ansys_tool,
         **simulation.get_simulation_data(),
-        **{(r[15:] if r.startswith('1t1_') else "t_" + r[15:]) + '_layer': default_layers[r] for r in layers},
+        'layers': layers,
         'analysis_setup': {
             'frequency_units': frequency_units,
             'frequency': frequency,
@@ -159,7 +148,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
     export_layers(gds_filename, simulation.layout, [simulation.cell],
                   output_format='GDS2',
-                  layers={default_layers[r] for r in layers}
+                  layers=layers.values()
                   )
 
     return json_filename

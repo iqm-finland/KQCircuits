@@ -26,30 +26,31 @@ def format_position(x, units):
 
 
 def create_rectangle(oEditor, name, x, y, z, w, h, axis, units):
-    oEditor.CreateRectangle(
-        ["NAME:RectangleParameters",
-         "IsCovered:=", True,
-         "XStart:=", format_position(x, units),
-         "YStart:=", format_position(y, units),
-         "ZStart:=", format_position(z, units),
-         "Width:=", format_position(w, units),
-         "Height:=", format_position(h, units),
-         "WhichAxis:=", axis
-         ],
-        ["NAME:Attributes",
-         "Name:=", name,
-         "Flags:=", "",
-         "Color:=", "(143 175 143)",
-         "Transparency:=", 0,
-         "PartCoordinateSystem:=", "Global",
-         "UDMId:=", "",
-         "MaterialValue:=", "\"vacuum\"",
-         "SurfaceMaterialValue:=", "\"\"",
-         "SolveInside:=", True,
-         "IsMaterialEditable:=", True,
-         "UseMaterialAppearance:=", False,
-         "IsLightweight:=", False
-         ])
+    if w != 0.0 and h != 0.0:
+        oEditor.CreateRectangle(
+            ["NAME:RectangleParameters",
+             "IsCovered:=", True,
+             "XStart:=", format_position(x, units),
+             "YStart:=", format_position(y, units),
+             "ZStart:=", format_position(z, units),
+             "Width:=", format_position(w, units),
+             "Height:=", format_position(h, units),
+             "WhichAxis:=", axis
+             ],
+            ["NAME:Attributes",
+             "Name:=", name,
+             "Flags:=", "",
+             "Color:=", "(143 175 143)",
+             "Transparency:=", 0,
+             "PartCoordinateSystem:=", "Global",
+             "UDMId:=", "",
+             "MaterialValue:=", "\"vacuum\"",
+             "SurfaceMaterialValue:=", "\"\"",
+             "SolveInside:=", True,
+             "IsMaterialEditable:=", True,
+             "UseMaterialAppearance:=", False,
+             "IsLightweight:=", False
+             ])
 
 
 def create_polygon(oEditor, name, points, units):
@@ -98,34 +99,35 @@ def create_polygon(oEditor, name, points, units):
 
 
 def create_box(oEditor, name, x, y, z, sx, sy, sz, material, units):
-    oEditor.CreateBox(
-        ["NAME:BoxParameters",
-         "XPosition:=", format_position(x, units),
-         "YPosition:=", format_position(y, units),
-         "ZPosition:=", format_position(z, units),
-         "XSize:=", format_position(sx, units),
-         "YSize:=", format_position(sy, units),
-         "ZSize:=", format_position(sz, units)
-         ],
-        ["NAME:Attributes",
-         "Name:=", name,
-         "Flags:=", "",
-         "Color:=", "(143 175 143)",
-         "Transparency:=", 0.6,
-         "PartCoordinateSystem:=", "Global",
-         "UDMId:=", "",
-         "MaterialValue:=", "\"%s\"" % material,
-         "SurfaceMaterialValue:=", "\"\"",
-         "SolveInside:=", True,
-         "IsMaterialEditable:=", True,
-         "UseMaterialAppearance:=", False,
-         "IsLightweight:=", False
-         ])
+    if sx != 0.0 and sy != 0.0 and sz != 0.0:
+        oEditor.CreateBox(
+            ["NAME:BoxParameters",
+             "XPosition:=", format_position(x, units),
+             "YPosition:=", format_position(y, units),
+             "ZPosition:=", format_position(z, units),
+             "XSize:=", format_position(sx, units),
+             "YSize:=", format_position(sy, units),
+             "ZSize:=", format_position(sz, units)
+             ],
+            ["NAME:Attributes",
+             "Name:=", name,
+             "Flags:=", "",
+             "Color:=", "(143 175 143)",
+             "Transparency:=", 0.6,
+             "PartCoordinateSystem:=", "Global",
+             "UDMId:=", "",
+             "MaterialValue:=", "\"%s\"" % material,
+             "SurfaceMaterialValue:=", "\"\"",
+             "SolveInside:=", True,
+             "IsMaterialEditable:=", True,
+             "UseMaterialAppearance:=", False,
+             "IsLightweight:=", False
+             ])
 
 
 def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_inside=None):
     """Thickens sheet to solid with given thickness and material"""
-    if objects:
+    if objects and thickness != 0.0:
         oEditor.SweepAlongVector(
             ["NAME:Selections",
              "Selections:=", ",".join(objects),
@@ -155,3 +157,41 @@ def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_insid
                   ["NAME:ChangedProps",
                    ["NAME:Material", "Value:=", '"{}"'.format(material)]
                    ]]])
+
+
+def add_layer(layer_map, order_map, layer_num, dest_layer, order, layer_type='signal'):
+    """ Appends layer data to layer_map and order_map. """
+    layer_map.append(["NAME:LayerMapInfo",
+                      "LayerNum:=", layer_num,
+                      "DestLayer:=", dest_layer,
+                      "layer_type:=", layer_type])
+    order_map += ["entry:=",
+                  ["order:=", order,
+                   "layer:=", dest_layer]]
+
+
+def move_vertically(oEditor, objects, z_shift, units):
+    """ Moves objects in z-direction by z_shift. """
+    if objects and z_shift != 0.0:
+        oEditor.Move(
+            ["NAME:Selections",
+             "Selections:=", ",".join(objects),
+             "NewPartsModelFlag:=", "Model"
+             ],
+            ["NAME:TranslateParameters",
+             "TranslateVectorX:=", "0 {}".format(units),
+             "TranslateVectorY:=", "0 {}".format(units),
+             "TranslateVectorZ:=", "{} {}".format(z_shift, units)
+             ])
+
+
+def copy_paste(oEditor, objects):
+    """ Duplicates objects and returns new object names. """
+    if objects:
+        oEditor.Copy([
+                "NAME:Selections",
+                "Selections:=", ",".join(objects)
+            ])
+        return oEditor.Paste()
+    else:
+        return []

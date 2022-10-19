@@ -85,7 +85,7 @@ sim_parameters = {
     'a': 10,
     'b': 6,
     'add_bumps': False,
-    'wafer_stack_type': "multiface" if multiface else "planar",
+    'face_stack': ['1t1', '2b1'] if multiface else ['1t1'],
     'n_guides': 1,
     'chip_distance': 8,
     'port_size': 50,
