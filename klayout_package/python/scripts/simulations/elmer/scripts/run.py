@@ -136,7 +136,12 @@ if workflow['run_elmer']:
 # Run Paraview to view results
 if workflow['run_paraview']:
     if shutil.which('paraview') is not None:
-        subprocess.check_call(['paraview'], cwd=path)
+        if elmer_n_processes > 1:
+            subprocess.check_call(['paraview', '{}/{}_t0001.pvtu'.format(msh_filepath.stem,
+                msh_filepath.stem)], cwd=path)
+        else:
+            subprocess.check_call(['paraview', '{}/{}_t0001.vtu'.format(msh_filepath.stem,
+                msh_filepath.stem)], cwd=path)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         logging.warning("The simulation was run, but Paraview cannot be run for viewing the results!")
