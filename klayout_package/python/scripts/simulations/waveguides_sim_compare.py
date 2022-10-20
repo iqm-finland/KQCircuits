@@ -103,7 +103,10 @@ if use_elmer:
         'port_min_dist': 4.,
         'port_max_dist': 200.,
         'algorithm': 5,
-        'gmsh_n_threads': -1,  # -1 means all the physical cores
+        'gmsh_n_threads': -1,  # <---------- This defines the number of processes in the
+                               #             second level of parallelization. -1 uses all
+                               #             the physical cores (based on the machine which
+                               #             was used to prepare the simulation).
         'show': True,  # For GMSH: if true, the mesh is shown after it is done
                        # (for large meshes this can take a long time)
     }
@@ -125,9 +128,20 @@ if use_elmer:
     workflow = {
         'run_elmergrid': True,
         'run_elmer': True,
-        'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
-        'python_executable': 'python', # use 'kqclib' when using singularity image (you can also put a full path)
-        'elmer_n_processes': elmer_n_processes,  # -1 means all the physical cores
+        'run_paraview': True,  # this is visual view of the results
+                               # which can be removed to speed up the process
+        'python_executable': 'python', # use 'kqclib' when using singularity
+                                       # image (you can also put a full path)
+        'elmer_n_processes': elmer_n_processes,  # <------ This defines the number of
+                                                 #         processes in the second level
+                                                 #         of parallelization. -1 uses all
+                                                 #         the physical cores (based on
+                                                 #         the machine which was used to
+                                                 #         prepare the simulation)
+        'n_workers': 2, # <--------- This defines the number of
+                        #            parallel independent processes.
+                        #            Moreover, adding this line activates
+                        #            the use of the simple workload manager.
     }
     if use_sbatch:  # if simulation is run in a HPC system, sbatch_parameters can be given here
         workflow['sbatch_parameters'] = {
