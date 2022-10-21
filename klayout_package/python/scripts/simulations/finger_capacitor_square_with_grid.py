@@ -64,7 +64,7 @@ sim_parameters = {
     'corner_r': 2,
     'chip_distance': 8,
     'with_grid': with_grid,
-    'face_ids': 'tbc',
+    'face_ids': ['2b1', '1t1', '2t1'],
 }
 
 if use_elmer:

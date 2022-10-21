@@ -25,7 +25,7 @@ from kqcircuits.util.parameters import add_parameters_from
 class FingerCapacitorSim(Simulation):
 
     def build(self):
-        capacitor_cell = self.add_element(FingerCapacitorSquare, **{**self.get_parameters(),})
+        capacitor_cell = self.add_element(FingerCapacitorSquare)
 
         cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
         _, refp = self.insert_cell(capacitor_cell, cap_trans)
