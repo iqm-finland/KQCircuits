@@ -120,9 +120,8 @@ End
 Solver 4 ! resultoutput
   Equation = "result output"
   Procedure = "ResultOutputSolve" "ResultOutputSolver"
-  Output File Name = case
+  Output File Name = #FILEPATHSTEM
   Vtu Format = Logical True
   save all meshes = logical true
-  output directory = "results"
   Save Geometry Ids = True
 End 

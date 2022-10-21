@@ -147,6 +147,7 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
         with open(sif_filepath, 'r+') as f:
             content = f.read().replace('#FREQUENCY', str(1e9*model_data['frequency']))
             content = content.replace('#SUBSTRATE_PERMITTIVITY', str(model_data['substrate_permittivity']))
+            content = content.replace('#FILEPATHSTEM', sif_filepath.stem)
             f.seek(0, 0)
             f.write(begin + content + s)
 

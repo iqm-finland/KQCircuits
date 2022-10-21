@@ -889,7 +889,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
             if 'polygon' in port:
                 if port['type'] == 'InternalPort':
                     port_physical_name = 'port_' + str(port['number'])
-                    gmsh.model.setPhysicalName(*port['dim_tag'], port_physical_name)
+                    set_physical_name(port['dim_tag'], port_physical_name)
                     parent_body_dim_tag = get_parent_body(port['dim_tag'], body_dim_tags)
                     if parent_body_dim_tag is not None:
                         port['physical_names'].append((parent_body_dim_tag, port_physical_name))
@@ -899,16 +899,11 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
                     port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
                     for i, dim_tag in enumerate(port['dim_tags']):
                         port_physical_name = 'port_{}_{}'.format(port['number'], i)
-                        gmsh.model.setPhysicalName(*dim_tag, port_physical_name)
+                        set_physical_name(dim_tag, port_physical_name)
                         parent_body_dim_tag = get_parent_body(dim_tag, body_dim_tags)
                         if parent_body_dim_tag is not None:
                             port['physical_names'].append((parent_body_dim_tag, port_physical_name))
                             body_port_phys_map[parent_body_dim_tag].append(port_physical_name)
-
-        if port['type'] == 'EdgePort':
-            port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
-            for i, dim_tag in enumerate(port['dim_tags']):
-                set_physical_name(dim_tag, 'port_{}_{}'.format(port['number'], i))
 
     for face in faces:
         set_physical_name(chips[face], 'chip_{}'.format(face))
