@@ -167,17 +167,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulations.html#creating-simulation-object">Creating simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulations.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulations.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/simulation_object.html">Creating simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/simulation_object.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulations.html#ansys-export">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulations.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/ansys_export.html">Ansys export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulations.html#sonnet-export">Sonnet export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulations.html#gmsh-elmer-export">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/xsection.html">Creating cross section images</a></li>
@@ -501,13 +501,17 @@
 <span id="kqcircuits-util-macro-prepare"></span><h1>kqcircuits.util.macro_prepare<a class="headerlink" href="#module-kqcircuits.util.macro_prepare" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.macro_prepare.prep_empty_layout">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.macro_prepare.</span></span><span class="sig-name descname"><span class="pre">prep_empty_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/macro_prepare.html#prep_empty_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.macro_prepare.prep_empty_layout" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.macro_prepare.</span></span><span class="sig-name descname"><span class="pre">prep_empty_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Top</span> <span class="pre">Cell'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/macro_prepare.html#prep_empty_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.macro_prepare.prep_empty_layout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an empty layout with default layers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p>A tuple <code class="docutils literal notranslate"><span class="pre">(layout,</span> <span class="pre">layout_view,</span> <span class="pre">cell_view)</span></code></p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>top_name</strong> – Name of the top cell</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A tuple <code class="docutils literal notranslate"><span class="pre">(layout,</span> <span class="pre">layout_view,</span> <span class="pre">cell_view)</span></code></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>:  the created layout</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">top_cell</span></code>: the top cell in the layout</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">layout_view</span></code>: layout view for the layout</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cell_view</span></code>: cell view for the layout</p></li>
 </ul>
@@ -515,11 +519,6 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.util.macro_prepare.get_layout_top_cell">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.macro_prepare.</span></span><span class="sig-name descname"><span class="pre">get_layout_top_cell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/macro_prepare.html#get_layout_top_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.macro_prepare.get_layout_top_cell" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <img alt="../_images/kqcircuits.util.macro_prepare.png" src="../_images/kqcircuits.util.macro_prepare.png" />
 </div>

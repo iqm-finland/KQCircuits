@@ -165,17 +165,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulations.html#creating-simulation-object">Creating simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulations.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulations.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html">Creating simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/simulation_object.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulations.html#ansys-export">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulations.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/ansys_export.html">Ansys export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulations.html#sonnet-export">Sonnet export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulations.html#gmsh-elmer-export">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/xsection.html">Creating cross section images</a></li>
@@ -517,7 +517,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">mask_bitmap_export_layers</span><span class="p">,</span> <span class="n">chip_export_layer_clusters</span><span class="p">,</span> <span class="n">default_layers</span><span class="p">,</span> \
     <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc</span> <span class="kn">import</span> <span class="n">FlipChipConnectorDc</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span><span class="p">,</span> <span class="n">resolve_default_layer_info</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">resolve_default_layer_info</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.area</span> <span class="kn">import</span> <span class="n">get_area_and_density</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.count_instances</span> <span class="kn">import</span> <span class="n">count_instances_in_cell</span>
@@ -544,7 +544,7 @@
         <span class="n">export_masks_of_face</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_chip">[docs]</a><span class="k">def</span> <span class="nf">export_chip</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">):</span>
+<div class="viewcode-block" id="export_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_chip">[docs]</a><span class="k">def</span> <span class="nf">export_chip</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exports a chip used in a maskset.&quot;&quot;&quot;</span>
 
     <span class="n">is_pcell</span> <span class="o">=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
@@ -568,14 +568,16 @@
     <span class="n">static_cell</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chip_dir</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">),</span> <span class="n">save_opts</span><span class="p">)</span>
 
     <span class="c1"># export netlist</span>
-    <span class="n">export_cell_netlist</span><span class="p">(</span><span class="n">static_cell</span><span class="p">,</span> <span class="n">chip_dir</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">-netlist.json&quot;</span><span class="p">,</span> <span class="n">chip_cell</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="n">export_cell_netlist</span><span class="p">(</span><span class="n">static_cell</span><span class="p">,</span> <span class="n">chip_dir</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">chip_name</span><span class="si">}</span><span class="s2">-netlist.json&quot;</span><span class="p">,</span> <span class="n">chip_cell</span><span class="p">)</span>
     <span class="c1"># calculate flip-chip bump count</span>
     <span class="n">bump_count</span> <span class="o">=</span> <span class="n">count_instances_in_cell</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">FlipChipConnectorDc</span><span class="p">)</span>
     <span class="c1"># find layer areas and densities</span>
     <span class="n">layer_areas_and_densities</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">density</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">get_area_and_density</span><span class="p">(</span><span class="n">static_cell</span><span class="p">)):</span>
-        <span class="k">if</span> <span class="n">area</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="n">layer_areas_and_densities</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">density</span> <span class="o">*</span> <span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">density</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">get_area_and_density</span><span class="p">(</span><span class="n">static_cell</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">area</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">layer_areas_and_densities</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">density</span> <span class="o">*</span> <span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
 
     <span class="c1"># save auxiliary chip data into json-file</span>
     <span class="n">chip_json</span> <span class="o">=</span> <span class="p">{</span>
@@ -806,26 +808,25 @@
 <span class="k">def</span> <span class="nf">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">spec_layers</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Exports bitmaps for the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=dangerous-default-value</span>
-    <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">KLayoutView</span><span class="p">):</span>
-        <span class="n">error_text</span> <span class="o">=</span> <span class="s2">&quot;Cannot export bitmap of mask with invalid or nil view.&quot;</span>
-        <span class="n">error</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_text</span><span class="p">)</span>
-        <span class="n">export_bitmaps</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_text</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">error</span>
+
     <span class="c1"># export bitmaps for mask layouts</span>
     <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
         <span class="n">mask_layout_dir_name</span> <span class="o">=</span> <span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span>
         <span class="n">mask_layout_dir</span> <span class="o">=</span> <span class="n">_get_directory</span><span class="p">(</span><span class="n">export_dir</span><span class="o">/</span><span class="nb">str</span><span class="p">(</span><span class="n">mask_layout_dir_name</span><span class="p">))</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">)</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">export_all_layers_bitmap</span><span class="p">(</span><span class="n">mask_layout_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">export_layers_bitmaps</span><span class="p">(</span><span class="n">mask_layout_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
-                                   <span class="n">layers_set</span><span class="o">=</span><span class="n">spec_layers</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">face_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">view</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">export_all_layers_bitmap</span><span class="p">(</span><span class="n">mask_layout_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">export_layers_bitmaps</span><span class="p">(</span><span class="n">mask_layout_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                                       <span class="n">layers_set</span><span class="o">=</span><span class="n">spec_layers</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">mask_layout</span><span class="o">.</span><span class="n">face_id</span><span class="p">)</span>
     <span class="c1"># export bitmaps for chips</span>
     <span class="n">chips_dir</span> <span class="o">=</span> <span class="n">_get_directory</span><span class="p">(</span><span class="n">export_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">used_chips</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">chip_dir</span> <span class="o">=</span> <span class="n">_get_directory</span><span class="p">(</span><span class="n">chips_dir</span><span class="o">/</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">view</span><span class="o">.</span><span class="n">export_all_layers_bitmap</span><span class="p">(</span><span class="n">chip_dir</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
-    <span class="n">view</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">top_cell</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">view</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">export_all_layers_bitmap</span><span class="p">(</span><span class="n">chip_dir</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">view</span><span class="p">:</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">top_cell</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="export_drc_report"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_drc_report">[docs]</a><span class="nd">@logged</span>
@@ -869,7 +870,7 @@
         <span class="n">svopt</span><span class="o">.</span><span class="n">clear_cells</span><span class="p">()</span>
         <span class="n">svopt</span><span class="o">.</span><span class="n">add_cell</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
-            <span class="n">layer_info</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()[</span><span class="n">layer</span><span class="p">]</span>
+            <span class="n">layer_info</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()[</span><span class="n">layer</span><span class="p">]</span>
             <span class="n">svopt</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">layer_info</span><span class="p">)</span>
         <span class="n">svopt</span><span class="o">.</span><span class="n">write_context_info</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">svopt</span><span class="p">)</span>

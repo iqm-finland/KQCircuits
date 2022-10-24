@@ -167,17 +167,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="simulations.html#creating-simulation-object">Creating simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="simulations.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulations.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation/simulation_object.html">Creating simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="simulations.html#ansys-export">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="simulations.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation/ansys_export.html">Ansys export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="simulations.html#sonnet-export">Sonnet export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="simulations.html#gmsh-elmer-export">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="xsection.html">Creating cross section images</a></li>
@@ -502,7 +502,11 @@ mask and the parameters of those chips. These scripts will export
 <code class="docutils literal notranslate"><span class="pre">.oas</span></code>/<code class="docutils literal notranslate"><span class="pre">.gds</span></code> files required for photomask production and possibly EBL,
 as well as auxiliary files such as netlists, images and automatic mask
 documentation. The mask scripts can be run either from the macro editor or
-from the command line using <code class="docutils literal notranslate"><span class="pre">klayout</span> <span class="pre">-z</span> <span class="pre">-r</span> <span class="pre">./scripts/masks/maskname.py</span></code>.</p>
+from the command line using <code class="docutils literal notranslate"><span class="pre">klayout</span> <span class="pre">-z</span> <span class="pre">-r</span> <span class="pre">./scripts/masks/maskname.py</span></code>.
+Masks also accept an optional <code class="docutils literal notranslate"><span class="pre">-d</span></code> switch to build the mask without KLayout
+and in a single process thus facilitating debugging mask issues. Please note
+that debug mode lacks certain features that are tied to the presence of
+KLayout.</p>
 <div class="section" id="tutorial">
 <h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="basic-mask-script-and-export">
@@ -515,19 +519,15 @@ the <code class="docutils literal notranslate"><span class="pre">Python</span></
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Imports required for any mask</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">TMP_PATH</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_set</span> <span class="kn">import</span> <span class="n">MaskSet</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 <span class="c1"># Import chips required for this mask</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.demo</span> <span class="kn">import</span> <span class="n">Demo</span>
 
-<span class="c1"># Get current view and layout</span>
-<span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">layout</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="o">.</span><span class="n">get_active_layout</span><span class="p">()</span>
 
 <span class="c1"># Initialize mask object.</span>
 <span class="c1"># &quot;name&quot; and &quot;version&quot; will be displayed in labels inside the mask</span>
 <span class="c1"># and in the names of the exported files.</span>
 <span class="c1"># &quot;with_grid&quot; determines if the ground plane grid is created.</span>
-<span class="n">test_mask</span> <span class="o">=</span> <span class="n">MaskSet</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">test_mask</span> <span class="o">=</span> <span class="n">MaskSet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># Add mask layouts.</span>
 <span class="c1"># A mask layout determines which chip is at each position. The chips are</span>
@@ -559,11 +559,11 @@ the <code class="docutils literal notranslate"><span class="pre">Python</span></
 <span class="c1"># ``add_mask_layout()`` and ``add_chip()`.</span>
 <span class="n">test_mask</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="c1"># Export the mask files to TMP_PATH</span>
-<span class="n">test_mask</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Any mask script should follow roughly the same structure. The
-beginning and end of the script (getting the view, and exporting the
+beginning and end of the script (creating the MaskSet object, and exporting the
 mask) are generally the same for any mask.</p>
 </li>
 <li><p>(Optional) Open <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/logging_setup.lym">kqcircuits_scripts/macros/logging_setup</a> and run it.
@@ -582,7 +582,7 @@ generated.</p>
 <p>The generated masks can include a ground plane grid, which automatically
 avoids other elements. To generate it, use <code class="docutils literal notranslate"><span class="pre">with_grid=True</span></code> in the mask object
 initialization:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span> <span class="o">=</span> <span class="n">MaskSet</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span> <span class="o">=</span> <span class="n">MaskSet</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Because the grid generation is slow, it is recommended to keep

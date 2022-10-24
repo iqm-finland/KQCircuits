@@ -165,17 +165,17 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulations.html#creating-simulation-object">Creating simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulations.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulations.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_object.html">Creating simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/simulation_object.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulations.html#ansys-export">Ansys export</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulations.html#ansys-scripts">Ansys scripts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/ansys_export.html">Ansys export</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../user_guide/simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulations.html#sonnet-export">Sonnet export</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulations.html#gmsh-elmer-export">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/xsection.html">Creating cross section images</a></li>
@@ -537,7 +537,8 @@
                       <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
                       <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                      <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                      <span class="n">participation_sheet_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thicken_participation_sheet_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulation into json and gds files.</span>
 
@@ -563,6 +564,26 @@
 <span class="sd">        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units</span>
 <span class="sd">            (if None is given, then the mesh element size is not restricted in the gap).</span>
 <span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
+<span class="sd">        participation_sheet_distance: Distance to set non-modelled TLS interface sheets. Default is None.</span>
+<span class="sd">        thicken_participation_sheet_distance: 3D thickness for non-modelled TLS interface sheets. Default is None.</span>
+<span class="sd">        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations</span>
+<span class="sd">            from the participation sheets. Default is None. Input is of the form::</span>
+
+<span class="sd">                &#39;layerMA&#39;: {  # metal–vacuum</span>
+<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,  # loss tangent</span>
+<span class="sd">                    &#39;th&#39;: 4e-9,  # thickness</span>
+<span class="sd">                    &#39;eps_r&#39;: 10  # relative permittivity</span>
+<span class="sd">                },</span>
+<span class="sd">                &#39;layerMS&#39;: { # metal–substrate</span>
+<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
+<span class="sd">                    &#39;th&#39;: 2e-9,</span>
+<span class="sd">                    &#39;eps_r&#39;: 10</span>
+<span class="sd">                },</span>
+<span class="sd">                &#39;layerSA&#39;: { # substrate–vacuum</span>
+<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
+<span class="sd">                    &#39;th&#39;: 2e-9,</span>
+<span class="sd">                    &#39;eps_r&#39;: 10</span>
+<span class="sd">                },</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
 
@@ -610,6 +631,9 @@
         <span class="p">},</span>
         <span class="s1">&#39;gap_max_element_length&#39;</span><span class="p">:</span> <span class="n">gap_max_element_length</span><span class="p">,</span>
         <span class="s1">&#39;substrate_loss_tangent&#39;</span><span class="p">:</span> <span class="n">substrate_loss_tangent</span><span class="p">,</span>
+        <span class="s1">&#39;participation_sheet_distance&#39;</span><span class="p">:</span> <span class="n">participation_sheet_distance</span><span class="p">,</span>
+        <span class="s1">&#39;thicken_participation_sheet_distance&#39;</span><span class="p">:</span> <span class="n">thicken_participation_sheet_distance</span><span class="p">,</span>
+        <span class="s1">&#39;dielectric_surfaces&#39;</span><span class="p">:</span> <span class="n">dielectric_surfaces</span><span class="p">,</span>
         <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span>
     <span class="p">}</span>
 
@@ -701,7 +725,9 @@
                  <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
                  <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
+                 <span class="n">participation_sheet_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">thicken_participation_sheet_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                  <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
                  <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -732,6 +758,27 @@
 <span class="sd">        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units</span>
 <span class="sd">            (if None is given, then the mesh element size is not restricted in the gap).</span>
 <span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
+<span class="sd">        participation_sheet_distance: Distance to set non-modelled TLS interface sheets. Default is None.</span>
+<span class="sd">        thicken_participation_sheet_distance: 3D thickness for non-modelled TLS interface sheets. Default is None.</span>
+<span class="sd">        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations</span>
+<span class="sd">            from the participation sheets. Default is None. Input is of the form::</span>
+
+<span class="sd">                &#39;layerMA&#39;: {  # metal–vacuum</span>
+<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,  # loss tangent</span>
+<span class="sd">                    &#39;th&#39;: 4e-9,  # thickness</span>
+<span class="sd">                    &#39;eps_r&#39;: 10  # relative permittivity</span>
+<span class="sd">                },</span>
+<span class="sd">                &#39;layerMS&#39;: { # metal–substrate</span>
+<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
+<span class="sd">                    &#39;th&#39;: 2e-9,</span>
+<span class="sd">                    &#39;eps_r&#39;: 10</span>
+<span class="sd">                },</span>
+<span class="sd">                &#39;layerSA&#39;: { # substrate–vacuum</span>
+<span class="sd">                    &#39;tan_delta_surf&#39;: 0.001,</span>
+<span class="sd">                    &#39;th&#39;: 2e-9,</span>
+<span class="sd">                    &#39;eps_r&#39;: 10</span>
+<span class="sd">                },</span>
+
 <span class="sd">        exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.</span>
 <span class="sd">        ansys_executable: Path to the Ansys Electronics Desktop executable.</span>
 <span class="sd">        import_script: Name of import script file.</span>
@@ -771,6 +818,9 @@
                                             <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
                                             <span class="n">gap_max_element_length</span><span class="o">=</span><span class="n">gap_max_element_length</span><span class="p">,</span>
                                             <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="n">substrate_loss_tangent</span><span class="p">,</span>
+                                            <span class="n">participation_sheet_distance</span><span class="o">=</span><span class="n">participation_sheet_distance</span><span class="p">,</span>
+                                            <span class="n">thicken_participation_sheet_distance</span><span class="o">=</span><span class="n">thicken_participation_sheet_distance</span><span class="p">,</span>
+                                            <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="n">dielectric_surfaces</span><span class="p">,</span>
                                             <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
                                             <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
