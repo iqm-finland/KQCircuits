@@ -197,7 +197,15 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 
     bat_filename = str(path.joinpath(file_prefix + '.bat'))
     with open(bat_filename, 'w') as file:
-        file.write('@echo off\ntitle Run Simulations\n')
+        file.write(
+            '@echo off\n'\
+            r'powershell -Command "Get-Process | Where-Object {$_.MainWindowTitle -like \"Run Simulations*\"} '\
+                '| Select -ExpandProperty Id | Export-Clixml -path blocking_pids.xml"\n'\
+            'title Run Simulations\n'\
+            'powershell -Command "$sim_pids = Import-Clixml -Path blocking_pids.xml; if ($sim_pids) '\
+                r'{ echo \"Waiting for $sim_pids\"; Wait-Process $sim_pids -ErrorAction SilentlyContinue }; '\
+                'Remove-Item blocking_pids.xml"\n'
+        )
 
         # Commands for each simulation
         for i, json_filename in enumerate(json_filenames):
