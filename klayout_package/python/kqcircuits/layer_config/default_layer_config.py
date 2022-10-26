@@ -19,7 +19,9 @@
 
 Defines default values related to layers and faces.
 
-Layers have a name, ID and data type. For example ``"annotations": (220, 1)``.
+Layers have a name, ID and data type. For example ``"annotations": (220, 0)`` The data type indicates which chip they
+belong to with 0 being reserved for layer that do not belong to a face or a chip. The IDs run from 0-127 for the bottom
+of the chips and 128-255 for the top.
 
 KQCircuit layers are grouped by faces and functionality. The face-numbering system works as follows.
 Each face-id consists of a number, the letter "b" or "t", and another number, for example "2b1". In
@@ -29,10 +31,9 @@ located at either the "bottom" or "top" of that chip (in the final place after f
 process). The last number is an additional index that can be used if necessary, in case multiple
 deposition layers and etching processes are needed.
 
-The main geometry containing layer groups are currently: "1t1" (top of lowest chip) 10-39, "2b1"
-(bottom of second-lowest chip) 40-69 and "2t1" (top of second-lowest chip) 70-89. Simulation 90-99,
-layers are in either "1t1" or "2b1" faces. Layer ID's 100-219 are reserved. Auxiliary layers 220-229
-are not face dependent, they contain annotations, refpoints and other text fields.
+The main geometry containing layer groups are currently in 1-89,  Simulation 90-99, layer ID's 100-219
+are reserved and auxiliary layers 220-229 are not face dependent, they contain annotations,
+refpoints and other text fields.
 
 In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
 layer views are hidden by default. See https://www.klayout.de/doc-qt5/manual/layer_source.html
@@ -51,86 +52,86 @@ from pathlib import Path
 from kqcircuits.pya_resolver import pya
 from kqcircuits.layer_cluster import LayerCluster
 
-# These layers are present in all faces. Layer id will have +30 for '1t1' and +60 for '2t1'
+# These layers are present in all faces. Layer id will have +128 for top face and data type +1 between chips
 _common_layers = {
     # Metal etching layers for front face (facing towards bottom chip)
-    "base_metal_gap": (10, 1),
+    "base_metal_gap": (1, 1),
 
     # merged etching layer with grid  (layers 11 & 13) that defines microscopic structures such as waveguides, launchers
-    "base_metal_gap_wo_grid": (11, 1),  # etching layer without grid
-    "base_metal_addition": (12, 0),  # Features subtracted from layer 11 , only used during the design.
-    "ground_grid": (13, 0),  # A subset of structures combined into layer 10 (e.g. ground plane perforations)
+    "base_metal_gap_wo_grid": (2, 1),  # etching layer without grid
+    "base_metal_addition": (3, 1),  # Features subtracted from layer 11 , only used during the design.
+    "ground_grid": (4, 1),  # A subset of structures combined into layer 10 (e.g. ground plane perforations)
 
     # Occupy the area where there should be no grids, only used during the design.
-    "ground_grid_avoidance": (14, 0),
+    "ground_grid_avoidance": (5, 1),
 }
 
 # common layers in b and t
 _common_b_t_layers = {
     **_common_layers,
 
-    "base_metal_gap_for_EBL": (15, 0),  # Features of layer 41 that are needed for EBL
-    "waveguide_path": (16, 0),  # Waveguide's metal part, used with waveguide length and DRC calculations
+    "base_metal_gap_for_EBL": (6, 1),  # Features of layer 41 that are needed for EBL
+    "waveguide_path": (7, 1),  # Waveguide's metal part, used with waveguide length and DRC calculations
 
     # Junction layer
-    "SIS_junction": (17, 2),  # Josephson junction evaporation opening
-    "SIS_shadow": (18, 2),  # Josephson junction resist undercut
-    "SIS_junction_2": (20, 2),
+    "SIS_junction": (8, 1),  # Josephson junction evaporation opening
+    "SIS_shadow": (9, 1),  # Josephson junction resist undercut
+    "SIS_junction_2": (11, 1),
 
     # Airbridge layers -- potentially obsolete
-    "airbridge_pads": (28, 3),  #
-    "airbridge_flyover": (29, 3),  #
+    "airbridge_pads": (18, 1),  #
+    "airbridge_flyover": (19, 1),  #
 
-    "chip_dicing": (30, 0),
+    "chip_dicing": (30, 1),
 
     # 3D integration layers
-    "underbump_metallization": (32, 4),  # flip-chip bonding
-    "indium_bump": (33, 4),  # flip-chip bonding
-    "through_silicon_via": (34, 4),  # TSV
-    "through_silicon_via_avoidance": (35, 4),  # TSV
+    "underbump_metallization": (20, 1),  # flip-chip bonding
+    "indium_bump": (21, 1),  # flip-chip bonding
+    "through_silicon_via": (22, 1),  # TSV
+    "through_silicon_via_avoidance": (23, 1),  # TSV
 
     # Netlist
-    "ports": (39, 0),  # Considered conductive in the netlist extraction
+    "ports": (26, 1),  # Considered conductive in the netlist extraction
 }
 
-_face_layers = {}   # layer descriptions per every chip face
-
-# Bottom face layers
-_face_layers['1t1'] = {
-    **_common_b_t_layers,
-
-    # Simulation faces [Layer 90-99]
-    "simulation_signal": (90, 0),
-    "simulation_ground": (91, 0),
-    "simulation_gap": (96, 0),
-    "simulation_airbridge_flyover": (94, 0),
-    "simulation_airbridge_pads": (95, 0),
-    "simulation_indium_bump": (98, 0),
-}
-
-
-def _shift_layers(layers, shift):
+def _shift_layers(layers, shift_ID, shift_data_type):
     """Add a number to replicate a group of layers on a different face.
 
     This is a helper function so we don't have to copy-paste similar groups of layers to several
     faces. It returns a new layer group where every layer id is increased by the number ``shift``.
     """
-    return {n: (v[0] + shift, v[1]) for n, v in layers.items()}
+    return {n: (v[0] + shift_ID, v[1] + shift_data_type) for n, v in layers.items()}
 
+# organizer layers into faces
+_face_layers = {}   # layer descriptions per every chip face
+
+_face_layers['1b1'] = {
+    **_common_b_t_layers,
+}
+
+_face_layers['1t1'] = {
+    **_shift_layers(_common_b_t_layers, 128, 0),
+
+    # Simulation faces [Layer 80-89]
+    "simulation_signal": (80+128, 1),
+    "simulation_ground": (81+128, 1),
+    "simulation_gap": (82+128, 1),
+    "simulation_airbridge_flyover": (83+128, 1),
+    "simulation_airbridge_pads": (84+128, 1),
+    "simulation_indium_bump": (85+128, 1),
+}
 
 # Top face layers
 _face_layers['2b1'] = {
-    **_shift_layers(_common_b_t_layers, 30),    # common layers at the "top"
-
-    # Simulation faces
-    "simulation_signal": (92, 0),
-    "simulation_ground": (93, 0),
-    "simulation_gap": (97, 0),
+    **_shift_layers(_common_b_t_layers, 0, 1),    # common layers at the "top"
+    "simulation_signal": (80, 2),
+    "simulation_ground": (81, 2),
+    "simulation_gap": (82, 2),
 }
 
 # Ceiling face layers
 _face_layers['2t1'] = {
-    **_shift_layers(_common_layers, 60),     # same common layers at the "ceiling"
+    **_shift_layers(_common_layers, 128, 1),     # same common layers at the "ceiling"
 }
 
 # Other auxiliary layers [Layer 220-229]

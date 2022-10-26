@@ -373,10 +373,10 @@ by modifying ``default_layers`` and ``default_faces``. As an example, let's
 add a new face ``x`` with some layers that are in KQCircuits default faces
 and one new layer::
 
-    default_layers["x_base_metal_gap_wo_grid"] = pya.LayerInfo(900, 1, "x_base_metal_gap_wo_grid")
-    default_layers["x_ground_grid_avoidance"] = pya.LayerInfo(903, 0, "x_ground_grid_avoidance")
-    default_layers["x_ports"] = pya.LayerInfo(928, 0, "x_ports")
-    default_layers["x_new_layer"] = pya.LayerInfo(999, 2, "x_new_layer")
+    default_layers["x_base_metal_gap_wo_grid"] = pya.LayerInfo(130, 9, "x_base_metal_gap_wo_grid")
+    default_layers["x_ground_grid_avoidance"] = pya.LayerInfo(133, 9, "x_ground_grid_avoidance")
+    default_layers["x_ports"] = pya.LayerInfo(154, 9, "x_ports")
+    default_layers["x_new_layer"] = pya.LayerInfo(999, 9, "x_new_layer")
 
     default_faces["x"] = {
         "id": "x",
@@ -385,6 +385,9 @@ and one new layer::
         "ports": default_layers["x_ports"],
         "new_layer": default_layers["x_new_layer"],
     }
+
+The layers are identified by ``layer number``, ``data type`` and ``name``,
+e.g. ``900``, ``1`` and ``x_base_metal_gap_wo_grid``
 
 These lines should be added after the last line where ``default_layers`` or
 ``default_faces`` are modified. It is best to do these changes in the layer
@@ -406,10 +409,11 @@ KQCircuit's Layers
 ------------------
 
 KLayout's right panel shows a layer tree. Layers containing meaningful device geometry are grouped
-by faces: ``1t1-face``, ``2b1-face`` and ``2t1-face``. Other texts, annotations
-and miscellaneous things not strictly belonging to a particular face are
-under the ``texts`` layer group. Other layers used only for simulations are
-under the aptly named ``simulations`` layer group.
+by faces: ``1t1-face``, ``2b1-face`` and ``2t1-face``. By default layer numbers 0-127 are used for
+the bottom face of the chips and 128-255 are used for the top face, and the data type indicates the
+chip number (data type 0 is used for layers not belonging to chip faces). Other texts, annotations
+and miscellaneous things not strictly belonging to a particular face are under the ``texts`` layer
+group. Other layers used only for simulations are under the aptly named ``simulations`` layer group.
 
 Most layers have self-describing names like ``refpoints`` or ``instance names`` but others need a
 bit of explanation:
