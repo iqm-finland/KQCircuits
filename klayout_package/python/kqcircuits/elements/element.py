@@ -23,7 +23,7 @@ from autologging import logged
 from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_cell_path_length
-from kqcircuits.util.library_helper import load_libraries, to_library_name
+from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.refpoints import Refpoints
 
@@ -69,24 +69,42 @@ class Element(pya.PCellDeclarationHelper):
         ""
         super().__init__()
 
+        cls = type(self)
+        mro = cls.__mro__
+
+        # We may need to redefine a Param object, because multiple classes may refer to the same Param object
+        # due to inheritance, so modifying the existing Param object could affect other classes.
+        def _redef_param(p, v, **kwargs):
+            np = Param(p.data_type, p.description, v, **{**p.kwargs, **kwargs})
+            np.__set_name__(cls, p.name)
+            setattr(type(self), p.name, np)
+            return np
+
+        bid = 1
+        while mro[bid] != Element:
+            bid += 1
+        base = mro[bid - 1]
+        # Set and hide *_type parameter in classes inheriting from a * base class
+        if hasattr(base, "default_type") and getattr(base, "build") == getattr(Element, "build"):
+            params = Param.get_all(base)
+            mod = to_module_name(base.__name__)
+            if f"{mod}_type" in params:
+                subtype = to_library_name(cls.__name__)
+                _redef_param(params[f"{mod}_type"], subtype, choices=[subtype], hidden=True)
+
         # create KLayout's PCellParameterDeclaration objects
         self._param_value_map = {}
-        for name, p in type(self).get_schema().items():
+        for name, p in cls.get_schema().items():
             self._param_value_map[name] = len(self._param_decls)
             # Override default value based on default_parameter_values if needed.
-            mro = type(self).__mro__
-            for cls in mro:
-                cls_name = cls.__qualname__
+            for cl in mro:
+                cls_name = cl.__qualname__
                 if cls_name in default_parameter_values and name in default_parameter_values[cls_name]:
-                    # Ensure that the `cls` default overrides the value only if it is not overridden
-                    # by another class below `cls` in the hierarchy.
-                    if cls != type(self) and cls.__dict__[name] != p:
+                    # Ensure that the `cl` default overrides the value only if it is not overridden
+                    # by another class below `cl` in the hierarchy.
+                    if cl != cls and cl.__dict__[name] != p:
                         break
-                    # We need to redefine the Param object, because multiple classes may refer to the same Param object
-                    # due to inheritance, so modifying the existing Param object could affect other classes.
-                    p = Param(p.data_type, p.description, default_parameter_values[cls_name][name], **p.kwargs)
-                    p.__set_name__(type(self), name)
-                    setattr(type(self), name, p)
+                    p = _redef_param(p, default_parameter_values[cls_name][name])
                     break
             self._add_parameter(name, p.data_type, p.description, default=p.default, **p.kwargs)
 
