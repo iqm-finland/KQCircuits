@@ -120,6 +120,23 @@ class MaskSet:
         self.mask_layouts.append(mask_layout)
         return mask_layout
 
+    def load_cell_from_file(self, file_name):
+        """Load GDS or OASIS cell from file.
+
+        Load a cell (usually a chip) from the specified file.
+
+        Args:
+            file_name: name of the file (with path) to be loaded
+
+        Returns:
+            the loaded cell
+        """
+        load_opts = pya.LoadLayoutOptions()
+        if self.view and pya.Application.instance().version() >= 'KLayout 0.27.0':
+            load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
+        self.layout.read(file_name, load_opts)
+        return self.layout.top_cells()[-1]
+
     def add_chips(self, chips, threads=None):
         """Adds a list of chips with parameters to self.chips_map_legend and exports the files for each chip.
 

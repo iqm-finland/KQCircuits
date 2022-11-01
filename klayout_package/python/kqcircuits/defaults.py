@@ -69,6 +69,7 @@ if TMP_PATH is None:
 else:
     TMP_PATH = Path(TMP_PATH)
 
+RESOURCES_PATH = ROOT_PATH.joinpath("resources")
 TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]

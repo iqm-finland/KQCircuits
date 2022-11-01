@@ -22,16 +22,10 @@ Q and AB tests. Showcases box maps and how to load cells from files to a mask.
 """
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
-from kqcircuits.defaults import TMP_PATH
-from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.defaults import TMP_PATH, RESOURCES_PATH
 from kqcircuits.masks.mask_set import MaskSet
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util import macro_prepare
 
-view = KLayoutView(current=True, initialize=True)
-layout = KLayoutView.get_active_layout()
-
-m001 = MaskSet(layout, name="M001", version=2, with_grid=False)
+m001 = MaskSet(name="M001", version=2, with_grid=False)
 
 box_map = {"A": [
     ["AB1", "AB2", "QSG"],
@@ -73,29 +67,25 @@ parameters_qs = {
     "res_b": [6] * 6
 }
 
-# We demonstrate how to add chips from different files to a mask
-# Create an empty layout with top cell and generate and export cell to file
-layout_2, top_cell, _, _ = macro_prepare.prep_empty_layout("Another file")
-cell = QualityFactor.create(layout_2, name_chip="QDD", name_mask="M001",
-                            **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
-top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
-save_opts = pya.SaveLayoutOptions()
-save_opts.write_context_info = True
-file_name = str(TMP_PATH / "m001_QDD.gds")
-top_cell.write(file_name, save_opts)
-pya.MainWindow.instance().close_current_view()
+# You may use KLayout or code like this to a export cell to a file:
+#
+#   from kqcircuits.pya_resolver import pya
+#   from kqcircuits.util import macro_prepare
+#
+#   layout_2, top_cell, _, _ = macro_prepare.prep_empty_layout("Another file")
+#   cell = QualityFactor.create(layout_2, name_chip="QDD", name_mask="M001",
+#                               **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
+#   top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+#   save_opts = pya.SaveLayoutOptions()
+#   save_opts.write_context_info = True
+#   file_name = str(TMP_PATH / "m001_QDD.gds")
+#   top_cell.write(file_name, save_opts)
+#   pya.MainWindow.instance().close_current_view()
 
-# Load the cell from a file
-if not 'imported' in globals() or not imported:
-    print("Loading:", file_name)
-    load_opts = pya.LoadLayoutOptions()
-    if pya.Application.instance().version() >= 'KLayout 0.27.0':
-        load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-    m001.layout.read(file_name, load_opts)
-    qdd = m001.layout.top_cells()[-1]
-    imported = True
-
-# Chip from file added manually
+# Add Chip from file manually
+file_name = f"{RESOURCES_PATH}/m001_QDD.oas"
+print("Loading:", file_name)
+qdd = m001.load_cell_from_file(file_name)
 m001.add_chip(qdd, "QDD")
 
 m001.add_chips([
@@ -110,4 +100,4 @@ m001.add_chips([
 ])
 
 m001.build()
-m001.export(TMP_PATH, view)
+m001.export(TMP_PATH)
