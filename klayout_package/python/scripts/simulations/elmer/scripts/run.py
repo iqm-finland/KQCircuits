@@ -14,18 +14,16 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-import logging
 import os
-import shutil
-import subprocess
-import sys
 import json
 from pathlib import Path
 import argparse
 
 from gmsh_helpers import export_gmsh_msh
 from elmer_helpers import export_elmer_sif, write_project_results_json
-
+from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview
+from cross_section_helpers import produce_cross_section_mesh, produce_cross_section_sif_files, \
+    get_cross_section_capacitance_and_inductance
 
 parser = argparse.ArgumentParser(description='Run script for Gmsh-Elmer workflow')
 parser.add_argument('json_filename', type=str, help='KQC simulation data')
@@ -48,7 +46,8 @@ args = parser.parse_args()
 
 # Get input json filename as first argument
 json_filename = args.json_filename
-path = Path(os.path.split(json_filename)[0])
+path = Path(json_filename).parent
+name = Path(Path(json_filename).stem)
 
 # Open json file
 with open(json_filename) as f:
@@ -89,63 +88,61 @@ if args.skip_paraview:
 
 if args.q:
     workflow['run_paraview'] = False
-    json_data['gmsh_params']['show'] = False
-
-# Generate mesh
-if workflow['run_gmsh']:
-    msh_filepath, model_data = export_gmsh_msh(json_data, path, **json_data['gmsh_params'])
-    model_data['frequency'] = json_data['frequency']
-    sif_filepath = export_elmer_sif(path, msh_filepath, model_data)
-else:
-    msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
+    workflow['run_gmsh_gui'] = False
 
 # Set number of processes for elmer
 elmer_n_processes = workflow['elmer_n_processes']
 if elmer_n_processes == -1:
     elmer_n_processes = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
 
-# Run ElmerGrid
-if workflow['run_elmergrid']:
-    if shutil.which('ElmerGrid') is not None:
-        subprocess.check_call(['ElmerGrid', '14', '2', msh_filepath], cwd=path)
-        if elmer_n_processes > 1:
-            subprocess.check_call(['ElmerGrid', '2', '2', msh_filepath.stem + '/', '-metis',
-                '{}'.format(elmer_n_processes), '4', '-removeunused'], cwd=path)
-    else:
-        logging.warning("ElmerGrid was not found! Make sure you have ElmerFEM " \
-                        "installed: https://github.com/ElmerCSC/elmerfem")
-        logging.warning("Mesh was created, but Elmer cannot be run!")
-        sys.exit()
+tool = json_data.get('tool', 'capacitance')
+if tool == 'cross-section':
+    # Generate mesh
+    msh_file = '{}.msh'.format(name)
+    if workflow['run_gmsh']:
+        produce_cross_section_mesh(json_data, path.joinpath(msh_file))
 
-# Run Elmer simulation
-if workflow['run_elmer']:
-    if shutil.which('ElmerSolver') is not None:
-        if elmer_n_processes > 1:
-            mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
-            subprocess.check_call([mpi_command, '-np', '{}'.format(elmer_n_processes), 'ElmerSolver_mpi',
-                                   'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
-        else:
-            subprocess.check_call(['ElmerSolver', 'sif/{}.sif'.format(msh_filepath.stem)], cwd=path)
+    # Run sub-processes
+    if workflow['run_elmergrid']:
+        run_elmer_grid(msh_file, elmer_n_processes, path)
+    if workflow['run_elmer']:
+        sif_files = produce_cross_section_sif_files(json_data, path.joinpath(name))
+        for sif_file in sif_files:
+            run_elmer_solver(name.joinpath(sif_file), elmer_n_processes, path)
+        res = get_cross_section_capacitance_and_inductance(json_data, path.joinpath(name))
+        with open(path.joinpath('{}_result.json'.format(name)), 'w') as f:
+            json.dump(res, f, indent=4)
+    if workflow['run_paraview']:
+        run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
+
+
+else:
+    # Generate mesh
+    if workflow['run_gmsh']:
+        gmsh_params = json_data['gmsh_params']
+        if 'run_gmsh_gui' in workflow:
+            gmsh_params['show'] = workflow['run_gmsh_gui']
+        if 'gmsh_n_threads' in workflow:
+            gmsh_params['gmsh_n_threads'] = workflow['gmsh_n_threads']
+        msh_filepath, model_data = export_gmsh_msh(json_data, path, **gmsh_params)
+        model_data['frequency'] = json_data['frequency']
+        sif_filepath = export_elmer_sif(path, msh_filepath, model_data)
+    else:
+        msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
+
+    # Set number of processes for elmer
+    elmer_n_processes = workflow['elmer_n_processes']
+    if elmer_n_processes == -1:
+        elmer_n_processes = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
+
+    # Run sub-processes
+    if workflow['run_elmergrid']:
+        run_elmer_grid(msh_filepath, elmer_n_processes, path)
+    if workflow['run_elmer']:
+        run_elmer_solver('sif/{}.sif'.format(msh_filepath.stem), elmer_n_processes, path)
+    if workflow['run_paraview']:
+        run_paraview('{}/{}'.format(msh_filepath.stem, msh_filepath.stem), elmer_n_processes, path)
+
+    # Write result file
+    if args.write_project_results:
         write_project_results_json(path, msh_filepath)
-    else:
-        logging.warning("ElmerSolver was not found! Make sure you have ElmerFEM installed: "
-                        "https://github.com/ElmerCSC/elmerfem")
-        logging.warning("Mesh was created, but Elmer cannot be run!")
-        sys.exit()
-
-# Run Paraview to view results
-if workflow['run_paraview']:
-    if shutil.which('paraview') is not None:
-        if elmer_n_processes > 1:
-            subprocess.check_call(['paraview', '{}/{}_t0001.pvtu'.format(msh_filepath.stem,
-                msh_filepath.stem)], cwd=path)
-        else:
-            subprocess.check_call(['paraview', '{}/{}_t0001.vtu'.format(msh_filepath.stem,
-                msh_filepath.stem)], cwd=path)
-    else:
-        logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
-        logging.warning("The simulation was run, but Paraview cannot be run for viewing the results!")
-        sys.exit()
-
-if args.write_project_results:
-    write_project_results_json(path, msh_filepath)

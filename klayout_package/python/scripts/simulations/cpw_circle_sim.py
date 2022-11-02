@@ -86,14 +86,13 @@ if use_elmer:
         'gap_min_dist': 4.,
         'gap_max_dist': 200.,
         'algorithm': 5,
-        'gmsh_n_threads': -1,  # -1 means all the physical cores
-        'show': True,  # For GMSH: if true, the mesh is shown after it is done
-                       # (for large meshes this can take a long time)
     }
     workflow = {
+        'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
+        'gmsh_n_threads': -1,  # -1 means all the physical cores
         'elmer_n_processes': -1,  # -1 means all the physical cores
     }
     export_elmer(simulations, **export_parameters, gmsh_params=mesh_parameters, workflow=workflow)

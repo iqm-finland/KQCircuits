@@ -58,16 +58,15 @@ default_gmsh_params = {
                            # curves
     'port_sampling': None,  # Number of points used for sampling each port region curve
     'algorithm': 5,  # Gmsh meshing algorithm (default is 5)
-    'gmsh_n_threads': 1,  # number of threads used in Gmsh meshing (default=1, -1 means all physical cores)
-    'show': False,  # Show the mesh in Gmsh graphical interface after completing the mesh (for large meshes this can
-                    # take a long time)
 }
 
 default_workflow = {
     'run_gmsh': True,  # Run Gmsh to generate mesh
+    'run_gmsh_gui': False,  # Show the mesh in Gmsh graphical interface after completing the mesh
     'run_elmergrid': True,  # Run ElmerGrid
     'run_elmer': True,  # Run Elmer simulation
     'run_paraview': False,  # Run Paraview. This is visual view of the results.
+    'gmsh_n_threads': 1,  # number of threads used in Gmsh meshing (default=1, -1 means all physical cores)
     'elmer_n_processes': 1,  # number of processes used in Elmer simulation (default=1, -1 means all physical cores)
     'python_executable': 'python' # the python executable that is used to prepare and control the simulations
                                   # another executable could be 'kqclib' (in case the singularity image is used
@@ -141,7 +140,7 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
     return json_filename
 
 
-def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simulation',
+def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='simulation',
         script_file='scripts/run.py'):
     """
     Create script files for running one or more simulations.
@@ -158,6 +157,8 @@ def export_elmer_script(json_filenames, path: Path, workflow, file_prefix='simul
 
         Path of exported main script file
     """
+    if workflow is None:
+        workflow = dict()
     sbatch = 'sbatch_parameters' in workflow
     if sbatch:
         sbatch_parameters = workflow['sbatch_parameters']

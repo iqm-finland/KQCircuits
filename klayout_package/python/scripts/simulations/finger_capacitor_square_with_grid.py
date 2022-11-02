@@ -83,8 +83,6 @@ if use_elmer:
         'port_min_dist': 4.,
         'port_max_dist': 100.,
         'algorithm': 5,
-        'show': True,  # For GMSH: if true, the mesh is shown after it is done
-                       # (for large meshes this can take a long time)
     }
 
     export_parameters_elmer = {
@@ -93,6 +91,8 @@ if use_elmer:
     }
 
     workflow = {
+        'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
+                               # (for large meshes this can take a long time)
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process

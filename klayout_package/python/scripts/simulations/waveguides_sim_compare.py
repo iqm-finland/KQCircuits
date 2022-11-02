@@ -103,12 +103,6 @@ if use_elmer:
         'port_min_dist': 4.,
         'port_max_dist': 200.,
         'algorithm': 5,
-        'gmsh_n_threads': -1,  # <---------- This defines the number of processes in the
-                               #             second level of parallelization. -1 uses all
-                               #             the physical cores (based on the machine which
-                               #             was used to prepare the simulation).
-        'show': True,  # For GMSH: if true, the mesh is shown after it is done
-                       # (for large meshes this can take a long time)
     }
 
     if wave_equation:
@@ -126,12 +120,18 @@ if use_elmer:
         }
 
     workflow = {
+        'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
+                               # (for large meshes this can take a long time)
         'run_elmergrid': True,
         'run_elmer': True,
         'run_paraview': True,  # this is visual view of the results
                                # which can be removed to speed up the process
         'python_executable': 'python', # use 'kqclib' when using singularity
                                        # image (you can also put a full path)
+        'gmsh_n_threads': -1,  # <---------- This defines the number of processes in the
+                               #             second level of parallelization. -1 uses all
+                               #             the physical cores (based on the machine which
+                               #             was used to prepare the simulation).
         'elmer_n_processes': elmer_n_processes,  # <------ This defines the number of
                                                  #         processes in the second level
                                                  #         of parallelization. -1 uses all

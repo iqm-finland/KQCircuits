@@ -27,7 +27,7 @@ except ImportError:
 
 def coord_dist(coord1: [], coord2: []):
     """
-    Returns the distance of two points based on two coordinates.
+    Returns the distance between two points.
 
     Args:
         coord1(list(float)): coordinates (x, y, z) of point 1.
@@ -36,46 +36,26 @@ def coord_dist(coord1: [], coord2: []):
     Returns:
         (float): distance between point 1 and 2
     """
-    return np.sqrt(
-        (coord1[0] - coord2[0]) ** 2.
-        + (coord1[1] - coord2[1]) ** 2.
-        + (coord1[2] - coord2[2]) ** 2.
-    )
+    return np.linalg.norm(np.array(coord1) - np.array(coord2))
 
 
-def add_polygon(point_coordinates: [], mesh_size: float):
+def add_polygon(point_coordinates: [], mesh_size=0):
     """
     Adds the geometry entities in the OpenCASCADE model for generating a polygon and keeps track of all the entities.
-    Returns the geometry entity ids.
+    Returns the geometry entity id.
 
     Args:
-        point_coordinates(list(float)):
-            list of coordinates that make up the polygon (when lines are drawn betwee each concecutive points)
-        mesh_size(float):
-            mesh size can be given to the points (note that these points are not used in the final mesh
-            in case the boolean operations are used.
+        point_coordinates(list(float)): list of point coordinates that frame the polygon
+        mesh_size(float): mesh element size, default=0
 
     Returns:
-        (list()): list of entity ids
-            * point_ids(list(int)): entity ids of each point used in the polygon
-            * line_ids(list(int)): entity ids of each line used in the polygon
-            * curve_loop_ids(list(int)): entity ids of each curveloop used in the polygon
-            * plane_surface_id(int): entity id of the polygon
-
-        Note that all of the ids become obsolete when boolean operations are used in OpenCASCADE kernel.
+        (int): entity id of the polygon
     """
-    point_ids = []
-    line_ids = []
-    curve_loop_ids = []
-    i = 0
-    for i, coord in enumerate(point_coordinates):
-        point_ids.append(gmsh.model.occ.addPoint(*coord, mesh_size))
-        if i > 0:
-            line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
-    line_ids.append(gmsh.model.occ.addLine(point_ids[i], point_ids[0]))
-    curve_loop_ids.append(gmsh.model.occ.addCurveLoop(line_ids))
-    plane_surface_id = gmsh.model.occ.addPlaneSurface(curve_loop_ids)
-    return point_ids, line_ids, curve_loop_ids, plane_surface_id
+    points = [gmsh.model.occ.addPoint(*coord, mesh_size) for coord in point_coordinates]
+    lines = [gmsh.model.occ.addLine(points[i - 1], points[i]) for i in range(1, len(points))]
+    lines.append(gmsh.model.occ.addLine(points[-1], points[0]))
+    loops = [gmsh.model.occ.addCurveLoop(lines)]
+    return gmsh.model.occ.addPlaneSurface(loops)
 
 
 def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
@@ -812,7 +792,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     for port in port_data_gmsh:
         if 'polygon' in port:
             # add port polygon and store its dim_tag
-            _, _, _, surface_id = add_polygon(port['polygon'], port_min_mesh_size)
+            surface_id = add_polygon(port['polygon'], port_min_mesh_size)
             port['dim_tag'] = (2, surface_id)
             if port['type'] == 'InternalPort':
                 face_port_dim_tags[port['face']].append(port['dim_tag'])

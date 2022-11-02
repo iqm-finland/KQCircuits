@@ -31,5 +31,5 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
     rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
     git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits && \
     python -m pip install -e klayout_package/python
-    python -m pip install gmsh
+    python -m pip install gmsh pandas
     ln -s /usr/bin/python /usr/bin/kqclib

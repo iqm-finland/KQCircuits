@@ -57,8 +57,6 @@ mesh_parameters = {
     'signal_min_dist': 16,
     'signal_max_dist': 200,
     'algorithm': 5,
-    'gmsh_n_threads': 2,
-    'show': True,
 }
 
 # Here we select to use up to 4*2=8 cores with two levels of parallelisation
@@ -66,9 +64,11 @@ mesh_parameters = {
 # NB that mesh_parameters also has a gmsh_n_threads parameter that may be different.
 workflow = {
     'run_elmergrid': True,
+    'run_gmsh_gui': True,
     'run_elmer': True,
     'run_paraview': False,  # don't open field solution between simulations
     'n_workers': 4,  # workers for first-level parallelisation, using Slurm would override this
+    'gmsh_n_threads': 2,
     'elmer_n_processes': 2,  # processes for second-level parallelisation
     'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
 }
