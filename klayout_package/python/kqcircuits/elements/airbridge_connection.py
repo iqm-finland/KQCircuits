@@ -49,8 +49,8 @@ class AirbridgeConnection(Element):
         # Add left waveguide
         pad_a = self.bridge_width
         pad_b = self.bridge_gap_width
-        wg_l_pos = ab_ref["port_a"] + pya.DPoint(self.waveguide_extra, 0)
-        taper_l_pos = pya.DPoint(ab_ref["port_a"] - pya.DVector(self.pad_length, 0))
+        wg_l_pos = ab_ref["port_a"] + pya.DVector(self.waveguide_extra, 0)
+        taper_l_pos = ab_ref["port_a"] - pya.DVector(self.pad_length, 0)
         terminator_l = self.add_element(WaveguideCoplanar,
                                         path=[taper_l_pos, wg_l_pos],
                                         a=pad_a, b=pad_b,
@@ -64,7 +64,7 @@ class AirbridgeConnection(Element):
 
         # Optionally, add right waveguide
         if self.with_right_waveguide:
-            wg_r_pos = pya.DPoint(ab_ref["port_b"] - pya.DPoint(self.waveguide_extra, 0))
+            wg_r_pos = ab_ref["port_b"] - pya.DVector(self.waveguide_extra, 0)
             taper_r_pos = ab_ref["port_b"] + pya.DVector(self.pad_length, 0)
             terminator_r = self.add_element(WaveguideCoplanar,
                                             path=[wg_r_pos, taper_r_pos],
