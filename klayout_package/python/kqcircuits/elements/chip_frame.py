@@ -16,6 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+import math
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.parameters import Param, pdt
@@ -49,6 +50,9 @@ class ChipFrame(Element):
     use_face_prefix = Param(pdt.TypeBoolean, "Use face prefix for chip name label", False)
     marker_types = Param(pdt.TypeList, "Marker type for each chip corner, clockwise starting from lower left",
                          default=[default_marker_type]*4)
+    chip_dicing_width = Param(pdt.TypeDouble, "Width of the chip dicing reference line", 10.0, unit="µm")
+    chip_dicing_line_length = Param(pdt.TypeDouble, "Length of the chip dicing reference line", 100.0, unit="µm")
+    chip_dicing_gap_length = Param(pdt.TypeDouble, "Gap between two chip dicing reference dashes", 50.0, unit="µm")
 
     def build(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""
@@ -119,6 +123,16 @@ class ChipFrame(Element):
         protection = pya.DPolygon(self._border_points(self.dice_width + self.dice_grid_margin))
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection)
 
+        box_points = self._box_points()
+        p1 = pya.DPoint(box_points[0], box_points[2])
+        p2 = pya.DPoint(box_points[1], box_points[2])
+        p3 = pya.DPoint(box_points[0], box_points[3])
+        p4 = pya.DPoint(box_points[1], box_points[3])
+        self._produce_lines_along_edge(p1.y, p3.y, True,  p1)
+        self._produce_lines_along_edge(p1.x, p2.x, False, p1)
+        self._produce_lines_along_edge(p2.y, p4.y, True,  p2)
+        self._produce_lines_along_edge(p3.x, p4.x, False, p3)
+
     def _box_points(self):
         """Returns x_min, x_max, y_min, y_max for the given box."""
         x_min = min(self.box.p1.x, self.box.p2.x)
@@ -144,3 +158,43 @@ class ChipFrame(Element):
             pya.DPoint(x_min + w, y_min + w),
         ]
         return points
+
+    def _produce_lines_along_edge(self, line_start, line_end, is_vertical, position):
+        """Adds chip dicing reference lines along one edge of the chip.
+        The line pattern is tied to the global coordinate system
+
+        Args:
+            line_start: One-dimensional coordinate of start of the line
+            line_end: One-dimensional coordinate of end of the line
+            is_vertical: True to draw a line along y-axis, False to draw along x-axis
+            position: A DPoint that is in the line
+        """
+        start = line_start
+        segment_length = self.chip_dicing_line_length + self.chip_dicing_gap_length
+        end = math.floor(line_start / segment_length) * segment_length + self.chip_dicing_line_length
+        if end > start:
+            self._add_chip_dicing_line_dash(start, end, is_vertical, position)
+        while True:
+            start = end + self.chip_dicing_gap_length
+            if start > line_end:
+                break
+            end = start + self.chip_dicing_line_length
+            if end > line_end:
+                self._add_chip_dicing_line_dash(start, line_end, is_vertical, position)
+                break
+            self._add_chip_dicing_line_dash(start, end, is_vertical, position)
+
+    def _add_chip_dicing_line_dash(self, start, end, is_vertical, position):
+        """Adds a dash as part of a chip dicing reference line.
+
+        Args:
+            start: One-dimensional coordinate of start of the dash
+            end: One-dimensional coordinate of end of the dash
+            is_vertical: True to draw a dash along y-axis, False to draw along x-axis
+            position: A DPoint that is in the line to which the dash belongs to
+        """
+        if is_vertical:
+            box = pya.DBox(position.x - self.chip_dicing_width/2, start, position.x + self.chip_dicing_width/2, end)
+        else:
+            box = pya.DBox(start, position.y - self.chip_dicing_width/2, end, position.y + self.chip_dicing_width/2)
+        self.cell.shapes(self.get_layer("chip_dicing")).insert(box)

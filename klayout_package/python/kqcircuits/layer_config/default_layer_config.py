@@ -81,6 +81,8 @@ _common_b_t_layers = {
     "airbridge_pads": (28, 3),  #
     "airbridge_flyover": (29, 3),  #
 
+    "chip_dicing": (30, 0),
+
     # 3D integration layers
     "underbump_metallization": (32, 4),  # flip-chip bonding
     "indium_bump": (33, 4),  # flip-chip bonding
