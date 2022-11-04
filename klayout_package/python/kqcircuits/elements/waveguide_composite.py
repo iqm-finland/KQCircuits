@@ -258,6 +258,37 @@ class WaveguideComposite(Element):
 
         return segment_lengths
 
+    @staticmethod
+    def produce_fixed_length_waveguide(chip, route_function, initial_guess=0.0, length=0.0, **waveguide_params):
+        """
+        Produce a waveguide composite with fixed length. `route_function` should be a single-argument function that
+        returns route, and its argument is an adjustable length in µm.
+        Note that this is not a minimization, but a single-step adjustment that only corrects for the offset in
+        length.
+
+        Args:
+            chip: Chip in which the element is added (self if called within chip code)
+            route_function: a function lambda x: [Node(f(x))...] where x can be for instance a meander length or a
+            DPoint coordinate (if more than one component is tuned in the Node list, the correction length must be
+            weighted)
+            initial_guess: float that allows to draw an initial waveguide of a reasonable length
+            length: target desired length for the final waveguide
+            waveguide_params: kwargs to be passed to the WaveguideComposite element, such as a, b, term1, term2 etc.
+
+        Returns: The waveguide instance, refpoints and the final length
+        """
+
+        wg_tmp = chip.add_element(WaveguideComposite, nodes=[
+            *route_function(initial_guess),
+        ], **waveguide_params)
+        offset_length = wg_tmp.length()
+        correction = length - offset_length
+        wg = chip.add_element(WaveguideComposite, nodes=[
+            *route_function(correction+initial_guess),
+        ], **waveguide_params)
+        inst, ref = chip.insert_cell(wg)
+        return inst, ref, wg.length()
+
     def snap_point(self, point: pya.DPoint) -> pya.DPoint:  # pylint: disable=no-self-use
         """
         Interface to define snap behavior for GUI editing in derived classes.
