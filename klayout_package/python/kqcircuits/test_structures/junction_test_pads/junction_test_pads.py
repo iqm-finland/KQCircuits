@@ -24,8 +24,10 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
 from kqcircuits.test_structures.junction_test_pads import junction_test_pads_type_choices
+from kqcircuits.junctions.manhattan import Manhattan
 
 
+@add_parameters_from(Manhattan, "offset_compensation", "shadow_margin", "mirror_offset", "finger_overlap")
 @add_parameters_from(Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
@@ -165,7 +167,7 @@ class JunctionTestPads(TestStructure):
         if not self.junctions_horizontal:
             trans = pya.DCplxTrans(x - junction_spacing, y)
         squid_ref_rel = self.produce_squid(trans, only_arms=only_arms, junction_width=self._next_width,
-                                           squid_index=index, loop_area=self.loop_area)
+                                           squid_index=index)
         if "right_side" in squid_ref_rel:
             arm_length = squid_ref_rel["right_side"].x - 0.5
         pos_rel_squid_top = squid_ref_rel["port_common"]

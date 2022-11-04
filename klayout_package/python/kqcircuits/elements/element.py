@@ -80,11 +80,8 @@ class Element(pya.PCellDeclarationHelper):
             setattr(type(self), p.name, np)
             return np
 
-        bid = 1
-        while mro[bid] != Element:
-            bid += 1
-        base = mro[bid - 1]
         # Set and hide *_type parameter in classes inheriting from a * base class
+        base = cls._get_base()
         if hasattr(base, "default_type") and getattr(base, "build") == getattr(Element, "build"):
             params = Param.get_all(base)
             mod = to_module_name(base.__name__)
@@ -248,11 +245,11 @@ class Element(pya.PCellDeclarationHelper):
         """
         return default_faces[self.face_ids[face_index]]
 
-    def pcell_params_by_name(self, whitelist=None, **parameters):
+    def pcell_params_by_name(self, cls=None, **parameters):
         """Give PCell parameters as a dictionary.
 
         Arguments:
-            whitelist: A classname. Its parameter names are used for filtering.
+            cls: Return only parameters present in this class. All by default.
             **parameters: Optionally update with other keyword arguments
 
         Returns:
@@ -260,9 +257,16 @@ class Element(pya.PCellDeclarationHelper):
         """
         keys = type(self).get_schema().keys()
 
-        # filter keys by whitelist if not a base class
-        if whitelist is not None and Element.build != whitelist.build:
-            keys = list(set(whitelist.get_schema().keys()) & set(keys))
+        if cls is not None:  # filter keys by cls
+            if Element.build == cls.build:  # base class? find subclass
+                cls = cls._get_base()
+                mod = to_module_name(cls.__name__)
+                if f"{mod}_type" in parameters:
+                    subtype = parameters[f"{mod}_type"]
+                    library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
+                    if subtype in library_layout.pcell_names():
+                        cls = type(library_layout.pcell_declaration(subtype))
+            keys = list(set(cls.get_schema().keys()) & set(keys))
 
         p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}
         return {**p, **parameters}
@@ -395,6 +399,18 @@ class Element(pya.PCellDeclarationHelper):
         else:
             load_libraries(path=elem_cls.LIBRARY_PATH)
             return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
+
+    @classmethod
+    def _get_base(cls):
+        """Helper function to return ``cls``'s base class, if available, otherwise just return ``cls``."""
+        if not hasattr(cls, "default_type"):
+            return cls
+        prev = cls
+        base = cls.__bases__[0]
+        while hasattr(base, "default_type"):
+            prev = base
+            base = prev.__bases__[0]
+        return prev
 
     def _add_parameter(self, name, value_type, description,
                        default=None, unit=None, hidden=False, readonly=False, choices=None, docstring=None):

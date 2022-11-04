@@ -23,7 +23,7 @@ from kqcircuits.test_structures.junction_test_pads.junction_test_pads import Jun
 from kqcircuits.junctions.junction import Junction
 
 
-@add_parameters_from(JunctionTestPads, "junction_test_pads_type", "test_junctions")
+@add_parameters_from(JunctionTestPads, "junction_test_pads_type", "test_junctions", pad_spacing=200)
 @add_parameters_from(Junction, "junction_type")
 @add_parameters_from(ChipFrame, "marker_types")
 class JunctionTest2(Chip):
@@ -31,7 +31,6 @@ class JunctionTest2(Chip):
 
     pad_width = Param(pdt.TypeDouble, "Pad Width", 500, unit="μm")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
-    pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 200, unit="μm")
     small_loop_area = Param(pdt.TypeDouble, "Test SQUIDs small loop area",
                                  default=80, unit="μm")
     large_loop_area = Param(pdt.TypeDouble, "Test SQUIDs large loop area",
