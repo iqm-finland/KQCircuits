@@ -513,7 +513,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
@@ -579,8 +579,8 @@
             <span class="n">pcell_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pcell_decl</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
 
     <span class="c1"># If some instances are selected, then we are only going to export code for them</span>
-    <span class="n">layout_view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="o">.</span><span class="n">get_active_cell_view</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layout_view</span><span class="o">.</span><span class="n">object_selection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">layout_view</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">()</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="p">,</span> <span class="s2">&quot;CellView&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">layout_view</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">layout_view</span><span class="o">.</span><span class="n">object_selection</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">layout_view</span><span class="o">.</span><span class="n">object_selection</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_cell_inst</span><span class="p">():</span>
                 <span class="n">add_instance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">inst</span><span class="p">())</span>
@@ -633,12 +633,18 @@
 
         <span class="n">wg_points</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">nodes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">_params</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">())</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;WaveguideCoplanar&quot;</span><span class="p">:</span>
-            <span class="n">wg_points</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each_point</span><span class="p">()</span>
+            <span class="n">wg_points</span> <span class="o">=</span> <span class="n">_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;path&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">each_point</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">nodes</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameter</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">))</span>
+            <span class="n">nodes</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="n">_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;nodes&quot;</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
                 <span class="n">wg_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+
+        <span class="n">wg_params</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>  <span class="c1"># non-default parameters of the cell</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_params</span> <span class="ow">and</span> <span class="n">v</span><span class="o">.</span><span class="n">data_type</span> <span class="o">!=</span> <span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span> <span class="ow">and</span> <span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+                <span class="n">wg_params</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,  </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">path_point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">wg_points</span><span class="p">):</span>
             <span class="n">path_point</span> <span class="o">+=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="o">.</span><span class="n">disp</span>
@@ -678,7 +684,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">path_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_prefix</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">x_snapped</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y_snapped</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">node_params</span><span class="si">}{</span><span class="n">point_postfix</span><span class="si">}</span><span class="s2">, &quot;</span>
         <span class="n">path_str</span> <span class="o">=</span> <span class="n">path_str</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># Remove extra comma and space</span>
-        <span class="n">path_str</span> <span class="o">+=</span> <span class="n">postfix</span>
+        <span class="n">path_str</span> <span class="o">+=</span> <span class="n">postfix</span> <span class="o">+</span> <span class="n">wg_params</span>
         <span class="k">if</span> <span class="n">output_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;insert_cell&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;self.insert_cell(</span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>

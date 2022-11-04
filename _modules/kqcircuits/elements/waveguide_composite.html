@@ -748,6 +748,37 @@
 
         <span class="k">return</span> <span class="n">segment_lengths</span></div>
 
+<div class="viewcode-block" id="WaveguideComposite.produce_fixed_length_waveguide"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_fixed_length_waveguide">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">produce_fixed_length_waveguide</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">route_function</span><span class="p">,</span> <span class="n">initial_guess</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">waveguide_params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Produce a waveguide composite with fixed length. `route_function` should be a single-argument function that</span>
+<span class="sd">        returns route, and its argument is an adjustable length in µm.</span>
+<span class="sd">        Note that this is not a minimization, but a single-step adjustment that only corrects for the offset in</span>
+<span class="sd">        length.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chip: Chip in which the element is added (self if called within chip code)</span>
+<span class="sd">            route_function: a function lambda x: [Node(f(x))...] where x can be for instance a meander length or a</span>
+<span class="sd">            DPoint coordinate (if more than one component is tuned in the Node list, the correction length must be</span>
+<span class="sd">            weighted)</span>
+<span class="sd">            initial_guess: float that allows to draw an initial waveguide of a reasonable length</span>
+<span class="sd">            length: target desired length for the final waveguide</span>
+<span class="sd">            waveguide_params: kwargs to be passed to the WaveguideComposite element, such as a, b, term1, term2 etc.</span>
+
+<span class="sd">        Returns: The waveguide instance, refpoints and the final length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">wg_tmp</span> <span class="o">=</span> <span class="n">chip</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="o">*</span><span class="n">route_function</span><span class="p">(</span><span class="n">initial_guess</span><span class="p">),</span>
+        <span class="p">],</span> <span class="o">**</span><span class="n">waveguide_params</span><span class="p">)</span>
+        <span class="n">offset_length</span> <span class="o">=</span> <span class="n">wg_tmp</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
+        <span class="n">correction</span> <span class="o">=</span> <span class="n">length</span> <span class="o">-</span> <span class="n">offset_length</span>
+        <span class="n">wg</span> <span class="o">=</span> <span class="n">chip</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span>
+            <span class="o">*</span><span class="n">route_function</span><span class="p">(</span><span class="n">correction</span><span class="o">+</span><span class="n">initial_guess</span><span class="p">),</span>
+        <span class="p">],</span> <span class="o">**</span><span class="n">waveguide_params</span><span class="p">)</span>
+        <span class="n">inst</span><span class="p">,</span> <span class="n">ref</span> <span class="o">=</span> <span class="n">chip</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">inst</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">wg</span><span class="o">.</span><span class="n">length</span><span class="p">()</span></div>
+
 <div class="viewcode-block" id="WaveguideComposite.snap_point"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">[docs]</a>    <span class="k">def</span> <span class="nf">snap_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">:</span>  <span class="c1"># pylint: disable=no-self-use</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Interface to define snap behavior for GUI editing in derived classes.</span>

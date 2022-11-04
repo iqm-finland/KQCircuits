@@ -644,6 +644,30 @@ flip chip, taper or any custom element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_fixed_length_waveguide">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">produce_fixed_length_waveguide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chip</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">route_function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">waveguide_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.produce_fixed_length_waveguide"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.produce_fixed_length_waveguide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a waveguide composite with fixed length. <cite>route_function</cite> should be a single-argument function that
+returns route, and its argument is an adjustable length in µm.
+Note that this is not a minimization, but a single-step adjustment that only corrects for the offset in
+length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chip</strong> – Chip in which the element is added (self if called within chip code)</p></li>
+<li><p><strong>route_function</strong> – a function lambda x: [Node(f(x))…] where x can be for instance a meander length or a</p></li>
+<li><p><strong>list</strong> (<em>DPoint coordinate</em><em> (</em><em>if more than one component is tuned in the Node</em>) – </p></li>
+<li><p><strong>be</strong> (<em>the correction length must</em>) – </p></li>
+<li><p><strong>weighted</strong><strong>)</strong> – </p></li>
+<li><p><strong>initial_guess</strong> – float that allows to draw an initial waveguide of a reasonable length</p></li>
+<li><p><strong>length</strong> – target desired length for the final waveguide</p></li>
+<li><p><strong>waveguide_params</strong> – kwargs to be passed to the WaveguideComposite element, such as a, b, term1, term2 etc.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: The waveguide instance, refpoints and the final length</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point">
 <span class="sig-name descname"><span class="pre">snap_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.DPoint</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">klayout.dbcore.DPoint</span></span></span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.snap_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.snap_point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interface to define snap behavior for GUI editing in derived classes.</p>
