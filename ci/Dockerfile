@@ -8,8 +8,8 @@ WORKDIR /kqc
 ENV DISPLAY :99
 ENV XDG_RUNTIME_DIR=/tmp
 ARG DEBIAN_FRONTEND=noninteractive
-ARG KL_FILE=klayout_0.27.9-1_amd64.deb
-ARG KL_HASH=d0254078e04f49c7578bc9e577fe39cc
+ARG KL_FILE=klayout_0.27.12-1_amd64.deb
+ARG KL_HASH=f5fbb6b33f96008bc7037c43b0bd6f24
 
 RUN apt-get update && apt-get install -y apt-utils && apt-get upgrade -y && \
     apt-get install -y wget xvfb python-is-python3 python3-pip git libcurl4 libglu1-mesa libxft-dev jq shellcheck graphviz && \
