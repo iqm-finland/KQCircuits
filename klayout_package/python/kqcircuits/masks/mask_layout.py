@@ -170,7 +170,7 @@ class MaskLayout:
             for (j, chip_name) in enumerate(row):
                 position = pya.DPoint(step_ver * (i + 1) + step_hor * j) - self.chips_map_offset \
                            + pya.DVector(-self.wafer_rad, self.wafer_rad)
-                if (position - step_ver*0.5 + step_hor*0.5 - self.wafer_center).length() - self.wafer_rad < \
+                if (position - step_ver*0.5 + step_hor*0.5 - self.wafer_center).abs() - self.wafer_rad < \
                         -self.edge_clearance:
                     added_chip, region_chip = self._add_chip(chip_name, position, self.chip_trans)
                 else:
