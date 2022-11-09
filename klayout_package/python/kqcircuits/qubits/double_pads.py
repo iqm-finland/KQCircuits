@@ -50,6 +50,7 @@ class DoublePads(Qubit):
     island_taper_height = Param(pdt.TypeDouble, "Qubit island tapering height", 10, unit="µm")
 
     def build(self):
+
         # Qubit base
         ground_gap_points = [
             pya.DPoint( float(self.ground_gap[0]) / 2,  float(self.ground_gap[1]) / 2),
@@ -134,10 +135,12 @@ class DoublePads(Qubit):
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection_region)
 
         # Coupler port
-        self.add_port("cplr", pya.DPoint(0, float(self.ground_gap[1]) / 2))
+        self.add_port("cplr", pya.DPoint(0, float(self.ground_gap[1]) / 2),
+            direction=pya.DVector(pya.DPoint(0, float(self.ground_gap[1]))))
 
         # Drive port
-        self.add_port("drive", pya.DPoint(float(self.drive_position[0]), float(self.drive_position[1])))
+        self.add_port("drive", pya.DPoint(float(self.drive_position[0]), float(self.drive_position[1])),
+            direction=pya.DVector(float(self.drive_position[0]), float(self.drive_position[1])))
 
 
     def _build_coupler(self, first_island_top_edge):
