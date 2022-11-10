@@ -6,5 +6,12 @@ if [ "$(basename "$0")" = "kqclib" ]; then
 else
 	cmd=$(basename "$0")
 fi
-echo running: singularity exec --home "$HOME" "${dir}/${img}" "$cmd" "$@"
-singularity exec --home "$HOME" "${dir}/${img}" "$cmd" "$@"
+
+# Check if running on WSL and use higher compatibility then
+if grep -qi "microsoft" /proc/version; then
+  echo running: singularity exec --containall --home "${PWD}" "${dir}/${img}" "$cmd" "$@"
+  singularity exec --containall --home "${PWD}" "${dir}/${img}" "$cmd" "$@"
+else
+  echo running: singularity exec --home "$HOME" "${dir}/${img}" "$cmd" "$@"
+  singularity exec --home "$HOME" "${dir}/${img}" "$cmd" "$@"
+fi
