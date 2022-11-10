@@ -28,5 +28,4 @@ junction_type_choices = [
     'Manhattan Single Junction',
     'QCD1',
     'Sim',
-    'SIM1',
 ]

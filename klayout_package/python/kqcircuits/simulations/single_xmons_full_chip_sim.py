@@ -47,7 +47,7 @@ class SingleXmonsFullChipSim(Simulation):
             "n_fingers": 4 * [4],
             "l_fingers": [23.65, 24.204, 24.7634, 25.325],
             "type_coupler": 4 * ["plate"],
-            "junction_type": "SIM1",
+            "junction_type": "Sim",
             "n": self.n,
         })
 

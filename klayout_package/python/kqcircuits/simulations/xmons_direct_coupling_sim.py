@@ -25,7 +25,7 @@ from kqcircuits.elements.fluxlines.fluxline import Fluxline
 from kqcircuits.junctions.junction import Junction
 
 
-@add_parameters_from(Junction, junction_type="SIM1")
+@add_parameters_from(Junction, junction_type="Sim")
 @add_parameters_from(Fluxline, fluxline_type="none")
 @add_parameters_from(XMonsDirectCoupling, "arm_width_a", "rr_cpl_width")
 class XMonsDirectCouplingSim(Simulation):
