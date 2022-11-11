@@ -15,13 +15,15 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
+import re
 import os
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import gmsh
 from scipy.constants import mu_0, epsilon_0
+
 from gmsh_helpers import separated_hull_and_holes, add_polygon
 
 try:
@@ -73,28 +75,32 @@ def produce_cross_section_mesh(json_data, msh_file):
         layer_dim_tags = []
         for simple_poly in reg.each():
             poly = separated_hull_and_holes(simple_poly)
-            hull_point_coordinates = [(point.x * layout.dbu, point.y * layout.dbu, 0)
-                                      for point in poly.each_point_hull()]
+            hull_point_coordinates = [
+                (point.x * layout.dbu, point.y * layout.dbu, 0) for point in poly.each_point_hull()
+            ]
             hull_plane_surface_id = add_polygon(hull_point_coordinates)
             hull_dim_tag = (2, hull_plane_surface_id)
             hole_dim_tags = []
             for hole in range(poly.holes()):
-                hole_point_coordinates = [(point.x * layout.dbu, point.y * layout.dbu, 0)
-                                          for point in poly.each_point_hole(hole)]
+                hole_point_coordinates = [
+                    (point.x * layout.dbu, point.y * layout.dbu, 0) for point in poly.each_point_hole(hole)
+                ]
                 hole_plane_surface_id = add_polygon(hole_point_coordinates)
                 hole_dim_tags.append((2, hole_plane_surface_id))
-            if len(hole_dim_tags) > 0:
+            if hole_dim_tags:
                 layer_dim_tags += gmsh.model.occ.cut([hull_dim_tag], hole_dim_tags)[0]
             else:
                 layer_dim_tags.append(hull_dim_tag)
         dim_tags[name] = layer_dim_tags
 
     # Call fragment and get updated dim_tags as new_tags. Then synchronize.
-    all_dim_tags = [tag for name, tags in dim_tags.items() for tag in tags]
+    all_dim_tags = [tag for tags in dim_tags.values() for tag in tags]
     _, dim_tags_map_imp = gmsh.model.occ.fragment(all_dim_tags, [], removeTool=False)
     dim_tags_map = dict(zip(all_dim_tags, dim_tags_map_imp))
-    new_tags = {name: [new_tag for old_tag in tags for new_tag in dim_tags_map[old_tag]]
-                for name, tags in dim_tags.items()}
+    new_tags = {
+        name: [new_tag for old_tag in tags for new_tag in dim_tags_map[old_tag]]
+        for name, tags in dim_tags.items()
+    }
     gmsh.model.occ.synchronize()
 
     # Refine mesh
@@ -113,6 +119,7 @@ def produce_cross_section_mesh(json_data, msh_file):
                     intersect_tags = [t1 for t1 in boundary_tags for t2 in intersect_tags if t1 == t2]
                 else:
                     intersect_tags = boundary_tags
+
         gmsh.model.mesh.setSize(intersect_tags, size)
 
     # Add physical groups
@@ -121,7 +128,7 @@ def produce_cross_section_mesh(json_data, msh_file):
     metals = [n for n in new_tags if 'signal' in n or 'ground' in n]
     for n in metals:
         metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=True)
-        gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name='{}_boundary'.format(n))
+        gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name=f'{n}_boundary')
 
     # Generate and save mesh
     gmsh.model.mesh.generate(2)
@@ -153,7 +160,7 @@ def sif_block(block_name, data):
     """
     res = block_name + '\n'
     for line in data:
-        res += '  {}\n'.format(line)
+        res += f'  {line}\n'
     res += 'End\n'
     return res
 
@@ -169,7 +176,8 @@ def sif_common_header(json_data, folder_path, def_file=None):
         'Mesh DB "." "{}"'.format(folder_path)])
     res += sif_block('Simulation', [
         'Max Output Level = 3',
-        'Coordinate System = "Cartesian 2D"',
+        ('Coordinate System = "Axi Symmetric"' if json_data.get('is_axisymmetric', False)
+         else 'Coordinate System = "Cartesian 2D"'),
         'Simulation Type = "Steady State"',
         'Steady State Max Iterations = 1',
         'Angular Frequency = {}'.format(angular_frequency),
@@ -181,33 +189,69 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
     """Returns capacitance sif file content in string format."""
     name = 'capacitance0' if with_zero else 'capacitance'
     res = sif_common_header(json_data, folder_path)
-    res += sif_block('Constants', [
-        'Permittivity Of Vacuum = {}'.format(epsilon_0)])
+    res += sif_block('Constants', [f'Permittivity Of Vacuum = {epsilon_0}'])
     res += sif_block('Equation 1', [
         'Active Solvers(2) = 1 2',
         'Calculate Electric Energy = True'])
-    res += sif_block('Solver 1', [
+    solver_1_common_terms = [
         'Equation = Stat Elec Solver',
         'Variable = Potential',
         'Variable DOFs = 1',
-        'Procedure = "StatElecSolve" "StatElecSolver"',
+        'Procedure = "StatElecSolveVec" "StatElecSolver"',
+        'Calculate Elemental Fields = Logical True',
         'Calculate Electric Field = True',
         'Calculate Electric Flux = False',
         'Calculate Capacitance Matrix = True',
         'Capacitance Matrix Filename = {}/{}'.format(folder_path, name + '.dat'),
-        'Potential Difference = 1.0e6',
         'Linear System Solver = Iterative',
-        'Linear System Iterative Method = BiCGStab',
-        'Linear System Max Iterations = 200',
-        'Linear System Convergence Tolerance = 1.0e-07',
-        'Linear System Preconditioning = ILU1',
-        'Linear System ILUT Tolerance = 1.0e-03',
         'Nonlinear System Max Iterations = 1',
-        'Nonlinear System Convergence Tolerance = 1.0e-4',
-        'Nonlinear System Newton After Tolerance = 1.0e-3',
-        'Nonlinear System Newton After Iterations = 10',
-        'Nonlinear System Relaxation Factor = 1',
-        'Steady State Convergence Tolerance = 1.0e-4'])
+        '$pn={p_element_order}'.format(**json_data),
+        'Vector Assembly = Logical True',
+        'Element = p:$pn',
+    ]
+    if json_data.get('linear_system_method', None) == 'bicgstab':
+        res += sif_block('Solver 1', solver_1_common_terms + [
+            'Linear System Iterative Method = BiCGStabL',
+            'Linear System Max Iterations = 1000',
+            'Linear System Convergence Tolerance = 1.0e-10',
+            'BiCGStabl polynomial degree = 2',
+            'Linear System Preconditioning = ILU0',
+            'Linear System ILUT Tolerance = 1.0e-03',
+
+            'Nonlinear System Convergence Tolerance = 1.0e-4',
+            'Nonlinear System Newton After Tolerance = 1.0e-3',
+            'Nonlinear System Newton After Iterations = 10',
+            'Nonlinear System Relaxation Factor = 1',
+
+            'Steady State Convergence Tolerance = 1.0e-4',
+        ])
+    else:  # multigrid
+        res += sif_block('Solver 1', solver_1_common_terms + [
+            'Optimize Bandwidth = True',
+            'Linear System Iterative Method = GCR',
+            'Linear System Max Iterations = 100',
+            'Linear System Convergence Tolerance = 1.0e-09',
+            'Linear System Abort Not Converged = False',
+            'Linear System Residual Output = 10',
+            'Linear System Preconditioning = multigrid !ILU2',
+            'Linear System Refactorize = False',
+
+            'Nonlinear System Consistent Norm = True',
+
+            '! Settings for multigrid method',
+            'MG Method = p',
+            'MG Levels = $pn',
+            'MG Smoother = SGS ! cg',
+            'MG Pre Smoothing iterations = 2',
+            'MG Post Smoothing Iterations = 2',
+            'MG Lowest Linear Solver = iterative',
+            'mglowest: Linear System Scaling = False',
+            'mglowest: Linear System Iterative Method = BiCGStabl !CG',
+            'mglowest: Linear System Preconditioning = none !ILU0',
+            'mglowest: Linear System Max Iterations = 100',
+            'mglowest: Linear System Convergence Tolerance = 1.0e-3',
+        ])
+
     res += sif_block('Solver 2', [
         'Exec Solver = True',
         'Equation = "ResultOutput"',
@@ -222,36 +266,50 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
         'Filename = results.dat'])
 
     # Divide layers into different materials
-    solids = ['vacuum', *[n for n in json_data['layers'].keys() if n != 'vacuum']]
-    mat_permittivity = []
-    mat_solids = []
-    for s in solids:
-        permittivity = 1.0 if with_zero else json_data.get('{}_permittivity'.format(s), 1.0)
-        if permittivity in mat_permittivity:
-            mat_solids[mat_permittivity.index(permittivity)].append(s)
-        else:
-            mat_permittivity.append(permittivity)
-            mat_solids.append([s])
+    solids = list(set(json_data['layers'].keys()) | {'vacuum'})
+    permittivities = [1.0 if with_zero else json_data.get(f'{s}_permittivity', 1.0) for s in solids]
+
+    if 'dielectric_surfaces' in json_data and not with_zero:  # no EPR for kinetic inductance
+        res += sif_block('Solver 4', [
+            'Exec Solver = Always',
+            'Equation = "SaveEnergy"',
+            'Procedure = "SaveData" "SaveScalars"',
+            f'Filename = {folder_path}/energy.dat',
+            'Parallel Reduce = Logical True',
+            # Add all target bodies to the solver
+            *(line for layer_props in ((
+                f'Variable {i} = Potential',
+                f'Operator {i} = body diffusive energy',
+                f'Mask Name {i} = {interface}',
+                f'Coefficient {i} = Relative Permittivity'
+                ) for i, interface in enumerate(solids, 1)
+            ) for line in layer_props)
+        ])
 
     # Write bodies and materials
-    for i, perm in enumerate(mat_permittivity):
-        res += sif_block('Body {}'.format(i + 1), [
-            'Target Bodies({}) = $ {}'.format(len(mat_solids[i]), ' '.join(list(mat_solids[i]))),
+    for i, (solid, perm) in enumerate(zip(solids, permittivities), 1):
+        res += sif_block(f'Body {i}', [
+            f'Target Bodies(1) = $ {solid}',
             'Equation = 1',
-            'Material = {}'.format(i + 1)])
-        res += sif_block('Material {}'.format(i + 1), [
-            'Relative Permittivity = {}'.format(perm)])
+            f'Material = {i}',
+            f'{solid} = Logical True',
+        ])
+        res += sif_block(f'Material {i}', [
+            f'Relative Permittivity = {perm}',
+        ])
 
     # Write metal boundary conditions
     signals = [n for n in json_data['layers'].keys() if 'signal' in n]
     grounds = [n for n in json_data['layers'].keys() if 'ground' in n and n not in signals]
     res += sif_block('Boundary Condition 1', [
         'Target Boundaries({}) = $ {}'.format(len(grounds), ' '.join(['{}_boundary'.format(s) for s in grounds])),
-        'Capacitance Body = 0'])
-    for i, s in enumerate(signals):
-        res += sif_block('Boundary Condition {}'.format(i + 2), [
-            'Target Boundaries(1) = $ {}_boundary'.format(s),
-            'Capacitance Body = {}'.format(i + 1)])
+        'Potential = 0.0',
+    ])
+    for i, s in enumerate(signals, 1):
+        res += sif_block(f'Boundary Condition {i+1}', [
+            f'Target Boundaries(1) = $ {s}_boundary',
+            f'Capacitance Body = {i}',
+        ])
     return res
 
 
@@ -369,11 +427,11 @@ def sif_inductance_definitions(json_data):
     # Define variable count and initialize circuit matrices.
     london_penetration_depth = json_data.get('london_penetration_depth', 0.0)
     n_equations = 4 + int(london_penetration_depth > 0.0)
-    res += '\n$ C.1.perm = zeros({})\n'.format(n_equations)
+    res += f'\n$ C.1.perm = zeros({n_equations})\n'
     for i in range(n_equations):
-        res += '$ C.1.perm({}) = {}\n'.format((i % (n_equations - 1)) + 1 if i > 0 and n_equations == 4 else i, i)
+        res += f'$ C.1.perm({i % (n_equations - 1) + 1 if i > 0 and n_equations == 4 else i}) = {i}\n'
 
-    res += '\n$ C.1.variables = {}\n'.format(n_equations)
+    res += f'\n$ C.1.variables = {n_equations}\n'
     for n in ['A', 'B', 'Mre', 'Mim']:
         res += '$ C.1.{} = zeros({n_equations},{n_equations})\n'.format(n, n_equations=n_equations)
 
@@ -386,15 +444,15 @@ def sif_inductance_definitions(json_data):
         # if he wishes to drive the SC with voltage.
         var_names.insert(3, 'phi_component(1)')
     for i, var_name in enumerate(var_names):
-        res += '$ C.1.name.{} = "{}"\n'.format(i + 1, var_name)
+        res += f'$ C.1.name.{i + 1} = "{var_name}"\n'
 
     # 1st equation
-    res += '\n$ C.1.B(0,{}) = 1\n'.format(n_equations - 4)
+    res += f'\n$ C.1.B(0,{n_equations - 4}) = 1\n'
     res += '$ C.1.source.1 = "testsource"\n'
 
     # 2nd equation: Voltage relations (v_testsource + v_component(1) = 0)
     res += '\n$ C.1.B(1,1) = 1\n'
-    res += '$ C.1.B(1,{}) = 1\n'.format(n_equations - 1)
+    res += f'$ C.1.B(1,{n_equations - 1}) = 1\n'
 
     # 3rd equation: Current relations (i_testsource - i_component(1) = 0)
     res += '\n$ C.1.B(2,0) = 1\n'
@@ -442,9 +500,10 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
         if london_penetration_depth > 0:
             l_matrix_file = Path(folder_path).joinpath('inductance.dat')
             data = pd.read_csv(l_matrix_file, delim_whitespace=True, header=None)
-            with open("{}.names".format(l_matrix_file)) as names:
-                data.columns = [line.split('res: ')[1].replace('\n', '') for line in names.readlines() if
-                                'res:' in line]
+            with open(f"{l_matrix_file}.names") as names:
+                data.columns = [
+                    line.split('res: ')[1].replace('\n', '') for line in names.readlines() if 'res:' in line
+                ]
             voltage = data['v_component(1) re'] + 1.j * data['v_component(1) im']
             current = data['i_component(1) re'] + 1.j * data['i_component(1) im']
             impedance = voltage / current
@@ -457,3 +516,37 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
         return {'Cs': c_matrix.tolist(), 'Ls': None}
 
     return {'Cs': c_matrix.tolist(), 'Ls': l_matrix.tolist()}
+
+
+def get_interface_quality_factors(json_data, path):
+    """ Compute quality factors for interfaces with given dielectric loss tangent and energy participation"""
+    interfaces = json_data['dielectric_surfaces']
+
+    try:
+        energy_data, energy_layer_data = Path(path) / 'energy.dat', Path(path) / 'energy.dat.names'
+        energies = pd.read_csv(energy_data, delim_whitespace=True, header=None).values.flatten()
+
+        with open(energy_layer_data) as fp:
+            energy_layers = [
+                match.group(1)
+                for line in fp
+                for match in re.finditer("diffusive energy: potential mask ([a-z_]+)", line)
+            ]
+
+        total_energy = energies.sum()
+        energy_dict = dict(zip(energy_layers, energies))
+        all_energies = {f'E_{k}': energy for k, energy in energy_dict.items()}
+        # remove non-interface bodies after getting total energy
+        energy_layers = frozenset(energy_layers) & frozenset(interfaces.keys())
+        energy_dict = {k: energy_dict[k] for k in energy_layers}
+        participations = {f'p_{k}': energy / total_energy for k, energy in energy_dict.items()}
+        quality_factors = {
+            f'Q_{k}': 1 / (p * interfaces[k]['tan_delta_surf'])
+            for k, p in zip(energy_dict, participations.values())
+        }
+        quality_factors['Q_total'] = 1 / sum(1 / q for q in quality_factors.values())
+
+        return {**all_energies, **participations, **quality_factors}
+
+    except FileNotFoundError:
+        return {'Q_total': None}

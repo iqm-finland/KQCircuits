@@ -29,7 +29,9 @@ from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
-def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Path, mesh_size=None, workflow=None):
+def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Path, mesh_size=None, workflow=None,
+                                    dielectric_surfaces=None, linear_system_method='bicgstab', p_element_order=1,
+                                    is_axisymmetric=False):
     """
     Export Elmer simulation into json and gds files.
 
@@ -41,6 +43,26 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
             example if the dictionary is {'substrate': 10, 'substrate|vacuum': 2}, the maximum mesh element length is
             10 inside the substrate and 2 on the substrate-vacuum interface.
         workflow(dict): Parameters for simulation workflow
+        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
+            the simulation. The loss tangent is post-processed to the participation to get the quality factor.
+            Default is None. Input is of the form::
+
+                'substrate': {
+                    'tan_delta_surf': 5e-7
+                },
+                'layerMA': {  # metal–vacuum
+                    'tan_delta_surf': 0.001,  # loss tangent
+                },
+                'layerMS': { # metal–substrate
+                    'tan_delta_surf': 0.001,
+                },
+                'layerSA': { # substrate–vacuum
+                    'tan_delta_surf': 0.001,
+                }
+
+        linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
+        p_element_order(int): polynomial order of p-elements (Default: 1)
+        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
 
     Returns:
          Path to exported json file.
@@ -56,6 +78,10 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
         'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'mesh_size': mesh_size if mesh_size is not None else dict(),
         'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
+        'dielectric_surfaces': dielectric_surfaces,
+        'linear_system_method': linear_system_method,
+        'p_element_order': p_element_order,
+        'is_axisymmetric': is_axisymmetric,
     }
 
     # write .json file
@@ -71,7 +97,8 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
 
 
 def export_cross_section_elmer(simulations: [], path: Path, file_prefix='simulation', script_file='scripts/run.py',
-                               mesh_size=None, workflow=None, skip_errors=False):
+                               mesh_size=None, workflow=None, dielectric_surfaces=None, linear_system_method='bicgstab',
+                               p_element_order=1, is_axisymmetric=False, skip_errors=False):
     """
     Exports an elmer cross-section simulation model to the simulation path.
 
@@ -86,6 +113,26 @@ def export_cross_section_elmer(simulations: [], path: Path, file_prefix='simulat
             example if the dictionary is {'substrate': 10, 'substrate|vacuum': 2}, the maximum mesh element length is
             10 inside the substrate and 2 on the substrate-vacuum interface.
         workflow(dict): Parameters for simulation workflow
+        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
+            the simulation. The loss tangent is post-processed to the participation to get the quality factor.
+            Default is None. Input is of the form::
+
+                'substrate': {
+                    'tan_delta_surf': 5e-7
+                },
+                'layerMA': {  # metal–vacuum
+                    'tan_delta_surf': 0.001,  # loss tangent
+                },
+                'layerMS': { # metal–substrate
+                    'tan_delta_surf': 0.001,
+                },
+                'layerSA': { # substrate–vacuum
+                    'tan_delta_surf': 0.001,
+                }
+
+        linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
+        p_element_order(int): polynomial order of p-elements (Default: 1)
+        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
         skip_errors(bool): Skip simulations that cause errors. (Default: False)
 
             .. warning::
@@ -102,7 +149,9 @@ def export_cross_section_elmer(simulations: [], path: Path, file_prefix='simulat
     json_filenames = []
     for simulation in simulations:
         try:
-            json_filenames.append(export_cross_section_elmer_json(simulation, path, mesh_size, workflow))
+            json_filenames.append(export_cross_section_elmer_json(simulation, path, mesh_size, workflow,
+                                                                  dielectric_surfaces, linear_system_method,
+                                                                  p_element_order, is_axisymmetric))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

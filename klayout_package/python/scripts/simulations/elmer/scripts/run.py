@@ -23,7 +23,7 @@ from gmsh_helpers import export_gmsh_msh
 from elmer_helpers import export_elmer_sif, write_project_results_json
 from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview
 from cross_section_helpers import produce_cross_section_mesh, produce_cross_section_sif_files, \
-    get_cross_section_capacitance_and_inductance
+    get_cross_section_capacitance_and_inductance, get_interface_quality_factors
 
 parser = argparse.ArgumentParser(description='Run script for Gmsh-Elmer workflow')
 parser.add_argument('json_filename', type=str, help='KQC simulation data')
@@ -99,7 +99,7 @@ if elmer_n_processes == -1:
 tool = json_data.get('tool', 'capacitance')
 if tool == 'cross-section':
     # Generate mesh
-    msh_file = '{}.msh'.format(name)
+    msh_file = f'{name}.msh'
     if workflow['run_gmsh']:
         produce_cross_section_mesh(json_data, path.joinpath(msh_file))
 
@@ -112,7 +112,9 @@ if tool == 'cross-section':
         for sif_file in sif_files:
             run_elmer_solver(name.joinpath(sif_file), elmer_n_processes, path)
         res = get_cross_section_capacitance_and_inductance(json_data, path.joinpath(name))
-        with open(path.joinpath('{}_result.json'.format(name)), 'w') as f:
+        if 'dielectric_surfaces' in json_data:  # Compute quality factors with energy participation ratio method
+            res = {**res, **get_interface_quality_factors(json_data, path.joinpath(name))}
+        with open(path.joinpath(f'{name}_result.json'), 'w') as f:
             json.dump(res, f, indent=4)
     if workflow['run_paraview']:
         run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
@@ -143,9 +145,10 @@ else:
     if workflow['run_elmergrid']:
         run_elmer_grid(msh_filepath, elmer_n_processes, path)
     if workflow['run_elmer']:
-        run_elmer_solver('sif/{}.sif'.format(msh_filepath.stem), elmer_n_processes, path)
+        run_elmer_solver(f'sif/{msh_filepath.stem}.sif', elmer_n_processes, path)
     if workflow['run_paraview']:
-        run_paraview('{}/{}'.format(msh_filepath.stem, msh_filepath.stem), elmer_n_processes, path)
+        run_paraview(f'{msh_filepath.stem}/{msh_filepath.stem}', elmer_n_processes, path)
+
 
     # Write result file
     if args.write_project_results:
