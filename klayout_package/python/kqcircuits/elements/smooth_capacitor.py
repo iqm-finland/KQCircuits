@@ -171,9 +171,12 @@ class SmoothCapacitor(Element):
                 raise ValueError(f"SmoothCapacitor parameters not compatible with fixed_length={self.fixed_length}")
             region_ground += pya.Region(pya.DBox(xport, -b2 - a2/2, xfixed, b2 + a2/2).to_itype(self.layout.dbu)) + \
                 pya.Region(pya.DBox(-xfixed, -self.b - self.a/2, -xport, self.b + self.a/2).to_itype(self.layout.dbu))
-            right_fingers += pya.Region(pya.DBox(xport, -a2/2, xfixed, a2/2).to_itype(self.layout.dbu))
-            left_fingers += pya.Region(pya.DBox(-xfixed, -self.a/2, -xport, self.a/2).to_itype(self.layout.dbu))
-            xport = xfixed
+        else:
+            xfixed = xport
+        # Always insert tolerance to secure trace connection
+        right_fingers += pya.Region(pya.DBox(xport-0.001, -a2/2, xfixed+1, a2/2).to_itype(self.layout.dbu))
+        left_fingers += pya.Region(pya.DBox(-xfixed-1, -self.a/2, -xport+0.001, self.a/2).to_itype(self.layout.dbu))
+        xport = xfixed
 
         # Create shapes into cell
         region = region_ground - right_fingers - left_fingers
