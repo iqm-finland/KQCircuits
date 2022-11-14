@@ -47,21 +47,22 @@ class Stripes(Chip):
 
         width = right - left
         height = top - bottom
+        dice_width = float(self.frames_dice_width[0])
 
         # create the test area polygon
         poly = pya.DPolygon([
-            pya.DPoint(left + p_left, bottom + 100 + self.dice_width),
+            pya.DPoint(left + p_left, bottom + 100 + dice_width),
             pya.DPoint(left + p_left, bottom + p_bottom),
-            pya.DPoint(left + 100 + self.dice_width, bottom + p_bottom),
-            pya.DPoint(left + 100 + self.dice_width, bottom + p_top),
+            pya.DPoint(left + 100 + dice_width, bottom + p_bottom),
+            pya.DPoint(left + 100 + dice_width, bottom + p_top),
             pya.DPoint(left + p_left, bottom + p_top),
-            pya.DPoint(left + p_left, bottom + height - 100 - self.dice_width),
-            pya.DPoint(left + p_right, bottom + height - 100 - self.dice_width),
+            pya.DPoint(left + p_left, bottom + height - 100 - dice_width),
+            pya.DPoint(left + p_right, bottom + height - 100 - dice_width),
             pya.DPoint(left + p_right, bottom + p_top),
-            pya.DPoint(left + width - 100 - self.dice_width, bottom + p_top),
-            pya.DPoint(left + width - 100 - self.dice_width, bottom + p_bottom),
+            pya.DPoint(left + width - 100 - dice_width, bottom + p_top),
+            pya.DPoint(left + width - 100 - dice_width, bottom + p_bottom),
             pya.DPoint(left + p_right, bottom + p_bottom),
-            pya.DPoint(left + p_right, bottom + 100 + self.dice_width)
+            pya.DPoint(left + p_right, bottom + 100 + dice_width)
         ])
 
         # create the box array
@@ -69,25 +70,25 @@ class Stripes(Chip):
 
         square_y_reach = bottom + height
         square_x_start = left + 120
-        square_x_reach = left + width - self.dice_width
+        square_x_reach = left + width - dice_width
 
         step = self.edge_len + self.inter_space
         stripe_step = step * 2
 
         if self.axis == "Vertical":
-            stripe_start = left + self.dice_width + self.inter_space
+            stripe_start = left + dice_width + self.inter_space
             stripe_reach = left + width
 
             stripe_top_right_y = top - 20
             stripe_bottom_left_y = bottom + 20
 
-            square_y_start = bottom + self.dice_width + self.inter_space
+            square_y_start = bottom + dice_width + self.inter_space
 
             square_y_step = step
             square_x_step = step * 2
 
         elif self.axis == "Horizontal":
-            stripe_start = bottom + self.dice_width + self.inter_space
+            stripe_start = bottom + dice_width + self.inter_space
             stripe_reach = bottom + height
 
             stripe_top_right_x = right - 20

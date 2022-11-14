@@ -24,7 +24,7 @@ class Empty(Chip):
     """Chip with almost all ground metal removed, used for EBL tests."""
 
     def make_empty_area(self):
-        d1 = self.dice_width + self.dice_grid_margin
+        d1 = float(self.frames_dice_width[0]) + self.dice_grid_margin
         d2 = 2000
 
         empty_area = pya.DPolygon([

@@ -30,7 +30,7 @@ class AirbridgeDcTest(Chip):
 
     def build(self):
 
-        d1 = self.dice_width + self.dice_grid_margin  # smaller distance of test area from chip edge
+        d1 = float(self.frames_dice_width[0]) + self.dice_grid_margin # smaller distance of test area from chip edge
         d2 = 2000  # larger distance of test area from chip edge
         chip_size = self.box.width()
 

@@ -40,7 +40,7 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import Flip
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand",
-                     "dice_width", "dice_grid_margin", marker_types=[default_marker_type]*8)
+                     "dice_grid_margin", marker_types=[default_marker_type]*8)
 class Chip(Element):
     """Base PCell declaration for chips.
 
@@ -83,6 +83,8 @@ class Chip(Element):
     frames_diagonal_squares = Param(pdt.TypeList, "Number of diagonal marker squares for each chip frame", [10, 2])
     frames_mirrored = Param(pdt.TypeList,
                             "List of booleans specifying if the frame is mirrored for each chip frame", [False, True])
+    frames_dice_width = Param(pdt.TypeList, "Dicing street width for each chip frame", [200, 140], unit="[μm]")
+
     face_boxes = Param(
         pdt.TypeShape,
         "List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.",
@@ -259,7 +261,7 @@ class Chip(Element):
                 box=frame_box,
                 face_ids=[self.face_ids[face]],
                 use_face_prefix=len(self.frames_enabled) > 1,
-                dice_width=default_mask_parameters[self.face_ids[face]]["dice_width"],
+                dice_width=float(self.frames_dice_width[i]),
                 text_margin=default_mask_parameters[self.face_ids[face]]["text_margin"],
                 marker_dist=float(self.frames_marker_dist[i]),
                 diagonal_squares=int(self.frames_diagonal_squares[i]),
