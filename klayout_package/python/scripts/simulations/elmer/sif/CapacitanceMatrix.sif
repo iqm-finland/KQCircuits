@@ -22,7 +22,7 @@ Solver 1
   Calculate Electric Field = False
   Calculate Electric Flux = False
   Calculate Capacitance Matrix = True
-  Capacitance Matrix Filename = #FILEPATHSTEM/CapacitanceMatrix.dat
+  Capacitance Matrix Filename = "#FILEPATHSTEM/CapacitanceMatrix.dat"
   Potential Difference = 1.0e6
   Linear System Solver = Iterative
   Linear System Iterative Method = BiCGStab
@@ -42,7 +42,7 @@ Solver 2  !---- ResultOutputSolve, ResultOutputSolver
    Exec Solver = Never
    Equation = "ResultOutput"
    Procedure = "ResultOutputSolve" "ResultOutputSolver"
-   Output File Name = #FILEPATHSTEM
+   Output File Name = "#FILEPATHSTEM"
    Vtu format = Logical True
    Save Geometry Ids = Logical True
 End

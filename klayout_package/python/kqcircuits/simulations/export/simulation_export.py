@@ -49,7 +49,7 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
                           'name': '{}_{}_{}'.format(
                             sim_parameters['name'],
                             param,
-                            value
+                            str(value)
                           )}
             simulations.append(sim_class(layout, **parameters))
     return simulations
@@ -65,6 +65,7 @@ def cross_sweep_simulation(layout, sim_class, sim_parameters, sweeps):
         parameters = {**sim_parameters}
         for i, key in enumerate(keys):
             parameters[key] = values[i]
-        parameters['name'] = sim_parameters['name'] + '_' + '_'.join([str(value) for value in values])
+        parameters['name'] = sim_parameters['name'] + '_' \
+            + '_'.join([str(value) for value in values])
         simulations.append(sim_class(layout, **parameters))
     return simulations

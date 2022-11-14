@@ -109,8 +109,8 @@ if workflow['run_elmergrid']:
     if shutil.which('ElmerGrid') is not None:
         subprocess.check_call(['ElmerGrid', '14', '2', msh_filepath], cwd=path)
         if elmer_n_processes > 1:
-            subprocess.check_call(['ElmerGrid', '2', '2', msh_filepath.stem, '-metis', '{}'.format(elmer_n_processes),
-                                   '4', '-removeunused'], cwd=path)
+            subprocess.check_call(['ElmerGrid', '2', '2', msh_filepath.stem + '/', '-metis',
+                '{}'.format(elmer_n_processes), '4', '-removeunused'], cwd=path)
     else:
         logging.warning("ElmerGrid was not found! Make sure you have ElmerFEM " \
                         "installed: https://github.com/ElmerCSC/elmerfem")

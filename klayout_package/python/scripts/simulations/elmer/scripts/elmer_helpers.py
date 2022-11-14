@@ -47,7 +47,7 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
     """
     sif_filepath = path.joinpath('sif/{}.sif'.format(msh_filepath.stem))
     begin = 'Check Keywords Warn\n'
-    begin += 'INCLUDE {}/mesh.names\n'.format(msh_filepath.stem)
+    begin += 'INCLUDE "{}/mesh.names"\n'.format(msh_filepath.stem)
     begin += 'Header\n'
     begin += '  Mesh DB "." "{}"\n'.format(msh_filepath.stem)
     begin += 'End\n'

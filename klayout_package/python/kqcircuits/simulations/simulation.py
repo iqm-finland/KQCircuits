@@ -118,6 +118,8 @@ class Simulation:
             else:
                 setattr(self, parameter, item.default)
 
+        self.name = self.name.replace(" ", "").replace(",", "__")  # no spaces or commas in filenames
+
         self.ports = []
         if 'cell' in kwargs:
             self.cell = kwargs['cell']
