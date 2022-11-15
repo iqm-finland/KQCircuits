@@ -25,10 +25,12 @@ from kqcircuits.test_structures.test_structure import TestStructure
 from kqcircuits.defaults import default_junction_test_pads_type
 from kqcircuits.test_structures.junction_test_pads import junction_test_pads_type_choices
 from kqcircuits.junctions.manhattan import Manhattan
+from kqcircuits.junctions.junction import Junction
 
 
 @add_parameters_from(Manhattan)
-@add_parameters_from(Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid")
+@add_parameters_from(Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid",
+                     "junction_parameters", "_junction_parameters")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""
 
@@ -37,7 +39,6 @@ class JunctionTestPads(TestStructure):
     pad_width = Param(pdt.TypeDouble, "Pad width", 500, unit="μm")
     area_height = Param(pdt.TypeDouble, "Area height", 1900, unit="μm")
     area_width = Param(pdt.TypeDouble, "Area width", 1300, unit="μm")
-    test_junctions = Param(pdt.TypeString, "Junction type", "SQUID")
     junctions_horizontal = Param(pdt.TypeBoolean, "Horizontal (True) or vertical (False) junctions", True)
     pad_spacing = Param(pdt.TypeDouble, "Spacing between different pad pairs", 100, unit="μm")
     only_pads = Param(pdt.TypeBoolean, "Only produce pads, no junctions", False)
@@ -49,12 +50,19 @@ class JunctionTestPads(TestStructure):
     junction_test_pads_type = Param(pdt.TypeString, "Type of junction test pads", default_type,
                                     choices=junction_test_pads_type_choices)
 
+    junction_test_pads_parameters = Param(pdt.TypeString, "Extra JunctionTestPads Parameters", "{}")
+    _junction_test_pads_parameters = Param(pdt.TypeString, "Previous state of *_parameters", "{}", hidden=True)
+
     produce_squid = Qubit.produce_squid
 
     @classmethod
     def create(cls, layout, library=None, junction_test_pads_type=None, **parameters):
         """Create a JunctionTestPads cell in layout."""
         return cls.create_subtype(layout, library, junction_test_pads_type, **parameters)[0]
+
+    def coerce_parameters_impl(self):
+        self.sync_parameters(Junction)
+        self.sync_parameters(JunctionTestPads)
 
     def _produce_impl(self):
         if self.pad_configuration == "2-port":

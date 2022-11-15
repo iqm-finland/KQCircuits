@@ -16,14 +16,15 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+import json
 from inspect import isclass
 
 from autologging import logged
 
 from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
-from kqcircuits.pya_resolver import pya
+from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.util.geometry_helper import get_cell_path_length
-from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name
+from kqcircuits.util.library_helper import load_libraries, to_library_name, to_module_name, element_by_class_name
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.util.refpoints import Refpoints
 
@@ -80,8 +81,8 @@ class Element(pya.PCellDeclarationHelper):
             setattr(type(self), p.name, np)
             return np
 
-        # Set and hide *_type parameter in classes inheriting from a * base class
-        base = cls._get_base()
+        # Set and hide *_type parameter in classes inheriting from a * abstract class
+        base = cls._get_abstract()
         if hasattr(base, "default_type") and getattr(base, "build") == getattr(Element, "build"):
             params = Param.get_all(base)
             mod = to_module_name(base.__name__)
@@ -125,10 +126,10 @@ class Element(pya.PCellDeclarationHelper):
 
     @classmethod
     def create_subtype(cls, layout, library=None, subtype=None, **parameters):
-        """Create cell from a base class using the specified sub-class type.
+        """Create cell from an abstract class using the specified sub-class type.
 
-        This is to be called from the ``create()`` function of base classes of other elements. It
-        takes care of creating a code generated or a file based cell.
+        This is to be called from the ``create()`` function of abstract classes. It takes care of
+        creating a code generated or a file based cell.
 
         Args:
             layout: pya.Layout object where this cell is created
@@ -145,13 +146,21 @@ class Element(pya.PCellDeclarationHelper):
         if subtype is None:  # derive type from the class name
             subtype = to_library_name(cls.__name__)
 
+        cl = cls._get_abstract()
+        module = to_module_name(cl.__name__)
+        pname = f"{module}_parameters"
+        if pname in parameters:
+            jp = dict(json.loads(parameters[pname]).items())
+            del parameters[pname], parameters[f"_{pname}"]
+            parameters = {**jp, **parameters}
+
         if subtype in library_layout.pcell_names():   # code generated
             pcell_class = type(library_layout.pcell_declaration(subtype))
             return Element._create_cell(pcell_class, layout, library, **parameters), True
         elif library_layout.cell(subtype):    # manually designed
-            return layout.create_cell(subtype, cls.LIBRARY_NAME), False
+            return layout.create_cell(subtype, cl.LIBRARY_NAME), False
         else:   # fallback is the default
-            return cls.create_subtype(layout, library, cls.default_type, **parameters)
+            return cl.create_subtype(layout, library, cl.default_type, **parameters)
 
     @classmethod
     def create_with_refpoints(cls, layout, library=None, refpoint_transform=pya.DTrans(), rec_levels=None,
@@ -258,8 +267,8 @@ class Element(pya.PCellDeclarationHelper):
         keys = type(self).get_schema().keys()
 
         if cls is not None:  # filter keys by cls
-            if Element.build == cls.build:  # base class? find subclass
-                cls = cls._get_base()
+            if Element.build == cls.build:  # Abstract class? Find subclass specified by *_type.
+                cls = cls._get_abstract()
                 mod = to_module_name(cls.__name__)
                 if f"{mod}_type" in parameters:
                     subtype = parameters[f"{mod}_type"]
@@ -320,18 +329,19 @@ class Element(pya.PCellDeclarationHelper):
                     break
 
     @classmethod
-    def get_schema(cls, noparents=False):
+    def get_schema(cls, noparents=False, abstract_class=None):
         """Returns the combined parameters of the class "cls" and all its ancestor classes.
 
         Args:
             noparents: If True then only return the parameters of "cls", not including ancestors.
+            abstract_class: Return parameters up to this abstract class if specified.
         """
         schema = {}
         for pc in cls.__mro__:
             if not hasattr(pc, 'LIBRARY_NAME'):
                 break
             schema = {**Param.get_all(pc), **schema}
-            if noparents:  # not interested in parent classes
+            if noparents or abstract_class == pc:  # not interested in more parent classes
                 break
         return schema
 
@@ -401,15 +411,15 @@ class Element(pya.PCellDeclarationHelper):
             return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
 
     @classmethod
-    def _get_base(cls):
-        """Helper function to return ``cls``'s base class, if available, otherwise just return ``cls``."""
+    def _get_abstract(cls):
+        """Helper function to return ``cls``'s abstract class, if available, otherwise just return ``cls``."""
         if not hasattr(cls, "default_type"):
             return cls
         prev = cls
-        base = cls.__bases__[0]
-        while hasattr(base, "default_type"):
-            prev = base
-            base = prev.__bases__[0]
+        abstract = cls.__bases__[0]
+        while hasattr(abstract, "default_type"):
+            prev = abstract
+            abstract = prev.__bases__[0]
         return prev
 
     def _add_parameter(self, name, value_type, description,
@@ -479,3 +489,60 @@ class Element(pya.PCellDeclarationHelper):
         self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id)).insert(shape)
         if self.protect_opposite_face and len(self.face_ids) > opposite_face_id:
             self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face_id)).insert(shape)
+
+    def sync_parameters(self, abc):
+        """Syncronise the calling class' parameters with a JSON representation.
+
+        This is called several times from coerce_parameters_impl() while using the PCell editor GUI. Particularly, each
+        time a parameter of abc's sub-class is changed by the user. It figures out which parameter is changed and
+        updates the ``*_parameters`` JSON strings accordingly, or the other way around.
+
+        For example, if abc is Fluxline and the fluxline_width parameter is changed in GUI then the fluxline_parameters
+        JSON string will be updated with this value. Or if fluxline_parameters string is changed then the corresponding
+        fluxline parameter of the calling pcell is updated.
+
+        Args:
+            abc: An abstract class. Only consider parameters of this class' descendants
+        """
+        if is_standalone_session():
+            return
+
+        def pformat(a):
+            if a.data_type == pdt.TypeInt:
+                return int(a.default)
+            elif a.data_type == pdt.TypeDouble:
+                return float(a.default)
+            return a.default
+
+        module = to_module_name(abc.__name__)
+        pname = f"{module}_parameters"
+        json_str = getattr(self, pname)
+        saved = getattr(self, f"_{pname}")
+        params = json.loads(json_str) if json_str else {}
+        subtype = getattr(self, f"{module}_type")
+        pd = {}
+
+        if subtype == "none":
+            return
+        if  json_str == "{}" or params[f"{module}_type"] != subtype:  # initialise defaults
+            if f"{module}_type" in params and json_str != saved and saved != {}:
+                subtype = params[f"{module}_type"]
+                setattr(self, f"{module}_type", subtype)
+            cls = element_by_class_name(subtype.replace(" ", ""), abc.LIBRARY_PATH, abc.LIBRARY_NAME)
+            schema = cls.get_schema(abstract_class=abc)
+            for k, v in schema.items():
+                if not k.endswith("_parameters"):
+                    pd[k] = getattr(self, k) if hasattr(self, k) else pformat(v)
+            json_str = json.dumps(pd)
+            setattr(self, pname, json_str)
+            Param.get_all(abc)[pname].default = json_str
+        elif saved == json_str:  # some parameters changed, update the JSON string
+            for k, v in params.items():
+                pd[k] = getattr(self, k) if hasattr(self, k) else v
+            json_str = json.dumps(pd)
+            setattr(self, pname, json_str)
+        else:  # the JSON string changed, use it to update other parameters
+            for k, v in params.items():
+                if hasattr(self, k):
+                    setattr(self, k, v)
+        setattr(self, f"_{pname}", json_str)

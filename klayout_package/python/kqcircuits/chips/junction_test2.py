@@ -46,6 +46,9 @@ class JunctionTest2(Chip):
     pads_loop = Param(pdt.TypeList, "Select large or small loop area for each central test pad",
                       default=["large", "large", "small", "small", "small", "large"])
 
+    def coerce_parameters_impl(self):
+        self.sync_parameters(JunctionTestPads)
+
     def build(self):
         left = self.box.left
         right = self.box.right
