@@ -121,7 +121,7 @@ def export_elmer_json(simulation: Simulation, path: Path, tool='capacitance',
     json_data = {
         'tool': tool,
         **simulation.get_simulation_data(),
-        'layers': {r: default_layers[r] for r in layers},
+        'layers': {r: (default_layers[r].layer, default_layers[r].datatype) for r in layers},
         'gmsh_params': default_gmsh_params if gmsh_params is None else {**default_gmsh_params, **gmsh_params},
         'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
         'frequency': frequency,

@@ -53,7 +53,7 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
     json_data = {
         'tool': 'cross-section',
         **simulation.get_simulation_data(),
-        'layers': layers,
+        'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'mesh_size': mesh_size if mesh_size is not None else dict(),
         'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
     }

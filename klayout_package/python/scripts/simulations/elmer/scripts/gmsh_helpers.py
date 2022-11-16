@@ -154,7 +154,7 @@ def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z
             * tag(int): the id of the entity
     """
     layout = cell.layout()
-    shapes = cell.shapes(layout.layer(layer_map[face + "_" + layer], 0))
+    shapes = cell.shapes(layout.layer(*layer_map[face + "_" + layer]))
     dim_tags = []
     for shape in shapes.each():
         poly = separated_hull_and_holes(shape.polygon)
