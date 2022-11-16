@@ -151,7 +151,7 @@ _aux_layers_dict = {
 #   - for all the available layers in that face: key "Layer_name", value pya.LayerInfo object for that layer
 #
 default_faces = {}
-for f in ('1t1', '2b1', '2t1'):
+for f in ('1b1', '1t1', '2b1', '2t1'):
     default_faces[f] = {n: pya.LayerInfo(i[0], i[1], f'{f}_{n}') for n, i in _face_layers[f].items()}
 
 # pya layer information
@@ -159,7 +159,7 @@ default_layers = {n: pya.LayerInfo(i[0], i[1], n) for n, i in _aux_layers_dict.i
 for face, layers in default_faces.items():
     default_layers.update({f'{face}_{name}': li for name, li in layers.items()})
 
-for f in ('1t1', '2b1', '2t1'):
+for f in ('1b1', '1t1', '2b1', '2t1'):
     default_faces[f]['id'] = f
 
 default_face_id = "1t1"  # face_id of the face that is used by default in some contexts
@@ -193,6 +193,11 @@ mask_bitmap_export_layers = [
 
 # Layers to hide when exporting a bitmap with "all" layers.
 all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + [
+    default_layers["1b1_ports"],
+    default_layers["1b1_base_metal_gap"],
+    default_layers["1b1_ground_grid"],
+    default_layers["1b1_ground_grid_avoidance"],
+    default_layers["1b1_waveguide_path"],
     default_layers["1t1_ports"],
     default_layers["1t1_base_metal_gap"],
     default_layers["1t1_ground_grid"],
@@ -212,6 +217,11 @@ all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + 
 # during mask layout export.
 # Dictionary with items "cluster name: LayerCluster".
 chip_export_layer_clusters = {
+    # 1b1-face
+    "SIS 1b1": LayerCluster(["1b1_SIS_junction", "1b1_SIS_shadow", "1b1_SIS_junction_2"],
+                            ["1b1_base_metal_gap_for_EBL"], "1b1"),
+    "airbridges 1b1": LayerCluster(["1b1_airbridge_pads", "1b1_airbridge_flyover"],
+                                   ["1b1_base_metal_gap_wo_grid"], "1b1"),
     # 1t1-face
     "SIS 1t1": LayerCluster(["1t1_SIS_junction", "1t1_SIS_shadow", "1t1_SIS_junction_2"],
                             ["1t1_base_metal_gap_for_EBL"], "1t1"),
@@ -226,6 +236,7 @@ chip_export_layer_clusters = {
 
 # default layers to use for calculating cell path lengths with get_cell_path_length()
 default_path_length_layers = [
+    "1b1_waveguide_path",
     "1t1_waveguide_path",
     "2b1_waveguide_path",
     "waveguide_length"  # AirbridgeConnection uses this
@@ -234,6 +245,18 @@ default_path_length_layers = [
 # default mask parameters for each face
 # dict of face_id: parameters
 default_mask_parameters = {
+    "1b1": {
+        "wafer_rad": 76200,
+        "chips_map_offset": pya.DVector(-1200, 1200),
+        "chip_size": 10000,
+        "chip_box_offset": pya.DVector(0, 0),
+        "chip_trans": pya.DTrans(),
+        "dice_width": 200,
+        "text_margin": 100,
+        "mask_text_scale": 1.0,
+        "mask_marker_offset": 50000,
+        "mask_name_offset": pya.DPoint(0, -7200),
+    },
     "1t1": {
         "wafer_rad": 76200,
         "chips_map_offset": pya.DVector(-1200, 1200),
@@ -277,6 +300,7 @@ default_parameter_values = {}
 default_layer_props = str(Path(__file__).resolve().parent.parent/"layer_config"/"default_layer_props.lyp")
 
 default_chip_label_face_prefixes = {
+    "1b1": "h",
     "1t1": "b",
     "2b1": "t",
     "2t1": "c",
