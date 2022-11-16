@@ -319,7 +319,7 @@ class MaskSet:
         for mask_layout in self.mask_layouts:
             # include face_id in mask_layout.name only for multi-face masks
             if len(self.mask_layouts) > 1:
-                mask_layout.name += mask_layout.face_id
+                mask_layout.name += "-" + mask_layout.face_id
             mask_layout.build(self.chips_map_legend)
 
         chip_copy_label_layers = [
