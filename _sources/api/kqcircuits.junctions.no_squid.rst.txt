@@ -1,0 +1,10 @@
+kqcircuits.junctions.no\_squid
+==============================
+
+.. automodule:: kqcircuits.junctions.no_squid
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.junctions.no_squid
+.. image:: ../pcell_images/kqcircuits.junctions.no_squid.png

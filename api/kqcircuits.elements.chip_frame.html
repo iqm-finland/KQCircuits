@@ -320,6 +320,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -355,6 +356,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -529,6 +531,9 @@
 <li><p><strong>diagonal_squares</strong><em> (Int)</em><span> - Number of diagonal squares for the markers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code></p></li>
 <li><p><strong>use_face_prefix</strong><em> (Boolean)</em><span> - Use face prefix for chip name label</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
+<li><p><strong>chip_dicing_width</strong><em> (Double)</em><span> - Width of the chip dicing reference line</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>chip_dicing_line_length</strong><em> (Double)</em><span> - Length of the chip dicing reference line</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>chip_dicing_gap_length</strong><em> (Double)</em><span> - Gap between two chip dicing reference dashes</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">50.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.chip_frame.png" src="../_images/kqcircuits.elements.chip_frame.png" />
 </div>

@@ -318,6 +318,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -353,6 +354,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -548,16 +550,15 @@
                            <span class="c1"># curves</span>
     <span class="s1">&#39;port_sampling&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Number of points used for sampling each port region curve</span>
     <span class="s1">&#39;algorithm&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>  <span class="c1"># Gmsh meshing algorithm (default is 5)</span>
-    <span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># number of threads used in Gmsh meshing (default=1, -1 means all physical cores)</span>
-    <span class="s1">&#39;show&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Show the mesh in Gmsh graphical interface after completing the mesh (for large meshes this can</span>
-                    <span class="c1"># take a long time)</span>
 <span class="p">}</span>
 
 <span class="n">default_workflow</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;run_gmsh&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Run Gmsh to generate mesh</span>
+    <span class="s1">&#39;run_gmsh_gui&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Show the mesh in Gmsh graphical interface after completing the mesh</span>
     <span class="s1">&#39;run_elmergrid&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Run ElmerGrid</span>
     <span class="s1">&#39;run_elmer&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># Run Elmer simulation</span>
     <span class="s1">&#39;run_paraview&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>  <span class="c1"># Run Paraview. This is visual view of the results.</span>
+    <span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># number of threads used in Gmsh meshing (default=1, -1 means all physical cores)</span>
     <span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># number of processes used in Elmer simulation (default=1, -1 means all physical cores)</span>
     <span class="s1">&#39;python_executable&#39;</span><span class="p">:</span> <span class="s1">&#39;python&#39;</span> <span class="c1"># the python executable that is used to prepare and control the simulations</span>
                                   <span class="c1"># another executable could be &#39;kqclib&#39; (in case the singularity image is used</span>
@@ -631,7 +632,7 @@
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
 
-<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">workflow</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="export_elmer_script"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_script">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_script</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
         <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create script files for running one or more simulations.</span>
@@ -648,6 +649,8 @@
 
 <span class="sd">        Path of exported main script file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">workflow</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">sbatch</span> <span class="o">=</span> <span class="s1">&#39;sbatch_parameters&#39;</span> <span class="ow">in</span> <span class="n">workflow</span>
     <span class="k">if</span> <span class="n">sbatch</span><span class="p">:</span>
         <span class="n">sbatch_parameters</span> <span class="o">=</span> <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span>

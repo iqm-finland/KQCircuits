@@ -21,7 +21,8 @@ There exist also more specific base classes such as ``Chip``, ``Qubit`` or
 All base classes (black) are shown, abstracts are ovals, concretes are
 rectangles. Only one example "leaf" class (green) is shown for most base classes.
 The class hierarchy is relatively flat as PCells make it more natural to use
-composition than inheritance.
+composition than inheritance. For simplicity we don't use multiple inheritance
+in this project, if it is ever used keep the Element as the first parent.
 
 Elements in KQCircuits are PCells, see `KLayout documentation <https://www.klayout
 .de/doc-qt5/about/about_pcells.html>`__ for more information on PCells. Due to how

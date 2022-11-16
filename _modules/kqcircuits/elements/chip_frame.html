@@ -318,6 +318,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -353,6 +354,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -506,6 +508,7 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
 
+<span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.label</span> <span class="kn">import</span> <span class="n">produce_label</span><span class="p">,</span> <span class="n">LabelOrigin</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
@@ -539,6 +542,9 @@
     <span class="n">use_face_prefix</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Use face prefix for chip name label&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
     <span class="n">marker_types</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Marker type for each chip corner, clockwise starting from lower left&quot;</span><span class="p">,</span>
                          <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">chip_dicing_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Width of the chip dicing reference line&quot;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
+    <span class="n">chip_dicing_line_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Length of the chip dicing reference line&quot;</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
+    <span class="n">chip_dicing_gap_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Gap between two chip dicing reference dashes&quot;</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChipFrame.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.chip_frame.html#kqcircuits.elements.chip_frame.ChipFrame.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces dicing edge, markers, labels and ground grid for the chip face.&quot;&quot;&quot;</span>
@@ -609,6 +615,16 @@
         <span class="n">protection</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_border_points</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dice_width</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">dice_grid_margin</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span>
 
+        <span class="n">box_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_box_points</span><span class="p">()</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">box_points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">box_points</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">p2</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">box_points</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">box_points</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">p3</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">box_points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">box_points</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">p4</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">box_points</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">box_points</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_lines_along_edge</span><span class="p">(</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">p3</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">p1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_lines_along_edge</span><span class="p">(</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_lines_along_edge</span><span class="p">(</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">p4</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span>  <span class="n">p2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_lines_along_edge</span><span class="p">(</span><span class="n">p3</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p4</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">p3</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_box_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns x_min, x_max, y_min, y_max for the given box.&quot;&quot;&quot;</span>
         <span class="n">x_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
@@ -633,7 +649,47 @@
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_max</span> <span class="o">-</span> <span class="n">w</span><span class="p">,</span> <span class="n">y_min</span> <span class="o">+</span> <span class="n">w</span><span class="p">),</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_min</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">y_min</span> <span class="o">+</span> <span class="n">w</span><span class="p">),</span>
         <span class="p">]</span>
-        <span class="k">return</span> <span class="n">points</span></div>
+        <span class="k">return</span> <span class="n">points</span>
+
+    <span class="k">def</span> <span class="nf">_produce_lines_along_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_start</span><span class="p">,</span> <span class="n">line_end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds chip dicing reference lines along one edge of the chip.</span>
+<span class="sd">        The line pattern is tied to the global coordinate system</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line_start: One-dimensional coordinate of start of the line</span>
+<span class="sd">            line_end: One-dimensional coordinate of end of the line</span>
+<span class="sd">            is_vertical: True to draw a line along y-axis, False to draw along x-axis</span>
+<span class="sd">            position: A DPoint that is in the line</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">line_start</span>
+        <span class="n">segment_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_line_length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_gap_length</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">line_start</span> <span class="o">/</span> <span class="n">segment_length</span><span class="p">)</span> <span class="o">*</span> <span class="n">segment_length</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_line_length</span>
+        <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="n">start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_chip_dicing_line_dash</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">end</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_gap_length</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">line_end</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_line_length</span>
+            <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="n">line_end</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_chip_dicing_line_dash</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">line_end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+                <span class="k">break</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_chip_dicing_line_dash</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_chip_dicing_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a dash as part of a chip dicing reference line.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start: One-dimensional coordinate of start of the dash</span>
+<span class="sd">            end: One-dimensional coordinate of end of the dash</span>
+<span class="sd">            is_vertical: True to draw a dash along y-axis, False to draw along x-axis</span>
+<span class="sd">            position: A DPoint that is in the line to which the dash belongs to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">is_vertical</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">position</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">position</span><span class="o">.</span><span class="n">y</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_dicing_width</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;chip_dicing&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">box</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

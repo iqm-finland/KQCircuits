@@ -318,6 +318,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -353,6 +354,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -570,11 +572,8 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">np</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">np</span>
 
-        <span class="n">bid</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">while</span> <span class="n">mro</span><span class="p">[</span><span class="n">bid</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Element</span><span class="p">:</span>
-            <span class="n">bid</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">base</span> <span class="o">=</span> <span class="n">mro</span><span class="p">[</span><span class="n">bid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
         <span class="c1"># Set and hide *_type parameter in classes inheriting from a * base class</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_base</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;default_type&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;build&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Element</span><span class="p">,</span> <span class="s2">&quot;build&quot;</span><span class="p">):</span>
             <span class="n">params</span> <span class="o">=</span> <span class="n">Param</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
             <span class="n">mod</span> <span class="o">=</span> <span class="n">to_module_name</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -738,11 +737,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_index</span><span class="p">]]</span></div>
 
-<div class="viewcode-block" id="Element.pcell_params_by_name"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">whitelist</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+<div class="viewcode-block" id="Element.pcell_params_by_name"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.pcell_params_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">pcell_params_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Give PCell parameters as a dictionary.</span>
 
 <span class="sd">        Arguments:</span>
-<span class="sd">            whitelist: A classname. Its parameter names are used for filtering.</span>
+<span class="sd">            cls: Return only parameters present in this class. All by default.</span>
 <span class="sd">            **parameters: Optionally update with other keyword arguments</span>
 
 <span class="sd">        Returns:</span>
@@ -750,9 +749,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
 
-        <span class="c1"># filter keys by whitelist if not a base class</span>
-        <span class="k">if</span> <span class="n">whitelist</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">Element</span><span class="o">.</span><span class="n">build</span> <span class="o">!=</span> <span class="n">whitelist</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>
-            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">whitelist</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># filter keys by cls</span>
+            <span class="k">if</span> <span class="n">Element</span><span class="o">.</span><span class="n">build</span> <span class="o">==</span> <span class="bp">cls</span><span class="o">.</span><span class="n">build</span><span class="p">:</span>  <span class="c1"># base class? find subclass</span>
+                <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_base</span><span class="p">()</span>
+                <span class="n">mod</span> <span class="o">=</span> <span class="n">to_module_name</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+                <span class="k">if</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod</span><span class="si">}</span><span class="s2">_type&quot;</span> <span class="ow">in</span> <span class="n">parameters</span><span class="p">:</span>
+                    <span class="n">subtype</span> <span class="o">=</span> <span class="n">parameters</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod</span><span class="si">}</span><span class="s2">_type&quot;</span><span class="p">]</span>
+                    <span class="n">library_layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)[</span><span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">])</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">subtype</span> <span class="ow">in</span> <span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_names</span><span class="p">():</span>
+                        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">library_layout</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">(</span><span class="n">subtype</span><span class="p">))</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;refpoints&quot;</span><span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">}</span></div>
@@ -885,6 +891,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">load_libraries</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">elem_cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">cell_library_name</span><span class="p">,</span> <span class="n">elem_cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_base</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to return ``cls``&#39;s base class, if available, otherwise just return ``cls``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;default_type&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">while</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">&quot;default_type&quot;</span><span class="p">):</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="n">base</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">prev</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">prev</span>
 
     <span class="k">def</span> <span class="nf">_add_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span>
                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">docstring</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

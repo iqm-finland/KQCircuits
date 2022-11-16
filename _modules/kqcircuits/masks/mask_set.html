@@ -318,6 +318,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -353,6 +354,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -609,6 +611,23 @@
                                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_layout</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mask_layout</span></div>
+
+<div class="viewcode-block" id="MaskSet.load_cell_from_file"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.load_cell_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_cell_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load GDS or OASIS cell from file.</span>
+
+<span class="sd">        Load a cell (usually a chip) from the specified file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file_name: name of the file (with path) to be loaded</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            the loaded cell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="ow">and</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="s1">&#39;KLayout 0.27.0&#39;</span><span class="p">:</span>
+            <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="MaskSet.add_chips"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chips">[docs]</a>    <span class="k">def</span> <span class="nf">add_chips</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Adds a list of chips with parameters to self.chips_map_legend and exports the files for each chip.</span>

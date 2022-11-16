@@ -320,6 +320,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -355,6 +356,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -549,7 +551,7 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
 <li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - Add opposite face protection too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>junction_total_length</strong><em> (Double)</em><span> - Simulation junction total length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">33</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'QCD1',</span> <span class="pre">'Sim',</span> <span class="pre">'SIM1']</span></code></p></li>
+<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'Sim']</span></code></p></li>
 <li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated element)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>loop_area</strong><em> (Double)</em><span> - Loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm^2</span></code></p></li>
 <li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Fluxline</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['none',</span> <span class="pre">'Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>

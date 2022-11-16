@@ -320,6 +320,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -355,6 +356,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -622,7 +624,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.circle_polygon">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">circle_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=&lt;klayout.dbcore.DPoint</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#circle_polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.circle_polygon" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">circle_polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#circle_polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.circle_polygon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a polygon for a full circle around the origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -638,7 +640,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.arc_points">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">arc_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop=6.283185307179586</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=&lt;klayout.dbcore.DPoint</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#arc_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.arc_points" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">arc_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop=6.283185307179586</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#arc_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.arc_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns point describing an arc around the origin with specified start and stop angles. The start and stop angle
 are included.</p>
 <p>If start &lt; stop, the points are counter-clockwise; if start &gt; stop, the points are clockwise.</p>

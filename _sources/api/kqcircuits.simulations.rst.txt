@@ -10,6 +10,7 @@ kqcircuits.simulations
 
    kqcircuits.simulations.airbridges_sim
    kqcircuits.simulations.circular_capacitor_sim
+   kqcircuits.simulations.cross_section_simulation
    kqcircuits.simulations.empty_simulation
    kqcircuits.simulations.finger_capacitor_sim
    kqcircuits.simulations.flip_chip_connector_sim

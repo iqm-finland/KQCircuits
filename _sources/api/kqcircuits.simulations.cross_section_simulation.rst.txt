@@ -1,0 +1,10 @@
+kqcircuits.simulations.cross\_section\_simulation
+=================================================
+
+.. automodule:: kqcircuits.simulations.cross_section_simulation
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.cross_section_simulation
+.. image:: ../pcell_images/kqcircuits.simulations.cross_section_simulation.png

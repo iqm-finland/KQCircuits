@@ -320,6 +320,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -355,6 +356,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -501,7 +503,9 @@
 <span id="kqcircuits-layer-config-default-layer-config"></span><h1>kqcircuits.layer_config.default_layer_config<a class="headerlink" href="#module-kqcircuits.layer_config.default_layer_config" title="Permalink to this headline">¶</a></h1>
 <p>Default layer configuration file for KQCircuits.</p>
 <p>Defines default values related to layers and faces.</p>
-<p>Layers have a name, ID and data type. For example <code class="docutils literal notranslate"><span class="pre">&quot;annotations&quot;:</span> <span class="pre">(220,</span> <span class="pre">1)</span></code>.</p>
+<p>Layers have a name, ID and data type. For example <code class="docutils literal notranslate"><span class="pre">&quot;annotations&quot;:</span> <span class="pre">(220,</span> <span class="pre">0)</span></code> The data type indicates which chip they
+belong to with 0 being reserved for layer that do not belong to a face or a chip. The IDs run from 0-127 for the bottom
+of the chips and 128-255 for the top.</p>
 <p>KQCircuit layers are grouped by faces and functionality. The face-numbering system works as follows.
 Each face-id consists of a number, the letter “b” or “t”, and another number, for example “2b1”. In
 a multi-chip stack, we can have more than one chip, bonded on top of each other, and the first
@@ -509,10 +513,9 @@ number denotes which of these chips it refers to. The letter “b” or “t” 
 located at either the “bottom” or “top” of that chip (in the final place after full manufacturing
 process). The last number is an additional index that can be used if necessary, in case multiple
 deposition layers and etching processes are needed.</p>
-<p>The main geometry containing layer groups are currently: “1t1” (top of lowest chip) 10-39, “2b1”
-(bottom of second-lowest chip) 40-69 and “2t1” (top of second-lowest chip) 70-89. Simulation 90-99,
-layers are in either “1t1” or “2b1” faces. Layer ID’s 100-219 are reserved. Auxiliary layers 220-229
-are not face dependent, they contain annotations, refpoints and other text fields.</p>
+<p>The main geometry containing layer groups are currently in 1-89,  Simulation 90-99, layer ID’s 100-219
+are reserved and auxiliary layers 220-229 are not face dependent, they contain annotations,
+refpoints and other text fields.</p>
 <p>In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
 layer views are hidden by default. See <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/layer_source.html">https://www.klayout.de/doc-qt5/manual/layer_source.html</a></p>
 <p><code class="docutils literal notranslate"><span class="pre">default_layers</span></code> is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.

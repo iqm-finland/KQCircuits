@@ -7,6 +7,7 @@ kqcircuits.junctions
    kqcircuits.junctions.junction
    kqcircuits.junctions.manhattan
    kqcircuits.junctions.manhattan_single_junction
+   kqcircuits.junctions.no_squid
    kqcircuits.junctions.sim
    kqcircuits.junctions.squid
 

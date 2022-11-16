@@ -1,0 +1,10 @@
+kqcircuits.simulations.export.elmer.cross\_section\_elmer\_export
+=================================================================
+
+.. automodule:: kqcircuits.simulations.export.elmer.cross_section_elmer_export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.elmer.cross_section_elmer_export
+.. image:: ../pcell_images/kqcircuits.simulations.export.elmer.cross_section_elmer_export.png

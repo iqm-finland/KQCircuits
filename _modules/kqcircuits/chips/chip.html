@@ -318,6 +318,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -353,6 +354,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -530,7 +532,7 @@
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="s2">&quot;connector_type&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameter</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;name_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;name_chip&quot;</span><span class="p">,</span> <span class="s2">&quot;name_copy&quot;</span><span class="p">,</span> <span class="s2">&quot;name_brand&quot;</span><span class="p">,</span>
-                     <span class="s2">&quot;dice_width&quot;</span><span class="p">,</span> <span class="s2">&quot;dice_grid_margin&quot;</span><span class="p">,</span> <span class="n">marker_types</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span>
+                     <span class="s2">&quot;dice_grid_margin&quot;</span><span class="p">,</span> <span class="n">marker_types</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span><span class="o">*</span><span class="mi">8</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Chip</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base PCell declaration for chips.</span>
 
@@ -573,6 +575,8 @@
     <span class="n">frames_diagonal_squares</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Number of diagonal marker squares for each chip frame&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
     <span class="n">frames_mirrored</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span>
                             <span class="s2">&quot;List of booleans specifying if the frame is mirrored for each chip frame&quot;</span><span class="p">,</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span>
+    <span class="n">frames_dice_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Dicing street width for each chip frame&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">200</span><span class="p">,</span> <span class="mi">140</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;[μm]&quot;</span><span class="p">)</span>
+
     <span class="n">face_boxes</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
         <span class="n">pdt</span><span class="o">.</span><span class="n">TypeShape</span><span class="p">,</span>
         <span class="s2">&quot;List of chip frame sizes (type DBox) for each face. None uses the chips box parameter.&quot;</span><span class="p">,</span>
@@ -749,7 +753,7 @@
                 <span class="n">box</span><span class="o">=</span><span class="n">frame_box</span><span class="p">,</span>
                 <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]],</span>
                 <span class="n">use_face_prefix</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_enabled</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span>
-                <span class="n">dice_width</span><span class="o">=</span><span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]][</span><span class="s2">&quot;dice_width&quot;</span><span class="p">],</span>
+                <span class="n">dice_width</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_dice_width</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
                 <span class="n">text_margin</span><span class="o">=</span><span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face</span><span class="p">]][</span><span class="s2">&quot;text_margin&quot;</span><span class="p">],</span>
                 <span class="n">marker_dist</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_marker_dist</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
                 <span class="n">diagonal_squares</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames_diagonal_squares</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>

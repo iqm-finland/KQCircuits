@@ -318,6 +318,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.junction.html">kqcircuits.junctions.junction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.manhattan.html">kqcircuits.junctions.manhattan</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.manhattan_single_junction.html">kqcircuits.junctions.manhattan_single_junction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.no_squid.html">kqcircuits.junctions.no_squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.sim.html">kqcircuits.junctions.sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.squid.html">kqcircuits.junctions.squid</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.junctions.html#module-kqcircuits.junctions">Module contents</a></li>
@@ -353,6 +354,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -687,7 +689,15 @@
 
     <span class="n">bat_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">file_prefix</span> <span class="o">+</span> <span class="s1">&#39;.bat&#39;</span><span class="p">))</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;@echo off</span><span class="se">\n</span><span class="s1">title Run Simulations</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s1">&#39;@echo off</span><span class="se">\n</span><span class="s1">&#39;</span>\
+            <span class="sa">r</span><span class="s1">&#39;powershell -Command &quot;Get-Process | Where-Object {$_.MainWindowTitle -like \&quot;Run Simulations*\&quot;} &#39;</span>\
+                <span class="s1">&#39;| Select -ExpandProperty Id | Export-Clixml -path blocking_pids.xml&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>\
+            <span class="s1">&#39;title Run Simulations</span><span class="se">\n</span><span class="s1">&#39;</span>\
+            <span class="s1">&#39;powershell -Command &quot;$sim_pids = Import-Clixml -Path blocking_pids.xml; if ($sim_pids) &#39;</span>\
+                <span class="sa">r</span><span class="s1">&#39;{ echo \&quot;Waiting for $sim_pids\&quot;; Wait-Process $sim_pids -ErrorAction SilentlyContinue }; &#39;</span>\
+                <span class="s1">&#39;Remove-Item blocking_pids.xml&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="p">)</span>
 
         <span class="c1"># Commands for each simulation</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">json_filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">json_filenames</span><span class="p">):</span>
