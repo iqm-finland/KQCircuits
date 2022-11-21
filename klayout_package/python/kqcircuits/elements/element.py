@@ -61,7 +61,7 @@ class Element(pya.PCellDeclarationHelper):
     n = Param(pdt.TypeInt, "Number of points on turns", 64)
     r = Param(pdt.TypeDouble, "Turn radius", 100, unit="μm")
     margin = Param(pdt.TypeDouble, "Margin of the protection layer", 5, unit="μm")
-    face_ids = Param(pdt.TypeList, "Chip face IDs list", ["1t1", "2b1", "2t1"])
+    face_ids = Param(pdt.TypeList, "Chip face IDs list", ["1t1", "2b1", "1b1", "2t1"])
     display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
     protect_opposite_face = Param(pdt.TypeBoolean, "Add opposite face protection too", False)
 
