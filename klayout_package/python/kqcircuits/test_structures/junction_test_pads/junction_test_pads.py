@@ -27,7 +27,7 @@ from kqcircuits.test_structures.junction_test_pads import junction_test_pads_typ
 from kqcircuits.junctions.manhattan import Manhattan
 
 
-@add_parameters_from(Manhattan, "offset_compensation", "shadow_margin", "mirror_offset", "finger_overlap")
+@add_parameters_from(Manhattan)
 @add_parameters_from(Qubit, "junction_type", "junction_width", "loop_area", "mirror_squid")
 class JunctionTestPads(TestStructure):
     """Base class for junction test structures."""

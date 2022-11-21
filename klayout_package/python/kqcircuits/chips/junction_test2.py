@@ -23,7 +23,7 @@ from kqcircuits.test_structures.junction_test_pads.junction_test_pads import Jun
 from kqcircuits.junctions.junction import Junction
 
 
-@add_parameters_from(JunctionTestPads, "junction_test_pads_type", "test_junctions", pad_spacing=200)
+@add_parameters_from(JunctionTestPads, "*", "loop_area", "junction_width", pad_spacing=200)
 @add_parameters_from(Junction, "junction_type")
 @add_parameters_from(ChipFrame, "marker_types")
 class JunctionTest2(Chip):
