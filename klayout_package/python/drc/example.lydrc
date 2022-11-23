@@ -36,7 +36,7 @@ source($input)
 report("DRC report", $output)
 
 # layers
-ab_pads = input(28, 3)
+ab_pads = input(146, 1)
 
 #drc checks
 ab_pads.space(20.0).output("ab_pads", "ab_pads spacing violations")
