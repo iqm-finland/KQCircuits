@@ -20,6 +20,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
+from kqcircuits.defaults import default_airbridge_type
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -48,6 +49,8 @@ class QualityFactor(Chip):
     res_b = Param(pdt.TypeList, "Resonator waveguide gap width", [3, 6, 12, 3, 6, 12], unit="[μm]",
                   docstring="Width of the gap in the resonators [μm]")
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
+    res_airbridge_types = Param(pdt.TypeList, "Airbridge type for each resonator",
+                         default=[default_airbridge_type]*6)
     launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="μm")
     launcher_indent = Param(pdt.TypeDouble, "Launcher indentation from edge", 800, unit="μm")
     marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="μm")
@@ -141,13 +144,20 @@ class QualityFactor(Chip):
                 node_beg = Node(pos_res_start)
 
             length_increment = res_lengths[i] - self.max_res_len if res_lengths[i] > self.max_res_len else None
+            bridge_length = res_a[i] + 2 * res_b[i] + 38
             if res_term[i] == "airbridge":
                 node_end = Node(pos_res_end, AirbridgeConnection, with_side_airbridges=False,
-                                with_right_waveguide=False, n_bridges=n_ab[i], length_increment=length_increment)
+                                with_right_waveguide=False, n_bridges=n_ab[i],
+                                bridge_length=bridge_length, length_increment=length_increment)
             else:
-                node_end = Node(pos_res_end, n_bridges=n_ab[i], length_increment=length_increment)
+                node_end = Node(pos_res_end, n_bridges=n_ab[i],
+                                bridge_length=bridge_length, length_increment=length_increment)
 
-            wg = self.add_element(WaveguideComposite, nodes=[node_beg, node_end], a=res_a[i], b=res_b[i])
+            airbridge_type = default_airbridge_type
+            if i < len(self.res_airbridge_types):
+                airbridge_type = self.res_airbridge_types[i]
+            wg = self.add_element(WaveguideComposite, nodes=[node_beg, node_end], a=res_a[i], b=res_b[i],
+                airbridge_type=airbridge_type)
             self.insert_cell(wg)
 
             # Feedline
