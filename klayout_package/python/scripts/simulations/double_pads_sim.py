@@ -47,14 +47,8 @@ sim_parameters = {
 for sim_tool in sim_tools:
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + f'_output_{sim_tool}')
 
-    export_parameters_ansys = {
-        'ansys_tool': sim_tool,
-        'path': dir_path,
-        'exit_after_run': True,
-    }
-
     # Add eigenmode and Q3D specific settings
-    export_parameters_ansys |= {
+    export_parameters_ansys = {
         'percent_error': 0.3,
         'maximum_passes': 18,
         'minimum_passes': 2,
@@ -108,6 +102,13 @@ for sim_tool in sim_tools:
                 'eps_r': 4,  # [5]
             }
         },
+    }
+
+    export_parameters_ansys = {
+        'ansys_tool': sim_tool,
+        'path': dir_path,
+        'exit_after_run': True,
+        **export_parameters_ansys
     }
 
     export_parameters_elmer = {
