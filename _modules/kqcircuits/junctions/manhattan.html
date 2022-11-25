@@ -355,6 +355,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.double_pads.html">kqcircuits.simulations.double_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -573,49 +574,12 @@
         <span class="n">junction_shapes_bottom</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">shadow_shapes</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c1"># create rounded bottom part</span>
-
-        <span class="n">bp_pts_left</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bp_gap_x</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bp_gap_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span> <span class="o">-</span> <span class="n">big_loop_height</span><span class="p">)</span>
-        <span class="p">]</span>
-        <span class="n">bp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bp_pts_left</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">bp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
-
-        <span class="n">bp_shadow_pts_left</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
-            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
-            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
-            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="n">bp_shadow_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bp_shadow_pts_left</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">bp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
-
-        <span class="c1"># create rounded top part</span>
-
-        <span class="n">tp_pts_left</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">tp_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">tp_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="n">tp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_pts_left</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_top</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
-
-        <span class="c1"># add top pad to bottom shapes in case another layer is used for the upper part of the squid</span>
-
-        <span class="k">if</span> <span class="n">top_pad_layer</span> <span class="o">!=</span> <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
-
-        <span class="n">tp_shadow_pts_left</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">tp_pts_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
-            <span class="n">tp_pts_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
-        <span class="p">]</span>
-        <span class="n">tp_shadow_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_shadow_pts_left</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+        <span class="c1"># create rounded bottom part and top parts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_contact_pads</span><span class="p">(</span><span class="n">top_pad_layer</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">,</span> <span class="n">bp_gap_x</span><span class="p">,</span> <span class="n">tp_height</span><span class="p">,</span> <span class="n">tp_width</span><span class="p">,</span>
+                                  <span class="n">big_loop_height</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">,</span>
+                                  <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">junction_shapes_top</span><span class="p">)</span>
 
         <span class="c1"># create rectangular junction-support structures and junctions</span>
-
         <span class="k">if</span> <span class="n">small_loop</span><span class="p">:</span>
             <span class="n">small_hat</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">small_hat_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">),</span>
@@ -654,10 +618,51 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_shapes</span><span class="p">(</span><span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="s2">&quot;SIS_junction&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_shapes</span><span class="p">(</span><span class="n">junction_shapes_top</span><span class="p">,</span> <span class="n">top_pad_layer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_shapes</span><span class="p">(</span><span class="n">shadow_shapes</span><span class="p">,</span> <span class="s2">&quot;SIS_shadow&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_metal_shapes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_grid_avoidance</span><span class="p">()</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_produce_ground_metal_shapes</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_refpoints</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Manhattan.produce_contact_pads"><a class="viewcode-back" href="../../../api/kqcircuits.junctions.manhattan.html#kqcircuits.junctions.manhattan.Manhattan.produce_contact_pads">[docs]</a>    <span class="k">def</span> <span class="nf">produce_contact_pads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">top_pad_layer</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">,</span> <span class="n">bp_gap_x</span><span class="p">,</span> <span class="n">tp_height</span><span class="p">,</span><span class="n">tp_width</span><span class="p">,</span> <span class="n">big_loop_height</span><span class="p">,</span>
+                             <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">junction_shapes_top</span><span class="p">):</span>
+
+        <span class="n">bp_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bp_gap_x</span><span class="p">,</span> <span class="n">bp_height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bp_gap_x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span> <span class="o">-</span> <span class="n">big_loop_height</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">bp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bp_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">bp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="n">bp_shadow_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">bp_pts_left</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">bp_shadow_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">bp_shadow_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">bp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="c1"># create rounded top part</span>
+
+        <span class="n">tp_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">tp_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">),</span>
+            <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="n">tp_width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">tp_height</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">tp_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_top</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="c1"># add top pad to bottom shapes in case another layer is used for the upper part of the squid</span>
+
+        <span class="k">if</span> <span class="n">top_pad_layer</span> <span class="o">!=</span> <span class="s2">&quot;SIS_junction&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shape</span><span class="p">,</span> <span class="n">junction_shapes_bottom</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span>
+
+        <span class="n">tp_shadow_pts_left</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tp_pts_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+            <span class="n">tp_pts_left</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shadow_margin</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">tp_shadow_shape</span> <span class="o">=</span> <span class="n">polygon_with_vsym</span><span class="p">(</span><span class="n">tp_shadow_pts_left</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_make_junctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_corner</span><span class="p">,</span> <span class="n">b_corner_y</span><span class="p">,</span> <span class="n">finger_margin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create junction fingers and add them to some SIS layer.</span>
