@@ -192,6 +192,7 @@ default_layers_to_mask = {
 # Layer names (without face prefix) in `layers_to_mask` for which mask covered region is not created.
 default_covered_region_excluded_layers = [
     "indium_bump",
+    "through_silicon_via",
 ]
 
 # Layer names (without face prefix) for layers exported as bitmap files during full mask layout export (does not
