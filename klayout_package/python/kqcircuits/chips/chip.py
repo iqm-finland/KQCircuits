@@ -411,7 +411,7 @@ class Chip(Element):
         return {}
 
     def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent, pad_pitch,
-                            launcher_assignments=None, enabled=None, chip_box=None):
+                            launcher_assignments=None, launcher_frame_gap=None, enabled=None, chip_box=None):
         """Produces n launchers at default locations and optionally changes the chip size.
 
         Launcher pads are equally distributed around the chip. This may be overridden by specifying
@@ -427,6 +427,7 @@ class Chip(Element):
             launcher_gap: pad to ground gap of the launchers
             launcher_indent: distance between the chip edge and pad port
             pad_pitch: distance between pad centers
+            launcher_frame_gap: gap of the launcher pad at the frame
             launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
             enabled: optional list of enabled launchers
             chip_box: optionally changes the chip size (``self.box``)
@@ -435,6 +436,9 @@ class Chip(Element):
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
         """
 
+        if launcher_frame_gap is None:
+            launcher_frame_gap = launcher_gap
+
         if chip_box is not None:
             self.box = chip_box
 
@@ -442,7 +446,8 @@ class Chip(Element):
             launcher_cell = self.add_element(LauncherDC, width=launcher_width)
         else:
             launcher_cell = self.add_element(Launcher, s=launcher_width, l=launcher_width,
-                                             a_launcher=launcher_width, b_launcher=launcher_gap)
+                                             a_launcher=launcher_width, b_launcher=launcher_gap,
+                                             launcher_frame_gap=launcher_frame_gap)
 
         pads_per_side = n
         if not isinstance(n, tuple):

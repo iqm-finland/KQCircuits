@@ -36,6 +36,7 @@ class Launcher(Element):
     l = Param(pdt.TypeDouble, "Tapering length", 300, unit="μm")
     a_launcher = Param(pdt.TypeDouble, "Outer trace width", 240, unit="μm")
     b_launcher = Param(pdt.TypeDouble, "Outer gap width", 144, unit="μm")
+    launcher_frame_gap = Param(pdt.TypeDouble, "Gap at chip frame", 144, unit="μm")
 
     def build(self):
         # optical layer
@@ -53,8 +54,8 @@ class Launcher(Element):
         shifts = [
             pya.DVector(0, self.b),
             pya.DVector(0, self.b_launcher),
-            pya.DVector(self.b_launcher, self.b_launcher),
-            pya.DVector(self.b_launcher, -self.b_launcher),
+            pya.DVector(self.launcher_frame_gap, self.b_launcher),
+            pya.DVector(self.launcher_frame_gap, -self.b_launcher),
             pya.DVector(0, -self.b_launcher),
             pya.DVector(0, -self.b),
         ]

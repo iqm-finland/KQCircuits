@@ -163,6 +163,7 @@ default_sampleholders = {
         "launcher_width": 300,
         "launcher_gap": 260,
         "launcher_indent": 800,
+        "launcher_frame_gap": 180,
         "pad_pitch": 4400,
         "chip_box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000))
     },
