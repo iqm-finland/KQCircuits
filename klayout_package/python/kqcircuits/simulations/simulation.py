@@ -287,6 +287,9 @@ class Simulation:
             ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
             lithography_region = self.merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching) - \
                 self.merged_region_from_layer(face_id, "base_metal_addition", -self.over_etching)
+            if self.hollow_tsv:
+                lithography_region += self.merged_region_from_layer(face_id, "through_silicon_via")
+
             tolerance=self.minimum_point_spacing / self.layout.dbu
 
             if lithography_region.is_empty():
