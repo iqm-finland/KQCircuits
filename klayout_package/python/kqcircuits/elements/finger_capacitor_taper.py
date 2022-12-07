@@ -77,7 +77,7 @@ class FingerCapacitorTaper(Element):
             pya.DPoint(-l / 2, 0),
             pya.DPoint(-l / 2, w)
         ])
-        for i in range(0, n):
+        for i in range(n):
             trans = pya.DTrans(pya.DVector(g / 2, i * (g + w) - total_width / 2)) if i % 2 else pya.DTrans(
                 pya.DVector(-g / 2, i * (g + w) - total_width / 2))
             polys_fingers.append(trans * poly_finger)

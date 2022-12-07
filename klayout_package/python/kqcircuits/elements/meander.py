@@ -87,9 +87,7 @@ class Meander(Element):
 
             Waveguide starts as straight segment from origin (0,0) and ends with bend pointing towards x at (self.r,w).
             """
-            if w >= self.r:
-                return 0.0
-            return (self.r - w) / (1 - w / (2 * self.r))
+            return 0.0 if w >= self.r else (self.r - w) / (1 - w / (2 * self.r))
 
         def bend_length_increment(w):
             """Returns amount of waveguide length increment due to a single bend as function of bend width w.

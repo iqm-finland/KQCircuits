@@ -164,8 +164,7 @@ def _get_meander_length_error(meander_length, num_meanders, end, r):
         r=r
     )
     true_length = get_cell_path_length(meander_cell)
-    relative_error = abs(true_length - meander_length) / meander_length
-    return relative_error
+    return abs(true_length - meander_length) / meander_length
 
 
 def _bridges_at_correct_positions(layout, meander_cell, bridge_positions):
@@ -175,11 +174,10 @@ def _bridges_at_correct_positions(layout, meander_cell, bridge_positions):
         # TODO: replace by `inst_cell = inst.cell` once KLayout bug is fixed
         inst_cell = layout.cell(inst.cell_index)
         if inst_cell.name == default_airbridge_type:
-            correct_position = False
-            for bridge_pos in bridge_positions:
-                if (inst.dtrans.disp - bridge_pos).length() < 1e-3:
-                    correct_position = True
-                    break
+            correct_position = any(
+                (inst.dtrans.disp - bridge_pos).length() < 1e-3
+                for bridge_pos in bridge_positions
+            )
             if not correct_position:
                 return False
     return True

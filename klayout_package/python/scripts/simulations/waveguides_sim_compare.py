@@ -56,24 +56,18 @@ sweep_parameters = {
 }
 
 if use_elmer:
-    if wave_equation:
-        path = create_or_empty_tmp_directory("waveguides_sim_elmer_wave")
-    else:
-        path = create_or_empty_tmp_directory("waveguides_sim_elmer")
-
+    path = (
+        create_or_empty_tmp_directory("waveguides_sim_elmer_wave")
+        if wave_equation
+        else create_or_empty_tmp_directory("waveguides_sim_elmer")
+    )
+elif wave_equation:
+    path = create_or_empty_tmp_directory("waveguides_sim_hfss")
 else:
-    if wave_equation:
-        path = create_or_empty_tmp_directory("waveguides_sim_hfss")
-    else:
-        path = create_or_empty_tmp_directory("waveguides_sim_q3d")
+    path = create_or_empty_tmp_directory("waveguides_sim_q3d")
 
-if edge_ports:
-    box_size_x = 100
-    box_size_y = 1000
-else:
-    box_size_x = 1000
-    box_size_y = 1000
-
+box_size_x = 100 if edge_ports else 1000
+box_size_y = 1000
 sim_parameters = {
     'name': 'waveguides',
     'use_internal_ports': True,
@@ -93,7 +87,6 @@ sim_parameters = {
 }
 
 if use_elmer:
-    elmer_n_processes = -1
     mesh_parameters = {
         'default_mesh_size': 100.,
         'gap_min_mesh_size': 2.,
@@ -105,6 +98,7 @@ if use_elmer:
         'algorithm': 5,
     }
 
+    elmer_n_processes = -1
     if wave_equation:
         elmer_n_processes = 1 # multi-core coming soon
         export_parameters_elmer = {
@@ -154,27 +148,26 @@ if use_elmer:
             '--mem-per-cpu':'4000',
         }
 
+elif wave_equation:
+    export_parameters_ansys = {
+        'path': path,
+        'frequency': [5, 10, 20],
+        'max_delta_s': 0.001,
+        'sweep_start': 0,
+        'sweep_end': 30,
+        'sweep_count': 1001,
+        'maximum_passes': 20,
+        'exit_after_run': True
+    }
 else:
-    if wave_equation:
-        export_parameters_ansys = {
-            'path': path,
-            'frequency': [5, 10, 20],
-            'max_delta_s': 0.001,
-            'sweep_start': 0,
-            'sweep_end': 30,
-            'sweep_count': 1001,
-            'maximum_passes': 20,
-            'exit_after_run': True
-        }
-    else:
-        export_parameters_ansys = {
-            'path': path,
-            'ansys_tool': 'q3d',
-            'percent_error': 0.2,
-            'minimum_converged_passes': 2,
-            'maximum_passes': 40,
-            'exit_after_run': True,
-        }
+    export_parameters_ansys = {
+        'path': path,
+        'ansys_tool': 'q3d',
+        'percent_error': 0.2,
+        'minimum_converged_passes': 2,
+        'maximum_passes': 40,
+        'exit_after_run': True,
+    }
 
 
 # Get layout

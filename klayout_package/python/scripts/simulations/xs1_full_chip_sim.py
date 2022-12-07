@@ -24,13 +24,10 @@ from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChi
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, open_with_klayout_or_default_application
 
 # Prepare output directory
-dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
+dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 
 launchers = True
-port_size = 200
-if launchers:
-    port_size = 900
-
+port_size = 900 if launchers else 200
 # Simulation parameters
 sim_class = SingleXmonsFullChipSim  # pylint: disable=invalid-name
 sim_parameters = {

@@ -82,9 +82,9 @@ def export_cell_netlist(cell, filename, pcell=None):
     # extract cell to circuit map for finding the netlist of interest
     cm = ltn.const_cell_mapping_into(layout, cell)
     reverse_cell_map = {v: k for k, v in cm.table().items()}
-    # export the circuit of interest
-    circuit = ltn.netlist().circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
-    if circuit:
+    if circuit := ltn.netlist().circuit_by_cell_index(
+        reverse_cell_map[cell.cell_index()]
+    ):
         log.info(f"Exporting netlist to {filename}")
         export_netlist(circuit, filename, ltn.internal_layout(), layout, cm, pcell)
     else:
@@ -112,10 +112,9 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
             if internal_cell.name.split('$')[0] in default_netlist_breakdown:
                 circuit.flatten_subcircuit(subcircuit)
 
-    nets_for_export = {}
-    for net in circuit.each_net():
-        nets_for_export[net.expanded_name()] = extract_nets(net)
-
+    nets_for_export = {
+        net.expanded_name(): extract_nets(net) for net in circuit.each_net()
+    }
     subcircuits_for_export = {}
     used_internal_cells = set()
 
@@ -128,12 +127,13 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
     original_instances = []
     instance_queue = list(last_cell.each_inst())
     instance_queue = [(instance, pya.DCplxTrans.R0) for instance in instance_queue]
-    while len(instance_queue) > 0:
+    while instance_queue:
         instance, instance_trans = instance_queue.pop(0)
         original_instances.append((instance, instance_trans))
-        for child in instance.cell.each_inst():
-            instance_queue.append((child, instance_trans * instance.dcplx_trans))
-
+        instance_queue.extend(
+            (child, instance_trans * instance.dcplx_trans)
+            for child in instance.cell.each_inst()
+        )
     # Indexing as defined in default_layers is not consistent with layer indexing in original_layout
     base_metal_gap_wo_grid_layer_idx_array = [idx for idx, li in
         enumerate(original_layout.layer_infos()) if li.name.endswith('_base_metal_gap_wo_grid')]
@@ -163,9 +163,11 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         property_dict = {}
         correct_instance = None
         if instances_with_eq_trans:
-            # Find property_dict if available
-            instances_with_property_dict = [(i, i_trans) for i, i_trans in instances_with_eq_trans if i.has_prop_id()]
-            if instances_with_property_dict:
+            if instances_with_property_dict := [
+                (i, i_trans)
+                for i, i_trans in instances_with_eq_trans
+                if i.has_prop_id()
+            ]:
                 correct_instance, correct_instance_trans = instances_with_property_dict[0]
                 property_dict = {key: value for (key, value) in
                     original_layout.properties(correct_instance.prop_id) if key != "id"}
@@ -178,9 +180,13 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
                 bbox = correct_instance.dbbox_per_layer(idx)
                 if not bbox.empty():
                     bboxes.append(bbox)
-            if len(bboxes) > 0:
-                combined_bbox = pya.DBox(min([bbox.p1.x for bbox in bboxes]), min([bbox.p1.y for bbox in bboxes]),
-                                         max([bbox.p2.x for bbox in bboxes]), max([bbox.p2.y for bbox in bboxes]))
+            if bboxes:
+                combined_bbox = pya.DBox(
+                    min(bbox.p1.x for bbox in bboxes),
+                    min(bbox.p1.y for bbox in bboxes),
+                    max(bbox.p2.x for bbox in bboxes),
+                    max(bbox.p2.y for bbox in bboxes),
+                )
                 # subcircuit_location is the center of geometry of all *_base_metal_gap_wo_grid layers in the cell
                 # we also transform the point by instance's predecessors' transformation
                 subcircuit_location = correct_instance_trans * combined_bbox.center()
@@ -200,10 +206,14 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
             "properties": property_dict,
         }
 
-    circuits_for_export = {}
-    for internal_cell in sorted(used_internal_cells, key=lambda cell: cell.name):
-        circuits_for_export[internal_cell.name] = extract_circuits(cell_mapping, internal_cell, original_layout)
-
+    circuits_for_export = {
+        internal_cell.name: extract_circuits(
+            cell_mapping, internal_cell, original_layout
+        )
+        for internal_cell in sorted(
+            used_internal_cells, key=lambda cell: cell.name
+        )
+    }
     chip_for_export = {}
     if pcell is not None and pcell.pcell_declaration() is not None:
         chip_params = pcell.pcell_parameters_by_name()
@@ -226,14 +236,13 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
 
 def extract_nets(net):
     """ Extract dictionary for net for JSON export """
-    net_for_export = []
-    for pin_ref in net.each_subcircuit_pin():
-        net_for_export.append({
+    return [
+        {
             "subcircuit_id": pin_ref.subcircuit().id(),
-            "pin": pin_ref.pin().expanded_name()
-        })
-
-    return net_for_export
+            "pin": pin_ref.pin().expanded_name(),
+        }
+        for pin_ref in net.each_subcircuit_pin()
+    ]
 
 
 def extract_circuits(cell_mapping, internal_cell, layout):

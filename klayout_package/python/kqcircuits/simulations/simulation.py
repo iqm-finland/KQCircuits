@@ -309,10 +309,6 @@ class Simulation:
             face: face to place waveguide and port on. Either 0 (default) or 1, for bottom or top face.
         """
 
-        waveguide_safety_overlap = 0.005  # Extend waveguide by this amount to avoid gaps due to nm-scale rounding
-                                          # errors
-        waveguide_gap_extension = 1  # Extend gaps beyond waveguides into ground plane to define the ground port edge
-
         if turn_radius is None:
             turn_radius = self.r
         if a is None:
@@ -344,11 +340,14 @@ class Simulation:
             signal_point = location + (waveguide_length + over_etching) * direction
             ground_point = location + (waveguide_length + a - 3 * over_etching) * direction
 
+            waveguide_safety_overlap = 0.005  # Extend waveguide by this amount to avoid gaps due to nm-scale rounding
             nodes = [
                 first_node,
                 Node(signal_point + waveguide_safety_overlap * direction),
             ]
             port = InternalPort(port_nr, *self.etched_line(signal_point, ground_point), face=face)
+
+            waveguide_gap_extension = 1  # Extend gaps beyond waveguides into ground plane to define the ground port edge
 
             extension_nodes = [
                 Node(ground_point),
@@ -449,8 +448,10 @@ class Simulation:
                         port_top_height = simulation.box_height
 
                     # Determine which edge this port is on
-                    if (port.signal_location.x == simulation.box.left
-                            or port.signal_location.x == simulation.box.right):
+                    if port.signal_location.x in [
+                        simulation.box.left,
+                        simulation.box.right,
+                    ]:
                         p_data['polygon'] = [
                             [port.signal_location.x, port.signal_location.y - simulation.port_size / 2,
                              -simulation.substrate_height],
@@ -462,8 +463,10 @@ class Simulation:
                                 port_top_height]
                         ]
 
-                    elif (port.signal_location.y == simulation.box.top
-                          or port.signal_location.y == simulation.box.bottom):
+                    elif port.signal_location.y in [
+                        simulation.box.top,
+                        simulation.box.bottom,
+                    ]:
                         p_data['polygon'] = [
                             [port.signal_location.x - simulation.port_size / 2, port.signal_location.y,
                              -simulation.substrate_height],
@@ -501,12 +504,15 @@ class Simulation:
                             p_data['ground_edge'] = ((ground_edge.x1, ground_edge.y1, port_z),
                                                      (ground_edge.x2, ground_edge.y2, port_z))
                         except ValueError:
-                            self.__log.warning('Unable to create polygon for port {}, because either signal or ground '
-                                               'edge is not found.'.format(port.number))
+                            self.__log.warning(
+                                f'Unable to create polygon for port {port.number}, because either signal or ground edge is not found.'
+                            )
                     else:
-                        self.__log.warning('Ground location of port {} is not determined.'.format(port.number))
+                        self.__log.warning(f'Ground location of port {port.number} is not determined.')
                 else:
-                    raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
+                    raise ValueError(
+                        f"Port {port.number} has unsupported port class {type(port).__name__}"
+                    )
 
                 port_data.append(p_data)
 
@@ -538,9 +544,9 @@ class Simulation:
 
         """
         simulation_data = {
-            'gds_file': self.name + '.gds',
+            'gds_file': f'{self.name}.gds',
             'stack_type': self.wafer_stack_type,
-            'units': 'um',  # hardcoded assumption in multiple places
+            'units': 'um',
             'substrate_height': self.substrate_height,
             'airbridge_height': self.airbridge_height,
             'box_height': self.box_height,

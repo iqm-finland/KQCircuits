@@ -56,14 +56,18 @@ def produce_label(cell, label, location, origin, origin_offset, margin, layers, 
         protection_only = False
 
     # text cell
-    subcells = []
-    for layer in layers:
-        subcells.append(layout.create_cell("TEXT", "Basic", {
-            "layer": layer,
-            "text": label,
-            "mag": size/350*500,
-        }))
-
+    subcells = [
+        layout.create_cell(
+            "TEXT",
+            "Basic",
+            {
+                "layer": layer,
+                "text": label,
+                "mag": size / 350 * 500,
+            },
+        )
+        for layer in layers
+    ]
     # relative placement with margin
     margin = margin / dbu
     origin_offset = origin_offset / dbu

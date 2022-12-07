@@ -152,12 +152,12 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
     # detect airbridges
     shapes_in_air = simulation.layout.begin_shapes(simulation.cell, simulation.layout.layer(
         default_layers["1t1_airbridge_flyover"]))
-    materials_type = "Si+Al" if not shapes_in_air.shape().is_null() else "Si BT"
+    materials_type = "Si BT" if shapes_in_air.shape().is_null() else "Si+Al"
 
     sonnet_strings = get_sonnet_strings(materials_type, 1, False)
     sonnet_strings["control"] = parser.control(control)
 
-    son_filename = str(path.joinpath(simulation.name + '.son'))
+    son_filename = str(path.joinpath(f'{simulation.name}.son'))
     parser.apply_template(
         os.path.join(os.path.dirname(os.path.abspath(parser.__file__)), "template.son"),
         son_filename,
@@ -190,9 +190,16 @@ def export_sonnet(simulations, path: Path, detailed_resonance=False, lower_accur
         List of paths to exported son files.
     """
     write_commit_reference_file(path)
-    son_filenames = []
-    for simulation in simulations:
-        son_filenames.append(export_sonnet_son(simulation, path, detailed_resonance=detailed_resonance,
-                                               lower_accuracy=lower_accuracy, current=current, control=control,
-                                               fill_type=fill_type, simulation_safety=simulation_safety))
-    return son_filenames
+    return [
+        export_sonnet_son(
+            simulation,
+            path,
+            detailed_resonance=detailed_resonance,
+            lower_accuracy=lower_accuracy,
+            current=current,
+            control=control,
+            fill_type=fill_type,
+            simulation_safety=simulation_safety,
+        )
+        for simulation in simulations
+    ]

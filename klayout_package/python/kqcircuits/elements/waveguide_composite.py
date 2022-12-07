@@ -107,13 +107,12 @@ class Node:
         if self.length_increment is not None:
             magic_params['length_increment'] = self.length_increment
 
-        all_params = {**self.params, **magic_params}
-        if all_params:
+        if all_params := {**self.params, **magic_params}:
             for pn, pv in all_params.items():
                 if isinstance(pv, pya.DPoint):  # encode DPoint as tuple
                     all_params[pn] = (pv.x, pv.y)
             txt += f", {all_params}"
-        return "(" + txt + ")"
+        return f"({txt})"
 
     @classmethod
     def deserialize(cls, node):
@@ -168,7 +167,7 @@ class Node:
         """
 
         nlas = ", ".join(nodes) if isinstance(nodes, list) else nodes
-        node_list = ast.literal_eval(nlas + ",")
+        node_list = ast.literal_eval(f"{nlas},")
 
         return [Node.deserialize(node) for node in node_list]
 
@@ -253,10 +252,11 @@ class WaveguideComposite(Element):
         layout = cell.layout()
         # Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235
         child_cells = [layout.cell(inst.cell_index) for inst in cell.each_inst()]
-        segment_lengths = [get_cell_path_length(child_cell) for child_cell in child_cells
-                           if child_cell.name.split('$')[0] == "Waveguide Coplanar"]
-
-        return segment_lengths
+        return [
+            get_cell_path_length(child_cell)
+            for child_cell in child_cells
+            if child_cell.name.split('$')[0] == "Waveguide Coplanar"
+        ]
 
     @staticmethod
     def produce_fixed_length_waveguide(chip, route_function, initial_guess=0.0, length=0.0, **waveguide_params):
@@ -500,8 +500,8 @@ class WaveguideComposite(Element):
         used to determine the entry and exit directions of the ports. If these points do not exist, the waveguides will
         extend the line through ``before`` and ``after``.
         """
-        before_corner = before + '_corner'
-        after_corner = after + '_corner'
+        before_corner = f'{before}_corner'
+        after_corner = f'{after}_corner'
 
         # Compute cell relative entrance direction
         rel_ref = self.get_refpoints(cell, rec_levels=0)
@@ -794,10 +794,18 @@ def _length_of_var_length_bend(layout, library, corner_dist, point_a, point_a_co
 
 
 def _var_length_bend(layout, library, corner_dist, point_a, point_a_corner, point_b, point_b_corner, bridges):
-    cell = WaveguideComposite.create(layout, library, nodes=[
-        Node(point_a, ab_across=bridges.endswith("ends")),
-        Node(point_shift_along_vector(point_a, point_a_corner, corner_dist)),
-        Node(point_shift_along_vector(point_b, point_b_corner, corner_dist), n_bridges=bridges.startswith("middle")),
-        Node(point_b, ab_across=bridges.endswith("ends")),
-    ])
-    return cell
+    return WaveguideComposite.create(
+        layout,
+        library,
+        nodes=[
+            Node(point_a, ab_across=bridges.endswith("ends")),
+            Node(
+                point_shift_along_vector(point_a, point_a_corner, corner_dist)
+            ),
+            Node(
+                point_shift_along_vector(point_b, point_b_corner, corner_dist),
+                n_bridges=bridges.startswith("middle"),
+            ),
+            Node(point_b, ab_across=bridges.endswith("ends")),
+        ],
+    )

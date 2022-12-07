@@ -102,7 +102,7 @@ def _create_waveguide_many_turns(layout, n, scale1, scale2):
         Cell object for the waveguide.
 
     """
-    points = [pya.DPoint(0, 0) for i in range(4 * n)]
+    points = [pya.DPoint(0, 0) for _ in range(4 * n)]
     for x in range(n):
         points[x] = pya.DPoint(x * scale1, scale2 * n * math.sin(x / (n / 3) * math.pi))
         points[x + n] = pya.DPoint(n * scale1 - scale2 * n * math.sin(x / (n / 3) * math.pi), -x * scale1)
@@ -112,12 +112,11 @@ def _create_waveguide_many_turns(layout, n, scale1, scale2):
 
     guideline = pya.DPath(points, 5)
 
-    waveguide_cell = WaveguideCoplanar.create(layout,
+    return WaveguideCoplanar.create(
+        layout,
         path=guideline,
         r=50,
     )
-
-    return waveguide_cell
 
 
 def assert_perfect_waveguide_continuity(cell, layout, expected_shapes):
@@ -131,7 +130,7 @@ def assert_perfect_waveguide_continuity(cell, layout, expected_shapes):
     test_region = pya.Region(cell.begin_shapes_rec(
             layout.layer(default_faces['1t1']["base_metal_gap_wo_grid"])
         )).merged()
-    number_of_shapes = len([x for x in test_region.each()])
+    number_of_shapes = len(list(test_region.each()))
     assert(number_of_shapes == expected_shapes)
 
 

@@ -85,7 +85,6 @@ def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
     """
     point_ids = []
     line_ids = []
-    curve_loop_ids = []
     spline_points = []
     spline = False
     i = 0
@@ -106,17 +105,16 @@ def add_polygon_with_splines(point_coordinates: [], mesh_size: [], tol=1.):
                         line_ids.append(gmsh.model.occ.addLine(spline_points[0], spline_points[1]))
                     line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
                     spline_points = [point_id]
+            elif coord_dist(coord1, coord2) <= tol:
+                spline = True
             else:
-                if coord_dist(coord1, coord2) <= tol:
-                    spline = True
-                else:
-                    line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
-                    spline_points = [point_id]
+                line_ids.append(gmsh.model.occ.addLine(point_ids[i - 1], point_ids[i]))
+                spline_points = [point_id]
     if len(spline_points) > 1:  # in case spline and the last point distance < tol
         line_ids.append(gmsh.model.occ.addSpline(spline_points))
 
     line_ids.append(gmsh.model.occ.addLine(point_ids[i], point_ids[0]))
-    curve_loop_ids.append(gmsh.model.occ.addCurveLoop(line_ids))
+    curve_loop_ids = [gmsh.model.occ.addCurveLoop(line_ids)]
     plane_surface_id = gmsh.model.occ.addPlaneSurface(curve_loop_ids)
     return point_ids, line_ids, curve_loop_ids, plane_surface_id
 
@@ -154,7 +152,7 @@ def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z
             * tag(int): the id of the entity
     """
     layout = cell.layout()
-    shapes = cell.shapes(layout.layer(*layer_map[face + "_" + layer]))
+    shapes = cell.shapes(layout.layer(*layer_map[f"{face}_{layer}"]))
     dim_tags = []
     for shape in shapes.each():
         poly = separated_hull_and_holes(shape.polygon)
@@ -168,7 +166,7 @@ def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z
                                       for point in poly.each_point_hole(hole)]
             _, _, _, hole_plane_surface_id = add_polygon_with_splines(hole_point_coordinates, mesh_size)
             hole_dim_tags.append((2, hole_plane_surface_id))
-        if len(hole_dim_tags) > 0:
+        if hole_dim_tags:
             dim_tags += gmsh.model.occ.cut([hull_dim_tag], hole_dim_tags)[0]
         else:
             dim_tags.append(hull_dim_tag)
@@ -238,14 +236,12 @@ def create_face(cell: pya.Cell, layer_map: dict, face: str, z_level: float, mesh
     if len(gap_dim_tags) > 0 and len(port_dim_tags) > 0:
         gap_dim_tags, _ = gmsh.model.occ.cut(gap_dim_tags, port_dim_tags, removeTool=False)
 
-    tags = {
+    return {
         'ground': ground_dim_tags,
         'gap': gap_dim_tags,
         'signal': signal_dim_tags,
         'ground_grid': ground_grid_dim_tags,
     }
-
-    return tags
 
 
 def bounding_box_from_dim_tags(dim_tags: list):
@@ -283,9 +279,7 @@ def bounding_box_from_dim_tags(dim_tags: list):
             ymaxmax = max(ymax, ymaxmax)
             zmaxmax = max(zmax, zmaxmax)
 
-    bounding_box = xminmin, yminmin, zminmin, xmaxmax, ymaxmax, zmaxmax
-
-    return bounding_box
+    return xminmin, yminmin, zminmin, xmaxmax, ymaxmax, zmaxmax
 
 
 def bounding_box_to_xyzdxdydz(bounding_box: [], dz: float = None):
@@ -406,10 +400,7 @@ def get_bounding_boxes(dim_tags: list):
                 * ymax(float): maximum y-coordinate of the bounding box
                 * zmax(float): maximum z-coordinate of the bounding box
     """
-    bboxes = []
-    for dim_tag in dim_tags:
-        bboxes.append(gmsh.model.occ.getBoundingBox(*dim_tag))
-    return bboxes
+    return [gmsh.model.occ.getBoundingBox(*dim_tag) for dim_tag in dim_tags]
 
 
 def get_entities_in_bounding_boxes(bboxes: list, dim: int, eps=1e-6):
@@ -495,8 +486,7 @@ def produce_geometry_info_for_dim_tags(dim_tags: list):
     """
     geom_info = {}
     for dim_tag in dim_tags:
-        geom_info[dim_tag] = {}
-        geom_info[dim_tag]['c_o_m'] = gmsh.model.occ.getCenterOfMass(*dim_tag)
+        geom_info[dim_tag] = {'c_o_m': gmsh.model.occ.getCenterOfMass(*dim_tag)}
         geom_info[dim_tag]['bbox'] = gmsh.model.occ.getBoundingBox(*dim_tag)
 
     return geom_info
@@ -538,7 +528,7 @@ def map_dim_tags_to_outdim_tags(geom_info: dict, dim: int):
     """
     outdim_tags = gmsh.model.occ.getEntities(dim)
     dim_tagMap = {}
-    for dim_tag in geom_info.keys():
+    for dim_tag in geom_info:
         bbox = geom_info[dim_tag]['bbox']
         for outdim_tag in outdim_tags:
             outbbox = gmsh.model.occ.getBoundingBox(*outdim_tag)
@@ -626,7 +616,7 @@ def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, di
             tag_distance_field = gmsh.model.mesh.field.add("Distance")
             gmsh.model.mesh.field.setNumbers(tag_distance_field, "CurvesList", [curve])
             bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
-            bbox_maxdist = coord_dist(bbox[0:3], bbox[3:6])
+            bbox_maxdist = coord_dist(bbox[:3], bbox[3:6])
             sampling = np.ceil(1.5 * bbox_maxdist / min_mesh_size)
             gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", sampling)
             tag_threshold_field = gmsh.model.mesh.field.add("Threshold")
@@ -677,7 +667,7 @@ def get_bbox_sides_as_bboxes(bbox):
 
     """
     xmin, ymin, zmin, xmax, ymax, zmax = bbox
-    sides = {
+    return {
         'xmin': (xmin, ymin, zmin, xmin, ymax, zmax),
         'xmax': (xmax, ymin, zmin, xmax, ymax, zmax),
         'ymin': (xmin, ymin, zmin, xmax, ymin, zmax),
@@ -685,21 +675,20 @@ def get_bbox_sides_as_bboxes(bbox):
         'zmin': (xmin, ymin, zmin, xmax, ymax, zmin),
         'zmax': (xmin, ymin, zmax, xmax, ymax, zmax),
     }
-    return sides
 
 def get_parent_body(dim_tag, body_dim_tags):
     """
     Find the parent body of a (outer) boundary.
     """
 
-    found_dim_tag = None
-
-    for e in body_dim_tags:
-        if dim_tag in gmsh.model.getBoundary([e], oriented=False):
-            found_dim_tag = e
-            break
-
-    return found_dim_tag
+    return next(
+        (
+            e
+            for e in body_dim_tags
+            if dim_tag in gmsh.model.getBoundary([e], oriented=False)
+        ),
+        None,
+    )
 
 def set_physical_name(dim_tag, name):
     gmsh.model.addPhysicalGroup(dim_tag[0], [dim_tag[1]], name=name)

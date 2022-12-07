@@ -45,71 +45,69 @@ sim_parameters = {
 }
 
 for sim_tool in sim_tools:
-    dir_path = create_or_empty_tmp_directory(Path(__file__).stem + f'_output_{sim_tool}')
+    dir_path = create_or_empty_tmp_directory(
+        f'{Path(__file__).stem}_output_{sim_tool}'
+    )
 
     export_parameters_ansys = {
         'ansys_tool': sim_tool,
         'path': dir_path,
         'exit_after_run': True,
-    }
-
-    # Add eigenmode and Q3D specific settings
-    export_parameters_ansys |= {
-        'percent_error': 0.3,
-        'maximum_passes': 18,
-        'minimum_passes': 2,
-        'minimum_converged_passes': 2,
-    } if sim_tool == 'q3d' else {
-        'max_delta_f': 0.5,
-
-        # do two passes with tight mesh
-        'gap_max_element_length': 10,
-        'maximum_passes': 2,
-        'minimum_passes': 1,
-        'minimum_converged_passes': 1,
-
-        # lossy eigenmode simulation settings
-        'n_modes': 2,
-        'frequency': 0.5,  # minimum allowed eigenfrequency
-        'simulation_flags': ['pyepr'],
-
-        # run T1 analysis with pyEPR between simulations
-        'intermediate_processing_command': 'python "scripts/t1_estimate.py"',
-        'participation_sheet_distance': 5e-3,  # in µm
-        'thicken_participation_sheet_distance': None,
-
-        # The values here are taken from the following literature:
-        #
-        # [1] J. Verjauw et al., ‘Investigation of Microwave Loss Induced by Oxide Regrowth in High-Q Niobium Resonators’,   # pylint: disable=line-too-long
-        #     Phys. Rev. Applied, vol. 16, no. 1, p. 014018, Jul. 2021, doi: 10.1103/PhysRevApplied.16.014018.
-        # [2] M. V. P. Altoé et al., ‘Localization and Mitigation of Loss in Niobium Superconducting Circuits’,
-        #     PRX Quantum, vol. 3, no. 2, p. 020312, Apr. 2022, doi: 10.1103/PRXQuantum.3.020312.
-        # [3] M. P. F. Graça et al., ‘Electrical analysis of niobium oxide thin films’,
-        #     Thin Solid Films, vol. 585, pp. 95–99, Jun. 2015, doi: 10.1016/j.tsf.2015.02.047.
-        # [4] C. Wang et al., ‘Surface participation and dielectric loss in superconducting qubits’,
-        #     Appl. Phys. Lett., vol. 107, no. 16, p. 162601, Oct. 2015, doi: 10.1063/1.4934486.
-        # [5] W. Woods et al., ‘Determining Interface Dielectric Losses in Superconducting Coplanar-Waveguide Resonators’,  # pylint: disable=line-too-long
-        #     Phys. Rev. Applied, vol. 12, no. 1, p. 014012, Jul. 2019, doi: 10.1103/PhysRevApplied.12.014012.
-        'substrate_loss_tangent': 5e-7,  # [5]
-        'dielectric_surfaces': {
-            'layerMA': {
-                'tan_delta_surf': 9.9e-3,  # surface loss tangent [1]
-                'th': 4.8e-9,  # thickness, [2]
-                'eps_r': 8,  # relative permittivity, worst-case [3]
+    } | (
+        {
+            'percent_error': 0.3,
+            'maximum_passes': 18,
+            'minimum_passes': 2,
+            'minimum_converged_passes': 2,
+        }
+        if sim_tool == 'q3d'
+        else {
+            'max_delta_f': 0.5,
+            # do two passes with tight mesh
+            'gap_max_element_length': 10,
+            'maximum_passes': 2,
+            'minimum_passes': 1,
+            'minimum_converged_passes': 1,
+            # lossy eigenmode simulation settings
+            'n_modes': 2,
+            'frequency': 0.5,  # minimum allowed eigenfrequency
+            'simulation_flags': ['pyepr'],
+            # run T1 analysis with pyEPR between simulations
+            'intermediate_processing_command': 'python "scripts/t1_estimate.py"',
+            'participation_sheet_distance': 5e-3,  # in µm
+            'thicken_participation_sheet_distance': None,
+            # The values here are taken from the following literature:
+            #
+            # [1] J. Verjauw et al., ‘Investigation of Microwave Loss Induced by Oxide Regrowth in High-Q Niobium Resonators’,   # pylint: disable=line-too-long
+            #     Phys. Rev. Applied, vol. 16, no. 1, p. 014018, Jul. 2021, doi: 10.1103/PhysRevApplied.16.014018.
+            # [2] M. V. P. Altoé et al., ‘Localization and Mitigation of Loss in Niobium Superconducting Circuits’,
+            #     PRX Quantum, vol. 3, no. 2, p. 020312, Apr. 2022, doi: 10.1103/PRXQuantum.3.020312.
+            # [3] M. P. F. Graça et al., ‘Electrical analysis of niobium oxide thin films’,
+            #     Thin Solid Films, vol. 585, pp. 95–99, Jun. 2015, doi: 10.1016/j.tsf.2015.02.047.
+            # [4] C. Wang et al., ‘Surface participation and dielectric loss in superconducting qubits’,
+            #     Appl. Phys. Lett., vol. 107, no. 16, p. 162601, Oct. 2015, doi: 10.1063/1.4934486.
+            # [5] W. Woods et al., ‘Determining Interface Dielectric Losses in Superconducting Coplanar-Waveguide Resonators’,  # pylint: disable=line-too-long
+            #     Phys. Rev. Applied, vol. 12, no. 1, p. 014012, Jul. 2019, doi: 10.1103/PhysRevApplied.12.014012.
+            'substrate_loss_tangent': 5e-7,  # [5]
+            'dielectric_surfaces': {
+                'layerMA': {
+                    'tan_delta_surf': 9.9e-3,  # surface loss tangent [1]
+                    'th': 4.8e-9,  # thickness, [2]
+                    'eps_r': 8,  # relative permittivity, worst-case [3]
+                },
+                'layerMS': {
+                    'tan_delta_surf': 2.6e-3,  # [4]
+                    'th': 0.3e-9,  # estimate worst case, [2]
+                    'eps_r': 11.4,  # estimate worst case (permittivity of Si)
+                },
+                'layerSA': {
+                    'tan_delta_surf': 2.1e-3,  # [5, 1new]
+                    'th': 2.4e-9,  # [2]
+                    'eps_r': 4,  # [5]
+                },
             },
-            'layerMS': {
-                'tan_delta_surf': 2.6e-3,  # [4]
-                'th': 0.3e-9,  # estimate worst case, [2]
-                'eps_r': 11.4,  # estimate worst case (permittivity of Si)
-            },
-            'layerSA': {
-                'tan_delta_surf': 2.1e-3,  # [5, 1new]
-                'th': 2.4e-9,  # [2]
-                'eps_r': 4,  # [5]
-            }
-        },
-    }
-
+        }
+    )
     export_parameters_elmer = {
         'tool': 'capacitance',
         'workflow': {

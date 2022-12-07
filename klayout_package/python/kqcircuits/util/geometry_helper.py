@@ -33,10 +33,7 @@ def vector_length_and_direction(vector):
 def point_shift_along_vector(start, other, distance=None):
     """Returns a point at a `distance` away from point `start` in the direction of point `other`."""
     v = other - start
-    if distance is not None:
-        return start + v / v.length() * distance
-    else:
-        return start + v
+    return start + v / v.length() * distance if distance is not None else start + v
 
 
 def get_direction(angle):
@@ -77,11 +74,10 @@ def get_cell_path_length(cell, layer=None):
     if layer is not None:
         return _get_length_per_layer(cell, layer)
 
-    length = 0
-    for path_layer in default_path_length_layers:
-        length += _get_length_per_layer(cell, path_layer)
-
-    return length
+    return sum(
+        _get_length_per_layer(cell, path_layer)
+        for path_layer in default_path_length_layers
+    )
 
 
 def _get_length_per_layer(cell, layer):
@@ -156,7 +152,7 @@ def region_with_merged_points(region, tolerance):
         # find squared length of each segment of polygon
         num = len(points)
         squares = [0.0] * num
-        for i in range(0, num):
+        for i in range(num):
             squares[i] = points[i].sq_distance(points[(i + 1) % num])
 
         # merge short segments
@@ -242,7 +238,13 @@ def circle_polygon(r, n=64, origin=pya.DPoint(0, 0)):
 
     Returns: list of ``DPoint``s, length ``n``.
     """
-    return pya.DPolygon([origin + pya.DPoint(cos(a / n * 2 * pi) * r, sin(a / n * 2 * pi) * r) for a in range(0, n)])
+    return pya.DPolygon(
+        [
+            origin
+            + pya.DPoint(cos(a / n * 2 * pi) * r, sin(a / n * 2 * pi) * r)
+            for a in range(n)
+        ]
+    )
 
 
 def arc_points(r, start=0, stop=2 * pi, n=64, origin=pya.DPoint(0, 0)):
@@ -262,4 +264,8 @@ def arc_points(r, start=0, stop=2 * pi, n=64, origin=pya.DPoint(0, 0)):
     """
     n_steps = max(ceil(n * abs(stop - start) / (2 * pi)), 2)
     step = (stop - start) / (n_steps - 1)
-    return [origin + pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]
+    return [
+        origin
+        + pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r)
+        for a in range(n_steps)
+    ]

@@ -55,8 +55,6 @@ class Manhattan(Squid):
         tp_width = 10  # top pad width
         brim_height = 1  # thickness of the "top-hat's" brim
         small_loop_height = 5.2
-        small_hat_width = 2  # width of the small hat shape, in case of small loop
-
         # corner rounding parameters
         rounding_params = {
             "rinner": 0.5,  # inner corner rounding radius
@@ -88,6 +86,8 @@ class Manhattan(Squid):
 
         # create rectangular junction-support structures and junctions
         if small_loop:
+            small_hat_width = 2  # width of the small hat shape, in case of small loop
+
             small_hat = [
                 pya.DPoint(-small_hat_width / 2, self.height - tp_height),
                 pya.DPoint(-small_hat_width / 2, small_loop_height + loop_bottom_y + brim_height),

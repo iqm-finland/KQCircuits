@@ -195,7 +195,7 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
     """
     run_cmd = 'RunScriptAndExit' if exit_after_run else 'RunScript'
 
-    bat_filename = str(path.joinpath(file_prefix + '.bat'))
+    bat_filename = str(path.joinpath(f'{file_prefix}.bat'))
     with open(bat_filename, 'w') as file:
         file.write(
             '@echo off\n'\
@@ -209,30 +209,17 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 
         # Commands for each simulation
         for i, json_filename in enumerate(json_filenames):
-            printing = 'echo Simulation {}/{} - {}\n'.format(
-                i+1,
-                len(json_filenames),
-                str(Path(json_filename).relative_to(path)))
+            printing = f'echo Simulation {i + 1}/{len(json_filenames)} - {str(Path(json_filename).relative_to(path))}\n'
             file.write(printing)
-            command = '"{}" -scriptargs "{}" -{} "{}"\n'.format(
-                ansys_executable,
-                str(Path(json_filename).relative_to(path) if use_rel_path else json_filename),
-                run_cmd,
-                str(Path(import_script_folder).joinpath(import_script)))
+            command = f'"{ansys_executable}" -scriptargs "{str(Path(json_filename).relative_to(path) if use_rel_path else json_filename)}" -{run_cmd} "{str(Path(import_script_folder).joinpath(import_script))}"\n'
             file.write(command)
             # Possible processing between simulations
             if intermediate_processing_command is not None:
-                command = '{} "{}"\n'.format(
-                    intermediate_processing_command,
-                    str(Path(json_filename).relative_to(path))
-                )
+                command = f'{intermediate_processing_command} "{str(Path(json_filename).relative_to(path))}"\n'
                 file.write(command)
 
         # Post-process command
-        command = '"{}" -{} "{}"\n'.format(
-            ansys_executable,
-            run_cmd,
-            str(Path(import_script_folder).joinpath(post_process_script)))
+        command = f'"{ansys_executable}" -{run_cmd} "{str(Path(import_script_folder).joinpath(post_process_script))}"\n'
         file.write(command)
 
     return bat_filename
@@ -341,7 +328,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                             dielectric_surfaces=dielectric_surfaces,
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template))
-        except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
+        except Exception as e:
             if skip_errors:
                 logging.warning(
                     f'Simulation {simulation.name} skipped due to {e.args}. '\

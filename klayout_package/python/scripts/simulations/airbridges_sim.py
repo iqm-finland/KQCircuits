@@ -29,7 +29,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # Simulation parameters
 sim_class = AirbridgesSim  # pylint: disable=invalid-name
 
-dir_path = Path(Path(__file__).stem + "_output")
+dir_path = Path(f"{Path(__file__).stem}_output")
 created_dir = create_or_empty_tmp_directory(dir_path)
 
 export_parameters = {

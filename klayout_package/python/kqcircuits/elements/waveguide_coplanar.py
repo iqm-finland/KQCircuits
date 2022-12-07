@@ -75,7 +75,7 @@ class WaveguideCoplanar(Element):
         last_cut_dist = 0.0 if self.term1 == 0 else -self.corner_safety_overlap
 
         # For each segment except the last
-        for i in range(0, len(points) - 2):
+        for i in range(len(points) - 2):
             # Check if straight can fit between points[i] and points[i + 1]
             v1, _, alpha1, alpha2, corner_pos = self.get_corner_data(points[i], points[i + 1], points[i + 2], self.r)
             alpha = (alpha2 - alpha1 + math.pi) % (2 * math.pi) - math.pi  # turn angle (between -pi and pi) in radians

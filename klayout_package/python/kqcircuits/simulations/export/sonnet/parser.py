@@ -53,10 +53,7 @@ def polygon_head(
 
 
 def symmetry(sym: bool = False):
-    sonnet_str = ""
-    if sym:
-        sonnet_str = "SYM"
-    return sonnet_str
+    return "SYM" if sym else ""
 
 
 def box(
@@ -97,7 +94,7 @@ def refplane(
         ):
     if port_ipoly != "":
         plane_type = "LINK"
-        poly = "POLY {} 1\n0\n".format(port_ipoly[0])
+        poly = f"POLY {port_ipoly[0]} 1\n0\n"
         length = ""
     else:
         plane_type = "FIX"
@@ -106,10 +103,10 @@ def refplane(
 
 
 def refplanes(positions, length, port_ipolys):
-    sonnet_str = ""
-    for i, pos in enumerate(positions):
-        sonnet_str += refplane(pos, length, port_ipolys[i])
-    return sonnet_str
+    return "".join(
+        refplane(pos, length, port_ipolys[i])
+        for i, pos in enumerate(positions)
+    )
 
 
 def port(
@@ -126,7 +123,7 @@ def port(
         capac=0
 ):
     if group:
-        group = '"' + group + '"'
+        group = f'"{group}"'
     logging.info(locals())
     return f"POR1 {port_type} {group}\nPOLY {ipolygon} 1\n{ivertex}\n{portnum} {resist} {react} {induct} {capac}\n"
     # {xcord} {ycord} [reftype rpcallen]
@@ -157,7 +154,7 @@ def control(control_type):
 
 
 def polygons(polygons, v, dbu, ilevel, fill_type):
-    sonnet_str = 'NUM {}\n'.format(len(polygons))
+    sonnet_str = f'NUM {len(polygons)}\n'
     for i, hole_poly in enumerate(polygons):
         poly = hole_poly.resolved_holes()
 
@@ -169,11 +166,10 @@ def polygons(polygons, v, dbu, ilevel, fill_type):
                                    filltype=fill_type)  # "Debugid" is actually used for mapping ports to polygons, 0 is
                                                         # not allowed
 
-        for _, point in enumerate(poly.each_point_hull()):
-            sonnet_str += "{} {}\n".format(point.x * dbu + v.x,
-                                           -(point.y * dbu + v.y))  # sonnet Y-coordinate goes in the other direction
+        for point in poly.each_point_hull():
+            sonnet_str += f"{point.x * dbu + v.x} {-(point.y * dbu + v.y)}\n"
         point = next(poly.each_point_hull())  # first point again to close the polygon
-        sonnet_str += "{} {}\nEND\n".format(point.x * dbu + v.x, -(point.y * dbu + v.y))
+        sonnet_str += f"{point.x * dbu + v.x} {-(point.y * dbu + v.y)}\nEND\n"
 
     return sonnet_str
 

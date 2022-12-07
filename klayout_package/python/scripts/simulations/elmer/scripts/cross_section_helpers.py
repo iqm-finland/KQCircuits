@@ -38,7 +38,7 @@ def produce_cross_section_mesh(json_data, msh_file):
     gmsh.initialize()
 
     # Set number of threads
-    workflow = json_data.get('workflow', dict())
+    workflow = json_data.get('workflow', {})
     gmsh_n_threads = workflow.get('gmsh_n_threads', 1)
     if gmsh_n_threads == -1:
         gmsh_n_threads = int(os.cpu_count() / 2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
@@ -83,7 +83,7 @@ def produce_cross_section_mesh(json_data, msh_file):
                                           for point in poly.each_point_hole(hole)]
                 hole_plane_surface_id = add_polygon(hole_point_coordinates)
                 hole_dim_tags.append((2, hole_plane_surface_id))
-            if len(hole_dim_tags) > 0:
+            if hole_dim_tags:
                 layer_dim_tags += gmsh.model.occ.cut([hull_dim_tag], hole_dim_tags)[0]
             else:
                 layer_dim_tags.append(hull_dim_tag)
@@ -121,7 +121,9 @@ def produce_cross_section_mesh(json_data, msh_file):
     metals = [n for n in new_tags if 'signal' in n or 'ground' in n]
     for n in metals:
         metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=True)
-        gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name='{}_boundary'.format(n))
+        gmsh.model.addPhysicalGroup(
+            1, [t[1] for t in metal_boundary], name=f'{n}_boundary'
+        )
 
     # Generate and save mesh
     gmsh.model.mesh.generate(2)
@@ -153,7 +155,7 @@ def sif_block(block_name, data):
     """
     res = block_name + '\n'
     for line in data:
-        res += '  {}\n'.format(line)
+        res += f'  {line}\n'
     res += 'End\n'
     return res
 
@@ -161,19 +163,21 @@ def sif_block(block_name, data):
 def sif_common_header(json_data, folder_path, def_file=None):
     """Returns common header and simulation blocks of a sif file in string format.
     Optional definition file name is given in 'def_file'."""
-    res = 'Check Keywords Warn\n'
-    res += 'INCLUDE {}/{}\n'.format(folder_path, 'mesh.names')
+    res = 'Check Keywords Warn\n' + f'INCLUDE {folder_path}/mesh.names\n'
     if def_file:
-        res += 'INCLUDE {}/{}\n'.format(folder_path, def_file)
-    res += sif_block('Header', [
-        'Mesh DB "." "{}"'.format(folder_path)])
-    res += sif_block('Simulation', [
-        'Max Output Level = 3',
-        'Coordinate System = "Cartesian 2D"',
-        'Simulation Type = "Steady State"',
-        'Steady State Max Iterations = 1',
-        'Angular Frequency = {}'.format(angular_frequency),
-        'Coordinate Scaling = {}'.format(coordinate_scaling(json_data))])
+        res += f'INCLUDE {folder_path}/{def_file}\n'
+    res += sif_block('Header', [f'Mesh DB "." "{folder_path}"'])
+    res += sif_block(
+        'Simulation',
+        [
+            'Max Output Level = 3',
+            'Coordinate System = "Cartesian 2D"',
+            'Simulation Type = "Steady State"',
+            'Steady State Max Iterations = 1',
+            f'Angular Frequency = {angular_frequency}',
+            f'Coordinate Scaling = {coordinate_scaling(json_data)}',
+        ],
+    )
     return res
 
 
@@ -181,40 +185,47 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
     """Returns capacitance sif file content in string format."""
     name = 'capacitance0' if with_zero else 'capacitance'
     res = sif_common_header(json_data, folder_path)
-    res += sif_block('Constants', [
-        'Permittivity Of Vacuum = {}'.format(epsilon_0)])
+    res += sif_block('Constants', [f'Permittivity Of Vacuum = {epsilon_0}'])
     res += sif_block('Equation 1', [
         'Active Solvers(2) = 1 2',
         'Calculate Electric Energy = True'])
-    res += sif_block('Solver 1', [
-        'Equation = Stat Elec Solver',
-        'Variable = Potential',
-        'Variable DOFs = 1',
-        'Procedure = "StatElecSolve" "StatElecSolver"',
-        'Calculate Electric Field = True',
-        'Calculate Electric Flux = False',
-        'Calculate Capacitance Matrix = True',
-        'Capacitance Matrix Filename = {}/{}'.format(folder_path, name + '.dat'),
-        'Potential Difference = 1.0e6',
-        'Linear System Solver = Iterative',
-        'Linear System Iterative Method = BiCGStab',
-        'Linear System Max Iterations = 200',
-        'Linear System Convergence Tolerance = 1.0e-07',
-        'Linear System Preconditioning = ILU1',
-        'Linear System ILUT Tolerance = 1.0e-03',
-        'Nonlinear System Max Iterations = 1',
-        'Nonlinear System Convergence Tolerance = 1.0e-4',
-        'Nonlinear System Newton After Tolerance = 1.0e-3',
-        'Nonlinear System Newton After Iterations = 10',
-        'Nonlinear System Relaxation Factor = 1',
-        'Steady State Convergence Tolerance = 1.0e-4'])
-    res += sif_block('Solver 2', [
-        'Exec Solver = True',
-        'Equation = "ResultOutput"',
-        'Procedure = "ResultOutputSolve" "ResultOutputSolver"',
-        'Output File Name = {}'.format(name),
-        'Vtu format = Logical True',
-        'Save Geometry Ids = Logical True'])
+    res += sif_block(
+        'Solver 1',
+        [
+            'Equation = Stat Elec Solver',
+            'Variable = Potential',
+            'Variable DOFs = 1',
+            'Procedure = "StatElecSolve" "StatElecSolver"',
+            'Calculate Electric Field = True',
+            'Calculate Electric Flux = False',
+            'Calculate Capacitance Matrix = True',
+            f'Capacitance Matrix Filename = {folder_path}/{name}.dat',
+            'Potential Difference = 1.0e6',
+            'Linear System Solver = Iterative',
+            'Linear System Iterative Method = BiCGStab',
+            'Linear System Max Iterations = 200',
+            'Linear System Convergence Tolerance = 1.0e-07',
+            'Linear System Preconditioning = ILU1',
+            'Linear System ILUT Tolerance = 1.0e-03',
+            'Nonlinear System Max Iterations = 1',
+            'Nonlinear System Convergence Tolerance = 1.0e-4',
+            'Nonlinear System Newton After Tolerance = 1.0e-3',
+            'Nonlinear System Newton After Iterations = 10',
+            'Nonlinear System Relaxation Factor = 1',
+            'Steady State Convergence Tolerance = 1.0e-4',
+        ],
+    )
+    res += sif_block(
+        'Solver 2',
+        [
+            'Exec Solver = True',
+            'Equation = "ResultOutput"',
+            'Procedure = "ResultOutputSolve" "ResultOutputSolver"',
+            f'Output File Name = {name}',
+            'Vtu format = Logical True',
+            'Save Geometry Ids = Logical True',
+        ],
+    )
     res += sif_block('Solver 3', [
         'Exec Solver = Always',
         'Equation = "sv"',
@@ -226,7 +237,7 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
     mat_permittivity = []
     mat_solids = []
     for s in solids:
-        permittivity = 1.0 if with_zero else json_data.get('{}_permittivity'.format(s), 1.0)
+        permittivity = 1.0 if with_zero else json_data.get(f'{s}_permittivity', 1.0)
         if permittivity in mat_permittivity:
             mat_solids[mat_permittivity.index(permittivity)].append(s)
         else:
@@ -235,23 +246,34 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
 
     # Write bodies and materials
     for i, perm in enumerate(mat_permittivity):
-        res += sif_block('Body {}'.format(i + 1), [
-            'Target Bodies({}) = $ {}'.format(len(mat_solids[i]), ' '.join(list(mat_solids[i]))),
-            'Equation = 1',
-            'Material = {}'.format(i + 1)])
-        res += sif_block('Material {}'.format(i + 1), [
-            'Relative Permittivity = {}'.format(perm)])
+        res += sif_block(
+            f'Body {i + 1}',
+            [
+                f"Target Bodies({len(mat_solids[i])}) = $ {' '.join(list(mat_solids[i]))}",
+                'Equation = 1',
+                f'Material = {i + 1}',
+            ],
+        )
+        res += sif_block(f'Material {i + 1}', [f'Relative Permittivity = {perm}'])
 
     # Write metal boundary conditions
     signals = [n for n in json_data['layers'].keys() if 'signal' in n]
     grounds = [n for n in json_data['layers'].keys() if 'ground' in n and n not in signals]
-    res += sif_block('Boundary Condition 1', [
-        'Target Boundaries({}) = $ {}'.format(len(grounds), ' '.join(['{}_boundary'.format(s) for s in grounds])),
-        'Capacitance Body = 0'])
+    res += sif_block(
+        'Boundary Condition 1',
+        [
+            f"Target Boundaries({len(grounds)}) = $ {' '.join([f'{s}_boundary' for s in grounds])}",
+            'Capacitance Body = 0',
+        ],
+    )
     for i, s in enumerate(signals):
-        res += sif_block('Boundary Condition {}'.format(i + 2), [
-            'Target Boundaries(1) = $ {}_boundary'.format(s),
-            'Capacitance Body = {}'.format(i + 1)])
+        res += sif_block(
+            f'Boundary Condition {i + 2}',
+            [
+                f'Target Boundaries(1) = $ {s}_boundary',
+                f'Capacitance Body = {i + 1}',
+            ],
+        )
     return res
 
 
@@ -310,39 +332,57 @@ def sif_inductance(json_data, folder_path, def_file):
         'Exec Solver = Always',
         'Equation = Circuits Output',
         'Procedure = "CircuitsAndDynamics" "CircuitsOutput"'])
-    res += sif_block('Solver 6', [
-        'Exec Solver = Always',
-        'Equation = "sv"',
-        'Procedure = "SaveData" "SaveScalars"',
-        'Filename = {}/{}'.format(folder_path, 'inductance.dat')])
+    res += sif_block(
+        'Solver 6',
+        [
+            'Exec Solver = Always',
+            'Equation = "sv"',
+            'Procedure = "SaveData" "SaveScalars"',
+            f'Filename = {folder_path}/inductance.dat',
+        ],
+    )
 
     # Divide layers into different materials
     signals = [n for n in json_data['layers'].keys() if 'signal' in n]
     grounds = [n for n in json_data['layers'].keys() if 'ground' in n and n not in signals]
     solids = ['vacuum', *[n for n in json_data['layers'].keys() if n not in signals + grounds and n != 'vacuum']]
 
-    res += sif_block('Body 1', [
-        'Target Bodies({}) = $ {}'.format(len(solids), ' '.join(solids)),
-        'Equation = 1',
-        'Material = 1'])
+    res += sif_block(
+        'Body 1',
+        [
+            f"Target Bodies({len(solids)}) = $ {' '.join(solids)}",
+            'Equation = 1',
+            'Material = 1',
+        ],
+    )
     res += sif_block('Material 1', [
         'Relative Permeability = 1',
         'Electric Conductivity = 1'])
 
-    res += sif_block('Body 2', [
-        'Target Bodies({}) = $ {}'.format(len(grounds), ' '.join(grounds)),
-        'Equation = 1',
-        'Material = 2'])
-    res += sif_block('Body 3', [
-        'Target Bodies({}) = $ {}'.format(len(signals), ' '.join(signals)),
-        'Equation = 1',
-        'Material = 2'])
+    res += sif_block(
+        'Body 2',
+        [
+            f"Target Bodies({len(grounds)}) = $ {' '.join(grounds)}",
+            'Equation = 1',
+            'Material = 2',
+        ],
+    )
+    res += sif_block(
+        'Body 3',
+        [
+            f"Target Bodies({len(signals)}) = $ {' '.join(signals)}",
+            'Equation = 1',
+            'Material = 2',
+        ],
+    )
     london_penetration_depth = json_data.get('london_penetration_depth', 0.0)
     if london_penetration_depth > 0:
-        opt_params = ['Electric Conductivity = 0',
-                      '$ lambda_l = {}'.format(london_penetration_depth),
-                      '$ mu_0 = 4e-7*pi',
-                      'London Lambda = Real $ mu_0 * lambda_l^2']
+        opt_params = [
+            'Electric Conductivity = 0',
+            f'$ lambda_l = {london_penetration_depth}',
+            '$ mu_0 = 4e-7*pi',
+            'London Lambda = Real $ mu_0 * lambda_l^2',
+        ]
     else:
         opt_params = ['Electric Conductivity = 1e10']
     res += sif_block('Material 2', [
@@ -369,11 +409,11 @@ def sif_inductance_definitions(json_data):
     # Define variable count and initialize circuit matrices.
     london_penetration_depth = json_data.get('london_penetration_depth', 0.0)
     n_equations = 4 + int(london_penetration_depth > 0.0)
-    res += '\n$ C.1.perm = zeros({})\n'.format(n_equations)
+    res += f'\n$ C.1.perm = zeros({n_equations})\n'
     for i in range(n_equations):
-        res += '$ C.1.perm({}) = {}\n'.format((i % (n_equations - 1)) + 1 if i > 0 and n_equations == 4 else i, i)
+        res += f'$ C.1.perm({i % (n_equations - 1) + 1 if i > 0 and n_equations == 4 else i}) = {i}\n'
 
-    res += '\n$ C.1.variables = {}\n'.format(n_equations)
+    res += f'\n$ C.1.variables = {n_equations}\n'
     for n in ['A', 'B', 'Mre', 'Mim']:
         res += '$ C.1.{} = zeros({n_equations},{n_equations})\n'.format(n, n_equations=n_equations)
 
@@ -386,15 +426,15 @@ def sif_inductance_definitions(json_data):
         # if he wishes to drive the SC with voltage.
         var_names.insert(3, 'phi_component(1)')
     for i, var_name in enumerate(var_names):
-        res += '$ C.1.name.{} = "{}"\n'.format(i + 1, var_name)
+        res += f'$ C.1.name.{i + 1} = "{var_name}"\n'
 
     # 1st equation
-    res += '\n$ C.1.B(0,{}) = 1\n'.format(n_equations - 4)
+    res += f'\n$ C.1.B(0,{n_equations - 4}) = 1\n'
     res += '$ C.1.source.1 = "testsource"\n'
 
     # 2nd equation: Voltage relations (v_testsource + v_component(1) = 0)
     res += '\n$ C.1.B(1,1) = 1\n'
-    res += '$ C.1.B(1,{}) = 1\n'.format(n_equations - 1)
+    res += f'$ C.1.B(1,{n_equations - 1}) = 1\n'
 
     # 3rd equation: Current relations (i_testsource - i_component(1) = 0)
     res += '\n$ C.1.B(2,0) = 1\n'
@@ -442,7 +482,7 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
         if london_penetration_depth > 0:
             l_matrix_file = Path(folder_path).joinpath('inductance.dat')
             data = pd.read_csv(l_matrix_file, delim_whitespace=True, header=None)
-            with open("{}.names".format(l_matrix_file)) as names:
+            with open(f"{l_matrix_file}.names") as names:
                 data.columns = [line.split('res: ')[1].replace('\n', '') for line in names.readlines() if
                                 'res:' in line]
             voltage = data['v_component(1) re'] + 1.j * data['v_component(1) im']

@@ -86,25 +86,18 @@ class Validator():
         """
         for name, rules in self.schema.items():
             rules = normalize_rules(name, rules)
-            self.__log.debug("Validating {} using rules [{}].".format(name, rules))
+            self.__log.debug(f"Validating {name} using rules [{rules}].")
             if name in parameters:
                 value = parameters[name]
                 if value is None:
                     if rules["required"]:
                         raise ValueError(_generate_missing_parameter_message(name))
-                    self.__log.debug("Validated {}.".format(name))
-                    return True
-                else:
-                    if _is_of_type(value, rules["type"]):
-                        self.__log.debug("Validated {}.".format(name))
-                        return True
-                    else:
-                        raise ValueError(_generate_invalid_parameter_message(name, value))
-            else:
-                if rules["required"]:
-                    raise ValueError(_generate_missing_parameter_message(name))
-                self.__log.debug("Validated {}.".format(name))
-                return True
+                elif not _is_of_type(value, rules["type"]):
+                    raise ValueError(_generate_invalid_parameter_message(name, value))
+            elif rules["required"]:
+                raise ValueError(_generate_missing_parameter_message(name))
+            self.__log.debug(f"Validated {name}.")
+            return True
 
     def __validate_schema(self):
         """Validates schema.
@@ -123,7 +116,7 @@ class Validator():
                 raise ValueError(_generate_invalid_rule_message(name, "type", rules["type"]))
             if "description" not in rules:
                 raise ValueError(_generate_missing_rule_message(name, "description"))
-            if "description" in rules and not isinstance(rules["description"], str):
+            if not isinstance(rules["description"], str):
                 raise ValueError(_generate_invalid_rule_message(name, "description", rules["description"]))
             if "hidden" in rules and not isinstance(rules["hidden"], bool):
                 raise ValueError(_generate_invalid_rule_message(name, "hidden", rules["hidden"]))
@@ -156,10 +149,7 @@ def _get_rule(name, default, rules):
     Returns:
         Dictionary containing rule.
     """
-    if name in rules:
-        return rules[name]
-    else:
-        return default
+    return rules[name] if name in rules else default
 
 
 def _is_valid_type(value):
@@ -207,10 +197,10 @@ def _is_of_type(value, rule_type):
             isinstance(value, (pya.DBox, pya.DEdge, pya.DPoint, pya.DPolygon, pya.DPath))
     ):
         return True
-    if rule_type is pya.PCellParameterDeclaration.TypeString and isinstance(value, str):
-        return True
-
-    return False
+    return (
+        rule_type is pya.PCellParameterDeclaration.TypeString
+        and isinstance(value, str)
+    )
 
 
 def _is_valid_choices(value, choice_type):
@@ -264,7 +254,7 @@ def _generate_missing_rule_message(rule_name, key):
     Returns:
         Message string.
     """
-    return "Missing required key [{}] in schema rule [{}].".format(key, rule_name)
+    return f"Missing required key [{key}] in schema rule [{rule_name}]."
 
 
 def _generate_invalid_rule_message(rule_name, key, value):
@@ -273,7 +263,7 @@ def _generate_invalid_rule_message(rule_name, key, value):
     Returns:
         Message string.
     """
-    return "Invalid value [{}] for [{}] in schema rule [{}].".format(value, key, rule_name)
+    return f"Invalid value [{value}] for [{key}] in schema rule [{rule_name}]."
 
 
 def _generate_missing_parameter_message(parameter_name):
@@ -282,7 +272,7 @@ def _generate_missing_parameter_message(parameter_name):
     Returns:
         Message string.
     """
-    return "Missing required value for parameter [{}].".format(parameter_name)
+    return f"Missing required value for parameter [{parameter_name}]."
 
 
 def _generate_invalid_parameter_message(parameter_name, value):
@@ -291,4 +281,4 @@ def _generate_invalid_parameter_message(parameter_name, value):
     Returns:
         Message string.
     """
-    return "Invalid value [{}] specified for parameter [{}].".format(value, parameter_name)
+    return f"Invalid value [{value}] specified for parameter [{parameter_name}]."

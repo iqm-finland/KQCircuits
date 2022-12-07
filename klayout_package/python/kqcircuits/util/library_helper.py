@@ -92,16 +92,16 @@ def load_libraries(flush=False, path=""):
     for cls, _ in pcell_classes:
 
         library_name = cls.LIBRARY_NAME
-        library_path = cls.LIBRARY_PATH
-
         library = pya.Library.library_by_name(library_name)  # returns only registered libraries
         if (library is None) or flush:
+            library_path = cls.LIBRARY_PATH
+
             if library_name in _kqc_libraries.keys():
-                load_libraries._log.debug("Using created library \"{}\".".format(library_name))
+                load_libraries._log.debug(f'Using created library \"{library_name}\".')
                 library, _ = _kqc_libraries[library_name]
             else:
                 # create a library, but do not register it yet
-                load_libraries._log.debug("Creating new library \"{}\".".format(library_name))
+                load_libraries._log.debug(f'Creating new library \"{library_name}\".')
                 library = pya.Library()
                 library.description = cls.LIBRARY_DESCRIPTION
                 _kqc_libraries[library_name] = (library, library_path)
@@ -146,7 +146,7 @@ def delete_library(name=None):
     if name in _kqc_libraries:
         _kqc_libraries.pop(name)
     if library._destroyed():
-        delete_library._log.info("Successfully deleted library '{}'.".format(name))
+        delete_library._log.info(f"Successfully deleted library '{name}'.")
     else:
         raise SystemError("Failed to delete library '[]'.".format(name))
 
@@ -243,11 +243,13 @@ def _register_pcell(pcell_class, library, library_name):
     try:
         pcell_name = to_library_name(pcell_class.__name__)
         library.layout().register_pcell(pcell_name, pcell_class())
-        _register_pcell._log.debug("Registered pcell [{}] to library {}.".format(pcell_name, library_name))
+        _register_pcell._log.debug(
+            f"Registered pcell [{pcell_name}] to library {library_name}."
+        )
     except Exception:  # pylint: disable=broad-except
         _register_pcell._log.warning(
-            "Failed to register pcell in class {} to library {}.".format(pcell_class, library_name),
-            exc_info=True
+            f"Failed to register pcell in class {pcell_class} to library {library_name}.",
+            exc_info=True,
         )
 
 
@@ -260,7 +262,7 @@ def _load_manual_designs(library_name):
     library, rel_path = _kqc_libraries[library_name]
 
     for src in SRC_PATHS:
-        for path in src.rglob("{}/**/*.oas".format(rel_path)):
+        for path in src.rglob(f"{rel_path}/**/*.oas"):
             library.layout().read(str(path.absolute()))
 
 
@@ -298,10 +300,9 @@ def _get_all_pcell_classes(reload=False, path=""):
                 module = importlib.import_module(import_path)
                 if reload:
                     importlib.reload(module)
-                    _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
+                    _get_all_pcell_classes._log.debug(f"Reloaded module '{module_name}'.")
 
-                classes = _get_pcell_classes(module)
-                if classes:
+                if classes := _get_pcell_classes(module):
                     pcell_classes.append((classes[-1], mp))  # touple of class and its file path
 
     return pcell_classes
@@ -350,11 +351,17 @@ def _get_pcell_class(name=None, module=None):
 def _is_valid_class_name(value=None):
     """Check if string value is valid PEP-8 compliant Python class name."""
     if value is None or not isinstance(value, str) or len(value) == 0:
-        raise ValueError("Cannot convert nil or non-string class name '{}' to library name.".format(value))
+        raise ValueError(
+            f"Cannot convert nil or non-string class name '{value}' to library name."
+        )
     if re.fullmatch(r"[a-zA-Z_][a-zA-Z0-9_]*", value) is None:
-        raise ValueError("Cannot convert invalid Python class name '{}' to library name.".format(value))
+        raise ValueError(
+            f"Cannot convert invalid Python class name '{value}' to library name."
+        )
     if re.fullmatch(r"([A-Z][a-z0-9]*)+", value) is None:
-        raise ValueError("PEP8 compliant class name '{}' must be PascalCase without underscores.".format(value))
+        raise ValueError(
+            f"PEP8 compliant class name '{value}' must be PascalCase without underscores."
+        )
 
 
 def _join_module_words(words=None):
@@ -378,10 +385,7 @@ def _join_module_words(words=None):
     for i in range(1, n):
         previous = words[i - 1]
         current = words[i]
-        if len(previous) == 1:
-            name += current
-        else:
-            name += "_" + current
+        name += current if len(previous) == 1 else f"_{current}"
     return name
 
 
@@ -405,10 +409,7 @@ def _join_library_words(words=None):
     for i in range(1, n):
         previous = words[i - 1].title()
         current = words[i].title()
-        if len(previous) == 1:
-            name += current
-        else:
-            name += " " + current
+        name += current if len(previous) == 1 else f" {current}"
     return name
 
 

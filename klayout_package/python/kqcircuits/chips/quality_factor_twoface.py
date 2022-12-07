@@ -79,7 +79,7 @@ class QualityFactorTwoface(Chip):
         resonators = len(self.res_lengths)
         tl_start = pya.DPoint(left_connector + self.spiral_box_width, mid_y)
         v_res_step = pya.DPoint(right_connector - left_connector - self.spiral_box_width, 0) * \
-                     (1. / resonators)
+                         (1. / resonators)
         cell_cross = self.add_element(WaveguideCoplanarSplitter, **t_cross_parameters(
             length_extra_side=5 * self.a_capped, a=self.a_capped, b=self.b_capped, a2=self.a_capped, b2=self.b_capped,
             face_ids=face_config))
@@ -144,7 +144,7 @@ class QualityFactorTwoface(Chip):
                 res_params = {'connector_dist': connector_distances[i] - self.cap_res_distance, "bridge_spacing": 0}
             elif self.resonator_types[i] == "etched":
                 res_params = {
-                    'name': 'resonator{}'.format(i),
+                    'name': f'resonator{i}',
                     "airbridge_type": "Airbridge Multi Face",
                     "include_bumps": False,
                     "bridge_length": res_a[i] + 2 * (res_b[i] + self.margin),
@@ -153,7 +153,7 @@ class QualityFactorTwoface(Chip):
                     "bridge_spacing": self.bridge_spacing,
                 }
             else:
-                res_params = {'name': 'resonator{}'.format(i), "bridge_spacing": 0}
+                res_params = {'name': f'resonator{i}', "bridge_spacing": 0}
             inst_res, _ = self.insert_cell(SpiralResonatorPolygon,
                                            margin=self.margin + extra_resonator_avoidance[i],
                                            **rectangular_parameters(

@@ -76,9 +76,20 @@ class SingleXmonsFullChipSim(Simulation):
                 ['NW', 'WN', 'WS', 'SW', 'SE', 'ES', 'EN', 'NE'],
                 [[0, port_shift], [-port_shift, 0], [-port_shift,0], [0, -port_shift],
                  [0, -port_shift], [port_shift, 0], [port_shift, 0], [0, port_shift]])):
-            self.ports.append(EdgePort(i + 1, refpoints['{}_port'.format(launcher)] + pya.DVector(*shift)))
+            self.ports.append(
+                EdgePort(
+                    i + 1, refpoints[f'{launcher}_port'] + pya.DVector(*shift)
+                )
+            )
 
         # Add squid internal ports
         for j in range(6):
-            self.ports.append(InternalPort(j+9, *self.etched_line(refpoints['qb_{}_port_squid_a'.format(j)],
-                                                                  refpoints['qb_{}_port_squid_b'.format(j)])))
+            self.ports.append(
+                InternalPort(
+                    j + 9,
+                    *self.etched_line(
+                        refpoints[f'qb_{j}_port_squid_a'],
+                        refpoints[f'qb_{j}_port_squid_b'],
+                    ),
+                )
+            )

@@ -34,8 +34,7 @@ def test_bridge_number_many():
 def _get_number_of_bridges(n_bridges):
     layout = pya.Layout()
     cell = AirbridgeDC.create(layout, n_ab=n_bridges)
-    actual_n_bridges = 0
-    for inst in cell.each_inst():
-        if type(inst.cell.pcell_declaration()) == AirbridgeRectangular:
-            actual_n_bridges += 1
-    return actual_n_bridges
+    return sum(
+        type(inst.cell.pcell_declaration()) == AirbridgeRectangular
+        for inst in cell.each_inst()
+    )

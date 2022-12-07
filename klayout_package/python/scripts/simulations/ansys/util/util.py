@@ -22,10 +22,17 @@ import json
 def get_enabled_setup(oDesign, tab="General"):
     """Returns enabled analysis setup. Returns None if not enabled."""
     setup_names = oDesign.GetModule("AnalysisSetup").GetSetups()
-    for name in setup_names:
-        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + name, "Enabled") == 'true':
-            return name
-    return None
+    return next(
+        (
+            name
+            for name in setup_names
+            if oDesign.GetPropertyValue(
+                tab, f"AnalysisSetup:{name}", "Enabled"
+            )
+            == 'true'
+        ),
+        None,
+    )
 
 
 def get_enabled_setup_and_sweep(oDesign, tab="HfssTab"):
@@ -36,18 +43,19 @@ def get_enabled_setup_and_sweep(oDesign, tab="HfssTab"):
 
     sweep_names = oDesign.GetModule("AnalysisSetup").GetSweeps(str(setup))
     for name in sweep_names:
-        if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + setup + ":" + name, "Enabled") == 'true':
+        if (
+            oDesign.GetPropertyValue(
+                tab, f"AnalysisSetup:{setup}:{name}", "Enabled"
+            )
+            == 'true'
+        ):
             return (setup, name)
     return (setup, None)
 
 
 def get_solution_data(report_setup, report_type, solution_name, context_array, families_array, expression):
     """Returns value of given expression. If expression is a list the result is a dictionary."""
-    if isinstance(expression, list):
-        expressions = expression
-    else:
-        expressions = [expression]
-
+    expressions = expression if isinstance(expression, list) else [expression]
     # get solution data by frequency and expression
     s = report_setup.GetSolutionDataPerVariation(report_type, solution_name, context_array, families_array,
                                                  expressions)[0]
@@ -82,23 +90,29 @@ def create_x_vs_y_plot(report_setup, plot_name, report_type, solution_name, cont
         ["X Component:=", x_components, "Y Component:=", y_components]
     )
     report_setup.ChangeProperty(
-        ["NAME:AllTabs",
-         ["NAME:Legend",
-          ["NAME:PropServers", "%s:Legend" % plot_name],
-          ["NAME:ChangedProps",
-           ["NAME:Show Variation Key", "Value:=", False],
-           ["NAME:Show Solution Name", "Value:=", False],
-           ["NAME:DockMode", "Value:=", "Dock Right"]
-           ]
-          ],
-         ["NAME:Axis",
-          ["NAME:PropServers", "%s:AxisY1" % plot_name],
-          ["NAME:ChangedProps",
-           ["NAME:Specify Name", "Value:=", True],
-           ["NAME:Name", "Value:=", y_label]
-           ]
-          ]
-         ])
+        [
+            "NAME:AllTabs",
+            [
+                "NAME:Legend",
+                ["NAME:PropServers", f"{plot_name}:Legend"],
+                [
+                    "NAME:ChangedProps",
+                    ["NAME:Show Variation Key", "Value:=", False],
+                    ["NAME:Show Solution Name", "Value:=", False],
+                    ["NAME:DockMode", "Value:=", "Dock Right"],
+                ],
+            ],
+            [
+                "NAME:Axis",
+                ["NAME:PropServers", f"{plot_name}:AxisY1"],
+                [
+                    "NAME:ChangedProps",
+                    ["NAME:Specify Name", "Value:=", True],
+                    ["NAME:Name", "Value:=", y_label],
+                ],
+            ],
+        ]
+    )
 
 
 # Helper class to encode complex data in json output

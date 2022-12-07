@@ -103,7 +103,7 @@ def export_cross_section_elmer(simulations: [], path: Path, file_prefix='simulat
     for simulation in simulations:
         try:
             json_filenames.append(export_cross_section_elmer_json(simulation, path, mesh_size, workflow))
-        except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
+        except Exception as e:
             if skip_errors:
                 logging.warning(
                     f'Simulation {simulation.name} skipped due to {e.args}. '

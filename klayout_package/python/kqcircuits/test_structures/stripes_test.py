@@ -46,11 +46,15 @@ class StripesTest(TestStructure):
             self.cell.shapes(layer_base_metal).insert(trans * stripe)
 
         width_str = int(width) if width.is_integer() else width
-        text_cell = self.layout.create_cell("TEXT", "Basic", {
-            "layer": self.face()["base_metal_gap_wo_grid"],
-            "text": "{}".format(width_str),
-            "mag": 40,
-        })
+        text_cell = self.layout.create_cell(
+            "TEXT",
+            "Basic",
+            {
+                "layer": self.face()["base_metal_gap_wo_grid"],
+                "text": f"{width_str}",
+                "mag": 40,
+            },
+        )
         text_x = self.num_stripes*(width + self.stripe_spacing) + width
         text_y = self.stripe_length/2
         self.insert_cell(text_cell, pya.DTrans(text_x, text_y))

@@ -45,25 +45,21 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
         sif_filepath: Path to exported sif file
 
     """
-    sif_filepath = path.joinpath('sif/{}.sif'.format(msh_filepath.stem))
-    begin = 'Check Keywords Warn\n'
-    begin += 'INCLUDE "{}/mesh.names"\n'.format(msh_filepath.stem)
+    sif_filepath = path.joinpath(f'sif/{msh_filepath.stem}.sif')
+    begin = 'Check Keywords Warn\n' + f'INCLUDE "{msh_filepath.stem}/mesh.names"\n'
     begin += 'Header\n'
-    begin += '  Mesh DB "." "{}"\n'.format(msh_filepath.stem)
+    begin += f'  Mesh DB "." "{msh_filepath.stem}"\n'
     begin += 'End\n'
 
-    # vacuum and substrates
-    n_bodies = 0
     n_boundaries = 0
-    s = 'Body 1\n'
-    s += '  Target Bodies(1) = $ vacuum\n'
+    s = 'Body 1\n' + '  Target Bodies(1) = $ vacuum\n'
     s += '  Equation = 1\n'
     s += '  Material = 1\n'
     s += 'End\n'
-    n_bodies += 1
+    n_bodies = 0 + 1
     for face in range(model_data['faces']):
-        s += 'Body {}\n'.format(face + 2)
-        s += '  Target Bodies(1) = $ chip_{}\n'.format(face)
+        s += f'Body {face + 2}\n'
+        s += f'  Target Bodies(1) = $ chip_{face}\n'
         s += '  Equation = 1\n'
         s += '  Material = 2\n'
         s += 'End\n'
@@ -74,22 +70,24 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
     s += '  Relative Permittivity = 1\n'
     s += 'End\n'
     s += 'Material 2\n'
-    s += '  Relative Permittivity = {}\n'.format(model_data['substrate_permittivity'])
+    s += f"  Relative Permittivity = {model_data['substrate_permittivity']}\n"
     s += 'End\n'
 
     if model_data['tool'] == 'capacitance':
         # boundary conditions
         n_ground = len(model_data['ground_names'])
         s += 'Boundary Condition 1\n'
-        s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(model_data['ground_names'])
+        s += f'  Target Boundaries({n_ground}) = $ ' + ' '.join(
+            model_data['ground_names']
+        )
         s += '\n  Capacitance Body = 0\n'
         s += 'End\n'
         n_boundaries += 1
 
         for i, port_signal_name in enumerate(model_data['port_signal_names']):
-            s += 'Boundary Condition '+str(i+2)+'\n'
-            s += '  Target Boundaries(1) = $ '+port_signal_name+'\n'
-            s += '  Capacitance Body = '+str(i+1)+'\n'
+            s += f'Boundary Condition {str(i + 2)}' + '\n'
+            s += f'  Target Boundaries(1) = $ {port_signal_name}' + '\n'
+            s += f'  Capacitance Body = {str(i + 1)}' + '\n'
             s += 'End\n'
             n_boundaries += 1
 
@@ -106,7 +104,9 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
         # boundary conditions
         n_ground = len(model_data['ground_names'])
         s += 'Boundary Condition 1\n'
-        s += '  Target Boundaries({}) = $ '.format(n_ground) + ' '.join(model_data['ground_names'])
+        s += f'  Target Boundaries({n_ground}) = $ ' + ' '.join(
+            model_data['ground_names']
+        )
         s += '\n  E re {e} = 0\n'
         s += '  E im {e} = 0\n'
         s += '  Potential = 0\n'
@@ -114,8 +114,8 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
         n_boundaries += 1
 
         for i, port_signal_name in enumerate(model_data['port_signal_names']):
-            s += 'Boundary Condition '+str(i+2)+'\n'
-            s += '  Target Boundaries(1) = $ '+port_signal_name+'\n'
+            s += f'Boundary Condition {str(i + 2)}' + '\n'
+            s += f'  Target Boundaries(1) = $ {port_signal_name}' + '\n'
             s += '\n  E re {e} = 0\n'
             s += '  E im {e} = 0\n'
             s += '  Potential = 1\n'
@@ -124,7 +124,7 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
 
         for i, body_dim_tag in enumerate(model_data['body_dim_tags']):
             body_id = i+1+n_bodies
-            s += 'Body {}\n'.format(body_id)
+            s += f'Body {body_id}\n'
             # s += '  Target Bodies(1) = {}\n'.format(body_dim_tag[1])
             s += '  Equation = 2\n'
             if model_data['body_materials'][body_dim_tag] == 'vacuum':
@@ -134,10 +134,13 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
             s += 'End\n'
 
             boundary_physical_names = model_data['body_port_phys_map'][body_dim_tag]
-            s += 'Boundary Condition {}'.format(i+1+n_boundaries)+'\n'
-            s += '  Target Boundaries({}) = $ '.format(len(boundary_physical_names)) + \
-                                            ' '.join(boundary_physical_names)+'\n'
-            s += '\n  Body Id = {}\n'.format(body_id)
+            s += f'Boundary Condition {i + 1 + n_boundaries}' + '\n'
+            s += (
+                f'  Target Boundaries({len(boundary_physical_names)}) = $ '
+                + ' '.join(boundary_physical_names)
+                + '\n'
+            )
+            s += f'\n  Body Id = {body_id}\n'
             s += '  TEM Potential im = variable potential\n'
             s += '    real matc "2*beta*tx"\n'
             s += '  electric robin coefficient im = real $ beta\n'
@@ -160,11 +163,15 @@ def export_elmer_sif(path: Path, msh_filepath: Path, model_data: dict):
 def calculate_total_capacitance_to_ground(c_matrix):
     """Returns total capacitance to ground for each column of c_matrix."""
     columns = range(len(c_matrix))
-    c_ground = []
-    for i in columns:
-        c_ground.append(
-            c_matrix[i][i] + sum([c_matrix[i][j] / (1.0 + c_matrix[i][j] / c_matrix[j][j]) for j in columns if i != j]))
-    return c_ground
+    return [
+        c_matrix[i][i]
+        + sum(
+            c_matrix[i][j] / (1.0 + c_matrix[i][j] / c_matrix[j][j])
+            for j in columns
+            if i != j
+        )
+        for i in columns
+    ]
 
 
 def write_project_results_json(path: Path, msh_filepath):
@@ -177,16 +184,21 @@ def write_project_results_json(path: Path, msh_filepath):
     """
     c_matrix_filename = path.joinpath(msh_filepath.stem).joinpath('capacitancematrix.dat')
     json_filename = path.joinpath(msh_filepath.stem)
-    json_filename = json_filename.parent / (json_filename.name + '_project_results.json')
+    json_filename = (
+        json_filename.parent / f'{json_filename.name}_project_results.json'
+    )
 
     if c_matrix_filename.exists():
 
         with open(c_matrix_filename, 'r') as file:
             my_reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
-            c_matrix = [row[0:-1] for row in my_reader]
+            c_matrix = [row[:-1] for row in my_reader]
 
-        c_data = {"C_Net{}_Net{}".format(net_i+1, net_j+1): [c_matrix[net_j][net_i]] for net_j in range(len(c_matrix))
-                for net_i in range(len(c_matrix))}
+        c_data = {
+            f"C_Net{net_i + 1}_Net{net_j + 1}": [c_matrix[net_j][net_i]]
+            for net_j in range(len(c_matrix))
+            for net_i in range(len(c_matrix))
+        }
 
         c_g = calculate_total_capacitance_to_ground(c_matrix)
 

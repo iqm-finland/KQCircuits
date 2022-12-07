@@ -92,7 +92,7 @@ class SpiralResonatorPolygon(Element):
             diams = []
             for i in range(n):
                 _, v = vector_length_and_direction(p[(i + 1) % n] - p[i])
-                diams.append(max([abs(v.vprod(p[j % n] - p[i])) for j in range(i+2, i+n)]))
+                diams.append(max(abs(v.vprod(p[j % n] - p[i])) for j in range(i+2, i+n)))
             return min(diams)
 
         # find optimal spacing using bisection method
@@ -203,7 +203,7 @@ class SpiralResonatorPolygon(Element):
                                pya.DVector(-direction.y, direction.x))
             # define amount of spacing for the first round
             shifts = [0.0] * len(poly_edges)
-            if len(points) > 0:
+            if points:
                 _, input_dir = vector_length_and_direction(poly_points[0] - points[-1])
                 _, poly_dir = vector_length_and_direction(poly_points[0] - poly_points[-1])
                 shifts[-1] = max(0.0, spacing[-1] * input_dir.sprod(poly_dir))
@@ -341,7 +341,7 @@ class SpiralResonatorPolygon(Element):
         bridge_width = Airbridge.get_schema()["bridge_width"].default
         if self.bridge_spacing > 0.0:
             dist_to_next_bridge = self.bridge_spacing
-            for i in range(0, len(points) - 1):
+            for i in range(len(points) - 1):
                 segment_len, segment_dir = vector_length_and_direction(points[i + 1] - points[i])
                 cut_dist, curve_len = (self._corner_cut_distance(points[i], points[i + 1], points[i + 2])
                                        if i + 2 < len(points) else (0.0, 0.0))
@@ -383,8 +383,8 @@ class SpiralResonatorPolygon(Element):
         # add connector cell and get connector length
         conn_cell = self.add_element(FlipChipConnectorRf)
         conn_ref = self.get_refpoints(conn_cell)
-        port0 = self.face_ids[0] + "_port"
-        port1 = self.face_ids[1] + "_port"
+        port0 = f"{self.face_ids[0]}_port"
+        port1 = f"{self.face_ids[1]}_port"
         conn_len, conn_dir = vector_length_and_direction(conn_ref[port1] - conn_ref[port0])
 
         def insert_wg_with_connector(segment, distance):

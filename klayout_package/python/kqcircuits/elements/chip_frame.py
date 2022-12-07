@@ -144,20 +144,18 @@ class ChipFrame(Element):
     def _border_points(self, w):
         """Returns a set of points forming frame with outer edge on the chip boundaries, and frame thickness `w`."""
         x_min, x_max, y_min, y_max = self._box_points()
-        points = [
+        return [
             pya.DPoint(x_min, y_min),
             pya.DPoint(x_max, y_min),
             pya.DPoint(x_max, y_max),
             pya.DPoint(x_min, y_max),
             pya.DPoint(x_min, y_min),
-
             pya.DPoint(x_min + w, y_min + w),
             pya.DPoint(x_min + w, y_max - w),
             pya.DPoint(x_max - w, y_max - w),
             pya.DPoint(x_max - w, y_min + w),
             pya.DPoint(x_min + w, y_min + w),
         ]
-        return points
 
     def _produce_lines_along_edge(self, line_start, line_end, is_vertical, position):
         """Adds chip dicing reference lines along one edge of the chip.

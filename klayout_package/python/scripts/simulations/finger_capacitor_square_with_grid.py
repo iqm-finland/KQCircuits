@@ -32,10 +32,7 @@ sim_class = FingerCapacitorSim  # pylint: disable=invalid-name
 
 use_elmer = True
 with_grid = True
-with_grid_str = ''
-if with_grid:
-    with_grid_str = '_with_grid'
-
+with_grid_str = '_with_grid' if with_grid else ''
 # Prepare output directory
 if use_elmer:
     path = create_or_empty_tmp_directory(Path(__file__).stem.replace('_with_grid', '') + with_grid_str + "_elmer")

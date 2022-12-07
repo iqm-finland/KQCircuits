@@ -108,7 +108,7 @@ classes_in_module = [m for m in vars(module).values() if
                      hasattr(m, '__module__') and m.__module__ == module_path and hasattr(m, '__mro__')]
 element_classes = [m for m in classes_in_module if 'Element' in [s.__name__ for s in m.__mro__]]
 
-logging.info(f"Found classes {str(element_classes)}")
+logging.info(f"Found classes {element_classes}")
 
 if len(element_classes) == 1:
     cls = element_classes[0]

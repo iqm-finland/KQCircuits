@@ -94,7 +94,7 @@ class Chip(Element):
 
     def display_text_impl(self):
         # Provide a descriptive text for the cell
-        return "{}".format(self.name_chip)
+        return f"{self.name_chip}"
 
     def can_create_from_shape_impl(self):
         return self.shape.is_box()
@@ -367,8 +367,7 @@ class Chip(Element):
     def _produce_instance_name_labels(self):
 
         for inst in self.cell.each_inst():
-            inst_id = inst.property("id")
-            if inst_id:
+            if inst_id := inst.property("id"):
                 cell = self.layout.create_cell("TEXT", "Basic", {
                     "layer": default_layers["instance_names"],
                     "text": inst_id,
@@ -401,9 +400,8 @@ class Chip(Element):
 
         """
 
-        if sampleholder_type == "SMA8":  # this is special: it has default launcher assignments
-            if not launcher_assignments:
-                launcher_assignments = {1: "NW", 2: "NE", 3: "EN", 4: "ES", 5: "SE", 6: "SW", 7: "WS", 8: "WN"}
+        if sampleholder_type == "SMA8" and not launcher_assignments:
+            launcher_assignments = {1: "NW", 2: "NE", 3: "EN", 4: "ES", 5: "SE", 6: "SW", 7: "WS", 8: "WN"}
 
         if sampleholder_type in default_sampleholders:
             return self.produce_n_launchers(**default_sampleholders[sampleholder_type],
@@ -485,7 +483,7 @@ class Chip(Element):
 
         return launchers
 
-    def make_grid_locations(self, box, delta_x=100, delta_y=100):  # pylint: disable=no-self-use
+    def make_grid_locations(self, box, delta_x=100, delta_y=100):    # pylint: disable=no-self-use
         """
         Define the locations for a grid. This method returns the full grid.
 
@@ -503,8 +501,10 @@ class Chip(Element):
 
         locations = []
         for i in numpy.linspace(-n/2,n/2, n+1):
-            for j in numpy.linspace(-m/2,m/2, m+1):
-                locations.append(box.center() + pya.DPoint(i * delta_x, j * delta_y))
+            locations.extend(
+                box.center() + pya.DPoint(i * delta_x, j * delta_y)
+                for j in numpy.linspace(-m / 2, m / 2, m + 1)
+            )
         return locations
 
     def get_ground_tsv_locations(self, tsv_box):

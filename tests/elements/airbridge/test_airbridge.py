@@ -24,8 +24,7 @@ from kqcircuits.elements.airbridges.airbridge import Airbridge
 
 @pytest.fixture
 def instance():
-    instance = Airbridge()
-    return instance
+    return Airbridge()
 
 
 def test_display_text_impl(instance):

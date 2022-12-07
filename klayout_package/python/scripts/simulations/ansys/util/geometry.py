@@ -54,47 +54,84 @@ def create_rectangle(oEditor, name, x, y, z, w, h, axis, units):
 
 def create_polygon(oEditor, name, points, units):
     oEditor.CreatePolyline(
-        ["NAME:PolylineParameters",
-         "IsPolylineCovered:=", True,
-         "IsPolylineClosed:=", True,
-         ["NAME:PolylinePoints"]
-         + [["NAME:PLPoint",
-             "X:=", format_position(p[0], units),
-             "Y:=", format_position(p[1], units),
-             "Z:=", format_position(p[2], units)]
-            for p in points + [points[0]]
+        [
+            "NAME:PolylineParameters",
+            "IsPolylineCovered:=",
+            True,
+            "IsPolylineClosed:=",
+            True,
+            ["NAME:PolylinePoints"]
+            + [
+                [
+                    "NAME:PLPoint",
+                    "X:=",
+                    format_position(p[0], units),
+                    "Y:=",
+                    format_position(p[1], units),
+                    "Z:=",
+                    format_position(p[2], units),
+                ]
+                for p in points + [points[0]]
             ],
-         ["NAME:PolylineSegments"]
-         + [["NAME:PLSegment",
-             "SegmentType:=", "Line",
-             "StartIndex:=", i,
-             "NoOfPoints:=", 2]
-            for i in range(len(points))
+            ["NAME:PolylineSegments"]
+            + [
+                [
+                    "NAME:PLSegment",
+                    "SegmentType:=",
+                    "Line",
+                    "StartIndex:=",
+                    i,
+                    "NoOfPoints:=",
+                    2,
+                ]
+                for i in range(len(points))
             ],
-         ["NAME:PolylineXSection",
-          "XSectionType:=", "None",
-          "XSectionOrient:=", "Auto",
-          "XSectionWidth:=", "0" + units,
-          "XSectionTopWidth:=", "0" + units,
-          "XSectionHeight:=", "0" + units,
-          "XSectionNumSegments:=", "0",
-          "XSectionBendType:=", "Corner"
-          ]
-         ],
-        ["NAME:Attributes",
-         "Name:=", name,
-         "Flags:=", "",
-         "Color:=", "(143 175 143)",
-         "Transparency:=", 0,
-         "PartCoordinateSystem:=", "Global",
-         "UDMId:=", "",
-         "MaterialValue:=", "\"vacuum\"",
-         "SurfaceMaterialValue:=", "\"\"",
-         "SolveInside:=", True,
-         "IsMaterialEditable:=", True,
-         "UseMaterialAppearance:=", False,
-         "IsLightweight:=", False
-         ])
+            [
+                "NAME:PolylineXSection",
+                "XSectionType:=",
+                "None",
+                "XSectionOrient:=",
+                "Auto",
+                "XSectionWidth:=",
+                f"0{units}",
+                "XSectionTopWidth:=",
+                f"0{units}",
+                "XSectionHeight:=",
+                f"0{units}",
+                "XSectionNumSegments:=",
+                "0",
+                "XSectionBendType:=",
+                "Corner",
+            ],
+        ],
+        [
+            "NAME:Attributes",
+            "Name:=",
+            name,
+            "Flags:=",
+            "",
+            "Color:=",
+            "(143 175 143)",
+            "Transparency:=",
+            0,
+            "PartCoordinateSystem:=",
+            "Global",
+            "UDMId:=",
+            "",
+            "MaterialValue:=",
+            "\"vacuum\"",
+            "SurfaceMaterialValue:=",
+            "\"\"",
+            "SolveInside:=",
+            True,
+            "IsMaterialEditable:=",
+            True,
+            "UseMaterialAppearance:=",
+            False,
+            "IsLightweight:=",
+            False,
+        ],
+    )
 
 
 def create_box(oEditor, name, x, y, z, sx, sy, sz, material, units):
@@ -127,18 +164,29 @@ def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_insid
     """Thickens sheet to solid with given thickness and material"""
     if objects:
         oEditor.SweepAlongVector(
-            ["NAME:Selections",
-             "Selections:=", ",".join(objects),
-             "NewPartsModelFlag:=", "Model"
-             ],
-            ["NAME:VectorSweepParameters",
-             "DraftAngle:=", "0deg",
-             "DraftType:=", "Round",
-             "CheckFaceFaceIntersection:=", False,
-             "SweepVectorX:=", "0um",
-             "SweepVectorY:=", "0um",
-             "SweepVectorZ:=", "{} {}".format(thickness, units)
-             ])
+            [
+                "NAME:Selections",
+                "Selections:=",
+                ",".join(objects),
+                "NewPartsModelFlag:=",
+                "Model",
+            ],
+            [
+                "NAME:VectorSweepParameters",
+                "DraftAngle:=",
+                "0deg",
+                "DraftType:=",
+                "Round",
+                "CheckFaceFaceIntersection:=",
+                False,
+                "SweepVectorX:=",
+                "0um",
+                "SweepVectorY:=",
+                "0um",
+                "SweepVectorZ:=",
+                f"{thickness} {units}",
+            ],
+        )
         if solve_inside is not None:
             oEditor.ChangeProperty(
                 ["NAME:AllTabs",
@@ -149,9 +197,15 @@ def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_insid
                    ]]])
         if material is not None:
             oEditor.ChangeProperty(
-                ["NAME:AllTabs",
-                 ["NAME:Geometry3DAttributeTab",
-                  ["NAME:PropServers"] + objects,
-                  ["NAME:ChangedProps",
-                   ["NAME:Material", "Value:=", '"{}"'.format(material)]
-                   ]]])
+                [
+                    "NAME:AllTabs",
+                    [
+                        "NAME:Geometry3DAttributeTab",
+                        ["NAME:PropServers"] + objects,
+                        [
+                            "NAME:ChangedProps",
+                            ["NAME:Material", "Value:=", f'"{material}"'],
+                        ],
+                    ],
+                ]
+            )

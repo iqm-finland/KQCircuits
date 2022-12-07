@@ -88,7 +88,7 @@ class CrossingTwoface(Chip):
         step = (launchers["WN"][0].y - launchers["WS"][0].y) / (crossings - 0.5) / 2
         wiggle = self.crossing_length / 2. + 250
 
-        for i in range(crossings):
+        for _ in range(crossings):
             nodes.append(Node((ref_x - wiggle, last_y)))
             nodes.append(Node((ref_x_1, last_y), face_id=self.face_ids[1]))
             nodes.append(Node((ref_x_2, last_y), face_id=self.face_ids[0]))

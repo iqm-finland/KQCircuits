@@ -319,7 +319,7 @@ class MaskSet:
         for mask_layout in self.mask_layouts:
             # include face_id in mask_layout.name only for multi-face masks
             if len(self.mask_layouts) > 1:
-                mask_layout.name += "-" + mask_layout.face_id
+                mask_layout.name += f"-{mask_layout.face_id}"
             mask_layout.build(self.chips_map_legend)
 
         chip_copy_label_layers = [
@@ -352,7 +352,7 @@ class MaskSet:
                 if sm_layout in submask_layouts_with_exported_layers:
                     # only export layers where chip copy labels are since they are different even for identical submasks
                     new_sm_layout.mask_export_layers = \
-                        [layer for layer in chip_copy_label_layers if layer in new_sm_layout.mask_export_layers]
+                            [layer for layer in chip_copy_label_layers if layer in new_sm_layout.mask_export_layers]
                 else:
                     submask_layouts_with_exported_layers.add(sm_layout)
         self.mask_layouts = submask_layouts + [ml for ml in self.mask_layouts if ml not in mask_layouts_to_remove]
@@ -372,7 +372,7 @@ class MaskSet:
         for chip_name, cell in self.chips_map_legend.items():
             for mask_layout in self.mask_layouts:
                 # pylint: disable=use-a-generator
-                if any([chip_name in row for row in mask_layout.chips_map]):
+                if any(chip_name in row for row in mask_layout.chips_map):
                 # pylint: enable=use-a-generator
                     self.used_chips[chip_name] = cell
                     break

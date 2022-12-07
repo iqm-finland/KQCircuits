@@ -46,7 +46,7 @@ class AirbridgeDC(TestStructure):
         island_width = bridge_width + ab_pad_extra*2 + 2*island_margin
         airbridge_separation = 30
         island_height = max(2*(ab_pad_length + ab_pad_width/2), 2*(ab_pad_width+ab_pad_extra)) + airbridge_separation\
-                        + island_margin*2
+                            + island_margin*2
         island = pya.DPolygon([
             pya.DPoint(0, 0),
             pya.DPoint(0, island_height),
@@ -81,10 +81,7 @@ class AirbridgeDC(TestStructure):
                 ab_trans = pya.DTrans(1, False, x + (island_width + x_step)/2,
                                       y + island_margin + ab_pad_width/2 + ab_pad_extra)
                 x += x_step
-                if row == 0 and n_ab_remaining < 5:
-                    ab_type = "top"
-                else:
-                    ab_type = "up"
+                ab_type = "top" if row == 0 and n_ab_remaining < 5 else "up"
                 n_ab_horizontal += 1
             elif ab_type == "up":
                 ab_trans = pya.DTrans(0, False, x + island_width/2,
@@ -92,24 +89,21 @@ class AirbridgeDC(TestStructure):
                 y += y_step
                 row += 1
                 if y + 2*island_height + bridge_length > pad_spacing_y/2 + self.pad_height + island_height/2 or \
-                   (row >= 0 and (n_ab_remaining <= row + 4 or n_ab_remaining == row + 6)):
+                       (row >= 0 and (n_ab_remaining <= row + 4 or n_ab_remaining == row + 6)):
                     ab_type = "top"
             elif ab_type == "top":
                 ab_trans = pya.DTrans(1, False, x + (island_width + x_step)/2,
                                       y + island_height - island_margin - ab_pad_width/2 - ab_pad_extra)
                 x += x_step
-                if row == 0 and n_ab_remaining < 5:
-                    ab_type = "bottom"
-                else:
-                    ab_type = "down"
+                ab_type = "bottom" if row == 0 and n_ab_remaining < 5 else "down"
                 n_ab_horizontal += 1
             else:  # ab_type == "down"
                 ab_trans = pya.DTrans(0, False, x + island_width/2, y - (y_step - island_height)/2)
                 y -= y_step
                 row -= 1
                 if y - island_height - bridge_length < -pad_spacing_y/2 - self.pad_height + island_height/2 or \
-                   (row < 0 and (n_ab_remaining <= -row + 4 or n_ab_remaining == -row + 6)) or \
-                   (row == 0 and n_ab_remaining < 5):
+                       (row < 0 and (n_ab_remaining <= -row + 4 or n_ab_remaining == -row + 6)) or \
+                       (row == 0 and n_ab_remaining < 5):
                     ab_type = "bottom"
 
             self.insert_cell(cell_ab, ab_trans)

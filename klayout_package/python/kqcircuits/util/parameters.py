@@ -123,10 +123,7 @@ class Param:
         """
 
         owner_name = f'{owner.__module__}.{owner.__qualname__}'
-        if owner_name in cls._index:
-            return cls._index[owner_name]
-        else:
-            return {}
+        return cls._index[owner_name] if owner_name in cls._index else {}
 
     def __init__(self, data_type, description, default, **kwargs):
         self.data_type = data_type

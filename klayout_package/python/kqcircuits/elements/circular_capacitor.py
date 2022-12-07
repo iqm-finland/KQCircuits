@@ -52,11 +52,9 @@ class CircularCapacitor(Element):
         y_right = self.a2 / 2
         x_end = self.r_outer + self.ground_gap
 
-        capacitor_region = []
         # generate the inner island
         inner_island = circle_polygon(self.r_inner, self.n)
-        capacitor_region.append(inner_island)
-
+        capacitor_region = [inner_island]
         # generate the outer island
         outer_island = self._get_outer_island(self.r_outer, self.outer_island_width, self.swept_angle)
         capacitor_region.append(outer_island)
@@ -98,24 +96,20 @@ class CircularCapacitor(Element):
         points_outside = arc_points(r_outer, -angle_rad / 2, angle_rad / 2, self.n)
         points_inside = arc_points(r_outer - outer_island_width, angle_rad / 2, -angle_rad / 2, self.n)
         points = points_outside + points_inside
-        outer_island = pya.DPolygon(points)
-
-        return outer_island
+        return pya.DPolygon(points)
 
     def _add_ground_region(self, x_end):
-        # generate the ground region
-        ground_region = []
         island_ground = circle_polygon(self.r_outer + self.ground_gap, self.n)
-        ground_region.append(island_ground)
+        ground_region = [island_ground]
         ground_region = pya.Region([poly.to_itype(self.layout.dbu) for poly in ground_region])
         self._add_waveguides(ground_region, x_end, self.a / 2 + self.b, self.a2 / 2 + self.b2)
 
         return ground_region
 
     def _get_protection_region(self, region):
-        protection_region = region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)
-
-        return protection_region
+        return region.sized(
+            self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2
+        )
 
     def _add_waveguides(self, region, x_end, y_left, y_right):
         x_guide = self.fixed_length / 2 if (self.fixed_length > 0) else x_end

@@ -48,15 +48,25 @@ class TsvEllipse(Tsv):
         p1 = 6
         p2 = 2
         # Protection layer
-        tsv_pts_avoidance = [pya.DPoint(
-            numpy.abs(math.cos(a)) ** (2 / p1) * (w + m) * numpy.sign(math.cos(a)),
-            numpy.abs(math.sin(a)) ** (2 / p2) * (r + m) * numpy.sign(math.sin(a))) for a in
-            (x / 32 * math.pi for x in range(0, 65))]
+        tsv_pts_avoidance = [
+            pya.DPoint(
+                numpy.abs(math.cos(a)) ** (2 / p1)
+                * (w + m)
+                * numpy.sign(math.cos(a)),
+                numpy.abs(math.sin(a)) ** (2 / p2)
+                * (r + m)
+                * numpy.sign(math.sin(a)),
+            )
+            for a in (x / 32 * math.pi for x in range(65))
+        ]
 
         tsv_pts = [
-            pya.DPoint(numpy.abs(math.cos(a)) ** (2 / p1) * w * numpy.sign(math.cos(a)),
-                       numpy.abs(math.sin(a)) ** (2 / p2) * r * numpy.sign(math.sin(a))) for
-            a in (x / 32 * math.pi for x in range(0, 65))]
+            pya.DPoint(
+                numpy.abs(math.cos(a)) ** (2 / p1) * w * numpy.sign(math.cos(a)),
+                numpy.abs(math.sin(a)) ** (2 / p2) * r * numpy.sign(math.sin(a)),
+            )
+            for a in (x / 32 * math.pi for x in range(65))
+        ]
 
         shape = pya.DPolygon(tsv_pts_avoidance)
         # ground avoidance layer 1t1 face
