@@ -98,7 +98,7 @@ class Simulation:
 
     use_ports = Param(pdt.TypeBoolean, "Turn off to disable all ports (for debugging)", True)
     use_internal_ports = Param(pdt.TypeBoolean, "Use internal (lumped) ports. The alternative is wave ports.", True)
-    port_size = Param(pdt.TypeDouble, "Width (um) of wave ports", 400.0)
+    port_size = Param(pdt.TypeDouble, "Width and height of wave ports", 400.0, unit="µm")
 
     upper_box_height = Param(pdt.TypeDouble, "Height of vacuum above top substrate", 1000.0, unit="µm")
     lower_box_height = Param(pdt.TypeDouble, "Height of vacuum below bottom substrate", 0, unit="µm",
@@ -512,26 +512,30 @@ class Simulation:
                 # Define a 3D polygon for each port
                 if isinstance(port, EdgePort):
 
-                    port_top_z = z_levels[face_num + 2]
-                    port_bottom_z = z_levels[face_num]
+                    port_z0 = max(z_levels[face_num + 1] - simulation.port_size / 2, z_levels[0])
+                    port_z1 = min(z_levels[face_num + 1] + simulation.port_size / 2, z_levels[-1])
 
                     # Determine which edge this port is on
                     if (port.signal_location.x == simulation.box.left
                             or port.signal_location.x == simulation.box.right):
+                        port_y0 = max(port.signal_location.y - simulation.port_size / 2, simulation.box.bottom)
+                        port_y1 = min(port.signal_location.y + simulation.port_size / 2, simulation.box.top)
                         p_data['polygon'] = [
-                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2, port_bottom_z],
-                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2, port_bottom_z],
-                            [port.signal_location.x, port.signal_location.y + simulation.port_size / 2, port_top_z],
-                            [port.signal_location.x, port.signal_location.y - simulation.port_size / 2, port_top_z]
+                            [port.signal_location.x, port_y0, port_z0],
+                            [port.signal_location.x, port_y1, port_z0],
+                            [port.signal_location.x, port_y1, port_z1],
+                            [port.signal_location.x, port_y0, port_z1]
                         ]
 
                     elif (port.signal_location.y == simulation.box.top
                           or port.signal_location.y == simulation.box.bottom):
+                        port_x0 = max(port.signal_location.x - simulation.port_size / 2, simulation.box.left)
+                        port_x1 = min(port.signal_location.x + simulation.port_size / 2, simulation.box.right)
                         p_data['polygon'] = [
-                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y, port_bottom_z],
-                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y, port_bottom_z],
-                            [port.signal_location.x + simulation.port_size / 2, port.signal_location.y, port_top_z],
-                            [port.signal_location.x - simulation.port_size / 2, port.signal_location.y, port_top_z]
+                            [port_x0, port.signal_location.y, port_z0],
+                            [port_x1, port.signal_location.y, port_z0],
+                            [port_x1, port.signal_location.y, port_z1],
+                            [port_x0, port.signal_location.y, port_z1]
                         ]
 
                     else:
