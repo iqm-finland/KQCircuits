@@ -89,10 +89,11 @@ class FlipChipConnectorRf(FlipChipConnector):
             s = self.ubm_diameter + (self.n_center_bumps - 1) * self.inter_bump_distance
             trans = pya.DCplxTrans(1, 0, False, bump_ref["base"] + pya.DPoint(- self.ubm_diameter - s / 2, 0))
             self.insert_cell(Launcher, trans, self.face_ids[0], s=s, l=self.ubm_diameter,
-                             a_launcher=self.connector_a, b_launcher=self.connector_b)
+                             a_launcher=self.connector_a, b_launcher=self.connector_b,
+                             launcher_frame_gap=self.connector_b)
             self.insert_cell(Launcher, tt * trans, self.face_ids[1], s=s, l=self.ubm_diameter,
                              a_launcher=self.connector_a, b_launcher=self.connector_b,
-                             face_ids=[self.face_ids[1], self.face_ids[0]])
+                             launcher_frame_gap=self.connector_b, face_ids=[self.face_ids[1], self.face_ids[0]])
 
         # Insert ground bumps
         if self.connector_type == "GSG":
