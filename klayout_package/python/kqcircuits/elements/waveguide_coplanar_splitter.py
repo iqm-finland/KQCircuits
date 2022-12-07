@@ -122,8 +122,14 @@ class WaveguideCoplanarSplitter(Element):
 
         # Corner section
         angles = [radians(float(angle)) for angle in self.angles]
-        prev_rad = min([2 * pi if a == angle_rad else (angle_rad - a) % (2 * pi) for a in angles])
-        next_rad = min([2 * pi if a == angle_rad else (a - angle_rad) % (2 * pi) for a in angles])
+        prev_rad = min(
+            2 * pi if a == angle_rad else (angle_rad - a) % (2 * pi)
+            for a in angles
+        )
+        next_rad = min(
+            2 * pi if a == angle_rad else (a - angle_rad) % (2 * pi)
+            for a in angles
+        )
         if prev_rad <= pi / 2:
             dist = r * cos(prev_rad) / sin(prev_rad)
             if length > dist:

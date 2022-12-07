@@ -43,7 +43,7 @@ oDesktop.TileWindows(0)
 
 # Save project
 oProject = oDesktop.GetActiveProject()
-oProject.SaveAs(os.path.join(path, basename + '_project.aedt'), True)
+oProject.SaveAs(os.path.join(path, f'{basename}_project.aedt'), True)
 
 # only import geometry for pyEPR simulations
 if 'pyepr' in simulation_flags:

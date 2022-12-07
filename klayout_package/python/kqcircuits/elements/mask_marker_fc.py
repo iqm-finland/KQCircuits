@@ -36,22 +36,22 @@ class MaskMarkerFc(Element):
         m = arm_length / 2
         n = arm_width / 2
 
-        cross = pya.DPolygon([
-            pya.DPoint(-n, -m),
-            pya.DPoint(-n, -n),
-            pya.DPoint(-m, -n),
-            pya.DPoint(-m, n),
-            pya.DPoint(-n, n),
-            pya.DPoint(-n, m),
-            pya.DPoint(n, m),
-            pya.DPoint(n, n),
-            pya.DPoint(m, n),
-            pya.DPoint(m, -n),
-            pya.DPoint(n, -n),
-            pya.DPoint(n, -m)
-        ])
-
-        return cross
+        return pya.DPolygon(
+            [
+                pya.DPoint(-n, -m),
+                pya.DPoint(-n, -n),
+                pya.DPoint(-m, -n),
+                pya.DPoint(-m, n),
+                pya.DPoint(-n, n),
+                pya.DPoint(-n, m),
+                pya.DPoint(n, m),
+                pya.DPoint(n, n),
+                pya.DPoint(m, n),
+                pya.DPoint(m, -n),
+                pya.DPoint(n, -n),
+                pya.DPoint(n, -m),
+            ]
+        )
 
     def build(self):
 

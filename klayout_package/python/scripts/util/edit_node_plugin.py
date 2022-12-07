@@ -149,8 +149,7 @@ class EditNodePlugin(pya.Plugin):
 
     def tracking_position(self):
         if self.selection is not None:
-            position = self.selection['instance_trans'].inverted() * self.last_mouse_position
-            return position
+            return self.selection['instance_trans'].inverted() * self.last_mouse_position
         else:
             return pya.DPoint(0, 0)  # Only reached if something in the internal state is broken
 
@@ -169,9 +168,11 @@ class EditNodePluginFactory(pya.PluginFactory):
             icon_path = os.path.join(os.path.dirname(__file__), 'edit_node_plugin.png')
             self.register(1000, "kqc_edit_node", "Edit Node", icon_path)
 
-            # Set tooltip to something more helpful
-            toolbar_action = pya.MainWindow.instance().menu().action('@toolbar.kqc_edit_node')
-            if toolbar_action:
+            if (
+                toolbar_action := pya.MainWindow.instance()
+                .menu()
+                .action('@toolbar.kqc_edit_node')
+            ):
                 toolbar_action.tool_tip = "Edit individual Node properties of WaveguideComposite elements"
 
     def create_plugin(self, manager, _, view):  # pylint: disable=no-self-use

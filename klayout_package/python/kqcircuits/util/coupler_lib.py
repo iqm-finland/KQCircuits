@@ -68,4 +68,4 @@ def cap_params(fingers, length=None, coupler_type="interdigital", element_key='c
                   "ground_gap_ratio": 1/3
                   }
 
-    return {**defaults, **params, **kwargs}
+    return defaults | params | kwargs

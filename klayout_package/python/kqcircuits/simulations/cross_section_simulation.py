@@ -80,8 +80,8 @@ class CrossSectionSimulation:
 
         self.cell = layout.create_cell(self.name)
 
-        self.layer_dict = dict()
-        self.permittivity_dict = dict()
+        self.layer_dict = {}
+        self.permittivity_dict = {}
         self.build()
 
     # Inherit specific methods from Element
@@ -115,12 +115,11 @@ class CrossSectionSimulation:
         Returns:
             dictionary of relevant parameters for simulation
         """
-        simulation_data = {
-            'gds_file': self.name + '.gds',
+        return {
+            'gds_file': f'{self.name}.gds',
             'units': 'um',
             'box': self.box,
             "london_penetration_depth": self.london_penetration_depth,
-            **{'{}_permittivity'.format(k): v for k, v in self.permittivity_dict.items()},
+            **{f'{k}_permittivity': v for k, v in self.permittivity_dict.items()},
             'parameters': self.get_parameters(),
         }
-        return simulation_data

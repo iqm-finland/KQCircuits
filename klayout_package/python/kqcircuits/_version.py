@@ -36,15 +36,14 @@ if os.name == "nt":
 def get_version(version_file=STATIC_VERSION_FILE):
     version_info = get_static_version_info(version_file)
     version = version_info["version"]
-    if version == "__use_git__":
-        version = get_version_from_git()
-        if not version:
-            version = get_version_from_git_archive(version_info)
-        if not version:
-            version = Version("unknown", None, None)
-        return pep440_format(version)
-    else:
+    if version != "__use_git__":
         return version
+    version = (
+        get_version_from_git()
+        or get_version_from_git_archive(version_info)
+        or Version("unknown", None, None)
+    )
+    return pep440_format(version)
 
 
 def get_static_version_info(version_file=STATIC_VERSION_FILE):
@@ -66,7 +65,7 @@ def pep440_format(version_info):
         if release.endswith("-dev") or release.endswith(".dev"):
             version_parts.append(dev)
         else:  # prefer PEP440 over strict adhesion to semver
-            version_parts.append(".dev{}".format(dev))
+            version_parts.append(f".dev{dev}")
 
     if labels:
         version_parts.append("+")
@@ -160,13 +159,13 @@ def get_version_from_git_archive(version_info):
         return None
 
     VTAG = "tag: v"
-    refs = set(r.strip() for r in refnames.split(","))
-    version_tags = set(r[len(VTAG) :] for r in refs if r.startswith(VTAG))
-    if version_tags:
-        release, *_ = sorted(version_tags)  # prefer e.g. "2.0" over "2.0rc1"
-        return Version(release, dev=None, labels=None)
-    else:
-        return Version("unknown", dev=None, labels=["g{}".format(git_hash)])
+    refs = {r.strip() for r in refnames.split(",")}
+    if not (
+        version_tags := {r[len(VTAG) :] for r in refs if r.startswith(VTAG)}
+    ):
+        return Version("unknown", dev=None, labels=[f"g{git_hash}"])
+    release, *_ = sorted(version_tags)  # prefer e.g. "2.0" over "2.0rc1"
+    return Version(release, dev=None, labels=None)
 
 
 __version__ = get_version()
@@ -186,8 +185,7 @@ def _write_version(fname):
         pass
     with open(fname, "w") as f:
         f.write(
-            "# This file has been created by setup.py.\n"
-            "version = '{}'\n".format(__version__)
+            f"# This file has been created by setup.py.\nversion = '{__version__}'\n"
         )
 
 

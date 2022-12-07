@@ -27,9 +27,9 @@ from kqcircuits.pya_resolver import pya
 file_in = argv[1]
 
 if file_in.endswith(".dxf"):
-    file_out = file_in[0:-4] + ".oas"
+    file_out = f"{file_in[:-4]}.oas"
 else:
-    file_out = file_in[0:-4] + ".dxf"
+    file_out = f"{file_in[:-4]}.dxf"
 
 layout = pya.Layout()
 layout.read(file_in)

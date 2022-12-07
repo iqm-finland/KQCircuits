@@ -43,8 +43,7 @@ def add_rulers(path, view):
     rulers = []
     with open(path) as f:
         for line in f:
-             a = line.split("MARKERS_FOR_PNG ")[1:]
-             if a:
+            if a := line.split("MARKERS_FOR_PNG ")[1:]:
                 rulers += a[0].split(' ')
 
     #Check for autoruler in x,y format or manual ruler in x1,y1,x2,y2 format

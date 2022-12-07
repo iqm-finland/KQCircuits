@@ -28,8 +28,19 @@ def run_elmer_grid(msh_path, n_processes, exec_path_override=None):
     if elmergrid_executable is not None:
         subprocess.check_call([elmergrid_executable, '14', '2', msh_path], cwd=exec_path_override)
         if n_processes > 1:
-            subprocess.check_call([elmergrid_executable, '2', '2', Path(msh_path).stem + '/', '-metis',
-                                   str(n_processes), '4', '-removeunused'], cwd=exec_path_override)
+            subprocess.check_call(
+                [
+                    elmergrid_executable,
+                    '2',
+                    '2',
+                    f'{Path(msh_path).stem}/',
+                    '-metis',
+                    str(n_processes),
+                    '4',
+                    '-removeunused',
+                ],
+                cwd=exec_path_override,
+            )
     else:
         logging.warning("ElmerGrid was not found! Make sure you have ElmerFEM installed: "
                         "https://github.com/ElmerCSC/elmerfem")
@@ -55,9 +66,15 @@ def run_paraview(result_path, n_processes, exec_path_override=None):
     paraview_executable = shutil.which('paraview')
     if paraview_executable is not None:
         if n_processes > 1:
-            subprocess.check_call([paraview_executable, '{}_t0001.pvtu'.format(result_path)], cwd=exec_path_override)
+            subprocess.check_call(
+                [paraview_executable, f'{result_path}_t0001.pvtu'],
+                cwd=exec_path_override,
+            )
         else:
-            subprocess.check_call([paraview_executable, '{}_t0001.vtu'.format(result_path)], cwd=exec_path_override)
+            subprocess.check_call(
+                [paraview_executable, f'{result_path}_t0001.vtu'],
+                cwd=exec_path_override,
+            )
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         sys.exit()

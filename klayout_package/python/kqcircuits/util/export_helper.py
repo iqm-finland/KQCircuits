@@ -107,9 +107,7 @@ def generate_probepoints_json(cell, face='1t1'):
         "groups": [{"id": name, **group} for name, group in groups.items()]
     }
 
-    comp_json = json.dumps(comp_dict, indent=2, sort_keys=True)
-
-    return comp_json
+    return json.dumps(comp_dict, indent=2, sort_keys=True)
 
 def flip(point, origin=pya.DPoint(0,0)):
     """Gets correct flip chip coordinates by setting a new origin and mirroring ``point`` by the y-axis."""

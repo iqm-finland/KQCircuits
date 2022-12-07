@@ -31,7 +31,7 @@ def export_simulation_oas(simulations, path: Path, file_prefix='simulation'):
         raise ValueError("Cannot write batch OASIS file since not all simulations are on the same layout.")
 
     cells = [simulation.cell for simulation in simulations]
-    oas_filename = str(path.joinpath(file_prefix + '.oas'))
+    oas_filename = str(path.joinpath(f'{file_prefix}.oas'))
     export_layers(oas_filename, simulations[0].layout, cells,
                   output_format='OASIS',
                   layers=None)
@@ -45,12 +45,11 @@ def sweep_simulation(layout, sim_class, sim_parameters, sweeps):
     logging.info(f'Added simulations: {" + ".join([str(l) for l in lengths])} = {sum(lengths)}')
     for param in sweeps:
         for value in sweeps[param]:
-            parameters = {**sim_parameters, param: value,
-                          'name': '{}_{}_{}'.format(
-                            sim_parameters['name'],
-                            param,
-                            str(value)
-                          )}
+            parameters = {
+                **sim_parameters,
+                param: value,
+                'name': f"{sim_parameters['name']}_{param}_{str(value)}",
+            }
             simulations.append(sim_class(layout, **parameters))
     return simulations
 

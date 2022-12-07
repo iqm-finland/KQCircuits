@@ -209,5 +209,4 @@ def _get_length_error(length, **parameters):
     layout = pya.Layout()
     spiral_resonator_cell = SpiralResonatorPolygon.create(layout, length=length, **parameters)
     true_length = get_cell_path_length(spiral_resonator_cell)
-    relative_error = abs(true_length - length) / length
-    return relative_error
+    return abs(true_length - length) / length

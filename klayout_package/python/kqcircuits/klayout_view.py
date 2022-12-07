@@ -34,11 +34,8 @@ def resolve_default_layer_info(layer_name, face_id=None):
         layer_name: layer name (without face prefix for face-specific layers)
         face_id: id of the face from which this layer should be
     """
-    if face_id:
-        if layer_name in default_faces[face_id]:
-            return default_faces[face_id][layer_name]
-        else:
-            return default_layers[layer_name]
+    if face_id and layer_name in default_faces[face_id]:
+        return default_faces[face_id][layer_name]
     else:
         return default_layers[layer_name]
 
@@ -54,12 +51,11 @@ class KLayoutView():
             if not current or pya.LayoutView.current() is None:
                 pya.MainWindow.instance().create_layout(1)
             self.layout_view = pya.LayoutView.current()
+        elif isinstance(view, pya.LayoutView):
+            self.layout_view = view
         else:
-            if isinstance(view, pya.LayoutView):
-                self.layout_view = view
-            else:
-                error = InvalidViewException(view)
-                raise error
+            error = InvalidViewException(view)
+            raise error
         if initialize:
             self.add_default_layers()
 
@@ -145,11 +141,8 @@ class KLayoutView():
         if z_box != pya.DBox(0, 0, 0, 0):
             self.layout_view.zoom_box(z_box)
 
-        if len(layers_set) == 1:
-            layer_str = " " + layers_set[0].name
-        else:
-            layer_str = ""
-        cell_png_name = path / "{}{}.png".format(filename, layer_str)
+        layer_str = f" {layers_set[0].name}" if len(layers_set) == 1 else ""
+        cell_png_name = path / f"{filename}{layer_str}.png"
 
         # first make all layers visible, then take a screenshot
         if layers_set == "all":
@@ -166,27 +159,25 @@ class KLayoutView():
                         break
 
             self.layout_view.save_image(str(cell_png_name), pngsize[0], pngsize[1])
-        # take screenshots of only specific layers
         else:
             # get the current visibility condition of the layers
-            current_layer_visibility = []
-            for layer in self.layout_view.each_layer():
-                current_layer_visibility.append(layer.visible)
-
+            current_layer_visibility = [
+                layer.visible for layer in self.layout_view.each_layer()
+            ]
             # only show the wanted layers
             layer_infos = self.get_active_layout().layer_infos()
             for layer in self.layout_view.each_layer():
-                # need to avoid hiding layer groups, because that could hide also layers in layers_set
-                is_layer_group = True
-                for layer_info in layer_infos:
-                    if pya.LayerInfo(layer.source_layer, layer.source_datatype).is_equivalent(layer_info):
-                        is_layer_group = False
-                        break
+                is_layer_group = not any(
+                    pya.LayerInfo(
+                        layer.source_layer, layer.source_datatype
+                    ).is_equivalent(layer_info)
+                    for layer_info in layer_infos
+                )
                 if not is_layer_group:
                     layer.visible = False
                 for layer_to_show in layers_set:
                     if layer.source_layer == layer_to_show.layer \
-                            and layer.source_datatype == layer_to_show.datatype:
+                                and layer.source_datatype == layer_to_show.datatype:
                         layer.visible = True
                         break
 
@@ -212,7 +203,4 @@ class MissingUILibraryException(ViewException):
 
 class InvalidViewException(ViewException):
     def __init__(self, view):
-        ViewException.__init__(
-            self,
-            "Invalid layout view [{}].".format(str(view))
-        )
+        ViewException.__init__(self, f"Invalid layout view [{str(view)}].")

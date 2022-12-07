@@ -90,7 +90,7 @@ class CpwCrossSectionSim(CrossSectionSimulation):
         self.cell.shapes(self.get_sim_layer("substrate")).insert(substrate)
         self.set_permittivity("substrate", 11.45)
         for i, s in enumerate(signals):
-            self.cell.shapes(self.get_sim_layer("signal_{}".format(i))).insert(s)
+            self.cell.shapes(self.get_sim_layer(f"signal_{i}")).insert(s)
         self.cell.shapes(self.get_sim_layer("ground")).insert(ground)
 
         if self.oxide_thickness > 0.0:
@@ -102,7 +102,7 @@ class CpwCrossSectionSim(CrossSectionSimulation):
             self.set_permittivity("sa_layer", 4.0)
 
 # Prepare output directory
-dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
+dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 
 sim_class = CpwCrossSectionSim  # pylint: disable=invalid-name
 

@@ -159,9 +159,7 @@ def test_length(nodes1):
     assert l2 > l1
 
     # Without "special" nodes it should be identical to a plain WaveguideCoplanar
-    points = []
-    for node in nodes1:    # get the points
-        points.append(node.position)
+    points = [node.position for node in nodes1]
     wg = WaveguideCoplanar.create(layout, path=pya.DPath(points, 1))
     l3 = wg.length()
     assert abs(l2 - l3)/l2 < 1e-12

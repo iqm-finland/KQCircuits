@@ -172,10 +172,7 @@ class SingleXmons(Chip):
         """
         # We define a factor depending on which side of the feedline the qubit is on. This lets us define all resonators
         # in the same way.
-        if above_feedline:
-            factor = 1
-        else:
-            factor = -1
+        factor = 1 if above_feedline else -1
         turn_radius = 50
         distance_to_feedline = 27
         feedline_coupling_y = 5e3 + factor * distance_to_feedline

@@ -58,16 +58,26 @@ class LithographyTest(Chip):
         cell_vertical = self.layout.create_cell("Stripes")
         cell_diagonal = self.layout.create_cell("Stripes")
 
+        # diagonal
+        diag_offset = 0  # 2*num_stripes*width/numpy.sqrt(8)
         for i, width in enumerate(numpy.arange(min_width, max_width + 0.1 * step, step)):
             stripes_cell = self.add_element(StripesTest, num_stripes=num_stripes, stripe_width=width,
                                             stripe_length=length, stripe_spacing=spacing * width, face_ids=[face_id])
 
             # calculate the number of cross alignment marker
-            if (num_stripes*(width + spacing * width) - spacing * width - 45) % 100 < 50:
-                num_crosses = (num_stripes * (width + spacing * width) - spacing * width - 45)//100 + 1
-            else:
-                num_crosses = (num_stripes * (width + spacing * width) - spacing * width - 45)//100 + 2
-
+            num_crosses = (
+                (num_stripes * (width + spacing * width) - spacing * width - 45)
+                // 100
+                + 1
+                if (num_stripes * (width + spacing * width) - spacing * width - 45)
+                % 100
+                < 50
+                else (
+                    num_stripes * (width + spacing * width) - spacing * width - 45
+                )
+                // 100
+                + 2
+            )
             cross_cell = self.add_element(CrossTest, num_crosses=int(num_crosses), cross_spacing=100,
                                           face_ids=[face_id])
 
@@ -85,8 +95,6 @@ class LithographyTest(Chip):
             cell_vertical.insert(pya.DCellInstArray(cross_cell.cell_index(),
                                                       pya.DCplxTrans(1, 90, True, 2 * i * length + length +
                                                     first_stripes_width - length - CrossTest.cross_length*5/2, +45)))
-            # diagonal
-            diag_offset = 0  # 2*num_stripes*width/numpy.sqrt(8)
             cell_diagonal.insert(pya.DCellInstArray(stripes_cell.cell_index(),
                                                       pya.DCplxTrans(1, -45, False, 500 + i * length - diag_offset,
                                                             500 + i * length + diag_offset)))

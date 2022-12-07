@@ -227,7 +227,7 @@ class Element(pya.PCellDeclarationHelper):
             cell_inst.set_property("id", inst_name)
             # copies probing refpoints to chip level with unique names using subcell id property
             for ref_name, pos in refpoints_abs.items():
-                new_name = "{}_{}".format(inst_name, ref_name)
+                new_name = f"{inst_name}_{ref_name}"
                 self.refpoints[new_name] = pos
             if label_trans is not None:
                 label_trans_str = pya.DCplxTrans(label_trans).to_s()  # must be saved as string to avoid errors
@@ -269,7 +269,7 @@ class Element(pya.PCellDeclarationHelper):
             keys = list(set(cls.get_schema().keys()) & set(keys))
 
         p = {k: self.__getattribute__(k) for k in keys if k != "refpoints"}
-        return {**p, **parameters}
+        return p | parameters
 
     def add_port(self, name, pos, direction=None, face_id=0):
         """ Add a port location to the list of reference points as well as ports layer for netlist extraction
@@ -286,10 +286,10 @@ class Element(pya.PCellDeclarationHelper):
         text = pya.DText(name, pos.x, pos.y)
         self.cell.shapes(self.get_layer("ports", face_id)).insert(text)
 
-        port_name = name if "port" in name else ("port_"+name if name else "port")
+        port_name = name if "port" in name else f"port_{name}" if name else "port"
         self.refpoints[port_name] = pos
         if direction:
-            self.refpoints[port_name+"_corner"] = pos+direction/direction.length()*self.r
+            self.refpoints[f"{port_name}_corner"] = pos+direction/direction.length()*self.r
 
     def copy_port(self, name, cell_inst, new_name=None):
         """ Copy a port definition from a different cell and instance; typically used to expose a specific subcell port.
@@ -310,14 +310,15 @@ class Element(pya.PCellDeclarationHelper):
 
         cell_refpoints = self.get_refpoints(cell, cell_inst.dcplx_trans)
         for i in range(len(self.face_ids)):
-            if "ports" in self.face(i):
-                if name in get_refpoints(self.get_layer("ports", i), cell, cell_inst.dcplx_trans):
-                    if port_corner_name in cell_refpoints:
-                        self.add_port(copy_name, cell_refpoints[port_name],
-                                      cell_refpoints[port_corner_name] - cell_refpoints[port_name], i)
-                    else:
-                        self.add_port(copy_name, cell_refpoints[port_name], face_id=i)
-                    break
+            if "ports" in self.face(i) and name in get_refpoints(
+                self.get_layer("ports", i), cell, cell_inst.dcplx_trans
+            ):
+                if port_corner_name in cell_refpoints:
+                    self.add_port(copy_name, cell_refpoints[port_name],
+                                  cell_refpoints[port_corner_name] - cell_refpoints[port_name], i)
+                else:
+                    self.add_port(copy_name, cell_refpoints[port_name], face_id=i)
+                break
 
     @classmethod
     def get_schema(cls, noparents=False):
@@ -340,10 +341,7 @@ class Element(pya.PCellDeclarationHelper):
 
         Adds all refpoints to user properties and draws their names to the annotation layer.
         """
-        self.refpoints = {}
-
-        # Put general "infrastructure actions" here, before build()
-        self.refpoints["base"] = pya.DPoint(0, 0)
+        self.refpoints = {"base": pya.DPoint(0, 0)}
 
         self.build()
 
@@ -360,9 +358,7 @@ class Element(pya.PCellDeclarationHelper):
         """Child classes re-define this method for post-build operations"""
 
     def display_text_impl(self):
-        if self.display_name:
-            return self.display_name
-        return type(self).__name__
+        return self.display_name or type(self).__name__
 
     def get_refpoints(self, cell, cell_transf=pya.DTrans(), rec_levels=None):
         """See `get_refpoints`."""
@@ -394,11 +390,10 @@ class Element(pya.PCellDeclarationHelper):
             **parameters: PCell parameters for the element as keyword arguments
         """
         cell_library_name = to_library_name(elem_cls.__name__)
-        if elem_cls.LIBRARY_NAME == library:  # Matthias' workaround: https://github.com/KLayout/klayout/issues/905
+        if elem_cls.LIBRARY_NAME == library:
             return layout.create_cell(cell_library_name, parameters)
-        else:
-            load_libraries(path=elem_cls.LIBRARY_PATH)
-            return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
+        load_libraries(path=elem_cls.LIBRARY_PATH)
+        return layout.create_cell(cell_library_name, elem_cls.LIBRARY_NAME, parameters)
 
     @classmethod
     def _get_base(cls):
@@ -431,8 +426,13 @@ class Element(pya.PCellDeclarationHelper):
 
         # special handling of layer parameters
         if value_type == pya.PCellParameterDeclaration.TypeLayer:
-            setattr(type(self), name + "_layer",
-                    pya._PCellDeclarationHelperLayerDescriptor(len(self._layer_param_index)))
+            setattr(
+                type(self),
+                f"{name}_layer",
+                pya._PCellDeclarationHelperLayerDescriptor(
+                    len(self._layer_param_index)
+                ),
+            )
             self._layer_param_index.append(len(self._param_decls))
 
         # create the PCellParameterDeclaration and add to self._param_decls

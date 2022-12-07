@@ -124,11 +124,15 @@ class Swissmon(Qubit):
             protection = pya.DBox(-g - w - b - self.margin, -l - b - self.margin, g + w + b + self.margin,
                                   b + self.margin)
             self.cell.shapes(self.get_layer("ground_grid_avoidance")).\
-                insert(protection.transformed((rotation * transf)))
+                    insert(protection.transformed((rotation * transf)))
 
         # add ref point
         port_ref = pya.DPoint(0, b)
-        self.add_port("cplr{}".format(cpl_nr), (rotation * transf).trans(port_ref), rotation*pya.DVector(0, 1))
+        self.add_port(
+            f"cplr{cpl_nr}",
+            (rotation * transf).trans(port_ref),
+            rotation * pya.DVector(0, 1),
+        )
 
     def _produce_cross_and_squid(self):
         """Produces the cross and squid for the Swissmon."""

@@ -53,7 +53,7 @@ class SmoothCapacitorSim(Simulation):
         self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right', a=a2, b=b2)
 
 # Prepare output directory
-dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
+dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 
 sim_class = SmoothCapacitorSim  # pylint: disable=invalid-name
 

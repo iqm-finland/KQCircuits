@@ -20,9 +20,7 @@
 
 from kqcircuits.pya_resolver import pya
 
-default_layers = {}
-# face 1 layers
-default_layers["1_Nb_gap"] = pya.LayerInfo(0, 0, "1 Nb_gap")
+default_layers = {"1_Nb_gap": pya.LayerInfo(0, 0, "1 Nb_gap")}
 default_layers["1_Nb_gap_avoidance"] = pya.LayerInfo(1, 0, "1 Nb_gap_avoidance")
 default_layers["1_Nb_gap_addition"] = pya.LayerInfo(2, 0, "1 Nb_gap_addition")
 default_layers["1_Al_1"] = pya.LayerInfo(3, 0, "1 Al_1")
@@ -52,38 +50,38 @@ default_layers["annotations"] = pya.LayerInfo(102, 1, "annotations")
 default_layers["instance_names"] = pya.LayerInfo(103, 1, "instance_names")
 
 
-default_faces = {}
-default_faces["1"] = {
-    "id": "1",
-    "base_metal_gap_wo_grid": default_layers["1_Nb_gap"],
-    "base_metal_gap_for_EBL": default_layers["1_Nb_gap"],  # same layer can be used for different "face-layers"
-    "ground_grid_avoidance": default_layers["1_Nb_gap_avoidance"],
-    "base_metal_addition": default_layers["1_Nb_gap_addition"],
-    "airbridge_pads": default_layers["1_Al_1"],
-    "airbridge_flyover": default_layers["1_Al_2"],
-    "SIS_junction": default_layers["1_SIS_junction"],
-    "SIS_shadow": default_layers["1_SIS_shadow"],
-    "underbump_metallization": default_layers["1_underbump"],
-    "ports": default_layers["1_ports"],
-    "waveguide_path": default_layers["1_wg_path"],
-    "new_layer": default_layers["1_new_layer"],
+default_faces = {
+    "1": {
+        "id": "1",
+        "base_metal_gap_wo_grid": default_layers["1_Nb_gap"],
+        "base_metal_gap_for_EBL": default_layers["1_Nb_gap"],
+        "ground_grid_avoidance": default_layers["1_Nb_gap_avoidance"],
+        "base_metal_addition": default_layers["1_Nb_gap_addition"],
+        "airbridge_pads": default_layers["1_Al_1"],
+        "airbridge_flyover": default_layers["1_Al_2"],
+        "SIS_junction": default_layers["1_SIS_junction"],
+        "SIS_shadow": default_layers["1_SIS_shadow"],
+        "underbump_metallization": default_layers["1_underbump"],
+        "ports": default_layers["1_ports"],
+        "waveguide_path": default_layers["1_wg_path"],
+        "new_layer": default_layers["1_new_layer"],
+    },
+    "2": {
+        "id": "2",
+        "base_metal_gap_wo_grid": default_layers["2_Nb_gap"],
+        "base_metal_gap_for_EBL": default_layers["2_Nb_gap"],
+        "ground_grid_avoidance": default_layers["2_Nb_gap_avoidance"],
+        "base_metal_addition": default_layers["2_Nb_gap_addition"],
+        "airbridge_pads": default_layers["2_Al_1"],
+        "airbridge_flyover": default_layers["2_Al_2"],
+        "SIS_junction": default_layers["2_SIS_junction"],
+        "SIS_shadow": default_layers["2_SIS_shadow"],
+        "underbump_metallization": default_layers["2_underbump"],
+        "ports": default_layers["2_ports"],
+        "waveguide_path": default_layers["2_wg_path"],
+        "new_layer": default_layers["2_new_layer"],
+    },
 }
-default_faces["2"] = {
-    "id": "2",
-    "base_metal_gap_wo_grid": default_layers["2_Nb_gap"],
-    "base_metal_gap_for_EBL": default_layers["2_Nb_gap"],
-    "ground_grid_avoidance": default_layers["2_Nb_gap_avoidance"],
-    "base_metal_addition": default_layers["2_Nb_gap_addition"],
-    "airbridge_pads": default_layers["2_Al_1"],
-    "airbridge_flyover": default_layers["2_Al_2"],
-    "SIS_junction": default_layers["2_SIS_junction"],
-    "SIS_shadow": default_layers["2_SIS_shadow"],
-    "underbump_metallization": default_layers["2_underbump"],
-    "ports": default_layers["2_ports"],
-    "waveguide_path": default_layers["2_wg_path"],
-    "new_layer": default_layers["2_new_layer"],
-}
-
 default_face_id = "1"
 default_mask_export_layers = None
 default_layers_to_mask = None

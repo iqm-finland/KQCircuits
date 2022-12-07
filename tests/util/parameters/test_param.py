@@ -140,13 +140,14 @@ def test_add_parameters_from_override_with_same_default():
 # test inherited parameters
 
 def test_add_parameters_from_everything_inherited():
+
     @add_parameters_from(D)
     class Test(B):
         pass
 
     t = Test()
     params = set(t.pcell_params_by_name().keys())
-    abcd12 = set(["pa1", "pa2", "pb1", "pb2", "pc1", "pc2", "pd1", "pd2"])
+    abcd12 = {"pa1", "pa2", "pb1", "pb2", "pc1", "pc2", "pd1", "pd2"}
     assert abcd12.issubset(params)
 
 

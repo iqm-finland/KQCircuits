@@ -32,25 +32,56 @@ from util import get_enabled_setup, get_enabled_setup_and_sweep, get_solution_da
 def calculate_total_capacitance_to_ground(c_matrix):
     """Returns total capacitance to ground for each column of c_matrix."""
     columns = range(len(c_matrix))
-    c_ground = []
-    for i in columns:
-        c_ground.append(
-            c_matrix[i][i] + sum([c_matrix[i][j] / (1.0 + c_matrix[i][j] / c_matrix[j][j]) for j in columns if i != j]))
-    return c_ground
+    return [
+        c_matrix[i][i]
+        + sum(
+            c_matrix[i][j] / (1.0 + c_matrix[i][j] / c_matrix[j][j])
+            for j in columns
+            if i != j
+        )
+        for i in columns
+    ]
 
 
 def save_capacitance_matrix(file_name, c_matrix, c_to_ground, detail=''):
     """Save capacitance matrix in readable format. """
     with open(file_name, 'w') as out_file:
-        out_file.write("Capacitance matrix" + detail + ":\n" + '\n'.join(
-            ['\t'.join(['%8.3f' % (item * 1e15) for item in row]) for row in c_matrix]) + '\n')
-        out_file.write("Total capacitance to ground" + detail + ":\n" +
-                       '\t'.join(['%8.3f' % (item * 1e15) for item in c_to_ground]) + '\n')
+        out_file.write(
+            (
+                (
+                    f"Capacitance matrix{detail}"
+                    + ":\n"
+                    + '\n'.join(
+                        [
+                            '\t'.join(
+                                ['%8.3f' % (item * 1e15) for item in row]
+                            )
+                            for row in c_matrix
+                        ]
+                    )
+                )
+                + '\n'
+            )
+        )
+        out_file.write(
+            (
+                (
+                    f"Total capacitance to ground{detail}"
+                    + ":\n"
+                    + '\t'.join(
+                        ['%8.3f' % (item * 1e15) for item in c_to_ground]
+                    )
+                )
+                + '\n'
+            )
+        )
 
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
-oDesktop.AddMessage("", "", 0, "Exporting PI model results (%s)" % time.asctime(time.localtime()))
+oDesktop.AddMessage(
+    "", "", 0, f"Exporting PI model results ({time.asctime(time.localtime())})"
+)
 
 oDesktop.RestoreWindow()
 oProject = oDesktop.GetActiveProject()
@@ -63,9 +94,9 @@ oReportSetup = oDesign.GetModule("ReportSetup")
 # Set file names
 path = oProject.GetPath()
 basename = oProject.GetName()
-matrix_filename = os.path.join(path, basename + '_CMatrix.txt')
-json_filename = os.path.join(path, basename + '_results.json')
-eig_filename = os.path.join(path, basename + '_modes.eig')
+matrix_filename = os.path.join(path, f'{basename}_CMatrix.txt')
+json_filename = os.path.join(path, f'{basename}_results.json')
+eig_filename = os.path.join(path, f'{basename}_modes.eig')
 
 # Export solution data separately for HFSS and Q3D
 design_type = oDesign.GetDesignType()
@@ -73,7 +104,7 @@ if design_type == "HFSS" and oDesign.GetSolutionType() == "HFSS Terminal Network
 
     freq = '1GHz'  # export frequency
     (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
-    solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
+    solution = setup + (" : LastAdaptive" if sweep is None else f" : {sweep}")
     context = [] if sweep is None else ["Domain:=", "Sweep"]
     families = ["Freq:=", [freq]]
 
@@ -81,32 +112,80 @@ if design_type == "HFSS" and oDesign.GetSolutionType() == "HFSS Terminal Network
     ports = oBoundarySetup.GetExcitations()[::2]
 
     # Get solution data
-    yyMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                   "yy_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
-    CMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                  "C_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
+    yyMatrix = [
+        [
+            get_solution_data(
+                oReportSetup,
+                "Terminal Solution Data",
+                solution,
+                context,
+                families,
+                f"yy_{port_i}_{port_j}",
+            )[0]
+            for port_j in ports
+        ]
+        for port_i in ports
+    ]
+    CMatrix = [
+        [
+            get_solution_data(
+                oReportSetup,
+                "Terminal Solution Data",
+                solution,
+                context,
+                families,
+                f"C_{port_i}_{port_j}",
+            )[0]
+            for port_j in ports
+        ]
+        for port_i in ports
+    ]
     Cg = calculate_total_capacitance_to_ground(CMatrix)
 
     # Save capacitance matrix into readable format
-    save_capacitance_matrix(matrix_filename, CMatrix, Cg, detail=' at ' + freq)
+    save_capacitance_matrix(matrix_filename, CMatrix, Cg, detail=f' at {freq}')
 
     # Save results in json format
     with open(json_filename, 'w') as outfile:
-        json.dump({'CMatrix': CMatrix,
-                   'Cg': Cg,
-                   'yyMatrix': yyMatrix,
-                   'freq': freq,
-                   'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                               ["yy_{}_{}".format(port_i, port_j) for port_j in ports
-                                                for port_i in ports]),
-                   'Cdata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                              ["C_{}_{}".format(port_i, port_j) for port_j in ports
-                                               for port_i in ports])
-                   }, outfile, cls=ComplexEncoder, indent=4)
+        json.dump(
+            {
+                'CMatrix': CMatrix,
+                'Cg': Cg,
+                'yyMatrix': yyMatrix,
+                'freq': freq,
+                'yydata': get_solution_data(
+                    oReportSetup,
+                    "Terminal Solution Data",
+                    solution,
+                    context,
+                    families,
+                    [
+                        f"yy_{port_i}_{port_j}"
+                        for port_j in ports
+                        for port_i in ports
+                    ],
+                ),
+                'Cdata': get_solution_data(
+                    oReportSetup,
+                    "Terminal Solution Data",
+                    solution,
+                    context,
+                    families,
+                    [
+                        f"C_{port_i}_{port_j}"
+                        for port_j in ports
+                        for port_i in ports
+                    ],
+                ),
+            },
+            outfile,
+            cls=ComplexEncoder,
+            indent=4,
+        )
 
     # S-parameter export (only for HFSS)
     file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
-    file_name = os.path.join(path, basename + '_SMatrix.s{}p'.format(len(ports)))
+    file_name = os.path.join(path, f'{basename}_SMatrix.s{len(ports)}p')
     frequencies = ["All"]
     do_renormalize = False
     renorm_impedance = 50
@@ -130,7 +209,7 @@ elif design_type == "HFSS" and oDesign.GetSolutionType() == "Eigenmode":
     )
 
 elif design_type == "Q3D Extractor":
-    solution = get_enabled_setup(oDesign) + " : LastAdaptive"
+    solution = f"{get_enabled_setup(oDesign)} : LastAdaptive"
     context = ["Context:=", "Original"]
 
     # Get list of signal nets
@@ -139,8 +218,20 @@ elif design_type == "Q3D Extractor":
     signal_nets = [net for net, net_type in zip(nets, net_types) if net_type == 'SignalNet']
 
     # Get solution data
-    CMatrix = [[get_solution_data(oReportSetup, "Matrix", solution, context, [],
-                                  "C_{}_{}".format(net_i, net_j))[0] for net_j in signal_nets] for net_i in signal_nets]
+    CMatrix = [
+        [
+            get_solution_data(
+                oReportSetup,
+                "Matrix",
+                solution,
+                context,
+                [],
+                f"C_{net_i}_{net_j}",
+            )[0]
+            for net_j in signal_nets
+        ]
+        for net_i in signal_nets
+    ]
     Cg = calculate_total_capacitance_to_ground(CMatrix)
 
     # Save capacitance matrix into readable format
@@ -148,12 +239,32 @@ elif design_type == "Q3D Extractor":
 
     # Save results in json format
     with open(json_filename, 'w') as outfile:
-        json.dump({'CMatrix': CMatrix,
-                   'Cg': Cg,
-                   'Cdata': get_solution_data(oReportSetup, "Matrix", solution, context, [],
-                                              ["C_{}_{}".format(net_i, net_j) for net_j in signal_nets for net_i in
-                                               signal_nets])
-                   }, outfile, cls=ComplexEncoder, indent=4)
+        json.dump(
+            {
+                'CMatrix': CMatrix,
+                'Cg': Cg,
+                'Cdata': get_solution_data(
+                    oReportSetup,
+                    "Matrix",
+                    solution,
+                    context,
+                    [],
+                    [
+                        f"C_{net_i}_{net_j}"
+                        for net_j in signal_nets
+                        for net_i in signal_nets
+                    ],
+                ),
+            },
+            outfile,
+            cls=ComplexEncoder,
+            indent=4,
+        )
 
 # Notify the end of script
-oDesktop.AddMessage("", "", 0, "Done exporting PI model results (%s)" % time.asctime(time.localtime()))
+oDesktop.AddMessage(
+    "",
+    "",
+    0,
+    f"Done exporting PI model results ({time.asctime(time.localtime())})",
+)

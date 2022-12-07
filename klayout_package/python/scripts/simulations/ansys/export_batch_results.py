@@ -47,13 +47,16 @@ for key, definition_file, result_file in zip(keys, definition_files, result_file
     CMatrix_dict[key] = result['CMatrix']
 
 # Find parameters that are swept
-parameters = []
-for parameter in parameter_dict[nominal]:
-    if not all(parameter_dict[key][parameter] == parameter_dict[nominal][parameter] for key in keys):
-        parameters.append(parameter)
-
+parameters = [
+    parameter
+    for parameter in parameter_dict[nominal]
+    if any(
+        parameter_dict[key][parameter] != parameter_dict[nominal][parameter]
+        for key in keys
+    )
+]
 # Tabulate C matrix as CSV
-with open('%s_results.csv' % prefix, 'wb') as csvfile:  # wb for python 2?
+with open(f'{prefix}_results.csv', 'wb') as csvfile:  # wb for python 2?
     writer = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
     port_range = range(1, len(CMatrix_dict[nominal]) + 1)

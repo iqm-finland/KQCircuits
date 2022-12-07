@@ -138,7 +138,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
             element_imports += f"from {WaveguideComposite.__module__} import {Node.__name__}\n"
 
     def get_waveguide_code(inst, prefix, postfix, pcell_type, point_prefix, point_postfix="", refpoint_prefix="",
-                           refpoint_postfix=""):
+                               refpoint_postfix=""):
         path_str = prefix
 
         wg_points = []
@@ -174,12 +174,16 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
             closest_refpoint_name = None
             for name, point in refpoints.items():
                 dist = point.distance(path_point)
-                if dist <= closest_dist and dist < refpoint_snap:
-                    # If this refpoint is at exact same position as closest_refpoint, compare also refpoint names.
-                    # This should ensure that chip-level refpoints are chosen over lower-level refpoints.
-                    if dist < closest_dist or (len(name) > len(closest_refpoint_name)):
-                        closest_dist = dist
-                        closest_refpoint_name = name
+                if (
+                    dist <= closest_dist
+                    and dist < refpoint_snap
+                    and (
+                        dist < closest_dist
+                        or (len(name) > len(closest_refpoint_name))
+                    )
+                ):
+                    closest_dist = dist
+                    closest_refpoint_name = name
             if closest_refpoint_name is not None:
                 if output_format.startswith("insert_cell"):
                     path_str += f"{refpoint_prefix}self.refpoints[\"{closest_refpoint_name}\"]{node_params}" \
@@ -206,10 +210,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         x, y = trans.disp.x, trans.disp.y
         if trans.mag == 1 and trans.angle % 90 == 0:
             if trans.rot() == 0 and not trans.is_mirror():
-                if x == 0 and trans.disp.y == 0:
-                    return ""
-                else:
-                    return f"pya.DTrans({x}, {y})"
+                return "" if x == 0 and trans.disp.y == 0 else f"pya.DTrans({x}, {y})"
             else:
                 return f"pya.DTrans({trans.rot()}, {trans.is_mirror()}, {x}, {y})"
         else:
@@ -345,10 +346,9 @@ def _move_to_end(instances, pcell_type):
     Assumes that all `pcell_type` instances are consecutive elements of the list.
     """
     wg_indices = [idx for idx, inst in enumerate(instances) if isinstance(inst.pcell_declaration(), pcell_type)]
-    if len(wg_indices) > 0:
-        if wg_indices[-1] < len(instances) - 1:  # otherwise the waveguides are already at the end of instances list
-            instances = \
-                instances[:wg_indices[0]] + instances[wg_indices[-1] + 1:] + instances[wg_indices[0]:wg_indices[-1] + 1]
+    if wg_indices and wg_indices[-1] < len(instances) - 1:
+        instances = \
+            instances[:wg_indices[0]] + instances[wg_indices[-1] + 1:] + instances[wg_indices[0]:wg_indices[-1] + 1]
     return instances
 
 

@@ -27,22 +27,22 @@ class Empty(Chip):
         d1 = float(self.frames_dice_width[0]) + self.dice_grid_margin
         d2 = 2000
 
-        empty_area = pya.DPolygon([
-            pya.DPoint(d1, d2),
-            pya.DPoint(d1, 10000 - d2),
-            pya.DPoint(d2, 10000 - d2),
-            pya.DPoint(d2, 10000 - d1),
-            pya.DPoint(10000-d2, 10000 - d1),
-            pya.DPoint(10000-d2, 10000 - d2),
-            pya.DPoint(10000-d1, 10000 - d2),
-            pya.DPoint(10000-d1, d2),
-            pya.DPoint(10000-d2, d2),
-            pya.DPoint(10000-d2, d1),
-            pya.DPoint(d2, d1),
-            pya.DPoint(d2, d2),
-        ])
-
-        return empty_area
+        return pya.DPolygon(
+            [
+                pya.DPoint(d1, d2),
+                pya.DPoint(d1, 10000 - d2),
+                pya.DPoint(d2, 10000 - d2),
+                pya.DPoint(d2, 10000 - d1),
+                pya.DPoint(10000 - d2, 10000 - d1),
+                pya.DPoint(10000 - d2, 10000 - d2),
+                pya.DPoint(10000 - d1, 10000 - d2),
+                pya.DPoint(10000 - d1, d2),
+                pya.DPoint(10000 - d2, d2),
+                pya.DPoint(10000 - d2, d1),
+                pya.DPoint(d2, d1),
+                pya.DPoint(d2, d2),
+            ]
+        )
 
     def build(self):
         empty_area = self.make_empty_area()

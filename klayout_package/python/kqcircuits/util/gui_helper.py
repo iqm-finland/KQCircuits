@@ -45,15 +45,19 @@ def get_nodes_near_position(top_cell, position, box_size=10, require_gui_editing
     found_nodes = []
 
     for inst in top_cell.each_inst():
-        if inst.is_pcell() and isinstance(inst.pcell_declaration(), WaveguideComposite):
-            if (not require_gui_editing_enabled) or inst.pcell_parameter('enable_gui_editing'):
-                dtrans = inst.dcplx_trans
+        if (
+            inst.is_pcell()
+            and isinstance(inst.pcell_declaration(), WaveguideComposite)
+            and (not require_gui_editing_enabled)
+            or inst.pcell_parameter('enable_gui_editing')
+        ):
+            dtrans = inst.dcplx_trans
 
-                nodes = Node.nodes_from_string(inst.pcell_parameter("nodes"))
-                for i, node in enumerate(nodes):
-                    node_position = dtrans * node.position
-                    if box.contains(node_position):
-                        found_nodes.append((inst, node, i))
+            nodes = Node.nodes_from_string(inst.pcell_parameter("nodes"))
+            for i, node in enumerate(nodes):
+                node_position = dtrans * node.position
+                if box.contains(node_position):
+                    found_nodes.append((inst, node, i))
     return found_nodes
 
 

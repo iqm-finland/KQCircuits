@@ -75,7 +75,7 @@ try:
 
     apidoc.main(args)
 except Exception as e:
-    print("Running `sphinx-apidoc` failed!\n{}".format(e))
+    print(f"Running `sphinx-apidoc` failed!\n{e}")
 
 import sphinx_rtd_theme
 
@@ -88,14 +88,12 @@ project = 'KQCircuits'
 copyright = '2021-2022, IQM'
 author = 'IQM'
 
-# Set supplied KQC version if found from Git tags
-matched_version = re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version())
-if not matched_version:
-    print(f'KQC version not matched for: {get_version()}')
-else:
-    version = matched_version.group(1)
+if matched_version := re.match(r'([0-9]+\.[0-9]+\.[0-9]+)\.', get_version()):
+    version = matched_version[1]
     release = version
 
+else:
+    print(f'KQC version not matched for: {get_version()}')
 # -- General configuration ---------------------------------------------------
 
 source_suffix = ['.rst']

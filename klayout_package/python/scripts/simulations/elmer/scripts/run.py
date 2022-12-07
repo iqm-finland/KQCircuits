@@ -98,7 +98,7 @@ if elmer_n_processes == -1:
 tool = json_data.get('tool', 'capacitance')
 if tool == 'cross-section':
     # Generate mesh
-    msh_file = '{}.msh'.format(name)
+    msh_file = f'{name}.msh'
     if workflow['run_gmsh']:
         produce_cross_section_mesh(json_data, path.joinpath(msh_file))
 
@@ -110,7 +110,7 @@ if tool == 'cross-section':
         for sif_file in sif_files:
             run_elmer_solver(name.joinpath(sif_file), elmer_n_processes, path)
         res = get_cross_section_capacitance_and_inductance(json_data, path.joinpath(name))
-        with open(path.joinpath('{}_result.json'.format(name)), 'w') as f:
+        with open(path.joinpath(f'{name}_result.json'), 'w') as f:
             json.dump(res, f, indent=4)
     if workflow['run_paraview']:
         run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
@@ -139,9 +139,11 @@ else:
     if workflow['run_elmergrid']:
         run_elmer_grid(msh_filepath, elmer_n_processes, path)
     if workflow['run_elmer']:
-        run_elmer_solver('sif/{}.sif'.format(msh_filepath.stem), elmer_n_processes, path)
+        run_elmer_solver(f'sif/{msh_filepath.stem}.sif', elmer_n_processes, path)
     if workflow['run_paraview']:
-        run_paraview('{}/{}'.format(msh_filepath.stem, msh_filepath.stem), elmer_n_processes, path)
+        run_paraview(
+            f'{msh_filepath.stem}/{msh_filepath.stem}', elmer_n_processes, path
+        )
 
     # Write result file
     if args.write_project_results:

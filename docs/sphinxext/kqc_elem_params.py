@@ -78,37 +78,37 @@ class KqcElemParamsDirective(Directive):
                     if found_parameters_schema:
                         break
 
-        if found_parameters_schema:
-
-            parameters_list = nodes.bullet_list("")
-
-            for key in parameters_schema:
-                param = parameters_schema[key]
-
-                parameter_paragraph = nodes.paragraph()
-                parameter_paragraph += nodes.strong("", key)
-                parameter_paragraph += nodes.emphasis("", " (" + pcell_parameter_types[param.data_type] + ")")
-                if "docstring" in param.kwargs.keys():
-                    parameter_paragraph += nodes.inline("", " - " + param.kwargs["docstring"])
-                else:
-                    parameter_paragraph += nodes.inline("", " - " + param.description)
-                parameter_paragraph += nodes.emphasis("", ", default=")
-                parameter_paragraph += nodes.literal("", str(param.default))
-
-                if "unit" in param.kwargs.keys():
-                    parameter_paragraph += nodes.emphasis("", ", unit=")
-                    parameter_paragraph += nodes.literal("", param.kwargs["unit"])
-                if "choices" in param.kwargs.keys():
-                    parameter_paragraph += nodes.emphasis("", ", choices=")
-                    choices_list = [choice if isinstance(choice, str) else choice[1] for choice in param.kwargs["choices"]]
-                    parameter_paragraph += nodes.literal("", str(choices_list))
-
-                parameters_list += nodes.list_item("", parameter_paragraph)
-
-            return [nodes.strong("", "PCell parameters:"), nodes.line("", ""), parameters_list]
-
-        else:
+        if not found_parameters_schema:
             return []
+        parameters_list = nodes.bullet_list("")
+
+        for key in parameters_schema:
+            param = parameters_schema[key]
+
+            parameter_paragraph = nodes.paragraph()
+            parameter_paragraph += nodes.strong("", key)
+            parameter_paragraph += nodes.emphasis(
+                "", f" ({pcell_parameter_types[param.data_type]})"
+            )
+            parameter_paragraph += (
+                nodes.inline("", " - " + param.kwargs["docstring"])
+                if "docstring" in param.kwargs.keys()
+                else nodes.inline("", f" - {param.description}")
+            )
+            parameter_paragraph += nodes.emphasis("", ", default=")
+            parameter_paragraph += nodes.literal("", str(param.default))
+
+            if "unit" in param.kwargs.keys():
+                parameter_paragraph += nodes.emphasis("", ", unit=")
+                parameter_paragraph += nodes.literal("", param.kwargs["unit"])
+            if "choices" in param.kwargs.keys():
+                parameter_paragraph += nodes.emphasis("", ", choices=")
+                choices_list = [choice if isinstance(choice, str) else choice[1] for choice in param.kwargs["choices"]]
+                parameter_paragraph += nodes.literal("", str(choices_list))
+
+            parameters_list += nodes.list_item("", parameter_paragraph)
+
+        return [nodes.strong("", "PCell parameters:"), nodes.line("", ""), parameters_list]
 
 
 def setup(app):

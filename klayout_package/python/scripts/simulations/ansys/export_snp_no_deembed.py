@@ -75,9 +75,21 @@ oDesign.ChangeProperty(
     ])
 
 oModule = oDesign.GetModule("Solutions")
-oModule.ExportNetworkData("", ["Setup1:Sweep"], 3, os.path.join(path, basename + '_SMatrix_nodeembed.s2p'),
-                          [
-                              "All"
-                          ], False, 50, "S", -1, 0, 15, True, True, True)
+oModule.ExportNetworkData(
+    "",
+    ["Setup1:Sweep"],
+    3,
+    os.path.join(path, f'{basename}_SMatrix_nodeembed.s2p'),
+    ["All"],
+    False,
+    50,
+    "S",
+    -1,
+    0,
+    15,
+    True,
+    True,
+    True,
+)
 
 oProject.Save()

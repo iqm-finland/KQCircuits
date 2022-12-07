@@ -64,11 +64,7 @@ else:
     PY_PATH = ROOT_PATH.joinpath("klayout_package").joinpath("python")
 SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
 TMP_PATH = os.getenv('KQC_TMP_PATH')
-if TMP_PATH is None:
-    TMP_PATH = ROOT_PATH.joinpath("tmp")
-else:
-    TMP_PATH = Path(TMP_PATH)
-
+TMP_PATH = ROOT_PATH.joinpath("tmp") if TMP_PATH is None else Path(TMP_PATH)
 RESOURCES_PATH = ROOT_PATH.joinpath("resources")
 TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
@@ -236,7 +232,7 @@ default_layer_props = layer_config_module.default_layer_props
 default_chip_label_face_prefixes = layer_config_module.default_chip_label_face_prefixes
 # Update default_parameter_values based on layer config file
 for k, v in layer_config_module.default_parameter_values.items():
-    params = default_parameter_values[k] if k in default_parameter_values else {}
+    params = default_parameter_values.get(k, {})
     for k2, v2 in v.items():
         params[k2] = v2
     default_parameter_values[k] = params

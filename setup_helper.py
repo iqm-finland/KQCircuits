@@ -68,4 +68,4 @@ def setup_symlinks(root_path, configdir, link_map):
         if os.path.lexists(link_name):
             os.unlink(link_name)
         os.symlink(link_target, link_name, target_is_directory=True)
-        print("Created symlink \"{}\" to \"{}\"".format(link_name, link_target))
+        print(f'Created symlink \"{link_name}\" to \"{link_target}\"')

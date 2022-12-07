@@ -58,7 +58,7 @@ def network_as_graph(network):
                 for net_j in net[i+1:]:
                     reasons_to_ignore_connections = [(a,b) for a,b in default_netlist_ignore_connections
                         if (net_i["pin"] == a and net_j["pin"] == b) or (net_i["pin"] == b and net_j["pin"] == a)]
-                    if len(reasons_to_ignore_connections) > 0:
+                    if reasons_to_ignore_connections:
                         continue
                     edges.append([net_i["subcircuit_id"], net_j["subcircuit_id"]])
                     used_subcircuit_ids.add(net_i["subcircuit_id"])

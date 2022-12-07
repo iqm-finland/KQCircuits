@@ -25,7 +25,7 @@ import pyEPR as epr
 import qutip.fileio
 
 project_path = Path.cwd()
-project_name = str(Path(sys.argv[1]).stem if Path(sys.argv[1]).suffixes else Path(sys.argv[1])) + '_project'
+project_name = f'{str(Path(sys.argv[1]).stem if Path(sys.argv[1]).suffixes else Path(sys.argv[1]))}_project'
 
 with open(sys.argv[1], 'r') as fp:
     data = json.load(fp)

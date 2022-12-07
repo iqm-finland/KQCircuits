@@ -146,7 +146,7 @@ class MaskLayout:
                                     shapes.append(shapes_iter.shape())
                                     shapes_iter.next()
                                 except ValueError:
-                                    print("error occurs at %s at %s" % (name, face_id))
+                                    print(f"error occurs at {name} at {face_id}")
 
                             for shapes_to_remove in shapes:
                                 shapes_to_remove.delete()
@@ -169,9 +169,9 @@ class MaskLayout:
         for (i, row) in enumerate(tqdm(self.chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
             for (j, chip_name) in enumerate(row):
                 position = pya.DPoint(step_ver * (i + 1) + step_hor * j) - self.chips_map_offset \
-                           + pya.DVector(-self.wafer_rad, self.wafer_rad)
+                               + pya.DVector(-self.wafer_rad, self.wafer_rad)
                 if (position - step_ver*0.5 + step_hor*0.5 - self.wafer_center).abs() - self.wafer_rad < \
-                        -self.edge_clearance:
+                            -self.edge_clearance:
                     added_chip, region_chip = self._add_chip(chip_name, position, self.chip_trans)
                 else:
                     added_chip, region_chip = False, pya.Region()
@@ -252,15 +252,14 @@ class MaskLayout:
         y_clip = -14.5e4
 
         points = []
-        for a in range(0, 256 + 1):
+        for a in range(256 + 1):
             x = math.cos(a / 128 * math.pi) * self.wafer_rad
             y = max(math.sin(a / 128 * math.pi) * self.wafer_rad, y_clip)
             if (y > 0 and (x > self.wafer_top_flat_length/2 or x < -self.wafer_top_flat_length/2)) or \
-               (y < 0 and (x > self.wafer_bottom_flat_length/2 or x < -self.wafer_bottom_flat_length/2)):
+                   (y < 0 and (x > self.wafer_bottom_flat_length/2 or x < -self.wafer_bottom_flat_length/2)):
                 points.append(pya.DPoint(self.wafer_center.x + x, self.wafer_center.y + y))
 
-        region_covered = pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
-        return region_covered
+        return pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
 
     def _add_chip(self, name, position, trans):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""
@@ -291,8 +290,15 @@ class MaskLayout:
             inst.dtrans = pya.DTrans(inst.dtrans.rot, inst.dtrans.is_mirror(), leftmost_label_x, inst.dtrans.disp.y)
 
         circle = pya.DTrans(self.wafer_center) * pya.DPath(
-            [pya.DPoint(math.cos(a / 32 * math.pi) * self.wafer_rad, math.sin(a / 32 * math.pi) * self.wafer_rad)
-             for a in range(0, 64 + 1)], 100)
+            [
+                pya.DPoint(
+                    math.cos(a / 32 * math.pi) * self.wafer_rad,
+                    math.sin(a / 32 * math.pi) * self.wafer_rad,
+                )
+                for a in range(64 + 1)
+            ],
+            100,
+        )
         maskextra_cell.shapes(self.layout.layer(default_layers["mask_graphical_rep"])).insert(circle)
 
         offset = self.mask_marker_offset
@@ -327,10 +333,14 @@ class MaskLayout:
             region_covered -= pya.Region(inst.bbox()).extents(1e3/self.layout.dbu)
 
     def _get_chip_name(self, search_cell):
-        for chip_name, cell in self.chips_map_legend.items():
-            if search_cell == cell:
-                return chip_name
-        return ""
+        return next(
+            (
+                chip_name
+                for chip_name, cell in self.chips_map_legend.items()
+                if search_cell == cell
+            ),
+            "",
+        )
 
     def _get_chip_cell_and_bbox(self, chip_name):
         chip_cell = self.chips_map_legend[chip_name]
@@ -358,15 +368,18 @@ class MaskLayout:
 
     def _insert_mask_name_label(self, cell, layer, postfix=""):
         if postfix != "":
-            postfix = "-" + postfix
-        cell_mask_name = self.layout.create_cell("TEXT", "Basic", {
-            "layer": layer,
-            "text": default_brand + "-" + self.name + "v" + str(self.version) + postfix,
-            "mag": self.mask_name_scale*5000.0,
-        })
+            postfix = f"-{postfix}"
+        cell_mask_name = self.layout.create_cell(
+            "TEXT",
+            "Basic",
+            {
+                "layer": layer,
+                "text": f"{default_brand}-{self.name}v{str(self.version)}{postfix}",
+                "mag": self.mask_name_scale * 5000.0,
+            },
+        )
         cell_mask_name_h = cell_mask_name.dbbox().height()
         cell_mask_name_w = cell_mask_name.dbbox().width()
         trans = pya.DTrans(self.wafer_center.x + self.mask_name_offset.x - cell_mask_name_w / 2,
                            self.wafer_rad + self.mask_name_offset.y - cell_mask_name_h / 2)
-        inst = cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), trans))
-        return inst
+        return cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), trans))

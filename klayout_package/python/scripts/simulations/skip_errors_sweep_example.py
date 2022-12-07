@@ -40,7 +40,7 @@ sim_parameters = {
     'box': pya.DBox(pya.DPoint(0,0), pya.DPoint(3000, 3000)),
 }
 
-dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
+dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 
 export_parameters = {
     'path': dir_path,

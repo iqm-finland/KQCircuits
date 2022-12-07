@@ -58,7 +58,9 @@ def create_z_vs_time_plot(report_setup, report_type, solution_name, context_arra
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
-oDesktop.AddMessage("", "", 0, "Plotting TDR for all ports (%s)" % time.asctime(time.localtime()))
+oDesktop.AddMessage(
+    "", "", 0, f"Plotting TDR for all ports ({time.asctime(time.localtime())})"
+)
 
 oDesktop.RestoreWindow()
 oProject = oDesktop.GetActiveProject()
@@ -69,7 +71,7 @@ oReportSetup = oDesign.GetModule("ReportSetup")
 # Set file name
 path = oProject.GetPath()
 basename = oProject.GetName()
-csv_filename = os.path.join(path, basename + '_TDR.csv')
+csv_filename = os.path.join(path, f'{basename}_TDR.csv')
 
 # No de-embedding
 oDesign.ChangeProperty(
@@ -117,7 +119,7 @@ oDesign.ChangeProperty(
 design_type = oDesign.GetDesignType()
 if design_type == "HFSS":
     (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
-    solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
+    solution = setup + (" : LastAdaptive" if sweep is None else f" : {sweep}")
     context = [] if sweep is None else [
         "Domain:=", "Time",
         "HoldTime:=", 1,
@@ -132,8 +134,16 @@ if design_type == "HFSS":
 
     ports = oBoundarySetup.GetExcitations()[::2]
 
-    create_z_vs_time_plot(oReportSetup, "Terminal Solution Data", solution, context, "Z [Ohm]",
-                          ["TDRZt(%s)" % (port) for port in ports])
+    create_z_vs_time_plot(
+        oReportSetup,
+        "Terminal Solution Data",
+        solution,
+        context,
+        "Z [Ohm]",
+        [f"TDRZt({port})" for port in ports],
+    )
 
 # Notify the end of script
-oDesktop.AddMessage("", "", 0, "TDR created (%s)" % time.asctime(time.localtime()))
+oDesktop.AddMessage(
+    "", "", 0, f"TDR created ({time.asctime(time.localtime())})"
+)

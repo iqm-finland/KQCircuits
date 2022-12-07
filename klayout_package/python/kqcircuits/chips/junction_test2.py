@@ -67,7 +67,7 @@ class JunctionTest2(Chip):
 
             if self.pads_loop[j] == "small":
                 junction_width_starting_value = self.junction_width_small + squid_indexing_small * \
-                                                self.junction_width_step_increment_small
+                                                    self.junction_width_step_increment_small
 
                 squid_indexing_small += squids_per_test_array
                 junction_width_steps = [junction_width_starting_value, self.junction_width_step_increment_small]
@@ -75,7 +75,7 @@ class JunctionTest2(Chip):
 
             else:
                 junction_width_starting_value = self.junction_width_large + squid_indexing_large * \
-                                                self.junction_width_step_increment_large
+                                                    self.junction_width_step_increment_large
 
                 squid_indexing_large += squids_per_test_array
                 junction_width_steps = [junction_width_starting_value, self.junction_width_step_increment_large]
@@ -90,5 +90,8 @@ class JunctionTest2(Chip):
                                 loop_area =loop_area,
                                 only_arms=True,
                                 )
-            self.insert_cell(cell, pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]),
-                             name + "_{}".format(j+1))
+            self.insert_cell(
+                cell,
+                pya.DTrans(0, False, array_coordinates[0], array_coordinates[1]),
+                f"{name}_{j + 1}",
+            )

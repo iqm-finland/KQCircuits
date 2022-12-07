@@ -32,6 +32,7 @@ Exits with code -1 if files without copyright were found, exits with code 0 othe
 without copyright.
 """
 
+
 from argparse import ArgumentParser
 from pathlib import Path
 from sys import exit
@@ -51,15 +52,14 @@ if __name__ == "__main__":
     file_paths_1 = list(cwd.glob("**/*.py")) + list(cwd.glob("**/*.lym"))
     file_paths_2 = []
     for path in file_paths_1:
-        exclude = False
-        for exclude_path in exclude_paths:
-            if path == exclude_path or exclude_path in path.parents:
-                exclude = True
-                break
+        exclude = any(
+            path == exclude_path or exclude_path in path.parents
+            for exclude_path in exclude_paths
+        )
         if not exclude:
             file_paths_2.append(path)
 
-    with open(f"ci/copyright_template", "r") as template_file:
+    with open("ci/copyright_template", "r") as template_file:
         copyright_template = Template(template_file.read())
 
     files_without_copyright = file_paths_2

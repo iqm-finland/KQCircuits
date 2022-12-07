@@ -40,7 +40,7 @@ from kqcircuits.util.geometry_helper import circle_polygon
 def export_mask_set(mask_set, path, view):
     """Exports the designs, bitmap and documentation for the mask_set."""
 
-    mask_set_dir = _get_directory(path/str("{}_v{}".format(mask_set.name, mask_set.version)))
+    mask_set_dir = _get_directory(path / f"{mask_set.name}_v{mask_set.version}")
     export_bitmaps(mask_set, mask_set_dir, view)
     export_designs(mask_set, mask_set_dir)
     export_docs(mask_set, mask_set_dir)
@@ -98,7 +98,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, debug=False)
         "Layer areas and densities": layer_areas_and_densities
     }
 
-    with open(chip_dir/(chip_name + ".json"), "w") as f:
+    with open(chip_dir / f"{chip_name}.json", "w") as f:
         json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
     # export .gds files for EBL or laser writer
@@ -119,7 +119,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, debug=False)
             temporary_cell.insert(pya.DCellInstArray(static_cell.cell_index(), default_mask_parameters[
                 layer_cluster.face_id]["chip_trans"]))
             layers_to_export = {name: layout.layer(default_layers[name]) for name in layer_cluster.all_layers()}
-            path = chip_dir / "{} {}.gds".format(chip_name, cluster_name)
+            path = chip_dir / f"{chip_name} {cluster_name}.gds"
             _export_cell(path, temporary_cell, layers_to_export)
             temporary_cell.delete()
 
@@ -178,7 +178,10 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         top_cell.shapes(layer).insert(wafer ^ disc)
 
     layers_to_export = {layer_info.name: layer}
-    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f" {layer_info.name}.oas")
+    path = (
+        export_dir
+        / f"{_get_mask_layout_full_name(mask_set, mask_layout)} {layer_info.name}.oas"
+    )
     _export_cell(path, top_cell, layers_to_export)
 
     if invert:
@@ -235,7 +238,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
 
             path = os.path.join("Chips", name, name)
 
-            with open(TMP_PATH / f"{mask_set.name}_v{mask_set.version}" / (path + ".json"), "r") as f2:
+            with open(TMP_PATH / f"{mask_set.name}_v{mask_set.version}" / f"{path}.json", "r") as f2:
                 chip_json = json.load(f2)
 
             f.write("### {} Chip\n".format(name))
@@ -373,7 +376,6 @@ def _export_cell(path, cell=None, layers_to_export=None):
         svopt.clear_cells()
         svopt.select_all_layers()
         svopt.add_cell(cell.cell_index())
-        layout.write(str(path), svopt)
     else:
         items = layers_to_export.items()
         svopt.deselect_all_layers()
@@ -383,7 +385,8 @@ def _export_cell(path, cell=None, layers_to_export=None):
             layer_info = layout.layer_infos()[layer]
             svopt.add_layer(layer, layer_info)
         svopt.write_context_info = False
-        layout.write(str(path), svopt)
+
+    layout.write(str(path), svopt)
 
 
 def _get_directory(directory):
