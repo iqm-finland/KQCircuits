@@ -518,7 +518,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">ANSYS_SCRIPT_PATHS</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ANSYS_SCRIPT_PATHS</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
 
@@ -598,23 +598,12 @@
     <span class="k">if</span> <span class="n">simulation_flags</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">simulation_flags</span> <span class="o">=</span> <span class="p">[]</span>
 
-    <span class="c1"># select layers</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;1t1_simulation_signal&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_simulation_ground&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_simulation_gap&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_simulation_airbridge_flyover&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_simulation_airbridge_pads&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
-        <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;2b1_simulation_signal&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;2b1_simulation_ground&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;2b1_simulation_gap&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;1t1_simulation_indium_bump&quot;</span><span class="p">]</span>
-
     <span class="c1"># collect data for .json file</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;ansys_tool&#39;</span><span class="p">:</span> <span class="n">ansys_tool</span><span class="p">,</span>
         <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
-        <span class="o">**</span><span class="p">{(</span><span class="n">r</span><span class="p">[</span><span class="mi">15</span><span class="p">:]</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;1t1_&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;t_&quot;</span> <span class="o">+</span> <span class="n">r</span><span class="p">[</span><span class="mi">15</span><span class="p">:])</span> <span class="o">+</span> <span class="s1">&#39;_layer&#39;</span><span class="p">:</span> <span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">},</span>
+        <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="n">layers</span><span class="p">,</span>
         <span class="s1">&#39;analysis_setup&#39;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;frequency_units&#39;</span><span class="p">:</span> <span class="n">frequency_units</span><span class="p">,</span>
             <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
@@ -652,7 +641,7 @@
     <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">))</span>
     <span class="n">export_layers</span><span class="p">(</span><span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
                   <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
-                  <span class="n">layers</span><span class="o">=</span><span class="p">{</span><span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">}</span>
+                  <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
                   <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">json_filename</span></div>

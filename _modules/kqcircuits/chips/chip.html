@@ -904,7 +904,7 @@
         <span class="k">return</span> <span class="p">{}</span></div>
 
 <div class="viewcode-block" id="Chip.produce_n_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_n_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">launcher_type</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span> <span class="n">launcher_gap</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span> <span class="n">pad_pitch</span><span class="p">,</span>
-                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Produces n launchers at default locations and optionally changes the chip size.</span>
 
 <span class="sd">        Launcher pads are equally distributed around the chip. This may be overridden by specifying</span>
@@ -920,6 +920,7 @@
 <span class="sd">            launcher_gap: pad to ground gap of the launchers</span>
 <span class="sd">            launcher_indent: distance between the chip edge and pad port</span>
 <span class="sd">            pad_pitch: distance between pad centers</span>
+<span class="sd">            launcher_frame_gap: gap of the launcher pad at the frame</span>
 <span class="sd">            launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers</span>
 <span class="sd">            enabled: optional list of enabled launchers</span>
 <span class="sd">            chip_box: optionally changes the chip size (``self.box``)</span>
@@ -928,6 +929,9 @@
 <span class="sd">            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="k">if</span> <span class="n">launcher_frame_gap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">launcher_frame_gap</span> <span class="o">=</span> <span class="n">launcher_gap</span>
+
         <span class="k">if</span> <span class="n">chip_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">chip_box</span>
 
@@ -935,7 +939,8 @@
             <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">LauncherDC</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Launcher</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span>
-                                             <span class="n">a_launcher</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span> <span class="n">b_launcher</span><span class="o">=</span><span class="n">launcher_gap</span><span class="p">)</span>
+                                             <span class="n">a_launcher</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span> <span class="n">b_launcher</span><span class="o">=</span><span class="n">launcher_gap</span><span class="p">,</span>
+                                             <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="n">launcher_frame_gap</span><span class="p">)</span>
 
         <span class="n">pads_per_side</span> <span class="o">=</span> <span class="n">n</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>

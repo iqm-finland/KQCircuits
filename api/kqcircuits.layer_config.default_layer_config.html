@@ -514,9 +514,9 @@ number denotes which of these chips it refers to. The letter “b” or “t” 
 located at either the “bottom” or “top” of that chip (in the final place after full manufacturing
 process). The last number is an additional index that can be used if necessary, in case multiple
 deposition layers and etching processes are needed.</p>
-<p>The main geometry containing layer groups are currently in 1-89,  Simulation 90-99, layer ID’s 100-219
-are reserved and auxiliary layers 220-229 are not face dependent, they contain annotations,
-refpoints and other text fields.</p>
+<p>The simulation layers are assigned with data type 0, because they are auxiliary layers that are created for simulation
+purposes. The simulation layer IDs are between 1000-1099. The other auxiliary layers containing annotations, refpoints
+and text fields are between 220-229.</p>
 <p>In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
 layer views are hidden by default. See <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/layer_source.html">https://www.klayout.de/doc-qt5/manual/layer_source.html</a></p>
 <p><code class="docutils literal notranslate"><span class="pre">default_layers</span></code> is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.

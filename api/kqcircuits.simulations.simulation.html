@@ -511,6 +511,22 @@
 implementation defines the simulation geometry ad ports in <cite>build</cite>.</p>
 <p>A convenience class method <cite>Simulation.from_cell</cite> is provided to create a Simulation from an
 existing cell. In this case no ports will be added.</p>
+<p>Basically, 3D layout is built of substrates, which are separated from each other by vacuum boxes, however, this rule
+is modifiable by setting substrate and vacuum thicknesses to zero. In princible, one can set a face on any of the
+imaginable vacuum-substrate interfaces. If substrate or vacuum thickness is set to zero, then there can be two
+overlapping faces with just different orientation for airbridges, indium bumbs and other non-flat objects.</p>
+<p>Number of substrate and vacuum boxes are determined with parameters face_stack and lower_box_height:
+- If lower_box_height &gt; 0, there will be a vacuum box below the lowest substrate, and the counting of faces will
+start from the bottom face of the lowest substrate. Otherwise, the lowest substrate will be below the lowest vacuum
+box, and the counting of faces will start from the top face of the lowest substrate.
+- Length of face_stack list describes how many faces are taken into account in the simulation.</p>
+<p>The terms in the face_stack indicate, in which order the klayout faces are stacked in the 3D layout.
+Faces are counted from the lowest substrate face to the highest.
+One can use empty string in face_stack to leave certain face without metallization.
+Notice that simulation layers must be introduced for indicated faces in default_faces.</p>
+<p>Heights of substrates (substrate_height) and vacuum boxes between faces (chip_distance) can be determined
+individually from bottom to top or with single value. Any of the heights can be left zero, to indicate that there
+is no vacuum between the substrates or substrate between the vacuum boxes.</p>
 <p>Initialize a Simulation.</p>
 <p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
 the simulation geometry, followed by <cite>self.create_simulation_layers</cite> to process the geometry
@@ -674,6 +690,26 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.face_z_levels">
+<span class="sig-name descname"><span class="pre">face_z_levels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.face_z_levels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.face_z_levels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns ascending list of face heights.
+Faces include bottom domain boundary, substrate faces from bottom to top, and top domain boundary.
+The level z=0 is at lowest substrate top face.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.merged_region_from_layer">
+<span class="sig-name descname"><span class="pre">merged_region_from_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expansion</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.merged_region_from_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.merged_region_from_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <cite>Region</cite> containing all geometry from a specified layer merged together</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_region">
+<span class="sig-name descname"><span class="pre">insert_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges points in the <cite>region</cite> and inserts the result in a target layer.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.create_simulation_layers">
 <span class="sig-name descname"><span class="pre">create_simulation_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.create_simulation_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.create_simulation_layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the layers used for simulation export.</p>
@@ -681,7 +717,7 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 <p>This method is called from <cite>__init__</cite> after <cite>build</cite>, and should not be called directly.</p>
 <dl>
 <dt>Geometry is added to the following layers:</dt><dd><ul>
-<li><p>For each face <code class="docutils literal notranslate"><span class="pre">b</span></code> and <code class="docutils literal notranslate"><span class="pre">t</span></code>, the inverse of <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code> is divided into</p>
+<li><p>For each face, the inverse of <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code> is divided into</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">simulation_ground</span></code>, containing any metalization not galvanically connected to a port</p></li>
@@ -699,17 +735,9 @@ the parent refpoint name, <cite>DPoint</cite> or <cite>DVector</cite>. Default i
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.produce_ground_on_face_grid">
-<span class="sig-name descname"><span class="pre">produce_ground_on_face_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.produce_ground_on_face_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.produce_ground_on_face_grid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Produces ground grid in the given face of the chip.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>box</strong> – pya.DBox within which the grid is created</p></li>
-<li><p><strong>face_id</strong> (<em>str</em>) – ID of the face where the grid is created</p></li>
-</ul>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.ground_grid_region">
+<span class="sig-name descname"><span class="pre">ground_grid_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.ground_grid_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.ground_grid_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns region of ground grid for the given face id.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -774,61 +802,39 @@ This function must be used when initializing InternalPort.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_port_data">
 <span class="sig-name descname"><span class="pre">get_port_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_port_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_port_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the port data in dictionary form and add the information of port polygon</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p>list of port data dictionaries</p>
-<blockquote>
-<div><ul class="simple">
+<dd><p>Return the port data in dictionary form and add the information of port polygon. Includes following:</p>
+<ul class="simple">
 <li><p>Items from <cite>Port</cite> instance</p></li>
 <li><p>polygon: point coordinates of the port polygon</p></li>
 <li><p>signal_edge: point coordinates of the signal edge</p></li>
 <li><p>ground_edge: point coordinates of the ground edge</p></li>
 </ul>
-</div></blockquote>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>port_data(list)</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_simulation_data">
 <span class="sig-name descname"><span class="pre">get_simulation_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_simulation_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_simulation_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the simulation data in dictionary form.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p>simulation_data</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>gds_file(str): self.name + ‘.gds’,</p></li>
-<li><p>stack_type(str): self.wafer_stack_type,</p></li>
-<li><p>units(str): ‘um’,  # hardcoded assumption in multiple places</p></li>
-<li><p>substrate_height(float): self.substrate_height,</p></li>
-<li><p>airbridge_height(float): self.airbridge_height,</p></li>
-<li><p>box_height(float): self.box_height,</p></li>
-<li><p>permittivity(float): self.permittivity,</p></li>
-<li><p>vertical_over_etching(float): self.vertical_over_etching</p></li>
-<li><p>box(pya.DBox): self.box,</p></li>
-<li><p>ports(list): dictionary (see <cite>self.get_port_data</cite>)</p></li>
-<li><p>parameters(dict): dictionary (see <cite>self.get_parameters</cite>),</p></li>
+<dd><p>Return the simulation data in dictionary form. Contains following:</p>
+<ul class="simple">
+<li><p>gds_file: name of gds file to include geometry layers,</p></li>
+<li><p>units: length unit in simulations, ‘um’,</p></li>
+<li><p>lower_box_height: Height of vacuum below bottom substrate,</p></li>
+<li><p>substrate_material: Materials of the substrates from bottom to top,</p></li>
+<li><p>material_dict: Dictionary of dielectric materials,</p></li>
+<li><p>face_stack: Face IDs for substrate faces from bottom to top,</p></li>
+<li><p>z_levels: Ascending list of face heights,</p></li>
+<li><p>airbridge_height: Height of airbridges,</p></li>
+<li><p>vertical_over_etching: Vertical over-etching into substrates at gaps,</p></li>
+<li><p>box: Boundary box,</p></li>
+<li><p>ports: Port data in dictionary form, see self.get_port_data(),</p></li>
+<li><p>parameters: All Simulation class parameters in dictionary form,</p></li>
 </ul>
-</div></blockquote>
-<p>if wafer stack type is ‘multiface data’, simulation_data contains also</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>substrate_height_top(float): simulation.substrate_height_top,</p></li>
-<li><p>chip_distance(float): simulation.chip_distance,</p></li>
-</ul>
-</div></blockquote>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.get_layers">
+<span class="sig-name descname"><span class="pre">get_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.get_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.get_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns simulation layers and layer numbers in dictionary form. Only return layers that are in use.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -842,23 +848,25 @@ access more than one sub-cell sharing the same ‘name’, but with different ap
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
-<li><p><strong>box</strong><em> (Shape)</em><span> - Border</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
+<li><p><strong>box</strong><em> (Shape)</em><span> - Boundary box</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
 <li><p><strong>ground_grid_box</strong><em> (Shape)</em><span> - Border</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
 <li><p><strong>with_grid</strong><em> (Boolean)</em><span> - Make ground plane grid</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>name</strong><em> (String)</em><span> - Name of the simulation</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Simulation</span></code></p></li>
 <li><p><strong>use_ports</strong><em> (Boolean)</em><span> - Turn off to disable all ports (for debugging)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 <li><p><strong>use_internal_ports</strong><em> (Boolean)</em><span> - Use internal (lumped) ports. The alternative is wave ports.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-<li><p><strong>port_size</strong><em> (Double)</em><span> - Width (um) of wave ports</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400.0</span></code></p></li>
-<li><p><strong>box_height</strong><em> (Double)</em><span> - Height (um) of vacuum above chip in case of single chip.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000.0</span></code></p></li>
-<li><p><strong>substrate_height</strong><em> (Double)</em><span> - Height (um) of the bottom substrate.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">550.0</span></code></p></li>
-<li><p><strong>permittivity</strong><em> (Double)</em><span> - Permittivity of the substrates.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">11.45</span></code></p></li>
-<li><p><strong>wafer_stack_type</strong><em> (Double)</em><span> - Defines whether to use single chip (‘planar’) or flip chip (‘multiface’).</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">planar</span></code></p></li>
-<li><p><strong>chip_distance</strong><em> (Double)</em><span> - Height (um) of vacuum between two chips in case of flip chip.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">8.0</span></code></p></li>
-<li><p><strong>substrate_height_top</strong><em> (Double)</em><span> - Height (um) of the substrate of the top chip in case of flip chip.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">375.0</span></code></p></li>
-<li><p><strong>airbridge_height</strong><em> (Double)</em><span> - Height (um) of airbridges.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3.4</span></code></p></li>
+<li><p><strong>port_size</strong><em> (Double)</em><span> - Width and height of wave ports</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>upper_box_height</strong><em> (Double)</em><span> - Height of vacuum above top substrate</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1000.0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>lower_box_height</strong><em> (Double)</em><span> - Set &gt; 0 to start face counting from substrate bottom layer.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>face_stack</strong><em> (List)</em><span> - Use empty string to not have metal on the face.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1']</span></code></p></li>
+<li><p><strong>substrate_height</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual substrate heights from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[550.0,</span> <span class="pre">375.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>substrate_material</strong><em> (List)</em><span> - Value can be string or list of strings. Use only keywords introduced in material_dict. Set as list to use individual materials from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['silicon']</span></code></p></li>
+<li><p><strong>material_dict</strong><em> (String)</em><span> - Material property keywords follow Ansys Electromagnetics property names. For example ‘permittivity’, ‘dielectric_loss_tangent’, etc.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'silicon':</span> <span class="pre">{'permittivity':</span> <span class="pre">11.45}}</span></code></p></li>
+<li><p><strong>chip_distance</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual chip distances from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[8.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
+<li><p><strong>airbridge_height</strong><em> (Double)</em><span> - Height of airbridges.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3.4</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>waveguide_length</strong><em> (Double)</em><span> - Length of waveguide stubs or distance between couplers and waveguide turning point</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
 <li><p><strong>over_etching</strong><em> (Double)</em><span> - Expansion of metal gaps (negative to shrink the gaps).</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>vertical_over_etching</strong><em> (Double)</em><span> - Vertical over-etching into substrates at gaps.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>hollow_tsv</strong><em> (Boolean)</em><span> - Make TSVs hollow with vacuum inside and thin metal boundary.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>minimum_point_spacing</strong><em> (Double)</em><span> - Tolerance (um) for merging adjacent points in polygon</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></li>
 <li><p><strong>polygon_tolerance</strong><em> (Double)</em><span> - Tolerance (um) for merging adjacent polygons in a layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.004</span></code></p></li>
 <li><p><strong>junction_total_length</strong><em> (Double)</em><span> - Simulation junction total length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">33</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>

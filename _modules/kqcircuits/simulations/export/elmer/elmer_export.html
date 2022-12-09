@@ -519,7 +519,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span><span class="p">,</span> <span class="n">default_layers</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">ELMER_SCRIPT_PATHS</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 
@@ -580,8 +580,14 @@
             <span class="n">copy_tree</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">script_path</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">update</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="export_elmer_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span>
-                      <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="export_elmer_json"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer_json">[docs]</a><span class="k">def</span> <span class="nf">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">:</span> <span class="n">Simulation</span><span class="p">,</span>
+                      <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+                      <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span>
+                      <span class="n">linear_system_method</span><span class="o">=</span><span class="s1">&#39;bicgstab&#39;</span><span class="p">,</span>
+                      <span class="n">p_element_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                      <span class="n">gmsh_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Elmer simulation into json and gds files.</span>
 
@@ -589,6 +595,8 @@
 <span class="sd">        simulation: The simulation to be exported.</span>
 <span class="sd">        path: Location where to write json.</span>
 <span class="sd">        tool(str): Available: &quot;capacitance&quot; and &quot;wave_equation&quot; (Default: capacitance)</span>
+<span class="sd">        linear_system_method(str): Available: &#39;bicgstab&#39;, &#39;mg&#39; (Default: bicgstab)</span>
+<span class="sd">        p_element_order(int): polynomial order of p-elements (Default: 1)</span>
 <span class="sd">        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.</span>
 <span class="sd">        gmsh_params(dict): Parameters for Gmsh</span>
 <span class="sd">        workflow(dict): Parameters for simulation workflow</span>
@@ -599,22 +607,14 @@
     <span class="k">if</span> <span class="n">simulation</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">Simulation</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot export without simulation&quot;</span><span class="p">)</span>
 
-    <span class="c1"># select layers</span>
-    <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;1t1_simulation_signal&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_simulation_ground&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_simulation_gap&quot;</span><span class="p">,</span>
-              <span class="s2">&quot;1t1_ground_grid&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">wafer_stack_type</span> <span class="o">==</span> <span class="s2">&quot;multiface&quot;</span><span class="p">:</span>
-        <span class="n">layers</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;2b1_simulation_signal&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;2b1_simulation_ground&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;2b1_simulation_gap&quot;</span><span class="p">,</span>
-                   <span class="s2">&quot;2b1_ground_grid&quot;</span><span class="p">]</span>
-
     <span class="c1"># collect data for .json file</span>
+    <span class="n">layers</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
     <span class="n">json_data</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;tool&#39;</span><span class="p">:</span> <span class="n">tool</span><span class="p">,</span>
+        <span class="s1">&#39;linear_system_method&#39;</span><span class="p">:</span> <span class="n">linear_system_method</span><span class="p">,</span>
+        <span class="s1">&#39;p_element_order&#39;</span><span class="p">:</span> <span class="n">p_element_order</span><span class="p">,</span>
         <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
-        <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">r</span><span class="p">:</span> <span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">},</span>
+        <span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()},</span>
         <span class="s1">&#39;gmsh_params&#39;</span><span class="p">:</span> <span class="n">default_gmsh_params</span> <span class="k">if</span> <span class="n">gmsh_params</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="o">**</span><span class="n">default_gmsh_params</span><span class="p">,</span> <span class="o">**</span><span class="n">gmsh_params</span><span class="p">},</span>
         <span class="s1">&#39;workflow&#39;</span><span class="p">:</span> <span class="n">default_workflow</span> <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="o">**</span><span class="n">default_workflow</span><span class="p">,</span> <span class="o">**</span><span class="n">workflow</span><span class="p">},</span>
         <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
@@ -628,7 +628,7 @@
     <span class="c1"># write .gds file</span>
     <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">))</span>
     <span class="n">export_layers</span><span class="p">(</span><span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
-                  <span class="n">layers</span><span class="o">=</span><span class="p">{</span><span class="n">default_layers</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">})</span>
+                  <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
@@ -770,8 +770,17 @@
     <span class="k">return</span> <span class="n">main_script_filename</span></div>
 
 
-<div class="viewcode-block" id="export_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a><span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">:</span> <span class="p">[],</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
-                 <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="export_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a><span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">:</span> <span class="p">[],</span>
+                 <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+                 <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span>
+                 <span class="n">linear_system_method</span><span class="o">=</span><span class="s1">&#39;bicgstab&#39;</span><span class="p">,</span>
+                 <span class="n">p_element_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
+                 <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span>
+                 <span class="n">gmsh_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports an elmer simulation model to the simulation path.</span>
 
@@ -780,6 +789,8 @@
 <span class="sd">        simulations(list(Simulation)): list of all the simulations</span>
 <span class="sd">        path(Path): Location where to output the simulation model</span>
 <span class="sd">        tool(str): Available: &quot;capacitance&quot; and &quot;wave_equation&quot; (Default: capacitance)</span>
+<span class="sd">        linear_system_method(str): Available: &#39;bicgstab&#39;, &#39;mg&#39; (Default: bicgstab)</span>
+<span class="sd">        p_element_order(int): polynomial order of p-elements (Default: 1)</span>
 <span class="sd">        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.</span>
 <span class="sd">        file_prefix: File prefix of the script file to be created.</span>
 <span class="sd">        script_file: Name of the script file to run.</span>
@@ -801,7 +812,8 @@
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tool</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="p">,</span> <span class="n">workflow</span><span class="p">))</span>
+            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">tool</span><span class="p">,</span> <span class="n">linear_system_method</span><span class="p">,</span>
+                                                    <span class="n">p_element_order</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">gmsh_params</span><span class="p">,</span> <span class="n">workflow</span><span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
