@@ -89,9 +89,9 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
             pcell_classes.add(pcell_decl.__class__)
 
     # If some instances are selected, then we are only going to export code for them
-    layout_view = pya.CellView.active().view() if hasattr(pya, "CellView") else None
-    if layout_view and len(layout_view.object_selection) > 0:
-        for obj in layout_view.object_selection:
+    cell_view = pya.CellView.active() if hasattr(pya, "CellView") else None
+    if cell_view and cell_view.is_valid() and len(cell_view.view().object_selection) > 0:
+        for obj in cell_view.view().object_selection:
             if obj.is_cell_inst():
                 add_instance(obj.inst())
     # Otherwise get all instances at one level below top_cell.
