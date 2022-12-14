@@ -552,7 +552,7 @@ class Simulation:
                         try:
                             _, _, signal_edge = find_edge_from_point_in_cell(
                                 simulation.cell,
-                                simulation.get_layer('simulation_signal', port.face),
+                                simulation.get_layer(port.signal_layer, port.face),
                                 port.signal_location,
                                 simulation.layout.dbu)
                             _, _, ground_edge = find_edge_from_point_in_cell(
