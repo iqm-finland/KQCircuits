@@ -60,7 +60,7 @@ def find_edge_from_point_in_polygons(polygons: List[pya.Polygon], point: pya.DPo
     if sq_distance < tolerance**2:
         return i, j, nearest_edge
     else:
-        raise ValueError("No edge found at point")
+        raise ValueError(f"No edge found at {point=}, {nearest_edge=}, {sq_distance=}")
 
 
 def get_enclosing_polygon(points: List[List[float]]):

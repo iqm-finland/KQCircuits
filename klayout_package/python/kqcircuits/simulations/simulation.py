@@ -569,9 +569,10 @@ class Simulation:
                                                      (signal_edge.x2, signal_edge.y2, port_z))
                             p_data['ground_edge'] = ((ground_edge.x1, ground_edge.y1, port_z),
                                                      (ground_edge.x2, ground_edge.y2, port_z))
-                        except ValueError:
+                        except ValueError as e:
                             self.__log.warning('Unable to create polygon for port {}, because either signal or ground '
                                                'edge is not found.'.format(port.number))
+                            self.__log.debug(e)
                 else:
                     raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
 
