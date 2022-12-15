@@ -136,6 +136,7 @@ class QualityFactor(Chip):
             pos_res_start = cplr_refpoints_abs["port_a"]
             sign = 1 if resonator_up else -1
             pos_res_end = pos_res_start + sign*pya.DVector(0, min(res_lengths[i], self.max_res_len))
+            self.refpoints['resonator_{}_end'.format(i)] = pos_res_end
 
             # create resonator using WaveguideComposite
             if res_beg[i] == "airbridge":
