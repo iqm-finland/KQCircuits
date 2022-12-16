@@ -104,6 +104,11 @@ or::
    the singularity image or override the system python with the latter executable, by moving it
    to path-to-your-KQCircuits/singularity/bin). 
 
+.. warning::
+   The singularity container can be used with Windows Subsystem for Linux (WSL) but problems with simulations
+   getting stuck have been encountered while using the simple workload manager in
+   :git_url:`klayout_package/python/scripts/simulations/elmer/scripts/simple_workload_manager.py`.
+
 The simulation scripts are then prepared in a subfolder (for example `\$KQC_TMP_PATH/waveguides_sim_elmer` in the
 affore mentioned example. The `$KQC_TMP_PATH` folder (is normally in `../tmp/`, remember to set it! If you do not,
 you might get a read-only error when the singularity image tries to write to the image tmp folder that is
