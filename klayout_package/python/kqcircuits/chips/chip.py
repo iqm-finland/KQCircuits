@@ -576,3 +576,5 @@ class Chip(Element):
 
         self.__log.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} ground TSVs, '
                         + f'totalling {existing_tsv_count + len(tsv_locations)} TSVs.')
+
+        return tsv_locations
