@@ -10,8 +10,7 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
- <group-name>Macros</group-name>
- <menu-path>kqcircuits_menu&gt;end("&amp;KQCircuits").end</menu-path>
+ <menu-path>kqcircuits_menu&gt;end("&amp;KQCircuits").begin</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text># This code is part of KQCircuits

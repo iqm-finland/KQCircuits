@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<klayout-macro>
+ <description>Add User Package</description>
+ <version>0.1</version>
+ <category>pymacros</category>
+ <prolog/>
+ <epilog/>
+ <doc/>
+ <autorun>false</autorun>
+ <autorun-early>false</autorun-early>
+ <shortcut/>
+ <show-in-menu>true</show-in-menu>
+ <menu-path>kqcircuits_menu.#1</menu-path>
+ <interpreter>python</interpreter>
+ <dsl-interpreter-name/>
+ <text>
+# This code is part of KQCircuits
+# Copyright (C) 2023 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+
+
+"""Macro for adding new user directory for user defined elements.
+
+Note, this only makes sense when using KQCircuits Salt package!
+
+This will do the following things:
+    * create the directory (if not already there)
+    * add symlink to it so that KLayout recognises it
+    * create subdirectories for libraries (if not already there)
+"""
+
+import os
+import pya
+import math
+import subprocess
+from pathlib import Path
+from kqcircuits.util.library_helper import get_library_paths
+
+
+def _setup_pkg(src_dir, pkg_name):
+    """set up selected user directory as a new KQC package."""
+
+    salt = Path(os.path.dirname(os.path.realpath(__file__))).parents[4]
+    if salt.parts[-1] != "salt":
+        raise RuntimeError("Supported only when using KQC Salt package.")
+
+    target_path = Path(src_dir)
+    link_path = os.path.join(salt.parents[0], "python", pkg_name)
+
+    target_path.mkdir(exist_ok=True)
+    for lib in get_library_paths():
+        Path(os.path.join(target_path, lib)).mkdir(exist_ok=True)
+
+    if os.path.lexists(link_path):
+        os.unlink(link_path)
+    if os.name == "nt":  # use junction link in Windows
+        subprocess.check_call(['cmd', '/c', 'mklink', '/J', link_path, target_path])
+    else:
+        os.symlink(target_path, link_path, target_is_directory=True)
+
+
+class AddUserDir(pya.QDialog):
+    """Qt Dialog for adding a user provided element source directory."""
+
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.setWindowTitle("Add User Directory")
+        layout = pya.QGridLayout(self)
+        self.setLayout(layout)
+
+        label = pya.QLabel(self)
+        label.text = "Package Name:"
+        layout.addWidget(label, 0, 0, 1, 1)
+
+        pkg_name = pya.QLineEdit(self)
+        layout.addWidget(pkg_name, 0, 1, 1, 1)
+
+        label = pya.QLabel(self)
+        label.text = "Source Directory:"
+        layout.addWidget(label, 1, 0, 1, 1)
+
+        src_dir = pya.QLineEdit(self)
+        layout.addWidget(src_dir, 1, 1, 1, 1)
+
+        def choose_dir():
+            chosen  = pya.QFileDialog.getExistingDirectory(self, "Choose different source directory", src_dir.text)
+            if chosen:
+                src_dir.text = chosen
+                if not pkg_name.text:
+                    pkg_name.text = Path(chosen).parts[-1]
+
+        browse = pya.QPushButton(self)
+        browse.text = "..."
+        layout.addWidget(browse, 1, 2, 1, 1)
+        browse.clicked = choose_dir
+
+        def add_package():
+            if not pkg_name.text and not src_dir.text:
+                return
+            if not src_dir.text:
+                src_dir.text = f"{os.path.expanduser('~')}/{pkg_name.text}"
+            elif not pkg_name.text:
+                pkg_name.text = Path(src_dir.text).parts[-1]
+            try:
+                _setup_pkg(src_dir.text, pkg_name.text)
+                if os.name == "nt":
+                    pya.MessageBox.info(f"Added '{pkg_name.text}' package.",
+                                        "Restart KLayout to make it visible!", pya.MessageBox.Ok)
+                self.accept()
+            except Exception as ex:
+                pya.QMessageBox.critical(self, "Error", str(ex))
+
+        add = pya.QPushButton(self)
+        add.text = "Add"
+        layout.addWidget(add, 2, 0, 1, 1)
+        add.clicked = add_package
+
+        cancel = pya.QPushButton(self)
+        cancel.text = "Cancel"
+        layout.addWidget(cancel, 2, 2, 1, 1)
+        cancel.clicked = lambda: self.reject()
+
+        layout.setRowStretch(2, 1)
+
+dialog = AddUserDir(pya.Application.instance().main_window())
+dialog.exec_()
+</text>
+</klayout-macro>

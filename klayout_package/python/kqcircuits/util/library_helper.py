@@ -26,10 +26,12 @@
         cell = Airbridge.create(layout, **kwargs)
 """
 
+import os
 import re
 import types
 import inspect
 import importlib
+from pathlib import Path
 from autologging import logged
 
 from kqcircuits.defaults import SRC_PATHS, kqc_library_names
@@ -62,6 +64,12 @@ _excluded_module_names = (
     "junction_test_pads",
     "tsv",
 )
+
+# Add user directories to SRC_PATHS when using Salt package.
+if SRC_PATHS[0].parts[-4] == "salt":
+    user_dirs = os.path.join(SRC_PATHS[0].parents[3], "python")
+    for ud in os.listdir(user_dirs):
+        SRC_PATHS.append(Path(os.path.join(user_dirs, ud)))
 
 
 @logged
@@ -117,6 +125,11 @@ def load_libraries(flush=False, path=""):
             library.register(library_name)  # library must be registered only after all cells have been added to it
 
     return {key: value[0] for key, value in _kqc_libraries.items()}
+
+
+def get_library_paths():
+    """Returns a list of library paths under kqcircuits."""
+    return (path for _, path in _kqc_libraries.values())
 
 
 def delete_all_libraries():

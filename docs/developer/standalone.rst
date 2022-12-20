@@ -3,7 +3,7 @@
 KLayout Standalone Usage
 ========================
 
-The :ref:`developer_setup` or :ref:`getting_started` sections described setting up KQCircuits for use
+The :ref:`developer_setup` or :ref:`salt_package` sections described setting up KQCircuits for use
 with KLayout Editor (GUI). However, KQC can also be used without KLayout
 Editor by using the standalone KLayout Python module. This lets you develop
 and use KQCircuits completely within any Python development environment of
