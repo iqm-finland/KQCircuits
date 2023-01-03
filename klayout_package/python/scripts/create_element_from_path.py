@@ -25,6 +25,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util import macro_prepare
 from kqcircuits.util.log_router import route_log
 from kqcircuits.defaults import TMP_PATH
+from kqcircuits.util.plugin_startup import register_plugins
 
 # Script to create a KQCircuits element in KLayout by specifying the path to the module file containing the element.
 # This script can be used to integrate with external editors.
@@ -79,6 +80,9 @@ from kqcircuits.defaults import TMP_PATH
 #        "isDefault": true
 #      }
 #    }
+
+# Register KQC plugins into KLayout (must happen before the layout view is created)
+register_plugins()
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)

@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<klayout-macro>
- <description>On startup, create an empty layout with a top cell and default layers</description>
- <version/>
- <category>pymacros</category>
- <prolog/>
- <epilog/>
- <doc/>
- <autorun>true</autorun>
- <autorun-early>false</autorun-early>
- <priority>0</priority>
- <shortcut/>
- <show-in-menu>false</show-in-menu>
- <group-name/>
- <menu-path/>
- <interpreter>python</interpreter>
- <dsl-interpreter-name/>
- <text># This code is part of KQCircuits
+# This code is part of KQCircuits
 # Copyright (C) 2021 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -32,15 +15,21 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-import pya
-import kqcircuits.util.macro_prepare as macroprep
-from kqcircuits.util.plugin_startup import register_plugins
 
-# Register KQC plugins into KLayout
-register_plugins()
+from kqcircuits.util.edit_node_plugin import EditNodePluginFactory
 
-# Create a new, empty layout if there is no active LayoutView yet
-if pya.LayoutView.current() is None:
-    (layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
-</text>
-</klayout-macro>
+
+_plugins_registered = False
+
+
+def register_plugins():
+    """ Register KQC plugins into KLayout. Registration happens only one.
+
+    Note: For KLayout 0.28.0 and up, plugin registration must happen before any layout views are created.
+    """
+    global _plugins_registered  # pylint: disable=global-statement
+    if not _plugins_registered:
+        _plugins_registered = True
+
+        # Register the Edit Node plugin
+        EditNodePluginFactory()
