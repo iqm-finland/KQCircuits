@@ -63,11 +63,7 @@ else:
     # for normal installation
     PY_PATH = ROOT_PATH.joinpath("klayout_package").joinpath("python")
 SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
-TMP_PATH = os.getenv('KQC_TMP_PATH')
-if TMP_PATH is None:
-    TMP_PATH = ROOT_PATH.joinpath("tmp")
-else:
-    TMP_PATH = Path(TMP_PATH)
+TMP_PATH = Path(os.getenv('KQC_TMP_PATH', ROOT_PATH.joinpath("tmp")))
 
 RESOURCES_PATH = ROOT_PATH.joinpath("resources")
 TMP_PATH.mkdir(exist_ok=True)
