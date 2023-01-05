@@ -85,7 +85,7 @@ import re
 from kqcircuits._version import get_version
 
 project = 'KQCircuits'
-copyright = '2021-2022, IQM'
+copyright = '2021-2023, IQM'
 author = 'IQM'
 
 # Set supplied KQC version if found from Git tags
