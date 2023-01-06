@@ -269,9 +269,9 @@ class Element(pya.PCellDeclarationHelper):
         if cls is not None:  # filter keys by cls
             if Element.build == cls.build:  # Abstract class? Find subclass specified by *_type.
                 cls = cls._get_abstract()
-                mod = to_module_name(cls.__name__)
-                if f"{mod}_type" in parameters:
-                    subtype = parameters[f"{mod}_type"]
+                mod_type = f"{to_module_name(cls.__name__)}_type"
+                subtype = parameters[mod_type] if mod_type in parameters else getattr(self, mod_type, "")
+                if subtype:
                     library_layout = (load_libraries(path=cls.LIBRARY_PATH)[cls.LIBRARY_NAME]).layout()
                     if subtype in library_layout.pcell_names():
                         cls = type(library_layout.pcell_declaration(subtype))
