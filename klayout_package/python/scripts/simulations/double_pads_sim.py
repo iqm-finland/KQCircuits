@@ -18,33 +18,33 @@
 import logging
 import sys
 from pathlib import Path
-from itertools import product
 
 import numpy as np
 
-from kqcircuits.simulations.double_pads import DoublePadsSim
+from kqcircuits.simulations.double_pads_sim import DoublePadsSim
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
-from kqcircuits.simulations.export.simulation_export import sweep_simulation
-from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout
+from kqcircuits.simulations.export.simulation_export import export_simulation_oas
+from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
+    open_with_klayout_or_default_application
 
 
 sim_tools = ['elmer', 'eigenmode', 'q3d']
 
-# Simulation parameters
-sim_class = DoublePadsSim  # pylint: disable=invalid-name
-sim_parameters = {
-    'name': 'double_pads',
-    'use_internal_ports': True,
-    'use_ports': True,
-    'face_stack': ['1t1'],
-    'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
-
-    'internal_island_ports': True  # DoublePads specific
-}
-
 for sim_tool in sim_tools:
+    # Simulation parameters
+    sim_class = DoublePadsSim  # pylint: disable=invalid-name
+    sim_parameters = {
+        'name': 'double_pads',
+        'use_internal_ports': True,
+        'use_ports': True,
+        'face_stack': ['1t1'],
+        'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
+
+        'internal_island_ports': sim_tool != 'eigenmode'  # DoublePads specific
+    }
+
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + f'_output_{sim_tool}')
 
     # Add eigenmode and Q3D specific settings
@@ -54,16 +54,16 @@ for sim_tool in sim_tools:
         'minimum_passes': 2,
         'minimum_converged_passes': 2,
     } if sim_tool == 'q3d' else {
-        'max_delta_f': 0.5,
+        'max_delta_f': 0.008,
 
         # do two passes with tight mesh
-        'gap_max_element_length': 10,
-        'maximum_passes': 2,
+        'gap_max_element_length': 25,
+        'maximum_passes': 17,
         'minimum_passes': 1,
-        'minimum_converged_passes': 1,
+        'minimum_converged_passes': 2,
 
         # lossy eigenmode simulation settings
-        'n_modes': 2,
+        'n_modes': 1,
         'frequency': 0.5,  # minimum allowed eigenfrequency
         'simulation_flags': ['pyepr'],
 
@@ -131,39 +131,39 @@ for sim_tool in sim_tools:
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     layout = get_active_or_new_layout()
 
-    # For eigenmode simulations, we want a port across the islands
-    if sim_tool == 'eigenmode':
-        sim_parameters['internal_island_ports'] = False
-
     # Sweep simulations
-    # simulations = [sim_class(layout, **sim_parameters)]
-    simulations = sweep_simulation(layout, sim_class, sim_parameters, {
-        'coupler_extent': [[float(w), 20.] for w in np.linspace(20, 400, 8, dtype=int)],
-        'coupler_offset': [float(e) for e in np.linspace(5, 50, 5, dtype=int)],
-        'ground_gap': [[float(w), float(h)] for w, h
-            in product(np.linspace(550, 1000, 5, dtype=int), np.linspace(400, 1000, 5, dtype=int))],
-        'squid_offset': [float(e) for e in np.linspace(-10, 0, 5, dtype=int)],
-    })
+    # Here, we sweep coupler width with two different island-island gap widths:
+    #   70 µm = 15.25 * 2 + 39.5
+    #   150µm = 55.25 * 2 + 29.5
+    # SIM junction set to 39.5 so that the gap between junction islands is same as that gap in Manhattan junction
+    # Adapt taper widths to have 15 degree tapering angle from y-axis. Widths are different for each island
+    # according to the Manhattan junction
 
-    simulations += [sim_class(layout, **{
-        **sim_parameters,
-        **{
-            'island1_extent': [float(i_w), float(i_h)],
-            'island2_extent': [float(i_w), float(i_h)],
-            'name': f'{sim_parameters["name"]}_island_extent_{i_w}_{i_h}'
-        }
-        })
-        for i_w, i_h in zip(np.linspace(200, 600, 16, dtype=int), np.linspace(50, 200, 16, dtype=int))]
+    simulations = []
+    for gap_height, junction_taper_width, island_width in zip([15.25, 55.25], [31, 31.7], [700, 775]):
+        name = sim_parameters["name"]
+        name = f'{name}_island_dist_{int(2*gap_height + 39.5)}'
+        simulations += [sim_class(layout, **{
+                **sim_parameters,
+                'ground_gap': [900, 900],
+                'coupler_extent': [round(coupler_width), 20],
+                'island1_extent': [round(island_width), 200],
+                'island2_extent': [round(island_width), 200],
+                'junction_type': 'Manhattan',
+                'junction_total_length': 39.5,
+                'island1_taper_width': 2 * gap_height * np.tan(np.radians(15)) + 8,
+                'island1_taper_height': gap_height,
+                'island1_taper_junction_width': 8,
+                'island2_taper_width': 2 * gap_height * np.tan(np.radians(15)) + junction_taper_width,
+                'island2_taper_height': gap_height,
+                'island2_taper_junction_width': junction_taper_width,
+                'name': f'{name}_coupler_width_{round(coupler_width)}'
+            })
+            for coupler_width in np.linspace(50, 800, 21)
+        ]
 
-    simulations += [sim_class(layout, **{
-        **sim_parameters,
-        **{
-            'island1_r': float(r),
-            'island2_r': float(r),
-            'name': f'{sim_parameters["name"]}_island_r_{r}'
-        }
-        })
-        for r in np.linspace(0, 100, 8, dtype=int)]
+    # Create simulation
+    oas = export_simulation_oas(simulations, dir_path)
 
     if sim_tool == 'elmer':
         export_elmer(simulations, dir_path, **export_parameters_elmer)
@@ -171,3 +171,4 @@ for sim_tool in sim_tools:
         export_ansys(simulations, **export_parameters_ansys)
 
 logging.info(f'Total simulations: {len(simulations)}')
+open_with_klayout_or_default_application(oas)
