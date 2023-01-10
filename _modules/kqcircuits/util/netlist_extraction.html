@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -522,7 +524,7 @@
 
 
 <div class="viewcode-block" id="export_cell_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_cell_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_cell_netlist</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pcell</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Exports netlist into `filename` in JSON</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Exports netlist into `filename` in JSON</span>
 
 <span class="sd">    The file will have four sections:</span>
 <span class="sd">    ``{&quot;nets&quot;: {...}, &quot;subcircuits&quot;: {...}, &quot;circuits&quot;: {...}, &quot;chip&quot;: {...}}``</span>
@@ -585,7 +587,7 @@
 
 
 <div class="viewcode-block" id="export_netlist"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_netlist">[docs]</a><span class="k">def</span> <span class="nf">export_netlist</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">internal_layout</span><span class="p">,</span> <span class="n">original_layout</span><span class="p">,</span> <span class="n">cell_mapping</span><span class="p">,</span> <span class="n">pcell</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Exports `circuit` into `filename` in JSON</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Exports `circuit` into `filename` in JSON</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        circuit: pya Circuit object</span>
@@ -718,7 +720,7 @@
 
 
 <div class="viewcode-block" id="extract_nets"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_nets">[docs]</a><span class="k">def</span> <span class="nf">extract_nets</span><span class="p">(</span><span class="n">net</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Extract dictionary for net for JSON export &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Extract dictionary for net for JSON export &quot;&quot;&quot;</span>
     <span class="n">net_for_export</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">pin_ref</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">each_subcircuit_pin</span><span class="p">():</span>
         <span class="n">net_for_export</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
@@ -730,7 +732,7 @@
 
 
 <div class="viewcode-block" id="extract_circuits"><a class="viewcode-back" href="../../../api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.extract_circuits">[docs]</a><span class="k">def</span> <span class="nf">extract_circuits</span><span class="p">(</span><span class="n">cell_mapping</span><span class="p">,</span> <span class="n">internal_cell</span><span class="p">,</span> <span class="n">layout</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Extract dictionary for circuit for JSON export &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Extract dictionary for circuit for JSON export &quot;&quot;&quot;</span>
 
     <span class="n">circuit_has_cell</span> <span class="o">=</span> <span class="n">cell_mapping</span><span class="o">.</span><span class="n">has_mapping</span><span class="p">(</span><span class="n">internal_cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
     <span class="n">circuit_for_export</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;circuit_has_cell&quot;</span><span class="p">:</span> <span class="n">circuit_has_cell</span><span class="p">}</span>
@@ -762,7 +764,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

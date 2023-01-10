@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -528,7 +530,7 @@
 
 <div class="viewcode-block" id="replace_squids"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squids">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">replace_squids</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">parameter_start</span><span class="p">,</span> <span class="n">parameter_step</span><span class="p">,</span> <span class="n">parameter_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Replaces squids by code generated squids with the given parameter sweep.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replaces squids by code generated squids with the given parameter sweep.</span>
 
 <span class="sd">    All squids below top_cell in the cell hierarchy are removed. The number of code</span>
 <span class="sd">    generated squids may be limited by the value of parameter_end.</span>
@@ -550,7 +552,7 @@
     <span class="n">old_squids</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of tuples (squid instance, squid dtrans with respect to cell, old name)</span>
 
     <span class="k">def</span> <span class="nf">recursive_replace_squids</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="p">,</span> <span class="n">combined_dtrans</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Appends to old_squids all squids in top_cell_inst or any instance below it in hierarchy.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Appends to old_squids all squids in top_cell_inst or any instance below it in hierarchy.&quot;&quot;&quot;</span>
         <span class="c1"># cannot use just top_cell_inst.cell due to klayout bug, see</span>
         <span class="c1"># https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference</span>
         <span class="n">top_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">top_cell_inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
@@ -584,7 +586,7 @@
 
 <div class="viewcode-block" id="replace_squid"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.replace_squid">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">junction_type</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">squid_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Replaces a SQUID by the requested alternative in the named instance.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Replaces a SQUID by the requested alternative in the named instance.</span>
 
 <span class="sd">    Replaces the SQUID(s) in the sub-element(s) named ``inst_name`` with other SQUID(s) of</span>
 <span class="sd">    ``junction_type``. The necessary SQUID parameters are specified in ``params``. If ``inst_name`` is</span>
@@ -600,7 +602,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">find_cells_with_squids</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the container cells in `chip` called `inst_name`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the container cells in `chip` called `inst_name`&quot;&quot;&quot;</span>
         <span class="n">cells</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">chip</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">chip</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
@@ -657,7 +659,7 @@
         <span class="n">new_squid</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;squid_index&quot;</span><span class="p">,</span> <span class="n">squid_index</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="convert_cells_to_static"><a class="viewcode-back" href="../../../api/kqcircuits.util.replace_squids.html#kqcircuits.util.replace_squids.convert_cells_to_static">[docs]</a><span class="k">def</span> <span class="nf">convert_cells_to_static</span><span class="p">(</span><span class="n">layout</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Converts all cells in the layout to static. &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts all cells in the layout to static. &quot;&quot;&quot;</span>
 
     <span class="n">converted_cells</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -689,7 +691,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

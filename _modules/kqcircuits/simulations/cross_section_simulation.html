@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -522,7 +524,7 @@
 <div class="viewcode-block" id="CrossSectionSimulation"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation">[docs]</a><span class="nd">@logged</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CrossSectionSimulation</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Class for co-planar waveguide cross-section simulations.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for co-planar waveguide cross-section simulations.</span>
 
 <span class="sd">    This class is intended to be subclassed by a specific simulation implementation;  The subclass should implement the</span>
 <span class="sd">    method &#39;build&#39; which defines the simulation geometry and material properties.</span>
@@ -543,7 +545,7 @@
                                      <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;London penetration depth is implemented for one signal simulation only&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a CrossSectionSimulation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a CrossSectionSimulation.</span>
 
 <span class="sd">        The initializer parses parameters, creates a top cell, and then calls `self.build` to create</span>
 <span class="sd">        the simulation geometry.</span>
@@ -582,28 +584,28 @@
 
 <div class="viewcode-block" id="CrossSectionSimulation.build"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.build">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build simulation geometry.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build simulation geometry.</span>
 
 <span class="sd">        This method is to be overridden, and the overriding method should create the geometry to be simulated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="CrossSectionSimulation.get_sim_layer"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_sim_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns layer of given name. If layer doesn&#39;t exist, a new layer is created.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns layer of given name. If layer doesn&#39;t exist, a new layer is created.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="CrossSectionSimulation.set_permittivity"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.set_permittivity">[docs]</a>    <span class="k">def</span> <span class="nf">set_permittivity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">permittivity</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets permittivity for layer of given name.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets permittivity for layer of given name.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">permittivity_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">permittivity</span></div>
 
 <div class="viewcode-block" id="CrossSectionSimulation.get_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()}</span></div>
 
 <div class="viewcode-block" id="CrossSectionSimulation.get_simulation_data"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the simulation data in dictionary form.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the simulation data in dictionary form.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dictionary of relevant parameters for simulation</span>
@@ -628,7 +630,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

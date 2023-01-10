@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -513,7 +515,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 <div class="viewcode-block" id="LabelOrigin"><a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.LabelOrigin">[docs]</a><span class="k">class</span> <span class="nc">LabelOrigin</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Origin of the Text PCell. One of the four corners of the cell bounding box</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Origin of the Text PCell. One of the four corners of the cell bounding box</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">BOTTOMLEFT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
     <span class="n">BOTTOMRIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
@@ -521,7 +523,7 @@
     <span class="n">TOPRIGHT</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="produce_label"><a class="viewcode-back" href="../../../api/kqcircuits.util.label.html#kqcircuits.util.label.produce_label">[docs]</a><span class="k">def</span> <span class="nf">produce_label</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">origin_offset</span><span class="p">,</span> <span class="n">margin</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">layer_protection</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">350</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Produces a Text PCell accounting for desired relative position of the text respect to the given location</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Produces a Text PCell accounting for desired relative position of the text respect to the given location</span>
 <span class="sd">    and the spacing.</span>
 
 <span class="sd">    Args:</span>
@@ -601,7 +603,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

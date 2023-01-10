@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -513,7 +515,7 @@
 
 
 <div class="viewcode-block" id="add_parameters_from"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameters_from">[docs]</a><span class="k">def</span> <span class="nf">add_parameters_from</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="n">param_names</span><span class="p">,</span> <span class="o">**</span><span class="n">param_with_default_value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator function to add parameters to the decorated class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator function to add parameters to the decorated class.</span>
 
 <span class="sd">    Only the named parameters are added or changed. Use a starting wildcard (``&quot;*&quot;``) argument to</span>
 <span class="sd">    get all parameters of ``cls``. For simplicity, if nothing is specified it gets all parameters.</span>
@@ -552,7 +554,7 @@
 
 
 <div class="viewcode-block" id="add_parameter"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameter">[docs]</a><span class="k">def</span> <span class="nf">add_parameter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">change</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Decorator function to add a single parameter to the decorated class.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator function to add a single parameter to the decorated class.</span>
 
 <span class="sd">    Makes it possible to have fine-grained control over the Parameter&#39;s properties. Particularly,</span>
 <span class="sd">    changing the &quot;hidden&quot; or the &quot;choices&quot; property of the parameter.</span>
@@ -580,7 +582,7 @@
 
 
 <div class="viewcode-block" id="pdt"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.pdt">[docs]</a><span class="k">class</span> <span class="nc">pdt</span><span class="p">:</span>  <span class="c1"># pylint: disable=invalid-name</span>
-    <span class="sd">&quot;&quot;&quot;A namespace for pya.PCellParameterDeclaration types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A namespace for pya.PCellParameterDeclaration types.&quot;&quot;&quot;</span>
     <span class="n">TypeDouble</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeDouble</span>
     <span class="n">TypeInt</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeInt</span>
     <span class="n">TypeList</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">PCellParameterDeclaration</span><span class="o">.</span><span class="n">TypeList</span>
@@ -592,7 +594,7 @@
 
 
 <div class="viewcode-block" id="Param"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.Param">[docs]</a><span class="k">class</span> <span class="nc">Param</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;PCell parameters as Element class attributes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;PCell parameters as Element class attributes.</span>
 
 <span class="sd">    This should be used for defining PCell parameters in Element subclasses. The attributes of Param are same</span>
 <span class="sd">    as ``pya.PCellParameterDeclaration``&#39;s attributes, except for:</span>
@@ -606,7 +608,7 @@
 
 <div class="viewcode-block" id="Param.get_all"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.Param.get_all">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get all parameters of given owner.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all parameters of given owner.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            owner: get all parameters of this class</span>
@@ -660,7 +662,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

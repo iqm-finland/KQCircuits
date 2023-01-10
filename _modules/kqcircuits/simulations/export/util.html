@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -533,14 +535,14 @@
 
 
 <div class="viewcode-block" id="find_edge_from_point_in_cell"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_cell">[docs]</a><span class="k">def</span> <span class="nf">find_edge_from_point_in_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the edge closest to a point, and returns the edge as well as it&#39;s polygon and edge index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Shapes</span><span class="o">.</span><span class="n">SPolygons</span><span class="p">),</span> <span class="n">point</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="find_edge_from_point_in_polygons"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.find_edge_from_point_in_polygons">[docs]</a><span class="k">def</span> <span class="nf">find_edge_from_point_in_polygons</span><span class="p">(</span><span class="n">polygons</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">],</span> <span class="n">point</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Finds the edge closest to a point, and returns the edge as well as it&#39;s polygon and edge index</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Find closest edge to point</span>
@@ -557,7 +559,7 @@
 
 
 <div class="viewcode-block" id="get_enclosing_polygon"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.util.html#kqcircuits.simulations.export.util.get_enclosing_polygon">[docs]</a><span class="k">def</span> <span class="nf">get_enclosing_polygon</span><span class="p">(</span><span class="n">points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Order points in such a way that they form a polygon without intersecting</span>
 <span class="sd">    lines. The ordering is clockwise starting from the left-most point.</span>
 
@@ -571,7 +573,7 @@
     <span class="c1"># Find y-coordinate of linear interpolation between p0 = [x0,y0] and</span>
     <span class="c1"># p1 = [x1,y1] corresponding to x</span>
     <span class="k">def</span> <span class="nf">_linearinterpy</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find y-coordinate of linear interpolation between p0 = [x0,y0] and p1 = [x1,y1] corresponding to x</span>
 
 <span class="sd">        Arguments:</span>
@@ -617,7 +619,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

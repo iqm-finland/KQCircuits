@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -517,7 +519,7 @@
 
 
 <div class="viewcode-block" id="Swissmon"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.swissmon.html#kqcircuits.qubits.swissmon.Swissmon">[docs]</a><span class="k">class</span> <span class="nc">Swissmon</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The PCell declaration for a Swissmon qubit.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a Swissmon qubit.</span>
 
 <span class="sd">    Swissmon type qubit. Each arm (West, North, East, South) has it&#39;s own arm gap width</span>
 <span class="sd">    (``gap_width``) and arm metal width (``arm_width``). SQUID is loaded from another library.</span>
@@ -624,7 +626,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;cplr</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cpl_nr</span><span class="p">),</span> <span class="p">(</span><span class="n">rotation</span> <span class="o">*</span> <span class="n">transf</span><span class="p">)</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span><span class="n">port_ref</span><span class="p">),</span> <span class="n">rotation</span><span class="o">*</span><span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_produce_cross_and_squid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces the cross and squid for the Swissmon.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces the cross and squid for the Swissmon.&quot;&quot;&quot;</span>
         <span class="c1"># shorthand</span>
         <span class="p">[</span><span class="n">ww</span><span class="p">,</span> <span class="n">wn</span><span class="p">,</span> <span class="n">we</span><span class="p">,</span> <span class="n">ws</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">width</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_width</span><span class="p">]</span>
         <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">length</span><span class="p">)</span> <span class="k">for</span> <span class="n">length</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_length</span><span class="p">]</span>
@@ -699,7 +701,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

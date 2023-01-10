@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -518,7 +520,7 @@
 
 
 <div class="viewcode-block" id="arc"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.arc">[docs]</a><span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Returns list of points of an arc</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Returns list of points of an arc</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        r: radius</span>
@@ -541,7 +543,7 @@
 
 
 <div class="viewcode-block" id="WaveguideCoplanarCurved"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved">[docs]</a><span class="k">class</span> <span class="nc">WaveguideCoplanarCurved</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The PCell declaration of a curved segment of a coplanar waveguide.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration of a curved segment of a coplanar waveguide.</span>
 
 <span class="sd">    Coordinate origin is left at the center of the arc.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -576,7 +578,7 @@
 
 <div class="viewcode-block" id="WaveguideCoplanarCurved.create_curve_arcs"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.create_curve_arcs">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_curve_arcs</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates arcs of points for a curved waveguide.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates arcs of points for a curved waveguide.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            elem: Element from which the waveguide parameters for the arc are taken</span>
@@ -600,7 +602,7 @@
 
 <div class="viewcode-block" id="WaveguideCoplanarCurved.produce_curve_termination"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_curve_termination">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">produce_curve_termination</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">term_len</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">face_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">opp_face_index</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces termination for a curved waveguide.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces termination for a curved waveguide.</span>
 
 <span class="sd">        The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.</span>
 <span class="sd">        The termination is placed at the position where a curved waveguide with alpha=angle and trans=trans would end.</span>
@@ -651,7 +653,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

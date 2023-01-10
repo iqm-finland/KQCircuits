@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -517,14 +519,14 @@
 
 <div class="viewcode-block" id="TestStructure"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">TestStructure</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base PCell declaration for test structures.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base PCell declaration for test structures.&quot;&quot;&quot;</span>
 
     <span class="n">LIBRARY_NAME</span> <span class="o">=</span> <span class="s2">&quot;Test Structure Library&quot;</span>
     <span class="n">LIBRARY_DESCRIPTION</span> <span class="o">=</span> <span class="s2">&quot;Superconducting quantum circuit library for test structures.&quot;</span>
     <span class="n">LIBRARY_PATH</span> <span class="o">=</span> <span class="s2">&quot;test_structures&quot;</span>
 
 <div class="viewcode-block" id="TestStructure.produce_pad"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_pad">[docs]</a>    <span class="k">def</span> <span class="nf">produce_pad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">pad_height</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inserts a square pad shape to pads_region.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a square pad shape to pads_region.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            x: x-coordinate of the pad center</span>
@@ -545,7 +547,7 @@
 
 <div class="viewcode-block" id="TestStructure.produce_four_point_pads"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_four_point_pads">[docs]</a>    <span class="k">def</span> <span class="nf">produce_four_point_pads</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pads_region</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">pad_height</span><span class="p">,</span> <span class="n">pad_spacing_x</span><span class="p">,</span> <span class="n">pad_spacing_y</span><span class="p">,</span> <span class="n">connect_pads</span><span class="p">,</span>
                                 <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">refpoint_prefix</span><span class="o">=</span><span class="s2">&quot;probe&quot;</span><span class="p">,</span> <span class="n">refpoint_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inserts four pads to pads_region.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts four pads to pads_region.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            pads_region: Region to which the pad shapes are inserted</span>
@@ -594,7 +596,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_se&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refpoint_prefix</span><span class="p">)]</span> <span class="o">=</span> <span class="n">pos_se</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="n">pad_width</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">refpoint_distance</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestStructure.produce_etched_region"><a class="viewcode-back" href="../../../api/kqcircuits.test_structures.test_structure.html#kqcircuits.test_structures.test_structure.TestStructure.produce_etched_region">[docs]</a>    <span class="k">def</span> <span class="nf">produce_etched_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metal_region</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces structures in metal gap layer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces structures in metal gap layer.</span>
 
 <span class="sd">        Subtracts metal_region from a region defined by width and height, and inserts resulting</span>
 <span class="sd">        region to metal gap layer. Also adds grid avoidance for the area.</span>
@@ -630,7 +632,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

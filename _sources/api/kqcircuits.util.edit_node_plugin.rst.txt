@@ -1,0 +1,10 @@
+kqcircuits.util.edit\_node\_plugin
+==================================
+
+.. automodule:: kqcircuits.util.edit_node_plugin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.edit_node_plugin
+.. image:: ../pcell_images/kqcircuits.util.edit_node_plugin.png

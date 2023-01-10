@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -520,7 +522,7 @@
 
 <div class="viewcode-block" id="Fluxline"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline.html#kqcircuits.elements.fluxlines.fluxline.Fluxline">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">Fluxline</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Base class for fluxline objects without actual produce function.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for fluxline objects without actual produce function.&quot;&quot;&quot;</span>
 
     <span class="n">default_type</span> <span class="o">=</span> <span class="n">default_fluxline_type</span>
 
@@ -528,13 +530,19 @@
     <span class="n">fluxline_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline width&quot;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
     <span class="n">fluxline_gap_width</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Fluxline gap width&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
+    <span class="n">fluxline_parameters</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Extra Fluxline Parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_fluxline_parameters</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;Previous state of *_parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Fluxline.create"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline.html#kqcircuits.elements.fluxlines.fluxline.Fluxline.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fluxline_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a Fluxline cell in layout.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Fluxline cell in layout.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">create_subtype</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">fluxline_type</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="Fluxline.coerce_parameters_impl"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.fluxlines.fluxline.html#kqcircuits.elements.fluxlines.fluxline.Fluxline.coerce_parameters_impl">[docs]</a>    <span class="k">def</span> <span class="nf">coerce_parameters_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync_parameters</span><span class="p">(</span><span class="n">Fluxline</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_insert_fluxline_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left_gap</span><span class="p">,</span> <span class="n">right_gap</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inserts the gap shapes to the cell.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts the gap shapes to the cell.</span>
 
 <span class="sd">        Protection layer is added based on their bounding box.</span>
 
@@ -551,7 +559,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">protection</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_add_fluxline_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">port_ref</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Adds refpoints for &quot;port_flux&quot; and &quot;port_flux_corner&quot;.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds refpoints for &quot;port_flux&quot; and &quot;port_flux_corner&quot;.</span>
 
 <span class="sd">        Arg:</span>
 <span class="sd">            port_ref (DPoint): position of &quot;port_flux&quot; in fluxline coordinates</span>
@@ -569,7 +577,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

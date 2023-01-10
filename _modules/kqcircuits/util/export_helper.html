@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -605,15 +607,15 @@
     <span class="k">return</span> <span class="n">comp_json</span></div>
 
 <div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)):</span>
-    <span class="sd">&quot;&quot;&quot;Gets correct flip chip coordinates by setting a new origin and mirroring ``point`` by the y-axis.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets correct flip chip coordinates by setting a new origin and mirroring ``point`` by the y-axis.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">origin</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">point</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">origin</span><span class="o">.</span><span class="n">y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="create_or_empty_tmp_directory"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.create_or_empty_tmp_directory">[docs]</a><span class="k">def</span> <span class="nf">create_or_empty_tmp_directory</span><span class="p">(</span><span class="n">dir_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates directory into TMP_PATH or removes its content if it exists.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates directory into TMP_PATH or removes its content if it exists.</span>
 <span class="sd">    Returns directory path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">remove_content</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Removes content of the directory path without removing directory itself.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Removes content of the directory path without removing directory itself.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
                 <span class="n">remove_content</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
@@ -630,7 +632,7 @@
 
 
 <div class="viewcode-block" id="get_active_or_new_layout"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_active_or_new_layout">[docs]</a><span class="k">def</span> <span class="nf">get_active_or_new_layout</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Tries to return active layout in GUI or returns new layout when running standalone.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tries to return active layout in GUI or returns new layout when running standalone.&quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">klayoutview</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">klayoutview</span><span class="o">.</span><span class="n">add_default_layers</span><span class="p">()</span>
@@ -640,7 +642,7 @@
 
 
 <div class="viewcode-block" id="write_commit_reference_file"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.write_commit_reference_file">[docs]</a><span class="k">def</span> <span class="nf">write_commit_reference_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number.</span>
 <span class="sd">    If git repository is not found in given path, no file is written.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -654,7 +656,7 @@
 
 
 <div class="viewcode-block" id="open_with_klayout_or_default_application"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.open_with_klayout_or_default_application">[docs]</a><span class="k">def</span> <span class="nf">open_with_klayout_or_default_application</span><span class="p">(</span><span class="n">filepath</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tries to open file with Klayout. If Klayout is not found, opens file with operating system&#39;s default application.</span>
 <span class="sd">    Implementation supports Windows, macOS, and Linux.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -687,7 +689,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

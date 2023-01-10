@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -522,7 +524,7 @@
 
 
 <div class="viewcode-block" id="Meander"><a class="viewcode-back" href="../../../api/kqcircuits.elements.meander.html#kqcircuits.elements.meander.Meander">[docs]</a><span class="k">class</span> <span class="nc">Meander</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The PCell declaration for a meandering waveguide.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a meandering waveguide.</span>
 
 <span class="sd">    Defined by two points, total length and number of meanders.</span>
 
@@ -576,7 +578,7 @@
                                      <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">end</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">bend_corner_displacement</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Returns x-displacement of corner point as function of bend width w.</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns x-displacement of corner point as function of bend width w.</span>
 
 <span class="sd">            Waveguide starts as straight segment from origin (0,0) and ends with bend pointing towards x at (self.r,w).</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -585,7 +587,7 @@
             <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">-</span> <span class="n">w</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">w</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">))</span>
 
         <span class="k">def</span> <span class="nf">bend_length_increment</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Returns amount of waveguide length increment due to a single bend as function of bend width w.</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns amount of waveguide length increment due to a single bend as function of bend width w.</span>
 
 <span class="sd">            Waveguide starts as straight segment from origin (0,0) and ends with bend pointing towards x at (self.r,w).</span>
 <span class="sd">            &quot;&quot;&quot;</span>
@@ -596,7 +598,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">atan</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">h</span> <span class="o">*</span> <span class="p">(</span><span class="n">h</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">h</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">meander_length_increment</span><span class="p">(</span><span class="n">w</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot;Returns amount of waveguide length increment due to all meander bends as function of meander width w.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Returns amount of waveguide length increment due to all meander bends as function of meander width w.&quot;&quot;&quot;</span>
             <span class="n">l0</span> <span class="o">=</span> <span class="n">bend_length_increment</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># starting and ending bend increment</span>
             <span class="n">l1</span> <span class="o">=</span> <span class="n">bend_length_increment</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># middle bend increment</span>
             <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">l0</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meanders</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">l1</span>
@@ -635,7 +637,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">copy_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="n">wg_inst</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_produce_bridges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces equally spaced airbridges on top of the meander waveguide.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces equally spaced airbridges on top of the meander waveguide.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            points: list of points for the waveguide path</span>
@@ -694,7 +696,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

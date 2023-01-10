@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -519,7 +521,7 @@
 
 <div class="viewcode-block" id="Manhattan"><a class="viewcode-back" href="../../../api/kqcircuits.junctions.manhattan.html#kqcircuits.junctions.manhattan.Manhattan">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">Manhattan</span><span class="p">(</span><span class="n">Squid</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The PCell declaration for a Manhattan style SQUID.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a Manhattan style SQUID.</span>
 
 <span class="sd">    This SQUID has two distinct sub-types automatically selected by loop-area.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -665,7 +667,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_round_corners_and_append</span><span class="p">(</span><span class="n">tp_shadow_shape</span><span class="p">,</span> <span class="n">shadow_shapes</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_make_junctions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_corner</span><span class="p">,</span> <span class="n">b_corner_y</span><span class="p">,</span> <span class="n">finger_margin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create junction fingers and add them to some SIS layer.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create junction fingers and add them to some SIS layer.</span>
 
 <span class="sd">        Choose &#39;SIS_junction&#39; layer by default but &#39;SIS_junction_2&#39; if ``separate_junctions`` is True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -708,17 +710,17 @@
                                          <span class="n">jy</span> <span class="o">-</span> <span class="n">fo</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_overshoot</span> <span class="o">*</span> <span class="n">squa</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shapes</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Merge shapes into a region and add it to layer.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merge shapes into a region and add it to layer.&quot;&quot;&quot;</span>
         <span class="n">region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">shapes</span><span class="p">)</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_refpoints</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Adds the &quot;origin_squid&quot; refpoint and port &quot;common&quot;.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds the &quot;origin_squid&quot; refpoint and port &quot;common&quot;.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refpoints</span><span class="p">[</span><span class="s2">&quot;origin_squid&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;common&quot;</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metal_gap_top_y</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_produce_ground_metal_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces hardcoded shapes in metal gap and metal addition layers.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces hardcoded shapes in metal gap and metal addition layers.&quot;&quot;&quot;</span>
         <span class="c1"># metal additions bottom</span>
         <span class="n">x0</span> <span class="o">=</span> <span class="o">-</span><span class="mi">12</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compact_geometry</span> <span class="k">else</span> <span class="o">-</span><span class="mi">13</span>
         <span class="n">y0</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -751,14 +753,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_gap_wo_grid&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_ground_grid_avoidance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Add ground grid avoidance.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add ground grid avoidance.&quot;&quot;&quot;</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
         <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
         <span class="n">protection</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="o">-</span><span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">w</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span> <span class="n">h</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">protection</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_round_corners_and_append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">polygon</span><span class="p">,</span> <span class="n">polygon_list</span><span class="p">,</span> <span class="n">rounding_params</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Rounds the corners of the polygon, converts it to integer coordinates, and adds it to the polygon list.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Rounds the corners of the polygon, converts it to integer coordinates, and adds it to the polygon list.&quot;&quot;&quot;</span>
         <span class="n">polygon</span> <span class="o">=</span> <span class="n">polygon</span><span class="o">.</span><span class="n">round_corners</span><span class="p">(</span><span class="n">rounding_params</span><span class="p">[</span><span class="s2">&quot;rinner&quot;</span><span class="p">],</span> <span class="n">rounding_params</span><span class="p">[</span><span class="s2">&quot;router&quot;</span><span class="p">],</span> <span class="n">rounding_params</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">])</span>
         <span class="n">polygon_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">polygon</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span></div>
 </pre></div>
@@ -772,7 +774,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

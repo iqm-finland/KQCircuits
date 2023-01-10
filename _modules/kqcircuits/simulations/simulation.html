@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -533,7 +535,7 @@
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Sim</span><span class="p">,</span> <span class="s2">&quot;junction_total_length&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Simulation</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Base class for simulation geometries.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for simulation geometries.</span>
 
 <span class="sd">    Generally, this class is intended to be subclassed by a specific simulation implementation; the</span>
 <span class="sd">    implementation defines the simulation geometry ad ports in `build`.</span>
@@ -624,7 +626,7 @@
     <span class="n">polygon_tolerance</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Tolerance (um) for merging adjacent polygons in a layer&quot;</span><span class="p">,</span> <span class="mf">0.004</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize a Simulation.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Simulation.</span>
 
 <span class="sd">        The initializer parses parameters, creates a top cell, and then calls `self.build` to create</span>
 <span class="sd">        the simulation geometry, followed by `self.create_simulation_layers` to process the geometry</span>
@@ -672,7 +674,7 @@
 
 <div class="viewcode-block" id="Simulation.from_cell"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.from_cell">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_cell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">grid_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a Simulation from an existing cell.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Simulation from an existing cell.</span>
 
 <span class="sd">        Arguments:</span>
 <span class="sd">            cell: existing top cell for the Simulation</span>
@@ -700,7 +702,7 @@
 
 <div class="viewcode-block" id="Simulation.build"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.build">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Build simulation geometry.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build simulation geometry.</span>
 
 <span class="sd">        This method is to be overridden, and the overriding method should create the geometry to be</span>
 <span class="sd">        simulated and add any ports to `self.ports`.</span>
@@ -717,12 +719,12 @@
     <span class="n">pcell_params_by_name</span> <span class="o">=</span> <span class="n">Element</span><span class="o">.</span><span class="n">pcell_params_by_name</span>
 
 <div class="viewcode-block" id="Simulation.face_z_levels"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.face_z_levels">[docs]</a>    <span class="k">def</span> <span class="nf">face_z_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns ascending list of face heights.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns ascending list of face heights.</span>
 <span class="sd">        Faces include bottom domain boundary, substrate faces from bottom to top, and top domain boundary.</span>
 <span class="sd">        The level z=0 is at lowest substrate top face.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">ith_float_value</span><span class="p">(</span><span class="n">list_or_scalar</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-            <span class="sd">&quot;&quot;&quot; Helper function to return float number from list or scalar corresponding to the ordinal number i.</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot; Helper function to return float number from list or scalar corresponding to the ordinal number i.</span>
 <span class="sd">            Too short lists are extended by duplicating the last value of the list.&quot;&quot;&quot;</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">list_or_scalar</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_or_scalar</span><span class="p">):</span>
@@ -745,7 +747,7 @@
         <span class="k">return</span> <span class="n">z_levels</span></div>
 
 <div class="viewcode-block" id="Simulation.merged_region_from_layer"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.merged_region_from_layer">[docs]</a>    <span class="k">def</span> <span class="nf">merged_region_from_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">expansion</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns a `Region` containing all geometry from a specified layer merged together &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns a `Region` containing all geometry from a specified layer merged together &quot;&quot;&quot;</span>
         <span class="n">face_layers</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="n">default_faces</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">face_layers</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">region_with_merged_polygons</span><span class="p">(</span>
@@ -754,14 +756,14 @@
         <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Simulation.insert_region"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_region">[docs]</a>    <span class="k">def</span> <span class="nf">insert_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">face_id</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Merges points in the `region` and inserts the result in a target layer.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merges points in the `region` and inserts the result in a target layer.&quot;&quot;&quot;</span>
         <span class="n">face_layers</span> <span class="o">=</span> <span class="n">default_faces</span><span class="p">[</span><span class="n">face_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="n">default_faces</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">face_layers</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">face_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
                 <span class="n">region_with_merged_points</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">minimum_point_spacing</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Simulation.create_simulation_layers"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.create_simulation_layers">[docs]</a>    <span class="k">def</span> <span class="nf">create_simulation_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create the layers used for simulation export.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the layers used for simulation export.</span>
 
 <span class="sd">        Based on any geometry defined on the relevant lithography layers.</span>
 
@@ -840,7 +842,7 @@
                                <span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;simulation_tsv&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Simulation.ground_grid_region"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.ground_grid_region">[docs]</a>    <span class="k">def</span> <span class="nf">ground_grid_region</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_id</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns region of ground grid for the given face id.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns region of ground grid for the given face id.&quot;&quot;&quot;</span>
         <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_box</span> <span class="o">&amp;</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span>  <span class="c1"># restrict self.ground_grid_box inside self.box</span>
         <span class="n">grid_area</span> <span class="o">=</span> <span class="n">box</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
         <span class="n">protection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">merged_region_from_layer</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="s2">&quot;ground_grid_avoidance&quot;</span><span class="p">)</span>
@@ -854,7 +856,7 @@
                                   <span class="n">term1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">turn_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">over_etching</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">airbridge</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Create a waveguide connection from some `location` to a port, and add the corresponding port to</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a waveguide connection from some `location` to a port, and add the corresponding port to</span>
 <span class="sd">        `simulation.ports`.</span>
 
 <span class="sd">        Arguments:</span>
@@ -971,12 +973,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">port</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Simulation.get_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()}</span></div>
 
 <div class="viewcode-block" id="Simulation.etched_line"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.etched_line">[docs]</a>    <span class="k">def</span> <span class="nf">etched_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p1</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">,</span> <span class="n">p2</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Return the end points of line segment after extending it at both ends by amount of over_etching.</span>
 <span class="sd">            This function must be used when initializing InternalPort.</span>
 
@@ -991,7 +993,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">p1</span> <span class="o">-</span> <span class="n">d</span><span class="p">,</span> <span class="n">p2</span> <span class="o">+</span> <span class="n">d</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Simulation.get_port_data"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_port_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the port data in dictionary form and add the information of port polygon. Includes following:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the port data in dictionary form and add the information of port polygon. Includes following:</span>
 
 <span class="sd">            * Items from `Port` instance</span>
 <span class="sd">            * polygon: point coordinates of the port polygon</span>
@@ -1078,7 +1080,7 @@
         <span class="k">return</span> <span class="n">port_data</span></div>
 
 <div class="viewcode-block" id="Simulation.get_simulation_data"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_simulation_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return the simulation data in dictionary form. Contains following:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return the simulation data in dictionary form. Contains following:</span>
 
 <span class="sd">            * gds_file: name of gds file to include geometry layers,</span>
 <span class="sd">            * units: length unit in simulations, &#39;um&#39;,</span>
@@ -1124,7 +1126,7 @@
         <span class="p">}</span></div>
 
 <div class="viewcode-block" id="Simulation.get_layers"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_layers">[docs]</a>    <span class="k">def</span> <span class="nf">get_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Returns simulation layers and layer numbers in dictionary form. Only return layers that are in use. &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Returns simulation layers and layer numbers in dictionary form. Only return layers that are in use. &quot;&quot;&quot;</span>
         <span class="n">sim_layer_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;simulation_signal&#39;</span><span class="p">,</span> <span class="s1">&#39;simulation_ground&#39;</span><span class="p">,</span> <span class="s1">&#39;simulation_gap&#39;</span><span class="p">,</span> <span class="s1">&#39;simulation_airbridge_flyover&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;simulation_airbridge_pads&#39;</span><span class="p">,</span> <span class="s1">&#39;simulation_indium_bump&#39;</span><span class="p">,</span> <span class="s1">&#39;simulation_tsv&#39;</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span> <span class="n">l</span>
@@ -1133,7 +1135,7 @@
 
 <div class="viewcode-block" id="Simulation.delete_instances"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.delete_instances">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">delete_instances</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,)):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Allows for deleting a sub-cell of the top &#39;cell&#39; with a specific &#39;name&#39;. The &#39;index&#39; argument can be used to</span>
 <span class="sd">            access more than one sub-cell sharing the same &#39;name&#39;, but with different appended &#39;index&#39; to the &#39;name&#39;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1153,7 +1155,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

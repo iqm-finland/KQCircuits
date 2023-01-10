@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -516,7 +518,7 @@
 
 
 <div class="viewcode-block" id="export_simulation_oas"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.export_simulation_oas">[docs]</a><span class="k">def</span> <span class="nf">export_simulation_oas</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Write single OASIS file containing all simulations in list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">unique_layouts</span> <span class="o">=</span> <span class="p">{</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span> <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">}</span>
@@ -532,10 +534,10 @@
 
 
 <div class="viewcode-block" id="sweep_simulation"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.sweep_simulation">[docs]</a><span class="k">def</span> <span class="nf">sweep_simulation</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">sim_class</span><span class="p">,</span> <span class="n">sim_parameters</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create simulation sweep by varying one parameter at time. Return list of simulations.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create simulation sweep by varying one parameter at time. Return list of simulations.&quot;&quot;&quot;</span>
     <span class="n">simulations</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">lengths</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Added simulations: </span><span class="si">{</span><span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lengths</span><span class="p">])</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Added simulations: </span><span class="si">{</span><span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">lengths</span><span class="p">])</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">lengths</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="p">[</span><span class="n">param</span><span class="p">]:</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">sim_parameters</span><span class="p">,</span> <span class="n">param</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span>
@@ -549,11 +551,11 @@
 
 
 <div class="viewcode-block" id="cross_sweep_simulation"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation">[docs]</a><span class="k">def</span> <span class="nf">cross_sweep_simulation</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">sim_class</span><span class="p">,</span> <span class="n">sim_parameters</span><span class="p">,</span> <span class="n">sweeps</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Create simulation sweep by cross varying all parameters. Return list of simulations.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create simulation sweep by cross varying all parameters. Return list of simulations.&quot;&quot;&quot;</span>
     <span class="n">simulations</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sweeps</span><span class="p">)</span>
     <span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">prod</span><span class="p">)</span> <span class="k">for</span> <span class="n">prod</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">sweeps</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Added simulations: </span><span class="si">{</span><span class="s2">&quot; * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">))</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">sweeps</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sets</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Added simulations: </span><span class="si">{</span><span class="s2">&quot; * &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">))</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">l</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">sweeps</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span><span class="si">}</span><span class="s1"> = </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sets</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">sim_parameters</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
@@ -573,7 +575,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

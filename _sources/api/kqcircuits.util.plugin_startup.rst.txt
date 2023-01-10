@@ -1,0 +1,10 @@
+kqcircuits.util.plugin\_startup
+===============================
+
+.. automodule:: kqcircuits.util.plugin_startup
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.util.plugin_startup
+.. image:: ../pcell_images/kqcircuits.util.plugin_startup.png

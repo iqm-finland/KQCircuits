@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -524,7 +526,7 @@
                           <span class="n">grid_snap</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">output_format</span><span class="o">=</span><span class="s2">&quot;insert_cell+chip&quot;</span><span class="p">,</span> <span class="n">include_imports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                           <span class="n">use_create_with_refpoints</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
-    <span class="sd">&quot;&quot;&quot;Prints out the Python code required to create the cells in top_cell.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Prints out the Python code required to create the cells in top_cell.</span>
 
 <span class="sd">    For each instance that is selected in GUI, prints out an `insert_cell()` command that can be copy pasted to a chip&#39;s</span>
 <span class="sd">    `build()`. If no instances are selected, then it will do the same for all instances that are one level below</span>
@@ -680,7 +682,7 @@
                 <span class="k">elif</span> <span class="n">use_create_with_refpoints</span><span class="p">:</span>
                     <span class="n">refp_split</span> <span class="o">=</span> <span class="n">closest_refpoint_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
                     <span class="n">refp_name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">refp_split</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-                    <span class="n">path_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">refpoint_prefix</span><span class="si">}{</span><span class="n">refp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">_refpoints[</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">refp_name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">]&quot;</span> \
+                    <span class="n">path_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">refpoint_prefix</span><span class="si">}{</span><span class="n">refp_split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">_refpoints[</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">refp_name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">]&quot;</span> \
                                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">node_params</span><span class="si">}{</span><span class="n">refpoint_postfix</span><span class="si">}</span><span class="s2">, &quot;</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">path_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_prefix</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">x_snapped</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y_snapped</span><span class="si">}</span><span class="s2">)</span><span class="si">{</span><span class="n">node_params</span><span class="si">}{</span><span class="n">point_postfix</span><span class="si">}</span><span class="s2">, &quot;</span>
@@ -833,7 +835,7 @@
 
 
 <span class="k">def</span> <span class="nf">_move_to_end</span><span class="p">(</span><span class="n">instances</span><span class="p">,</span> <span class="n">pcell_type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns `instances` list where instances of `pcell_type` are at the end</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns `instances` list where instances of `pcell_type` are at the end</span>
 
 <span class="sd">    Assumes that all `pcell_type` instances are consecutive elements of the list.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -846,7 +848,7 @@
 
 
 <div class="viewcode-block" id="get_node_params"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.get_node_params">[docs]</a><span class="k">def</span> <span class="nf">get_node_params</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">Node</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate a list of parameters for Node in string form</span>
 
 <span class="sd">    Args:</span>
@@ -885,7 +887,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

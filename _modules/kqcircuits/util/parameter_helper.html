@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -532,7 +534,7 @@
 
 
 <div class="viewcode-block" id="normalize_rules"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.normalize_rules">[docs]</a><span class="k">def</span> <span class="nf">normalize_rules</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Normalizes rule fields corresponding to specified name.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalizes rule fields corresponding to specified name.</span>
 
 <span class="sd">    Adds missing optional rule fields with default settings.</span>
 
@@ -554,7 +556,7 @@
 
 <div class="viewcode-block" id="Validator"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.Validator">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">Validator</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Validates KLayout parameters according to specified schema.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validates KLayout parameters according to specified schema.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        schema: Dictionary containing rules for validating KLayout parameters.</span>
@@ -565,7 +567,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__validate_schema</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Validator.validate"><a class="viewcode-back" href="../../../api/kqcircuits.util.parameter_helper.html#kqcircuits.util.parameter_helper.Validator.validate">[docs]</a>    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validates KLayout parameters.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates KLayout parameters.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            parameters: KLayout parameters.</span>
@@ -600,7 +602,7 @@
                 <span class="k">return</span> <span class="kc">True</span></div>
 
     <span class="k">def</span> <span class="nf">__validate_schema</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Validates schema.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validates schema.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if validation is successful.</span>
@@ -639,7 +641,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_rule</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">rules</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Get rule from dictionary without raising exception.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get rule from dictionary without raising exception.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        name: Rule name.</span>
@@ -656,7 +658,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_valid_type</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check if value is a KLayout parameter type.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if value is a KLayout parameter type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: Type value.</span>
@@ -675,7 +677,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_of_type</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">rule_type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check if value is a KLayout parameter type.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if value is a KLayout parameter type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: Rule value.</span>
@@ -707,7 +709,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_valid_choices</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choice_type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate choices.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate choices.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: Choices.</span>
@@ -720,7 +722,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_valid_choice</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">choice_type</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate choice type.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate choice type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: Choice value.</span>
@@ -739,7 +741,7 @@
 
 
 <span class="k">def</span> <span class="nf">_is_float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Check if valid float.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if valid float.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        value: Number value.</span>
@@ -752,7 +754,7 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_missing_rule_message</span><span class="p">(</span><span class="n">rule_name</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Message string.</span>
@@ -761,7 +763,7 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_invalid_rule_message</span><span class="p">(</span><span class="n">rule_name</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Message string.</span>
@@ -770,7 +772,7 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_missing_parameter_message</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Message string.</span>
@@ -779,7 +781,7 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_invalid_parameter_message</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate missing rule error message.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Message string.</span>
@@ -796,7 +798,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

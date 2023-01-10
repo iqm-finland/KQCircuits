@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -524,7 +526,7 @@
 
 
 <div class="viewcode-block" id="klayout_executable_command"><a class="viewcode-back" href="../../api/kqcircuits.defaults.html#kqcircuits.defaults.klayout_executable_command">[docs]</a><span class="k">def</span> <span class="nf">klayout_executable_command</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Returns the command (string) needed to run klayout executable in the current OS.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the command (string) needed to run klayout executable in the current OS.&quot;&quot;&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">),</span> <span class="s2">&quot;KLayout&quot;</span><span class="p">,</span> <span class="s2">&quot;klayout_app.exe&quot;</span><span class="p">)</span>
@@ -556,11 +558,7 @@
     <span class="c1"># for normal installation</span>
     <span class="n">PY_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;klayout_package&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">)</span>
 <span class="n">SRC_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="n">PY_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;kqcircuits&quot;</span><span class="p">)]</span>
-<span class="n">TMP_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;KQC_TMP_PATH&#39;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">TMP_PATH</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="n">TMP_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">TMP_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">)</span>
+<span class="n">TMP_PATH</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;KQC_TMP_PATH&#39;</span><span class="p">,</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;tmp&quot;</span><span class="p">)))</span>
 
 <span class="n">RESOURCES_PATH</span> <span class="o">=</span> <span class="n">ROOT_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;resources&quot;</span><span class="p">)</span>
 <span class="n">TMP_PATH</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -745,7 +743,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

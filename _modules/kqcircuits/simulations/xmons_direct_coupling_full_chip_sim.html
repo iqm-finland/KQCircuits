@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -581,7 +583,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">meander</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">()))</span></div>
 
 <div class="viewcode-block" id="XMonsDirectCouplingFullChipSim.produce_launcher"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html#kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.XMonsDirectCouplingFullChipSim.produce_launcher">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Wrapper function for launcher PCell placement at `pos` with `direction`, `name` and `width`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper function for launcher PCell placement at `pos` with `direction`, `name` and `width`.&quot;&quot;&quot;</span>
 
         <span class="n">subcell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span>
             <span class="n">path</span><span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">([</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">)],</span> <span class="mi">0</span><span class="p">),</span>
@@ -599,7 +601,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DCellInstArray</span><span class="p">(</span><span class="n">subcell2</span><span class="o">.</span><span class="n">cell_index</span><span class="p">(),</span> <span class="n">transf</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="XMonsDirectCouplingFullChipSim.produce_launchers_SMA8"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html#kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.XMonsDirectCouplingFullChipSim.produce_launchers_SMA8">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers_SMA8</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;WS&quot;</span><span class="p">,</span> <span class="s2">&quot;WN&quot;</span><span class="p">,</span> <span class="s2">&quot;ES&quot;</span><span class="p">,</span> <span class="s2">&quot;EN&quot;</span><span class="p">,</span> <span class="s2">&quot;SW&quot;</span><span class="p">,</span> <span class="s2">&quot;SE&quot;</span><span class="p">,</span> <span class="s2">&quot;NW&quot;</span><span class="p">,</span> <span class="s2">&quot;NE&quot;</span><span class="p">]):</span>
-        <span class="sd">&quot;&quot;&quot;Produces enabled launchers for SMA8 sample holder default locations</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces enabled launchers for SMA8 sample holder default locations</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            enabled: List of enabled standard launchers from set (&quot;WS&quot;, &quot;WN&quot;, &quot;ES&quot;, &quot;EN&quot;, &quot;SW&quot;, &quot;SE&quot;, &quot;NW&quot;, &quot;NE&quot;)</span>
@@ -752,7 +754,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

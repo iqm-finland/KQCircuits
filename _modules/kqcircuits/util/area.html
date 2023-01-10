@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -517,21 +519,21 @@
 
 <div class="viewcode-block" id="AreaReceiver"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.AreaReceiver">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">AreaReceiver</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">TileOutputReceiver</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Class for handling and storing output from :class:`TilingProcessor` &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Class for handling and storing output from :class:`TilingProcessor` &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="mf">0.0</span>
 
 <div class="viewcode-block" id="AreaReceiver.put"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.AreaReceiver.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">tile</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">clip</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Function called by :class:`TilingProcessor` on output &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Function called by :class:`TilingProcessor` on output &quot;&quot;&quot;</span>
         <span class="c1">#pylint: disable=unused-argument</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Area for tile </span><span class="si">{</span><span class="n">ix</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">iy</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dbu</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">*</span> <span class="p">(</span><span class="n">dbu</span> <span class="o">*</span> <span class="n">dbu</span><span class="p">)</span>  <span class="c1"># report as um^2</span></div></div>
 
 
 <div class="viewcode-block" id="get_area_and_density"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density">[docs]</a><span class="k">def</span> <span class="nf">get_area_and_density</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Get total area and density :math:`\\rho=\\frac{area}{bbox.area}` of all layers.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get total area and density :math:`\\rho=\\frac{area}{bbox.area}` of all layers.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cell: target cell to get area from all layers</span>
@@ -581,7 +583,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

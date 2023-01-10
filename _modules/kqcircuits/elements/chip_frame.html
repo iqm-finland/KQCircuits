@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -519,7 +521,7 @@
 
 
 <div class="viewcode-block" id="ChipFrame"><a class="viewcode-back" href="../../../api/kqcircuits.elements.chip_frame.html#kqcircuits.elements.chip_frame.ChipFrame">[docs]</a><span class="k">class</span> <span class="nc">ChipFrame</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;The PCell declaration for a chip frame.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration for a chip frame.</span>
 
 <span class="sd">    The chip frame consists of a dicing edge, and labels and markers in the corners.</span>
 
@@ -548,7 +550,7 @@
     <span class="n">chip_dicing_gap_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Gap between two chip dicing reference dashes&quot;</span><span class="p">,</span> <span class="mf">50.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChipFrame.build"><a class="viewcode-back" href="../../../api/kqcircuits.elements.chip_frame.html#kqcircuits.elements.chip_frame.ChipFrame.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces dicing edge, markers, labels and ground grid for the chip face.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces dicing edge, markers, labels and ground grid for the chip face.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_dicing_edge</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_labels</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_markers</span><span class="p">()</span></div>
@@ -572,7 +574,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_label</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">),</span> <span class="n">LabelOrigin</span><span class="o">.</span><span class="n">BOTTOMLEFT</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_produce_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Produces Text PCells with text `label` with `origin` of the text at `location`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces Text PCells with text `label` with `origin` of the text at `location`.</span>
 
 <span class="sd">        Wrapper for the stand alone function `produce_label`.</span>
 <span class="sd">        Text size scales with chip dimension for chips smaller than 7 mm.</span>
@@ -627,7 +629,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_produce_lines_along_edge</span><span class="p">(</span><span class="n">p3</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p4</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">p3</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_box_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns x_min, x_max, y_min, y_max for the given box.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns x_min, x_max, y_min, y_max for the given box.&quot;&quot;&quot;</span>
         <span class="n">x_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
         <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
         <span class="n">y_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
@@ -635,7 +637,7 @@
         <span class="k">return</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span>
 
     <span class="k">def</span> <span class="nf">_border_points</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a set of points forming frame with outer edge on the chip boundaries, and frame thickness `w`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a set of points forming frame with outer edge on the chip boundaries, and frame thickness `w`.&quot;&quot;&quot;</span>
         <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_box_points</span><span class="p">()</span>
         <span class="n">points</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">),</span>
@@ -653,7 +655,7 @@
         <span class="k">return</span> <span class="n">points</span>
 
     <span class="k">def</span> <span class="nf">_produce_lines_along_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_start</span><span class="p">,</span> <span class="n">line_end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Adds chip dicing reference lines along one edge of the chip.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds chip dicing reference lines along one edge of the chip.</span>
 <span class="sd">        The line pattern is tied to the global coordinate system</span>
 
 <span class="sd">        Args:</span>
@@ -678,7 +680,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_chip_dicing_line_dash</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_chip_dicing_line_dash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">is_vertical</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Adds a dash as part of a chip dicing reference line.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a dash as part of a chip dicing reference line.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start: One-dimensional coordinate of start of the dash</span>
@@ -702,7 +704,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

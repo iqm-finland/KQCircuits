@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -524,7 +526,7 @@
 
 <div class="viewcode-block" id="MaskLayout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout">[docs]</a><span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">MaskLayout</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Class representing the mask for a certain face.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing the mask for a certain face.</span>
 
 <span class="sd">    A MaskLayout is used to create the cells for the mask.</span>
 
@@ -603,7 +605,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">added_chips</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="MaskLayout.build"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map_legend</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Builds the cell hierarchy for this mask layout.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds the cell hierarchy for this mask layout.</span>
 
 <span class="sd">        Inserts cells copied from chips_map_legend to self.top_cell at positions determined by self.chips_map. The</span>
 <span class="sd">        copied cells are modified to only have layers corresponding to self.face_id, and they are translated and/or</span>
@@ -685,7 +687,7 @@
                      <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">()[</span><span class="s2">&quot;base_metal_gap&quot;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="MaskLayout.insert_chip_copy_labels"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">[docs]</a>    <span class="k">def</span> <span class="nf">insert_chip_copy_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels_cell</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Inserts chip copy labels to all chips in this mask layout and its submasks</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts chip copy labels to all chips in this mask layout and its submasks</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            labels_cell: Cell to which the labels are inserted</span>
@@ -738,7 +740,7 @@
                                                                          <span class="n">pos_index_name</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">labels_cell_2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MaskLayout.face"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.face">[docs]</a>    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the face dictionary for this mask layout&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the face dictionary for this mask layout&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">default_faces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="nf">_mask_create_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -756,7 +758,7 @@
         <span class="k">return</span> <span class="n">region_covered</span>
 
     <span class="k">def</span> <span class="nf">_add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns a tuple (Boolean telling if the chip was added, Region which the chip covers).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a tuple (Boolean telling if the chip was added, Region which the chip covers).&quot;&quot;&quot;</span>
         <span class="n">chip_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">chip_cell</span><span class="p">,</span> <span class="n">bounding_box</span><span class="p">,</span> <span class="n">bbox_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_chip_cell_and_bbox</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -874,7 +876,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

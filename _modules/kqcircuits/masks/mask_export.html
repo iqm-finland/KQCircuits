@@ -390,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.coupler_lib.html">kqcircuits.util.coupler_lib</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.deep_delete.html">kqcircuits.util.deep_delete</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.dependencies.html">kqcircuits.util.dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.edit_node_plugin.html">kqcircuits.util.edit_node_plugin</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.export_helper.html">kqcircuits.util.export_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_helper.html">kqcircuits.util.geometry_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.geometry_json_encoder.html">kqcircuits.util.geometry_json_encoder</a></li>
@@ -406,6 +407,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameter_helper.html">kqcircuits.util.parameter_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.parameters.html">kqcircuits.util.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.plugin_startup.html">kqcircuits.util.plugin_startup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.refpoints.html">kqcircuits.util.refpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.replace_squids.html">kqcircuits.util.replace_squids</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.symmetric_polygons.html">kqcircuits.util.symmetric_polygons</a></li>
@@ -531,7 +533,7 @@
 
 <div class="viewcode-block" id="export_mask_set"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask_set">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_mask_set</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Exports the designs, bitmap and documentation for the mask_set.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports the designs, bitmap and documentation for the mask_set.&quot;&quot;&quot;</span>
 
     <span class="n">mask_set_dir</span> <span class="o">=</span> <span class="n">_get_directory</span><span class="p">(</span><span class="n">path</span><span class="o">/</span><span class="nb">str</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_v</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">version</span><span class="p">)))</span>
     <span class="n">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_set_dir</span><span class="p">,</span> <span class="n">view</span><span class="p">)</span>
@@ -541,14 +543,14 @@
 
 <div class="viewcode-block" id="export_designs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_designs">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_designs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Exports .oas and .gds files of the mask_set.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports .oas and .gds files of the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># export mask layouts</span>
     <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
         <span class="n">export_masks_of_face</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="export_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_chip">[docs]</a><span class="k">def</span> <span class="nf">export_chip</span><span class="p">(</span><span class="n">chip_cell</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">,</span> <span class="n">chip_dir</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Exports a chip used in a maskset.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports a chip used in a maskset.&quot;&quot;&quot;</span>
 
     <span class="n">is_pcell</span> <span class="o">=</span> <span class="n">chip_cell</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
@@ -580,7 +582,7 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">debug</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">layer</span><span class="p">,</span> <span class="n">area</span><span class="p">,</span> <span class="n">density</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">get_area_and_density</span><span class="p">(</span><span class="n">static_cell</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">area</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
-                <span class="n">layer_areas_and_densities</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">density</span> <span class="o">*</span> <span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+                <span class="n">layer_areas_and_densities</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;area&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">density</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
 
     <span class="c1"># save auxiliary chip data into json-file</span>
     <span class="n">chip_json</span> <span class="o">=</span> <span class="p">{</span>
@@ -626,7 +628,7 @@
 
 
 <div class="viewcode-block" id="export_masks_of_face"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_masks_of_face">[docs]</a><span class="k">def</span> <span class="nf">export_masks_of_face</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Exports masks for layers of a single face of a mask_set.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Exports masks for layers of a single face of a mask_set.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        export_dir: directory for the face specific subdirectories</span>
@@ -636,7 +638,7 @@
     <span class="n">subdir_name_for_face</span> <span class="o">=</span> <span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span>
     <span class="n">export_dir_for_face</span> <span class="o">=</span> <span class="n">_get_directory</span><span class="p">(</span><span class="n">export_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">subdir_name_for_face</span><span class="p">))</span>
     <span class="c1"># export .oas file with all layers</span>
-    <span class="n">path</span> <span class="o">=</span> <span class="n">export_dir_for_face</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span><span class="si">}</span><span class="s2">.oas&quot;</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">export_dir_for_face</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span><span class="w"> </span><span class="n">mask_layout</span><span class="p">)</span><span class="si">}</span><span class="s2">.oas&quot;</span>
     <span class="n">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span><span class="p">,</span> <span class="s2">&quot;all&quot;</span><span class="p">)</span>
     <span class="c1"># export .oas files for individual optical lithography layers</span>
     <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">mask_export_layers</span><span class="p">:</span>
@@ -644,7 +646,7 @@
 
 
 <div class="viewcode-block" id="export_mask"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask">[docs]</a><span class="k">def</span> <span class="nf">export_mask</span><span class="p">(</span><span class="n">export_dir</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">,</span> <span class="n">mask_set</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Exports a mask from a single layer of a single face of a mask set.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Exports a mask from a single layer of a single face of a mask set.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        export_dir: directory for the files</span>
@@ -681,7 +683,7 @@
 
 <div class="viewcode-block" id="export_docs"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_docs">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_docs</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;Mask_Documentation.md&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Exports mask documentation containing mask layouts and parameters of all chips in the mask_set.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports mask documentation containing mask layouts and parameters of all chips in the mask_set.&quot;&quot;&quot;</span>
     <span class="n">file_location</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">export_dir</span><span class="p">),</span> <span class="n">filename</span><span class="p">))</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_location</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -809,7 +811,7 @@
 
 <div class="viewcode-block" id="export_bitmaps"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_bitmaps">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">export_dir</span><span class="p">,</span> <span class="n">view</span><span class="p">,</span> <span class="n">spec_layers</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Exports bitmaps for the mask_set.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exports bitmaps for the mask_set.&quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=dangerous-default-value</span>
 
     <span class="c1"># export bitmaps for mask layouts</span>
@@ -898,7 +900,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021-2022, IQM.
+        &#169; Copyright 2021-2023, IQM.
 
     </p>
   </div>

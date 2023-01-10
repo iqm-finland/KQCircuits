@@ -9,6 +9,7 @@ kqcircuits.util
    kqcircuits.util.coupler_lib
    kqcircuits.util.deep_delete
    kqcircuits.util.dependencies
+   kqcircuits.util.edit_node_plugin
    kqcircuits.util.export_helper
    kqcircuits.util.geometry_helper
    kqcircuits.util.geometry_json_encoder
@@ -25,6 +26,7 @@ kqcircuits.util
    kqcircuits.util.netlist_graph
    kqcircuits.util.parameter_helper
    kqcircuits.util.parameters
+   kqcircuits.util.plugin_startup
    kqcircuits.util.refpoints
    kqcircuits.util.replace_squids
    kqcircuits.util.symmetric_polygons
