@@ -153,15 +153,20 @@ def add_shape_polygons(cell: pya.Cell, layer_map: dict, face: str, layer: str, z
             * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
             * tag(int): the id of the entity
     """
+    def region_by_layer_name(layer_name):
+        if layer_name in layer_map:
+            return pya.Region(cell.shapes(layout.layer(*layer_map[layer_name])))
+        return pya.Region()
+
     layout = cell.layout()
     if layer == 'ground_grid':
         # Use of ground_grid layer is deprecated. ground_grid shapes are obtained as bbox-ground-signal-gap.
-        reg_signal = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_simulation_signal"])))
-        reg_ground = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_simulation_ground"])))
-        reg_gap = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_simulation_gap"])))
+        reg_signal = region_by_layer_name(face + "_signal")
+        reg_ground = region_by_layer_name(face + "_ground")
+        reg_gap = region_by_layer_name(face + "_gap")
         reg = pya.Region(reg_ground.bbox()) - reg_signal - reg_ground - reg_gap
     else:
-        reg = pya.Region(cell.shapes(layout.layer(*layer_map[face + "_" + layer])))
+        reg = region_by_layer_name(face + "_" + layer)
     dim_tags = []
     for spoly in reg.each():
         poly = separated_hull_and_holes(spoly)
@@ -235,10 +240,10 @@ def create_face(cell: pya.Cell, layer_map: dict, face: str, z_level: float, mesh
     if port_dim_tags is None:
         port_dim_tags = []
 
-    ground_dim_tags = add_shape_polygons(cell, layer_map, face, "simulation_ground", z_level, mesh_sizes['ground'])
+    ground_dim_tags = add_shape_polygons(cell, layer_map, face, "ground", z_level, mesh_sizes['ground'])
     ground_grid_dim_tags = add_shape_polygons(cell, layer_map, face, "ground_grid", z_level, mesh_sizes['ground_grid'])
-    gap_dim_tags = add_shape_polygons(cell, layer_map, face, "simulation_gap", z_level, mesh_sizes['gap'])
-    signal_dim_tags = add_shape_polygons(cell, layer_map, face, "simulation_signal", z_level, mesh_sizes['signal'])
+    gap_dim_tags = add_shape_polygons(cell, layer_map, face, "gap", z_level, mesh_sizes['gap'])
+    signal_dim_tags = add_shape_polygons(cell, layer_map, face, "signal", z_level, mesh_sizes['signal'])
 
     if len(ground_dim_tags) > 0 and len(ground_grid_dim_tags) > 0:
         ground_dim_tags, _ = gmsh.model.occ.cut(ground_dim_tags, ground_grid_dim_tags, removeTool=False)
@@ -834,7 +839,8 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
     chips = []
     face_dim_tags = []
     for face in faces:
-        face_dim_tag_dicts.append(create_face(cell, sim_data['layers'], params['face_ids'][face],
+        layers = {k: (v['layer'], 0) for k, v in sim_data['layers'].items() if 'layer' in v}
+        face_dim_tag_dicts.append(create_face(cell, layers, params['face_ids'][face],
                                               face_z_levels[face], port_dim_tags=face_port_dim_tags[face]))
         chips.append(box_volume(face_dim_tag_dicts[face]['ground'], chip_dzs[face]))
         face_dim_tags.append(face_tag_dict_to_list(face_dim_tag_dicts[face]))
@@ -965,6 +971,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
         'body_dim_tags': body_dim_tags,
         'body_materials': body_materials,
         'ground_names': ground_names,
-        'substrate_permittivity': sim_data['material_dict'][sim_data['substrate_material'][0]]['permittivity'],
+        'substrate_permittivity': sim_data['material_dict'][sim_data['layers']['substrate']['material']][
+            'permittivity'],
     }
     return Path(filepath), model_data

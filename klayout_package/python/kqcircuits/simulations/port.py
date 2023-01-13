@@ -56,7 +56,7 @@ class InternalPort(Port):
     """Data structure for ports inside the simulation area."""
     def __init__(self, number: int, signal_location: DPoint, ground_location: DPoint = None,
                  resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0,
-                 face: int = 0, junction: bool = False, signal_layer: str = 'simulation_signal'):
+                 face: int = 0, junction: bool = False, signal_layer: str = 'signal'):
         """
         Args:
             number: Port number.
@@ -69,7 +69,7 @@ class InternalPort(Port):
             face: Integer-valued face index for the port.
             junction: Whether this port models a SQUID/Junction. Used in EPR calculations.
             signal_layer: Manual override for simulation signal layer.
-                May be used to set ports across the ground layer with ``simulation_ground``.
+                May be used to set ports across the ground layer with ``ground``.
         """
         super().__init__(number, resistance, reactance, inductance, capacitance, face, junction)
         self.signal_location = signal_location

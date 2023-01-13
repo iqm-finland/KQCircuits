@@ -39,17 +39,9 @@ def create_rectangle(oEditor, name, x, y, z, w, h, axis, units):
              ],
             ["NAME:Attributes",
              "Name:=", name,
-             "Flags:=", "",
              "Color:=", "(143 175 143)",
              "Transparency:=", 0,
-             "PartCoordinateSystem:=", "Global",
-             "UDMId:=", "",
-             "MaterialValue:=", "\"vacuum\"",
-             "SurfaceMaterialValue:=", "\"\"",
-             "SolveInside:=", True,
-             "IsMaterialEditable:=", True,
-             "UseMaterialAppearance:=", False,
-             "IsLightweight:=", False
+             "PartCoordinateSystem:=", "Global"
              ])
 
 
@@ -87,18 +79,11 @@ def create_polygon(oEditor, name, points, units):
          "Flags:=", "",
          "Color:=", "(143 175 143)",
          "Transparency:=", 0,
-         "PartCoordinateSystem:=", "Global",
-         "UDMId:=", "",
-         "MaterialValue:=", "\"vacuum\"",
-         "SurfaceMaterialValue:=", "\"\"",
-         "SolveInside:=", True,
-         "IsMaterialEditable:=", True,
-         "UseMaterialAppearance:=", False,
-         "IsLightweight:=", False
+         "PartCoordinateSystem:=", "Global"
          ])
 
 
-def create_box(oEditor, name, x, y, z, sx, sy, sz, material, units):
+def create_box(oEditor, name, x, y, z, sx, sy, sz, units):
     if sx != 0.0 and sy != 0.0 and sz != 0.0:
         oEditor.CreateBox(
             ["NAME:BoxParameters",
@@ -114,18 +99,11 @@ def create_box(oEditor, name, x, y, z, sx, sy, sz, material, units):
              "Flags:=", "",
              "Color:=", "(143 175 143)",
              "Transparency:=", 0.6,
-             "PartCoordinateSystem:=", "Global",
-             "UDMId:=", "",
-             "MaterialValue:=", "\"%s\"" % material,
-             "SurfaceMaterialValue:=", "\"\"",
-             "SolveInside:=", True,
-             "IsMaterialEditable:=", True,
-             "UseMaterialAppearance:=", False,
-             "IsLightweight:=", False
+             "PartCoordinateSystem:=", "Global"
              ])
 
 
-def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_inside=None):
+def thicken_sheet(oEditor, objects, thickness, units):
     """Thickens sheet to solid with given thickness and material"""
     if objects and thickness != 0.0:
         oEditor.SweepAlongVector(
@@ -141,6 +119,10 @@ def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_insid
              "SweepVectorY:=", "0um",
              "SweepVectorZ:=", "{} {}".format(thickness, units)
              ])
+
+
+def set_material(oEditor, objects, material=None, solve_inside=None):
+    if objects:
         if solve_inside is not None:
             oEditor.ChangeProperty(
                 ["NAME:AllTabs",
@@ -157,6 +139,15 @@ def thicken_sheet(oEditor, objects, thickness, units, material=None, solve_insid
                   ["NAME:ChangedProps",
                    ["NAME:Material", "Value:=", '"{}"'.format(material)]
                    ]]])
+        else:
+            oEditor.ChangeProperty(
+                ["NAME:AllTabs",
+                 ["NAME:Geometry3DAttributeTab",
+                  ["NAME:PropServers"] + objects,
+                  ["NAME:ChangedProps",
+                   ["NAME:Model", "Value:=", False]
+                   ]]])
+
 
 
 def add_layer(layer_map, order_map, layer_num, dest_layer, order, layer_type='signal'):
@@ -189,15 +180,39 @@ def copy_paste(oEditor, objects):
     """ Duplicates objects and returns new object names. """
     if objects:
         oEditor.Copy([
-                "NAME:Selections",
-                "Selections:=", ",".join(objects)
-            ])
+            "NAME:Selections",
+            "Selections:=", ",".join(objects)
+        ])
         return oEditor.Paste()
     else:
         return []
 
 
-def objects_from_sheet_edges(oEditor, objects):
+def delete(oEditor, objects):
+    """Delete given objects"""
+    if objects:
+        oEditor.Delete(["NAME:Selections", "Selections:=", ",".join(objects)])
+
+
+def subtract(oEditor, objects, tool_objects, keep_originals=False):
+    """Subtract tool_objects from objects."""
+    if objects and tool_objects:
+        oEditor.Subtract(
+            ["NAME:Selections",
+             "Blank Parts:=", ",".join(objects),
+             "Tool Parts:=", ",".join(tool_objects)],
+            ["NAME:SubtractParameters", "KeepOriginals:=", keep_originals])
+
+
+def unite(oEditor, objects, keep_originals=False):
+    """Unite objects into the first object."""
+    if len(objects) > 1:
+        oEditor.Unite(
+            ["NAME:Selections", "Selections:=", ",".join(objects)],
+            ["NAME:UniteParameters", "KeepOriginals:=", keep_originals])
+
+
+def objects_from_sheet_edges(oEditor, objects, thickness, units):
     """ Creates boundary objects for each sheet and returns object names in list. """
     edges = []
     for o in objects:
@@ -206,9 +221,8 @@ def objects_from_sheet_edges(oEditor, objects):
             ["NAME:Selections", "Selections:=", o, "NewPartsModelFlag:=", "Model"],
             ["NAME:Parameters", ["NAME:BodyFromEdgeToParameters", "Edges:=", boundary_ids]],
             ["CreateGroupsForNewObjects:=", False])
-        oEditor.Unite(
-            ["NAME:Selections", "Selections:=", ','.join(edge_list)],
-            ["NAME:UniteParameters", "KeepOriginals:=", False])
+        thicken_sheet(oEditor, edge_list, thickness, units)
+        unite(oEditor, edge_list, False)
         edges.append(edge_list[0])
     return edges
 

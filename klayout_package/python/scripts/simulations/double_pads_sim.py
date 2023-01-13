@@ -42,7 +42,9 @@ for sim_tool in sim_tools:
         'face_stack': ['1t1'],
         'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
 
-        'internal_island_ports': sim_tool != 'eigenmode'  # DoublePads specific
+        'internal_island_ports': sim_tool != 'eigenmode',  # DoublePads specific
+        'participation_sheet_distance': 5e-3 if sim_tool == 'eigenmode' else 0.0,  # in µm
+        'participation_sheet_thickness': 0.0,
     }
 
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + f'_output_{sim_tool}')
@@ -69,8 +71,6 @@ for sim_tool in sim_tools:
 
         # run T1 analysis with pyEPR between simulations
         'intermediate_processing_command': 'python "scripts/t1_estimate.py"',
-        'participation_sheet_distance': 5e-3,  # in µm
-        'thicken_participation_sheet_distance': None,
 
         # The values here are taken from the following literature:
         #

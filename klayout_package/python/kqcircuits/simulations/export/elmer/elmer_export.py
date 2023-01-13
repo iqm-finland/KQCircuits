@@ -72,13 +72,11 @@ def export_elmer_json(simulation: Simulation,
         raise ValueError("Cannot export without simulation")
 
     # collect data for .json file
-    layers = simulation.get_layers()
     json_data = {
         'tool': tool,
         'linear_system_method': linear_system_method,
         'p_element_order': p_element_order,
         **simulation.get_simulation_data(),
-        'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'mesh_size': {} if mesh_size is None else mesh_size,
         'workflow': {} if workflow is None else workflow,
         'frequency': frequency,
@@ -92,7 +90,7 @@ def export_elmer_json(simulation: Simulation,
     # write .gds file
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
     export_layers(gds_filename, simulation.layout, [simulation.cell], output_format='GDS2',
-                  layers=layers.values())
+                  layers=simulation.get_layers())
 
     return json_filename
 

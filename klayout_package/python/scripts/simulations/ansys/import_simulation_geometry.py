@@ -25,8 +25,8 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from geometry import create_box, create_polygon, thicken_sheet, add_layer, move_vertically, \
-    copy_paste, objects_from_sheet_edges, add_material  # pylint: disable=wrong-import-position
+from geometry import create_box, create_rectangle, create_polygon, thicken_sheet, set_material, add_layer, delete, \
+    move_vertically, subtract, unite, objects_from_sheet_edges, add_material  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -39,31 +39,17 @@ path = os.path.dirname(jsonfile)
 with open(jsonfile, 'r') as fjsonfile:
     data = json.load(fjsonfile)
 
-
 ansys_tool = data.get('ansys_tool', 'hfss')
 
 simulation_flags = data['simulation_flags']
 gds_file = data['gds_file']
 units = data.get('units', 'um')
-lower_box_height = data.get('lower_box_height', 0)
-face_stack = data['face_stack']
-z_levels = data['z_levels']
-substrate_material = data['substrate_material']
-material_dict = data.get('material_dict')
-airbridge_height = data.get('airbridge_height', 0)
-hollow_tsv = data.get('hollow_tsv', False)
+material_dict = data.get('material_dict', dict())
+box = data['box']
 
-participation_sheet_distance = data.get('participation_sheet_distance', None)
-thicken_participation_sheet_distance = data.get('thicken_participation_sheet_distance', None)
-use_ansys_project_template = 'ansys_project_template' in data \
-    and not data['ansys_project_template'] == ''
+ansys_project_template = data.get('ansys_project_template', '')
 vertical_over_etching = data.get('vertical_over_etching', 0)
 gap_max_element_length = data.get('gap_max_element_length', None)
-export_gaps = any((
-    vertical_over_etching > 0,
-    gap_max_element_length is not None,
-    participation_sheet_distance is not None
-))
 
 # Create project
 oDesktop.RestoreWindow()
@@ -95,24 +81,17 @@ for name, params in material_dict.items():
     add_material(oDefinitionManager, name, **params)
 
 # Import GDSII geometry
-layers = data['layers']
-layer_names = ['signal', 'ground', 'airbridge_flyover', 'airbridge_pads', 'indium_bump', 'tsv']
-if export_gaps:
-    layer_names += ['gap']
+layers = data.get('layers', dict())
+if gap_max_element_length is None:
+    layers = {n: d for n, d in layers.items() if '_gap' not in n}  # ignore gap objects if they are not used
 
 order_map = []
 layer_map = ["NAME:LayerMap"]
 order = 0
-for face in face_stack:
-    if not face:
-        continue
-
-    for layer_name in layer_names:
-        full_layer_name = face + '_simulation_' + layer_name
-        if full_layer_name in layers:
-            dest_name = face + '_' + layer_name
-            add_layer(layer_map, order_map, layers[full_layer_name], dest_name, order)
-            order += 1
+for lname, ldata in layers.items():
+    if 'layer' in ldata:
+        add_layer(layer_map, order_map, ldata['layer'], lname, order)
+        order += 1
 
 oEditor.ImportGDSII(
     ["NAME:options",
@@ -131,60 +110,75 @@ oEditor.ImportGDSII(
      ])
 
 # Create 3D geometry
-import_bounding_box = oEditor.GetModelBoundingBox()
 objects = {}
 pec_sheets = []
-for i, face in enumerate(face_stack):
-    if not face:
-        continue
+for lname, ldata in layers.items():
+    z = ldata.get('z', 0.0)
+    thickness = ldata.get('thickness', 0.0)
+    if 'layer' in ldata:
+        # Get imported objects
+        objects[lname] = oEditor.GetMatchedObjectName(lname + '_*')
+        move_vertically(oEditor, objects[lname], z, units)
 
-    # Get lists of imported objects (2d sheets)
-    objects[face] = {n: oEditor.GetMatchedObjectName(face + '_' + n + '_*') for n in layer_names}
+        # Create pec-sheets from edges
+        edge_material = ldata.get('edge_material', None)
+        if edge_material == 'pec' and thickness != 0.0:
+            pec_sheets += objects_from_sheet_edges(oEditor, objects[lname], thickness, units)
 
-    # Move all sheets to correct z-level
-    sign = (-1) ** (i + int(lower_box_height > 0))
-    face_objects = [o for n in layer_names if n != 'airbridge_flyover' for o in objects[face][n]]
-    move_vertically(oEditor, face_objects, z_levels[i + 1], units)
-    move_vertically(oEditor, objects[face]['airbridge_flyover'], z_levels[i + 1] + sign * airbridge_height, units)
-
-    # Thicken airbridge pads, indium bumps, and TSVs
-    thicken_sheet(oEditor, objects[face]['airbridge_pads'], sign * airbridge_height, units, "pec")
-    signed_vacuum_thickness = z_levels[i + 1 + sign] - z_levels[i + 1]
-    thicken_sheet(oEditor, objects[face]['indium_bump'], signed_vacuum_thickness, units, "pec")
-    signed_substrate_thickness = z_levels[i + 1 - sign] - z_levels[i + 1]
-    if hollow_tsv:
-        edges = objects_from_sheet_edges(oEditor, objects[face]['tsv'])
-        thicken_sheet(oEditor, edges, signed_substrate_thickness, units)
-        pec_sheets += edges
-        thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "vacuum", True)
+        thicken_sheet(oEditor, objects[lname], thickness, units)
     else:
-        thicken_sheet(oEditor, objects[face]['tsv'], signed_substrate_thickness, units, "pec")
+        # Create object covering full box
+        objects[lname] = [lname]
+        if thickness != 0.0:
+            create_box(oEditor, lname, box[0][0], box[0][1], z, box[1][0] - box[0][0], box[1][1] - box[0][1], thickness,
+                       units)
+        else:
+            create_rectangle(oEditor, lname, box[0][0], box[0][1], z, box[1][0] - box[0][0], box[1][1] - box[0][1], 'Z',
+                             units)
 
-# Assign perfect electric conductor to imported objects
-pec_sheets += [o for f in face_stack if f for n in ['signal', 'ground', 'airbridge_flyover'] for o in objects[f][n]]
-if ansys_tool in {'hfss', 'eigenmode'}:
-    oBoundarySetup.AssignPerfectE(
-        ["NAME:PerfE1",
-         "Objects:=", pec_sheets,
-         "InfGroundPlane:=", False
-         ])
-elif ansys_tool == 'q3d':
-    oBoundarySetup.AssignThinConductor(
-        [
-            "NAME:ThinCond1",
-            "Objects:=", pec_sheets,
-            "Material:=", "pec",
-            "Thickness:=", "1nm"  # thickness does not matter when material is pec
-        ])
+    # Set material
+    material = ldata.get('material', None)
+    if thickness != 0.0:
+        # Solve Inside parameter must be set in 'hfss' and 'eigenmode' simulations to avoid warnings.
+        # Solve Inside doesn't exist in 'q3d', so we use None to ignore the parameter.
+        solve_inside = material != 'pec' if ansys_tool in ['hfss', 'eigenmode'] else None
+        set_material(oEditor, objects[lname], material, solve_inside)
+    elif material == 'pec':
+        pec_sheets += objects[lname]
+
+
+# Assign perfect electric conductor to metal sheets
+if pec_sheets:
+    if ansys_tool in {'hfss', 'eigenmode'}:
+        oBoundarySetup.AssignPerfectE(
+            ["NAME:PerfE1",
+             "Objects:=", pec_sheets,
+             "InfGroundPlane:=", False
+             ])
+    elif ansys_tool == 'q3d':
+        oBoundarySetup.AssignThinConductor(
+            [
+                "NAME:ThinCond1",
+                "Objects:=", pec_sheets,
+                "Material:=", "pec",
+                "Thickness:=", "1nm"  # thickness does not matter when material is pec
+            ])
+
+
+# Subtract objects from others
+for lname, ldata in layers.items():
+    if 'subtract' in ldata:
+        subtract(oEditor, objects[lname], [o for n in ldata['subtract'] for o in objects[n]], True)
+
 
 # Create ports or nets
-signal_objects = [o for f in face_stack if f for o in objects[f]['signal']]
-ground_objects = [o for f in face_stack if f for o in objects[f]['ground']]
+signal_objects = [o for n, v in objects.items() if '_signal' in n for o in v]
+ground_objects = [o for n, v in objects.items() if '_ground' in n for o in v]
 if ansys_tool in {'hfss', 'eigenmode'}:
     ports = sorted(data['ports'], key=lambda k: k['number'])
     for port in ports:
         is_wave_port = port['type'] == 'EdgePort'
-        if not is_wave_port or not use_ansys_project_template:
+        if not is_wave_port or not ansys_project_template:
             if 'polygon' not in port:
                 continue
 
@@ -215,29 +209,29 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                 # add junction inductance variable
                 oDesign.ChangeProperty(
                     ["NAME:AllTabs",
-                        ["NAME:LocalVariableTab",
-                            ["NAME:PropServers", "LocalVariables"],
-                            ["NAME:NewProps",
-                                ["NAME:Lj_%d" % port['number'],
-                                 "PropType:=", "VariableProp",
-                                 "UserDef:=", True,
-                                 "Value:=", "%.32eH" % port['inductance']]  # use best float precision
-                            ]
-                        ]
-                    ])
+                     ["NAME:LocalVariableTab",
+                      ["NAME:PropServers", "LocalVariables"],
+                      ["NAME:NewProps",
+                       ["NAME:Lj_%d" % port['number'],
+                        "PropType:=", "VariableProp",
+                        "UserDef:=", True,
+                        "Value:=", "%.32eH" % port['inductance']]  # use best float precision
+                       ]
+                      ]
+                     ])
                 # add junction capacitance variable
                 oDesign.ChangeProperty(
                     ["NAME:AllTabs",
-                        ["NAME:LocalVariableTab",
-                            ["NAME:PropServers", "LocalVariables"],
-                            ["NAME:NewProps",
-                                ["NAME:Cj_%d" % port['number'],
-                                 "PropType:=", "VariableProp",
-                                 "UserDef:=", True,
-                                 "Value:=", "%.32efarad" % port['capacitance']]
-                            ]
-                        ]
-                    ])
+                     ["NAME:LocalVariableTab",
+                      ["NAME:PropServers", "LocalVariables"],
+                      ["NAME:NewProps",
+                       ["NAME:Cj_%d" % port['number'],
+                        "PropType:=", "VariableProp",
+                        "UserDef:=", True,
+                        "Value:=", "%.32efarad" % port['capacitance']]
+                       ]
+                      ]
+                     ])
 
                 current_start = ["%.32e%s" % (p, units) for p in port['signal_location']]
                 current_end = ["%.32e%s" % (p, units) for p in port['ground_location']]
@@ -245,10 +239,10 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                 oDesign.GetModule("BoundarySetup").AssignLumpedRLC(
                     ["NAME:LumpRLC_jj_%d" % port['number'],
                      "Objects:=", [polyname],
-                        ["NAME:CurrentLine",  # set direction of current across junction
-                         "Coordinate System:=", "Global",
-                         "Start:=", current_start,
-                         "End:=", current_end],
+                     ["NAME:CurrentLine",  # set direction of current across junction
+                      "Coordinate System:=", "Global",
+                      "Start:=", current_start,
+                      "End:=", current_end],
                      "RLC Type:=", "Parallel",
                      "UseResist:=", False,
                      "UseInduct:=", True,
@@ -256,61 +250,61 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                      "UseCap:=", True,
                      "Capacitance:=", "Cj_%d" % port['number'],
                      "Faces:=", [int(oEditor.GetFaceIDs(polyname)[0])]
-                    ])
+                     ])
 
                 if 'pyepr' in simulation_flags:
                     # add polyline across junction for voltage across the junction
                     oEditor.CreatePolyline(
                         ["NAME:PolylineParameters",
-                        "IsPolylineCovered:=", True,
-                        "IsPolylineClosed:=", False,
-                            ["NAME:PolylinePoints",
-                            ["NAME:PLPoint",
-                            "X:=", current_start[0],
-                            "Y:=", current_start[1],
-                            "Z:=", current_start[2]],
-                            ["NAME:PLPoint",
-                            "X:=", current_end[0],
-                            "Y:=", current_end[1],
-                            "Z:=", current_end[2]]],
-                            ["NAME:PolylineSegments",
-                            ["NAME:PLSegment",
-                            "SegmentType:=", "Line",
-                            "StartIndex:=", 0,
-                            "NoOfPoints:=", 2]],
-                            ["NAME:PolylineXSection",
-                            "XSectionType:=", "None",
-                            "XSectionOrient:=", "Auto",
-                            "XSectionWidth:=", "0" + units,
-                            "XSectionTopWidth:=", "0" + units,
-                            "XSectionHeight:=", "0" + units,
-                            "XSectionNumSegments:=", "0",
-                            "XSectionBendType:=", "Corner"]],
+                         "IsPolylineCovered:=", True,
+                         "IsPolylineClosed:=", False,
+                         ["NAME:PolylinePoints",
+                          ["NAME:PLPoint",
+                           "X:=", current_start[0],
+                           "Y:=", current_start[1],
+                           "Z:=", current_start[2]],
+                          ["NAME:PLPoint",
+                           "X:=", current_end[0],
+                           "Y:=", current_end[1],
+                           "Z:=", current_end[2]]],
+                         ["NAME:PolylineSegments",
+                          ["NAME:PLSegment",
+                           "SegmentType:=", "Line",
+                           "StartIndex:=", 0,
+                           "NoOfPoints:=", 2]],
+                         ["NAME:PolylineXSection",
+                          "XSectionType:=", "None",
+                          "XSectionOrient:=", "Auto",
+                          "XSectionWidth:=", "0" + units,
+                          "XSectionTopWidth:=", "0" + units,
+                          "XSectionHeight:=", "0" + units,
+                          "XSectionNumSegments:=", "0",
+                          "XSectionBendType:=", "Corner"]],
                         ["NAME:Attributes",
-                        "Name:=", "Junction%d" % port['number'],
-                        "Flags:=", "",
-                        "Color:=", "(143 175 143)",
-                        "Transparency:=", 0.4,
-                        "PartCoordinateSystem:=", "Global",
-                        "UDMId:=", "",
-                        "MaterialValue:=", "\"vacuum\"",
-                        "SurfaceMaterialValue:=", "\"\"",
-                        "SolveInside:=", True,
-                        "ShellElement:=", False,
-                        "ShellElementThickness:=", "0" + units,
-                        "IsMaterialEditable:="	, True,
-                        "UseMaterialAppearance:=", False,
-                        "IsLightweight:="	, False
-                        ])
+                         "Name:=", "Junction%d" % port['number'],
+                         "Flags:=", "",
+                         "Color:=", "(143 175 143)",
+                         "Transparency:=", 0.4,
+                         "PartCoordinateSystem:=", "Global",
+                         "UDMId:=", "",
+                         "MaterialValue:=", "\"vacuum\"",
+                         "SurfaceMaterialValue:=", "\"\"",
+                         "SolveInside:=", True,
+                         "ShellElement:=", False,
+                         "ShellElementThickness:=", "0" + units,
+                         "IsMaterialEditable:=", True,
+                         "UseMaterialAppearance:=", False,
+                         "IsLightweight:=", False
+                         ])
 
                     oEditor.ChangeProperty(
                         ["NAME:AllTabs",
-                            ["NAME:Geometry3DAttributeTab",
-                                ["NAME:PropServers", "Junction%d" % port['number']],
-                                ["NAME:ChangedProps",
-                                    ["NAME:Show Direction",
-                                    "Value:=", True]]]
-                        ])
+                         ["NAME:Geometry3DAttributeTab",
+                          ["NAME:PropServers", "Junction%d" % port['number']],
+                          ["NAME:ChangedProps",
+                           ["NAME:Show Direction",
+                            "Value:=", True]]]
+                         ])
 
     if ansys_tool == 'eigenmode':
         oBoundarySetup.DeleteAllExcitations()
@@ -355,40 +349,15 @@ elif ansys_tool == 'q3d':
     oBoundarySetup.AutoIdentifyNets()  # Combine Nets by conductor connections. Order: GroundNet, SignalNet, FloatingNet
 
 
-# Create (floating) sheets modelling participation surfaces
-if participation_sheet_distance is not None:
-    for layer, src_names, side, height in (
-            ('layerMA', ['signal', 'ground'], 1, 0),  # metal-air (vacuum)
-            ('layerMS', ['signal', 'ground'], -1, 0),  # metal-substrate
-            ('layerSA', ['gap'], 1, -vertical_over_etching),  # substrate-air (vacuum)
-    ):
-        layer_objs = []
-        for i, face in enumerate(face_stack):
-            if not face:
-                continue
-
-            sign = (-1) ** (i + int(lower_box_height > 0))
-            objs = [o for n in src_names for o in objects[face][n]]
-            if not objs:  # skip if no objects given
-                continue
-
-            # duplicate objs and transform
-            objs_copy = copy_paste(oEditor, objs)
-            move_vertically(oEditor, objs_copy, sign * (side * participation_sheet_distance + height), units)
-            if thicken_participation_sheet_distance:
-                thicken_sheet(oEditor, objs_copy, sign * side * thicken_participation_sheet_distance, units)
-            layer_objs += objs_copy
-
-        # combine objects to just `layer`
-        if len(layer_objs) > 1:  # unite fails for only one selected object
-            oEditor.Unite(
-                ["NAME:Selections", "Selections:=", ','.join(layer_objs)],
-                ["NAME:UniteParameters", "KeepOriginals:=", False]
-            )
+# Unite sheets modelling participation surfaces
+for layer in ['layerMA', 'layerMS', 'layerSA']:
+    layer_objects = [o for n, v in objects.items() if '_' + layer in n for o in v]
+    if layer_objects:
+        unite(oEditor, layer_objects, False)
         oEditor.ChangeProperty(
             ["NAME:AllTabs",
              ["NAME:Geometry3DAttributeTab",
-              ["NAME:PropServers", layer_objs[0]],
+              ["NAME:PropServers", layer_objects[0]],
               ["NAME:ChangedProps",
                ["NAME:Model", "Value:=", False],  # non-modelled sheet
                ["NAME:Color", "R:=", 197, "G:=", 197, "B:=", 197],  # grey
@@ -397,22 +366,25 @@ if participation_sheet_distance is not None:
               ]
              ])
 
-if not use_ansys_project_template:
-    # Create substrate and vacuum boxes
-    import_bounding_box = oEditor.GetModelBoundingBox()
 
-    for i in range(len(z_levels) - 1):
-        is_vacuum = bool((i + int(lower_box_height > 0)) % 2)
-        box_name = "Vacuum" if is_vacuum else "Substrate"
-        create_box(
-            oEditor, box_name if i < 2 else '{}_{}'.format(box_name, i // 2),
-            float(import_bounding_box[0]), float(import_bounding_box[1]), z_levels[i],
-            float(import_bounding_box[3]) - float(import_bounding_box[0]),
-            float(import_bounding_box[4]) - float(import_bounding_box[1]),
-            z_levels[i + 1] - z_levels[i],
-            "vacuum" if is_vacuum else substrate_material[i // 2],
-            units)
+# Manual mesh refinement on gap objects
+if gap_max_element_length is not None:
+    gap_objects = [o for n, v in objects.items() if '_gap' in n for o in v]
+    if gap_objects:
+        oMeshSetup = oDesign.GetModule("MeshSetup")
+        oMeshSetup.AssignLengthOp(
+            [
+                "NAME:GapLength",
+                "RefineInside:=", False,
+                "Enabled:=", True,
+                "Objects:=", gap_objects,
+                "RestrictElem:=", False,
+                "RestrictLength:=", True,
+                "MaxLength:=", str(gap_max_element_length) + units
+            ])
 
+
+if not ansys_project_template:
     # Insert analysis setup
     setup = data['analysis_setup']
 
@@ -465,7 +437,6 @@ if not use_ansys_project_template:
             "UseDefaultLambdaTgtForIESolver:=", True
         ]
         oAnalysisSetup.InsertSetup("HfssDriven", setup_list)
-
 
         oAnalysisSetup.InsertFrequencySweep(
             "Setup1",
@@ -537,7 +508,10 @@ if not use_ansys_project_template:
         ]
         oAnalysisSetup.InsertSetup("HfssEigen", setup_list)
 
-else:
+else:  # use ansys_project_template
+    # delete substrate and vacuum objects
+    delete(oEditor, [o for n, v in objects.items() if 'substrate' in n or 'vacuum' in n for o in v])
+
     scriptpath = os.path.dirname(__file__)
     aedt_path = os.path.join(scriptpath, '../')
     basename = os.path.splitext(os.path.basename(jsonfile))[0]
@@ -554,7 +528,7 @@ else:
     oEditor.Copy(
         [
             "NAME:Selections",
-            "Selections:="		, ",".join(sheet_name_list)
+            "Selections:="	, ",".join(sheet_name_list)
         ])
 
     oDesktop.OpenProject(os.path.join(aedt_path, template_path))
@@ -564,34 +538,6 @@ else:
     oEditor.Paste()
     oDesktop.CloseProject(build_geom_name)
 
-if vertical_over_etching > 0:
-    # In case of vertical over-etching, solids of vacuum are created inside substrates (overrides substrate material).
-    # Solve Inside parameter must be set in 'hfss' and 'eigenmode' simulations to avoid warnings.
-    # Solve Inside doesn't exists in 'q3d', so we use None in thicken_sheet function to ignore the parameter.
-    solve_inside = True if ansys_tool in ['hfss', 'eigenmode'] else None
-    for i, face in enumerate(face_stack):
-        if not face:
-            continue
-
-        sign = (-1) ** (i + int(lower_box_height > 0))
-        gap_objects = objects[face]['gap']
-        thicken_sheet(oEditor, gap_objects, -sign * vertical_over_etching, units, "vacuum", solve_inside)
-
-if gap_max_element_length is not None:
-    # Manual mesh refinement on gap sheets (or solids in case of vertical over-etching)
-    gap_objects = [o for f in face_stack if f for o in objects[f]['gap']]
-    oMeshSetup = oDesign.GetModule("MeshSetup")
-    oMeshSetup.AssignLengthOp(
-            [
-                "NAME:GapLength",
-                "RefineInside:=", False,
-                "Enabled:=", True,
-                "Objects:=", gap_objects,
-                "RestrictElem:=", False,
-                # "NumMaxElem:=", 100000
-                "RestrictLength:=", True,
-                "MaxLength:=", str(gap_max_element_length) + units
-            ])
 
 # Fit window to objects
 oEditor.FitAll()

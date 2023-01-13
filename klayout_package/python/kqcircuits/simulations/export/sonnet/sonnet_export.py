@@ -24,7 +24,7 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.simulations.export.sonnet import parser
 from kqcircuits.simulations.export.util import find_edge_from_point_in_polygons
 from kqcircuits.simulations.port import InternalPort, EdgePort
-from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name
 from kqcircuits.util.export_helper import write_commit_reference_file
 
 
@@ -78,10 +78,10 @@ def export_sonnet_son(simulation: Simulation, path: Path, detailed_resonance=Fal
     def get_sonnet_strings(material_type, grid_size, symmetry):
         layout = simulation.cell.layout()
         dbu = layout.dbu
-        layer_pad = layout.layer(default_layers["1t1_simulation_airbridge_pads"])
-        layer_bridge = layout.layer(default_layers["1t1_simulation_airbridge_flyover"])
-        layer_son = layout.layer(default_layers["1t1_simulation_signal"])
-        layer_son_ground = layout.layer(default_layers["1t1_simulation_ground"])
+        layer_pad = layout.layer(get_simulation_layer_by_name("1t1_airbridge_pads"))
+        layer_bridge = layout.layer(get_simulation_layer_by_name("1t1_airbridge_flyover"))
+        layer_son = layout.layer(get_simulation_layer_by_name("1t1_signal"))
+        layer_son_ground = layout.layer(get_simulation_layer_by_name("1t1_ground"))
 
         simpolygons = [p.polygon for p in simulation.cell.shapes(layer_son).each()] + \
                       [p.polygon for p in simulation.cell.shapes(layer_son_ground).each()]

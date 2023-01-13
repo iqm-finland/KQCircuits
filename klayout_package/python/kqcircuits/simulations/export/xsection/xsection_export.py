@@ -23,7 +23,7 @@ import os
 import subprocess
 from pathlib import Path
 from typing import Callable, List, Tuple, Union
-from kqcircuits.defaults import default_faces, klayout_executable_command, STARTUPINFO, XSECTION_PROCESS_PATH
+from kqcircuits.defaults import klayout_executable_command, STARTUPINFO, XSECTION_PROCESS_PATH
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
@@ -143,7 +143,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
 
 
 def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya.Shape], float] = None):
-    """Separate shapes in simulation_signal layer to their own dedicated signal layers for each face
+    """Separate shapes in signal layer to their own dedicated signal layers for each face
 
     Args:
         simulation: A Simulation object where the layer will be separated
@@ -157,23 +157,24 @@ def separate_signal_layer_shapes(simulation: Simulation, sort_key: Callable[[pya
             return (-point_in_shape.y, point_in_shape.x)
     signal_index = 1
     gen_free_layer_slots = free_layer_slots(simulation.layout)
-    for face_id, face in enumerate(simulation.face_ids):
-        if face not in default_faces or "simulation_signal" not in default_faces[face]:
+    for face in simulation.face_ids:
+        signal_layer = find_layer_by_name(f"{face}_signal", simulation.layout)
+        if signal_layer is None:
             continue
-        simulation_signal_layer = simulation.get_layer("simulation_signal", face_id=face_id)
-        for shape in sorted(simulation.cell.each_shape(simulation_signal_layer), key=sort_key):
+        signal_layer_idx = simulation.layout.layer(signal_layer)
+        for shape in sorted(simulation.cell.each_shape(signal_layer_idx), key=sort_key):
             # Reuse layer if it already used in layout
-            signal_layer = layer_already_exists(f"{face}_signal_{signal_index}", simulation.layout)
+            signal_layer = find_layer_by_name(f"{face}_signal_{signal_index}", simulation.layout)
             # If no such layer, find next available layer index
             if signal_layer is None:
                 layer_index = next(gen_free_layer_slots)
                 signal_layer = pya.LayerInfo(layer_index, 0, f"{face}_signal_{signal_index}")
             simulation.cell.shapes(simulation.layout.layer(signal_layer)).insert(shape)
             signal_index += 1
-        simulation.cell.clear(simulation_signal_layer)
+        simulation.cell.clear(signal_layer_idx)
 
 
-def layer_already_exists(layer_name, layout):
+def find_layer_by_name(layer_name, layout):
     """Returns layerinfo if there already is a layer by layer_name in layout. None if no such layer exists"""
     for l in layout.layer_infos():
         if l.datatype == 0 and layer_name == l.name:
@@ -346,7 +347,7 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
     substrate_layers = [layer for layer in simulation.layout.layer_infos() if layer.name.endswith("_substrate")]
     substrate = _combine_region_from_layers(simulation, substrate_layers)
     metal_layers  = [layer for layer in simulation.layout.layer_infos() if layer.name in
-        ["b_simulation_ground", "t_simulation_ground", "b_simulation_signal", "t_simulation_signal"]]
+        ["b_ground", "t_ground", "b_signal", "t_signal"]]
     metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith("b_signal_")]
     metal_layers += [layer for layer in simulation.layout.layer_infos() if layer.name.startswith("t_signal_")]
     metals = _combine_region_from_layers(simulation, metal_layers)

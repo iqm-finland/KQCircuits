@@ -47,7 +47,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                       max_delta_f=0.1, n_modes=2, gap_max_element_length=None, substrate_loss_tangent=0,
-                      participation_sheet_distance=None, thicken_participation_sheet_distance=None,
                       dielectric_surfaces=None, simulation_flags=None, ansys_project_template=None):
     r"""
     Export Ansys simulation into json and gds files.
@@ -74,8 +73,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units
             (if None is given, then the mesh element size is not restricted in the gap).
         substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
-        participation_sheet_distance: Distance to set non-modelled TLS interface sheets. Default is None.
-        thicken_participation_sheet_distance: 3D thickness for non-modelled TLS interface sheets. Default is None.
         dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations
             from the participation sheets. Default is None. Input is of the form::
 
@@ -106,11 +103,9 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         simulation_flags = []
 
     # collect data for .json file
-    layers = simulation.get_layers()
     json_data = {
         'ansys_tool': ansys_tool,
         **simulation.get_simulation_data(),
-        'layers': layers,
         'analysis_setup': {
             'frequency_units': frequency_units,
             'frequency': frequency,
@@ -130,8 +125,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         },
         'gap_max_element_length': gap_max_element_length,
         'substrate_loss_tangent': substrate_loss_tangent,
-        'participation_sheet_distance': participation_sheet_distance,
-        'thicken_participation_sheet_distance': thicken_participation_sheet_distance,
         'dielectric_surfaces': dielectric_surfaces,
         'simulation_flags': simulation_flags
     }
@@ -148,7 +141,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
     export_layers(gds_filename, simulation.layout, [simulation.cell],
                   output_format='GDS2',
-                  layers=layers.values()
+                  layers=simulation.get_layers()
                   )
 
     return json_filename
@@ -232,7 +225,6 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  maximum_passes=12, minimum_passes=1, minimum_converged_passes=1,
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                  max_delta_f=0.1, n_modes=2, gap_max_element_length=None, substrate_loss_tangent=0,
-                 participation_sheet_distance=None, thicken_participation_sheet_distance=None,
                  dielectric_surfaces=None, exit_after_run=False,
                  ansys_executable=r"%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
@@ -265,8 +257,6 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units
             (if None is given, then the mesh element size is not restricted in the gap).
         substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.
-        participation_sheet_distance: Distance to set non-modelled TLS interface sheets. Default is None.
-        thicken_participation_sheet_distance: 3D thickness for non-modelled TLS interface sheets. Default is None.
         dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations
             from the participation sheets. Default is None. Input is of the form::
 
@@ -325,8 +315,6 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                             max_delta_f=max_delta_f, n_modes=n_modes,
                                             gap_max_element_length=gap_max_element_length,
                                             substrate_loss_tangent=substrate_loss_tangent,
-                                            participation_sheet_distance=participation_sheet_distance,
-                                            thicken_participation_sheet_distance=thicken_participation_sheet_distance,
                                             dielectric_surfaces=dielectric_surfaces,
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template))

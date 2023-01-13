@@ -22,7 +22,7 @@ from autologging import logged
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_by_name
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
@@ -117,19 +117,12 @@ class CrossSectionSimulation:
         """Returns layer of given name. If layer doesn't exist, a new layer is created."""
         if layer_name not in self.layer_dict:
             layer_info = None
-            reserved_layer_ids = []
             for l in self.layout.layer_infos():
-                if l.datatype == 0:
-                    reserved_layer_ids.append(l.layer)
+                if l.datatype == 0 and l.name == layer_name:
                     # If there is a layer with layer_name in layout (used by other cell), reuse that
-                    if l.name == layer_name:
-                        layer_info = l
+                    layer_info = l
             if layer_info is None:
-                # Find unused slot of layers
-                layer_id = 1
-                while layer_id in reserved_layer_ids:
-                    layer_id += 1
-                layer_info = pya.LayerInfo(layer_id, 0, layer_name)
+                layer_info = get_simulation_layer_by_name(layer_name)
             self.layer_dict[layer_name] = layer_info
         return self.layout.layer(self.layer_dict[layer_name])
 

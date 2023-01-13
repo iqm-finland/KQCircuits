@@ -31,9 +31,8 @@ located at either the "bottom" or "top" of that chip (in the final place after f
 process). The last number is an additional index that can be used if necessary, in case multiple
 deposition layers and etching processes are needed.
 
-The simulation layers are assigned with data type 0, because they are auxiliary layers that are created for simulation
-purposes. The simulation layer IDs are between 1000-1099. The other auxiliary layers containing annotations, refpoints
-and text fields are between 220-229.
+The data type 0 is reserved for auxiliary layers. Annotations, refpoints and text fields are between 220-229.
+Simulations use the data type 0 by creating custom layers starting from layer number 1000.
 
 In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
 layer views are hidden by default. See https://www.klayout.de/doc-qt5/manual/layer_source.html
@@ -94,22 +93,6 @@ _common_b_t_layers = {
     "ports": (26, 1),  # Considered conductive in the netlist extraction
 }
 
-_common_simulation_layers = {
-    "simulation_signal": (1000, 0),
-    "simulation_ground": (1001, 0),
-    "simulation_gap": (1002, 0),
-}
-_single_face_simulation_layers = {
-    "simulation_airbridge_flyover": (1003, 0),
-    "simulation_airbridge_pads": (1004, 0),
-}
-_chip_to_chip_simulation_layers = {
-    "simulation_indium_bump": (1005, 0),
-}
-_in_chip_simulation_layers = {
-    "simulation_tsv": (1006, 0),
-}
-
 def _shift_layers(layers, shift_ID, shift_data_type):
     """Add a number to replicate a group of layers on a different face.
 
@@ -123,25 +106,20 @@ _face_layers = {}   # layer descriptions per every chip face
 
 _face_layers['1b1'] = {
     **_common_b_t_layers,
-    **_common_simulation_layers,
 }
 
 _face_layers['1t1'] = {
     **_shift_layers(_common_b_t_layers, 128, 0),
-    **_shift_layers({**_common_simulation_layers, **_single_face_simulation_layers, **_chip_to_chip_simulation_layers,
-                     **_in_chip_simulation_layers}, 10, 0),
 }
 
 # Top face layers
 _face_layers['2b1'] = {
     **_shift_layers(_common_b_t_layers, 0, 1),    # common layers at the "top"
-    **_shift_layers({**_common_simulation_layers, **_in_chip_simulation_layers}, 20, 0),
 }
 
 # Ceiling face layers
 _face_layers['2t1'] = {
     **_shift_layers(_common_layers, 128, 1),     # same common layers at the "ceiling"
-    **_shift_layers(_common_simulation_layers, 30, 0),
 }
 
 # Other auxiliary layers [Layer 220-229]
