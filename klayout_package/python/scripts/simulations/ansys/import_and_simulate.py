@@ -20,7 +20,21 @@
 import os
 import json
 import sys
+import platform
 import ScriptEnv
+
+
+def write_simulation_machine_versions_file(oDesktop):
+    """
+    Writes file SIMULATION_MACHINE_VERSIONS into given file path.
+    """
+    versions = {}
+    versions['platform'] = platform.platform()
+    versions['python'] = sys.version_info
+    versions['Ansys ElectronicsDesktop'] = oDesktop.GetVersion()
+
+    with open('SIMULATION_MACHINE_VERSIONS.json', 'w') as file:
+        json.dump(versions, file)
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -71,3 +85,5 @@ if 'tdr' in simulation_flags:
 # Export Touchstone S-matrix (.sNp) w/o de-embedding
 if 'snp_no_deembed' in simulation_flags:
     oDesktop.RunScript(os.path.join(scriptpath, 'export_snp_no_deembed.py'))
+
+write_simulation_machine_versions_file(oDesktop)

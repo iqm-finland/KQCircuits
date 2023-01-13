@@ -20,8 +20,43 @@ import logging
 import shutil
 import subprocess
 import sys
+import platform
+import json
 from pathlib import Path
 
+def write_simulation_machine_versions_file(path, name):
+    """
+    Writes file SIMULATION_MACHINE_VERSIONS into given file path.
+    """
+    versions = {}
+    versions['platform'] = platform.platform()
+    versions['python'] = sys.version_info
+
+    gmsh_versions_list = []
+    with open(path.joinpath(name+'.json_Gmsh.log')) as f:
+        gmsh_log = f.readlines()
+        gmsh_versions_list = [line.replace('\n', '') for line in gmsh_log if 'ersion' in line]
+
+    elmer_versions_list = []
+    with open(path.joinpath(name+'.json_Elmer.log')) as f:
+        elmer_log = f.readlines()
+        elmer_versions_list = [line.replace('\n', '') for line in elmer_log if 'ersion' in line]
+
+    versions['gmsh'] = gmsh_versions_list
+    versions['elmer'] = elmer_versions_list
+
+    mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
+    if shutil.which(mpi_command) is not None:
+        output = subprocess.check_output([mpi_command, '--version'])
+        versions['mpi'] = output.decode('ascii').split('\n', maxsplit=1)[0]
+
+    paraview_command = 'paraview'
+    if shutil.which(paraview_command) is not None:
+        output = subprocess.check_output([paraview_command, '--version'])
+        versions['paraview'] = output.decode('ascii').split('\n', maxsplit=1)[0]
+
+    with open('SIMULATION_MACHINE_VERSIONS.json', 'w') as file:
+        json.dump(versions, file)
 
 def run_elmer_grid(msh_path, n_processes, exec_path_override=None):
     elmergrid_executable = shutil.which('ElmerGrid')

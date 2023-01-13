@@ -40,6 +40,10 @@ def klayout_executable_command():
     else:
         return "klayout"
 
+def get_klayout_version():
+    output = subprocess.check_output([klayout_executable_command(), '-v'], stderr=subprocess.DEVNULL)
+
+    return output.decode('ascii').replace('\n','')
 
 _kqcircuits_path = Path(os.path.dirname(os.path.realpath(__file__)))
 # workaround for Windows because os.path.realpath doesn't work there before Python 3.8
@@ -71,6 +75,10 @@ SCRIPTS_PATH = PY_PATH.joinpath("scripts")
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]
 ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")]
 XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
+
+VERSION_PATHS = {}
+VERSION_PATHS['KQC'] = ROOT_PATH
+KLAYOUT_VERSION = get_klayout_version()
 
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None

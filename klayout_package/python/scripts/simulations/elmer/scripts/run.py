@@ -21,7 +21,7 @@ import argparse
 
 from gmsh_helpers import export_gmsh_msh
 from elmer_helpers import export_elmer_sif, write_project_results_json
-from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview
+from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview, write_simulation_machine_versions_file
 from cross_section_helpers import produce_cross_section_mesh, produce_cross_section_sif_files, \
     get_cross_section_capacitance_and_inductance, get_interface_quality_factors
 
@@ -42,6 +42,9 @@ parser.add_argument('-q', action='store_true', help="Quiet operation: no GUIs ar
 parser.add_argument('--write-project-results', action='store_true',
         help="Write the results in KQC 'project.json' -format")
 
+parser.add_argument('--write-versions-file', action='store_true',
+        help="Write the versions of used software in 'SIMULATION_MACHINE_VERSIONS.json'")
+
 args = parser.parse_args()
 
 # Get input json filename as first argument
@@ -59,6 +62,13 @@ if args.write_project_results:
     args.skip_elmergrid = True
     args.skip_elmer = True
     args.skip_paraview = True
+
+if args.write_versions_file:
+    args.skip_gmsh = True
+    args.skip_elmergrid = True
+    args.skip_elmer = True
+    args.skip_paraview = True
+    args.write_project_results = False
 
 if args.only_gmsh:
     args.skip_elmergrid = True
@@ -151,3 +161,5 @@ else:
     # Write result file
     if args.write_project_results:
         write_project_results_json(path, msh_filepath)
+    elif args.write_versions_file:
+        write_simulation_machine_versions_file(path, json_data['parameters']['name'])

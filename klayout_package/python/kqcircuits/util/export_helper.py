@@ -20,6 +20,7 @@ import json
 import logging
 import subprocess
 import platform
+import sys
 from sys import argv
 from pathlib import Path
 
@@ -27,7 +28,7 @@ from autologging import logged
 
 from kqcircuits.elements.element import get_refpoints
 from kqcircuits.defaults import default_layers, TMP_PATH, STARTUPINFO, default_probe_types, default_probe_suffixes, \
-    klayout_executable_command
+    klayout_executable_command, VERSION_PATHS, KLAYOUT_VERSION
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya
 
@@ -146,19 +147,35 @@ def get_active_or_new_layout():
         return pya.Layout()
 
 
-def write_commit_reference_file(path: Path):
+def write_commit_reference_file(path: Path, write_versions_file=True):
     """
     Writes file COMMIT_REFERENCE into given file path. The file includes current git revision number.
     If git repository is not found in given path, no file is written.
     """
     try:
-        output = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL,
-                                         cwd=path, startupinfo=STARTUPINFO)
+        with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
+            for item in VERSION_PATHS.items():
+                output = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.DEVNULL,
+                                             cwd=item[1], startupinfo=STARTUPINFO)
+                file.write("{} revision number: {}".format(item[0], output.decode('ascii')))
+
     except subprocess.CalledProcessError:
         return
-    with open(path.joinpath('COMMIT_REFERENCE'), 'w') as file:
-        file.write("Git revision number: " + output.decode('ascii'))
 
+    if write_versions_file:
+        write_export_machine_versions_file(path)
+
+def write_export_machine_versions_file(path: Path):
+    """
+    Writes file EXPORT_MACHINE_VERSIONS into given file path.
+    """
+    versions = {}
+    versions['platform'] = platform.platform()
+    versions['python'] = sys.version_info
+    versions['klayout'] = KLAYOUT_VERSION
+
+    with open(path.joinpath('EXPORT_MACHINE_VERSIONS.json'), 'w') as file:
+        json.dump(versions, file)
 
 def open_with_klayout_or_default_application(filepath):
     """

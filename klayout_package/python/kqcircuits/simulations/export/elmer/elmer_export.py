@@ -182,6 +182,14 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
+
+                    file.write('echo "Simulation {}/{} write versions json"\n'.format(i + 1, len(json_filenames)))
+                    file.write('srun -n 1 {2} "{0}" "{1}" --write-versions-file 2>&1 >> '\
+                            '{1}_write_versions_file.log\n'.format(
+                        script_file,
+                        Path(json_filename).relative_to(path),
+                        python_executable)
+                    )
                 else:
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-gmsh 2>&1 >> "{1}_Gmsh.log"\n'.format(
@@ -207,9 +215,17 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
+
                     file.write('echo "Simulation {}/{} write results json"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --write-project-results 2>&1 >> '\
                             '"{1}_write_project_results.log"\n'.format(
+                        script_file,
+                        Path(json_filename).relative_to(path),
+                        python_executable)
+                    )
+
+                    file.write('echo "Simulation {}/{} write versions file"\n'.format(i + 1, len(json_filenames)))
+                    file.write('{2} "{0}" "{1}" --write-versions-file\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable)
