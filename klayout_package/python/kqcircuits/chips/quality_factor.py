@@ -54,6 +54,7 @@ class QualityFactor(Chip):
     launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="μm")
     launcher_indent = Param(pdt.TypeDouble, "Launcher indentation from edge", 800, unit="μm")
     marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="μm")
+    feedline_bend_distance = Param(pdt.TypeDouble, "Horizontal distance of feedline bend", 100, unit="μm")
     resonators_both_sides = Param(pdt.TypeBoolean, "Place resonators on both sides of feedline", False)
     max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="μm",
                         docstring="Resonators exceeding this length become meandering")
@@ -90,10 +91,12 @@ class QualityFactor(Chip):
             # Bend in the feedline needed
             points_fl += [
                 launchers["PL-IN"][0] + pya.DVector(self.r + self.marker_safety, 0),
-                pya.DPoint(launchers["PL-IN"][0].x + self.r * 2 + self.marker_safety, wg_top_y)
+                pya.DPoint(launchers["PL-IN"][0].x + self.r + self.feedline_bend_distance + self.marker_safety,
+                           wg_top_y)
             ]
             points_fl_end = [
-                pya.DPoint(launchers["PL-OUT"][0].x - self.r * 2 - self.marker_safety, wg_top_y),
+                pya.DPoint(launchers["PL-OUT"][0].x - self.r - self.feedline_bend_distance - self.marker_safety,
+                           wg_top_y),
                 launchers["PL-OUT"][0] + pya.DVector(-self.r - self.marker_safety, 0),
             ]
         elif self.marker_safety > 0:
