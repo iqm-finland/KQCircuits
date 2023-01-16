@@ -23,8 +23,6 @@ It is assumed that KLayout is installed and that pip is available in the shell w
 
 Usage:
 
-    (in Windows the command line must be opened with admin privileges)
-
     > cd directory_where_this_file_is
 
     > python3 setup_within_klayout.py
@@ -58,9 +56,9 @@ if __name__ == "__main__":
 
     # create symlink between KLayout python folder and kqcircuits folder
     link_map = (
-        ("klayout_package/python/kqcircuits", "kqcircuits"),
-        ("klayout_package/python/scripts", "kqcircuits_scripts"),
-        ("klayout_package/python/drc/", "drc"),
+        ("klayout_package/python/kqcircuits", "python/kqcircuits"),
+        ("klayout_package/python/scripts", "python/kqcircuits_scripts"),
+        ("klayout_package/python/drc", "drc/kqcircuits"),
     )
 
     configdir = klayout_configdir(kqc_root_path)

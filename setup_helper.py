@@ -16,6 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import os
+import subprocess
 
 
 # Retuns KLayout's configuration directory already associated with `root_path`.
@@ -51,21 +52,19 @@ def klayout_configdir(root_path, configdir=""):
         print("Warning: {configdir} already used! Reconfiguring for this source directory.")
         return configdir
 
+
 # This function createst KLayout symlinks. Used by setup_within_klayout.py.
 def setup_symlinks(root_path, configdir, link_map):
     for target, name in link_map:
         link_target = os.path.join(root_path, target)
 
-        if target.endswith("/"):  # link all files under "target" dir
-            for f in os.listdir(link_target):
-                link_name =  os.path.join(configdir, name, f)
-                if os.path.lexists(link_name):
-                    os.unlink(link_name)
-                os.symlink(os.path.join(link_target, f), link_name)
-            continue
-
-        link_name = os.path.join(configdir, 'python', name)
+        link_name = os.path.join(configdir, name)
         if os.path.lexists(link_name):
             os.unlink(link_name)
-        os.symlink(link_target, link_name, target_is_directory=True)
+        if os.name == "nt":
+            # On Windows, create a Junction to avoid requiring Administrative privileges
+            subprocess.check_call(['cmd', '/c', 'mklink', '/J',
+                                   os.path.normpath(link_name), os.path.normpath(link_target)])
+        else:
+            os.symlink(link_target, link_name, target_is_directory=True)
         print("Created symlink \"{}\" to \"{}\"".format(link_name, link_target))

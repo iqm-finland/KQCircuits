@@ -114,7 +114,7 @@ Developer setup
 
    python setup_within_klayout.py
 
-then KLayout will contain KQCircuits. **In Windows you must run the command with administrator privileges.**
+then KLayout will contain KQCircuits.
 You may have to write ``python3`` or ``py`` instead of ``python`` depending on your OS and Python installation,
 just make sure that the command refers to Python 3. For further details see the `developer setup
 documentation <https://iqm-finland.github.io/KQCircuits/developer/setup.html>`__.
