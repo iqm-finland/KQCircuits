@@ -6,6 +6,7 @@ kqcircuits.simulations.export
    kqcircuits.simulations.export.ansys
    kqcircuits.simulations.export.elmer
    kqcircuits.simulations.export.sonnet
+   kqcircuits.simulations.export.xsection
 
 
 .. toctree::

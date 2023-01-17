@@ -45,11 +45,12 @@ Documentation
 .. toctree::
    :maxdepth: 2
 
-   start/index
-   support
+   installation
    user_guide/index
+   salt
    developer/index
    api/kqcircuits
+   support
    citing
    trademarks
    about

@@ -1,0 +1,10 @@
+kqcircuits.simulations.export.xsection.xsection\_export
+=======================================================
+
+.. automodule:: kqcircuits.simulations.export.xsection.xsection_export
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.xsection.xsection_export
+.. image:: ../pcell_images/kqcircuits.simulations.export.xsection.xsection_export.png
