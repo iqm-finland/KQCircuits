@@ -132,6 +132,9 @@ class Simulation:
     minimum_point_spacing = Param(pdt.TypeDouble, "Tolerance for merging adjacent points in polygon", 0.01, unit="µm")
     polygon_tolerance = Param(pdt.TypeDouble, "Tolerance for merging adjacent polygons in a layer", 0.004, unit="µm")
 
+    extra_json_data = Param(pdt.TypeNone, "Extra data in dict form to store in resulting JSON", None,
+        docstring="This field may be used to store 'virtual' parameters useful for your simulations")
+
     def __init__(self, layout, **kwargs):
         """Initialize a Simulation.
 

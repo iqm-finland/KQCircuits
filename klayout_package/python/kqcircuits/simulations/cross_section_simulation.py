@@ -27,7 +27,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
 @logged
-@add_parameters_from(Simulation, 'name', 'box')
+@add_parameters_from(Simulation, 'name', 'box', 'extra_json_data')
 class CrossSectionSimulation:
     """Class for co-planar waveguide cross-section simulations.
 
