@@ -53,7 +53,7 @@ setup(
         "docs": ["sphinx~=4.4", "sphinx-rtd-theme~=0.4", "networkx>=2.7", "matplotlib>=3.5.1"],
         "tests": ["pytest>=6.0.2", "pytest-cov~=2.8", "pytest-xdist>=2.1", "tox>=3.18", "pylint==2.9",
                   "networkx>=2.7", "matplotlib>=3.5.1", "nbqa~=1.3"],
-        "notebooks": ["gdspy~=1.5", "jupyter~=1.0.0"],
+        "notebooks": ["jupyter~=1.0.0", "klayout>=0.28"],
         "graphs": ["networkx>=2.7", "matplotlib>=3.5.1"],
     },
     entry_points={

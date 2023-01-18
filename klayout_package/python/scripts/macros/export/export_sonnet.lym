@@ -42,7 +42,7 @@ from kqcircuits.defaults import TMP_PATH
 path = TMP_PATH  # Your path here
 name = "Dev"  # makes filename Dev.son
 
-top_cell = KLayoutView.get_active_cell()
+top_cell = KLayoutView(current=True).active_cell
 
 simulation = Simulation.from_cell(top_cell, margin=100, name=name)
 

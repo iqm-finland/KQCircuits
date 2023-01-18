@@ -34,13 +34,11 @@
 
 """Exports the top cell as a .png image."""
 
-import os
-from pathlib import Path
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.defaults import TMP_PATH
 
-top_cell = KLayoutView.get_active_cell_view().cell
 view = KLayoutView(current=True)
+top_cell = view.active_cell
 
 path =TMP_PATH
 filename = "kqc_export"

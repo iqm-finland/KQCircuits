@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -50,9 +51,8 @@ Usage:
 cell_name = Airbridge.default_type  # any cell that starts with this string will be counted
 file_name = "airbridge_coordinates.txt"
 
-cell_view = KLayoutView.get_active_cell_view()
-layout_view = cell_view.view()
-layout = cell_view.layout()
+view = KLayoutView(current=True)
+layout = view.layout
 airbridge_coordinates = []
 
 
@@ -72,7 +72,7 @@ def find_airbridge_coordinates(inst, trans):
     # workaround for getting the cell due to KLayout bug, see
     # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
     # TODO: replace by `cell = inst.cell` once KLayout bug is fixed
-    cell = layout.cell(inst.cell.cell_index())
+    cell = view.layout.cell(inst.cell.cell_index())
     for sub_inst in cell.each_inst():
         find_airbridge_coordinates(sub_inst, trans*inst.dtrans)
 
@@ -82,7 +82,7 @@ def point_to_str(point):
 
 
 static_cells = set()  # tuples of (cell, cell transform)
-for obj in layout_view.object_selection:
+for obj in view.layout_view.object_selection:
     if obj.is_cell_inst():
         inst = obj.inst()
         find_airbridge_coordinates(inst, pya.DTrans())

@@ -50,14 +50,13 @@ from kqcircuits.util.refpoints import Refpoints
 # LOCAL displays coordinates relative to the selected cell
 COORDINATE_ARG = "GLOBAL"
 
-layout = KLayoutView.get_active_layout()
-top_cell = layout.top_cells()[0]
-layout_view = KLayoutView.get_active_cell_view().view()
+view = KLayoutView(current=True)
+layout = view.layout
 
 print("Refpoints of selected cell(s)")
 print("")
 no_selection = True
-for obj in layout_view.object_selection:
+for obj in view.layout_view.object_selection:
     no_selection = False
     # workaround for getting the cell due to KLayout bug, see
     # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference

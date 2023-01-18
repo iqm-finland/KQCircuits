@@ -20,11 +20,9 @@
 
 Defines values for things such as default layers, paths, and default sub-element types.
 """
-
 import os
 import platform
 import subprocess
-from importlib.metadata import version
 from pathlib import Path
 
 from kqcircuits.pya_resolver import pya, is_standalone_session
@@ -34,17 +32,23 @@ from kqcircuits.util.import_helper import module_from_file
 def klayout_executable_command():
     """Returns the command (string) needed to run klayout executable in the current OS."""
     name = platform.system()
-    if name == "Windows":
-        return os.path.join(os.getenv("APPDATA"), "KLayout", "klayout_app.exe")
-    elif name == "Darwin":
-        return "/Applications/klayout.app/Contents/MacOS/klayout"
-    else:
-        return "klayout"
 
-def get_klayout_version():
     if is_standalone_session():
-        return f"KLayout {version('klayout')}"
-    return pya.Application.instance().version()
+        # Assume KLayout is installed in the default location
+        if name == "Windows":
+            klayout_path = Path(os.getenv("APPDATA")).joinpath("KLayout")
+        elif name == "Darwin":
+            klayout_path = Path("/Applications/klayout.app/Contents/MacOS")
+        else:
+            klayout_path = Path("")
+    else:
+        # The path of the currently running KLayout application
+        klayout_path = Path(pya.Application.instance().inst_path())
+
+    if name == "Windows":
+        return str(klayout_path.joinpath("klayout_app.exe"))
+    else:
+        return str(klayout_path.joinpath("klayout"))
 
 _kqcircuits_path = Path(os.path.dirname(os.path.realpath(__file__)))
 # workaround for Windows because os.path.realpath doesn't work there before Python 3.8
@@ -79,7 +83,6 @@ XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
 
 VERSION_PATHS = {}
 VERSION_PATHS['KQC'] = ROOT_PATH
-KLAYOUT_VERSION = get_klayout_version()
 
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None

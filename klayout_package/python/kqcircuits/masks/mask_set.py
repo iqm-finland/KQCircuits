@@ -17,7 +17,6 @@
 
 import copy
 import os
-import sys
 import subprocess
 from time import perf_counter
 from string import Template
@@ -28,11 +27,11 @@ from pathlib import Path
 from autologging import logged
 from tqdm import tqdm
 
-from kqcircuits.pya_resolver import pya
+from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, klayout_executable_command, default_face_id
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
-from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
+from kqcircuits.klayout_view import KLayoutView
 
 
 @logged
@@ -66,28 +65,14 @@ class MaskSet:
 
     """
 
-    def __init__(self, layout=None, name="MaskSet", version=1, with_grid=False, export_drc=False,
-                 mask_export_layers=None, debug=False):
+    def __init__(self, view=None, name="MaskSet", version=1, with_grid=False, export_drc=False,
+                 mask_export_layers=None):
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0,  "BUILD": 0, 'EXPORT': 0, 'END': 0}
-        self.layout = layout
-        self.debug = debug
 
-        if debug or '-d' in sys.argv:  # Stand-alone debug mode, without klayout. Single process.
-            print("Running without KLayout. Some features for mask export have been limited.")
-            self.debug = True
-            self.view = None
-            self.layout = pya.Layout()
-        else:  # Normal mode, multiple processes run klayout in the background
-            try:
-                self.view = KLayoutView(current=True, initialize=True)
-                self.layout = KLayoutView.get_active_layout()
-            except MissingUILibraryException:
-                print("KLayout application not detected! Most likely the mask export was attempted externally.")
-                print("Try: 'klayout -z -r masks/demo.py' ")
-                print("Alternatively, you may export the mask without KLayout but with limited features.")
-                print("To do this use the debug mode switch '-d': 'python masks/demo.py -d'")
-                sys.exit()
+        if view is None:
+            self.view = KLayoutView()
+        self.layout = self.view.layout
 
         self.name = name
         self.version = version
@@ -132,7 +117,7 @@ class MaskSet:
             the loaded cell
         """
         load_opts = pya.LoadLayoutOptions()
-        if self.view and pya.Application.instance().version() >= 'KLayout 0.27.0':
+        if hasattr(pya.LoadLayoutOptions, "CellConflictResolution"):
             load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
         self.layout.read(file_name, load_opts)
         return self.layout.top_cells()[-1]
@@ -144,7 +129,7 @@ class MaskSet:
             chips: List of tuples that ``add_chip`` uses. Parameters are optional.
                 For example, ``(QualityFactor, "QDG", parameters)``.
             threads: Number of parallel threads to use for generation. By default uses ``os.cpu_count()`` threads.
-                Uses subprocesses and consequently a lot of memory.
+                Uses subprocesses and consequently a lot of memory. In standalone python mode always uses 1 thread.
 
         Warning:
             It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.
@@ -154,7 +139,7 @@ class MaskSet:
 
         if threads is None:
             threads = os.cpu_count()
-        if threads is None or threads < 1 or self.debug:
+        if threads is None or threads < 1 or is_standalone_session():
             threads = 1
 
         if threads == 1:
@@ -272,10 +257,10 @@ class MaskSet:
 
         if isclass(chip):
             cell = self.variant_definition(chip, variant_name, **kwargs)[variant_name]
-            export_chip(cell, variant_name, chip_path, self.layout, self.export_drc, debug=self.debug)
+            export_chip(cell, variant_name, chip_path, self.layout, self.export_drc)
             self.layout.delete_cell_rec(cell.cell_index())
         else:
-            export_chip(chip, variant_name, chip_path, self.layout, self.export_drc, debug=self.debug)
+            export_chip(chip, variant_name, chip_path, self.layout, self.export_drc)
 
         self._load_chip_into_mask(str(chip_path / f"{variant_name}.oas"), variant_name)
 
@@ -381,14 +366,13 @@ class MaskSet:
         if remove_guiding_shapes and self.layout.is_valid_layer(self.layout.guiding_shape_layer()):
             self.layout.delete_layer(self.layout.guiding_shape_layer())
 
-    def export(self, path, view=None):  # pylint: disable=unused-argument
+    def export(self, path):  # pylint: disable=unused-argument
         """Exports designs, bitmaps and documentation of this mask set.
 
         Assumes that self.build() has been called before.
 
         Args:
             path: path where the folder for this mask set is created
-            view: KLayout view object
 
         """
         self._time['EXPORT'] = perf_counter()
@@ -463,7 +447,7 @@ from pathlib import Path
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_export import export_chip
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util import macro_prepare
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.log_router import route_log
 ${element_import}
 
@@ -472,7 +456,8 @@ try:
     chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
     route_log(filename=chip_path/"${variant_name}.log")
 
-    layout, top_cell, _, _ = macro_prepare.prep_empty_layout()
+    view = KLayoutView()
+    layout, top_cell = view.layout, view.top_cell
 
     # cell definition and arbitrary code here
     ${create_element}

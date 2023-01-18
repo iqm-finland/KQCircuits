@@ -8,8 +8,10 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
+ <group-name/>
  <menu-path>kqcircuits_menu.end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
@@ -32,7 +34,13 @@
 
 
 
-"""Demo macro showing how to generate some basic structures"""
+"""Demo macro showing how to generate some basic structures with the KLayout pya API.
+
+
+This macro is intended to learn about the KLayout API. To get started with KQCircuits, it is recommended to use the
+helper object KLayoutView, which takes care of the basic operations and provides an easier interface to developers
+KQC macros. See the demo_placing_a_cell macro for examples on how to use KLayoutView.
+"""
 
 import math
 import numpy
@@ -41,7 +49,7 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 
 # Usually the layout, top_cell, layout_view and cell_view are generated using
-# kqcircuits.util.macro_prepare.prep_empty_layout, but here we show how to create them explicitly.
+# KLayoutView from kqcircuits.klayout_view, here we create them manually as example.
 
 app = pya.Application.instance()
 mw = app.main_window()
@@ -98,7 +106,7 @@ for x in range(0,n):
 
 guideline = pya.DPath(points,5)
 
-c1 = WaveguideCoplanar.create(layout, path=guideline)
+c1 = WaveguideCoplanar.create(layout, path=guideline, r=50)
 
 cell.insert(pya.DCellInstArray(c1.cell_index(), pya.DTrans(pya.DVector(200, -400))))
 

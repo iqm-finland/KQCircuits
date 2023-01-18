@@ -10,8 +10,11 @@ KLayout documentation about `macro development
 , and the `KLayout API documentation
 <https://www.klayout.de/doc-qt5/code/index.html>`__.
 
-Basic workflow
---------------
+Running the first example
+-------------------------
+
+To get started, follow the steps below to run a demo macro. The comments in the macro explain what is going on step by
+step.
 
 #. Open the KLayout application
 #. From the top menu, choose "Macros" and "Macro Development", or press F5.
@@ -23,6 +26,57 @@ Basic workflow
    from the current tab"), or use Shift+F5.
 #. A chip cell should appear in the main KLayout window.
 
+Interacting with the KLayout application
+----------------------------------------
+KLayout organizes layouts in *Panels*, which show as tabs in the application if more than one panel is open.
+In code, the panel is represented by a ``LayoutView`` object. Inside each panel there can be one or more
+layouts loaded, for example with the *File*, *Open in Same Panel* command. Each layout is represented by a
+``CellView`` object and a ``Layout`` object. The ``Layout`` contains all the actual cells, layers and shapes.
+
+As shown by the above, to work with the KLayout display in macro code we need access to at least three objects.
+To help in managing this, KQCircuits provides the class :class:`.KLayoutView`.
+
+Creating a new panel
+^^^^^^^^^^^^^^^^^^^^
+Often, in a macro you want to start with a new layout in a new panel, which can be created as follows::
+
+    from kqcircuits.klayout_view import KLayoutView
+    view = KLayoutView()
+
+This code creates a panel, cell view and layout, and initializes these with the layers used by KQCircuits.
+
+Accessing the currently active panel
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+In some macros you may want to interact with the layout that is currently visible. In this case, use::
+
+    from kqcircuits.klayout_view import KLayoutView
+    view = KLayoutView(current=True)
+
+Using ``KLayoutView``
+^^^^^^^^^^^^^^^^^^^^^
+Once created, :class:`.KLayoutView` exposes methods for the most common tasks to do with a layout:
+
+- ``insert_cell`` places KQCircuits elements into the top cell, similar to ``Element.insert_cell``.
+- ``focus`` makes sure a particular cell or the entire layout is visible (zoom to fit and show all hierarchy levels).
+- ``show`` shows the panel associated with this object, in case there are multiple panels open
+- ``export_pcell_png`` exports an image of a cell to a file
+
+See the :class:`.KLayoutView` API documentation for all methods and their usage.
+
+If more advanced interaction with KLayout is needed, the KLayout API objects are exposed as properties. See the
+corresponding KLayout API documentation linked below for their usage details:
+
+- ``layout_view``: The `LayoutView <https://www.klayout.de/doc-qt5/code/class_LayoutView.html>`__ instance, which refers
+  to a panel in the KLayout GUI.
+- ``cell_view``: The `CellView <https://www.klayout.de/doc-qt5/code/class_CellView.html>`__ instance. In case a
+  panel has multiple cell views (for example when multiple files are opened in the same panel), this returns the
+  currently active one.
+- ``layout``: The `Layout <https://www.klayout.de/doc-qt5/code/class_Layout.html>`__ object is the main container for
+  cells, layers and geometry
+- ``top_cell``: A reference to the first top `Cell <https://www.klayout.de/doc-qt5/code/class_Cell.html>`__ of the layout. This is the very first cell shown in the cell window.
+  Usually we place elements in this cell.
+- ``active_cell``: A reference to the currently active cell. This is the cell which is shown in bold in the cell
+  window, and can be changed in KLayout by right-clicking a cell and choosing *Show As New Top*.
 
 Debugger
 --------

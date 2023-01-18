@@ -5,12 +5,11 @@ Masks are defined by simple scripts, which define the layout of chips in the
 mask and the parameters of those chips. These scripts will export
 ``.oas``/``.gds`` files required for photomask production and possibly EBL,
 as well as auxiliary files such as netlists, images and automatic mask
-documentation. The mask scripts can be run either from the macro editor or
-from the command line using ``klayout -z -r ./scripts/masks/maskname.py``.
-Masks also accept an optional ``-d`` switch to build the mask without KLayout
-and in a single process thus facilitating debugging mask issues. Please note
-that debug mode lacks certain features that are tied to the presence of
-KLayout.
+documentation. There are three ways to run the mask scripts:
+
+- From the KLayout macro editor.
+- In KLayout from the command line using ``klayout -z -r ./scripts/masks/maskname.py``.
+- As standalone python script. In this case, mask generation always runs single threaded.
 
 Tutorial
 --------

@@ -79,7 +79,7 @@ include_imports = True
 # "create+macro". Required if you want to use refpoints as waveguide points.
 use_create_with_refpoints = True
 
-top_cell = KLayoutView.get_active_cell()
+top_cell = KLayoutView(current=True).active_cell
 # the code is returned by the function
 full_code = convert_cells_to_code(top_cell, print_waveguides_as_composite, add_instance_names, refpoint_snap,
                                   grid_snap, output_format, include_imports, use_create_with_refpoints)

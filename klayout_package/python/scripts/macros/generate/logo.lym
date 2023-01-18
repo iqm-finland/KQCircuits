@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -34,10 +35,10 @@
 
 from kqcircuits.pya_resolver import pya
 
-import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
-(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout("logo")
+view = KLayoutView()
 
 h = 300 # height
 k = 250 # kernel
@@ -69,8 +70,8 @@ nodes = [[ # K 1
 ]
 
 for line in nodes:
-    wg = WaveguideComposite.create(layout, nodes=line, r=s*70, a=s*15, b=s*10)
-    top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+    wg = WaveguideComposite.create(view.layout, nodes=line, r=s*70, a=s*15, b=s*10)
+    view.insert_cell(wg)
 
 
 from kqcircuits.defaults import SRC_PATHS
@@ -78,7 +79,8 @@ from pathlib import Path
 import os
 
 gds_path = os.path.join(SRC_PATHS[0], Path("logo.gds"))
-layout.write(gds_path)
+view.layout.write(gds_path)
+view.focus()
 
 print("GDS written to {}".format(gds_path))
 

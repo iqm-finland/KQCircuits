@@ -66,12 +66,12 @@ module = import_module(lib_name)
 cls = getattr(module, cls_name)
 path = Path(dest_dir)
 cls_path = cls_path if "cls_path" in locals() else ""
-layout = KLayoutView.get_active_layout()
-top = layout.create_cell("top")
+view = KLayoutView()
+layout = view.layout
 cell = cls.create(layout)
 
 #Insert the element to the layout
-top.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+view.insert_cell(cell)
 
 # save the element as static .oas file
 static_cell = layout.cell(layout.convert_cell_to_static(cell.cell_index()))
@@ -80,14 +80,12 @@ save_opts.format = "OASIS"
 save_opts.write_context_info = False  # to save all cells as static cells
 static_cell.write(f"{path}/{cls.__module__}.oas", save_opts)
 
-view = KLayoutView(current=True)
-
 #Hides specified layers before saving png - improves readability and rulers
 layers_to_remove = ['refpoints','1t1_ports','1t1_ground_grid_avoidance', '2b1_ground_grid_avoidance']
 for layer in layers_to_remove: layout.delete_layer(layout.layer(default_layers[layer]))
-view.focus(top)
+view.focus()
 
 # export as .png file
 add_rulers(cls_path, view)
 size = 1000 if lib_name.find(".chips.") != -1 else 500
-view.export_pcell_png(path, top, cls.__module__, max_size=size)
+view.export_pcell_png(path, view.top_cell, cls.__module__, max_size=size)

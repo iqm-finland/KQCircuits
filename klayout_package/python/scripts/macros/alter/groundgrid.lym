@@ -41,7 +41,7 @@ from kqcircuits.defaults import default_layers
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.groundgrid import make_grid
 
-cell = KLayoutView.get_active_cell()
+cell = KLayoutView(current=True).active_cell
 
 if not cell:
   raise ValueError('Create a cell first')

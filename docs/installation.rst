@@ -27,11 +27,13 @@ should exist there for most common operating systems, choose the correct one
 for your OS. Otherwise you need to build KLayout yourself. We will assume in
 these instructions, that KLayout has been installed in the default location.
 
-Successfully tested versions:
+KLayout is an actively maintained project with regular feature updates, bugfixes and
+stability improvements. We recommend using the latest version. KQCircuits is automatically
+tested on the following versions:
 
-- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.28
-- MacOS: KLayout 0.26.3, 0.26.12 (recommended version `HomeBrew-Python3 included`)
-- Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12, 0.27.2, 0.27.9, 0.27.13
+- Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.7, 0.26.12, 0.27.13, and the latest version of 0.28
+- MacOS: the latest version of 0.28
+- Windows 10 (64-bit): KLayout 0.26.12, and the latest version of 0.28
 
 .. note::
     KQC documetation uses Linux conventions and examples unless explicitly talking about Windows or

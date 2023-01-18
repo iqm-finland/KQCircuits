@@ -14,8 +14,7 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
-
+import importlib.metadata
 import json
 import logging
 import subprocess
@@ -29,9 +28,9 @@ from autologging import logged
 
 from kqcircuits.elements.element import get_refpoints
 from kqcircuits.defaults import default_layers, TMP_PATH, STARTUPINFO, default_probe_types, default_probe_suffixes, \
-    klayout_executable_command, VERSION_PATHS, KLAYOUT_VERSION
+    klayout_executable_command, VERSION_PATHS
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
-from kqcircuits.pya_resolver import pya
+from kqcircuits.pya_resolver import pya, is_standalone_session
 
 
 @logged
@@ -153,7 +152,7 @@ def get_active_or_new_layout():
     try:
         klayoutview = KLayoutView(current=True)
         klayoutview.add_default_layers()
-        return klayoutview.get_active_layout()
+        return klayoutview.layout
     except MissingUILibraryException:
         return pya.Layout()
 
@@ -183,7 +182,7 @@ def write_export_machine_versions_file(path: Path):
     versions = {}
     versions['platform'] = platform.platform()
     versions['python'] = sys.version_info
-    versions['klayout'] = KLAYOUT_VERSION
+    versions['klayout'] = get_klayout_version()
 
     with open(path.joinpath('EXPORT_MACHINE_VERSIONS.json'), 'w') as file:
         json.dump(versions, file)
@@ -211,3 +210,10 @@ def open_with_klayout_or_default_application(filepath):
             subprocess.call(('xdg-open', filepath))
     except FileNotFoundError:
         logging.warning("Unable to open file %s.", filepath)
+
+
+def get_klayout_version():
+    if is_standalone_session():
+        return f"KLayout {importlib.metadata.version('klayout')}"
+    else:
+        return pya.Application.instance().version()

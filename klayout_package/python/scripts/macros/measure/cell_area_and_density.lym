@@ -41,8 +41,7 @@ Usage:
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.area import get_area_and_density
 
-cell_view = KLayoutView.get_active_cell_view()
-cell = cell_view.cell
+cell = KLayoutView(current=True).active_cell
 
 layer_names, areas, densities = get_area_and_density(cell)
 for name, area, density in zip(layer_names, areas, densities):

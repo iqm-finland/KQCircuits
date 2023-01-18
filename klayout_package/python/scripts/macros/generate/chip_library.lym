@@ -8,8 +8,10 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
+ <group-name/>
  <menu-path>kqcircuits_menu.#4</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
@@ -33,14 +35,14 @@
 import pya
 from tqdm import tqdm
 
-import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import default_bar_format
 
 libname = Chip.LIBRARY_NAME
 library = pya.Library.library_by_name(libname)
 
-(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
+view = KLayoutView()
 
 columns = 5
 chip_step_x = pya.DVector(2.5e3, 0)
@@ -49,15 +51,14 @@ chip_step_y = pya.DVector(0, -2.5e3)
 x, y, y0 = 0, 0, 0
 for i, pcell_name in tqdm(enumerate(library.layout().pcell_names()), desc='Generating chips',
                           bar_format=default_bar_format):
-    cell = layout.create_cell(pcell_name, libname, {"name_chip": pcell_name})
+    cell = view.layout.create_cell(pcell_name, libname, {"name_chip": pcell_name})
 
     chip_frame = [i.cell for i in cell.each_inst() if 'Chip Frame' in i.cell.name]
     chip_frame = chip_frame[0] if chip_frame else cell
-    height, width = chip_frame.bbox().height() * layout.dbu, chip_frame.bbox().width() * layout.dbu
+    height, width = chip_frame.bbox().height() * view.layout.dbu, chip_frame.bbox().width() * view.layout.dbu
 
     base = pya.DVector(x, -(height + y0))
-    top_cell.insert(pya.DCellInstArray(cell.cell_index(),
-                    pya.DTrans((i % columns) * chip_step_x + int(i / columns) * chip_step_y + base)))
+    view.insert_cell(cell, pya.DTrans((i % columns) * chip_step_x + int(i / columns) * chip_step_y + base))
 
     y = max(y, height + y0)
     if (i + 1) % columns == 0:
@@ -65,5 +66,6 @@ for i, pcell_name in tqdm(enumerate(library.layout().pcell_names()), desc='Gener
         y0 = y
     else:
         x += width
-    </text>
+    
+view.focus()</text>
 </klayout-macro>

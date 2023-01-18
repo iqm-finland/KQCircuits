@@ -198,8 +198,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
         if output_format.startswith("insert_cell"):
             return f"self.insert_cell({pcell_type}, {path_str})\n"
         else:
-            return f"wg_cell = {pcell_type}.create(layout, {path_str})\n" \
-                   f"top_cell.insert(pya.DCellInstArray(wg_cell.cell_index(), pya.DTrans()))\n"
+            return f"view.insert_cell({pcell_type}, {path_str})\n"
 
     def transform_as_string(inst):
         trans = inst.dcplx_trans
@@ -251,13 +250,11 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                         instances_code += \
                             f"{var_name}, {var_name}_refpoints = {pcell_type}.create_with_refpoints(layout, " \
                             f"{refpoint_transform}rec_levels=0{_pcell_params_as_string(cell)})\n"
-                        instances_code += f"top_cell.insert(pya.DCellInstArray({var_name}.cell_index(), " \
-                                          f"{transform_nonempty}))\n"
+                        instances_code += f"view.insert_cell({var_name}, {transform_nonempty})\n"
                     else:
                         instances_code += \
                             f"{var_name} = {pcell_type}.create(layout{_pcell_params_as_string(cell)})\n"
-                        instances_code += f"top_cell.insert(pya.DCellInstArray({var_name}.cell_index(), " \
-                                          f"{transform_nonempty}))\n"
+                        instances_code += f"view.insert_cell({var_name}, {transform_nonempty})\n"
             else:
                 # non-Element PCell
                 if output_format.startswith("insert_cell"):
@@ -269,7 +266,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                     instances_code += \
                         f"cell = layout.create_cell(\"{cell.name}\", \"{cell.library().name()}\", " \
                         f"{cell.pcell_parameters_by_name()})\n" \
-                        f"top_cell.insert(pya.DCellInstArray(cell.cell_index(), {transform}))\n"
+                        f"view.insert_cell(cell, {transform})\n"
 
         else:
             # static cell
@@ -278,7 +275,7 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                 instances_code += f"self.insert_cell(cell, {transform})\n"
             else:
                 instances_code += f"cell = layout.create_cell(\"{cell.name}\", \"{cell.library().name()}\")\n"
-                instances_code += f"top_cell.insert(pya.DCellInstArray(cell.cell_index(), {transform}))\n"
+                instances_code += f"view.insert_cell(cell, {transform})\n"
 
     # Generate code for the beginning of the chip or macro file if needed
     start_code = ""
@@ -294,9 +291,10 @@ def convert_cells_to_code(top_cell, print_waveguides_as_composite=False, add_ins
                 def build(self):\n\n""")
     elif output_format == "create+macro":
         start_code += "from kqcircuits.pya_resolver import pya\n"
-        start_code += "import kqcircuits.util.macro_prepare as macroprep\n\n"
+        start_code += "from kqcircuits.klayout_view import KLayoutView\n\n"
         start_code += element_imports + "\n"
-        start_code += "(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()\n\n"
+        start_code += "view = KLayoutView()\n"
+        start_code += "layout = view.layout\n\n"
     else:
         start_code += element_imports + "\n"
 

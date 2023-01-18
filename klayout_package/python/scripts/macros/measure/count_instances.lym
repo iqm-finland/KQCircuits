@@ -46,7 +46,7 @@ Usage:
 
 cell_name = Airbridge.default_type
 
-top_cell = KLayoutView.get_active_cell()
+top_cell = KLayoutView(current=True).active_cell
 
 def count_instances_in_cell(cell_idx):
     # workaround for getting the cell due to KLayout bug, see

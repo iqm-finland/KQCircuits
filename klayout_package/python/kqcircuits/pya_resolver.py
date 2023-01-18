@@ -29,15 +29,11 @@ Usage:
 
 try:
     import pya
+    import pya as lay  # pylint: disable=unused-import
 except ImportError:
     import klayout.db as pya
+    from klayout import lay  # pylint: disable=unused-import
+
 
 def is_standalone_session():
-    try:
-        pya.Application
-    except AttributeError:
-        standalone = True
-    else:
-        standalone = False
-
-    return standalone
+    return not hasattr(pya, 'Application')

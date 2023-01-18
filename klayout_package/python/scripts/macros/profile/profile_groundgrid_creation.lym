@@ -35,16 +35,18 @@
 import numpy
 import time
 
+from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_layers
 from kqcircuits.chips.demo import Demo
 from kqcircuits.util.groundgrid import make_grid
-import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.klayout_view import KLayoutView
 
-(layout, _, layout_view, cell_view) = macroprep.prep_empty_layout()
+view = KLayoutView()
+layout = view.layout
 
 # Top cell
 cell = Demo.create(layout) # A new cell into the layout
-cell_view.cell_name=cell.name     # Shows the new cell
+view.focus(cell)
 
 protection = pya.Region(cell.begin_shapes_rec(layout.layer(default_layers["1t1_ground_grid_avoidance"]))).merged()
 cell.shapes(layout.layer(default_layers["annotations"])).insert(protection)

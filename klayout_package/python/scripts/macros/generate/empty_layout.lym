@@ -31,8 +31,8 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.klayout_view import KLayoutView
 
-(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
+view = KLayoutView()
 </text>
 </klayout-macro>

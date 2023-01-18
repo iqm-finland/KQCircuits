@@ -45,6 +45,55 @@ def get_refpoints(layer, cell, cell_transf=pya.DTrans(), rec_levels=None):
     return Refpoints(layer, cell, cell_transf, rec_levels)
 
 
+def insert_cell_into(target_cell, cell, trans=None, inst_name=None, label_trans=None, align_to=None, align=None,
+                     rec_levels=0, **parameters):
+    """Inserts a subcell into a given target cell.
+
+    Note: This general method is useful to insert cells or elements into a static cell. To insert cells into an
+    ``Element``, use the elements' ``insert_cell`` method, which has additional features such as parameter inheritance.
+
+    It will use the given ``cell`` object or if ``cell`` is an Element class' name then directly
+    take the provided keyword arguments to first create the cell object.
+
+    If `inst_name` given, a label ``inst_name`` is added to labels layer at the ``base`` refpoint and `label_trans`
+    transformation.
+
+    Arguments:
+        target_cell: Cell object to insert into
+        cell: cell object or Element class name
+        trans: used transformation for placement. None by default, which places the subcell into the coordinate
+            origin of the parent cell. If `align` and `align_to` arguments are used, `trans` is applied to the
+            `cell` before alignment transform which allows for example rotation of the `cell` before placement.
+        inst_name: possible instance name inserted into subcell properties under `id`. Default is None
+        label_trans: relative transformation for the instance name label
+        align_to: ``DPoint`` or ``DVector`` location in parent cell coordinates for alignment of cell. Default is None
+        align: name of the ``cell`` refpoint aligned to argument ``align_to``. Default is None
+        rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.
+        **parameters: PCell parameters for the element, as keyword argument
+
+    Return:
+        tuple of placed cell instance and reference points with the same transformation
+    """
+    layout = target_cell.layout()
+    if isclass(cell):
+        cell = cell.create(layout, **parameters)
+
+    if trans is None:
+        trans = pya.DTrans()
+    if (align_to and align) is not None:
+        align = get_refpoints(layout.layer(default_layers["refpoints"]), cell, trans, rec_levels=rec_levels)[align]
+        trans = pya.DCplxTrans(align_to - align) * trans
+
+    cell_inst = target_cell.insert(pya.DCellInstArray(cell.cell_index(), trans))
+
+    refpoints_abs = get_refpoints(layout.layer(default_layers["refpoints"]), cell, cell_inst.dcplx_trans, rec_levels)
+    if inst_name is not None:
+        cell_inst.set_property("id", inst_name)
+        if label_trans is not None:
+            label_trans_str = pya.DCplxTrans(label_trans).to_s()  # must be saved as string to avoid errors
+            cell_inst.set_property("label_trans", label_trans_str)
+    return cell_inst, refpoints_abs
+
 @logged
 class Element(pya.PCellDeclarationHelper):
     """Element PCell declaration.
@@ -112,7 +161,7 @@ class Element(pya.PCellDeclarationHelper):
         return layout.create_cell(name, Element.LIBRARY_NAME)
 
     @classmethod
-    def create(cls, layout, library=None, **parameters):
+    def create(cls, layout, library=None, **parameters) -> pya.Cell:
         """Create cell for this element in layout.
 
         Args:
@@ -221,26 +270,17 @@ class Element(pya.PCellDeclarationHelper):
             parameters = self.pcell_params_by_name(cell, **parameters)
             cell = cell.create(self.layout, library=self.LIBRARY_NAME, **parameters)
 
-        if trans is None:
-            trans = pya.DTrans()
-        if (align_to and align) is not None:
-            align = self.get_refpoints(cell, trans, rec_levels=rec_levels)[align]
-            if isinstance(align_to, str):
-                align_to = self.refpoints[align_to]
-            trans = pya.DCplxTrans(align_to - align) * trans
+        if isinstance(align_to, str):
+            align_to = self.refpoints[align_to]
 
-        cell_inst = self.cell.insert(pya.DCellInstArray(cell.cell_index(), trans))
+        cell_inst, refpoints_abs = insert_cell_into(self.cell, cell, trans, inst_name, label_trans, align_to, align,
+                                                    rec_levels, **parameters)
 
-        refpoints_abs = self.get_refpoints(cell, cell_inst.dcplx_trans, rec_levels)  # should use .dtrans, if possible
         if inst_name is not None:
-            cell_inst.set_property("id", inst_name)
             # copies probing refpoints to chip level with unique names using subcell id property
             for ref_name, pos in refpoints_abs.items():
                 new_name = "{}_{}".format(inst_name, ref_name)
                 self.refpoints[new_name] = pos
-            if label_trans is not None:
-                label_trans_str = pya.DCplxTrans(label_trans).to_s()  # must be saved as string to avoid errors
-                cell_inst.set_property("label_trans", label_trans_str)
         return cell_inst, refpoints_abs
 
     def face(self, face_index=0):
@@ -392,7 +432,7 @@ class Element(pya.PCellDeclarationHelper):
             return self.layout.layer(self.face(face_id)[layer_name])
 
     @staticmethod
-    def _create_cell(elem_cls, layout, library=None, **parameters):
+    def _create_cell(elem_cls, layout, library=None, **parameters) -> pya.Cell:
         """Create cell for elem_cls in layout.
 
         This is separated from the class method `create` to enable invocation from classes where `create` is shadowed.

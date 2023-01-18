@@ -40,14 +40,11 @@
 
 import pya
 
-from kqcircuits.defaults import default_layers
 from kqcircuits.klayout_view import KLayoutView
 
-cell_view = KLayoutView.get_active_cell_view()
-layout_view = cell_view.view()
-layout = cell_view.layout()
+view = KLayoutView(current=True)
 
-for obj in layout_view.object_selection:
+for obj in view.layout_view.object_selection:
 
 
     if obj.is_cell_inst():

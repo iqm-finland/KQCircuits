@@ -33,20 +33,15 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
-import pya
-
-import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 
 
-
-(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
+view = KLayoutView()
 
 def show(nodes, a, b):
-    wg = WaveguideComposite.create(layout, nodes=nodes, a=a, b=b, term1=5, term2=10)
-    top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+    view.insert_cell(WaveguideComposite, nodes=nodes, a=a, b=b, term1=5, term2=10)
 
 # Simple airbridge is easy.
 show([
@@ -77,6 +72,6 @@ show([
 ], 6, 3)
 
 # Show all hierarchy levels and zoom to fit window
-layout_view.max_hier()
-layout_view.zoom_fit()</text>
+view.focus()
+</text>
 </klayout-macro>

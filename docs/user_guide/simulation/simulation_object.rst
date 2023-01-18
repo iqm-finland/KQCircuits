@@ -1,7 +1,7 @@
 Creating simulation object
 ==========================
 
-Simulation export begins by creating an instance of ``Simulation`` class. The simulation object includes following information:
+Simulation export begins by creating an instance of :class:`.Simulation` class. The simulation object includes following information:
 
 * name (defines export filenames)
 * geometry for the simulation
@@ -15,9 +15,9 @@ When you have an active project open, import the following and get the top cell:
     from kqcircuits.klayout_view import KLayoutView
     from kqcircuits.simulations.simulation import Simulation
 
-    top_cell = KLayoutView.get_active_cell()
+    top_cell = KLayoutView(current=True).active_cell
 
-Create an instance of ``Simulation``::
+Create an instance of :class:`.Simulation`::
 
     simulation = Simulation.from_cell(top_cell, name='Dev', margin=100)
 
@@ -29,7 +29,7 @@ The ``simulation`` object is needed for Ansys export and Sonnet export (more det
 Geometry from KQCircuits library
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Define the geometry and ports in KQCircuits by inheriting ``Simulation`` class. Following creates waveguide crossing the domain box::
+Define the geometry and ports in KQCircuits by inheriting :class:`.Simulation` class. Following creates waveguide crossing the domain box::
 
     from kqcircuits.simulations.simulation import Simulation
     from kqcircuits.pya_resolver import pya
@@ -44,13 +44,13 @@ Define the geometry and ports in KQCircuits by inheriting ``Simulation`` class. 
                                            1, 'right', use_internal_ports=False)
 
 
-Get layout for ``Simulation`` object::
+Get layout for :class:`.Simulation` object::
 
     logging.basicConfig(level=logging.WARN, stream=sys.stdout)
     layout = get_active_or_new_layout()
 
-Create an instance of ``Simulation``::
+Create an instance of :class:`.Simulation`::
 
     simulation = WaveguideSimulation(layout, name='Dev', box=pya.DBox(pya.DPoint(0, 0), pya.DPoint(500, 500)))
 
-``Simulation`` class and it's subclasses are located in folder :git_url:`kqcircuits/simulations/ <klayout_package/python/kqcircuits/simulations>`.
+The :class:`.Simulation` class and it's subclasses are located in folder :git_url:`kqcircuits/simulations/ <klayout_package/python/kqcircuits/simulations>`.

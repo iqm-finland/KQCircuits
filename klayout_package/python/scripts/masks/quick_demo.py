@@ -23,7 +23,7 @@ from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_set import MaskSet
 
 
-qdemo = MaskSet(name="Quick", version=1, with_grid=False, debug=False)
+qdemo = MaskSet(name="Quick", version=1, with_grid=False)
 
 layers_to_mask = {
     "base_metal_gap": "1",

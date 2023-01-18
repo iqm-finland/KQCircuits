@@ -54,7 +54,7 @@ def export_designs(mask_set, export_dir):
         export_masks_of_face(export_dir, mask_layout, mask_set)
 
 
-def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, debug=False):
+def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     """Exports a chip used in a maskset."""
 
     is_pcell = chip_cell.pcell_declaration() is not None
@@ -78,16 +78,14 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, debug=False)
     static_cell.write(str(chip_dir/f"{chip_name}.oas"), save_opts)
 
     # export netlist
-    if not debug:
-        export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json", chip_cell)
+    export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json", chip_cell)
     # calculate flip-chip bump count
     bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
     # find layer areas and densities
     layer_areas_and_densities = {}
-    if not debug:
-        for layer, area, density in zip(*get_area_and_density(static_cell)):
-            if area != 0.0:
-                layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
+    for layer, area, density in zip(*get_area_and_density(static_cell)):
+        if area != 0.0:
+            layer_areas_and_densities[layer] = {"area": f"{area:.2f}", "density": f"{density * 100:.2f}"}
 
     # save auxiliary chip data into json-file
     chip_json = {

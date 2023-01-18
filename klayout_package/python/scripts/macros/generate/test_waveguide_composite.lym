@@ -35,7 +35,7 @@
 
 import pya
 
-import kqcircuits.util.macro_prepare as macroprep
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.elements.waveguide_composite import Node, WaveguideComposite
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.airbridge_connection import AirbridgeConnection
@@ -45,7 +45,7 @@ from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 
 
-(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()
+view = KLayoutView()
 
 nodes = [
     Node(pya.DPoint(0, 0)),                                             # Nodes have a position, and optionally
@@ -69,8 +69,7 @@ nodes = [
     Node((800, -400), Airbridge, a=20, b=12),                           # first and last element "kisses" Node, i.e. aligned to the edge.
 ]
 
-wg = WaveguideComposite.create(layout, nodes=nodes, term1=6, taper_length=31.416)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+view.insert_cell(WaveguideComposite, nodes=nodes, term1=6, taper_length=31.416)
 
 nodes = [
     Node(pya.DPoint(0, -800)),
@@ -92,8 +91,7 @@ nodes = [
     Node(pya.DPoint(400, -1000)),
 ]
 
-wg = WaveguideComposite.create(layout, nodes=nodes)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+view.insert_cell(WaveguideComposite, nodes=nodes)
 
 nodes = [
     Node(pya.DPoint(0, -1400)),
@@ -104,13 +102,8 @@ nodes = [
     Node(pya.DPoint(500, -600), FingerCapacitorSquare, length_before=1000, n_bridges=4),  # Works also when ending at an element
 ]
 
-wg = WaveguideComposite.create(layout, nodes=nodes, r=50)
-top_cell.insert(pya.DCellInstArray(wg.cell_index(), pya.DTrans()))
+view.insert_cell(WaveguideComposite, nodes=nodes, r=50)
 
-
-# Show all hierarchy levels and zoom to fit window
-if layout_view:
-    layout_view.max_hier()
-    layout_view.zoom_fit()
+view.focus()
 </text>
 </klayout-macro>

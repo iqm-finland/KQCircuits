@@ -20,7 +20,7 @@
 
     Typical usage in a macro::
 
-            top_cell = KLayoutView.get_active_cell()
+            top_cell = KLayoutView(current=True).active_cell
             replace_squids(top_cell, "MySQUID", "junction_width", 0.5, 0.1)  # a parameter sweep
             replace_squid(top_cell, "QB_2", "MySQUID", mirror=True)          # replace an individual SQUID
 """

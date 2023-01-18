@@ -37,7 +37,7 @@
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.export_helper import generate_probepoints_json
 
-top_cell = KLayoutView.get_active_cell()
+top_cell = KLayoutView(current=True).active_cell
 
 ### Action
 # Note that this works on the bottom face by default. For the top, specify a second 't' argument.

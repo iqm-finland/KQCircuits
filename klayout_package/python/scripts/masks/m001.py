@@ -70,12 +70,11 @@ parameters_qs = {
 # You may use KLayout or code like this to a export cell to a file:
 #
 #   from kqcircuits.pya_resolver import pya
-#   from kqcircuits.util import macro_prepare
+#   from kqcircuits.klayout_view import KLayoutView
 #
-#   layout_2, top_cell, _, _ = macro_prepare.prep_empty_layout("Another file")
-#   cell = QualityFactor.create(layout_2, name_chip="QDD", name_mask="M001",
-#                               **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
-#   top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
+#   view_2 = KLayoutView()
+#   view_2.insert_cell(QualityFactor, name_chip="QDD", name_mask="M001",
+# #                    **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
 #   save_opts = pya.SaveLayoutOptions()
 #   save_opts.write_context_info = True
 #   file_name = str(TMP_PATH / "m001_QDD.gds")

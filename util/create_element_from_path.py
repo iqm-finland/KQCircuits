@@ -21,8 +21,7 @@ import sys
 import pathlib
 import importlib
 
-from kqcircuits.pya_resolver import pya
-from kqcircuits.util import macro_prepare
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.log_router import route_log
 from kqcircuits.defaults import TMP_PATH
 from kqcircuits.util.plugin_startup import register_plugins
@@ -119,12 +118,6 @@ if len(element_classes) == 1:
 else:
     raise ValueError("Expecting exactly one class in the module to run.")
 
-# Create an empty layout with top cell
-layout, top_cell, layout_view, cell_view = macro_prepare.prep_empty_layout()
-
-cell = cls.create(layout)
-top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
-
-# Show all hierarchy levels and zoom to fit window
-layout_view.max_hier()
-layout_view.zoom_fit()
+view = KLayoutView()
+view.insert_cell(cls)
+view.focus()

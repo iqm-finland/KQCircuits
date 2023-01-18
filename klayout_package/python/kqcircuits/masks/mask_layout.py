@@ -14,8 +14,6 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
-
 import math
 from autologging import logged
 from tqdm import tqdm
@@ -66,7 +64,8 @@ class MaskLayout:
         extra_chips: List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional
             transformation to use in place of self.chip_trans
         top_cell: Top cell of this mask layout
-        added_chips: List of (chip name, chip position, chip_inst) populated by chips added during build()
+        added_chips: List of (chip name, chip position, chip bounding box, chip dtrans) populated by chips added during
+            build()
     """
 
     def __init__(self, layout, name, version, with_grid, chips_map, face_id, **kwargs):
@@ -215,33 +214,32 @@ class MaskLayout:
         chips_dict = {}  # {(pos_x, pos_y): chip_name, chip_pos (in submask coordinates), chip_inst, mask_layout}
         xvals = set()
         yvals = set()
-        for chip_name, pos, inst in self.added_chips:
+        for chip_name, pos, bbox, dtrans in self.added_chips:
             xvals.add(pos.x)
             yvals.add(pos.y)
-            chips_dict[(pos.x, pos.y)] = chip_name, pos, inst, self
+            chips_dict[(pos.x, pos.y)] = chip_name, pos, bbox, dtrans, self
         for submask_layout, submask_pos in self.submasks:
-            for chip_name, pos, inst in submask_layout.added_chips:
+            for chip_name, pos, bbox, dtrans in submask_layout.added_chips:
                 pos2 = pos + submask_pos
                 xvals.add(pos2.x)
                 yvals.add(pos2.y)
-                chips_dict[(pos2.x, pos2.y)] = chip_name, pos, inst, submask_layout
+                chips_dict[(pos2.x, pos2.y)] = chip_name, pos, bbox, dtrans, submask_layout
 
         # produce the labels such that chips with identical x-coordinate (y-coordinate) have identical number (letter)
         for i, y in enumerate(sorted(yvals, reverse=True)):
             for j, x in enumerate(sorted(xvals)):
                 if (x, y) in chips_dict:
-                    chip_name, _, inst, mask_layout = chips_dict[(x, y)]
+                    chip_name, _, bbox, dtrans, mask_layout = chips_dict[(x, y)]
                     labels_cell_2 = labels_cells[mask_layout]
-                    _, bbox, _ = mask_layout._get_chip_cell_and_bbox(chip_name)
                     pos_index_name = chr(ord("A") + i) + ("{:02d}".format(j))
-                    bbox_x1 = bbox.left if inst.dtrans.is_mirror() else bbox.right
-                    produce_label(labels_cell_2, pos_index_name, inst.dtrans*(pya.DPoint(bbox_x1, bbox.bottom)),
+                    bbox_x1 = bbox.left if dtrans.is_mirror() else bbox.right
+                    produce_label(labels_cell_2, pos_index_name, dtrans*(pya.DPoint(bbox_x1, bbox.bottom)),
                                   LabelOrigin.BOTTOMRIGHT, mask_layout.dice_width, mask_layout.text_margin,
                                   [mask_layout.face()[layer] for layer in layers],
                                   mask_layout.face()["ground_grid_avoidance"])
-                    bbox_x2 = bbox.right if inst.dtrans.is_mirror() else bbox.left
+                    bbox_x2 = bbox.right if dtrans.is_mirror() else bbox.left
                     mask_layout._add_chip_graphical_representation_layer(chip_name,
-                                                                         inst.dtrans*(pya.DPoint(bbox_x2, bbox.bottom)),
+                                                                         dtrans*(pya.DPoint(bbox_x2, bbox.bottom)),
                                                                          pos_index_name, bbox.width(), labels_cell_2)
 
     def face(self):
@@ -268,9 +266,9 @@ class MaskLayout:
         if name in self.chips_map_legend.keys():
             chip_cell, bounding_box, bbox_offset = self._get_chip_cell_and_bbox(name)
             trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset)*trans
-            inst = self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
+            self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
             chip_region = pya.Region(pya.Box(trans*bounding_box*(1/self.layout.dbu)))
-            self.added_chips.append((name, position, inst))
+            self.added_chips.append((name, position, bounding_box, trans))
             return True, chip_region
         return False, chip_region
 
@@ -278,17 +276,17 @@ class MaskLayout:
         dbu = self.layout.dbu
 
         leftmost_label_x = 1e10
-        label_insts = []
+        labels = []
         for layer, postfix in layers_dict.items():
-            inst = self._insert_mask_name_label(maskextra_cell, self.face()[layer], postfix)
-            inst_x = inst.dtrans.disp.x
-            if inst_x < leftmost_label_x:
-                leftmost_label_x = inst_x
-            region_covered -= pya.Region(inst.bbox()).extents(1e3 / dbu)
-            label_insts.append(inst)
+            label_cell, label_trans = self._create_mask_name_label(self.face()[layer], postfix)
+            if label_trans.disp.x < leftmost_label_x:
+                leftmost_label_x = label_trans.disp.x
+            labels.append((label_cell, label_trans))
         # align left edges of mask name labels in different layers
-        for inst in label_insts:
-            inst.dtrans = pya.DTrans(inst.dtrans.rot, inst.dtrans.is_mirror(), leftmost_label_x, inst.dtrans.disp.y)
+        for (label_cell, label_trans) in labels:
+            label_trans = pya.DTrans(label_trans.rot, label_trans.is_mirror(), leftmost_label_x, label_trans.disp.y)
+            inst = maskextra_cell.insert(pya.DCellInstArray(label_cell.cell_index(), label_trans))
+            region_covered -= pya.Region(inst.bbox()).extents(1e3 / dbu)
 
         circle = pya.DTrans(self.wafer_center) * pya.DPath(
             [pya.DPoint(math.cos(a / 32 * math.pi) * self.wafer_rad, math.sin(a / 32 * math.pi) * self.wafer_rad)
@@ -357,6 +355,11 @@ class MaskLayout:
         cell.insert(pya.DCellInstArray(pos_index_name_text.cell_index(), pos_index_trans))
 
     def _insert_mask_name_label(self, cell, layer, postfix=""):
+        cell_mask_name, trans = self._create_mask_name_label(layer, postfix)
+        inst = cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), trans))
+        return inst
+
+    def _create_mask_name_label(self, layer, postfix=""):
         if postfix != "":
             postfix = "-" + postfix
         cell_mask_name = self.layout.create_cell("TEXT", "Basic", {
@@ -368,5 +371,5 @@ class MaskLayout:
         cell_mask_name_w = cell_mask_name.dbbox().width()
         trans = pya.DTrans(self.wafer_center.x + self.mask_name_offset.x - cell_mask_name_w / 2,
                            self.wafer_rad + self.mask_name_offset.y - cell_mask_name_h / 2)
-        inst = cell.insert(pya.DCellInstArray(cell_mask_name.cell_index(), trans))
-        return inst
+
+        return cell_mask_name, trans
