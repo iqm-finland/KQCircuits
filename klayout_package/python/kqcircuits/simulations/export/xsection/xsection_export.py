@@ -83,12 +83,12 @@ def create_xsections_from_simulations(simulations: List[Simulation],
         cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or
               2. a list of such tuples such that each Simulation object gets an individual cut
         process_path: XSection process file that defines cross-section etching depths etc
-        ma_permittivity: Permittivity of metal-to-vaccuum oxide layer
-        ms_permittivity: Permittivity of metal-to-substrate oxide layer
-        sa_permittivity: Permittivity of substrate-to-vaccuum oxide layer
-        ma_thickness: Thickness of metal-to-vaccuum oxide layer
-        ms_thickness: Thickness of metal-to-substrate oxide layer
-        sa_thickness: Thickness of substrate-to-vaccuum oxide layer
+        ma_permittivity: Permittivity of metal–vacuum (air) interface
+        ms_permittivity: Permittivity of metal–substrate interface
+        sa_permittivity: Permittivity of substrate–vacuum (air) interface
+        ma_thickness: Thickness of metal–vacuum (air) interface
+        ms_thickness: Thickness of metal–substrate interface
+        sa_thickness: Thickness of substrate–vacuum (air) interface
         magnification_order: Increase magnification of simulation geometry to accomodate more precise spacial units.
             0 =   no magnification with 1e-3 dbu
             1 =  10x magnification with 1e-4 dbu
@@ -401,6 +401,10 @@ def _construct_cross_section_simulation(layout, xsection_cell, simulation,
     xsection_parameters['box'] = cell_bbox
     xsection_parameters['cell'] = xsection_cell
     xsection_simulation = CrossSectionSimulation(layout, **xsection_parameters)
+    # Keep all parameters given in simulations for JSON
+    for k, v in xsection_parameters.items():
+        setattr(xsection_simulation, k, v)
+    xsection_simulation.xsection_source_class = type(simulation)
     xsection_simulation.register_cell_layers_as_sim_layers()
 
     material_dict = xsection_parameters['material_dict']
