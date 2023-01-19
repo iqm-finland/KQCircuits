@@ -68,21 +68,12 @@ sim_parameters = {
 }
 
 if use_elmer:
-    mesh_parameters = {
-        'default_mesh_size': 100.,
-        'ground_min_mesh_size': 100,
-        'ground_min_dist': 4.,
-        'ground_max_dist': 100.,
-        'ground_grid_min_mesh_size': 10,
-        'ground_grid_min_dist': 4.,
-        'ground_grid_max_dist': 100.,
-        'gap_min_mesh_size': 1,
-        'gap_min_dist': 4.,
-        'gap_max_dist': 100.,
-        'port_min_mesh_size': 1.,
-        'port_min_dist': 4.,
-        'port_max_dist': 100.,
-        'algorithm': 5,
+    mesh_size = {
+        'global_max': 100.,
+        'ground_grid': 10,
+        'gap&signal': 1,
+        'gap&ground': 1,
+        'port': 1.,
     }
 
     export_parameters_elmer = {
@@ -119,6 +110,6 @@ simulations = [sim_class(layout, **param) for param in sim_param_list]
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))
 
 if use_elmer:
-    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=workflow)
+    export_elmer(simulations, **export_parameters_elmer, mesh_size=mesh_size, workflow=workflow)
 else:
     export_ansys(simulations, **export_parameters_ansys)

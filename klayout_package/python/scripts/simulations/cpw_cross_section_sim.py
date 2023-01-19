@@ -131,7 +131,7 @@ mesh_size = {
     'ground': 0.1,
     'ma_layer': 0.1,
     'ms_layer': 0.1,
-    'sa_layer': 0.1
+    'sa_layer': [0.03, None, 0.3]
 }
 if is_axisymmetric:
     mesh_size = {k: v*4 for k, v in mesh_size.items()}

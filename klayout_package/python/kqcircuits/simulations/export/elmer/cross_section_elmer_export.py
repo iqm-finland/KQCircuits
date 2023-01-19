@@ -22,8 +22,7 @@ import json
 from pathlib import Path
 
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
-from kqcircuits.simulations.export.elmer.elmer_export import copy_elmer_scripts_to_directory, export_elmer_script, \
-    default_workflow
+from kqcircuits.simulations.export.elmer.elmer_export import copy_elmer_scripts_to_directory, export_elmer_script
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
@@ -77,7 +76,7 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
         **simulation.get_simulation_data(),
         'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'mesh_size': mesh_size if mesh_size is not None else dict(),
-        'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
+        'workflow': {} if workflow is None else workflow,
         **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
         'linear_system_method': linear_system_method,
         'p_element_order': p_element_order,

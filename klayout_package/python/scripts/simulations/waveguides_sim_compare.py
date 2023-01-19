@@ -40,7 +40,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # is launched after the simulation at the simulation path directory. The Paraview data for
 # visual results is in "simulation" folder.
 #
-# The mesh is shown in Gmsh before the model export if mesh_parameters['show']. For large meshes
+# The mesh is shown in Gmsh before the model export if workflow['run_gmsh_gui']. For large meshes
 # it is better to not view the mesh in Gmsh but in Paraview together with the results.
 #
 # Simulation parameters
@@ -96,15 +96,10 @@ sim_parameters = {
 
 if use_elmer:
     elmer_n_processes = -1
-    mesh_parameters = {
-        'default_mesh_size': 100.,
-        'gap_min_mesh_size': 2.,
-        'gap_min_dist': 4.,
-        'gap_max_dist': 200.,
-        'port_min_mesh_size': 1.,
-        'port_min_dist': 4.,
-        'port_max_dist': 200.,
-        'algorithm': 5,
+    mesh_size = {
+        'global_max': 100.,
+        'gap': 2.,
+        'port': 1.,
     }
 
     if wave_equation:
@@ -191,6 +186,6 @@ simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_paramete
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))
 
 if use_elmer:
-    export_elmer(simulations, **export_parameters_elmer, gmsh_params=mesh_parameters, workflow=workflow)
+    export_elmer(simulations, **export_parameters_elmer, mesh_size=mesh_size, workflow=workflow)
 else:
     export_ansys(simulations, **export_parameters_ansys)

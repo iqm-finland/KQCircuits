@@ -584,8 +584,7 @@ def dtmap(dim_tagMap: dict, dim_tags: list):
     return gmsh.model.getBoundary(mapped_dim_tags, False, False, True)
 
 
-def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, dist_min: float, dist_max: float,
-                  sampling: float = None):
+def set_mesh_size(dim_tags, min_mesh_size, max_mesh_size, dist_min, dist_max, sampling=None):
     """
     Set the mesh size such that it is `min_mesh_size` when near the curves of boundaries defined by the entities of
     dim_tags and gradually increasing to `max_mesh_size`.
@@ -602,7 +601,7 @@ def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, di
 
     Args:
 
-        dim_tags(list(int, int)): a list of BOUNDARY dim_tags:
+        dim_tags(list(int, int)): a list of entity dim_tags:
             dimTag (as called in Gmsh) is a tuple of
 
                 * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
@@ -619,43 +618,102 @@ def set_mesh_size(dim_tags: list, min_mesh_size: float, max_mesh_size: float, di
                          algorithm.
 
     Returns:
-        tag_threshold_fields(list(int)): tag list of the threshold fields that were defined in this function
+        list of the threshold field ids that were defined in this function
     """
-    outdim_tags = gmsh.model.getBoundary(dim_tags, combined=False, oriented=False, recursive=True)  # search points
-    gmsh.model.mesh.setSize(outdim_tags, min_mesh_size)
-
-    outdim_tags = gmsh.model.getBoundary(dim_tags, combined=False, oriented=False, recursive=False)  # search lines
-
-    tag_threshold_fields = []
-    if sampling is None:
-        for dim_tag in outdim_tags:
-            curve = dim_tag[1]
-            tag_distance_field = gmsh.model.mesh.field.add("Distance")
-            gmsh.model.mesh.field.setNumbers(tag_distance_field, "CurvesList", [curve])
-            bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
-            bbox_maxdist = coord_dist(bbox[0:3], bbox[3:6])
-            sampling = np.ceil(1.5 * bbox_maxdist / min_mesh_size)
-            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", sampling)
-            tag_threshold_field = gmsh.model.mesh.field.add("Threshold")
-            gmsh.model.mesh.field.setNumber(tag_threshold_field, "InField", tag_distance_field)
-            gmsh.model.mesh.field.setNumber(tag_threshold_field, "SizeMin", min_mesh_size)
-            gmsh.model.mesh.field.setNumber(tag_threshold_field, "SizeMax", max_mesh_size)
-            gmsh.model.mesh.field.setNumber(tag_threshold_field, "DistMin", dist_min)
-            gmsh.model.mesh.field.setNumber(tag_threshold_field, "DistMax", dist_max)
-            tag_threshold_fields.append(tag_threshold_field)
-    else:
-        curve_list = [dim_tag[1] for dim_tag in outdim_tags]
+    mesh_field_ids = []
+    for dim_tag in dim_tags:
         tag_distance_field = gmsh.model.mesh.field.add("Distance")
-        gmsh.model.mesh.field.setNumbers(tag_distance_field, "CurvesList", curve_list)
-        gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", sampling)
-        tag_threshold_field = gmsh.model.mesh.field.add("Threshold")
-        gmsh.model.mesh.field.setNumber(tag_threshold_field, "InField", tag_distance_field)
-        gmsh.model.mesh.field.setNumber(tag_threshold_field, "SizeMin", min_mesh_size)
-        gmsh.model.mesh.field.setNumber(tag_threshold_field, "SizeMax", max_mesh_size)
-        gmsh.model.mesh.field.setNumber(tag_threshold_field, "DistMin", dist_min)
-        gmsh.model.mesh.field.setNumber(tag_threshold_field, "DistMax", dist_max)
-        tag_threshold_fields.append(tag_threshold_field)
-    return tag_threshold_fields
+        key_dict = {0: "PointsList", 1: "CurvesList", 2: "SurfacesList", 3: "VolumesList"}
+        gmsh.model.mesh.field.setNumbers(tag_distance_field, key_dict[dim_tag[0]], [dim_tag[1]])
+
+        # Sample the object with points
+        if sampling is not None:
+            # Manual sampling
+            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", sampling)
+        elif dim_tag[0] > 0:
+            # The sampling is determined by 1.5 times the maximum reachable distance in the bounding box of the entity
+            # (curve) divided by the minimum mesh size. At the moment there is no obvious way to implement
+            # curve_length/min_mesh_size type of algorithm.
+            bbox = gmsh.model.occ.getBoundingBox(*dim_tag)
+            bbox_diam = coord_dist(bbox[0:3], bbox[3:6])  # diameter of bounding box
+            gmsh.model.mesh.field.setNumber(tag_distance_field, "Sampling", np.ceil(1.5 * bbox_diam / min_mesh_size))
+
+        mesh_field_id = gmsh.model.mesh.field.add("Threshold")
+        gmsh.model.mesh.field.setNumber(mesh_field_id, "InField", tag_distance_field)
+        gmsh.model.mesh.field.setNumber(mesh_field_id, "SizeMin", min_mesh_size)
+        gmsh.model.mesh.field.setNumber(mesh_field_id, "SizeMax", max_mesh_size)
+        gmsh.model.mesh.field.setNumber(mesh_field_id, "DistMin", dist_min)
+        gmsh.model.mesh.field.setNumber(mesh_field_id, "DistMax", dist_max)
+        mesh_field_ids.append(mesh_field_id)
+
+    return mesh_field_ids
+
+
+def set_mesh_size_field(dim_tags, global_max, size, distance=None, slope=1.0):
+    """
+    Set the maximal mesh element length in the neighbourhood of the entities given in `dim_tags`. The element size near
+    the entities is determined by 'size', 'expansion_dist', and 'expansion_rate'. Further away from the entities the
+    element size gradually increases to `global_max`. The maximal mesh elements size as function of distance 'x' from
+    the entity is given by min(global_max, size + max(0, x - distance) * slope).
+
+    Args:
+
+        dim_tags: a list of entity dim_tags:
+            dimTag (as called in Gmsh) is a tuple of
+
+                * dimension(int): the dimension of the entity (0=point, 1=line, 2=surface, 3=volume)
+                * tag(int): the id of the entity
+
+        global_max: global maximal mesh element length
+        size: the maximal mesh element length inside at the entity and its expansion
+        distance: expansion distance in which the maximal mesh element length is constant (default=size)
+        slope: the slope of the increase in the maximal mesh element length outside the entity
+
+    Returns:
+        list of the threshold field ids that were defined in this function
+    """
+    dist = size if distance is None else distance
+    return set_mesh_size(dim_tags, size, global_max, dist, dist + (global_max - size) / slope)
+
+
+def get_recursive_children(dim_tags):
+    """Returns children and all recursive grand children of given parent entities
+
+    Args:
+        dim_tags: list of dim tags of parent entities
+
+    Returns:
+        list of dim tags of all children and recursive grand children
+    """
+    children = set()
+    while dim_tags:
+        dim_tags = gmsh.model.getBoundary(list(dim_tags), combined=False, oriented=False, recursive=False)
+        children = children.union(dim_tags)
+    return children
+
+
+def set_meshing_options(mesh_field_ids, max_size, n_threads):
+    """Setup meshing options including mesh size fields and number of parallel threads.
+
+    Args:
+        mesh_field_ids: list of the threshold field ids that are given by set_mesh_size function
+        max_size: global maximal mesh element length
+        n_threads: Number of threads to be used in mesh generation
+    """
+    background_field_id = gmsh.model.mesh.field.add("Min")
+    gmsh.model.mesh.field.setNumbers(background_field_id, "FieldsList", mesh_field_ids)
+    gmsh.model.mesh.field.setAsBackgroundMesh(background_field_id)
+    gmsh.option.setNumber("Mesh.MeshSizeMax", max_size)
+    gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
+    gmsh.option.setNumber("Mesh.MeshSizeFromPoints", 0)
+    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
+    gmsh.option.setNumber("Mesh.Algorithm", 5)
+    gmsh.option.setNumber("Mesh.Algorithm3D", 10)  # HTX
+    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-14)
+    gmsh.option.setNumber("General.NumThreads", n_threads)
+    gmsh.option.setNumber("Mesh.MaxNumThreads1D", n_threads)
+    gmsh.option.setNumber("Mesh.MaxNumThreads2D", n_threads)
+    gmsh.option.setNumber("Mesh.MaxNumThreads3D", n_threads)
 
 
 def get_bbox_sides_as_bboxes(bbox):
@@ -711,17 +769,7 @@ def get_parent_body(dim_tag, body_dim_tags):
 def set_physical_name(dim_tag, name):
     gmsh.model.addPhysicalGroup(dim_tag[0], [dim_tag[1]], name=name)
 
-def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, signal_min_mesh_size: float = 100,
-                    signal_min_dist: float = 100, signal_max_dist: float = 100,
-                    signal_sampling: float = None, ground_min_mesh_size: float = 100,
-                    ground_min_dist: float = 100, ground_max_dist: float = 100, ground_sampling: float = None,
-                    ground_grid_min_mesh_size: float = 100,
-                    ground_grid_min_dist: float = 100, ground_grid_max_dist: float = 100,
-                    ground_grid_sampling: float = None, gap_min_mesh_size: float = 100,
-                    gap_min_dist: float = 100, gap_max_dist: float = 100,
-                    gap_sampling: float = None, port_min_mesh_size: float = 100,
-                    port_min_dist: float = 100, port_max_dist: float = 100, port_sampling: float = None,
-                    algorithm: int = 5, show: bool = False, gmsh_n_threads: int = 1):
+def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = False, gmsh_n_threads: int = 1):
     """
     Builds the model using OpenCASCADE kernel and exports the result in "simulation.msh"
     file in the specified simulation `path`
@@ -730,38 +778,16 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
 
         sim_data(dict): simulation data in dictionary format
         path(Path): path of the simulation export folder
-        default_mesh_size(float): Default size to be used where not defined
-        signal_min_mesh_size(float): Minimum mesh size near signal region curves
-        signal_min_dist(float): Mesh size will be the minimum size until this distance
-                                from the signal region curves
-        signal_max_dist(float): Mesh size will grow from to the maximum size until
-                                this distance from the signal region curves
-        signal_sampling(float): Number of points used for sampling each signal region curve
-        ground_min_mesh_size(float): Minimum mesh size near ground region curves
-        ground_min_dist(float): Mesh size will be the minimum size until this distance
-                                from the ground region curves
-        ground_max_dist(float): Mesh size will grow from to the maximum size until
-                                this distance from the ground region curves
-        ground_sampling(float): Number of points used for sampling each ground region curve
-        ground_grid_min_mesh_size(float): Minimum mesh size near ground_grid region curves
-        ground_grid_min_dist(float): Mesh size will be the minimum size until this distance
-                                from the ground_grid region curves
-        ground_grid_max_dist(float): Mesh size will grow from to the maximum size until
-                                this distance from the ground_grid region curves
-        ground_grid_sampling(float): Number of points used for sampling each ground_grid region curve
-        gap_min_mesh_size(float): Minimum mesh size near gap region curves
-        gap_min_dist(float): Mesh size will be the minimum size until this distance
-                                from the gap region curves
-        gap_max_dist(float): Mesh size will grow from to the maximum size until
-                                this distance from the gap region curves
-        gap_sampling(float): Number of points used for sampling each gap region curve
-        port_min_mesh_size(float): Minimum mesh size near port region curves
-        port_min_dist(float): Mesh size will be the minimum size until this distance
-                                from the port region curves
-        port_max_dist(float): Mesh size will grow from to the maximum size until
-                                this distance from the port region curves
-        port_sampling(float): Number of points used for sampling each port region curve
-        algorithm(float): Gmsh meshing algorithm (default is 5)
+        mesh_size(dict): mesh element size definitions in dictionary format. Here key denotes material (string) and
+            value (double) denotes the maximal length of mesh element. Additional terms can be determined by setting the
+            value as a list. Then,
+                - term[0] = the maximal mesh element length inside at the entity and its expansion
+                - term[1] = expansion distance in which the maximal mesh element length is constant (default=term[0])
+                - term[2] = the slope of the increase in the maximal mesh element length outside the entity
+            To refine material interface the material names by should be separated by '&' in the key. Available key
+            words: signal, ground, ground grid, gap, and port. The key word 'global_max' is reserved for setting global
+            maximal element length. For example, if the dictionary is given as {'gap': 10, 'global_max': 100}, then the
+            maximal mesh element length is 10 on the metal gaps and the mesh element size can increase up to 100.
         show(float): Show the mesh in Gmsh graphical interface after completing the mesh
                      (for large meshes this can take a long time)
         gmsh_n_threads(int): number of threads used in Gmsh meshing (default=1, -1 means all physical cores)
@@ -775,9 +801,6 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     """
     params = sim_data['parameters']
     filepath = Path(path).joinpath(params['name'] + '.msh')
-
-    if gmsh_n_threads == -1:
-        gmsh_n_threads = int(os.cpu_count() / 2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
 
     gmsh.initialize()
     gmsh.option.setNumber("General.NumThreads", gmsh_n_threads)
@@ -799,7 +822,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     for port in port_data_gmsh:
         if 'polygon' in port:
             # add port polygon and store its dim_tag
-            surface_id = add_polygon(port['polygon'], port_min_mesh_size)
+            surface_id = add_polygon(port['polygon'])
             port['dim_tag'] = (2, surface_id)
             if port['type'] == 'InternalPort':
                 face_port_dim_tags[port['face']].append(port['dim_tag'])
@@ -825,32 +848,37 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
     all_dim_tags_new, dim_tags_map_imp = gmsh.model.occ.fragment(all_dim_tags, [], removeTool=False)
     dim_tags_map = dict(zip(all_dim_tags, dim_tags_map_imp))
     face_port_dim_tags = [[t for tag in tags for t in dim_tags_map[tag]] for tags in face_port_dim_tags]
-    new_ground_dim_tags = [new_tag for old_tag in ground_dim_tags for new_tag in dim_tags_map[old_tag] ]
+    new_ground_dim_tags = [new_tag for old_tag in ground_dim_tags for new_tag in dim_tags_map[old_tag]]
 
     face_dim_tag_dicts = [{k: [t for tag in d[k] for t in dim_tags_map[tag]] for k in d} for d in face_dim_tag_dicts]
     chips = [t for tag in chips for t in dim_tags_map[tag]]
     vacuum = dim_tags_map[vacuum][0]
     gmsh.model.occ.synchronize()
 
-    gmsh.model.mesh.setSize(gmsh.model.getEntities(0), default_mesh_size)
-    mesh_field_ids = []
+    # Refine mesh
     for face in faces:
-        mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['signal'],
-                                        signal_min_mesh_size, default_mesh_size, signal_min_dist,
-                                        signal_max_dist, signal_sampling)
-        mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['ground'],
-                                        ground_min_mesh_size, default_mesh_size, ground_min_dist,
-                                        ground_max_dist, ground_sampling)
-        mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['gap'],
-                                        gap_min_mesh_size, default_mesh_size, gap_min_dist, gap_max_dist,
-                                        gap_sampling)
-        mesh_field_ids += set_mesh_size(face_dim_tag_dicts[face]['ground_grid'], ground_grid_min_mesh_size,
-                                        default_mesh_size, ground_grid_min_dist, ground_grid_max_dist,
-                                        ground_grid_sampling)
-        mesh_field_ids += set_mesh_size(face_port_dim_tags[face],
-                                        port_min_mesh_size, default_mesh_size, port_min_dist, port_max_dist,
-                                        port_sampling)
+        face_dim_tag_dicts[face]['port'] = face_port_dim_tags[face]  # add port dim tags here to enable port refinement
 
+    bbox = bounding_box_from_dim_tags(gmsh.model.getEntities())
+    mesh_global_max_size = mesh_size.pop('global_max', sum(bbox[3:6])-sum(bbox[0:3]))
+    mesh_field_ids = []
+    for name, size in mesh_size.items():
+        intersection = set()
+        for sname in name.split('&'):
+            tags = [t for face in faces if sname in face_dim_tag_dicts[face] for t in face_dim_tag_dicts[face][sname]]
+            if tags:
+                family = get_recursive_children(tags).union(tags)
+                intersection = intersection.intersection(family) if intersection else family
+
+        mesh_field_ids += set_mesh_size_field(list(intersection - get_recursive_children(intersection)),
+                                              mesh_global_max_size, *(size if isinstance(size, list) else [size]))
+
+    # Set meshing options
+    if gmsh_n_threads == -1:
+        gmsh_n_threads = int(os.cpu_count() / 2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
+    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
+
+    # Set ports
     for port in port_data_gmsh:
         face = port['face']
         if 'ground_location' in port:
@@ -908,19 +936,6 @@ def export_gmsh_msh(sim_data: dict, path: Path, default_mesh_size: float = 100, 
         ground_name = 'ground_{}'.format(i)
         set_physical_name(dim_tag, ground_name)
         ground_names.append(ground_name)
-
-    background_field_id = gmsh.model.mesh.field.add("Min")
-    gmsh.model.mesh.field.setNumbers(background_field_id, "FieldsList", mesh_field_ids)
-    gmsh.model.mesh.field.setAsBackgroundMesh(background_field_id)
-    gmsh.option.setNumber("Mesh.MeshSizeExtendFromBoundary", 0)
-    gmsh.option.setNumber("Mesh.MeshSizeFromPoints", 0)
-    gmsh.option.setNumber("Mesh.MeshSizeFromCurvature", 0)
-    gmsh.option.setNumber("Mesh.Algorithm", algorithm)
-    gmsh.option.setNumber("Mesh.Algorithm3D", 10)  # HTX
-    gmsh.option.setNumber("Mesh.ToleranceInitialDelaunay", 1e-14)
-    gmsh.option.setNumber("Mesh.MaxNumThreads1D", gmsh_n_threads)
-    gmsh.option.setNumber("Mesh.MaxNumThreads2D", gmsh_n_threads)
-    gmsh.option.setNumber("Mesh.MaxNumThreads3D", gmsh_n_threads)
 
     gmsh.model.mesh.generate(3)
     gmsh.write(str(filepath))

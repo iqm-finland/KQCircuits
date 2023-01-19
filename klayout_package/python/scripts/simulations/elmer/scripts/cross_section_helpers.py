@@ -24,7 +24,8 @@ import pandas as pd
 import gmsh
 from scipy.constants import mu_0, epsilon_0
 
-from gmsh_helpers import separated_hull_and_holes, add_polygon
+from gmsh_helpers import separated_hull_and_holes, add_polygon, set_mesh_size_field, get_recursive_children, \
+    set_meshing_options
 
 try:
     import pya
@@ -38,13 +39,6 @@ def produce_cross_section_mesh(json_data, msh_file):
     """Produces mesh and optionally runs the Gmsh GUI"""
     # Initialize gmsh
     gmsh.initialize()
-
-    # Set number of threads
-    workflow = json_data.get('workflow', dict())
-    gmsh_n_threads = workflow.get('gmsh_n_threads', 1)
-    if gmsh_n_threads == -1:
-        gmsh_n_threads = int(os.cpu_count() / 2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
-    gmsh.option.setNumber("General.NumThreads", gmsh_n_threads)
 
     # Read geometry from gds file
     layout = pya.Layout()
@@ -105,22 +99,35 @@ def produce_cross_section_mesh(json_data, msh_file):
 
     # Refine mesh
     # Here json_data['mesh_size'] is assumed to be dictionary where key denotes material (string) and value (double)
-    # denotes the maximal length of mesh element. To refine material interface the material names by should be separated
-    # by '|' in the key. For example if the dictionary is {'substrate': 10, 'substrate|vacuum': 2}, the maximum mesh
-    # element length is 10 inside the substrate and 2 on the substrate-vacuum interface.
-    mesh_data = json_data.get('mesh_size', {})
-    mesh_size_sorted = sorted(mesh_data.items(), key=lambda item: -item[1])
-    for name, size in mesh_size_sorted:
-        intersect_tags = []
-        for sname in name.split('|'):
+    # denotes the maximal length of mesh element. Additional terms can be determined, if the value type is list. Then,
+    # - term[0] = the maximal mesh element length inside at the entity and its expansion
+    # - term[1] = expansion distance in which the maximal mesh element length is constant (default=term[0])
+    # - term[2] = the slope of the increase in the maximal mesh element length outside the entity
+    #
+    # To refine material interface the material names by should be separated by '&' in the key. Key 'global_max' is
+    # reserved for setting global maximal element length. For example, if the dictionary is given as
+    # {'substrate': 10, 'substrate&vacuum': [2, 5], 'global_max': 100}, then the maximal mesh element length is 10
+    # inside the substrate and 2 on region which is less than 5 units away from the substrate-vacuum interface. Outside
+    # these regions, the mesh element size can increase up to 100.
+    mesh_size = json_data.get('mesh_size', {})
+    mesh_global_max_size = mesh_size.pop('global_max', bbox.perimeter())
+    mesh_field_ids = []
+    for name, size in mesh_size.items():
+        intersection = set()
+        for sname in name.split('&'):
             if sname in new_tags:
-                boundary_tags = gmsh.model.getBoundary(new_tags[sname], combined=False, oriented=False, recursive=True)
-                if intersect_tags:
-                    intersect_tags = [t1 for t1 in boundary_tags for t2 in intersect_tags if t1 == t2]
-                else:
-                    intersect_tags = boundary_tags
+                family = get_recursive_children(new_tags[sname]).union(new_tags[sname])
+                intersection = intersection.intersection(family) if intersection else family
 
-        gmsh.model.mesh.setSize(intersect_tags, size)
+        mesh_field_ids += set_mesh_size_field(list(intersection - get_recursive_children(intersection)),
+                                              mesh_global_max_size, *(size if isinstance(size, list) else [size]))
+
+    # Set meshing options
+    workflow = json_data.get('workflow', dict())
+    gmsh_n_threads = workflow.get('gmsh_n_threads', 1)
+    if gmsh_n_threads == -1:
+        gmsh_n_threads = int(os.cpu_count() / 2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
+    set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
 
     # Add physical groups
     for n in new_tags:

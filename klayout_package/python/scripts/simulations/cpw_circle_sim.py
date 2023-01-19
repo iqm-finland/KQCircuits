@@ -81,12 +81,10 @@ if use_elmer:
         'tool': 'capacitance',
         'linear_system_method': 'mg',
     }
-    mesh_parameters = {
-        'default_mesh_size': 200.,
-        'gap_min_mesh_size': 2.,
-        'gap_min_dist': 1.,
-        'gap_max_dist': 500.,
-        'algorithm': 5,
+    mesh_size = {
+        'global_max': 200.,
+        'gap&signal': 2.,
+        'gap&ground': 2.,
     }
     workflow = {
         'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
@@ -96,7 +94,7 @@ if use_elmer:
         'gmsh_n_threads': -1,  # -1 means all the physical cores
         'elmer_n_processes': -1,  # -1 means all the physical cores
     }
-    export_elmer(simulations, **export_parameters, gmsh_params=mesh_parameters, workflow=workflow)
+    export_elmer(simulations, **export_parameters, mesh_size=mesh_size, workflow=workflow)
 else:
     export_parameters = {
         'path': dir_path,

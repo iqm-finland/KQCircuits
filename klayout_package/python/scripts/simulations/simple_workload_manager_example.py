@@ -45,18 +45,11 @@ export_parameters = {
 }
 
 # Gmsh meshing parameters
-mesh_parameters = {
-    'default_mesh_size': 400.,
-    'gap_min_mesh_size': 16.,
-    'gap_min_dist': 16.,
-    'gap_max_dist': 400.,
-    'port_min_mesh_size': 8.,
-    'port_min_dist': 16.,
-    'port_max_dist': 400.,
-    'signal_min_mesh_size': 8,
-    'signal_min_dist': 16,
-    'signal_max_dist': 200,
-    'algorithm': 5,
+mesh_size = {
+    'global_max': 400.,
+    'gap': 16.,
+    'port': 8.,
+    'signal&gap': 8,
 }
 
 # Here we select to use up to 4*2=8 cores with two levels of parallelisation
@@ -83,7 +76,7 @@ simulations = sweep_simulation(layout, sim_class, sim_parameters, {
 })
 
 # Export Elmer files
-export_elmer(simulations, **export_parameters, gmsh_params=mesh_parameters, workflow=workflow)
+export_elmer(simulations, **export_parameters, mesh_size=mesh_size, workflow=workflow)
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, dir_path))

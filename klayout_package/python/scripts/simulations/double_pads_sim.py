@@ -117,18 +117,13 @@ for sim_tool in sim_tools:
             'python_executable': 'python',
             'n_workers': 4,
             'elmer_n_processes': 4,
-        },
-        'gmsh_params': {
-            'default_mesh_size': 50.,
-            'gap_min_mesh_size': 2.,
-            'gap_min_dist': 4.,
-            'gap_max_dist': 50.,
-            'port_min_mesh_size': 1.,
-            'port_min_dist': 4.,
-            'port_max_dist': 50.,
-            'algorithm': 5,
             'gmsh_n_threads': 4,
-            'show': False,
+        },
+        'mesh_size': {
+            'global_max': 50.,
+            'gap&signal': [2., 4.],
+            'gap&ground': [2., 4.],
+            'port': [1., 4.],
         }
     }
 

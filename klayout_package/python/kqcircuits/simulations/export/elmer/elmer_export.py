@@ -30,50 +30,6 @@ from kqcircuits.defaults import ELMER_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
-default_gmsh_params = {
-    'default_mesh_size': 100,  # Default size to be used where not defined
-    'signal_min_mesh_size': 100,  # Minimum mesh size near signal region curves
-    'signal_min_dist': 100,  # Mesh size will be the minimum size until this distance from the signal region curves
-    'signal_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the signal region
-                             # curves
-    'signal_sampling': None,  # Number of points used for sampling each signal region curve
-    'ground_min_mesh_size': 100,  # Minimum mesh size near ground region curves
-    'ground_min_dist': 100,  # Mesh size will be the minimum size until this distance from the ground region curves
-    'ground_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the ground region
-                             # curves
-    'ground_sampling': None,  # Number of points used for sampling each ground region curve
-    'ground_grid_min_mesh_size': 100,  # Minimum mesh size near ground_grid region curves
-    'ground_grid_min_dist': 100,  # Mesh size will be the minimum size until this distance from the ground_grid region
-                                  # curves
-    'ground_grid_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the ground_
-                                  # grid region curves
-    'ground_grid_sampling': None,  # Number of points used for sampling each ground_grid region curve
-    'gap_min_mesh_size': 100,  # Minimum mesh size near gap region curves
-    'gap_min_dist': 100,  # Mesh size will be the minimum size until this distance from the gap region curves
-    'gap_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the gap region curves
-    'gap_sampling': None,  # Number of points used for sampling each gap region curve
-    'port_min_mesh_size': 100,  # Minimum mesh size near port region curves
-    'port_min_dist': 100,  # Mesh size will be the minimum size until this distance from the port region curves
-    'port_max_dist': 100,  # Mesh size will grow from to the maximum size until this distance from the port region
-                           # curves
-    'port_sampling': None,  # Number of points used for sampling each port region curve
-    'algorithm': 5,  # Gmsh meshing algorithm (default is 5)
-}
-
-default_workflow = {
-    'run_gmsh': True,  # Run Gmsh to generate mesh
-    'run_gmsh_gui': False,  # Show the mesh in Gmsh graphical interface after completing the mesh
-    'run_elmergrid': True,  # Run ElmerGrid
-    'run_elmer': True,  # Run Elmer simulation
-    'run_paraview': False,  # Run Paraview. This is visual view of the results.
-    'gmsh_n_threads': 1,  # number of threads used in Gmsh meshing (default=1, -1 means all physical cores)
-    'elmer_n_processes': 1,  # number of processes used in Elmer simulation (default=1, -1 means all physical cores)
-    'python_executable': 'python' # the python executable that is used to prepare and control the simulations
-                                  # another executable could be 'kqclib' (in case the singularity image is used
-                                  # the host system python is at the same time needed and does not have all the
-                                  # libraries installed for running the simulations)
-}
-
 
 def copy_elmer_scripts_to_directory(path: Path):
     """
@@ -93,7 +49,7 @@ def export_elmer_json(simulation: Simulation,
                       linear_system_method='bicgstab',
                       p_element_order=1,
                       frequency=5,
-                      gmsh_params=None,
+                      mesh_size=None,
                       workflow=None):
     """
     Export Elmer simulation into json and gds files.
@@ -105,7 +61,7 @@ def export_elmer_json(simulation: Simulation,
         linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
         p_element_order(int): polynomial order of p-elements (Default: 1)
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
-        gmsh_params(dict): Parameters for Gmsh
+        mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
 
     Returns:
@@ -122,8 +78,8 @@ def export_elmer_json(simulation: Simulation,
         'p_element_order': p_element_order,
         **simulation.get_simulation_data(),
         'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
-        'gmsh_params': default_gmsh_params if gmsh_params is None else {**default_gmsh_params, **gmsh_params},
-        'workflow': default_workflow if workflow is None else {**default_workflow, **workflow},
+        'mesh_size': {} if mesh_size is None else mesh_size,
+        'workflow': {} if workflow is None else workflow,
         'frequency': frequency,
     }
 
@@ -292,7 +248,7 @@ def export_elmer(simulations: [],
                  frequency=5,
                  file_prefix='simulation',
                  script_file='scripts/run.py',
-                 gmsh_params=None,
+                 mesh_size=None,
                  workflow=None,
                  skip_errors=False):
     """
@@ -308,7 +264,7 @@ def export_elmer(simulations: [],
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.
-        gmsh_params(dict): Parameters for Gmsh
+        mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
         skip_errors(bool): Skip simulations that cause errors. (Default: False)
 
@@ -327,7 +283,7 @@ def export_elmer(simulations: [],
     for simulation in simulations:
         try:
             json_filenames.append(export_elmer_json(simulation, path, tool, linear_system_method,
-                                                    p_element_order, frequency, gmsh_params, workflow))
+                                                    p_element_order, frequency, mesh_size, workflow))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(
