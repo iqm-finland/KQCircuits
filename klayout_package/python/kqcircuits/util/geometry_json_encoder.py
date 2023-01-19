@@ -37,4 +37,7 @@ class GeometryJsonEncoder(json.JSONEncoder):
 
     def default(self, o):
         # Use the default JSON encoder for any other types
-        return GeometryJsonEncoder.encode_geometry(o) or json.JSONEncoder.default(self, o)
+        encoded_geometry = GeometryJsonEncoder.encode_geometry(o)
+        if encoded_geometry is None:
+            return json.JSONEncoder.default(self, o)
+        return encoded_geometry
