@@ -50,6 +50,7 @@ Documentation
    salt
    developer/index
    api/kqcircuits
+   notebook_examples
    support
    citing
    trademarks

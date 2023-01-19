@@ -22,6 +22,8 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+import subprocess
+from pathlib import Path
 import os
 import sys
 import inspect
@@ -79,6 +81,7 @@ except Exception as e:
 
 import sphinx_rtd_theme
 
+
 # -- Project information -----------------------------------------------------
 
 import re
@@ -116,6 +119,8 @@ extensions = [
     'sphinx.ext.graphviz',
     'kqc_elem_params',
     'sphinx.ext.extlinks',
+    'sphinx_copybutton',
+    'nbsphinx',
 ]
 
 todo_include_todos = True
@@ -152,6 +157,10 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'api/modules.rst']
 
+
+# Detect if notebook examples exist
+if not Path('../notebooks/examples').exists():
+    exclude_patterns += ['notebook_examples', '**/*.ipynb']
 
 # -- Options for HTML output -------------------------------------------------
 
