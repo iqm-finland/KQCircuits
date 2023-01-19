@@ -79,47 +79,14 @@ class DoublePads(Qubit):
         self.produce_squid(squid_transf)
 
         # First island
-        island1_bottom = self.squid_offset + squid_height / 2
-        island1_polygon = pya.DPolygon([
-            pya.DPoint(-float(self.island1_extent[0]) / 2,
-                island1_bottom + self.island1_taper_height + float(self.island1_extent[1])),
-            pya.DPoint( float(self.island1_extent[0]) / 2,
-                island1_bottom + self.island1_taper_height + float(self.island1_extent[1])),
-            pya.DPoint( float(self.island1_extent[0]) / 2, island1_bottom + self.island1_taper_height),
-            pya.DPoint(-float(self.island1_extent[0]) / 2, island1_bottom + self.island1_taper_height),
-        ])
-        island1_region = pya.Region(island1_polygon.to_itype(self.layout.dbu))
-        island1_region.round_corners(self.island1_r / self.layout.dbu, self.island1_r / self.layout.dbu, self.n)
-        island1_taper = pya.Region(pya.DPolygon([
-            pya.DPoint( self.island1_taper_width / 2, island1_bottom + self.island1_taper_height),
-            pya.DPoint( self.island1_taper_junction_width / 2, island1_bottom),
-            pya.DPoint(-self.island1_taper_junction_width / 2, island1_bottom),
-            pya.DPoint(-self.island1_taper_width / 2, island1_bottom + self.island1_taper_height),
-        ]).to_itype(self.layout.dbu))
-        island1_region += island1_taper
+        island1_region = self._build_island1(squid_height)
 
         # Second island
-        island2_top = self.squid_offset - squid_height / 2
-        island2_polygon = pya.DPolygon([
-            pya.DPoint(-float(self.island2_extent[0]) / 2,
-                island2_top - self.island2_taper_height - float(self.island2_extent[1])),
-            pya.DPoint( float(self.island2_extent[0]) / 2,
-                island2_top - self.island2_taper_height - float(self.island2_extent[1])),
-            pya.DPoint( float(self.island2_extent[0]) / 2, island2_top - self.island2_taper_height),
-            pya.DPoint(-float(self.island2_extent[0]) / 2, island2_top - self.island2_taper_height),
-        ])
-        island2_region = pya.Region(island2_polygon.to_itype(self.layout.dbu))
-        island2_region.round_corners(self.island2_r / self.layout.dbu, self.island2_r / self.layout.dbu, self.n)
-        island2_taper = pya.Region(pya.DPolygon([
-            pya.DPoint( self.island2_taper_width / 2, island2_top - self.island2_taper_height),
-            pya.DPoint( self.island2_taper_junction_width / 2, island2_top),
-            pya.DPoint(-self.island2_taper_junction_width / 2, island2_top),
-            pya.DPoint(-self.island2_taper_width / 2, island2_top - self.island2_taper_height),
-        ]).to_itype(self.layout.dbu))
-        island2_region += island2_taper
+        island2_region = self._build_island2(squid_height)
 
         # Coupler gap
-        coupler_region = self._build_coupler(island1_bottom + self.island1_taper_height + float(self.island1_extent[1]))
+        coupler_region = self._build_coupler((self.squid_offset + squid_height / 2)
+            + self.island1_taper_height + float(self.island1_extent[1]))
 
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(
             ground_gap_region - coupler_region - island1_region - island2_region
@@ -167,3 +134,45 @@ class DoublePads(Qubit):
         ])
         coupler_path = pya.Region(coupler_path_polygon.to_itype(self.layout.dbu))
         return coupler_region + coupler_path
+
+
+    def _build_island1(self, squid_height):
+        island1_bottom = self.squid_offset + squid_height / 2
+        island1_polygon = pya.DPolygon([
+            pya.DPoint(-float(self.island1_extent[0]) / 2,
+                island1_bottom + self.island1_taper_height + float(self.island1_extent[1])),
+            pya.DPoint( float(self.island1_extent[0]) / 2,
+                island1_bottom + self.island1_taper_height + float(self.island1_extent[1])),
+            pya.DPoint( float(self.island1_extent[0]) / 2, island1_bottom + self.island1_taper_height),
+            pya.DPoint(-float(self.island1_extent[0]) / 2, island1_bottom + self.island1_taper_height),
+        ])
+        island1_region = pya.Region(island1_polygon.to_itype(self.layout.dbu))
+        island1_region.round_corners(self.island1_r / self.layout.dbu, self.island1_r / self.layout.dbu, self.n)
+        island1_taper = pya.Region(pya.DPolygon([
+            pya.DPoint( self.island1_taper_width / 2, island1_bottom + self.island1_taper_height),
+            pya.DPoint( self.island1_taper_junction_width / 2, island1_bottom),
+            pya.DPoint(-self.island1_taper_junction_width / 2, island1_bottom),
+            pya.DPoint(-self.island1_taper_width / 2, island1_bottom + self.island1_taper_height),
+        ]).to_itype(self.layout.dbu))
+        return island1_region + island1_taper
+
+
+    def _build_island2(self, squid_height):
+        island2_top = self.squid_offset - squid_height / 2
+        island2_polygon = pya.DPolygon([
+            pya.DPoint(-float(self.island2_extent[0]) / 2,
+                island2_top - self.island2_taper_height - float(self.island2_extent[1])),
+            pya.DPoint( float(self.island2_extent[0]) / 2,
+                island2_top - self.island2_taper_height - float(self.island2_extent[1])),
+            pya.DPoint( float(self.island2_extent[0]) / 2, island2_top - self.island2_taper_height),
+            pya.DPoint(-float(self.island2_extent[0]) / 2, island2_top - self.island2_taper_height),
+        ])
+        island2_region = pya.Region(island2_polygon.to_itype(self.layout.dbu))
+        island2_region.round_corners(self.island2_r / self.layout.dbu, self.island2_r / self.layout.dbu, self.n)
+        island2_taper = pya.Region(pya.DPolygon([
+            pya.DPoint( self.island2_taper_width / 2, island2_top - self.island2_taper_height),
+            pya.DPoint( self.island2_taper_junction_width / 2, island2_top),
+            pya.DPoint(-self.island2_taper_junction_width / 2, island2_top),
+            pya.DPoint(-self.island2_taper_width / 2, island2_top - self.island2_taper_height),
+        ]).to_itype(self.layout.dbu))
+        return island2_region + island2_taper

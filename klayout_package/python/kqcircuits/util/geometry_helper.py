@@ -19,6 +19,8 @@
 """Helper module for general geometric functions"""
 
 from math import cos, sin, radians, atan2, degrees, pi, ceil
+from typing import List
+import numpy as np
 from kqcircuits.defaults import default_layers, default_path_length_layers
 from kqcircuits.pya_resolver import pya
 
@@ -263,3 +265,115 @@ def arc_points(r, start=0, stop=2 * pi, n=64, origin=pya.DPoint(0, 0)):
     n_steps = max(ceil(n * abs(stop - start) / (2 * pi)), 2)
     step = (stop - start) / (n_steps - 1)
     return [origin + pya.DPoint(cos(start + a * step) * r, sin(start + a * step) * r) for a in range(0, n_steps)]
+
+
+def _cubic_polynomial(control_points: List[pya.DPoint],
+                      spline_matrix: np.array,
+                      sample_points: int = 100,
+                      endpoint: bool = False) -> List[pya.DPoint]:
+    """Returns a list of DPoints sampled uniformly from a third order polynomial spline
+
+    Args:
+        control_points: list of exactly four control points
+        spline_matrix: matrix of coefficients of the polynomial function
+        sample_points: number of points to sample for the curve
+        endpoint: if True, will distribute sample points to sample at t = 1.0
+    """
+    if len(control_points) != 4:
+        raise ValueError("There should be exactly four control points for cubic polynomial")
+    if spline_matrix.shape != (4, 4):
+        raise ValueError("spline_matrix must be of shape (4, 4)")
+    geometry_matrix = np.array([[p.x, p.y] for p in control_points]).T
+    result_points = []
+    for t in np.linspace(0.0, 1.0, sample_points, endpoint=endpoint):
+        result_vector = geometry_matrix.dot(spline_matrix).dot(np.array([1, t, t*t, t*t*t]).T)
+        result_points.append(pya.DPoint(result_vector[0], result_vector[1]))
+    return result_points
+
+
+def bspline_points(control_points: List[pya.DPoint],
+                   sample_points: int = 100,
+                   startpoint: bool = False,
+                   endpoint: bool = False) -> List[pya.DPoint]:
+    """Samples points uniformly from the B-Spline constructed from a sequence of control points.
+    The spline is derived from a sequence of cubic splines for each subsequence of four-control points
+    in a sliding window.
+
+    Unlike Bezier curves, for each spline in B-Spline it is not guaranteed
+    that the first and last control point will be in the spline.
+
+    B-Spline cubic polynomial implemented based on the following reference:
+    Kaihuai Qin, "General matrix representations for B-splines", Proceedings Pacific Graphics '98
+    Sixth Pacific Conference on Computer Graphics and Applications, Singapore, 1998, pp. 37-43,
+    doi: 10.1109/PCCGA.1998.731996
+
+    Args:
+        control_points: a sequence of control points, must have at least 4 pya.DPoints elements
+        sample_points: number of uniform samples of each cubic B-spline,
+            total number of samples is: sample_points * (control_points - 3)
+        startpoint: If True, will prepend duplicates of the first control point so that the
+            first control point will be in the B-Spline
+        endpoint: If True, will append duplicates of the last control point so that the
+            last control point will be in the B-Spline
+
+    Returns:
+        List of pya.DPoints that can be used as part of a polygon
+    """
+    # B-Spline doesn't guarantee that the spline will go through the end points,
+    # duplicate points on either end if needed
+    if startpoint:
+        control_points = [control_points[0], control_points[0]] + control_points
+    if endpoint:
+        control_points = control_points + [control_points[-1], control_points[-1]]
+    if len(control_points) < 4:
+        raise ValueError("B-Spline needs at least four control points")
+    bspline_matrix = (1.0/6.0) * np.array([[ 1,-3, 3,-1],
+                                           [ 4, 0,-6, 3],
+                                           [ 1, 3, 3,-3],
+                                           [ 0, 0, 0, 1]])
+    result_points = []
+    # Sliding window
+    for window_start in range(len(control_points) - 3):
+        result_points += _cubic_polynomial( control_points[window_start:window_start+4],
+                                            bspline_matrix,
+                                            sample_points,
+                                            endpoint=(window_start == len(control_points) - 4))
+    return result_points
+
+
+def bezier_points(control_points: List[pya.DPoint], sample_points: int = 100) -> List[pya.DPoint]:
+    """Samples points uniformly from the Bezier curve constructed from a sequence of control points.
+    The curve is derived from a sequence of cubic splines for each subsequence of four-control points
+    such that subsequence shares one control point with the previous subsequence.
+
+    Special care needs to be taken to guarantee continuity in the tangent of the curve.
+    The third and fourth control point of each subsequence as well as the second
+    control point of the next subsequence have to be in the same line.
+
+    Bezier cubic polynomial implemented based on the following reference:
+    Kaihuai Qin, "General matrix representations for B-splines", Proceedings Pacific Graphics '98
+    Sixth Pacific Conference on Computer Graphics and Applications, Singapore, 1998, pp. 37-43,
+    doi: 10.1109/PCCGA.1998.731996
+
+    Args:
+        control_points: a sequence of control points, must be of length equal to 3*n+1 for some integer n
+        sample_points: number of uniform samples of each cubic spline,
+            total number of samples is: sample_points * ((control_points - 3) / 3)
+
+    Returns:
+        List of pya.DPoints that can be used as part of a polygon
+    """
+    if (len(control_points) - 1) % 3 == 0:
+        raise ValueError("For Bezier curve, the number of control points should equal to 3*n+1 for some integer n")
+    bezier_matrix = np.array([[ 1,-3, 3,-1],
+                              [ 0, 3,-6, 3],
+                              [ 0, 0, 3,-3],
+                              [ 0, 0, 0, 1]])
+    result_points = []
+    # Windows with one shared control point
+    for window_start in range(0, len(control_points) - 3, 3):
+        result_points += _cubic_polynomial( control_points[window_start:window_start+4],
+                                            bezier_matrix,
+                                            sample_points,
+                                            endpoint=(window_start == len(control_points) - 4))
+    return result_points
