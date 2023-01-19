@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
  <description>Remove User Package</description>
- <version>0.1</version>
+ <version/>
  <category>pymacros</category>
  <prolog/>
  <epilog/>
@@ -10,8 +10,8 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
- <group-name>system-tools</group-name>
  <menu-path>kqcircuits_menu.#2</menu-path>
+ <group-name>system-tools</group-name>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text>

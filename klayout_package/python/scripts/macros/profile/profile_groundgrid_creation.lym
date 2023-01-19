@@ -10,6 +10,7 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
+ <group-name>misc</group-name>
  <menu-path>kqcircuits_menu.end</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>

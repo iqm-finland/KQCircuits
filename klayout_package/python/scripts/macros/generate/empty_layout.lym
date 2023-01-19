@@ -10,7 +10,7 @@
  <autorun-early>false</autorun-early>
  <shortcut/>
  <show-in-menu>true</show-in-menu>
- <menu-path>kqcircuits_menu.end</menu-path>
+ <menu-path>kqcircuits_menu.#4</menu-path>
  <interpreter>python</interpreter>
  <dsl-interpreter-name/>
  <text># This code is part of KQCircuits

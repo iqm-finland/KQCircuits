@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <klayout-macro>
  <description>Add User Package</description>
- <version>0.1</version>
+ <version/>
  <category>pymacros</category>
  <prolog/>
  <epilog/>
