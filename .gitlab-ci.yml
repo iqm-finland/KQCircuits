@@ -1,6 +1,6 @@
 default:
   image:
-    name: gitlab.iqm.fi:5005/iqm/qe/kqcircuits:master
+    name: $KQC_IMAGE_REPOSITORY
     entrypoint: ['']
   cache:
     key: "$CI_PROJECT_ID-$CI_COMMIT_REF_SLUG"
@@ -64,7 +64,7 @@ verify_documentation:
     - cd docs
     - make html SPHINXOPTS="-W --keep-going"
   after_script:
-    - echo "See documentation at https://iqm.gitlab-pages.iqm.fi/-/qe/KQCircuits/-/jobs/$CI_JOB_ID/artifacts/docs/_build/html/index.html"
+    - echo "See documentation at $KQC_GITLAB_PAGES/-/jobs/$CI_JOB_ID/artifacts/docs/_build/html/index.html"
   artifacts:
     expose_as: 'HTML docs PNG and OAS files'
     paths:
