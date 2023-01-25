@@ -36,6 +36,7 @@ Usage:
 
 
 import os
+import subprocess
 from sys import platform
 from setup_helper import setup_symlinks, klayout_configdir
 
@@ -81,5 +82,10 @@ if __name__ == "__main__":
         raise SystemError("Unsupported operating system.")
 
     print(f'Required packages will be installed in "{target_dir}".')
-    os.system(f"pip install -r {pip_args}")
+
+    try:
+        subprocess.check_output(["pip", "install", "-r", pip_args])
+    except subprocess.CalledProcessError as e:
+        subprocess.check_output(["pip3", "install", "-r", pip_args])
+
     print("Finished setting up KQC.")
