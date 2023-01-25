@@ -20,6 +20,10 @@
 
 Junctions can be either code-generated or loaded from manual design files. They are typically included in
 qubits or junction test structures.
+
+This package contains three manually designed SQUIDs in OASIS files from the Quantum Computing and Devices
+research group at Aalto:
+QCD1, QCD2 and QCD3.
 """
 
 junction_type_choices = [

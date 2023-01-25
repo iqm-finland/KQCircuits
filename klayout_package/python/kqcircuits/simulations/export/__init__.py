@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2021 IQM Finland Oy
+# Copyright (C) 2023 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -16,8 +16,8 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-"""Simulation modules.
+"""Simulation export modules.
 
-This package contains modules for Simulation objects, which contain cell layout and data needed for
-simulations. The ``Simulation`` base class provides common functionality and detailed documentation.
+These modules are used for exporting Simulation objects to the actual simulation programs.
+Currently HFSS, Q3D, Elmer and Sonnet are supported.
 """
