@@ -88,7 +88,7 @@ _common_b_t_layers = {
     "underbump_metallization": (20, 1),  # flip-chip bonding
     "indium_bump": (21, 1),  # flip-chip bonding
     "through_silicon_via": (22, 1),  # TSV
-    "through_silicon_via_avoidance": (23, 1),  # TSV
+    "through_silicon_via_avoidance": (25, 1),  # TSV
 
     # Netlist
     "ports": (26, 1),  # Considered conductive in the netlist extraction
