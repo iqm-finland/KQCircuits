@@ -260,7 +260,7 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
         ])
 
     res += sif_block('Solver 2', [
-        'Exec Solver = True',
+        'Exec Solver = Always',
         'Equation = "ResultOutput"',
         'Procedure = "ResultOutputSolve" "ResultOutputSolver"',
         'Output File Name = {}'.format(name),
@@ -339,7 +339,7 @@ def sif_inductance(json_data, folder_path, def_file):
         'Linear System Symmetric = True',
         'NonLinear System Relaxation Factor = 1',
         'Export Lagrange Multiplier = Logical True',
-        'Linear System Solver = "Direct"',
+        'Linear System Solver = "Iterative"',
         'Linear System Iterative Method = BicgStabL',
         'Linear System Preconditioning = None',
         'Linear System Complex = Logical True',
@@ -359,7 +359,7 @@ def sif_inductance(json_data, folder_path, def_file):
         'Calculate Current Density = Logical True',
         'Calculate Magnetic Vector Potential = Logical True',
         'Steady State Convergence Tolerance = 0',
-        'Linear System Solver = "Direct"',
+        'Linear System Solver = "Iterative"',
         'Linear System Preconditioning = None',
         'Linear System Residual Output = 0',
         'Linear System Max Iterations = 5000',
@@ -506,8 +506,12 @@ def get_cross_section_capacitance_and_inductance(json_data, folder_path):
     london_penetration_depth = json_data.get('london_penetration_depth', 0.0)
     try:
         if london_penetration_depth > 0:
-            l_matrix_file = Path(folder_path).joinpath('inductance.dat')
+            l_matrix_file_name = 'inductance.dat'
+            l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
+            if not l_matrix_file.is_file():
+                l_matrix_file = Path(folder_path).joinpath(f'{l_matrix_file_name}.0')
             data = pd.read_csv(l_matrix_file, delim_whitespace=True, header=None)
+            l_matrix_file = Path(folder_path).joinpath(l_matrix_file_name)
             with open(f"{l_matrix_file}.names") as names:
                 data.columns = [
                     line.split('res: ')[1].replace('\n', '') for line in names.readlines() if 'res:' in line

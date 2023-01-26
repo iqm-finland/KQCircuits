@@ -73,6 +73,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
                                       ma_thickness: float = 0,
                                       ms_thickness: float = 0,
                                       sa_thickness: float = 0,
+                                      london_penetration_depth: float = 0,
                                       magnification_order: int = 0
                                     ) -> List[Simulation]:
     """Create cross-sections of all simulation geometries in the list.
@@ -89,6 +90,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
         ma_thickness: Thickness of metal–vacuum (air) interface
         ms_thickness: Thickness of metal–substrate interface
         sa_thickness: Thickness of substrate–vacuum (air) interface
+        london_penetration_depth: London penetration depth of the superconducting material
         magnification_order: Increase magnification of simulation geometry to accomodate more precise spacial units.
             0 =   no magnification with 1e-3 dbu
             1 =  10x magnification with 1e-4 dbu
@@ -137,6 +139,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
                 ma_thickness,
                 ms_thickness,
                 sa_thickness,
+                london_penetration_depth,
                 magnification_order)
         for idx, xsection_cell in enumerate(layout.top_cells())]
 # pylint: enable=dangerous-default-value
@@ -388,12 +391,14 @@ def _oxidise_layers(simulation, ma_thickness, ms_thickness, sa_thickness):
 
 def _construct_cross_section_simulation(layout, xsection_cell, simulation,
         ma_permittivity, ms_permittivity, sa_permittivity,
-        ma_thickness, ms_thickness, sa_thickness, magnification_order):
+        ma_thickness, ms_thickness, sa_thickness,
+        london_penetration_depth, magnification_order):
     """Produce CrossSectionSimulation object"""
     if magnification_order > 0:
         layout.dbu = 10 ** (-3 - magnification_order)
         xsection_cell.transform(pya.DCplxTrans(10 ** magnification_order))
     xsection_parameters = simulation.get_parameters()
+    xsection_parameters['london_penetration_depth'] = london_penetration_depth
     cell_bbox = xsection_cell.dbbox()
     # Disabled for single face and flip-chip cases
     #cell_bbox.p1 -= pya.DPoint(0, xsection_parameters['lower_box_height'])

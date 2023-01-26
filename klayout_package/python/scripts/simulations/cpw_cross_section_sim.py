@@ -17,6 +17,7 @@
 
 
 import logging
+import argparse
 import sys
 import itertools
 from pathlib import Path
@@ -27,7 +28,7 @@ import numpy as np
 from kqcircuits.elements.element import Element
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.export.elmer.cross_section_elmer_export import export_cross_section_elmer
-from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
+from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_sweep_simulation
 
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
@@ -107,6 +108,17 @@ class CpwCrossSectionSim(CrossSectionSimulation):
             self.cell.shapes(self.get_sim_layer("sa_layer")).insert(sa_layer)
             self.set_permittivity("sa_layer", 4.0)
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--number-of-cpws', nargs="+", default=[1,2], type=int, help='number of guides in simulations')
+parser.add_argument('--vertical-over-etching', nargs="+", default=[0],
+        type=float, help='Vertical over eching in simulations')
+parser.add_argument('--p-element-order', default=2, type=int, help='Order of p-elements in the FEM computation')
+parser.add_argument('--is-axisymmetric', action="store_true", help='Make an axi-symmetric model')
+parser.add_argument('--axisymmetric-test', action="store_true", help='Run only one test for axisymmetric case')
+
+args, unknown = parser.parse_known_args()
+
+args.is_axisymmetric = args.axisymmetric_test or args.is_axisymmetric
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
@@ -114,7 +126,7 @@ dir_path = create_or_empty_tmp_directory(f"{Path(__file__).stem}_output")
 sim_class = CpwCrossSectionSim  # pylint: disable=invalid-name
 
 # Simulate Axi-symmetric case with toroidal revolution symmetry
-is_axisymmetric = False
+is_axisymmetric = args.is_axisymmetric
 
 # Simulation parameters
 sim_parameters = {
@@ -134,7 +146,9 @@ mesh_size = {
     'sa_layer': [0.03, None, 0.3]
 }
 if is_axisymmetric:
-    mesh_size = {k: v*4 for k, v in mesh_size.items()}
+    axi_symmetric_mesh_factor = 4
+    mesh_size = {k: v*axi_symmetric_mesh_factor for k, v in mesh_size.items()}
+    mesh_size['sa_layer'] = [0.03*axi_symmetric_mesh_factor, None, 0.3*axi_symmetric_mesh_factor]
 
 workflow = {
     'run_gmsh': True,
@@ -164,9 +178,9 @@ layout = get_active_or_new_layout()
 layout.dbu = 1e-5  # need finer DBU for SA-interface
 
 # Create simulations
-simulations = sweep_simulation(layout, sim_class, sim_parameters, {
-    'number_of_cpws': [1, 2],
-    'vertical_over_etching': [10]
+simulations = cross_sweep_simulation(layout, sim_class, sim_parameters, {
+    'number_of_cpws': args.number_of_cpws,
+    'vertical_over_etching': args.vertical_over_etching,
 })
 
 # Test large geometries
@@ -184,10 +198,12 @@ if is_axisymmetric:
         )
     ]
 
+    simulations = [simulations[0]] if args.axisymmetric_test else simulations
+
 
 # Export simulation files
 export_cross_section_elmer(simulations, dir_path, mesh_size=mesh_size, workflow=workflow,
-    dielectric_surfaces=dielectric_surfaces, p_element_order=2, linear_system_method='mg',
+    dielectric_surfaces=dielectric_surfaces, p_element_order=args.p_element_order, linear_system_method='mg',
     is_axisymmetric=is_axisymmetric)
 
 # Write and open oas file

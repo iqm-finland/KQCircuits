@@ -17,6 +17,7 @@
 
 import sys
 import logging
+import argparse
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
@@ -44,18 +45,42 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # it is better to not view the mesh in Gmsh but in Paraview together with the results.
 #
 # Simulation parameters
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--no-edge-ports', action="store_true", help='Do not use edge_ports')
+parser.add_argument('--flip-chip', action="store_true", help='Make a flip chip')
+parser.add_argument('--ansys', action="store_true", help='Use Ansys (otherwise Elmer)')
+parser.add_argument('--use-sbatch', action="store_true", help='Use sbatch (Slurm)')
+parser.add_argument('--wave-equation', action="store_true",
+        help='Compute wave equation (otherwise electrostatics)')
+parser.add_argument('--n-guides-range', nargs=2, default=[1,2],
+        type=int, help='number of guides in first case and last \
+        simulation: all the cases in between with an increment of one \
+        will be simulated as well')
+parser.add_argument('--cpw-length', default=100., type=float, help='Length of cpws in the model')
+parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
+parser.add_argument('--elmer-n-processes', default=-1, type=int,
+        help='Number of processes in Elmer simulations, -1 means all physical cores')
+parser.add_argument('--gmsh-n-threads', default=-1, type=int, help='Number of threads in Gmsh simulations, \
+        -1 means all physical cores')
+
+parser.add_argument('--port-mesh-size', default=1., type=float, help='Element size at ports')
+parser.add_argument('--gap-mesh-size', default=2., type=float, help='Element size at gaps')
+parser.add_argument('--global-mesh-size', default=100., type=float, help='Global element size')
+args, unknown = parser.parse_known_args()
+
 sim_class = WaveGuidesSim  # pylint: disable=invalid-name
 
-edge_ports = True
-use_elmer = True
-use_sbatch = False
-wave_equation = False
-multiface = True
+edge_ports = not args.no_edge_ports
+use_elmer = not args.ansys
+use_sbatch = args.use_sbatch
+wave_equation = args.wave_equation
+flip_chip = args.flip_chip
 sweep_parameters = {
-    'n_guides': range(2, 3)
+    'n_guides': range(args.n_guides_range[0], args.n_guides_range[1]+1)
 }
 
-cpw_length = 100
+cpw_length = args.cpw_length
 
 if edge_ports:
     box_size_x = 100
@@ -88,34 +113,32 @@ sim_parameters = {
     'a': 10,
     'b': 6,
     'add_bumps': False,
-    'face_stack': ['1t1', '2b1'] if multiface else ['1t1'],
+    'face_stack': ['1t1', '2b1'] if flip_chip else ['1t1'],
     'n_guides': 1,
     'chip_distance': 8,
     'port_size': 50,
 }
 
 if use_elmer:
-    elmer_n_processes = -1
+    elmer_n_processes = args.elmer_n_processes
     mesh_size = {
-        'global_max': 100.,
-        'gap': 2.,
-        'port': 1.,
+        'global_max': args.global_mesh_size,
+        'gap': args.gap_mesh_size,
+        'port': args.port_mesh_size,
     }
 
     if wave_equation:
-        elmer_n_processes = 1 # multi-core coming soon
         export_parameters_elmer = {
             'path': path,
             'tool': 'wave_equation',
             'frequency': 10,
         }
     else:
-        elmer_n_processes = -1
         export_parameters_elmer = {
             'path': path,
             'tool': 'capacitance',
             'linear_system_method': 'mg',
-            'p_element_order': 3,
+            'p_element_order': args.p_element_order,
         }
 
     workflow = {
@@ -127,7 +150,7 @@ if use_elmer:
                                # which can be removed to speed up the process
         'python_executable': 'python', # use 'kqclib' when using singularity
                                        # image (you can also put a full path)
-        'gmsh_n_threads': -1,  # <---------- This defines the number of processes in the
+        'gmsh_n_threads': args.gmsh_n_threads,  # <---------- This defines the number of processes in the
                                #             second level of parallelization. -1 uses all
                                #             the physical cores (based on the machine which
                                #             was used to prepare the simulation).
@@ -137,7 +160,7 @@ if use_elmer:
                                                  #         the physical cores (based on
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
-        'n_workers': 2, # <--------- This defines the number of
+#        'n_workers': 2, # <--------- This defines the number of
                         #            parallel independent processes.
                         #            Moreover, adding this line activates
                         #            the use of the simple workload manager.

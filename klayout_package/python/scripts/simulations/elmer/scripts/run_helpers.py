@@ -47,7 +47,10 @@ def write_simulation_machine_versions_file(path, name):
 
     mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
     if shutil.which(mpi_command) is not None:
-        output = subprocess.check_output([mpi_command, '--version'])
+        if mpi_command == 'mpiexec':
+            output = subprocess.check_output([mpi_command])
+        else:
+            output = subprocess.check_output([mpi_command, '--version'])
         versions['mpi'] = output.decode('ascii').split('\n', maxsplit=1)[0]
 
     paraview_command = 'paraview'

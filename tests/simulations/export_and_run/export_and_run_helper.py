@@ -1,0 +1,139 @@
+# This code is part of KQCircuits
+# Copyright (C) 2023 IQM Finland Oy
+#
+# This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
+# License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program. If not, see
+# https://www.gnu.org/licenses/gpl-3.0.html.
+#
+# The software distribution should follow IQM trademark policy for open-source software
+# (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
+# for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+import json
+import uuid
+from pathlib import Path
+import numpy as np
+from kqcircuits.simulations.export.export_and_run import export_and_run
+from kqcircuits.defaults import SIM_SCRIPT_PATH, TMP_PATH
+
+
+def assert_dicts(d1, d2, rtol, atol):
+    """
+    Checks if fem data in dictionaries d1 and d2 is equivalent.
+    Equivalent if
+
+      * keys are the same
+      * values are np.allclose()
+
+    Args:
+
+      * d1(dict()): first dictionary containing the first fem data
+      * d2(dict()): second dictionary containing the second fem data
+    """
+    if d1 is None and d2 is None:
+        return True
+
+    keys1 = set(d1.keys())
+    keys2 = set(d2.keys())
+
+    assert keys1 == keys2
+
+    for key in keys1:
+        val1 = d1[key]
+        val2 = d2[key]
+        assert np.allclose(val1, val2, rtol=rtol, atol=atol)
+    return True
+
+def assert_project_results_equal(project_results_path: Path,
+        ref_project_results_path: Path, rtol, atol,
+        generate_ref_results=False):
+    """
+    Checks whether the project results correspond to the reference
+    project results.
+
+    project_results_path(Path): path to the KQC simulations "_project_results.json" file
+    ref_project_results_path(dict): path to reference project results in dict format
+    rtol(float): see `numpy.allclose`
+    atol(float): see `numpy.allclose`
+    generate_ref_results(bool): if true, generates the reference results json based on the simulation to be tested
+    """
+
+    with open(project_results_path) as f:
+        results = json.load(f)
+
+    if generate_ref_results:
+        with open(ref_project_results_path, 'w') as f:
+            json.dump(results, f)
+
+    with open(ref_project_results_path) as f:
+        ref_results = json.load(f)
+
+    ref_cdata = ref_results.pop('Cdata', None)
+    cdata = results.pop('Cdata', None)
+
+    return assert_dicts(ref_results, results, rtol, atol) \
+            and assert_dicts(ref_cdata, cdata, rtol, atol)
+
+def export_and_run_test(export_script_name: str, args:list):
+    """
+    Exports, runs and asserts a KQC simulation.
+
+    Args:
+        export_script_name(str): Name of the export script (has to be located in SIM_SCRIPT_PATH)
+        args(list): list of arguments passed to the export script
+
+    Returns:
+        a tuple containing
+
+            * export_script(Path): path to the simulation export script
+            * export_path(Path): path where simulation files are exported
+
+    """
+
+    export_script = SIM_SCRIPT_PATH / f'{export_script_name}.py'
+    export_path = TMP_PATH / f"{export_script_name}_{uuid.uuid4()}"
+
+    return export_and_run(export_script, export_path, quiet=True, args=args)
+
+def assert_sim_script(export_script_name: str,
+                      export_script_dir: Path,
+                      export_path: Path,
+                      project_ref_info: dict,
+                      generate_ref_results = False,
+                      ):
+    """
+    Exports, runs and asserts a KQC simulation.
+
+    Args:
+        export_script_name(str): Name of the export script (has to be located in SIM_SCRIPT_PATH)
+        export_script_dir(Path): Path to the export script
+        export_path(Path): Path to the export folder
+        project_ref_info_list(list): list of dicts containing
+
+            * project_results_file(Path): KQC simulations "_project_results.json" file
+            * ref_project_results_file(dict): reference project results file
+            * rtol(float): see `numpy.allclose`
+            * atol(float): see `numpy.allclose`
+
+        generate_ref_results(bool): if True, generates the reference
+            results json based on the simulation to be tested (test
+            passes only if this is False)
+
+    """
+    asset_dir = export_script_dir / export_script_name
+
+    project_ref = {
+            'project_results_path':  export_path / project_ref_info['project_results_file'],
+            'ref_project_results_path': asset_dir / project_ref_info['ref_project_results_file'],
+            'rtol': project_ref_info['rtol'],
+            'atol': project_ref_info['atol'],
+        }
+
+    assert_project_results_equal(**project_ref, generate_ref_results=generate_ref_results)
+
+    assert not generate_ref_results, "Test set to fail when reference data is generated"

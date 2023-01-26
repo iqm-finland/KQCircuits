@@ -17,6 +17,7 @@
 
 import sys
 import logging
+import argparse
 from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
@@ -28,6 +29,17 @@ from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument('--flip-chip', action="store_true", help='Make a flip chip')
+parser.add_argument('--n-guides', nargs="+", default=[1, 2, 3],
+                    type=int, help='Number of waveguides in each simulation')
+parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
+parser.add_argument('--london-penetration-depth', default=0.0, type=float,
+                    help='London penetration depth of superconductor in [m]')
+
+args, unknown = parser.parse_known_args()
+
 
 # This testcase is derived from waveguides_sim_compare.py and
 # provides an example of how to use the XSection tool to produce cross section simulations.
@@ -35,10 +47,10 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # Simulation parameters
 sim_class = WaveGuidesSim  # pylint: disable=invalid-name
 
-multiface = True
+multiface = args.flip_chip
 
 sweep_parameters = {
-    'n_guides': [1, 2, 3]
+    'n_guides': args.n_guides
 }
 
 path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
@@ -49,7 +61,7 @@ sim_parameters = {
     'name': 'waveguides',
     'box': pya.DBox(pya.DPoint(-cpw_length/2., -sim_box_height/2.), pya.DPoint(cpw_length/2., sim_box_height/2.)),
     'cpw_length': cpw_length,
-    'face_stack': ['1t1', '2b1'] if multiface else ['1t1']
+    'face_stack': ['1t1', '2b1'] if multiface else ['1t1'],
 }
 
 workflow = {
@@ -94,7 +106,9 @@ xsection_simulations = create_xsections_from_simulations(simulations,
     ma_thickness=0.0048,
     ms_thickness=0.0003,
     sa_thickness=0.0024,
-    magnification_order=3 # Zoom to nanometers due to thin oxide layers
+    magnification_order=3, # Zoom to nanometers due to thin oxide layers
+    london_penetration_depth=args.london_penetration_depth,
 )
 open_with_klayout_or_default_application(export_simulation_oas(xsection_simulations, path))
-export_cross_section_elmer(xsection_simulations, path, mesh_size=mesh_size, workflow=workflow)
+export_cross_section_elmer(xsection_simulations, path, mesh_size=mesh_size, workflow=workflow,
+                           p_element_order=args.p_element_order, linear_system_method='mg')

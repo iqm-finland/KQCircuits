@@ -19,7 +19,8 @@ import subprocess
 import platform
 import sys
 
-def export_and_run(export_script: Path, export_path: Path, quiet: bool=False):
+def export_and_run(export_script: Path, export_path: Path, quiet:
+        bool=False, args=None):
     """
     Exports and runs a KQC simulation.
 
@@ -27,14 +28,25 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool=False):
         export_script(Path): path to the simulation export script
         export_path(Path): path where simulation files are exported
         quiet(bool): if True all the GUI dialogs are shown, otherwise not.
+        args(list): a list of strings describing arguments to be passed to the simulation script
+
+    Returns:
+        a tuple containing
+
+            * export_script(Path): path to the simulation export script
+            * export_path(Path): path where simulation files are exported
+
     """
 
-    if quiet:
-        subprocess.call([sys.executable, export_script,
-            '--simulation-export-path', str(export_path), '-q'])
+    if args is None:
+        args = []
     else:
-        subprocess.call([sys.executable, export_script,
-            '--simulation-export-path', str(export_path)])
+        if '--simulation-export-path' in args:
+            print("--simulation-export-path is not allowed!")
+            sys.exit()
+
+    subprocess.call([sys.executable, export_script,
+        '--simulation-export-path', str(export_path)] + args + (['-q'] if quiet else []))
 
 
     if (export_path / 'simulation.sh').is_file():
@@ -48,3 +60,5 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool=False):
         subprocess.call(['bash', simulation_shell_script], cwd=str(export_path))
     else:  # Linux
         subprocess.call(['bash', simulation_shell_script], cwd=str(export_path))
+
+    return export_script, export_path

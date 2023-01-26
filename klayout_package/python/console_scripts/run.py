@@ -31,11 +31,11 @@ def run():
     simulate_parser.add_argument('export_script', type=str, help='Name of the export script')
     simulate_parser.add_argument('-q', '--quiet', action="store_true", help='Quiet mode: No GUI')
 
-    args = parser.parse_args()
+    args, args_for_script = parser.parse_known_args()
 
     if args.command == "simulate":
         if Path(args.export_script).is_file():
             export_path = TMP_PATH / Path(args.export_script).stem
-            export_and_run(args.export_script, export_path, args.quiet)
+            export_and_run(args.export_script, export_path, args.quiet, args_for_script)
         else:
             print ("Export script not found: ", args.export_script)

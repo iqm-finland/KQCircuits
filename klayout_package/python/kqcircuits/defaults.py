@@ -82,6 +82,7 @@ XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
 
 VERSION_PATHS = {}
 VERSION_PATHS['KQC'] = ROOT_PATH
+SIM_SCRIPT_PATH = ROOT_PATH / 'klayout_package' / 'python' / 'scripts' / 'simulations'
 
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None

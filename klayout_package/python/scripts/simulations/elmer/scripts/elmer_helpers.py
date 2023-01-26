@@ -39,7 +39,7 @@ def get_electrostatics_solver(method='mg', p_element_order=3):
         solver += '  Linear System Solver = Iterative\n'
         solver += '  Linear System Iterative Method = BiCGStab\n'
         solver += '  Linear System Max Iterations = 200\n'
-        solver += '  Linear System Convergence Tolerance = 1.0e-09\n'
+        solver += '  Linear System Convergence Tolerance = 1.0e-12\n'
         solver += '  Linear System Preconditioning = ILU1\n'
         solver += '  Linear System ILUT Tolerance = 1.0e-03\n'
     elif method == 'mg':
@@ -47,7 +47,7 @@ def get_electrostatics_solver(method='mg', p_element_order=3):
         solver += '  Linear System Solver = Iterative\n'
         solver += '  Linear System Iterative Method = GCR \n'
         solver += '  Linear System Max Iterations = 30\n'
-        solver += '  Linear System Convergence Tolerance = 1.0e-9\n'
+        solver += '  Linear System Convergence Tolerance = 1.0e-12\n'
         solver += '  Linear System Abort Not Converged = False\n'
         solver += '  Linear System Residual Output = 10\n'
         solver += '\n'
@@ -67,7 +67,7 @@ def get_electrostatics_solver(method='mg', p_element_order=3):
         solver += '  mglowest: Linear System Iterative Method = CG !BiCGStabl\n'
         solver += '  mglowest: Linear System Preconditioning = none !ILU0\n'
         solver += '  mglowest: Linear System Max Iterations = 100\n'
-        solver += '  mglowest: Linear System Convergence Tolerance = 1.0e-3\n'
+        solver += '  mglowest: Linear System Convergence Tolerance = 1.0e-4\n'
 
     solver += '\n'
     solver += '  Vector Assembly = True\n'
