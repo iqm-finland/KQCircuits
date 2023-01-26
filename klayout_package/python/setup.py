@@ -56,4 +56,9 @@ setup(
         "notebooks": ["gdspy~=1.5", "jupyter~=1.0.0"],
         "graphs": ["networkx>=2.7", "matplotlib>=3.5.1"],
     },
+    entry_points={
+        'console_scripts':[
+            'kqc = console_scripts.run:run',
+            ]
+        }
 )

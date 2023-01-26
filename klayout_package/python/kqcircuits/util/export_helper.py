@@ -21,6 +21,7 @@ import logging
 import subprocess
 import platform
 import sys
+import argparse
 from sys import argv
 from pathlib import Path
 
@@ -129,11 +130,21 @@ def create_or_empty_tmp_directory(dir_name):
             else:
                 child.unlink()
 
-    dir_path = TMP_PATH.joinpath(dir_name)
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--simulation-export-path", type=str, default=None)
+    args, _ = parser.parse_known_args()
+
+    if args.simulation_export_path is not None:
+        dir_path=Path(args.simulation_export_path)
+    else:
+        dir_path = TMP_PATH.joinpath(dir_name)
+
     if dir_path.exists() and dir_path.is_dir():
         remove_content(dir_path)
     else:
         dir_path.mkdir()
+
     return dir_path
 
 

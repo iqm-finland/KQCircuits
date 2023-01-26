@@ -18,6 +18,7 @@
 
 import logging
 import json
+import argparse
 
 from pathlib import Path
 
@@ -66,6 +67,22 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
     Returns:
          Path to exported json file.
     """
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-q', "--quiet", action='store_true')
+    args, _ = parser.parse_known_args()
+
+    workflow = {} if workflow is None else workflow
+
+    if args.quiet:
+        workflow.update(
+            {
+                'run_gmsh_gui': False,  # For GMSH: if true, the mesh is shown after it is done
+                                       # (for large meshes this can take a long time)
+                'run_paraview': False,  # this is visual view of the results
+            })
+
     if simulation is None or not isinstance(simulation, CrossSectionSimulation):
         raise ValueError("Cannot export without simulation")
 
@@ -76,7 +93,7 @@ def export_cross_section_elmer_json(simulation: CrossSectionSimulation, path: Pa
         **simulation.get_simulation_data(),
         'layers': {k: (v.layer, v.datatype) for k, v in layers.items()},
         'mesh_size': mesh_size if mesh_size is not None else dict(),
-        'workflow': {} if workflow is None else workflow,
+        'workflow': workflow,
         **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
         'linear_system_method': linear_system_method,
         'p_element_order': p_element_order,

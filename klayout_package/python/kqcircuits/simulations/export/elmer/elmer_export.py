@@ -20,6 +20,7 @@ import os
 import stat
 import logging
 import json
+import argparse
 
 from pathlib import Path
 from distutils.dir_util import copy_tree
@@ -293,6 +294,19 @@ def export_elmer(simulations: [],
 
         Path to exported script file.
     """
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-q', "--quiet", action='store_true')
+    args, _ = parser.parse_known_args()
+
+    if args.quiet:
+        workflow.update(
+            {
+                'run_gmsh_gui': False,  # For GMSH: if true, the mesh is shown after it is done
+                                       # (for large meshes this can take a long time)
+                'run_paraview': False,  # this is visual view of the results
+            })
+
     write_commit_reference_file(path)
     copy_elmer_scripts_to_directory(path)
     json_filenames = []
