@@ -37,7 +37,7 @@ Usage:
 
 import os
 import subprocess
-from sys import platform
+import sys
 from setup_helper import setup_symlinks, klayout_configdir
 
 
@@ -45,8 +45,10 @@ def get_klayout_packages_path(path_start):
     # KLayout python folder name changes when its python version is updated, try to make sure we find it
     python_versions = [(major, minor) for major in [3, 4] for minor in range(30)]
     for major, minor in python_versions:
-        path_start_2 = os.path.join(path_start, f"{major}.{minor}") if platform == "darwin" else path_start
-        packages_path = os.path.join(path_start_2, "lib", f"python{major}.{minor}", "site-packages")
+        path_start_2 = os.path.join(
+            path_start, f"{major}.{minor}") if sys.platform == "darwin" else path_start
+        packages_path = os.path.join(
+            path_start_2, "lib", f"python{major}.{minor}", "site-packages")
         if os.path.exists(packages_path):
             break
     return packages_path
@@ -72,8 +74,9 @@ if __name__ == "__main__":
         pip_args = f'requirements_within_klayout_windows.txt --target="{target_dir}"'
     elif os.name == "posix":
         pip_args = "requirements_within_klayout_unix.txt"  # Linux
-        if platform == "darwin":  # macOS
-            td = get_klayout_packages_path("/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions")
+        if sys.platform == "darwin":  # macOS
+            td = get_klayout_packages_path(
+                "/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions")
             # KLayout may use either its own site-packages or the system site-packages, depending on the build
             if os.path.exists(td):
                 target_dir = td
@@ -84,8 +87,13 @@ if __name__ == "__main__":
     print(f'Required packages will be installed in "{target_dir}".')
 
     try:
-        subprocess.check_output(["pip", "install", "-r", pip_args])
+        subprocess.check_output(f"pip install -r {pip_args}", shell=True)
     except subprocess.CalledProcessError as e:
-        subprocess.check_output(["pip3", "install", "-r", pip_args])
+        # Maybe pip utility goes by the name of pip3
+        try:
+            subprocess.check_output(f"pip3 install -r {pip_args}", shell=True)
+        except subprocess.CalledProcessError as e2:
+            print("Couldn't install required packages: pip and pip3 commands not found")
+            sys.exit(1)
 
     print("Finished setting up KQC.")
