@@ -441,11 +441,11 @@ Find more details in `defaults.py <../api/kqcircuits.defaults.html>`_.
 Opening :class:`.Element` or :class:`.Chip` from an IDE
 -------------------------------------------------------
 
-You can use :git_url:`klayout_package/python/scripts/create_element_from_path.py` to open an
+You can use :git_url:`util/create_element_from_path.py` to open a
 :class:`.Element` or :class:`.Chip` in KLayout from your IDE (or just straight from the
 command-line).  The script is used as::
 
-    klayout_app -e -rx -rm path/to/create_element_from_path.py -rd element_path=kqcircuits/chips/demo.py
+    klayout -e -rx -rm util/create_element_from_path.py -rd element_path=kqcircuits/chips/demo.py
 
 And can be easily incorporated as a macro to your IDE.  Check the comments in the function on how to
 use it in PyCharm or Visual Studio Code. The ``element_path`` argument can strip a leading

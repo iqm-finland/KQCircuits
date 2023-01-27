@@ -31,7 +31,7 @@ from kqcircuits.util.plugin_startup import register_plugins
 # This script can be used to integrate with external editors.
 #
 # Command line usage:
-#   klayout_app -e -rx -rm path/to/create_element_from_path.py -rd element_path=kqcircuits\chips\demo.py
+#   klayout -e -rx -rm util/create_element_from_path.py -rd element_path=kqcircuits\chips\demo.py
 #
 # Here, the flags specify the following:
 #  -e: Run KLayout in edit mode
@@ -44,7 +44,7 @@ from kqcircuits.util.plugin_startup import register_plugins
 # To use this as an external tool in Pycharm:
 # - Under Settings -> Tools -> External Tools create a new entry as follows:
 #   - Program: point to klayout_app.exe (Windows) or the klayout executable (Linux)
-#   - Arguments: -e -rm "$ContentRoot$\klayout_package\python\scripts\create_element_from_path.py" -rd
+#   - Arguments: -e -rm "$ContentRoot$\util\create_element_from_path.py" -rd
 #                element_path="$FilePathRelativeToProjectRoot$"
 # - To execute, right click the python file (in the Project browser on the editor tab) containing the element to create
 #   and choose the tool under External Tools.
@@ -58,7 +58,7 @@ from kqcircuits.util.plugin_startup import register_plugins
 #      "args": [
 #        "-e",
 #        "-rm",
-#        "'${workspaceFolder:KQCircuits}${pathSeparator}klayout_package${pathSeparator}python${pathSeparator}scripts${pathSeparator}create_element_from_path.py'", // # pylint: disable=line-too-long
+#        "'${workspaceFolder:KQCircuits}${pathSeparator}util${pathSeparator}create_element_from_path.py'",
 #        "-rd",
 #        "element_path=\"${relativeFile}\""
 #      ],

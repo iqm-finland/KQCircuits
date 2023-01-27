@@ -26,7 +26,7 @@ import ScriptEnv
 # TODO: Figure out how to set the python path for the HFSS internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
 from util import get_enabled_setup, get_enabled_setup_and_sweep, get_solution_data, \
-    ComplexEncoder  # pylint: disable=wrong-import-position
+    ComplexEncoder  # pylint: disable=wrong-import-position,no-name-in-module
 
 
 def calculate_total_capacitance_to_ground(c_matrix):

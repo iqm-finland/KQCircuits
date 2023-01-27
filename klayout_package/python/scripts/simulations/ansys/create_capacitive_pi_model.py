@@ -25,7 +25,8 @@ import time
 import ScriptEnv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from util import get_enabled_setup_and_sweep, get_enabled_setup, create_x_vs_y_plot  # pylint: disable=wrong-import-position
+from util import get_enabled_setup_and_sweep, get_enabled_setup, create_x_vs_y_plot \
+                 # pylint: disable=wrong-import-position,no-name-in-module
 
 
 # Set up environment
