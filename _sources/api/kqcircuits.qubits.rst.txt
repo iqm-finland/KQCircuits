@@ -5,6 +5,7 @@ kqcircuits.qubits
 .. toctree::
 
    kqcircuits.qubits.double_pads
+   kqcircuits.qubits.double_pads_splines
    kqcircuits.qubits.qubit
    kqcircuits.qubits.swissmon
 

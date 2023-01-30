@@ -1,0 +1,10 @@
+kqcircuits.qubits.double\_pads\_splines
+=======================================
+
+.. automodule:: kqcircuits.qubits.double_pads_splines
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.qubits.double_pads_splines
+.. image:: ../pcell_images/kqcircuits.qubits.double_pads_splines.png

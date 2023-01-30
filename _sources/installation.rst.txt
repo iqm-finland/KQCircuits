@@ -33,6 +33,12 @@ Successfully tested versions:
 - MacOS: KLayout 0.26.3, 0.26.12 (recommended version `HomeBrew-Python3 included`)
 - Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12, 0.27.2, 0.27.9, 0.27.13
 
+.. note::
+    KQC documetation uses Linux conventions and examples unless explicitly talking about Windows or
+    MacOS. For example a Windows user should mentally translate path separator ``/`` to ``\``,
+    klayout executable ``klayout`` to ``%APPDATA%\KLayout\klayout_app.exe`` or the KLayout
+    environment directory ``~/.klayout`` to ``%HOMEPATH%\KLayout``.
+
 .. _installation_issues:
 
 Known installation issues

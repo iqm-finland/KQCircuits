@@ -340,6 +340,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.qubits.double_pads_splines.html">kqcircuits.qubits.double_pads_splines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.qubits.html#module-kqcircuits.qubits">Module contents</a></li>
@@ -358,7 +359,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.double_pads.html">kqcircuits.simulations.double_pads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -518,6 +519,8 @@
 <span class="sd">&quot;&quot;&quot;Helper module for general geometric functions&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_path_length_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
@@ -762,6 +765,118 @@
     <span class="n">n_steps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">step</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_steps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">origin</span> <span class="o">+</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">,</span> <span class="n">sin</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">a</span> <span class="o">*</span> <span class="n">step</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">)]</span></div>
+
+
+<span class="k">def</span> <span class="nf">_cubic_polynomial</span><span class="p">(</span><span class="n">control_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span>
+                      <span class="n">spline_matrix</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+                      <span class="n">sample_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                      <span class="n">endpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of DPoints sampled uniformly from a third order polynomial spline</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        control_points: list of exactly four control points</span>
+<span class="sd">        spline_matrix: matrix of coefficients of the polynomial function</span>
+<span class="sd">        sample_points: number of points to sample for the curve</span>
+<span class="sd">        endpoint: if True, will distribute sample points to sample at t = 1.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There should be exactly four control points for cubic polynomial&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">spline_matrix</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;spline_matrix must be of shape (4, 4)&quot;</span><span class="p">)</span>
+    <span class="n">geometry_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">control_points</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">result_points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">sample_points</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="n">endpoint</span><span class="p">):</span>
+        <span class="n">result_vector</span> <span class="o">=</span> <span class="n">geometry_matrix</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">spline_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="o">*</span><span class="n">t</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="n">result_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">result_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">result_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">result_points</span>
+
+
+<div class="viewcode-block" id="bspline_points"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bspline_points">[docs]</a><span class="k">def</span> <span class="nf">bspline_points</span><span class="p">(</span><span class="n">control_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span>
+                   <span class="n">sample_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                   <span class="n">startpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                   <span class="n">endpoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Samples points uniformly from the B-Spline constructed from a sequence of control points.</span>
+<span class="sd">    The spline is derived from a sequence of cubic splines for each subsequence of four-control points</span>
+<span class="sd">    in a sliding window.</span>
+
+<span class="sd">    Unlike Bezier curves, for each spline in B-Spline it is not guaranteed</span>
+<span class="sd">    that the first and last control point will be in the spline.</span>
+
+<span class="sd">    B-Spline cubic polynomial implemented based on the following reference:</span>
+<span class="sd">    Kaihuai Qin, &quot;General matrix representations for B-splines&quot;, Proceedings Pacific Graphics &#39;98</span>
+<span class="sd">    Sixth Pacific Conference on Computer Graphics and Applications, Singapore, 1998, pp. 37-43,</span>
+<span class="sd">    doi: 10.1109/PCCGA.1998.731996</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        control_points: a sequence of control points, must have at least 4 pya.DPoints elements</span>
+<span class="sd">        sample_points: number of uniform samples of each cubic B-spline,</span>
+<span class="sd">            total number of samples is: sample_points * (control_points - 3)</span>
+<span class="sd">        startpoint: If True, will prepend duplicates of the first control point so that the</span>
+<span class="sd">            first control point will be in the B-Spline</span>
+<span class="sd">        endpoint: If True, will append duplicates of the last control point so that the</span>
+<span class="sd">            last control point will be in the B-Spline</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of pya.DPoints that can be used as part of a polygon</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># B-Spline doesn&#39;t guarantee that the spline will go through the end points,</span>
+    <span class="c1"># duplicate points on either end if needed</span>
+    <span class="k">if</span> <span class="n">startpoint</span><span class="p">:</span>
+        <span class="n">control_points</span> <span class="o">=</span> <span class="p">[</span><span class="n">control_points</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">control_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">control_points</span>
+    <span class="k">if</span> <span class="n">endpoint</span><span class="p">:</span>
+        <span class="n">control_points</span> <span class="o">=</span> <span class="n">control_points</span> <span class="o">+</span> <span class="p">[</span><span class="n">control_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">control_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;B-Spline needs at least four control points&quot;</span><span class="p">)</span>
+    <span class="n">bspline_matrix</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">6.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                           <span class="p">[</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                                           <span class="p">[</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                                           <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+    <span class="n">result_points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Sliding window</span>
+    <span class="k">for</span> <span class="n">window_start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">result_points</span> <span class="o">+=</span> <span class="n">_cubic_polynomial</span><span class="p">(</span> <span class="n">control_points</span><span class="p">[</span><span class="n">window_start</span><span class="p">:</span><span class="n">window_start</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span>
+                                            <span class="n">bspline_matrix</span><span class="p">,</span>
+                                            <span class="n">sample_points</span><span class="p">,</span>
+                                            <span class="n">endpoint</span><span class="o">=</span><span class="p">(</span><span class="n">window_start</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result_points</span></div>
+
+
+<div class="viewcode-block" id="bezier_points"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.bezier_points">[docs]</a><span class="k">def</span> <span class="nf">bezier_points</span><span class="p">(</span><span class="n">control_points</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">],</span> <span class="n">sample_points</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Samples points uniformly from the Bezier curve constructed from a sequence of control points.</span>
+<span class="sd">    The curve is derived from a sequence of cubic splines for each subsequence of four-control points</span>
+<span class="sd">    such that subsequence shares one control point with the previous subsequence.</span>
+
+<span class="sd">    Special care needs to be taken to guarantee continuity in the tangent of the curve.</span>
+<span class="sd">    The third and fourth control point of each subsequence as well as the second</span>
+<span class="sd">    control point of the next subsequence have to be in the same line.</span>
+
+<span class="sd">    Bezier cubic polynomial implemented based on the following reference:</span>
+<span class="sd">    Kaihuai Qin, &quot;General matrix representations for B-splines&quot;, Proceedings Pacific Graphics &#39;98</span>
+<span class="sd">    Sixth Pacific Conference on Computer Graphics and Applications, Singapore, 1998, pp. 37-43,</span>
+<span class="sd">    doi: 10.1109/PCCGA.1998.731996</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        control_points: a sequence of control points, must be of length equal to 3*n+1 for some integer n</span>
+<span class="sd">        sample_points: number of uniform samples of each cubic spline,</span>
+<span class="sd">            total number of samples is: sample_points * ((control_points - 3) / 3)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        List of pya.DPoints that can be used as part of a polygon</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For Bezier curve, the number of control points should equal to 3*n+1 for some integer n&quot;</span><span class="p">)</span>
+    <span class="n">bezier_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                              <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                              <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span>
+                              <span class="p">[</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+    <span class="n">result_points</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Windows with one shared control point</span>
+    <span class="k">for</span> <span class="n">window_start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">result_points</span> <span class="o">+=</span> <span class="n">_cubic_polynomial</span><span class="p">(</span> <span class="n">control_points</span><span class="p">[</span><span class="n">window_start</span><span class="p">:</span><span class="n">window_start</span><span class="o">+</span><span class="mi">4</span><span class="p">],</span>
+                                            <span class="n">bezier_matrix</span><span class="p">,</span>
+                                            <span class="n">sample_points</span><span class="p">,</span>
+                                            <span class="n">endpoint</span><span class="o">=</span><span class="p">(</span><span class="n">window_start</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">control_points</span><span class="p">)</span> <span class="o">-</span> <span class="mi">4</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result_points</span></div>
 </pre></div>
 
            </div>

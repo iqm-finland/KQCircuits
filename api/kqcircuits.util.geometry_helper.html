@@ -342,6 +342,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.double_pads_splines.html">kqcircuits.qubits.double_pads_splines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.swissmon.html">kqcircuits.qubits.swissmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.html#module-kqcircuits.qubits">Module contents</a></li>
@@ -360,7 +361,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.double_pads.html">kqcircuits.simulations.double_pads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
@@ -660,6 +661,63 @@ are included.</p>
 <li><p><strong>origin</strong> – Center of the arc, default (0,0)</p></li>
 <li><p><strong>n</strong> – Number of steps corresponding to a full circle.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.bspline_points">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">bspline_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#bspline_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.bspline_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Samples points uniformly from the B-Spline constructed from a sequence of control points.
+The spline is derived from a sequence of cubic splines for each subsequence of four-control points
+in a sliding window.</p>
+<p>Unlike Bezier curves, for each spline in B-Spline it is not guaranteed
+that the first and last control point will be in the spline.</p>
+<p>B-Spline cubic polynomial implemented based on the following reference:
+Kaihuai Qin, “General matrix representations for B-splines”, Proceedings Pacific Graphics ‘98
+Sixth Pacific Conference on Computer Graphics and Applications, Singapore, 1998, pp. 37-43,
+doi: 10.1109/PCCGA.1998.731996</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>control_points</strong> – a sequence of control points, must have at least 4 pya.DPoints elements</p></li>
+<li><p><strong>sample_points</strong> – number of uniform samples of each cubic B-spline,
+total number of samples is: sample_points * (control_points - 3)</p></li>
+<li><p><strong>startpoint</strong> – If True, will prepend duplicates of the first control point so that the
+first control point will be in the B-Spline</p></li>
+<li><p><strong>endpoint</strong> – If True, will append duplicates of the last control point so that the
+last control point will be in the B-Spline</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of pya.DPoints that can be used as part of a polygon</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.geometry_helper.bezier_points">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.geometry_helper.</span></span><span class="sig-name descname"><span class="pre">bezier_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">control_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_points</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.DPoint</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/util/geometry_helper.html#bezier_points"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.geometry_helper.bezier_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Samples points uniformly from the Bezier curve constructed from a sequence of control points.
+The curve is derived from a sequence of cubic splines for each subsequence of four-control points
+such that subsequence shares one control point with the previous subsequence.</p>
+<p>Special care needs to be taken to guarantee continuity in the tangent of the curve.
+The third and fourth control point of each subsequence as well as the second
+control point of the next subsequence have to be in the same line.</p>
+<p>Bezier cubic polynomial implemented based on the following reference:
+Kaihuai Qin, “General matrix representations for B-splines”, Proceedings Pacific Graphics ‘98
+Sixth Pacific Conference on Computer Graphics and Applications, Singapore, 1998, pp. 37-43,
+doi: 10.1109/PCCGA.1998.731996</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>control_points</strong> – a sequence of control points, must be of length equal to 3*n+1 for some integer n</p></li>
+<li><p><strong>sample_points</strong> – number of uniform samples of each cubic spline,
+total number of samples is: sample_points * ((control_points - 3) / 3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of pya.DPoints that can be used as part of a polygon</p>
 </dd>
 </dl>
 </dd></dl>

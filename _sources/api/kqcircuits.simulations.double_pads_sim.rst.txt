@@ -1,0 +1,10 @@
+kqcircuits.simulations.double\_pads\_sim
+========================================
+
+.. automodule:: kqcircuits.simulations.double_pads_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.double_pads_sim
+.. image:: ../pcell_images/kqcircuits.simulations.double_pads_sim.png
