@@ -122,6 +122,7 @@ Solver 4 ! resultoutput
   Procedure = "ResultOutputSolve" "ResultOutputSolver"
   Output File Name = #FILEPATHSTEM
   Vtu Format = Logical True
+  Discontinuous Bodies = Logical True
   save all meshes = logical true
   Save Geometry Ids = True
 End 

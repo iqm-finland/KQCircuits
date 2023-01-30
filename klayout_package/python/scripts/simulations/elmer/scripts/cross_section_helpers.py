@@ -265,6 +265,7 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
         'Procedure = "ResultOutputSolve" "ResultOutputSolver"',
         'Output File Name = {}'.format(name),
         'Vtu format = Logical True',
+        'Discontinuous Bodies = Logical True',
         'Save Geometry Ids = Logical True'])
     res += sif_block('Solver 3', [
         'Exec Solver = Always',

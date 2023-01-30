@@ -21,6 +21,7 @@ Solver 2  !---- ResultOutputSolve, ResultOutputSolver
    Procedure = "ResultOutputSolve" "ResultOutputSolver"
    Output File Name = "#FILEPATHSTEM"
    Vtu format = Logical True
+   Discontinuous Bodies = Logical True
    Save Geometry Ids = Logical True
 End
 Solver 3  !---- SaveData, SaveScalars
