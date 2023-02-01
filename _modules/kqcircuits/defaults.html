@@ -524,9 +524,10 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">version</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.import_helper</span> <span class="kn">import</span> <span class="n">module_from_file</span>
 
 
@@ -541,9 +542,9 @@
         <span class="k">return</span> <span class="s2">&quot;klayout&quot;</span></div>
 
 <div class="viewcode-block" id="get_klayout_version"><a class="viewcode-back" href="../../api/kqcircuits.defaults.html#kqcircuits.defaults.get_klayout_version">[docs]</a><span class="k">def</span> <span class="nf">get_klayout_version</span><span class="p">():</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">([</span><span class="n">klayout_executable_command</span><span class="p">(),</span> <span class="s1">&#39;-v&#39;</span><span class="p">],</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">DEVNULL</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;KLayout </span><span class="si">{</span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;klayout&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span></div>
 
 <span class="n">_kqcircuits_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
 <span class="c1"># workaround for Windows because os.path.realpath doesn&#39;t work there before Python 3.8</span>

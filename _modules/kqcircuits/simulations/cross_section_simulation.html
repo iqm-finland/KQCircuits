@@ -527,7 +527,7 @@
 
 
 <div class="viewcode-block" id="CrossSectionSimulation"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation">[docs]</a><span class="nd">@logged</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Simulation</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="s1">&#39;extra_json_data&#39;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">CrossSectionSimulation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for co-planar waveguide cross-section simulations.</span>
 
@@ -546,8 +546,14 @@
 
     <span class="n">LIBRARY_NAME</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># This is needed by some methods inherited from Element.</span>
 
-    <span class="n">london_penetration_depth</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;London penetration depth of metals&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
-                                     <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;London penetration depth is implemented for one signal simulation only&quot;</span><span class="p">)</span>
+    <span class="n">london_penetration_depth</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;London penetration depth of metals&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;m&#39;</span><span class="p">,</span>
+        <span class="n">docstring</span><span class="o">=</span><span class="s2">&quot;London penetration depth is implemented for one signal simulation only&quot;</span>
+    <span class="p">)</span>
+    <span class="n">xsection_source_class</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span>
+        <span class="n">pdt</span><span class="o">.</span><span class="n">TypeNone</span><span class="p">,</span> <span class="s2">&quot;Simulation class XSection tool was used on&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">docstring</span><span class="o">=</span>
+        <span class="s2">&quot;Class from which the simulation was generated from using the XSection tool. Used to get the correct schema.&quot;</span>
+    <span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a CrossSectionSimulation.</span>
@@ -633,7 +639,10 @@
 
 <div class="viewcode-block" id="CrossSectionSimulation.get_parameters"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary with all parameters and their values.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()}</span></div>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">param</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xsection_source_class</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span>
+        <span class="p">}</span></div>
 
 <div class="viewcode-block" id="CrossSectionSimulation.get_simulation_data"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_simulation_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_simulation_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the simulation data in dictionary form.</span>
