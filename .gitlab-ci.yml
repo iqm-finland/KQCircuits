@@ -57,6 +57,15 @@ shell_check:
     - merge_requests
     - tags
 
+layer_properties:
+  stage: test
+  script:
+    - python util/check_layer_props.py
+  only:
+    - master
+    - merge_requests
+    - tags
+
 verify_documentation:
   stage: test
   script:

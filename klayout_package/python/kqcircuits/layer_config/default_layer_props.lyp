@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <layer-properties>
  <properties>
-  <frame-color/>
-  <fill-color/>
+  <frame-color />
+  <fill-color />
   <frame-brightness>0</frame-brightness>
   <fill-brightness>0</fill-brightness>
-  <dither-pattern/>
-  <line-style/>
+  <dither-pattern />
+  <line-style />
   <valid>true</valid>
   <visible>true</visible>
   <transparent>false</transparent>
-  <width/>
+  <width />
   <marked>false</marked>
   <xfill>false</xfill>
   <animation>0</animation>
@@ -22,7 +22,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -30,7 +30,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 base metal gap' 1/1@1</source>
   </group-members>
   <group-members>
@@ -47,7 +47,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 base metal gap wo grid' 2/1@1</source>
   </group-members>
   <group-members>
@@ -56,7 +56,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I2</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -64,7 +64,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 base metal addition' 3/1@1</source>
   </group-members>
   <group-members>
@@ -73,7 +73,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I7</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -81,7 +81,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 ground grid' 4/1@1</source>
   </group-members>
   <group-members>
@@ -98,7 +98,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 ground grid avoidance' 5/1@1</source>
   </group-members>
   <group-members>
@@ -107,7 +107,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -115,7 +115,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 base metal gap for EBL' 6/1@1</source>
   </group-members>
   <group-members>
@@ -124,7 +124,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I0</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -132,7 +132,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 waveguide path' 7/1@1</source>
   </group-members>
   <group-members>
@@ -149,7 +149,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 SIS junction' 8/1@1</source>
   </group-members>
   <group-members>
@@ -166,7 +166,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 SIS shadow' 9/1@1</source>
   </group-members>
   <group-members>
@@ -183,7 +183,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 SIS junction 2' 11/1@1</source>
   </group-members>
   <group-members>
@@ -192,7 +192,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I7</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -200,7 +200,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 airbridge pads' 18/1@1</source>
   </group-members>
   <group-members>
@@ -209,7 +209,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -217,7 +217,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 airbridge flyover' 19/1@1</source>
   </group-members>
   <group-members>
@@ -234,7 +234,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 underbump metallization' 20/1@1</source>
   </group-members>
   <group-members>
@@ -251,7 +251,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 indium bump' 21/1@1</source>
   </group-members>
   <group-members>
@@ -260,7 +260,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -268,7 +268,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 through silicon via' 22/1@1</source>
   </group-members>
   <group-members>
@@ -285,7 +285,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 through silicon via avoidance' 25/1@1</source>
   </group-members>
   <group-members>
@@ -302,21 +302,21 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 chip dicing' 30/1@1</source>
   </group-members>
  </properties>
  <properties>
-  <frame-color/>
-  <fill-color/>
+  <frame-color />
+  <fill-color />
   <frame-brightness>0</frame-brightness>
   <fill-brightness>0</fill-brightness>
-  <dither-pattern/>
-  <line-style/>
+  <dither-pattern />
+  <line-style />
   <valid>true</valid>
   <visible>true</visible>
   <transparent>false</transparent>
-  <width/>
+  <width />
   <marked>false</marked>
   <xfill>false</xfill>
   <animation>0</animation>
@@ -328,7 +328,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -336,7 +336,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 base metal gap' 129/1@1</source>
   </group-members>
   <group-members>
@@ -353,7 +353,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 base metal gap wo grid' 130/1@1</source>
   </group-members>
   <group-members>
@@ -362,7 +362,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I2</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -370,7 +370,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 base metal addition' 131/1@1</source>
   </group-members>
   <group-members>
@@ -379,7 +379,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I7</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -387,7 +387,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 ground grid' 132/1@1</source>
   </group-members>
   <group-members>
@@ -404,7 +404,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 ground grid avoidance' 133/1@1</source>
   </group-members>
   <group-members>
@@ -413,7 +413,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -421,7 +421,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 base metal gap for EBL' 134/1@1</source>
   </group-members>
   <group-members>
@@ -430,7 +430,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I0</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -438,7 +438,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 waveguide path' 135/1@1</source>
   </group-members>
   <group-members>
@@ -455,7 +455,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 SIS junction' 136/1@1</source>
   </group-members>
   <group-members>
@@ -472,7 +472,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 SIS shadow' 137/1@1</source>
   </group-members>
   <group-members>
@@ -489,25 +489,8 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 SIS junction 2' 139/1@1</source>
-  </group-members>
-  <group-members>
-   <frame-color>#fc98b8</frame-color>
-   <fill-color>#fc98b8</fill-color>
-   <frame-brightness>0</frame-brightness>
-   <fill-brightness>0</fill-brightness>
-   <dither-pattern>I9</dither-pattern>
-   <line-style/>
-   <valid>true</valid>
-   <visible>true</visible>
-   <transparent>false</transparent>
-   <width/>
-   <marked>false</marked>
-   <xfill>false</xfill>
-   <animation>0</animation>
-   <name/>
-   <source>'1t1 SIS region' 138/1@1</source>
   </group-members>
   <group-members>
    <frame-color>#ffae00</frame-color>
@@ -515,7 +498,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -523,7 +506,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 airbridge pads' 146/1@1</source>
   </group-members>
   <group-members>
@@ -532,7 +515,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -540,7 +523,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 airbridge flyover' 147/1@1</source>
   </group-members>
   <group-members>
@@ -557,7 +540,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 chip dicing' 158/1@1</source>
   </group-members>
   <group-members>
@@ -574,7 +557,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 underbump metallization' 148/1@1</source>
   </group-members>
   <group-members>
@@ -583,7 +566,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I9</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -591,7 +574,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 indium bump' 149/1@1</source>
   </group-members>
   <group-members>
@@ -600,7 +583,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -608,7 +591,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 through silicon via' 150/1@1</source>
   </group-members>
   <group-members>
@@ -625,21 +608,21 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 through silicon via avoidance' 153/1@1</source>
   </group-members>
  </properties>
  <properties>
-  <frame-color/>
-  <fill-color/>
+  <frame-color />
+  <fill-color />
   <frame-brightness>0</frame-brightness>
   <fill-brightness>0</fill-brightness>
-  <dither-pattern/>
-  <line-style/>
+  <dither-pattern />
+  <line-style />
   <valid>true</valid>
   <visible>true</visible>
   <transparent>false</transparent>
-  <width/>
+  <width />
   <marked>false</marked>
   <xfill>false</xfill>
   <animation>0</animation>
@@ -651,7 +634,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -659,7 +642,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 base metal gap' 1/2@1</source>
   </group-members>
   <group-members>
@@ -668,7 +651,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I0</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>true</transparent>
@@ -676,7 +659,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 base metal gap wo grid' 2/2@1</source>
   </group-members>
   <group-members>
@@ -685,7 +668,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I2</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -693,7 +676,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 base metal addition' 3/2@1</source>
   </group-members>
   <group-members>
@@ -702,7 +685,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I7</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -710,7 +693,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 ground grid' 4/2@1</source>
   </group-members>
   <group-members>
@@ -727,7 +710,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 ground grid avoidance' 5/2@1</source>
   </group-members>
   <group-members>
@@ -736,7 +719,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -744,7 +727,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 base metal gap for EBL' 6/2@1</source>
   </group-members>
   <group-members>
@@ -753,7 +736,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I0</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -761,7 +744,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 waveguide path' 7/2@1</source>
   </group-members>
   <group-members>
@@ -778,7 +761,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 SIS junction' 8/2@1</source>
   </group-members>
   <group-members>
@@ -795,25 +778,8 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 SIS shadow' 9/2@1</source>
-  </group-members>
-  <group-members>
-   <frame-color>#800057</frame-color>
-   <fill-color>#800057</fill-color>
-   <frame-brightness>0</frame-brightness>
-   <fill-brightness>0</fill-brightness>
-   <dither-pattern>I5</dither-pattern>
-   <line-style/>
-   <valid>true</valid>
-   <visible>true</visible>
-   <transparent>false</transparent>
-   <width/>
-   <marked>false</marked>
-   <xfill>false</xfill>
-   <animation>0</animation>
-   <name/>
-   <source>'2b1 SIS region' 10/2@1</source>
   </group-members>
   <group-members>
    <frame-color>#ffaaba</frame-color>
@@ -829,7 +795,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 SIS junction 2' 11/2@1</source>
   </group-members>
   <group-members>
@@ -838,7 +804,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -846,7 +812,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 airbridge pads' 18/2@1</source>
   </group-members>
   <group-members>
@@ -855,7 +821,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -863,7 +829,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 airbridge flyover' 19/2@1</source>
   </group-members>
   <group-members>
@@ -880,7 +846,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 chip dicing' 30/2@1</source>
   </group-members>
   <group-members>
@@ -897,7 +863,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 underbump metallization' 20/2@1</source>
   </group-members>
   <group-members>
@@ -914,7 +880,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 indium bump' 21/2@1</source>
   </group-members>
   <group-members>
@@ -923,7 +889,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I7</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -931,7 +897,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 through silicon via' 22/2@1</source>
   </group-members>
   <group-members>
@@ -948,21 +914,21 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 through silicon via avoidance' 25/2@1</source>
   </group-members>
  </properties>
  <properties>
-  <frame-color/>
-  <fill-color/>
+  <frame-color />
+  <fill-color />
   <frame-brightness>0</frame-brightness>
   <fill-brightness>0</fill-brightness>
-  <dither-pattern/>
-  <line-style/>
+  <dither-pattern />
+  <line-style />
   <valid>true</valid>
   <visible>true</visible>
   <transparent>false</transparent>
-  <width/>
+  <width />
   <marked>false</marked>
   <xfill>false</xfill>
   <animation>0</animation>
@@ -974,7 +940,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I11</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -982,7 +948,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2t1 base metal gap' 129/2@1</source>
   </group-members>
   <group-members>
@@ -991,7 +957,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I0</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>true</transparent>
@@ -999,7 +965,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2t1 base metal gap wo grid' 130/2@1</source>
   </group-members>
   <group-members>
@@ -1008,7 +974,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I2</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>true</visible>
    <transparent>false</transparent>
@@ -1016,7 +982,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2t1 base metal addition' 131/2@1</source>
   </group-members>
   <group-members>
@@ -1025,7 +991,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I7</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1033,7 +999,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2t1 ground grid' 132/2@1</source>
   </group-members>
   <group-members>
@@ -1050,21 +1016,21 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2t1 ground grid avoidance' 133/2@1</source>
   </group-members>
  </properties>
  <properties>
-  <frame-color/>
-  <fill-color/>
+  <frame-color />
+  <fill-color />
   <frame-brightness>0</frame-brightness>
   <fill-brightness>0</fill-brightness>
-  <dither-pattern/>
-  <line-style/>
+  <dither-pattern />
+  <line-style />
   <valid>true</valid>
   <visible>true</visible>
   <transparent>false</transparent>
-  <width/>
+  <width />
   <marked>false</marked>
   <xfill>false</xfill>
   <animation>0</animation>
@@ -1076,7 +1042,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I1</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1084,7 +1050,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1b1 ports' 26/1@1</source>
   </group-members>
   <group-members>
@@ -1093,7 +1059,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I1</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1101,7 +1067,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'1t1 ports' 154/1@1</source>
   </group-members>
   <group-members>
@@ -1110,7 +1076,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I1</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1118,7 +1084,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'2b1 ports' 26/2@1</source>
   </group-members>
   <group-members>
@@ -1127,7 +1093,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1136,7 +1102,7 @@
    <xfill>false</xfill>
    <animation>0</animation>
    <name>top refpoints</name>
-   <source>refpoints 225/0@1 #0..1</source>
+   <source>'refpoints' 225/0@1 #0..1</source>
   </group-members>
   <group-members>
    <frame-color>#800057</frame-color>
@@ -1144,7 +1110,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1152,8 +1118,8 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
-   <source>annotations 220/0@1</source>
+   <name />
+   <source>'annotations' 220/0@1</source>
   </group-members>
   <group-members>
    <frame-color>#800080</frame-color>
@@ -1161,7 +1127,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I9</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1169,7 +1135,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'annotations 2' 221/0@1</source>
   </group-members>
   <group-members>
@@ -1178,7 +1144,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I0</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>true</transparent>
@@ -1186,7 +1152,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'instance names' 222/0@1</source>
   </group-members>
   <group-members>
@@ -1195,7 +1161,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I6</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1203,7 +1169,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'mask graphical rep' 223/0@1</source>
   </group-members>
   <group-members>
@@ -1212,7 +1178,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I23</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1220,7 +1186,7 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
+   <name />
    <source>'waveguide length' 224/0@1</source>
   </group-members>
   <group-members>
@@ -1229,7 +1195,7 @@
    <frame-brightness>0</frame-brightness>
    <fill-brightness>0</fill-brightness>
    <dither-pattern>I5</dither-pattern>
-   <line-style/>
+   <line-style />
    <valid>true</valid>
    <visible>false</visible>
    <transparent>false</transparent>
@@ -1237,9 +1203,9 @@
    <marked>false</marked>
    <xfill>false</xfill>
    <animation>0</animation>
-   <name/>
-   <source>refpoints 225/0@1</source>
+   <name />
+   <source>'refpoints' 225/0@1</source>
   </group-members>
  </properties>
- <name/>
+ <name />
 </layer-properties>
