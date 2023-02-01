@@ -24,9 +24,10 @@ Defines values for things such as default layers, paths, and default sub-element
 import os
 import platform
 import subprocess
+from importlib.metadata import version
 from pathlib import Path
 
-from kqcircuits.pya_resolver import pya
+from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.util.import_helper import module_from_file
 
 
@@ -41,9 +42,9 @@ def klayout_executable_command():
         return "klayout"
 
 def get_klayout_version():
-    output = subprocess.check_output([klayout_executable_command(), '-v'], stderr=subprocess.DEVNULL)
-
-    return output.decode('ascii').replace('\n','')
+    if is_standalone_session():
+        return f"KLayout {version('klayout')}"
+    return pya.Application.instance().version()
 
 _kqcircuits_path = Path(os.path.dirname(os.path.realpath(__file__)))
 # workaround for Windows because os.path.realpath doesn't work there before Python 3.8
