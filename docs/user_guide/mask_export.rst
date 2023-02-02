@@ -23,7 +23,6 @@ Basic mask script and export
        the ``Python`` tab of the Macro IDE::
 
         # Imports required for any mask
-        from kqcircuits.defaults import TMP_PATH
         from kqcircuits.masks.mask_set import MaskSet
         # Import chips required for this mask
         from kqcircuits.chips.demo import Demo
@@ -64,8 +63,8 @@ Basic mask script and export
         # This generates the layout in KLayout based on previous calls to
         # ``add_mask_layout()`` and ``add_chip()`.
         test_mask.build()
-        # Export the mask files to TMP_PATH
-        test_mask.export(TMP_PATH)
+        # Export the mask files to TMP_PATH, unless an ``export_path`` argument has been given to MaskSet.
+        test_mask.export()
 
        Any mask script should follow roughly the same structure. The
        beginning and end of the script (creating the MaskSet object, and exporting the
@@ -74,9 +73,9 @@ Basic mask script and export
     #. (Optional) Open :git_url:`kqcircuits_scripts/macros/logging_setup <klayout_package/python/scripts/macros/logging_setup.lym>` and run it.
        This makes mask generation logs visible in the Macro console.
 
-    #. With the mask script open, click "Run script from current tab"
-       (Shift+F5). This generates the mask and exports the files to the
-       folder defined by ``kqcircuits.default.TMP_PATH``.
+    #. With the mask script open, click "Run script from current tab" (Shift+F5). This generates the
+       mask and exports the files to the folder defined by ``kqcircuits.default.TMP_PATH`` or to any
+       directory spcified by the ``export_path`` argument to ``MaskSet``.
 
 If you generate the mask again (for example in the following sections), it is
 recommended that you first close the layout where the previous mask was

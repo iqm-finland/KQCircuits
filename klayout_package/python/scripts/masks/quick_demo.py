@@ -19,7 +19,6 @@
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.chips.demo import Demo
-from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_set import MaskSet
 
 
@@ -62,4 +61,4 @@ qdemo.add_chips([
 #qdemo.add_chip(Demo, "DE1")
 
 qdemo.build()
-qdemo.export(TMP_PATH)
+qdemo.export()

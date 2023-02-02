@@ -22,7 +22,7 @@ Q and AB tests. Showcases box maps and how to load cells from files to a mask.
 """
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
-from kqcircuits.defaults import TMP_PATH, RESOURCES_PATH
+from kqcircuits.defaults import RESOURCES_PATH
 from kqcircuits.masks.mask_set import MaskSet
 
 m001 = MaskSet(name="M001", version=2, with_grid=False)
@@ -99,4 +99,4 @@ m001.add_chips([
 ])
 
 m001.build()
-m001.export(TMP_PATH)
+m001.export()

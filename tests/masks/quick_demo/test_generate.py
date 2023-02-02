@@ -34,10 +34,10 @@ def test_generate_quick_demo(tmp_path):
 
     assert chips_path.joinpath('DE1').exists()
     assert chips_path.joinpath('DE1/DE1.png').exists()
-    # assert chips_path.joinpath('DE1/DE1.oas').exists()  # TODO: enable once KQC#1211 is fixed
+    assert chips_path.joinpath('DE1/DE1.oas').exists()
     assert chips_path.joinpath('CH1').exists()
     assert chips_path.joinpath('CH1/CH1.png').exists()
-    # assert chips_path.joinpath('CH1/CH1.oas').exists()  # TODO: enable once KQC#1211 is fixed
+    assert chips_path.joinpath('CH1/CH1.oas').exists()
     assert mask_path.joinpath('Quick_v1 1t1.oas').exists()
     assert mask_path.joinpath('Quick_v1 1t1.png').exists()
 
@@ -48,6 +48,6 @@ def _run_mask(path, tmp_path):
     with open(file, "r") as fp:
         code = fp.read()
 
-    code = code.replace('.export(TMP_PATH)', '.export(tmp_path)')
+    code = code.replace('MaskSet(name=', 'MaskSet(export_path=tmp_path, name=')
 
     exec(code, globals(), _locals)  # pylint: disable=exec-used

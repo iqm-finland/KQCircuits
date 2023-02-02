@@ -25,7 +25,7 @@ from autologging import logged
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, TMP_PATH, STARTUPINFO, klayout_executable_command
+    default_mask_parameters, default_drc_runset, SCRIPTS_PATH, STARTUPINFO, klayout_executable_command
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.klayout_view import resolve_default_layer_info
 from kqcircuits.pya_resolver import pya
@@ -37,21 +37,20 @@ from kqcircuits.util.geometry_helper import circle_polygon
 
 
 @logged
-def export_mask_set(mask_set, path, view):
+def export_mask_set(mask_set):
     """Exports the designs, bitmap and documentation for the mask_set."""
 
-    mask_set_dir = _get_directory(path/str("{}_v{}".format(mask_set.name, mask_set.version)))
-    export_bitmaps(mask_set, mask_set_dir, view)
-    export_designs(mask_set, mask_set_dir)
-    export_docs(mask_set, mask_set_dir)
+    export_bitmaps(mask_set)
+    export_designs(mask_set)
+    export_docs(mask_set)
 
 
 @logged
-def export_designs(mask_set, export_dir):
+def export_designs(mask_set):
     """Exports .oas and .gds files of the mask_set."""
     # export mask layouts
     for mask_layout in mask_set.mask_layouts:
-        export_masks_of_face(export_dir, mask_layout, mask_set)
+        export_masks_of_face(mask_set._mask_set_dir, mask_layout, mask_set)
 
 
 def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
@@ -185,9 +184,9 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
     layout.delete_layer(tmp_layer)
 
 @logged
-def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
+def export_docs(mask_set, filename="Mask_Documentation.md"):
     """Exports mask documentation containing mask layouts and parameters of all chips in the mask_set."""
-    file_location = str(os.path.join(str(export_dir), filename))
+    file_location = str(mask_set._mask_set_dir/filename)
 
     with open(file_location, "w+", encoding="utf-8") as f:
         f.write("# Mask Set Name: {}\n".format(mask_set.name))
@@ -233,7 +232,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
 
             path = os.path.join("Chips", name, name)
 
-            with open(TMP_PATH / f"{mask_set.name}_v{mask_set.version}" / (path + ".json"), "r") as f2:
+            with open(mask_set._mask_set_dir / (path + ".json"), "r") as f2:
                 chip_json = json.load(f2)
 
             f.write("### {} Chip\n".format(name))
@@ -292,7 +291,7 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
         f.write("## Links\n")
         for mask_layout in mask_set.mask_layouts:
             mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout)
-            mask_layout_path = os.path.join(str(export_dir), mask_layout_str)
+            mask_layout_path = mask_set._mask_set_dir / mask_layout_str
 
             f.write("### Mask Files:\n")
             for file_name in os.listdir(mask_layout_path):
@@ -313,22 +312,23 @@ def export_docs(mask_set, export_dir, filename="Mask_Documentation.md"):
 
 
 @logged
-def export_bitmaps(mask_set, export_dir, view, spec_layers=mask_bitmap_export_layers):
+def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
     """Exports bitmaps for the mask_set."""
     # pylint: disable=dangerous-default-value
 
     # export bitmaps for mask layouts
     for mask_layout in mask_set.mask_layouts:
         mask_layout_dir_name = _get_mask_layout_full_name(mask_set, mask_layout)
-        mask_layout_dir = _get_directory(export_dir/str(mask_layout_dir_name))
+        mask_layout_dir = _get_directory(mask_set._mask_set_dir/str(mask_layout_dir_name))
         filename = _get_mask_layout_full_name(mask_set, mask_layout)
+        view = mask_set.view
         if view:
             view.focus(mask_layout.top_cell)
             view.export_all_layers_bitmap(mask_layout_dir, mask_layout.top_cell, filename=filename)
             view.export_layers_bitmaps(mask_layout_dir, mask_layout.top_cell, filename=filename,
                                        layers_set=spec_layers, face_id=mask_layout.face_id)
     # export bitmaps for chips
-    chips_dir = _get_directory(export_dir/"Chips")
+    chips_dir = _get_directory(mask_set._mask_set_dir/"Chips")
     for name, cell in mask_set.used_chips.items():
         chip_dir = _get_directory(chips_dir/name)
         if view:

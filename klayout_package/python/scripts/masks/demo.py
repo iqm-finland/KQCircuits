@@ -28,7 +28,6 @@ from kqcircuits.chips.shaping import Shaping
 from kqcircuits.chips.single_xmons import SingleXmons
 from kqcircuits.chips.stripes import Stripes
 from kqcircuits.chips.demo_twoface import DemoTwoface
-from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_set import MaskSet
 
 
@@ -105,4 +104,4 @@ mdemo.add_chips([
 ])
 
 mdemo.build()
-mdemo.export(TMP_PATH)
+mdemo.export()

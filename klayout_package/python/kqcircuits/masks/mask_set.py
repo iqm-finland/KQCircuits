@@ -50,7 +50,7 @@ class MaskSet:
         mask.add_mask_layout(...)
         mask.add_chips(...)
         mask.build()
-        mask.export(...)
+        mask.export()
 
     Attributes:
         layout: pya.Layout of this mask set
@@ -62,11 +62,11 @@ class MaskSet:
         mask_layouts: list of MaskLayout objects in this mask set
         mask_export_layers: list of names of the layers which are exported for each MaskLayout
         used_chips: similar to chips_map_legend, but only includes chips which are actually used in mask layouts
-
+        export_path: The folder for mask files will be generated under this. TMP_PATH by default.
     """
 
     def __init__(self, view=None, name="MaskSet", version=1, with_grid=False, export_drc=False,
-                 mask_export_layers=None):
+                 mask_export_layers=None, export_path=TMP_PATH):
 
         self._time = {"INIT": perf_counter(), "ADD_CHIPS": 0,  "BUILD": 0, 'EXPORT': 0, 'END': 0}
 
@@ -84,6 +84,9 @@ class MaskSet:
         self.used_chips = {}
         self.template_imports = []
         self._thread_create_chip_parameters = {}
+        self._mask_set_dir = Path(export_path)/f"{name}_v{version}"
+
+        self._mask_set_dir.mkdir(parents=True, exist_ok=True)
 
     def add_mask_layout(self, chips_map, face_id=default_face_id, mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -200,14 +203,14 @@ class MaskSet:
 
                 element_import = f'from {chip_class.__module__} import {chip_class.__name__}'
                 create_element = f'cell = {chip_class.__name__}.create(layout {_params_to_str(params)})'
-                chip_path = TMP_PATH/f"{self.name}_v{self.version}"/"Chips"/f"{variant_name}"
+                chip_path = self._mask_set_dir/"Chips"/f"{variant_name}"
                 chip_path.mkdir(parents=True, exist_ok=True)
                 script_name = str(chip_path / f"{variant_name}.py")
                 file_names.append((variant_name, str(chip_path / f"{variant_name}.oas"), script_name))
 
                 substitution_parameters = {
                     'name_mask': self.name,
-                    'version_mask': self.version,
+                    'chip_path': str(chip_path),
                     'variant_name': variant_name,
                     'chip_class': chip_class.__name__,
                     'element_import': element_import,
@@ -252,7 +255,7 @@ class MaskSet:
             **kwargs: any parameters passed to the chip PCell
         """
 
-        chip_path = Path(TMP_PATH/f"{self.name}_v{self.version}"/"Chips"/variant_name)
+        chip_path = self._mask_set_dir/"Chips"/f"{variant_name}"
         chip_path.mkdir(parents=True, exist_ok=True)
 
         if isclass(chip):
@@ -366,19 +369,15 @@ class MaskSet:
         if remove_guiding_shapes and self.layout.is_valid_layer(self.layout.guiding_shape_layer()):
             self.layout.delete_layer(self.layout.guiding_shape_layer())
 
-    def export(self, path):  # pylint: disable=unused-argument
+    def export(self):
         """Exports designs, bitmaps and documentation of this mask set.
 
         Assumes that self.build() has been called before.
-
-        Args:
-            path: path where the folder for this mask set is created
-
         """
         self._time['EXPORT'] = perf_counter()
 
         print("Exporting mask set...")
-        export_mask_set(self, path, self.view)
+        export_mask_set(self)
 
         self._time['END'] = perf_counter()
 
@@ -444,7 +443,6 @@ import sys
 import traceback
 #TEMPLATE_IMPORT#
 from pathlib import Path
-from kqcircuits.defaults import TMP_PATH
 from kqcircuits.masks.mask_export import export_chip
 from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView
@@ -453,7 +451,7 @@ ${element_import}
 
 try:
     logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
-    chip_path = Path(TMP_PATH / "${name_mask}_v${version_mask}" / "Chips" / "${variant_name}")
+    chip_path = Path(r"${chip_path}")
     route_log(filename=chip_path/"${variant_name}.log")
 
     view = KLayoutView()
