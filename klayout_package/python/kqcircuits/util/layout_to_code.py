@@ -329,10 +329,11 @@ def _pcell_params_as_string(cell):
     params_schema = type(cell.pcell_declaration()).get_schema()
     params_str = ""
     for param_name, param_declaration in params_schema.items():
-        if params[param_name] != param_declaration.default and param_name != "refpoints":
+        if (params[param_name] != param_declaration.default and param_name != "refpoints"
+                and not (param_name.startswith("_") and param_name.endswith("_parameters"))):
             param_value = params[param_name]
             if isinstance(param_value, str):
-                param_value = f"\"{param_value}\""
+                param_value = repr(param_value)
             if isinstance(param_value, pya.DPoint):
                 param_value = f"pya.DPoint({param_value})"
             params_str += f", {param_name}={param_value}"
