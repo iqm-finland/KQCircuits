@@ -325,6 +325,8 @@ elif ansys_tool == 'q3d':
              "ZPosition:=", str(signal_location[2]) + units
              ])
 
+        port_object = [o for o in port_object if '_signal' in o ]
+
         if len(port_object) == 1 and port_object[0] not in port_objects and port_object[0] in signal_objects:
             port_objects.append(port_object[0])
 
