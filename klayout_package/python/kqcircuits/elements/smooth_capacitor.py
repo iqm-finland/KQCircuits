@@ -130,7 +130,7 @@ class SmoothCapacitor(Element):
             rr = r / self.layout.dbu
             reg_mod = reg.sized(rr, 5).sized(-rr, 5).rounded_corners(rr, 0, self.n).rounded_corners(0, rr, self.n)
             reg += reg_mod
-            reg.smooth(1)
+            return reg.smoothed(1)
 
         # List of finger polygons
         i = 0
@@ -156,13 +156,13 @@ class SmoothCapacitor(Element):
         b2 = self.b if self.b2 < 0 else self.b2
         insert_wg_joint(region_ground, xport, x_mid - self.ground_gap, b2 + a2/2)
         insert_wg_joint(region_ground, -xport, -x_mid + self.ground_gap, self.b + self.a/2)
-        super_smoothen_region(region_ground, self.finger_gap + self.ground_gap)
+        region_ground = super_smoothen_region(region_ground, self.finger_gap + self.ground_gap)
 
         # Finalize finger pad regions
         insert_wg_joint(right_fingers, xport, x_mid, a2/2)
         insert_wg_joint(left_fingers, -xport, -x_mid, self.a/2)
-        super_smoothen_region(right_fingers, self.finger_gap)
-        super_smoothen_region(left_fingers, self.finger_gap)
+        right_fingers = super_smoothen_region(right_fingers, self.finger_gap)
+        left_fingers = super_smoothen_region(left_fingers, self.finger_gap)
 
         # Insert waveguide segments in both ends, if fixed_length is set
         if self.fixed_length != 0:

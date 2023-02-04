@@ -211,7 +211,7 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     new_region = region.sized(0.5 * tolerance)  # expand polygons to ignore gaps in merge
     new_region.merge()
     new_region.size(expansion - 0.5 * tolerance)  # shrink polygons back to original shape (+ optional expansion)
-    new_region.smooth(2)  # smooth out the slight jaggedness on the edges
+    new_region = new_region.smoothed(2)  # smooth out the slight jaggedness on the edges
     return new_region
 
 
