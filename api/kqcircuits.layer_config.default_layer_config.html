@@ -168,6 +168,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/xsection.html">Creating cross section images</a><ul>
@@ -354,8 +355,10 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
@@ -430,10 +433,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../citing.html">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../trademarks.html">Trademarks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../about.html#contributors">Contributors</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">About</a></li>
 </ul>
 
             
@@ -521,9 +521,8 @@ number denotes which of these chips it refers to. The letter “b” or “t” 
 located at either the “bottom” or “top” of that chip (in the final place after full manufacturing
 process). The last number is an additional index that can be used if necessary, in case multiple
 deposition layers and etching processes are needed.</p>
-<p>The simulation layers are assigned with data type 0, because they are auxiliary layers that are created for simulation
-purposes. The simulation layer IDs are between 1000-1099. The other auxiliary layers containing annotations, refpoints
-and text fields are between 220-229.</p>
+<p>The data type 0 is reserved for auxiliary layers. Annotations, refpoints and text fields are between 220-229.
+Simulations use the data type 0 by creating custom layers starting from layer number 1000.</p>
 <p>In Klayout GUI these layers are organised in view groups according to faces. Simulation and text
 layer views are hidden by default. See <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/layer_source.html">https://www.klayout.de/doc-qt5/manual/layer_source.html</a></p>
 <p><code class="docutils literal notranslate"><span class="pre">default_layers</span></code> is a flat dictionary mapping layer names to corresponding pya.LayerInfo objects.

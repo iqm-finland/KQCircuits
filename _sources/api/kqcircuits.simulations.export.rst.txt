@@ -11,5 +11,14 @@ kqcircuits.simulations.export
 
 .. toctree::
 
+   kqcircuits.simulations.export.export_and_run
    kqcircuits.simulations.export.simulation_export
    kqcircuits.simulations.export.util
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.simulations.export
+   :members:
+   :undoc-members:
+   :show-inheritance:

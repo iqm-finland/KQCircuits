@@ -166,6 +166,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/xsection.html">Creating cross section images</a><ul>
@@ -352,8 +353,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
@@ -428,10 +431,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../about.html#contributors">Contributors</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
 </ul>
 
             
@@ -522,7 +522,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">get_simulation_layer_by_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 
 
@@ -617,19 +617,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns layer of given name. If layer doesn&#39;t exist, a new layer is created.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">:</span>
             <span class="n">layer_info</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="n">reserved_layer_ids</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">datatype</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">reserved_layer_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">datatype</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">layer_name</span><span class="p">:</span>
                     <span class="c1"># If there is a layer with layer_name in layout (used by other cell), reuse that</span>
-                    <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">layer_name</span><span class="p">:</span>
-                        <span class="n">layer_info</span> <span class="o">=</span> <span class="n">l</span>
+                    <span class="n">layer_info</span> <span class="o">=</span> <span class="n">l</span>
             <span class="k">if</span> <span class="n">layer_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># Find unused slot of layers</span>
-                <span class="n">layer_id</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="k">while</span> <span class="n">layer_id</span> <span class="ow">in</span> <span class="n">reserved_layer_ids</span><span class="p">:</span>
-                    <span class="n">layer_id</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="n">layer_info</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">layer_id</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">)</span>
+                <span class="n">layer_info</span> <span class="o">=</span> <span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer_info</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span></div>
 

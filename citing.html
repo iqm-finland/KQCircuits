@@ -168,6 +168,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/xsection.html">Creating cross section images</a><ul>
@@ -354,8 +355,10 @@
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
@@ -430,10 +433,7 @@
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="trademarks.html">Trademarks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="about.html#contributors">Contributors</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
 
             
@@ -504,7 +504,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="citing">
-<h1>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h1>
+<span id="authors"></span><h1>Citing<a class="headerlink" href="#citing" title="Permalink to this headline">¶</a></h1>
 <p>You can cite KQCircuits in your projects and publications.
 Version-specific DOIs and other information in many citation formats,
 including <code class="docutils literal notranslate"><span class="pre">.bib</span></code>, are found on Zenodo. Click the badge below to go to Zenodo.</p>
@@ -514,13 +514,15 @@ the following <code class="docutils literal notranslate"><span class="pre">.bib<
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@software</span><span class="p">{</span><span class="n">kqcircuits</span><span class="p">,</span>
   <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Heinsoo</span><span class="p">,</span> <span class="n">Johannes</span> <span class="ow">and</span>
                   <span class="n">Inel</span><span class="p">,</span> <span class="n">Sinan</span> <span class="ow">and</span>
-                  <span class="n">Janzso</span><span class="p">,</span> <span class="n">David</span> <span class="ow">and</span>
+                  <span class="n">Janzsó</span><span class="p">,</span> <span class="n">Dávid</span> <span class="ow">and</span>
                   <span class="n">Jenei</span><span class="p">,</span> <span class="n">Máté</span> <span class="ow">and</span>
                   <span class="n">Kotilahti</span><span class="p">,</span> <span class="n">Janne</span> <span class="ow">and</span>
                   <span class="n">Landra</span><span class="p">,</span> <span class="n">Alessandro</span> <span class="ow">and</span>
                   <span class="n">Ockeloen</span><span class="o">-</span><span class="n">Korppi</span><span class="p">,</span> <span class="n">Caspar</span> <span class="ow">and</span>
                   <span class="n">Räbinä</span><span class="p">,</span> <span class="n">Jukka</span> <span class="ow">and</span>
-                  <span class="n">Savola</span><span class="p">,</span> <span class="n">Niko</span><span class="p">},</span>
+                  <span class="n">Savola</span><span class="p">,</span> <span class="n">Niko</span> <span class="ow">and</span>
+                  <span class="n">Smirnov</span><span class="p">,</span> <span class="n">Pavel</span> <span class="ow">and</span>
+                  <span class="n">Takala</span><span class="p">,</span> <span class="n">Eelis</span><span class="p">},</span>
   <span class="n">title</span>        <span class="o">=</span> <span class="p">{{</span><span class="n">KQCircuits</span><span class="p">}},</span>
   <span class="n">month</span>        <span class="o">=</span> <span class="n">jun</span><span class="p">,</span>
   <span class="n">year</span>         <span class="o">=</span> <span class="mi">2021</span><span class="p">,</span>

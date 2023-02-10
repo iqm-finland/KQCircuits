@@ -166,6 +166,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/xsection.html">Creating cross section images</a><ul>
@@ -352,8 +353,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
@@ -428,10 +431,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../trademarks.html">Trademarks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../about.html#contributors">Contributors</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../about.html">About</a></li>
 </ul>
 
             
@@ -630,7 +630,7 @@
             <span class="n">rr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span>
             <span class="n">reg_mod</span> <span class="o">=</span> <span class="n">reg</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="o">-</span><span class="n">rr</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">rounded_corners</span><span class="p">(</span><span class="n">rr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">rounded_corners</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
             <span class="n">reg</span> <span class="o">+=</span> <span class="n">reg_mod</span>
-            <span class="n">reg</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">reg</span><span class="o">.</span><span class="n">smoothed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># List of finger polygons</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -656,13 +656,13 @@
         <span class="n">b2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">b2</span>
         <span class="n">insert_wg_joint</span><span class="p">(</span><span class="n">region_ground</span><span class="p">,</span> <span class="n">xport</span><span class="p">,</span> <span class="n">x_mid</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">,</span> <span class="n">b2</span> <span class="o">+</span> <span class="n">a2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">insert_wg_joint</span><span class="p">(</span><span class="n">region_ground</span><span class="p">,</span> <span class="o">-</span><span class="n">xport</span><span class="p">,</span> <span class="o">-</span><span class="n">x_mid</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">region_ground</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">)</span>
+        <span class="n">region_ground</span> <span class="o">=</span> <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">region_ground</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ground_gap</span><span class="p">)</span>
 
         <span class="c1"># Finalize finger pad regions</span>
         <span class="n">insert_wg_joint</span><span class="p">(</span><span class="n">right_fingers</span><span class="p">,</span> <span class="n">xport</span><span class="p">,</span> <span class="n">x_mid</span><span class="p">,</span> <span class="n">a2</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">insert_wg_joint</span><span class="p">(</span><span class="n">left_fingers</span><span class="p">,</span> <span class="o">-</span><span class="n">xport</span><span class="p">,</span> <span class="o">-</span><span class="n">x_mid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">right_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">)</span>
-        <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">left_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">)</span>
+        <span class="n">right_fingers</span> <span class="o">=</span> <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">right_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">)</span>
+        <span class="n">left_fingers</span> <span class="o">=</span> <span class="n">super_smoothen_region</span><span class="p">(</span><span class="n">left_fingers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">finger_gap</span><span class="p">)</span>
 
         <span class="c1"># Insert waveguide segments in both ends, if fixed_length is set</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fixed_length</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>

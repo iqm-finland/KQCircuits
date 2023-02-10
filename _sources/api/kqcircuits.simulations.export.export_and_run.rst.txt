@@ -1,0 +1,10 @@
+kqcircuits.simulations.export.export\_and\_run
+==============================================
+
+.. automodule:: kqcircuits.simulations.export.export_and_run
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.export_and_run
+.. image:: ../pcell_images/kqcircuits.simulations.export.export_and_run.png

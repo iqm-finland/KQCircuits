@@ -1,3 +1,5 @@
+.. _authors:
+
 Citing
 ======
 
@@ -15,13 +17,15 @@ the following ``.bib`` file can be used::
    @software{kqcircuits,
      author       = {Heinsoo, Johannes and
                      Inel, Sinan and
-                     Janzso, David and
+                     Janzsó, Dávid and
                      Jenei, Máté and
                      Kotilahti, Janne and
                      Landra, Alessandro and
                      Ockeloen-Korppi, Caspar and
                      Räbinä, Jukka and
-                     Savola, Niko},
+                     Savola, Niko and
+                     Smirnov, Pavel and
+                     Takala, Eelis},
      title        = {{KQCircuits}},
      month        = jun,
      year         = 2021,

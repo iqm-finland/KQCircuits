@@ -166,6 +166,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../user_guide/xsection.html">Creating cross section images</a><ul>
@@ -352,8 +353,10 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.elmer.html">kqcircuits.simulations.export.elmer</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
@@ -428,10 +431,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../../support.html">Support</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../citing.html">Citing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../trademarks.html">Trademarks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../about.html">About</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../../about.html#contributors">Contributors</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../about.html">About</a></li>
 </ul>
 
             
@@ -524,7 +524,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.sonnet</span> <span class="kn">import</span> <span class="n">parser</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">find_edge_from_point_in_polygons</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span><span class="p">,</span> <span class="n">EdgePort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span><span class="p">,</span> <span class="n">get_simulation_layer_by_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
 
 
@@ -578,10 +578,10 @@
     <span class="k">def</span> <span class="nf">get_sonnet_strings</span><span class="p">(</span><span class="n">material_type</span><span class="p">,</span> <span class="n">grid_size</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
         <span class="n">dbu</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">dbu</span>
-        <span class="n">layer_pad</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;1t1_simulation_airbridge_pads&quot;</span><span class="p">])</span>
-        <span class="n">layer_bridge</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;1t1_simulation_airbridge_flyover&quot;</span><span class="p">])</span>
-        <span class="n">layer_son</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;1t1_simulation_signal&quot;</span><span class="p">])</span>
-        <span class="n">layer_son_ground</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="s2">&quot;1t1_simulation_ground&quot;</span><span class="p">])</span>
+        <span class="n">layer_pad</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="s2">&quot;1t1_airbridge_pads&quot;</span><span class="p">))</span>
+        <span class="n">layer_bridge</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="s2">&quot;1t1_airbridge_flyover&quot;</span><span class="p">))</span>
+        <span class="n">layer_son</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="s2">&quot;1t1_signal&quot;</span><span class="p">))</span>
+        <span class="n">layer_son_ground</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">get_simulation_layer_by_name</span><span class="p">(</span><span class="s2">&quot;1t1_ground&quot;</span><span class="p">))</span>
 
         <span class="n">simpolygons</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span> <span class="o">+</span> \
                       <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">polygon</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_son_ground</span><span class="p">)</span><span class="o">.</span><span class="n">each</span><span class="p">()]</span>

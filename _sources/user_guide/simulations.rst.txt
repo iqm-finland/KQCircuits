@@ -14,3 +14,4 @@ KQCircuits supports exports to following external simulation tools:
     simulation/ansys_export
     simulation/sonnet_export
     simulation/gmsh_elmer_export
+    simulation/export_and_run
