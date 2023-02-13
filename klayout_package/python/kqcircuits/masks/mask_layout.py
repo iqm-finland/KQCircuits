@@ -80,7 +80,7 @@ class MaskLayout:
 
         self.layers_to_mask = kwargs.get("layers_to_mask", default_layers_to_mask)
         self.covered_region_excluded_layers = kwargs.get("covered_region_excluded_layers",
-                                                        default_covered_region_excluded_layers)
+                                                        default_covered_region_excluded_layers) + ["mask_edge"]
         self.wafer_rad = kwargs.get("wafer_rad", default_mask_parameters[self.face_id]["wafer_rad"])
         self.wafer_center = (pya.DVector(0, 0))
         self.chips_map_offset = kwargs.get("chips_map_offset",
