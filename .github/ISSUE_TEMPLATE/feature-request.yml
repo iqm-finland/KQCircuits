@@ -1,0 +1,25 @@
+name: Feature request
+labels: [feature]
+description: Missing features or suggested improvements to KQCircuits
+title: <Descriptive title of the feature>
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for sharing your idea!
+        We truly appreciate community efforts to improve KQCircuits.
+
+  - type: textarea
+    attributes:
+      label: Description
+      placeholder: |
+        What problem are you solving with this new feature?
+        Why is this important? How would it work?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Use case
+      placeholder: >
+        How could people use this feature to achieve some goals?

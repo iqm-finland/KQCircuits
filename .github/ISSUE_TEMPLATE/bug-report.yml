@@ -1,0 +1,51 @@
+name: Bug report
+labels: [bug]
+description: About broken functionality of KQCircuits
+title: <Descriptive title for this bug>
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please make sure to add as much
+        detail as you can, preferably with a way of reproduction. This will help us diagnose the
+        issue faster and resolve it quicker.
+
+  - type: textarea
+    attributes:
+      label: What happened? What you expected to happen?
+      description: Describe the bug, the expected behavior and add any other useful information
+      placeholder: |
+        Please provide the context in which the problem occurred and explain what happened. Provide
+        exact steps to reproduce it, if possible.
+
+        Please also explain why do you think this behaviour is erroneous.
+
+        It is extremely helpful if you can paste here relevant logs or add screenshots to
+        illustrate the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Versions
+      description: Please specify the SW versions of KQCircuits, KLayout, Python and your OS.
+      placeholder: |
+           KQCircuits: 4.6.5
+           KLayout: 0.28.5
+           Python: 3.8.10
+           OS: Ubuntu 20.04.5 LTS
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Issue Severity
+      description: |
+        How does this issue affect your work with KQCircuits?
+      multiple: false
+      options:
+          - "Low: it is annoying"
+          - "Medium: significant difficulty but I can work around it"
+          - "High: blocks me from doing my work"
+    validations:
+        required: false
