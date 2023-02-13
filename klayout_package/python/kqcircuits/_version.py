@@ -14,6 +14,9 @@ Version = namedtuple("Version", ("release", "dev", "labels"))
 # No public API
 __all__ = []
 
+# PEP 440 friendly null version value
+NULL_VERSION = "0.0.0"
+
 package_root = os.path.dirname(os.path.realpath(__file__))
 package_name = os.path.basename(package_root)
 distr_root = os.path.dirname(package_root)
@@ -41,7 +44,7 @@ def get_version(version_file=STATIC_VERSION_FILE):
         if not version:
             version = get_version_from_git_archive(version_info)
         if not version:
-            version = Version("unknown", None, None)
+            version = Version(NULL_VERSION, None, None)
         return pep440_format(version)
     else:
         return version
@@ -121,7 +124,7 @@ def get_version_from_git():
     except ValueError:  # No tags, only the git hash
         # prepend 'g' to match with format returned by 'git describe'
         git = "g{}".format(*description)
-        release = "unknown"
+        release = NULL_VERSION
         dev = None
 
     labels = []
@@ -166,7 +169,7 @@ def get_version_from_git_archive(version_info):
         release, *_ = sorted(version_tags)  # prefer e.g. "2.0" over "2.0rc1"
         return Version(release, dev=None, labels=None)
     else:
-        return Version("unknown", dev=None, labels=["g{}".format(git_hash)])
+        return Version(NULL_VERSION, dev=None, labels=["g{}".format(git_hash)])
 
 
 __version__ = get_version()
