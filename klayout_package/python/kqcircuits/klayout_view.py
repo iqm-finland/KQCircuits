@@ -56,6 +56,8 @@ class KLayoutView:
     Several methods are available to export PNG files of the current view or specific cells and layers.
     In Jupyter notebooks, the ``show`` method displays the current view inline in the notebook.
     """
+    if hasattr(lay, "LayoutView"):
+        layout_view: lay.LayoutView
 
     def __init__(self, current=False, initialize=None, background_color="#ffffff"):
         """Initialize a ``KLayoutView`` instance.
@@ -266,6 +268,8 @@ class KLayoutView:
             width = height * self.layout_view.viewport_width() / self.layout_view.viewport_height()
         elif height is None:
             height = width * self.layout_view.viewport_height() / self.layout_view.viewport_width()
+        if layers_set is not None:
+            layers_set = [resolve_default_layer_info(layer_name) for layer_name in layers_set]
 
         def export_callback():
             pixel_buffer = self.layout_view.get_pixels(width, height)
@@ -312,7 +316,7 @@ class KLayoutView:
         if filename is None:
             filename = cell.name
         if layers_set is None:
-            layers_set = mask_bitmap_export_layers
+            layers_set = [resolve_default_layer_info(layer_name) for layer_name in mask_bitmap_export_layers]
 
         if len(layers_set) == 1:
             layer_str = " " + layers_set[0].name
@@ -326,40 +330,45 @@ class KLayoutView:
         self._export_bitmap_configure(export_callback, cell, layers_set, z_box)
 
     def _export_bitmap_configure(self, export_callback, cell, layers_set, z_box):
-        """ Common configuration for export functions """
+        """ Common configuration for export functions. """
+
+        def get_visibility_state():
+            """Get the current layer visibility and drawing focus state"""
+            current_layer_visibility = [_layer.visible for _layer in self.layout_view.each_layer()]
+            current_cell = self.layout_view.active_cellview().cell
+            current_hier = (self.layout_view.min_hier_levels, self.layout_view.max_hier_levels)
+            current_zoom = self.layout_view.box()
+            return current_layer_visibility, current_cell, current_zoom, current_hier
+
+        def restore_visibility_state(layer_visibility, cell, zoom, hier):
+            """Restore the layer visibility and drawing focus state.
+            Assumes order of layers has not changed since calling ``get_visibility_state`` """
+            for _layer, _visible in zip(self.layout_view.each_layer(), layer_visibility):
+                _layer.visible = _visible
+            self.layout_view.active_cellview().cell = cell
+            self.layout_view.min_hier_levels, self.layout_view.max_hier_levels = hier
+            self.layout_view.zoom_box(zoom)
+
+        visibility_state = get_visibility_state()
+
         if cell is not None:
             self.layout_view.active_cellview().cell = cell
 
-        # TODO - undo this side-effect
         self.layout_view.max_hier()
         self.layout_view.zoom_fit()  # Has to be done also before zoom_box
 
         if z_box is not None:
             self.layout_view.zoom_box(z_box)
 
-        # first make all layers visible, then take a screenshot
         if layers_set is None or layers_set == "all":
-
-            # TODO - undo this side-effect
             for layer in self.layout_view.each_layer():
                 layer.visible = True
 
-            # hide unwanted layers from the bitmap files
-            for layer in self.layout_view.each_layer():
                 for layer_to_hide in all_layers_bitmap_hide_layers:
                     if layer.source_layer == layer_to_hide.layer and layer.source_datatype == layer_to_hide.datatype:
                         layer.visible = False
                         break
-
-            export_return = export_callback()
-        # take screenshots of only specific layers
         else:
-            # get the current visibility condition of the layers
-            current_layer_visibility = []
-            for layer in self.layout_view.each_layer():
-                current_layer_visibility.append(layer.visible)
-
-            # only show the wanted layers
             layer_infos = self.layout.layer_infos()
             for layer in self.layout_view.each_layer():
                 # need to avoid hiding layer groups, because that could hide also layers in layers_set
@@ -376,36 +385,23 @@ class KLayoutView:
                         layer.visible = True
                         break
 
-            if hasattr(lay, "Application"):
-                # Make sure the layer property changes are reflected before saving the image
-                lay.Application.instance().process_events()
-            else:
-                # TODO: Figure out how to make the layer visibility changes appear in standalone mode
-                pass
-            export_return = export_callback()
+        if hasattr(lay, "Application"):
+            # Make sure the layer property changes are reflected before saving the image
+            lay.Application.instance().process_events()
+        else:
+            # Undocumented method timer does basically the same thing as process_events in GUI.
+            self.layout_view.timer()
 
-            # return the layer visibility to before screenshot state
-            for i, layer in enumerate(self.layout_view.each_layer()):
-                layer.visible = current_layer_visibility[i]
+        export_return = export_callback()
+
+        restore_visibility_state(*visibility_state)
+
         return export_return
 
 
-class ViewException(Exception):
-    def __init__(self, message):
-        Exception.__init__(self, message)
-
-
-class MissingUILibraryException(ViewException):
+class MissingUILibraryException(Exception):
     def __init__(self, message="Missing KLayout UI library."):
-        ViewException.__init__(self, message)
-
-
-class InvalidViewException(ViewException):
-    def __init__(self, view):
-        ViewException.__init__(
-            self,
-            "Invalid layout view [{}].".format(str(view))
-        )
+        Exception.__init__(self, message)
 
 
 @logged
