@@ -31,17 +31,16 @@ static_analysis:
   stage: test
   script:
     - pip install pylint-gitlab
-    - export CODEQUALITY_JSON=codeclimate.json CODEQUALITY_NB_JSON=codeclimate_nb.json
+    - export CODEQUALITY_JSON=codeclimate.json
     - >
       tox -e static_analysis --
       --exit-zero
       --output-format=pylint_gitlab.GitlabCodeClimateReporter
       --output=
-    - jq -s add "$CODEQUALITY_JSON" "$CODEQUALITY_NB_JSON" > codeclimate_merged.json
-    - if [ $(jq '. | length' codeclimate_merged.json) != "0" ]; then exit 1; else exit 0; fi  # raise error if not empty
+    - if [ $(jq '. | length' $CODEQUALITY_JSON) != "0" ]; then exit 1; else exit 0; fi  # raise error if not empty
   artifacts:
     reports:
-      codequality: codeclimate_merged.json
+      codequality: codeclimate.json
     when: always
   only:
     - master
@@ -100,13 +99,6 @@ check_confidential_strings:
     GIT_STRATEGY: clone
     FILTER_BRANCH_SQUELCH_WARNING: 1
   script:
-    - pip install nbconvert
-    # go through relevant history and clear output from notebooks
-    - >
-      git filter-branch --tree-filter
-      'python3 -m nbconvert --clear-output --inplace notebooks/*.ipynb || true'
-      -- $(git merge-base remotes/origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME HEAD)..HEAD
-    - python3 -m nbconvert --clear-output --inplace notebooks/*.ipynb
     - >
       bash ci/check_files_for_strings.sh "$KQC_CONFIDENTIAL_STRINGS"
       "remotes/origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" "remotes/origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
