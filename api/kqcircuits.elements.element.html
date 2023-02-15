@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -528,6 +534,38 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.elements.element.insert_cell_into">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.element.</span></span><span class="sig-name descname"><span class="pre">insert_cell_into</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#insert_cell_into"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.insert_cell_into" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a subcell into a given target cell.</p>
+<p>Note: This general method is useful to insert cells or elements into a static cell. To insert cells into an
+<code class="docutils literal notranslate"><span class="pre">Element</span></code>, use the elements’ <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code> method, which has additional features such as parameter inheritance.</p>
+<p>It will use the given <code class="docutils literal notranslate"><span class="pre">cell</span></code> object or if <code class="docutils literal notranslate"><span class="pre">cell</span></code> is an Element class’ name then directly
+take the provided keyword arguments to first create the cell object.</p>
+<p>If <cite>inst_name</cite> given, a label <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> is added to labels layer at the <code class="docutils literal notranslate"><span class="pre">base</span></code> refpoint and <cite>label_trans</cite>
+transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_cell</strong> – Cell object to insert into</p></li>
+<li><p><strong>cell</strong> – cell object or Element class name</p></li>
+<li><p><strong>trans</strong> – used transformation for placement. None by default, which places the subcell into the coordinate
+origin of the parent cell. If <cite>align</cite> and <cite>align_to</cite> arguments are used, <cite>trans</cite> is applied to the
+<cite>cell</cite> before alignment transform which allows for example rotation of the <cite>cell</cite> before placement.</p></li>
+<li><p><strong>inst_name</strong> – possible instance name inserted into subcell properties under <cite>id</cite>. Default is None</p></li>
+<li><p><strong>label_trans</strong> – relative transformation for the instance name label</p></li>
+<li><p><strong>align_to</strong> – <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> or <code class="docutils literal notranslate"><span class="pre">DVector</span></code> location in parent cell coordinates for alignment of cell. Default is None</p></li>
+<li><p><strong>align</strong> – name of the <code class="docutils literal notranslate"><span class="pre">cell</span></code> refpoint aligned to argument <code class="docutils literal notranslate"><span class="pre">align_to</span></code>. Default is None</p></li>
+<li><p><strong>rec_levels</strong> – recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element, as keyword argument</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of placed cell instance and reference points with the same transformation</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py class">
 <dt class="sig sig-object py" id="kqcircuits.elements.element.Element">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.elements.element.</span></span><span class="sig-name descname"><span class="pre">Element</span></span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element" title="Permalink to this definition">¶</a></dt>
@@ -557,7 +595,7 @@ Elements have ports.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.element.Element.create">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">library</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">klayout.dbcore.Cell</span></span></span><a class="reference internal" href="../_modules/kqcircuits/elements/element.html#Element.create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.element.Element.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create cell for this element in layout.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

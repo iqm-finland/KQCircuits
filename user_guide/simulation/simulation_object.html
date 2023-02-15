@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../macro_workflow.html#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -509,7 +515,7 @@
             
   <div class="section" id="creating-simulation-object">
 <h1>Creating simulation object<a class="headerlink" href="#creating-simulation-object" title="Permalink to this headline">¶</a></h1>
-<p>Simulation export begins by creating an instance of <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class. The simulation object includes following information:</p>
+<p>Simulation export begins by creating an instance of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class. The simulation object includes following information:</p>
 <ul class="simple">
 <li><p>name (defines export filenames)</p></li>
 <li><p>geometry for the simulation</p></li>
@@ -521,10 +527,10 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 
-<span class="n">top_cell</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="o">.</span><span class="n">get_active_cell</span><span class="p">()</span>
+<span class="n">top_cell</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">active_cell</span>
 </pre></div>
 </div>
-<p>Create an instance of <code class="docutils literal notranslate"><span class="pre">Simulation</span></code>:</p>
+<p>Create an instance of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">from_cell</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -536,7 +542,7 @@
 </div>
 <div class="section" id="geometry-from-kqcircuits-library">
 <h2>Geometry from KQCircuits library<a class="headerlink" href="#geometry-from-kqcircuits-library" title="Permalink to this headline">¶</a></h2>
-<p>Define the geometry and ports in KQCircuits by inheriting <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class. Following creates waveguide crossing the domain box:</p>
+<p>Define the geometry and ports in KQCircuits by inheriting <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class. Following creates waveguide crossing the domain box:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -550,16 +556,16 @@
                                        <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Get layout for <code class="docutils literal notranslate"><span class="pre">Simulation</span></code> object:</p>
+<p>Get layout for <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> object:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 <span class="n">layout</span> <span class="o">=</span> <span class="n">get_active_or_new_layout</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Create an instance of <code class="docutils literal notranslate"><span class="pre">Simulation</span></code>:</p>
+<p>Create an instance of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">WaveguideSimulation</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)))</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">Simulation</span></code> class and it’s subclasses are located in folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/simulations">kqcircuits/simulations/</a>.</p>
+<p>The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class and it’s subclasses are located in folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/simulations">kqcircuits/simulations/</a>.</p>
 </div>
 </div>
 

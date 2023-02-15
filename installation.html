@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -521,11 +527,13 @@ building documentation, etc.</p>
 should exist there for most common operating systems, choose the correct one
 for your OS. Otherwise you need to build KLayout yourself. We will assume in
 these instructions, that KLayout has been installed in the default location.</p>
-<p>Successfully tested versions:</p>
+<p>KLayout is an actively maintained project with regular feature updates, bugfixes and
+stability improvements. We recommend using the latest version. KQCircuits is automatically
+tested on the following versions:</p>
 <ul class="simple">
-<li><p>Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.4, 0.26.7 - 0.28</p></li>
-<li><p>MacOS: KLayout 0.26.3, 0.26.12 (recommended version <cite>HomeBrew-Python3 included</cite>)</p></li>
-<li><p>Windows 10 (64-bit): KLayout 0.26.3, 0.26.4, 0.26.7 - 0.26.9, 0.26.11, 0.26.12, 0.27.2, 0.27.9, 0.27.13</p></li>
+<li><p>Linux (Ubuntu 18.04/20.04 LTS, 64-bit): KLayout 0.26.7, 0.26.12, 0.27.13, and the latest version of 0.28</p></li>
+<li><p>MacOS: the latest version of 0.28</p></li>
+<li><p>Windows 10 (64-bit): KLayout 0.26.12, and the latest version of 0.28</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>

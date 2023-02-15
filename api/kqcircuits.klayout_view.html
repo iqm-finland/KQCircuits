@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -507,6 +513,248 @@
             
   <div class="section" id="module-kqcircuits.klayout_view">
 <span id="kqcircuits-klayout-view"></span><h1>kqcircuits.klayout_view<a class="headerlink" href="#module-kqcircuits.klayout_view" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">KLayoutView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#ffffff'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Helper object to represent the KLayout rendering environment.</p>
+<p><code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code> is a wrapper around the KLayout <code class="docutils literal notranslate"><span class="pre">LayoutView</span></code> and <code class="docutils literal notranslate"><span class="pre">CellView</span></code> objects, that represent containers
+for viewing a layout in the GUI. It provides methods to initialize the views and layout for KQCircuits, for placing
+KQCircuits <code class="docutils literal notranslate"><span class="pre">Elements</span></code>, and for exporting images.</p>
+<p>Create a new view as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This creates a new set of <code class="docutils literal notranslate"><span class="pre">LayoutView</span></code>, <code class="docutils literal notranslate"><span class="pre">CellView</span></code>, <code class="docutils literal notranslate"><span class="pre">Layout</span></code> and top <code class="docutils literal notranslate"><span class="pre">Cell</span></code> objects with layers initialized
+to the KQCircuits layer configuration. In the KLayout GUI, the new view will show as a new tab.</p>
+<p>Note: In standalone python mode, the user must keep a reference to the <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code> object in scope, otherwise
+the associated layout and cells may also go out of scope.</p>
+<p>When running scripts or macros in the KLayout application, the following command creates a wrapper around the
+currently active view:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This can be used in macros to act on the existing layout. The argument <code class="docutils literal notranslate"><span class="pre">current=True</span></code> is not available in
+standalone python mode.</p>
+<p>Once a view is created, new <code class="docutils literal notranslate"><span class="pre">Elements</span></code> can be placed with the <code class="docutils literal notranslate"><span class="pre">insert_cell</span></code> method.</p>
+<p>Several methods are available to export PNG files of the current view or specific cells and layers.
+In Jupyter notebooks, the <code class="docutils literal notranslate"><span class="pre">show</span></code> method displays the current view inline in the notebook.</p>
+<p>Initialize a <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code> instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> – Boolean. If True, wrap the currently active <code class="docutils literal notranslate"><span class="pre">LayoutView</span></code> (not available in standalone python)</p></li>
+<li><p><strong>initialize</strong> – Boolean, specify whether to initialize the layout with the default layer configuration and a
+top cell. Defaults to True if <code class="docutils literal notranslate"><span class="pre">current==False</span></code>, and to False if <code class="docutils literal notranslate"><span class="pre">current==True</span></code>.</p></li>
+<li><p><strong>background_color</strong> – Background color as HTML color code. Defaults to <cite>“#ffffff”</cite> (white).</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.insert_cell">
+<span class="sig-name descname"><span class="pre">insert_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.insert_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.insert_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a subcell into the first top cell (the very first cell in the cell window)</p>
+<p>It will use the given <code class="docutils literal notranslate"><span class="pre">cell</span></code> object or if <code class="docutils literal notranslate"><span class="pre">cell</span></code> is an Element class’ name then directly
+take the provided keyword arguments to first create the cell object.</p>
+<p>If <cite>inst_name</cite> given, a label <code class="docutils literal notranslate"><span class="pre">inst_name</span></code> is added to labels layer at the <code class="docutils literal notranslate"><span class="pre">base</span></code> refpoint and <cite>label_trans</cite>
+transformation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> – cell object or Element class name</p></li>
+<li><p><strong>trans</strong> – used transformation for placement. None by default, which places the subcell into the coordinate
+origin of the parent cell. If <cite>align</cite> and <cite>align_to</cite> arguments are used, <cite>trans</cite> is applied to the
+<cite>cell</cite> before alignment transform which allows for example rotation of the <cite>cell</cite> before placement.</p></li>
+<li><p><strong>inst_name</strong> – possible instance name inserted into subcell properties under <cite>id</cite>. Default is None</p></li>
+<li><p><strong>label_trans</strong> – relative transformation for the instance name label</p></li>
+<li><p><strong>align_to</strong> – <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> or <code class="docutils literal notranslate"><span class="pre">DVector</span></code> location in parent cell coordinates for alignment of cell.
+Default is None</p></li>
+<li><p><strong>align</strong> – name of the <code class="docutils literal notranslate"><span class="pre">cell</span></code> refpoint aligned to argument <code class="docutils literal notranslate"><span class="pre">align_to</span></code>. Default is None</p></li>
+<li><p><strong>rec_levels</strong> – recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</p></li>
+<li><p><strong>**parameters</strong> – PCell parameters for the element, as keyword argument</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple of placed cell instance and reference points with the same transformation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.focus">
+<span class="sig-name descname"><span class="pre">focus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.focus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a given cell as the active cell, and fits the zoom level to fit the cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cell</strong> – cell to focus on, or None to focus on the currently active cell</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>In KLayout, show this LayoutView as the current in the main window.</p>
+<p>In standalone python, display an image of the view. Requires IPython / Jupyter. Keyword arguments are passed
+to <code class="docutils literal notranslate"><span class="pre">KLayoutView.get_pixels</span></code>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.cell_view">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">klayout.laycore.CellView</span></em><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.cell_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>The active <code class="docutils literal notranslate"><span class="pre">CellView</span></code></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.layout">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">layout</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">klayout.dbcore.Layout</span></em><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>The active <code class="docutils literal notranslate"><span class="pre">Layout</span></code></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.active_cell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">active_cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">klayout.dbcore.Cell</span></em><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.active_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>The active <code class="docutils literal notranslate"><span class="pre">Cell</span></code>, which is shown as current top in the cellview and bold in the cell window.</p>
+<p>Can be set to any Cell in the layout.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.top_cell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">top_cell</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">klayout.dbcore.Cell</span></em><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.top_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>The first top cell of the active layout.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.clear_layers">
+<span class="sig-name descname"><span class="pre">clear_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.clear_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.clear_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the layer view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.add_default_layers">
+<span class="sig-name descname"><span class="pre">add_default_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.add_default_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.add_default_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Populate view with KQCircuits default layers. Adds the layers to the layout, and populates the layer view.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.create_top_cell">
+<span class="sig-name descname"><span class="pre">create_top_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_cell_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Top</span> <span class="pre">Cell'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.create_top_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.create_top_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a new static cell and set it as the top cell.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps">
+<span class="sig-name descname"><span class="pre">export_layers_bitmaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_layers_bitmaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports each layer to a separate png image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Directory to place the exported file in</p></li>
+<li><p><strong>cell</strong> – Cell to export</p></li>
+<li><p><strong>filename</strong> – Filename to export to, or None to use the cell’s name.</p></li>
+<li><p><strong>layers_set</strong> – A list of layer names to export, or None for default values specified in the layer configuration</p></li>
+<li><p><strong>face_id</strong> – The face id for which to export the given layers, or None for general layers not associated to
+a face.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">
+<span class="sig-name descname"><span class="pre">export_all_layers_bitmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_all_layers_bitmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports a cell to a .png file with all layers visible</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Directory to place the exported file in</p></li>
+<li><p><strong>cell</strong> – Cell to export</p></li>
+<li><p><strong>filename</strong> – Filename to export to, or None to use the cell’s name.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.export_pcell_png">
+<span class="sig-name descname"><span class="pre">export_pcell_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_pcell_png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_pcell_png" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports a cell to a .png file no bigger than max_size at either dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Directory to place the exported file in</p></li>
+<li><p><strong>cell</strong> – Cell to export</p></li>
+<li><p><strong>filename</strong> – Filename to export to, or None to use the cell’s name.</p></li>
+<li><p><strong>max_size</strong> – Maximum size of the image.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_pixels">
+<span class="sig-name descname"><span class="pre">get_pixels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_pixels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_pixels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a PixelBuffer render of the current view.</p>
+<p>This method first zooms to fit the whole layout and shows all hierarchy levels. If either <code class="docutils literal notranslate"><span class="pre">width</span></code> or
+<code class="docutils literal notranslate"><span class="pre">height</span></code> is specified, the other is chosen correspondingly to keep the same viewport aspect ratio. If neither
+is specified, the current viewport size is used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> – Cell to render, or None to render the currently active cell.</p></li>
+<li><p><strong>width</strong> – image width in pixels, or None for automatic.</p></li>
+<li><p><strong>height</strong> – image height in pixels, or None for automatic.</p></li>
+<li><p><strong>layers_set</strong> – list of layer names to export, or None for the default set.</p></li>
+<li><p><strong>box</strong> – DBox area to show, or None for the full layout.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: PixelBuffer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_active_cell_view">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_active_cell_view</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_cell_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_cell_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the currently active CellView. Not supported in standalone python mode.</p>
+<p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">KLayoutView(current=True).cell_view</span></code> to get the same behavior.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_active_layout">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_active_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the layout of the currently active CellView. Not supported in standalone python mode.</p>
+<p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">KLayoutView(current=True).layout</span></code> to get the same behavior. If you already have a
+KLayoutView instance, use the <code class="docutils literal notranslate"><span class="pre">layout</span></code> property of that instance instead.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_active_cell">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_active_cell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_cell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the active cell of the currently active CellView. Not supported in standalone python mode.</p>
+<p>Deprecated, use <code class="docutils literal notranslate"><span class="pre">KLayoutView(current=True).active_cell</span></code> to get the same behavior. If you already have a
+KLayoutView instance, use the <code class="docutils literal notranslate"><span class="pre">active_cell</span></code> property of that instance instead.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.ViewException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">ViewException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#ViewException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.ViewException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.MissingUILibraryException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">MissingUILibraryException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Missing</span> <span class="pre">KLayout</span> <span class="pre">UI</span> <span class="pre">library.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#MissingUILibraryException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.MissingUILibraryException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.InvalidViewException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">InvalidViewException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#InvalidViewException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.InvalidViewException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.klayout_view.resolve_default_layer_info">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">resolve_default_layer_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#resolve_default_layer_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.resolve_default_layer_info" title="Permalink to this definition">¶</a></dt>
@@ -520,80 +768,6 @@
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">KLayoutView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>KLayout layout view wrapper with helper methods.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_active_cell_view">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_active_cell_view</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_cell_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_cell_view" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_active_layout">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_active_layout</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_layout" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.get_active_cell">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_active_cell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.get_active_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.get_active_cell" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.focus">
-<span class="sig-name descname"><span class="pre">focus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.focus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.focus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear view.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.clear_layers">
-<span class="sig-name descname"><span class="pre">clear_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.clear_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.clear_layers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clear view.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.add_default_layers">
-<span class="sig-name descname"><span class="pre">add_default_layers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.add_default_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.add_default_layers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Populate view with KQCircuits default layers.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps">
-<span class="sig-name descname"><span class="pre">export_layers_bitmaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['mask_graphical_rep']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_layers_bitmaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">
-<span class="sig-name descname"><span class="pre">export_all_layers_bitmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_all_layers_bitmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.export_pcell_png">
-<span class="sig-name descname"><span class="pre">export_pcell_png</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.export_pcell_png"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.export_pcell_png" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exports pcell to .png file no bigger than max_size at either dimension.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.ViewException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">ViewException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#ViewException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.ViewException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.MissingUILibraryException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">MissingUILibraryException</span></span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#MissingUILibraryException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.MissingUILibraryException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.InvalidViewException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">InvalidViewException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#InvalidViewException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.InvalidViewException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
 </dd></dl>
 
 <img alt="../_images/kqcircuits.klayout_view.png" src="../_images/kqcircuits.klayout_view.png" />

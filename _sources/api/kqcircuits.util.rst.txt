@@ -20,7 +20,6 @@ kqcircuits.util
    kqcircuits.util.layout_to_code
    kqcircuits.util.library_helper
    kqcircuits.util.log_router
-   kqcircuits.util.macro_prepare
    kqcircuits.util.merge
    kqcircuits.util.netlist_extraction
    kqcircuits.util.netlist_graph

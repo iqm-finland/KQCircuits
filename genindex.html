@@ -138,7 +138,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -206,6 +212,7 @@
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="developer/containers.html">Containers</a><ul>
@@ -408,7 +415,6 @@
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -536,6 +542,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kqcircuits.util.edit_node_plugin.html#kqcircuits.util.edit_node_plugin.EditNodePlugin.activated">activated() (kqcircuits.util.edit_node_plugin.EditNodePlugin method)</a>
 </li>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.active_cell">active_cell (kqcircuits.klayout_view.KLayoutView property)</a>
+</li>
       <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">add_chip() (kqcircuits.masks.mask_set.MaskSet method)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chips">add_chips() (kqcircuits.masks.mask_set.MaskSet method)</a>
@@ -564,10 +572,10 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.added_chips">added_chips (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge">Airbridge (class in kqcircuits.elements.airbridges.airbridge)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.elements.airbridges.airbridge.html#kqcircuits.elements.airbridges.airbridge.Airbridge">Airbridge (class in kqcircuits.elements.airbridges.airbridge)</a>
+</li>
       <li><a href="api/kqcircuits.elements.airbridge_connection.html#kqcircuits.elements.airbridge_connection.AirbridgeConnection">AirbridgeConnection (class in kqcircuits.elements.airbridge_connection)</a>
 </li>
       <li><a href="api/kqcircuits.chips.airbridge_crossings.html#kqcircuits.chips.airbridge_crossings.AirbridgeCrossings">AirbridgeCrossings (class in kqcircuits.chips.airbridge_crossings)</a>
@@ -788,6 +796,8 @@
 </li>
       <li><a href="api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.cell">cell (kqcircuits.util.refpoints.Refpoints attribute)</a>
 </li>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.cell_view">cell_view (kqcircuits.klayout_view.KLayoutView property)</a>
+</li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip">Chip (class in kqcircuits.chips.chip)</a>
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.chip_box_offset">chip_box_offset (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
@@ -893,6 +903,8 @@
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.create_simulation_layers">create_simulation_layers() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.create_subtype">create_subtype() (kqcircuits.elements.element.Element class method)</a>
+</li>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.create_top_cell">create_top_cell() (kqcircuits.klayout_view.KLayoutView method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.tsvs.tsv_ellipse.html#kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse.create_tsv_connector">create_tsv_connector() (kqcircuits.elements.tsvs.tsv_ellipse.TsvEllipse method)</a>
 </li>
@@ -1060,6 +1072,8 @@
 </li>
       <li><a href="api/kqcircuits.util.netlist_extraction.html#kqcircuits.util.netlist_extraction.export_netlist">export_netlist() (in module kqcircuits.util.netlist_extraction)</a>
 </li>
+      <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export_path">export_path (kqcircuits.masks.mask_set.MaskSet attribute)</a>
+</li>
       <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_pcell_png">export_pcell_png() (kqcircuits.klayout_view.KLayoutView method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.export_simulation_oas">export_simulation_oas() (in module kqcircuits.simulations.export.simulation_export)</a>
@@ -1184,7 +1198,7 @@
 </li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_ground_tsv_locations">get_ground_tsv_locations() (kqcircuits.chips.chip.Chip method)</a>
 </li>
-      <li><a href="api/kqcircuits.defaults.html#kqcircuits.defaults.get_klayout_version">get_klayout_version() (in module kqcircuits.defaults)</a>
+      <li><a href="api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_klayout_version">get_klayout_version() (in module kqcircuits.util.export_helper)</a>
 </li>
       <li><a href="api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.get_launcher_assignments">get_launcher_assignments() (kqcircuits.chips.chip.Chip static method)</a>
 </li>
@@ -1212,6 +1226,8 @@
         <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_parameters">(kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_pixels">get_pixels() (kqcircuits.klayout_view.KLayoutView method)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_port_data">get_port_data() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints">get_refpoints() (in module kqcircuits.elements.element)</a>
@@ -1263,9 +1279,13 @@
       <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.insert_cell">insert_cell() (kqcircuits.elements.element.Element method)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.insert_cell">(kqcircuits.klayout_view.KLayoutView method)</a>
+</li>
         <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_cell">(kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.insert_cell_into">insert_cell_into() (in module kqcircuits.elements.element)</a>
+</li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.insert_chip_copy_labels">insert_chip_copy_labels() (kqcircuits.masks.mask_layout.MaskLayout method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_layer">insert_layer() (kqcircuits.simulations.simulation.Simulation method)</a>
@@ -1274,10 +1294,10 @@
 </li>
       <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.insert_splitter_layers">insert_splitter_layers() (kqcircuits.simulations.simulation.Simulation method)</a>
 </li>
-      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.inst_name">inst_name (kqcircuits.elements.waveguide_composite.Node attribute)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.Node.inst_name">inst_name (kqcircuits.elements.waveguide_composite.Node attribute)</a>
+</li>
       <li><a href="api/kqcircuits.util.dependencies.html#kqcircuits.util.dependencies.install_kqc_dependencies">install_kqc_dependencies() (in module kqcircuits.util.dependencies)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort">InternalPort (class in kqcircuits.simulations.port)</a>
@@ -1828,6 +1848,8 @@
         <li><a href="api/kqcircuits.klayout_view.html#module-kqcircuits.klayout_view">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_cluster
 
@@ -1835,8 +1857,6 @@
         <li><a href="api/kqcircuits.layer_cluster.html#module-kqcircuits.layer_cluster">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_config.default_layer_config
 
@@ -2286,13 +2306,6 @@
 </li>
       </ul></li>
       <li>
-    kqcircuits.util.macro_prepare
-
-      <ul>
-        <li><a href="api/kqcircuits.util.macro_prepare.html#module-kqcircuits.util.macro_prepare">module</a>
-</li>
-      </ul></li>
-      <li>
     kqcircuits.util.merge
 
       <ul>
@@ -2377,9 +2390,11 @@
 </li>
       <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.layers_to_mask">layers_to_mask (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
-      <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.layout">layout (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.layout">layout (kqcircuits.klayout_view.KLayoutView property)</a>
 
       <ul>
+        <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.layout">(kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
+</li>
         <li><a href="api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.layout">(kqcircuits.masks.mask_set.MaskSet attribute)</a>
 </li>
       </ul></li>
@@ -2771,8 +2786,6 @@
 </li>
         <li><a href="api/kqcircuits.util.log_router.html#module-kqcircuits.util.log_router">kqcircuits.util.log_router</a>
 </li>
-        <li><a href="api/kqcircuits.util.macro_prepare.html#module-kqcircuits.util.macro_prepare">kqcircuits.util.macro_prepare</a>
-</li>
         <li><a href="api/kqcircuits.util.merge.html#module-kqcircuits.util.merge">kqcircuits.util.merge</a>
 </li>
         <li><a href="api/kqcircuits.util.netlist_extraction.html#module-kqcircuits.util.netlist_extraction">kqcircuits.util.netlist_extraction</a>
@@ -2910,8 +2923,6 @@
         <li><a href="api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.post_build">(kqcircuits.elements.element.Element method)</a>
 </li>
       </ul></li>
-      <li><a href="api/kqcircuits.util.macro_prepare.html#kqcircuits.util.macro_prepare.prep_empty_layout">prep_empty_layout() (in module kqcircuits.util.macro_prepare)</a>
-</li>
       <li><a href="api/kqcircuits.junctions.manhattan.html#kqcircuits.junctions.manhattan.Manhattan.produce_contact_pads">produce_contact_pads() (kqcircuits.junctions.manhattan.Manhattan method)</a>
 </li>
       <li><a href="api/kqcircuits.chips.demo.html#kqcircuits.chips.demo.Demo.produce_control_lines">produce_control_lines() (kqcircuits.chips.demo.Demo method)</a>
@@ -3140,6 +3151,8 @@
 </li>
       <li><a href="api/kqcircuits.chips.shaping.html#kqcircuits.chips.shaping.Shaping">Shaping (class in kqcircuits.chips.shaping)</a>
 </li>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.show">show() (kqcircuits.klayout_view.KLayoutView method)</a>
+</li>
       <li><a href="api/kqcircuits.junctions.sim.html#kqcircuits.junctions.sim.Sim">Sim (class in kqcircuits.junctions.sim)</a>
 </li>
       <li><a href="api/kqcircuits.chips.simple.html#kqcircuits.chips.simple.Simple">Simple (class in kqcircuits.chips.simple)</a>
@@ -3150,10 +3163,10 @@
 </li>
       <li><a href="api/kqcircuits.simulations.single_xmon.html#kqcircuits.simulations.single_xmon.SingleXmon">SingleXmon (class in kqcircuits.simulations.single_xmon)</a>
 </li>
-      <li><a href="api/kqcircuits.chips.single_xmons.html#kqcircuits.chips.single_xmons.SingleXmons">SingleXmons (class in kqcircuits.chips.single_xmons)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kqcircuits.chips.single_xmons.html#kqcircuits.chips.single_xmons.SingleXmons">SingleXmons (class in kqcircuits.chips.single_xmons)</a>
+</li>
       <li><a href="api/kqcircuits.simulations.single_xmons_full_chip_sim.html#kqcircuits.simulations.single_xmons_full_chip_sim.SingleXmonsFullChipSim">SingleXmonsFullChipSim (class in kqcircuits.simulations.single_xmons_full_chip_sim)</a>
 </li>
       <li><a href="api/kqcircuits.elements.smooth_capacitor.html#kqcircuits.elements.smooth_capacitor.SmoothCapacitor">SmoothCapacitor (class in kqcircuits.elements.smooth_capacitor)</a>
@@ -3194,8 +3207,12 @@
 </li>
       <li><a href="api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">to_module_name() (in module kqcircuits.util.library_helper)</a>
 </li>
-      <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.top_cell">top_cell (kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
+      <li><a href="api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.top_cell">top_cell (kqcircuits.klayout_view.KLayoutView property)</a>
+
+      <ul>
+        <li><a href="api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.top_cell">(kqcircuits.masks.mask_layout.MaskLayout attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/kqcircuits.util.label.html#kqcircuits.util.label.LabelOrigin.TOPLEFT">TOPLEFT (kqcircuits.util.label.LabelOrigin attribute)</a>
 </li>
       <li><a href="api/kqcircuits.util.label.html#kqcircuits.util.label.LabelOrigin.TOPRIGHT">TOPRIGHT (kqcircuits.util.label.LabelOrigin attribute)</a>

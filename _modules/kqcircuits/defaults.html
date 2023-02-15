@@ -138,7 +138,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -206,6 +212,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../developer/containers.html">Containers</a><ul>
@@ -408,7 +415,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -520,11 +526,9 @@
 
 <span class="sd">Defines values for things such as default layers, paths, and default sub-element types.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
-<span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">version</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
@@ -534,17 +538,23 @@
 <div class="viewcode-block" id="klayout_executable_command"><a class="viewcode-back" href="../../api/kqcircuits.defaults.html#kqcircuits.defaults.klayout_executable_command">[docs]</a><span class="k">def</span> <span class="nf">klayout_executable_command</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the command (string) needed to run klayout executable in the current OS.&quot;&quot;&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">),</span> <span class="s2">&quot;KLayout&quot;</span><span class="p">,</span> <span class="s2">&quot;klayout_app.exe&quot;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;/Applications/klayout.app/Contents/MacOS/klayout&quot;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;klayout&quot;</span></div>
 
-<div class="viewcode-block" id="get_klayout_version"><a class="viewcode-back" href="../../api/kqcircuits.defaults.html#kqcircuits.defaults.get_klayout_version">[docs]</a><span class="k">def</span> <span class="nf">get_klayout_version</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;KLayout </span><span class="si">{</span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;klayout&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span></div>
+        <span class="c1"># Assume KLayout is installed in the default location</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+            <span class="n">klayout_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;KLayout&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+            <span class="n">klayout_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;/Applications/klayout.app/Contents/MacOS&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">klayout_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># The path of the currently running KLayout application</span>
+        <span class="n">klayout_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">inst_path</span><span class="p">())</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">klayout_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;klayout_app.exe&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">klayout_path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;klayout&quot;</span><span class="p">))</span></div>
 
 <span class="n">_kqcircuits_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
 <span class="c1"># workaround for Windows because os.path.realpath doesn&#39;t work there before Python 3.8</span>
@@ -579,7 +589,6 @@
 
 <span class="n">VERSION_PATHS</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">VERSION_PATHS</span><span class="p">[</span><span class="s1">&#39;KQC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ROOT_PATH</span>
-<span class="n">KLAYOUT_VERSION</span> <span class="o">=</span> <span class="n">get_klayout_version</span><span class="p">()</span>
 
 <span class="c1"># Given to subprocess.Popen calls, hides terminals on Windows</span>
 <span class="n">STARTUPINFO</span> <span class="o">=</span> <span class="kc">None</span>

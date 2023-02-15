@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -511,7 +517,7 @@
 <span id="kqcircuits-util-replace-squids"></span><h1>kqcircuits.util.replace_squids<a class="headerlink" href="#module-kqcircuits.util.replace_squids" title="Permalink to this headline">¶</a></h1>
 <p>Functions to replace SQUIDs in existing design files.</p>
 <p>Typical usage in a macro:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">top_cell</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="o">.</span><span class="n">get_active_cell</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">top_cell</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">active_cell</span>
 <span class="n">replace_squids</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="s2">&quot;MySQUID&quot;</span><span class="p">,</span> <span class="s2">&quot;junction_width&quot;</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># a parameter sweep</span>
 <span class="n">replace_squid</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="s2">&quot;QB_2&quot;</span><span class="p">,</span> <span class="s2">&quot;MySQUID&quot;</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>          <span class="c1"># replace an individual SQUID</span>
 </pre></div>

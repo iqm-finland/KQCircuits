@@ -138,7 +138,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -206,6 +212,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/containers.html">Containers</a><ul>
@@ -408,7 +415,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -698,8 +704,7 @@
         <span class="k">if</span> <span class="n">output_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;insert_cell&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;self.insert_cell(</span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;wg_cell = </span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">.create(layout, </span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span> \
-                   <span class="sa">f</span><span class="s2">&quot;top_cell.insert(pya.DCellInstArray(wg_cell.cell_index(), pya.DTrans()))</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;view.insert_cell(</span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">path_str</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="nf">transform_as_string</span><span class="p">(</span><span class="n">inst</span><span class="p">):</span>
         <span class="n">trans</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">dcplx_trans</span>
@@ -751,13 +756,11 @@
                         <span class="n">instances_code</span> <span class="o">+=</span> \
                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">_refpoints = </span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">.create_with_refpoints(layout, &quot;</span> \
                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">refpoint_transform</span><span class="si">}</span><span class="s2">rec_levels=0</span><span class="si">{</span><span class="n">_pcell_params_as_string</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-                        <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;top_cell.insert(pya.DCellInstArray(</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">.cell_index(), &quot;</span> \
-                                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transform_nonempty</span><span class="si">}</span><span class="s2">))</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;view.insert_cell(</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">transform_nonempty</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">instances_code</span> <span class="o">+=</span> \
                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">pcell_type</span><span class="si">}</span><span class="s2">.create(layout</span><span class="si">{</span><span class="n">_pcell_params_as_string</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-                        <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;top_cell.insert(pya.DCellInstArray(</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">.cell_index(), &quot;</span> \
-                                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transform_nonempty</span><span class="si">}</span><span class="s2">))</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;view.insert_cell(</span><span class="si">{</span><span class="n">var_name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">transform_nonempty</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># non-Element PCell</span>
                 <span class="k">if</span> <span class="n">output_format</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;insert_cell&quot;</span><span class="p">):</span>
@@ -769,7 +772,7 @@
                     <span class="n">instances_code</span> <span class="o">+=</span> \
                         <span class="sa">f</span><span class="s2">&quot;cell = layout.create_cell(</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">, </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">library</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">, &quot;</span> \
                         <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span> \
-                        <span class="sa">f</span><span class="s2">&quot;top_cell.insert(pya.DCellInstArray(cell.cell_index(), </span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">))</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;view.insert_cell(cell, </span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># static cell</span>
@@ -778,7 +781,7 @@
                 <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;self.insert_cell(cell, </span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;cell = layout.create_cell(</span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">, </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">library</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">()</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;top_cell.insert(pya.DCellInstArray(cell.cell_index(), </span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">))</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="n">instances_code</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;view.insert_cell(cell, </span><span class="si">{</span><span class="n">transform</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="c1"># Generate code for the beginning of the chip or macro file if needed</span>
     <span class="n">start_code</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -794,9 +797,10 @@
 <span class="s2">                def build(self):</span><span class="se">\n\n</span><span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">output_format</span> <span class="o">==</span> <span class="s2">&quot;create+macro&quot;</span><span class="p">:</span>
         <span class="n">start_code</span> <span class="o">+=</span> <span class="s2">&quot;from kqcircuits.pya_resolver import pya</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">start_code</span> <span class="o">+=</span> <span class="s2">&quot;import kqcircuits.util.macro_prepare as macroprep</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">start_code</span> <span class="o">+=</span> <span class="s2">&quot;from kqcircuits.klayout_view import KLayoutView</span><span class="se">\n\n</span><span class="s2">&quot;</span>
         <span class="n">start_code</span> <span class="o">+=</span> <span class="n">element_imports</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">start_code</span> <span class="o">+=</span> <span class="s2">&quot;(layout, top_cell, layout_view, cell_view) = macroprep.prep_empty_layout()</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+        <span class="n">start_code</span> <span class="o">+=</span> <span class="s2">&quot;view = KLayoutView()</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">start_code</span> <span class="o">+=</span> <span class="s2">&quot;layout = view.layout</span><span class="se">\n\n</span><span class="s2">&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">start_code</span> <span class="o">+=</span> <span class="n">element_imports</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 

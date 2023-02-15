@@ -138,7 +138,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -206,6 +212,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../developer/containers.html">Containers</a><ul>
@@ -408,7 +415,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -514,14 +520,398 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
-
-
+<span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">insert_cell_into</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">lay</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_png_dimensions</span><span class="p">,</span> <span class="n">mask_bitmap_export_layers</span><span class="p">,</span> \
     <span class="n">all_layers_bitmap_hide_layers</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">default_layer_props</span>
+
+
+<div class="viewcode-block" id="KLayoutView"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView">[docs]</a><span class="nd">@logged</span>
+<span class="k">class</span> <span class="nc">KLayoutView</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper object to represent the KLayout rendering environment.</span>
+
+<span class="sd">    ``KLayoutView`` is a wrapper around the KLayout ``LayoutView`` and ``CellView`` objects, that represent containers</span>
+<span class="sd">    for viewing a layout in the GUI. It provides methods to initialize the views and layout for KQCircuits, for placing</span>
+<span class="sd">    KQCircuits ``Elements``, and for exporting images.</span>
+
+<span class="sd">    Create a new view as follows::</span>
+
+<span class="sd">       view = KLayoutView()</span>
+
+<span class="sd">    This creates a new set of ``LayoutView``, ``CellView``, ``Layout`` and top ``Cell`` objects with layers initialized</span>
+<span class="sd">    to the KQCircuits layer configuration. In the KLayout GUI, the new view will show as a new tab.</span>
+
+<span class="sd">    Note: In standalone python mode, the user must keep a reference to the ``KLayoutView`` object in scope, otherwise</span>
+<span class="sd">    the associated layout and cells may also go out of scope.</span>
+
+<span class="sd">    When running scripts or macros in the KLayout application, the following command creates a wrapper around the</span>
+<span class="sd">    currently active view::</span>
+
+<span class="sd">        view = KLayoutView(current=True)</span>
+
+<span class="sd">    This can be used in macros to act on the existing layout. The argument ``current=True`` is not available in</span>
+<span class="sd">    standalone python mode.</span>
+
+<span class="sd">    Once a view is created, new ``Elements`` can be placed with the ``insert_cell`` method.</span>
+
+<span class="sd">    Several methods are available to export PNG files of the current view or specific cells and layers.</span>
+<span class="sd">    In Jupyter notebooks, the ``show`` method displays the current view inline in the notebook.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a ``KLayoutView`` instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            current: Boolean. If True, wrap the currently active ``LayoutView`` (not available in standalone python)</span>
+<span class="sd">            initialize: Boolean, specify whether to initialize the layout with the default layer configuration and a</span>
+<span class="sd">                top cell. Defaults to True if ``current==False``, and to False if ``current==True``.</span>
+<span class="sd">            background_color: Background color as HTML color code. Defaults to `&quot;#ffffff&quot;` (white).</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lay</span><span class="p">,</span> <span class="s2">&quot;LayoutView&quot;</span><span class="p">):</span>
+            <span class="c1"># Standalone session before KLayout 0.28</span>
+            <span class="k">raise</span> <span class="n">MissingUILibraryException</span><span class="p">(</span><span class="s2">&quot;KLayoutView is not supported in standalone mode for this klayout version. &quot;</span>
+                                            <span class="s2">&quot;Consider upgrading your klayout package to version 0.28 or above.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">initialize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initialize</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">current</span>
+
+        <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
+            <span class="c1"># Standalone session since KLayout 0.28</span>
+            <span class="k">if</span> <span class="n">current</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">MissingUILibraryException</span><span class="p">(</span><span class="s2">&quot;In standalone python mode only KLayoutView(current=False) &quot;</span> <span class="o">+</span>
+                                                <span class="s2">&quot;is supported.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span> <span class="o">=</span> <span class="n">lay</span><span class="o">.</span><span class="n">LayoutView</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># Creates a new LayoutView in editable mode</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">show_layout</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">(),</span> <span class="kc">True</span><span class="p">)</span>  <span class="c1"># Adds a CellView and Layout</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">set_config</span><span class="p">(</span><span class="s2">&quot;background-color&quot;</span><span class="p">,</span> <span class="n">background_color</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Regular session in the KLayout GUI</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">current</span> <span class="ow">or</span> <span class="p">(</span><span class="n">lay</span><span class="o">.</span><span class="n">LayoutView</span><span class="o">.</span><span class="n">current</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">MainWindow</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">create_layout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span> <span class="o">=</span> <span class="n">lay</span><span class="o">.</span><span class="n">LayoutView</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">initialize</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_default_layers</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_top_cell</span><span class="p">()</span>
+
+<div class="viewcode-block" id="KLayoutView.insert_cell"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.insert_cell">[docs]</a>    <span class="k">def</span> <span class="nf">insert_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inst_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">label_trans</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align_to</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">rec_levels</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts a subcell into the first top cell (the very first cell in the cell window)</span>
+
+<span class="sd">        It will use the given ``cell`` object or if ``cell`` is an Element class&#39; name then directly</span>
+<span class="sd">        take the provided keyword arguments to first create the cell object.</span>
+
+<span class="sd">        If `inst_name` given, a label ``inst_name`` is added to labels layer at the ``base`` refpoint and `label_trans`</span>
+<span class="sd">        transformation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: cell object or Element class name</span>
+<span class="sd">            trans: used transformation for placement. None by default, which places the subcell into the coordinate</span>
+<span class="sd">                origin of the parent cell. If `align` and `align_to` arguments are used, `trans` is applied to the</span>
+<span class="sd">                `cell` before alignment transform which allows for example rotation of the `cell` before placement.</span>
+<span class="sd">            inst_name: possible instance name inserted into subcell properties under `id`. Default is None</span>
+<span class="sd">            label_trans: relative transformation for the instance name label</span>
+<span class="sd">            align_to: ``DPoint`` or ``DVector`` location in parent cell coordinates for alignment of cell.</span>
+<span class="sd">                Default is None</span>
+<span class="sd">            align: name of the ``cell`` refpoint aligned to argument ``align_to``. Default is None</span>
+<span class="sd">            rec_levels: recursion level when looking for refpoints from subcells. Set to 0 to disable recursion.</span>
+<span class="sd">            **parameters: PCell parameters for the element, as keyword argument</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            tuple of placed cell instance and reference points with the same transformation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">insert_cell_into</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">inst_name</span><span class="p">,</span> <span class="n">label_trans</span><span class="p">,</span> <span class="n">align_to</span><span class="p">,</span> <span class="n">align</span><span class="p">,</span> <span class="n">rec_levels</span><span class="p">,</span>
+                                <span class="o">**</span><span class="n">parameters</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KLayoutView.focus"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.focus">[docs]</a>    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets a given cell as the active cell, and fits the zoom level to fit the cell.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: cell to focus on, or None to focus on the currently active cell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">max_hier</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_fit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KLayoutView.show"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;In KLayout, show this LayoutView as the current in the main window.</span>
+
+<span class="sd">        In standalone python, display an image of the view. Requires IPython / Jupyter. Keyword arguments are passed</span>
+<span class="sd">        to ``KLayoutView.get_pixels``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
+            <span class="n">display</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;IPython.display&quot;</span><span class="p">)</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">display_png</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pixels</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">to_png_data</span><span class="p">(),</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">main_window</span> <span class="o">=</span> <span class="n">lay</span><span class="o">.</span><span class="n">MainWindow</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">views</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">main_window</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="p">:</span>
+                    <span class="n">main_window</span><span class="o">.</span><span class="n">current_view_index</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="k">break</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cell_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;lay.CellView&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The active ``CellView``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">layout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The active ``Layout``&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_view</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">active_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The active ``Cell``, which is shown as current top in the cellview and bold in the cell window.</span>
+
+<span class="sd">        Can be set to any Cell in the layout.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell_view</span><span class="o">.</span><span class="n">cell</span>
+
+    <span class="nd">@active_cell</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">active_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_view</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">top_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The first top cell of the active layout.&quot;&quot;&quot;</span>
+        <span class="n">cells</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cells</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cells</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="KLayoutView.clear_layers"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.clear_layers">[docs]</a>    <span class="k">def</span> <span class="nf">clear_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear the layer view.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">clear_layers</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KLayoutView.add_default_layers"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.add_default_layers">[docs]</a>    <span class="k">def</span> <span class="nf">add_default_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate view with KQCircuits default layers. Adds the layers to the layout, and populates the layer view.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_layers</span><span class="p">()</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">default_layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">add_missing_layers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">default_layer_props</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">load_layer_props</span><span class="p">(</span><span class="n">default_layer_props</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KLayoutView.create_top_cell"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.create_top_cell">[docs]</a>    <span class="k">def</span> <span class="nf">create_top_cell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">top_cell_name</span><span class="o">=</span><span class="s2">&quot;Top Cell&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a new static cell and set it as the top cell.&quot;&quot;&quot;</span>
+        <span class="n">top_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">create_cell</span><span class="p">(</span><span class="n">top_cell_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell_view</span><span class="o">.</span><span class="n">cell_name</span> <span class="o">=</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">name</span>  <span class="c1"># Shows the new cell</span>
+        <span class="k">return</span> <span class="n">top_cell</span></div>
+
+<div class="viewcode-block" id="KLayoutView.export_layers_bitmaps"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps">[docs]</a>    <span class="k">def</span> <span class="nf">export_layers_bitmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exports each layer to a separate png image.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: Directory to place the exported file in</span>
+<span class="sd">            cell: Cell to export</span>
+<span class="sd">            filename: Filename to export to, or None to use the cell&#39;s name.</span>
+<span class="sd">            layers_set: A list of layer names to export, or None for default values specified in the layer configuration</span>
+<span class="sd">            face_id: The face id for which to export the given layers, or None for general layers not associated to</span>
+<span class="sd">                a face.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">layers_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">layers_set</span> <span class="o">=</span> <span class="n">mask_bitmap_export_layers</span>
+        <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers_set</span><span class="p">:</span>
+            <span class="n">layer_info</span> <span class="o">=</span> <span class="n">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="p">[</span><span class="n">layer_info</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="KLayoutView.export_all_layers_bitmap"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">[docs]</a>    <span class="k">def</span> <span class="nf">export_all_layers_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exports a cell to a .png file with all layers visible</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: Directory to place the exported file in</span>
+<span class="sd">            cell: Cell to export</span>
+<span class="sd">            filename: Filename to export to, or None to use the cell&#39;s name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KLayoutView.export_pcell_png"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_pcell_png">[docs]</a>    <span class="k">def</span> <span class="nf">export_pcell_png</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exports a cell to a .png file no bigger than max_size at either dimension.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path: Directory to place the exported file in</span>
+<span class="sd">            cell: Cell to export</span>
+<span class="sd">            filename: Filename to export to, or None to use the cell&#39;s name.</span>
+<span class="sd">            max_size: Maximum size of the image.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">zoom</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">zoom</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">zoom</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">max_size</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">max_size</span> <span class="o">-</span> <span class="mi">200</span> <span class="p">:</span>   <span class="c1"># 200x100 is enough for the sizebar</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_size</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">200</span><span class="p">,</span> <span class="n">max_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="n">max_size</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">z_box</span><span class="o">=</span><span class="n">zoom</span><span class="p">,</span> <span class="n">pngsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KLayoutView.get_pixels"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_pixels">[docs]</a>    <span class="k">def</span> <span class="nf">get_pixels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a PixelBuffer render of the current view.</span>
+
+<span class="sd">        This method first zooms to fit the whole layout and shows all hierarchy levels. If either ``width`` or</span>
+<span class="sd">        ``height`` is specified, the other is chosen correspondingly to keep the same viewport aspect ratio. If neither</span>
+<span class="sd">        is specified, the current viewport size is used.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: Cell to render, or None to render the currently active cell.</span>
+<span class="sd">            width: image width in pixels, or None for automatic.</span>
+<span class="sd">            height: image height in pixels, or None for automatic.</span>
+<span class="sd">            layers_set: list of layer names to export, or None for the default set.</span>
+<span class="sd">            box: DBox area to show, or None for the full layout.</span>
+
+<span class="sd">        Returns: PixelBuffer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_width</span><span class="p">()</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_height</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">width</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_width</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_height</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">height</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_height</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_width</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">export_callback</span><span class="p">():</span>
+            <span class="n">pixel_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">get_pixels</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pixel_buffer</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap_configure</span><span class="p">(</span><span class="n">export_callback</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">layers_set</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="KLayoutView.get_active_cell_view"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_active_cell_view">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_active_cell_view</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the currently active CellView. Not supported in standalone python mode.</span>
+
+<span class="sd">        Deprecated, use ``KLayoutView(current=True).cell_view`` to get the same behavior.&quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;KLayoutView.get_active_cell_view will be deprecated. &#39;</span> <span class="o">+</span>
+                      <span class="s1">&#39;Use instance property KLayoutView.cell_view instead.&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lay</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KLayoutView.get_active_layout"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_active_layout">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_active_layout</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the layout of the currently active CellView. Not supported in standalone python mode.</span>
+
+<span class="sd">        Deprecated, use ``KLayoutView(current=True).layout`` to get the same behavior. If you already have a</span>
+<span class="sd">        KLayoutView instance, use the ``layout`` property of that instance instead.&quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;KLayoutView.get_active_layout will be deprecated. &#39;</span> <span class="o">+</span>
+                      <span class="s1">&#39;Use instance property KLayoutView.layout instead.&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lay</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="KLayoutView.get_active_cell"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_active_cell">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_active_cell</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the active cell of the currently active CellView. Not supported in standalone python mode.</span>
+
+<span class="sd">        Deprecated, use ``KLayoutView(current=True).active_cell`` to get the same behavior. If you already have a</span>
+<span class="sd">        KLayoutView instance, use the ``active_cell`` property of that instance instead.&quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;KLayoutView.get_active_cell will be deprecated. &#39;</span> <span class="o">+</span>
+                      <span class="s1">&#39;Use instance property KLayoutView.active_cell instead.&#39;</span><span class="p">,</span> <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lay</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span></div>
+
+    <span class="c1"># ********************************************************************************</span>
+    <span class="c1"># PRIVATE METHODS</span>
+    <span class="c1"># ********************************************************************************</span>
+
+    <span class="k">def</span> <span class="nf">_export_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">pngsize</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">layers_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">layers_set</span> <span class="o">=</span> <span class="n">mask_bitmap_export_layers</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers_set</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">layers_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">cell_png_name</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">layer_str</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">export_callback</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">save_image</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell_png_name</span><span class="p">),</span> <span class="n">pngsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pngsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap_configure</span><span class="p">(</span><span class="n">export_callback</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">layers_set</span><span class="p">,</span> <span class="n">z_box</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_export_bitmap_configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_callback</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">layers_set</span><span class="p">,</span> <span class="n">z_box</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Common configuration for export functions &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+
+        <span class="c1"># TODO - undo this side-effect</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">max_hier</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_fit</span><span class="p">()</span>  <span class="c1"># Has to be done also before zoom_box</span>
+
+        <span class="k">if</span> <span class="n">z_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_box</span><span class="p">(</span><span class="n">z_box</span><span class="p">)</span>
+
+        <span class="c1"># first make all layers visible, then take a screenshot</span>
+        <span class="k">if</span> <span class="n">layers_set</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">layers_set</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+
+            <span class="c1"># TODO - undo this side-effect</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
+                <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># hide unwanted layers from the bitmap files</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">layer_to_hide</span> <span class="ow">in</span> <span class="n">all_layers_bitmap_hide_layers</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">==</span> <span class="n">layer_to_hide</span><span class="o">.</span><span class="n">layer</span> <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span> <span class="o">==</span> <span class="n">layer_to_hide</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
+                        <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">break</span>
+
+            <span class="n">export_return</span> <span class="o">=</span> <span class="n">export_callback</span><span class="p">()</span>
+        <span class="c1"># take screenshots of only specific layers</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># get the current visibility condition of the layers</span>
+            <span class="n">current_layer_visibility</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
+                <span class="n">current_layer_visibility</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">visible</span><span class="p">)</span>
+
+            <span class="c1"># only show the wanted layers</span>
+            <span class="n">layer_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
+                <span class="c1"># need to avoid hiding layer groups, because that could hide also layers in layers_set</span>
+                <span class="n">is_layer_group</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span><span class="p">)</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="n">layer_info</span><span class="p">):</span>
+                        <span class="n">is_layer_group</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_layer_group</span><span class="p">:</span>
+                    <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">layer_to_show</span> <span class="ow">in</span> <span class="n">layers_set</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">==</span> <span class="n">layer_to_show</span><span class="o">.</span><span class="n">layer</span> \
+                            <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span> <span class="o">==</span> <span class="n">layer_to_show</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
+                        <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">break</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lay</span><span class="p">,</span> <span class="s2">&quot;Application&quot;</span><span class="p">):</span>
+                <span class="c1"># Make sure the layer property changes are reflected before saving the image</span>
+                <span class="n">lay</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">process_events</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># TODO: Figure out how to make the layer visibility changes appear in standalone mode</span>
+                <span class="k">pass</span>
+            <span class="n">export_return</span> <span class="o">=</span> <span class="n">export_callback</span><span class="p">()</span>
+
+            <span class="c1"># return the layer visibility to before screenshot state</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">()):</span>
+                <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">current_layer_visibility</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">export_return</span></div>
+
+
+<div class="viewcode-block" id="ViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.ViewException">[docs]</a><span class="k">class</span> <span class="nc">ViewException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="ne">Exception</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MissingUILibraryException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">[docs]</a><span class="k">class</span> <span class="nc">MissingUILibraryException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Missing KLayout UI library.&quot;</span><span class="p">):</span>
+        <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InvalidViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.InvalidViewException">[docs]</a><span class="k">class</span> <span class="nc">InvalidViewException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
+        <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">&quot;Invalid layout view [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">view</span><span class="p">))</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="resolve_default_layer_info"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">[docs]</a><span class="nd">@logged</span>
@@ -541,181 +931,6 @@
             <span class="k">return</span> <span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="KLayoutView"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">KLayoutView</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;KLayout layout view wrapper with helper methods.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="p">,</span> <span class="s2">&quot;Application&quot;</span><span class="p">):</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">MissingUILibraryException</span><span class="p">()</span>
-            <span class="k">raise</span> <span class="n">error</span>
-        <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">current</span> <span class="ow">or</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutView</span><span class="o">.</span><span class="n">current</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">MainWindow</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">create_layout</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutView</span><span class="o">.</span><span class="n">current</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayoutView</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span> <span class="o">=</span> <span class="n">view</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">error</span> <span class="o">=</span> <span class="n">InvalidViewException</span><span class="p">(</span><span class="n">view</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">error</span>
-        <span class="k">if</span> <span class="n">initialize</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_default_layers</span><span class="p">()</span>
-
-<div class="viewcode-block" id="KLayoutView.get_active_cell_view"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_active_cell_view">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_active_cell_view</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="KLayoutView.get_active_layout"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_active_layout">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_active_layout</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="KLayoutView.get_active_cell"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.get_active_cell">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">get_active_cell</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span></div>
-
-<div class="viewcode-block" id="KLayoutView.focus"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.focus">[docs]</a>    <span class="k">def</span> <span class="nf">focus</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear view.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">max_hier</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_fit</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="KLayoutView.clear_layers"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.clear_layers">[docs]</a>    <span class="k">def</span> <span class="nf">clear_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear view.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">clear_layers</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="KLayoutView.add_default_layers"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.add_default_layers">[docs]</a>    <span class="k">def</span> <span class="nf">add_default_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Populate view with KQCircuits default layers.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">clear_layers</span><span class="p">()</span>
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">default_layers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">add_missing_layers</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">default_layer_props</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">load_layer_props</span><span class="p">(</span><span class="n">default_layer_props</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="KLayoutView.export_layers_bitmaps"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_layers_bitmaps">[docs]</a>    <span class="k">def</span> <span class="nf">export_layers_bitmaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">,</span>
-                              <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="c1"># pylint: disable=dangerous-default-value</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers_set</span><span class="p">:</span>
-            <span class="n">layer_info</span> <span class="o">=</span> <span class="n">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="p">[</span><span class="n">layer_info</span><span class="p">])</span></div>
-
-<div class="viewcode-block" id="KLayoutView.export_all_layers_bitmap"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_all_layers_bitmap">[docs]</a>    <span class="k">def</span> <span class="nf">export_all_layers_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="KLayoutView.export_pcell_png"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.export_pcell_png">[docs]</a>    <span class="k">def</span> <span class="nf">export_pcell_png</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exports pcell to .png file no bigger than max_size at either dimension.&quot;&quot;&quot;</span>
-
-        <span class="n">zoom</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span>
-        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">zoom</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">zoom</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">max_size</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">max_size</span> <span class="o">-</span> <span class="mi">200</span> <span class="p">:</span>   <span class="c1"># 200x100 is enough for the sizebar</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_size</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">200</span><span class="p">,</span> <span class="n">max_size</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_size</span><span class="p">,</span> <span class="n">max_size</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">100</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">z_box</span><span class="o">=</span><span class="n">zoom</span><span class="p">,</span> <span class="n">pngsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
-
-    <span class="c1"># ********************************************************************************</span>
-    <span class="c1"># PRIVATE METHODS</span>
-    <span class="c1"># ********************************************************************************</span>
-
-    <span class="k">def</span> <span class="nf">_export_bitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">layers_set</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">,</span>
-                       <span class="n">z_box</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pngsize</span><span class="o">=</span><span class="n">default_png_dimensions</span><span class="p">):</span>
-        <span class="c1"># pylint: disable=dangerous-default-value</span>
-        <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot export bitmap of unspecified cell. Defaulting to active cell in view.&quot;</span><span class="p">)</span>
-            <span class="n">cell</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Cannot export bitmap of invalid cell. Defaulting to active cell in view.&quot;</span><span class="p">)</span>
-            <span class="n">cell</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">pya</span><span class="o">.</span><span class="n">CellView</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
-        <span class="c1"># TODO - undo this side-effect</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_fit</span><span class="p">()</span>  <span class="c1"># Has to be done also before zoom_box</span>
-
-        <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
-
-        <span class="k">if</span> <span class="n">z_box</span> <span class="o">!=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_box</span><span class="p">(</span><span class="n">z_box</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers_set</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">layers_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">cell_png_name</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">.png&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">layer_str</span><span class="p">)</span>
-
-        <span class="c1"># first make all layers visible, then take a screenshot</span>
-        <span class="k">if</span> <span class="n">layers_set</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-
-            <span class="c1"># TODO - undo this side-effect</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
-                <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
-
-            <span class="c1"># hide unwanted layers from the bitmap files</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
-                <span class="k">for</span> <span class="n">layer_to_hide</span> <span class="ow">in</span> <span class="n">all_layers_bitmap_hide_layers</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">==</span> <span class="n">layer_to_hide</span><span class="o">.</span><span class="n">layer</span> <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span> <span class="o">==</span> <span class="n">layer_to_hide</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
-                        <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="k">break</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">save_image</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell_png_name</span><span class="p">),</span> <span class="n">pngsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pngsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="c1"># take screenshots of only specific layers</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># get the current visibility condition of the layers</span>
-            <span class="n">current_layer_visibility</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
-                <span class="n">current_layer_visibility</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">visible</span><span class="p">)</span>
-
-            <span class="c1"># only show the wanted layers</span>
-            <span class="n">layer_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_layout</span><span class="p">()</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
-                <span class="c1"># need to avoid hiding layer groups, because that could hide also layers in layers_set</span>
-                <span class="n">is_layer_group</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">pya</span><span class="o">.</span><span class="n">LayerInfo</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span><span class="p">,</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span><span class="p">)</span><span class="o">.</span><span class="n">is_equivalent</span><span class="p">(</span><span class="n">layer_info</span><span class="p">):</span>
-                        <span class="n">is_layer_group</span> <span class="o">=</span> <span class="kc">False</span>
-                        <span class="k">break</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_layer_group</span><span class="p">:</span>
-                    <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">for</span> <span class="n">layer_to_show</span> <span class="ow">in</span> <span class="n">layers_set</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">==</span> <span class="n">layer_to_show</span><span class="o">.</span><span class="n">layer</span> \
-                            <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span> <span class="o">==</span> <span class="n">layer_to_show</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
-                        <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">save_image</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cell_png_name</span><span class="p">),</span> <span class="n">pngsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pngsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-
-            <span class="c1"># return the layer visibility to before screenshot state</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">()):</span>
-                <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">current_layer_visibility</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
-
-
-<div class="viewcode-block" id="ViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.ViewException">[docs]</a><span class="k">class</span> <span class="nc">ViewException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="ne">Exception</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MissingUILibraryException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">[docs]</a><span class="k">class</span> <span class="nc">MissingUILibraryException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="s2">&quot;Missing KLayout UI library.&quot;</span>
-        <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="InvalidViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.InvalidViewException">[docs]</a><span class="k">class</span> <span class="nc">InvalidViewException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="s2">&quot;Invalid layout view [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">view</span><span class="p">))</span>
-        <span class="p">)</span></div>
 </pre></div>
 
            </div>

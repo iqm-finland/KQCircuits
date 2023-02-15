@@ -58,6 +58,21 @@ KQCircuits fully within a Python IDE of your choice. For example, standalone
 debuggers and automated testing (see :ref:`testing`) can be done, which would
 not be possible without the standalone KLayout module.
 
+The preferred way to instantiate a drawing environment in standalone mode is with the :class:`.KLayoutView` object::
+
+    from kqcircuits.klayout_view import KLayoutView
+    view = KLayoutView()
+
+This creates the required object structure and has helper methods for inserting cells and exporting images. See the
+:class:`.KLayoutView` API documentation for more details.
+
+  .. note::
+    The user **must** keep a reference to the :class:`.KLayoutView` instance in scope, as long as references to the layout or
+    individual cells are used.
+
+Jupyter notebook usage
+----------------------
+
 There is an example Jupyter notebook :git_url:`viewer.ipynb <notebooks/viewer.ipynb>` in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
 standalone KLayout module. Run it like::

@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="macro_workflow.html#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -511,12 +517,12 @@
 mask and the parameters of those chips. These scripts will export
 <code class="docutils literal notranslate"><span class="pre">.oas</span></code>/<code class="docutils literal notranslate"><span class="pre">.gds</span></code> files required for photomask production and possibly EBL,
 as well as auxiliary files such as netlists, images and automatic mask
-documentation. The mask scripts can be run either from the macro editor or
-from the command line using <code class="docutils literal notranslate"><span class="pre">klayout</span> <span class="pre">-z</span> <span class="pre">-r</span> <span class="pre">./scripts/masks/maskname.py</span></code>.
-Masks also accept an optional <code class="docutils literal notranslate"><span class="pre">-d</span></code> switch to build the mask without KLayout
-and in a single process thus facilitating debugging mask issues. Please note
-that debug mode lacks certain features that are tied to the presence of
-KLayout.</p>
+documentation. There are three ways to run the mask scripts:</p>
+<ul class="simple">
+<li><p>From the KLayout macro editor.</p></li>
+<li><p>In KLayout from the command line using <code class="docutils literal notranslate"><span class="pre">klayout</span> <span class="pre">-z</span> <span class="pre">-r</span> <span class="pre">./scripts/masks/maskname.py</span></code>.</p></li>
+<li><p>As standalone python script. In this case, mask generation always runs single threaded.</p></li>
+</ul>
 <div class="section" id="tutorial">
 <h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="basic-mask-script-and-export">
@@ -527,7 +533,6 @@ KLayout.</p>
 <li><p>Add the following script to the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/masks">kqcircuits_scripts/masks</a> folder in
 the <code class="docutils literal notranslate"><span class="pre">Python</span></code> tab of the Macro IDE:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Imports required for any mask</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">TMP_PATH</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_set</span> <span class="kn">import</span> <span class="n">MaskSet</span>
 <span class="c1"># Import chips required for this mask</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.demo</span> <span class="kn">import</span> <span class="n">Demo</span>
@@ -568,8 +573,8 @@ the <code class="docutils literal notranslate"><span class="pre">Python</span></
 <span class="c1"># This generates the layout in KLayout based on previous calls to</span>
 <span class="c1"># ``add_mask_layout()`` and ``add_chip()`.</span>
 <span class="n">test_mask</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-<span class="c1"># Export the mask files to TMP_PATH</span>
-<span class="n">test_mask</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">)</span>
+<span class="c1"># Export the mask files to TMP_PATH, unless an ``export_path`` argument has been given to MaskSet.</span>
+<span class="n">test_mask</span><span class="o">.</span><span class="n">export</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Any mask script should follow roughly the same structure. The
@@ -578,9 +583,9 @@ mask) are generally the same for any mask.</p>
 </li>
 <li><p>(Optional) Open <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/logging_setup.lym">kqcircuits_scripts/macros/logging_setup</a> and run it.
 This makes mask generation logs visible in the Macro console.</p></li>
-<li><p>With the mask script open, click “Run script from current tab”
-(Shift+F5). This generates the mask and exports the files to the
-folder defined by <code class="docutils literal notranslate"><span class="pre">kqcircuits.default.TMP_PATH</span></code>.</p></li>
+<li><p>With the mask script open, click “Run script from current tab” (Shift+F5). This generates the
+mask and exports the files to the folder defined by <code class="docutils literal notranslate"><span class="pre">kqcircuits.default.TMP_PATH</span></code> or to any
+directory spcified by the <code class="docutils literal notranslate"><span class="pre">export_path</span></code> argument to <code class="docutils literal notranslate"><span class="pre">MaskSet</span></code>.</p></li>
 </ol>
 </div></blockquote>
 <p>If you generate the mask again (for example in the following sections), it is

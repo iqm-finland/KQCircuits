@@ -5,12 +5,11 @@ Masks are defined by simple scripts, which define the layout of chips in the
 mask and the parameters of those chips. These scripts will export
 ``.oas``/``.gds`` files required for photomask production and possibly EBL,
 as well as auxiliary files such as netlists, images and automatic mask
-documentation. The mask scripts can be run either from the macro editor or
-from the command line using ``klayout -z -r ./scripts/masks/maskname.py``.
-Masks also accept an optional ``-d`` switch to build the mask without KLayout
-and in a single process thus facilitating debugging mask issues. Please note
-that debug mode lacks certain features that are tied to the presence of
-KLayout.
+documentation. There are three ways to run the mask scripts:
+
+- From the KLayout macro editor.
+- In KLayout from the command line using ``klayout -z -r ./scripts/masks/maskname.py``.
+- As standalone python script. In this case, mask generation always runs single threaded.
 
 Tutorial
 --------
@@ -24,7 +23,6 @@ Basic mask script and export
        the ``Python`` tab of the Macro IDE::
 
         # Imports required for any mask
-        from kqcircuits.defaults import TMP_PATH
         from kqcircuits.masks.mask_set import MaskSet
         # Import chips required for this mask
         from kqcircuits.chips.demo import Demo
@@ -65,8 +63,8 @@ Basic mask script and export
         # This generates the layout in KLayout based on previous calls to
         # ``add_mask_layout()`` and ``add_chip()`.
         test_mask.build()
-        # Export the mask files to TMP_PATH
-        test_mask.export(TMP_PATH)
+        # Export the mask files to TMP_PATH, unless an ``export_path`` argument has been given to MaskSet.
+        test_mask.export()
 
        Any mask script should follow roughly the same structure. The
        beginning and end of the script (creating the MaskSet object, and exporting the
@@ -75,9 +73,9 @@ Basic mask script and export
     #. (Optional) Open :git_url:`kqcircuits_scripts/macros/logging_setup <klayout_package/python/scripts/macros/logging_setup.lym>` and run it.
        This makes mask generation logs visible in the Macro console.
 
-    #. With the mask script open, click "Run script from current tab"
-       (Shift+F5). This generates the mask and exports the files to the
-       folder defined by ``kqcircuits.default.TMP_PATH``.
+    #. With the mask script open, click "Run script from current tab" (Shift+F5). This generates the
+       mask and exports the files to the folder defined by ``kqcircuits.default.TMP_PATH`` or to any
+       directory spcified by the ``export_path`` argument to ``MaskSet``.
 
 If you generate the mask again (for example in the following sections), it is
 recommended that you first close the layout where the previous mask was

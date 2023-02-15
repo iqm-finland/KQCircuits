@@ -138,7 +138,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/macro_workflow.html">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/macro_workflow.html#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/macro_workflow.html#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/macro_workflow.html#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/macro_workflow.html#examples">Examples</a></li>
@@ -206,6 +212,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/containers.html">Containers</a><ul>
@@ -408,7 +415,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -517,7 +523,6 @@
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">perf_counter</span>
 <span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
@@ -528,11 +533,11 @@
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">klayout_executable_command</span><span class="p">,</span> <span class="n">default_face_id</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span><span class="p">,</span> <span class="n">MissingUILibraryException</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 
 
 <div class="viewcode-block" id="MaskSet"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet">[docs]</a><span class="nd">@logged</span>
@@ -551,7 +556,7 @@
 <span class="sd">        mask.add_mask_layout(...)</span>
 <span class="sd">        mask.add_chips(...)</span>
 <span class="sd">        mask.build()</span>
-<span class="sd">        mask.export(...)</span>
+<span class="sd">        mask.export()</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        layout: pya.Layout of this mask set</span>
@@ -563,31 +568,17 @@
 <span class="sd">        mask_layouts: list of MaskLayout objects in this mask set</span>
 <span class="sd">        mask_export_layers: list of names of the layers which are exported for each MaskLayout</span>
 <span class="sd">        used_chips: similar to chips_map_legend, but only includes chips which are actually used in mask layouts</span>
-
+<span class="sd">        export_path: The folder for mask files will be generated under this. TMP_PATH by default.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MaskSet&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">export_drc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">mask_export_layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MaskSet&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">with_grid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">export_drc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">mask_export_layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">export_path</span><span class="o">=</span><span class="n">TMP_PATH</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;INIT&quot;</span><span class="p">:</span> <span class="n">perf_counter</span><span class="p">(),</span> <span class="s2">&quot;ADD_CHIPS&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>  <span class="s2">&quot;BUILD&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;EXPORT&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;END&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="n">debug</span>
 
-        <span class="k">if</span> <span class="n">debug</span> <span class="ow">or</span> <span class="s1">&#39;-d&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">:</span>  <span class="c1"># Stand-alone debug mode, without klayout. Single process.</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Running without KLayout. Some features for mask export have been limited.&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Normal mode, multiple processes run klayout in the background</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="o">.</span><span class="n">get_active_layout</span><span class="p">()</span>
-            <span class="k">except</span> <span class="n">MissingUILibraryException</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;KLayout application not detected! Most likely the mask export was attempted externally.&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Try: &#39;klayout -z -r masks/demo.py&#39; &quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Alternatively, you may export the mask without KLayout but with limited features.&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;To do this use the debug mode switch &#39;-d&#39;: &#39;python masks/demo.py -d&#39;&quot;</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="o">.</span><span class="n">layout</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
@@ -599,6 +590,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">template_imports</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">default_face_id</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a mask layout from chips_map and adds it to self.mask_layouts.</span>
@@ -632,7 +626,7 @@
 <span class="sd">            the loaded cell</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span> <span class="ow">and</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">version</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="s1">&#39;KLayout 0.27.0&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">,</span> <span class="s2">&quot;CellConflictResolution&quot;</span><span class="p">):</span>
             <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
@@ -644,7 +638,7 @@
 <span class="sd">            chips: List of tuples that ``add_chip`` uses. Parameters are optional.</span>
 <span class="sd">                For example, ``(QualityFactor, &quot;QDG&quot;, parameters)``.</span>
 <span class="sd">            threads: Number of parallel threads to use for generation. By default uses ``os.cpu_count()`` threads.</span>
-<span class="sd">                Uses subprocesses and consequently a lot of memory.</span>
+<span class="sd">                Uses subprocesses and consequently a lot of memory. In standalone python mode always uses 1 thread.</span>
 
 <span class="sd">        Warning:</span>
 <span class="sd">            It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.</span>
@@ -654,7 +648,7 @@
 
         <span class="k">if</span> <span class="n">threads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">threads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">threads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">threads</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">threads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">threads</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">is_standalone_session</span><span class="p">():</span>
             <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="n">threads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -715,14 +709,14 @@
 
                 <span class="n">element_import</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;from </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1"> import </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
                 <span class="n">create_element</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;cell = </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.create(layout </span><span class="si">{</span><span class="n">_params_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
-                <span class="n">chip_path</span> <span class="o">=</span> <span class="n">TMP_PATH</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">chip_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                 <span class="n">script_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.py&quot;</span><span class="p">)</span>
                 <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">),</span> <span class="n">script_name</span><span class="p">))</span>
 
                 <span class="n">substitution_parameters</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;name_mask&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="s1">&#39;version_mask&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                    <span class="s1">&#39;chip_path&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span><span class="p">),</span>
                     <span class="s1">&#39;variant_name&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
                     <span class="s1">&#39;chip_class&#39;</span><span class="p">:</span> <span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
                     <span class="s1">&#39;element_import&#39;</span><span class="p">:</span> <span class="n">element_import</span><span class="p">,</span>
@@ -767,15 +761,15 @@
 <span class="sd">            **kwargs: any parameters passed to the chip PCell</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">chip_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="n">variant_name</span><span class="p">)</span>
+        <span class="n">chip_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">chip</span><span class="p">):</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variant_definition</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="n">variant_name</span><span class="p">]</span>
-            <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+            <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">delete_cell_rec</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">export_chip</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">debug</span><span class="p">)</span>
+            <span class="n">export_chip</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_chip_into_mask</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">),</span> <span class="n">variant_name</span><span class="p">)</span></div>
 
@@ -881,20 +875,15 @@
         <span class="k">if</span> <span class="n">remove_guiding_shapes</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">is_valid_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">()):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">delete_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">guiding_shape_layer</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="MaskSet.export"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+<div class="viewcode-block" id="MaskSet.export"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Exports designs, bitmaps and documentation of this mask set.</span>
 
 <span class="sd">        Assumes that self.build() has been called before.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            path: path where the folder for this mask set is created</span>
-<span class="sd">            view: KLayout view object</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="s1">&#39;EXPORT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exporting mask set...&quot;</span><span class="p">)</span>
-        <span class="n">export_mask_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">view</span><span class="p">)</span>
+        <span class="n">export_mask_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="s1">&#39;END&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
 
@@ -960,19 +949,19 @@
 <span class="s2">import traceback</span>
 <span class="s2">#TEMPLATE_IMPORT#</span>
 <span class="s2">from pathlib import Path</span>
-<span class="s2">from kqcircuits.defaults import TMP_PATH</span>
 <span class="s2">from kqcircuits.masks.mask_export import export_chip</span>
 <span class="s2">from kqcircuits.pya_resolver import pya</span>
-<span class="s2">from kqcircuits.util import macro_prepare</span>
+<span class="s2">from kqcircuits.klayout_view import KLayoutView</span>
 <span class="s2">from kqcircuits.util.log_router import route_log</span>
 <span class="s2">$</span><span class="si">{element_import}</span>
 
 <span class="s2">try:</span>
 <span class="s2">    logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used</span>
-<span class="s2">    chip_path = Path(TMP_PATH / &quot;$</span><span class="si">{name_mask}</span><span class="s2">_v$</span><span class="si">{version_mask}</span><span class="s2">&quot; / &quot;Chips&quot; / &quot;$</span><span class="si">{variant_name}</span><span class="s2">&quot;)</span>
+<span class="s2">    chip_path = Path(r&quot;$</span><span class="si">{chip_path}</span><span class="s2">&quot;)</span>
 <span class="s2">    route_log(filename=chip_path/&quot;$</span><span class="si">{variant_name}</span><span class="s2">.log&quot;)</span>
 
-<span class="s2">    layout, top_cell, _, _ = macro_prepare.prep_empty_layout()</span>
+<span class="s2">    view = KLayoutView()</span>
+<span class="s2">    layout, top_cell = view.layout, view.top_cell</span>
 
 <span class="s2">    # cell definition and arbitrary code here</span>
 <span class="s2">    $</span><span class="si">{create_element}</span>

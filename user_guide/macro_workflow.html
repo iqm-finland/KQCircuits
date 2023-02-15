@@ -140,7 +140,13 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Macro development</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#basic-workflow">Basic workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-first-example">Running the first example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interacting-with-the-klayout-application">Interacting with the KLayout application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-new-panel">Creating a new panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#accessing-the-currently-active-panel">Accessing the currently active panel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-klayoutview">Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#debugger">Debugger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#reloading-libraries">Reloading libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
@@ -208,6 +214,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/containers.html">Containers</a><ul>
@@ -410,7 +417,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.layout_to_code.html">kqcircuits.util.layout_to_code</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.library_helper.html">kqcircuits.util.library_helper</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.log_router.html">kqcircuits.util.log_router</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.macro_prepare.html">kqcircuits.util.macro_prepare</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.merge.html">kqcircuits.util.merge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_extraction.html">kqcircuits.util.netlist_extraction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.util.netlist_graph.html">kqcircuits.util.netlist_graph</a></li>
@@ -513,8 +519,10 @@ measure properties of cells, or export data from the layout. See also the
 KLayout documentation about <a class="reference external" href="https://www.klayout.de/doc-qt5/about/macro_editor.html">macro development</a> and
 <a class="reference external" href="https://www.klayout.de/doc-qt5/programming/index.html">programming scripts</a>
 , and the <a class="reference external" href="https://www.klayout.de/doc-qt5/code/index.html">KLayout API documentation</a>.</p>
-<div class="section" id="basic-workflow">
-<h2>Basic workflow<a class="headerlink" href="#basic-workflow" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="running-the-first-example">
+<h2>Running the first example<a class="headerlink" href="#running-the-first-example" title="Permalink to this headline">¶</a></h2>
+<p>To get started, follow the steps below to run a demo macro. The comments in the macro explain what is going on step by
+step.</p>
 <ol class="arabic simple">
 <li><p>Open the KLayout application</p></li>
 <li><p>From the top menu, choose “Macros” and “Macro Development”, or press F5.</p></li>
@@ -526,6 +534,58 @@ directory</p></li>
 from the current tab”), or use Shift+F5.</p></li>
 <li><p>A chip cell should appear in the main KLayout window.</p></li>
 </ol>
+</div>
+<div class="section" id="interacting-with-the-klayout-application">
+<h2>Interacting with the KLayout application<a class="headerlink" href="#interacting-with-the-klayout-application" title="Permalink to this headline">¶</a></h2>
+<p>KLayout organizes layouts in <em>Panels</em>, which show as tabs in the application if more than one panel is open.
+In code, the panel is represented by a <code class="docutils literal notranslate"><span class="pre">LayoutView</span></code> object. Inside each panel there can be one or more
+layouts loaded, for example with the <em>File</em>, <em>Open in Same Panel</em> command. Each layout is represented by a
+<code class="docutils literal notranslate"><span class="pre">CellView</span></code> object and a <code class="docutils literal notranslate"><span class="pre">Layout</span></code> object. The <code class="docutils literal notranslate"><span class="pre">Layout</span></code> contains all the actual cells, layers and shapes.</p>
+<p>As shown by the above, to work with the KLayout display in macro code we need access to at least three objects.
+To help in managing this, KQCircuits provides the class <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a>.</p>
+<div class="section" id="creating-a-new-panel">
+<h3>Creating a new panel<a class="headerlink" href="#creating-a-new-panel" title="Permalink to this headline">¶</a></h3>
+<p>Often, in a macro you want to start with a new layout in a new panel, which can be created as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This code creates a panel, cell view and layout, and initializes these with the layers used by KQCircuits.</p>
+</div>
+<div class="section" id="accessing-the-currently-active-panel">
+<h3>Accessing the currently active panel<a class="headerlink" href="#accessing-the-currently-active-panel" title="Permalink to this headline">¶</a></h3>
+<p>In some macros you may want to interact with the layout that is currently visible. In this case, use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">(</span><span class="n">current</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-klayoutview">
+<h3>Using <code class="docutils literal notranslate"><span class="pre">KLayoutView</span></code><a class="headerlink" href="#using-klayoutview" title="Permalink to this headline">¶</a></h3>
+<p>Once created, <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a> exposes methods for the most common tasks to do with a layout:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">insert_cell</span></code> places KQCircuits elements into the top cell, similar to <code class="docutils literal notranslate"><span class="pre">Element.insert_cell</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">focus</span></code> makes sure a particular cell or the entire layout is visible (zoom to fit and show all hierarchy levels).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">show</span></code> shows the panel associated with this object, in case there are multiple panels open</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">export_pcell_png</span></code> exports an image of a cell to a file</p></li>
+</ul>
+<p>See the <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a> API documentation for all methods and their usage.</p>
+<p>If more advanced interaction with KLayout is needed, the KLayout API objects are exposed as properties. See the
+corresponding KLayout API documentation linked below for their usage details:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">layout_view</span></code>: The <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_LayoutView.html">LayoutView</a> instance, which refers
+to a panel in the KLayout GUI.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cell_view</span></code>: The <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_CellView.html">CellView</a> instance. In case a
+panel has multiple cell views (for example when multiple files are opened in the same panel), this returns the
+currently active one.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">layout</span></code>: The <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Layout.html">Layout</a> object is the main container for
+cells, layers and geometry</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">top_cell</span></code>: A reference to the first top <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Cell.html">Cell</a> of the layout. This is the very first cell shown in the cell window.
+Usually we place elements in this cell.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active_cell</span></code>: A reference to the currently active cell. This is the cell which is shown in bold in the cell
+window, and can be changed in KLayout by right-clicking a cell and choosing <em>Show As New Top</em>.</p></li>
+</ul>
+</div>
 </div>
 <div class="section" id="debugger">
 <h2>Debugger<a class="headerlink" href="#debugger" title="Permalink to this headline">¶</a></h2>
