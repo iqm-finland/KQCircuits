@@ -24,7 +24,7 @@ from kqcircuits.defaults import default_layers, default_brand, default_faces, de
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.elements.mask_marker_fc import MaskMarkerFc
 from kqcircuits.util.label import produce_label, LabelOrigin
-from kqcircuits.util.merge import merge_layers
+from kqcircuits.util.merge import merge_layout_layers_on_face, convert_child_instances_to_static
 
 
 @logged
@@ -70,7 +70,7 @@ class MaskLayout:
 
     def __init__(self, layout, name, version, with_grid, chips_map, face_id, **kwargs):
 
-        self.layout = layout
+        self.layout: pya.Layout = layout
         self.name = name
         self.version = version
         self.with_grid = with_grid
@@ -184,11 +184,12 @@ class MaskLayout:
                 region_covered -= self._add_chip(name, pos, trans[0] if trans else self.chip_trans)[1]
                 self.chips_map.append([name])  # to get correct amount of chips in mask documentation
 
-        maskextra_cell = self.layout.create_cell("MaskExtra")
+        maskextra_cell: pya.Cell = self.layout.create_cell("MaskExtra")
+
         self._insert_mask_name_label(self.top_cell, default_layers["mask_graphical_rep"])
         self._mask_create_covered_region(maskextra_cell, region_covered, self.layers_to_mask)
-        merge_layers(self.layout, [maskextra_cell], self.face()["base_metal_gap_wo_grid"], self.face()["ground_grid"],
-                     self.face()["base_metal_gap"])
+        convert_child_instances_to_static(self.layout, maskextra_cell, only_elements=True, prune=True)
+        merge_layout_layers_on_face(self.layout, maskextra_cell, self.face())
 
     def insert_chip_copy_labels(self, labels_cell, layers):
         """Inserts chip copy labels to all chips in this mask layout and its submasks

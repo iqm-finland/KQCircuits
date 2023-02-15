@@ -26,7 +26,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.launcher import Launcher
 from kqcircuits.elements.launcher_dc import LauncherDC
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.geometry_helper import region_with_merged_polygons
+from kqcircuits.util.merge import merge_layout_layers_on_face
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from, add_parameter
 from kqcircuits.test_structures.junction_test_pads.junction_test_pads import JunctionTestPads
 from kqcircuits.test_structures.stripes_test import StripesTest
@@ -226,12 +226,7 @@ class Chip(Element):
             face: face dictionary containing layer names as keys and layer info objects as values
             tolerance: gap length to be ignored while merging (µm)
         """
-        gaps = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face["base_metal_gap_wo_grid"])))
-        metal = pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face["base_metal_addition"])))
-        grid = self.cell.begin_shapes_rec(self.layout.layer(face["ground_grid"]))
-        res = self.cell.shapes(self.layout.layer(face["base_metal_gap"]))
-        res.insert(region_with_merged_polygons(gaps - metal, tolerance / self.layout.dbu))
-        res.insert(grid)
+        merge_layout_layers_on_face(self.layout, self.cell, face, tolerance)
 
     def merge_layout_layers(self):
         """Creates "base_metal_gap" layers on all faces.
