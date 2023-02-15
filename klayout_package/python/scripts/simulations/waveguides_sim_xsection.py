@@ -98,7 +98,7 @@ for simulation in simulations:
 
 # Create cross sections using xsection tool
 # Oxide layer permittivity and thickness values same as in double_pads_sim.py simulation
-xsection_simulations = create_xsections_from_simulations(simulations,
+xsection_simulations = create_xsections_from_simulations(simulations, path,
     (pya.DPoint(0, 150), pya.DPoint(0, -150)), # Cut coordinates
     ma_permittivity=8.0,
     ms_permittivity=11.4,

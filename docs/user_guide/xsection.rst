@@ -29,7 +29,9 @@ generation for simulation files.
       for each simulation object using two ``DPoint`` values
 
    -  ``xsection_call``, a low level method requiring a path to the input and output
-      OAS files, two ``DPoint`` values and, optionally, a path to a process file
+      OAS files, two ``DPoint`` values and, optionally, a path to a process file.
+      If :git_url:`xsection/kqc_process.xs` process file is used, make sure to
+      provide a path to the parameters json file as well.
 
 An example of using XSection tool to produce cross-section simulation files is
 demonstrated in :git_url:`klayout_package/python/scripts/simulations/waveguides_sim_xsection.py`

@@ -33,15 +33,13 @@ lower_box_height = 0.0
 chip_distance = []
 
 # To allow sweeping for some parameters in this process description file for simulations,
-# read such parameter values from an external file
-# HACK: we use the path for xs_run to determine where the external file is located
+# read such parameter values from an external file under $xs_params.
+# This file also contains simulation layer information.
 
-process_file_dir = $xs_run.chomp("kqc_process.xs")
-sweep_file = "#{process_file_dir}../tmp/xsection/xsection_parameters.json"
-if File.exists? sweep_file
+if File.exists? $xs_params
   require 'json'
   sweep_file_content = nil
-  File.open(sweep_file) do |file|
+  File.open($xs_params) do |file|
     sweep_file_content = file.read
   end
   if !!sweep_file_content

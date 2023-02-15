@@ -31,7 +31,7 @@ from kqcircuits.simulations.simulation import Simulation
 
 
 def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya.DPoint,
-        process_path: Path = XSECTION_PROCESS_PATH) -> None:
+        process_path: Path = XSECTION_PROCESS_PATH, parameters_path: Path = None) -> None:
     """Calls on KLayout to run the XSection plugin
 
     Args:
@@ -40,6 +40,9 @@ def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya
         cut1: DPoint of first endpoint of the cross-section cut
         cut2: DPoint of second endpoint of the cross-section cut
         process_path: XSection process file that defines cross-section etching depths etc
+        parameters_path: If process_path points to kqc_process.xs,
+            parameters_path should point to the XSection parameters json file
+            containing sweeped parameters and layer information.
     """
     if os.name == "nt":
         klayout_dir_name = "KLayout"
@@ -52,10 +55,12 @@ def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya
     try:
         # Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin
         xs_run = str(process_path).replace("\\\\?\\", "")
+        xs_params = str(parameters_path).replace("\\\\?\\", "")
         # When debugging, remove '-z' argument to see ruby error messages
         subprocess.run([klayout_executable_command(), input_oas.absolute(), '-z', '-nc', '-rx',
                         '-r', xsection_plugin_path,
                         '-rd', f'xs_run={xs_run}',
+                        '-rd', f'xs_params={xs_params}',
                         '-rd', f'xs_cut={cut_string}',
                         '-rd', f'xs_out={output_oas.absolute()}'],
             check=True, startupinfo=STARTUPINFO)
@@ -65,6 +70,7 @@ def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya
 
 # pylint: disable=dangerous-default-value
 def create_xsections_from_simulations(simulations: List[Simulation],
+                                      output_path: Path,
                                       cuts: Union[Tuple[pya.DPoint, pya.DPoint], List[Tuple[pya.DPoint, pya.DPoint]]],
                                       process_path: Path = XSECTION_PROCESS_PATH,
                                       ma_permittivity: float = 0,
@@ -81,6 +87,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
 
     Args:
         simulations: List of Simulation objects, usually produced by a sweep
+        output_path: Path for the exported simulation files
         cuts: 1. A tuple (p1, p2), where p1 and p2 are endpoints of a cross-section cut or
               2. a list of such tuples such that each Simulation object gets an individual cut
         process_path: XSection process file that defines cross-section etching depths etc
@@ -108,20 +115,19 @@ def create_xsections_from_simulations(simulations: List[Simulation],
     if any(len(simulation.get_parameters()["face_stack"]) not in (1, 2) for simulation in simulations):
         raise Exception("Only single face and flip chip cross section simulations currently supported")
 
-    # Hack: tmp file for xsection tied to the process filepath
-    xsection_dir = process_path.parent.parent.joinpath("tmp/xsection")
+    xsection_dir = output_path.joinpath("xsection_tmp")
     xsection_dir.mkdir(parents=True, exist_ok=True)
 
     layout = pya.Layout()
     load_opts = _load_layout_options_for_xsection_output()
     for simulation, cut in zip(simulations, cuts):
-        _dump_xsection_parameters(xsection_dir, simulation)
+        xsection_parameters = _dump_xsection_parameters(xsection_dir, simulation)
         simulation_file = xsection_dir / f"original_{simulation.cell.name}.oas"
         xsection_file   = xsection_dir / f"xsection_{simulation.cell.name}.oas"
         export_layers(str(simulation_file), simulation.layout, [simulation.cell],
                     output_format='OASIS',
                     layers=None)
-        xsection_call(simulation_file, xsection_file, cut[0], cut[1], process_path)
+        xsection_call(simulation_file, xsection_file, cut[0], cut[1], process_path, xsection_parameters)
 
         layout.read(str(xsection_file), load_opts)
         xsection_cell = layout.top_cells()[-1]
@@ -225,18 +231,20 @@ def _dump_xsection_parameters(xsection_dir, simulation):
     sim_layers["b_substrate"] = f"{next(gen_free_layer_slots)}/0"
     sim_layers["t_substrate"] = f"{next(gen_free_layer_slots)}/0"
     simulation_params['sim_layers'] = sim_layers
-    with open(xsection_dir / "xsection_parameters.json", "w") as sweep_file:
+    xsection_parameters_file = xsection_dir / f"parameters_{simulation.cell.name}.json"
+    with open(xsection_parameters_file, "w") as sweep_file:
         json.dump(simulation_params, sweep_file)
+    return xsection_parameters_file
 
 
 def _clean_tmp_xsection_directory(xsection_dir, simulations):
-    if os.path.exists(xsection_dir / "xsection_parameters.json"):
-        os.remove(xsection_dir / "xsection_parameters.json")
     for simulation in simulations:
         if os.path.exists(xsection_dir / f"original_{simulation.cell.name}.oas"):
             os.remove(xsection_dir / f"original_{simulation.cell.name}.oas")
         if os.path.exists(xsection_dir / f"xsection_{simulation.cell.name}.oas"):
             os.remove(xsection_dir / f"xsection_{simulation.cell.name}.oas")
+        if os.path.exists(xsection_dir / f"parameters_{simulation.cell.name}.json"):
+            os.remove(xsection_dir / f"parameters_{simulation.cell.name}.json")
     if os.path.exists(xsection_dir):
         os.rmdir(xsection_dir)
 
