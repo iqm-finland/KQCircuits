@@ -152,6 +152,13 @@ class KLayoutView:
                     main_window.current_view_index = i
                     break
 
+    def close(self):
+        """Closes the current LayoutView."""
+        if is_standalone_session():
+            self.layout_view.destroy()
+        else:
+            lay.MainWindow.instance().close_current_view()
+
     @property
     def cell_view(self) -> "lay.CellView":
         """The active ``CellView``"""

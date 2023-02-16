@@ -74,7 +74,6 @@ else:
 SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
 TMP_PATH = Path(os.getenv('KQC_TMP_PATH', ROOT_PATH.joinpath("tmp")))
 
-RESOURCES_PATH = ROOT_PATH.joinpath("resources")
 TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]

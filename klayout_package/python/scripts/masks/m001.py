@@ -22,7 +22,9 @@ Q and AB tests. Showcases box maps and how to load cells from files to a mask.
 """
 from kqcircuits.chips.airbridge_crossings import AirbridgeCrossings
 from kqcircuits.chips.quality_factor import QualityFactor
-from kqcircuits.defaults import RESOURCES_PATH
+from kqcircuits.pya_resolver import pya
+from kqcircuits.defaults import TMP_PATH
+from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.masks.mask_set import MaskSet
 
 m001 = MaskSet(name="M001", version=2, with_grid=False)
@@ -67,22 +69,16 @@ parameters_qs = {
     "res_b": [6] * 6
 }
 
-# You may use KLayout or code like this to a export cell to a file:
-#
-#   from kqcircuits.pya_resolver import pya
-#   from kqcircuits.klayout_view import KLayoutView
-#
-#   view_2 = KLayoutView()
-#   view_2.insert_cell(QualityFactor, name_chip="QDD", name_mask="M001",
-# #                    **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
-#   save_opts = pya.SaveLayoutOptions()
-#   save_opts.write_context_info = True
-#   file_name = str(TMP_PATH / "m001_QDD.gds")
-#   top_cell.write(file_name, save_opts)
-#   pya.MainWindow.instance().close_current_view()
+# Let's generate a static OASIS file first:
+view_2 = KLayoutView()
+view_2.insert_cell(QualityFactor, name_chip="QDD", name_mask="M001",
+                 **{**parameters_qd, 'n_ab': 18 * [5], 'res_term': 18 * ["airbridge"]})
+save_opts = pya.SaveLayoutOptions()
+save_opts.write_context_info = True
+file_name = str(TMP_PATH / "m001_QDD.oas")
+view_2.top_cell.write(file_name, save_opts)
+view_2.close()
 
-# Add Chip from file manually
-file_name = f"{RESOURCES_PATH}/m001_QDD.oas"
 print("Loading:", file_name)
 qdd = m001.load_cell_from_file(file_name)
 m001.add_chip(qdd, "QDD")
