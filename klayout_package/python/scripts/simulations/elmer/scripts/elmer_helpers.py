@@ -225,16 +225,6 @@ def replace_strings(content, replace_dict):
         content = content.replace(key, replace_dict[key])
     return content
 
-def calculate_total_capacitance_to_ground(c_matrix):
-    """Returns total capacitance to ground for each column of c_matrix."""
-    columns = range(len(c_matrix))
-    c_ground = []
-    for i in columns:
-        c_ground.append(
-            c_matrix[i][i] + sum([c_matrix[i][j] / (1.0 + c_matrix[i][j] / c_matrix[j][j]) for j in columns if i != j]))
-    return c_ground
-
-
 def write_project_results_json(path: Path, msh_filepath):
     """
     Writes the solution data in '_project_results.json' format for one Elmer capacitance matrix computation.
@@ -256,11 +246,8 @@ def write_project_results_json(path: Path, msh_filepath):
         c_data = {"C_Net{}_Net{}".format(net_i+1, net_j+1): [c_matrix[net_j][net_i]] for net_j in range(len(c_matrix))
                 for net_i in range(len(c_matrix))}
 
-        c_g = calculate_total_capacitance_to_ground(c_matrix)
-
         with open(json_filename, 'w') as outfile:
             json.dump({'CMatrix': c_matrix,
-                       'Cg': c_g,
                        'Cdata': c_data,
                        'Frequency': [0],
                        }, outfile, indent=4)

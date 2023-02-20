@@ -29,23 +29,11 @@ from util import get_enabled_setup, get_enabled_setup_and_sweep, get_solution_da
     ComplexEncoder  # pylint: disable=wrong-import-position,no-name-in-module
 
 
-def calculate_total_capacitance_to_ground(c_matrix):
-    """Returns total capacitance to ground for each column of c_matrix."""
-    columns = range(len(c_matrix))
-    c_ground = []
-    for i in columns:
-        c_ground.append(
-            c_matrix[i][i] + sum([c_matrix[i][j] / (1.0 + c_matrix[i][j] / c_matrix[j][j]) for j in columns if i != j]))
-    return c_ground
-
-
-def save_capacitance_matrix(file_name, c_matrix, c_to_ground, detail=''):
+def save_capacitance_matrix(file_name, c_matrix, detail=''):
     """Save capacitance matrix in readable format. """
     with open(file_name, 'w') as out_file:
         out_file.write("Capacitance matrix" + detail + ":\n" + '\n'.join(
             ['\t'.join(['%8.3f' % (item * 1e15) for item in row]) for row in c_matrix]) + '\n')
-        out_file.write("Total capacitance to ground" + detail + ":\n" +
-                       '\t'.join(['%8.3f' % (item * 1e15) for item in c_to_ground]) + '\n')
 
 
 # Set up environment
@@ -85,15 +73,13 @@ if design_type == "HFSS" and oDesign.GetSolutionType() == "HFSS Terminal Network
                                    "yy_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
     CMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
                                   "C_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
-    Cg = calculate_total_capacitance_to_ground(CMatrix)
 
     # Save capacitance matrix into readable format
-    save_capacitance_matrix(matrix_filename, CMatrix, Cg, detail=' at ' + freq)
+    save_capacitance_matrix(matrix_filename, CMatrix, detail=' at ' + freq)
 
     # Save results in json format
     with open(json_filename, 'w') as outfile:
         json.dump({'CMatrix': CMatrix,
-                   'Cg': Cg,
                    'yyMatrix': yyMatrix,
                    'freq': freq,
                    'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
@@ -141,15 +127,13 @@ elif design_type == "Q3D Extractor":
     # Get solution data
     CMatrix = [[get_solution_data(oReportSetup, "Matrix", solution, context, [],
                                   "C_{}_{}".format(net_i, net_j))[0] for net_j in signal_nets] for net_i in signal_nets]
-    Cg = calculate_total_capacitance_to_ground(CMatrix)
 
     # Save capacitance matrix into readable format
-    save_capacitance_matrix(matrix_filename, CMatrix, Cg)
+    save_capacitance_matrix(matrix_filename, CMatrix)
 
     # Save results in json format
     with open(json_filename, 'w') as outfile:
         json.dump({'CMatrix': CMatrix,
-                   'Cg': Cg,
                    'Cdata': get_solution_data(oReportSetup, "Matrix", solution, context, [],
                                               ["C_{}_{}".format(net_i, net_j) for net_j in signal_nets for net_i in
                                                signal_nets])
