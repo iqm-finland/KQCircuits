@@ -27,8 +27,8 @@ from pathlib import Path
 from autologging import logged
 from tqdm import tqdm
 
-from kqcircuits.pya_resolver import pya, is_standalone_session
-from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, klayout_executable_command, default_face_id
+from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executable_command
+from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, default_face_id
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 from kqcircuits.klayout_view import KLayoutView

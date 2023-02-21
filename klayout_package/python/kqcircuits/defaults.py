@@ -21,34 +21,12 @@
 Defines values for things such as default layers, paths, and default sub-element types.
 """
 import os
-import platform
 import subprocess
 from pathlib import Path
 
-from kqcircuits.pya_resolver import pya, is_standalone_session
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.import_helper import module_from_file
 
-
-def klayout_executable_command():
-    """Returns the command (string) needed to run klayout executable in the current OS."""
-    name = platform.system()
-
-    if is_standalone_session():
-        # Assume KLayout is installed in the default location
-        if name == "Windows":
-            klayout_path = Path(os.getenv("APPDATA")).joinpath("KLayout")
-        elif name == "Darwin":
-            klayout_path = Path("/Applications/klayout.app/Contents/MacOS")
-        else:
-            klayout_path = Path("")
-    else:
-        # The path of the currently running KLayout application
-        klayout_path = Path(pya.Application.instance().inst_path())
-
-    if name == "Windows":
-        return str(klayout_path.joinpath("klayout_app.exe"))
-    else:
-        return str(klayout_path.joinpath("klayout"))
 
 _kqcircuits_path = Path(os.path.dirname(os.path.realpath(__file__)))
 # workaround for Windows because os.path.realpath doesn't work there before Python 3.8

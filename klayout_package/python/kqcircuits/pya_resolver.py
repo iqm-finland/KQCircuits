@@ -22,11 +22,17 @@ Without this module, the API would need to be imported using ``import pya`` for 
 ``import klayout.db`` for usage with standalone klayout package. To make it simple to create a python module for both
 use cases, this module automatically imports the correct module and exposes it as ``pya``.
 
+It also contains convenience functions to find the KLayout executable and the running session type.
+
 Usage:
     from kqcircuits.pya_resolver import pya
 
 """
 
+import os
+import platform
+from pathlib import Path
+from shutil import which
 try:
     import pya
     import pya as lay  # pylint: disable=unused-import
@@ -37,3 +43,25 @@ except ImportError:
 
 def is_standalone_session():
     return not hasattr(pya, 'Application')
+
+def klayout_executable_command():
+    """Returns the KLayout executable command's full path in the current OS. Or ``None`` if it is not found."""
+    if is_standalone_session():
+        if platform.system() == "Windows":
+            klayout_path = which("klayout_app.exe")
+            if klayout_path is None:  # try the default location
+                dwp = Path(os.getenv("APPDATA")).joinpath("KLayout/klayout_app.exe")
+                if dwp.is_file():
+                    return str(dwp)
+            return klayout_path
+        klayout_path = which("klayout")  # Linux is simple :)
+        if klayout_path is None and platform.system() == "Darwin":
+            dwp = "/Applications/klayout.app/Contents/MacOS/klayout"
+            if Path(dwp).is_file():
+                return dwp
+            dwp = "/Applications/KLayout/klayout.app/Contents/MacOS/klayout"
+            if Path(dwp).is_file():
+                return dwp
+        return klayout_path
+    else:  # The path of the currently running KLayout application
+        return pya.Application.instance().applicationFilePath()

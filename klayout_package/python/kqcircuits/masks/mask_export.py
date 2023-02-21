@@ -25,10 +25,10 @@ from autologging import logged
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, DRC_PATH, STARTUPINFO, klayout_executable_command
+    default_mask_parameters, default_drc_runset, DRC_PATH, STARTUPINFO
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.klayout_view import resolve_default_layer_info
-from kqcircuits.pya_resolver import pya
+from kqcircuits.pya_resolver import pya, klayout_executable_command
 from kqcircuits.util.area import get_area_and_density
 from kqcircuits.util.count_instances import count_instances_in_cell
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder

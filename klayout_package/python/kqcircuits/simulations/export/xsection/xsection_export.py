@@ -23,8 +23,8 @@ import os
 import subprocess
 from pathlib import Path
 from typing import Callable, List, Tuple, Union
-from kqcircuits.defaults import klayout_executable_command, STARTUPINFO, XSECTION_PROCESS_PATH
-from kqcircuits.pya_resolver import pya
+from kqcircuits.defaults import STARTUPINFO, XSECTION_PROCESS_PATH
+from kqcircuits.pya_resolver import pya, klayout_executable_command
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.simulations.simulation import Simulation

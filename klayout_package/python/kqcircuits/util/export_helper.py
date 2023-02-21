@@ -28,9 +28,9 @@ from autologging import logged
 
 from kqcircuits.elements.element import get_refpoints
 from kqcircuits.defaults import default_layers, TMP_PATH, STARTUPINFO, default_probe_types, default_probe_suffixes, \
-    klayout_executable_command, VERSION_PATHS
+    VERSION_PATHS
 from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
-from kqcircuits.pya_resolver import pya, is_standalone_session
+from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executable_command
 
 
 @logged
