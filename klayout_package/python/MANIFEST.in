@@ -1,0 +1,4 @@
+# Non-Python files that are part of the package
+include kqcircuits/elements/daisy_woven.oas
+include kqcircuits/layer_config/default_layer_props.lyp
+include kqcircuits/simulations/export/sonnet/template.son

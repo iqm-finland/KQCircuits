@@ -90,8 +90,7 @@ out KQCircuits under some different name::
 
     git clone https://github.com/iqm-finland/KQCircuits KQC_2nd
 
-KLayout needs to know about this secondary environment, run it with :git_url:`startkl.py` or by manualy
-setting the environment variable ``KLAYOUT_HOME``::
+KLayout needs to know about this secondary environment, for example:
 
     KLAYOUT_HOME=~/.klayout_alt/KQC_2nd klayout
 

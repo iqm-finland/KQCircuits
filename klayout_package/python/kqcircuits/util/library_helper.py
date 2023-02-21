@@ -95,9 +95,7 @@ def load_libraries(flush=False, path=""):
             if lib_path == path:
                 return {key: value[0] for key, value in _kqc_libraries.items()}
 
-    pcell_classes = _get_all_pcell_classes(flush, path)
-
-    for cls, _ in pcell_classes:
+    for cls in _get_all_pcell_classes(flush, path):
 
         library_name = cls.LIBRARY_NAME
         library_path = cls.LIBRARY_PATH
@@ -286,7 +284,7 @@ def _get_all_pcell_classes(reload=False, path=""):
         path: path (relative to SRC_PATH) from which the classes are searched
 
     Returns:
-        List of the PCell (class, module path) tuples
+        List of the PCell classes
     """
     pcell_classes = []
 
@@ -315,7 +313,7 @@ def _get_all_pcell_classes(reload=False, path=""):
 
                 classes = _get_pcell_classes(module)
                 if classes:
-                    pcell_classes.append((classes[-1], mp))  # touple of class and its file path
+                    pcell_classes.append(classes[-1])
 
     return pcell_classes
 

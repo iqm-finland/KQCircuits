@@ -31,7 +31,7 @@ Usage:
 
     To set up a secondary klayout environment just run it from a differently named directory, like
     KQcircuits_2. To use this secondary environment with KLayout the KLAYOUT_HOME environment
-    variable needs to point to it, or just use the startkl.py script.
+    variable needs to point to it.
 """
 
 

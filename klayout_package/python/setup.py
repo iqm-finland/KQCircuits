@@ -35,13 +35,16 @@ setup(
     version=version,
     cmdclass=cmdclass,
     description="KQCircuits is a KLayout/Python-based superconducting quantum circuit library developed by IQM.",
+    long_description=open('README.md').read(),  # pylint: disable=consider-using-with
+    long_description_content_type='text/markdown',
     author="IQM Finland Oy",
     author_email="kqcircuits@meetiqm.com",
-    url="meetiqm.com",
+    url="https://iqm-finland.github.io/KQCircuits/",
     packages=find_packages(),
+    include_package_data=True,
     python_requires=">=3.6.9",
-    install_requires=[                # Record dependencies in kqcircuits/util/dependecies.py too
-        "klayout>=0.26",
+    install_requires=[                # Record dependencies in kqcircuits/util/dependencies.py too
+        "klayout>=0.28",
         "numpy>=1.16",
         "Autologging~=1.3",
         "scipy>=1.2",
@@ -55,6 +58,7 @@ setup(
                   "networkx>=2.7", "matplotlib>=3.5.1", "nbqa~=1.3"],
         "notebooks": ["jupyter~=1.0.0", "klayout>=0.28"],
         "graphs": ["networkx>=2.7", "matplotlib>=3.5.1"],
+        "simulations": ["gmsh>=4.11.1", "pandas>=1.5.3"],
     },
     entry_points={
         'console_scripts':[

@@ -112,7 +112,6 @@ jobs:
         run: ci/init_kqc.sh
       - name: Make docs
         run: |
-          Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
           cd docs
           make html SPHINXOPTS="-W --keep-going"
       - name: Docs to artifact
@@ -128,8 +127,6 @@ jobs:
     container: ghcr.io/iqm-finland/kqcircuits
     steps:
       - uses: actions/checkout@v2
-      - name: Init KQCircuits
-        run: ci/init_kqc.sh
       - name: Run copyright headers check
         run: >
           python ci/check_copyright_headers.py --exclude-paths
@@ -142,10 +139,41 @@ jobs:
     container: ghcr.io/iqm-finland/kqcircuits
     steps:
       - uses: actions/checkout@v2
-      - name: Init KQCircuits
-        run: ci/init_kqc.sh
       - name: Run license check
         run: sha256sum -c ci/license_manifest.txt
+
+  verify_layer_properties:
+    name: Verify layer properties
+    runs-on: ubuntu-latest
+    container: ghcr.io/iqm-finland/kqcircuits
+    steps:
+      - uses: actions/checkout@v2
+      - name: Init KQCircuits
+        run: ci/init_kqc.sh
+      - name: Run check_layer_props.py
+        run:  python util/check_layer_props.py
+
+  pypi_package_build_and_publish:
+    name: Build & Publish kqcircuits 🐍 📦
+    needs: [ verify_documentation, verify_layer_properties, test, test_non_linux, shellcheck]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and test
+        run: |
+          git fetch --unshallow --tags
+          echo "GIT_TAG=$(git tag --contains HEAD | grep -P '^v\d+\.\d+\.\d+.*')" >> $GITHUB_ENV
+          python -m pip install --upgrade build twine
+          cd klayout_package/python
+          python -m build
+          python -m twine check dist/*
+      - name: Publish to PyPI
+        if: env.GIT_TAG
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          repository_url: https://upload.pypi.org/legacy/
+          packages_dir: klayout_package/python/dist/
 
   pages:
     name: Deploy documentation

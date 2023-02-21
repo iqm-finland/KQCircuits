@@ -29,7 +29,7 @@ class WaveguideCoplanarSplitter(Element):
     The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the
     parameter lists. Ports are labelled by letters starting from ``a``
 
-    .. MARKERS_FOR_PNG -15.1,3.96,-9.91,6.96 -5.85,0,2.8,4.93
+    .. MARKERS_FOR_PNG -9,4 -1,-8 9,9
     """
     lengths = Param(pdt.TypeList, "Waveguide length per port, measured from origin", [11, 11, 11])
     angles = Param(pdt.TypeList, "Angle of each port (degrees)", [0, 180, 270])

@@ -16,16 +16,19 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-# Helper script to create a .png image of the given pcell.
+# Helper script to create a .png image and .oas export of the given pcell.
 #
-# Specify library, class name and destination directory for the .png file. If element file path is
-# also given then rulers showing important sizes are also drawn on the .png file in the specified
-# places.
+# Specify library, class name and destination directory for the .png file:
 #
-# klayout -z -nc -r docs/pcell2png.py -rd lib_name=kqcircuits.elements.finger_capacitor_square
-#         -rd cls_name=FingerCapacitorSquare -rd dest_dir=tmp [-rd cls_path=<path of element file>]
+#     klayout -z -nc -r docs/pcell2png.py -rd lib_name=kqcircuits.elements.finger_capacitor_square
+#             -rd cls_name=FingerCapacitorSquare -rd dest_dir=/tmp
+#
+# Or without klayout:
+#
+#     python docs/pcell2png.py kqcircuits.elements.finger_capacitor_square FingerCapacitorSquare /tmp
 
 
+from sys import argv
 from importlib import import_module
 from pathlib import Path
 
@@ -36,16 +39,13 @@ from kqcircuits.pya_resolver import pya
 
 # Ruler places are specified as space delimited x,y coordinate pairs after a "MARKERS_FOR_PNG" tag.
 # Ruler places can also be added manually using x1,y1,x2,y2 format.
-def add_rulers(path, view):
-    if path == "":
+def add_rulers(cls, view):
+    if not cls.__doc__:
         return
-
     rulers = []
-    with open(path) as f:
-        for line in f:
-             a = line.split("MARKERS_FOR_PNG ")[1:]
-             if a:
-                rulers += a[0].split(' ')
+    markers = cls.__doc__.split("MARKERS_FOR_PNG ")[1:]
+    if markers:
+        rulers += markers[0].split()
 
     #Check for autoruler in x,y format or manual ruler in x1,y1,x2,y2 format
     for ruler in rulers:
@@ -61,11 +61,14 @@ def add_rulers(path, view):
             ant.fmt = "$(sprintf('%.1f',D))"
             view.layout_view.insert_annotation(ant)
 
+# Get arguments from command line, if not already processed by KLayout.
+lib_name = lib_name if "lib_name" in locals() else argv[1]
+cls_name = cls_name if "cls_name" in locals() else argv[2]
+dest_dir = dest_dir if "dest_dir" in locals() else argv[3]
 
 module = import_module(lib_name)
 cls = getattr(module, cls_name)
 path = Path(dest_dir)
-cls_path = cls_path if "cls_path" in locals() else ""
 view = KLayoutView()
 layout = view.layout
 cell = cls.create(layout)
@@ -86,6 +89,6 @@ for layer in layers_to_remove: layout.delete_layer(layout.layer(default_layers[l
 view.focus()
 
 # export as .png file
-add_rulers(cls_path, view)
+add_rulers(cls, view)
 size = 1000 if lib_name.find(".chips.") != -1 else 500
 view.export_pcell_png(path, view.top_cell, cls.__module__, max_size=size)

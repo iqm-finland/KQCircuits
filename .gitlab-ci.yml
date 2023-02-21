@@ -69,7 +69,6 @@ layer_properties:
 verify_documentation:
   stage: test
   script:
-    - Xvfb :99 -screen 0 640x480x24 -nolisten tcp &
     - cd docs
     - make html SPHINXOPTS="-W --keep-going"
   after_script:
@@ -81,6 +80,16 @@ verify_documentation:
     - docs/_build/html/
     expire_in: 1 week
     when: always
+  only:
+    - merge_requests
+
+check_package_building:
+  stage: test
+  script:
+    - python3 -m pip install --upgrade build twine
+    - cd klayout_package/python
+    - python3 -m build
+    - python3 -m twine check dist/*
   only:
     - merge_requests
 

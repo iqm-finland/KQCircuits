@@ -34,27 +34,24 @@ if os.name == "nt" and os.path.islink(Path(__file__).parent):
     _kqcircuits_path = Path(os.readlink(str(Path(__file__).parent)))
 
 # project paths
-ROOT_PATH = _kqcircuits_path.parents[2]
-if ROOT_PATH.parts[-1] == "salt":
-    # need different paths for KQC Salt package
-    ROOT_PATH = _kqcircuits_path.parents[1]
-    PY_PATH = ROOT_PATH.joinpath("python")
-elif _kqcircuits_path.parents[0].name == "python" and _kqcircuits_path.parents[1].name in ("KLayout", ".klayout"):
-    # allow using KQC by having kqcircuits and scripts folders directly in KLayout python folder
-    if _kqcircuits_path.parents[1].name == "KLayout":
-        ROOT_PATH = ROOT_PATH.joinpath("KLayout")
-    else:
-        ROOT_PATH = ROOT_PATH.joinpath(".klayout")
-    PY_PATH = ROOT_PATH.joinpath("python")
-else:
-    # for normal installation
-    PY_PATH = ROOT_PATH.joinpath("klayout_package").joinpath("python")
-SRC_PATHS = [PY_PATH.joinpath("kqcircuits")]
-TMP_PATH = Path(os.getenv('KQC_TMP_PATH', ROOT_PATH.joinpath("tmp")))
+SRC_PATHS = [_kqcircuits_path]
+ROOT_PATH = Path(os.getenv('KQC_ROOT_PATH', os.getcwd()))  # "current dir" or set by optional KQC_ROOT_PATH
+if _kqcircuits_path.parts[-3] == "klayout_package":  # developer setup
+    ROOT_PATH = _kqcircuits_path.parents[2]
 
-TMP_PATH.mkdir(exist_ok=True)
-SCRIPTS_PATH = PY_PATH.joinpath("scripts")
-DRC_PATH = PY_PATH.joinpath("drc")
+TMP_PATH = Path(os.getenv('KQC_TMP_PATH', ROOT_PATH.joinpath("tmp")))  # specify alternative tmp directory
+_py_path = ROOT_PATH.joinpath("klayout_package/python")
+
+if _kqcircuits_path.parts[-4] == "salt":  # KQC Salt package
+    ROOT_PATH = _kqcircuits_path.parents[1]
+    _py_path = ROOT_PATH.joinpath("python")
+    TMP_PATH = _kqcircuits_path.parents[3].joinpath("python/tmp")  # local tmp dir for salt package
+
+SCRIPTS_PATH = _py_path.joinpath("scripts")
+DRC_PATH = _py_path.joinpath("drc")
+
+TMP_PATH.mkdir(parents=True, exist_ok=True)  # TODO move elsewhere?
+
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]
 ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")]
 XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")

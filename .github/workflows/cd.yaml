@@ -74,7 +74,7 @@ jobs:
       - name: Login and Deploy Container
         working-directory: ./singularity/libexec
         shell: bash
-        run: |         
+        run: |
           echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -i -u ${{ github.repository_owner }} \
             --password-stdin oras://ghcr.io
           # loop over tags separated with newlines
