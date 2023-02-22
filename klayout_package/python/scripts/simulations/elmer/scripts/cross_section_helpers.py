@@ -32,7 +32,9 @@ try:
 except ImportError:
     import klayout.db as pya
 
-angular_frequency = 5e9  # a constant for inductance simulations (technically is needed but doesn't affect results)
+angular_frequency = 5e2  # a constant for inductance simulations.
+                         # technically is needed but doesn't affect results
+                         # howewer, if very high, might have an unwanted effect
 
 
 def produce_cross_section_mesh(json_data, msh_file):

@@ -18,9 +18,11 @@ from pathlib import Path
 import subprocess
 import platform
 import sys
+import logging
 
-def export_and_run(export_script: Path, export_path: Path, quiet:
-        bool=False, args=None):
+logging.basicConfig(level=logging.WARN, stream=sys.stdout)
+
+def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, args=None):
     """
     Exports and runs a KQC simulation.
 
@@ -42,7 +44,7 @@ def export_and_run(export_script: Path, export_path: Path, quiet:
         args = []
     else:
         if '--simulation-export-path' in args:
-            print("--simulation-export-path is not allowed!")
+            logging.error("--simulation-export-path is not allowed!")
             sys.exit()
 
     subprocess.call([sys.executable, export_script,
