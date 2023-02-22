@@ -76,6 +76,7 @@ TMP_PATH = Path(os.getenv('KQC_TMP_PATH', ROOT_PATH.joinpath("tmp")))
 
 TMP_PATH.mkdir(exist_ok=True)
 SCRIPTS_PATH = PY_PATH.joinpath("scripts")
+DRC_PATH = PY_PATH.joinpath("drc")
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]
 ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")]
 XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")
@@ -107,7 +108,7 @@ default_marker_type = "Marker Standard"
 default_junction_test_pads_type = "Junction Test Pads Simple"
 default_tsv_type = "Tsv Standard"
 
-default_drc_runset = "example.drc"
+default_drc_runset = "example.lydrc"
 
 # default elements to breakdown before netlist export
 # list of strings

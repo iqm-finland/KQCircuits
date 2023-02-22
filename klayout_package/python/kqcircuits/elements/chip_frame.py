@@ -120,7 +120,7 @@ class ChipFrame(Element):
         self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
         self.cell.shapes(self.get_layer("base_metal_gap_for_EBL")).insert(shape)
 
-        protection = pya.DPolygon(self._border_points(self.dice_width + self.dice_grid_margin))
+        protection = pya.DPolygon(self._border_points(self.dice_width + self.dice_grid_margin, self.margin))
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(protection)
 
         box_points = self._box_points()
@@ -141,15 +141,17 @@ class ChipFrame(Element):
         y_max = max(self.box.p1.y, self.box.p2.y)
         return x_min, x_max, y_min, y_max
 
-    def _border_points(self, w):
-        """Returns a set of points forming frame with outer edge on the chip boundaries, and frame thickness `w`."""
+    def _border_points(self, w, extension=0):
+        """Returns a set of points forming frame with outer edge on the chip boundaries, and frame thickness ``w``.
+        Optional parameter ``extension`` extends the outer edge of the box.
+        """
         x_min, x_max, y_min, y_max = self._box_points()
         points = [
-            pya.DPoint(x_min, y_min),
-            pya.DPoint(x_max, y_min),
-            pya.DPoint(x_max, y_max),
-            pya.DPoint(x_min, y_max),
-            pya.DPoint(x_min, y_min),
+            pya.DPoint(x_min - extension, y_min - extension),
+            pya.DPoint(x_max + extension, y_min - extension),
+            pya.DPoint(x_max + extension, y_max + extension),
+            pya.DPoint(x_min - extension, y_max + extension),
+            pya.DPoint(x_min - extension, y_min - extension),
 
             pya.DPoint(x_min + w, y_min + w),
             pya.DPoint(x_min + w, y_max - w),
