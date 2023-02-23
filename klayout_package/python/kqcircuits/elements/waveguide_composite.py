@@ -245,16 +245,71 @@ class WaveguideComposite(Element):
         return cell
 
     @staticmethod
+    def get_segment_cells(cell):
+        """Get the subcells of a ``WaveguideComposite`` cell, ordered by node index.
+
+        The subcells include ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` cells for straight,
+        tapered and meandering segments, respectively, and any element cells that were inserted explicitly
+        (``element`` argument) or implicitly (changing ``a``, ``b`` or ``face_id``) at any ``Node``.
+
+        The ``node_index`` returned with each subcell is an index to the ``nodes`` parameter of the
+        ``WaveguideComposite`` cell. It points to the node that _created_ the subcell, which is the node following a
+        segment for regular ``WaveguideCoplanar`` segments, and the node that specified the element or parameter change
+        otherwise.
+
+        Note that there may be multiple subcells per node, and some nodes may not have associated subcells (in
+        particular, regular ``WaveguideCoplanar`` segments are merged when possible). Subscells are returned in the
+        order in which they appear in the waveguide.
+
+        Args:
+            cell: A WaveguideComposite cell. Can be a PCell or static cell created from a PCell.
+
+        Returns: A list of tuples (node_index: int, subcell: pya.Cell) ordered by node_index.
+        """
+        layout = cell.layout()
+
+        segment_data = []
+
+        for inst in cell.each_inst():
+            # Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235
+            child_cell = layout.cell(inst.cell_index)
+
+            node_index = inst.property("waveguide_composite_node_index")
+            if node_index is not None:
+                segment_data.append((node_index, child_cell))
+
+        return list(sorted(reversed(segment_data), key=lambda x: x[0]))
+
+    @staticmethod
     def get_segment_lengths(cell):
-        """ Retreives the segment lengths of each waveguide segment in a WaveguideComposite cell
+        """ Retrieves the segment lengths of each waveguide segment in a WaveguideComposite cell.
+
+        Waveguide segments are ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` subcells.
+        This method returns a list with the same length as the ``nodes`` parameter, where each element is the total
+        length of all waveguides directly preceding and/or defined in that node. For example, for a taper node both the
+        preceding regular waveguide and the taper itself are counted.
+
+        Note that ``WaveguideComposite`` merges consecutive waveguide segments if they have no special elements. As
+        a consequence, the corresponding waveguide lengths all accumulate in the next index which has a taper, meander
+        or other element, and the length for nodes that contain ony ``WaveguideCoplanar`` is reported as 0.
+
+        Args:
+            cell: A WaveguideComposite cell. Can be a PCell or static cell created from a PCell.
+
+        Returns: A list waveguide lengths per node
         """
 
         # Measure segment lengths, counting only "regular waveguides"
-        layout = cell.layout()
-        # Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235
-        child_cells = [layout.cell(inst.cell_index) for inst in cell.each_inst()]
-        segment_lengths = [get_cell_path_length(child_cell) for child_cell in child_cells
-                           if child_cell.name.split('$')[0] == "Waveguide Coplanar"]
+        waveguide_segment_types = {"Waveguide Coplanar", "Waveguide Coplanar Taper", "Meander"}
+
+        segment_data = WaveguideComposite.get_segment_cells(cell)
+        if len(segment_data) == 0:
+            return []
+
+        segment_lengths = [0] * (segment_data[-1][0] + 1)
+        for node_index, child_cell in segment_data:
+            if child_cell.name.split('$')[0] in waveguide_segment_types:
+                segment_lengths[node_index] += get_cell_path_length(child_cell)
 
         return segment_lengths
 
@@ -517,7 +572,8 @@ class WaveguideComposite(Element):
             trans *= pya.DTrans(-rel_ref[before if ind == 0 else after])
 
         # Insert element cell with computed transformation
-        _, ref = self.insert_cell(cell, trans)
+        cell_inst, ref = self.insert_cell(cell, trans)
+        cell_inst.set_property("waveguide_composite_node_index", ind)
         if inst_name is not None:
             for name, value in ref.items():
                 self._child_refpoints[f'{inst_name}_{name}'] = value
@@ -551,7 +607,8 @@ class WaveguideComposite(Element):
         if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
             params['term2'] = 0
         wg_cell = self.add_element(WaveguideCoplanar, **params)
-        self.insert_cell(wg_cell)
+        cell_inst, _ = self.insert_cell(wg_cell)
+        cell_inst.set_property("waveguide_composite_node_index", end_index)
 
     def _add_waveguide(self, end_index, end_pos=None, end_dir=None):
         """Creates waveguide from `self._wg_start_idx` until `end_index`.
@@ -672,8 +729,9 @@ class WaveguideComposite(Element):
                     else:
                         meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
 
-                self.insert_cell(Meander, start=[meander_start.x, meander_start.y], end=[meander_end.x, meander_end.y],
-                                 length=meander_len, **node1.params)
+                cell_inst, _ = self.insert_cell(Meander, start=[meander_start.x, meander_start.y],
+                                                end=[meander_end.x, meander_end.y], length=meander_len, **node1.params)
+                cell_inst.set_property("waveguide_composite_node_index", end_index)
                 wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])
                 self._insert_wg_cell(wg_points, n0, n1)
                 n0 = n1

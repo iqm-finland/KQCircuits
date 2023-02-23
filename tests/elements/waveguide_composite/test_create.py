@@ -91,37 +91,6 @@ def nodes2():
     ]
 
 
-@pytest.fixture
-def nodes_with_expected_segment_lengths():
-    """
-    Node list for which the segment_lengths() is easy to predict
-
-    Returns: Tuple (nodes, expected_segment_lengths)
-    """
-
-    nodes = [
-        # Start at x position 0
-        Node((0, 0)),
-        Node((100, 0)),  # Regular nodes do not end segment
-        Node((200, 0)),
-        Node((300, 0), WaveguideCoplanarTaper, a=6, b=3, taper_length=50),  # Ends segment 0 at position 300
-
-        # Position after taper is 350
-        Node((400, 0), ab_across=True),  # Airbridge across does not end segment
-        Node((600, 0), WaveguideCoplanarSplitter, angles=[0, 180, 60], lengths=[50, 100, 75]),  # Ends segment 1 at 550
-
-        # Position after splitter is 700
-        Node((1000, 0), FingerCapacitorSquare, fixed_length=160),  # Ends segment 2 at 920
-
-        # Position after capacitor is 1080
-        Node((1200, 0)),  # Ends segment 3 at 1200
-    ]
-
-    expected_segment_lengths = [300 - 0, 550 - 350, 920 - 700, 1200 - 1080]
-
-    return nodes, expected_segment_lengths
-
-
 def test_too_few_nodes(capfd):
     layout = pya.Layout()
     WaveguideComposite.create(layout, nodes=[Node((0, 0))])
@@ -236,14 +205,3 @@ def test_length_before_diagonal_non_90_deg_turns():
     relative_length_error = abs(true_length - length) / length
 
     assert relative_length_error < relative_length_tolerance
-
-
-def test_segment_lengths(nodes_with_expected_segment_lengths):
-    layout = pya.Layout()
-    nodes, expected_segment_lengths = nodes_with_expected_segment_lengths
-
-    wg = WaveguideComposite.create(layout, nodes=nodes)
-
-    tolerance = 1e-4
-    assert (all(abs(real / expected - 1) < tolerance for (real, expected) in
-                zip(wg.segment_lengths(), expected_segment_lengths)))
