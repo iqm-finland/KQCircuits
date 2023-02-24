@@ -222,7 +222,7 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
         res += sif_block('Solver 1', solver_1_common_terms + [
             'Linear System Iterative Method = BiCGStabL',
             'Linear System Max Iterations = 1000',
-            'Linear System Convergence Tolerance = 1.0e-10',
+            'Linear System Convergence Tolerance = 1.0e-14',
             'BiCGStabl polynomial degree = 2',
             'Linear System Preconditioning = ILU0',
             'Linear System ILUT Tolerance = 1.0e-03',
@@ -239,7 +239,7 @@ def sif_capacitance(json_data, folder_path, with_zero=False):
             'Optimize Bandwidth = True',
             'Linear System Iterative Method = GCR',
             'Linear System Max Iterations = 100',
-            'Linear System Convergence Tolerance = 1.0e-09',
+            'Linear System Convergence Tolerance = 1.0e-14',
             'Linear System Abort Not Converged = False',
             'Linear System Residual Output = 10',
             'Linear System Preconditioning = multigrid !ILU2',
@@ -333,7 +333,10 @@ def sif_inductance(json_data, folder_path, def_file):
         'Equation = Circuits',
         'Variable = X',
         'No Matrix = Logical True',
-        'Procedure = "CircuitsAndDynamics" "CircuitsAndDynamicsHarmonic"'])
+        'Procedure = "CircuitsAndDynamics" "CircuitsAndDynamicsHarmonic"',
+        '$pn={p_element_order}'.format(**json_data),
+        'Element = p:$pn',
+        ])
     res += sif_block('Solver 2', [
         'Equation = "Mag"',
         'Variable = A[A re:1 A im:1]',
@@ -345,13 +348,15 @@ def sif_inductance(json_data, folder_path, def_file):
         'Linear System Iterative Method = BicgStabL',
         'Linear System Preconditioning = None',
         'Linear System Complex = Logical True',
-        'Linear System Convergence Tolerance = 1.e-7',
+        'Linear System Convergence Tolerance = 1.e-14',
         'Linear System Max Iterations = 3000',
         'Linear System Residual Output = 10',
         'Linear System Abort not Converged = False',
         'Linear System ILUT Tolerance=1e-8',
         'BicgStabL Polynomial Degree = 6',
-        'Steady State Convergence Tolerance = 1e-06'])
+        'Steady State Convergence Tolerance = 1e-06',
+        'Element = p:$pn',
+        ])
     res += sif_block('Solver 3', [
         'Exec Solver = Always',
         'Equation = "MGDynamicsCalc"',
@@ -366,7 +371,9 @@ def sif_inductance(json_data, folder_path, def_file):
         'Linear System Residual Output = 0',
         'Linear System Max Iterations = 5000',
         'Linear System Iterative Method = CG',
-        'Linear System Convergence Tolerance = 1.0e-8'])
+        'Linear System Convergence Tolerance = 1.0e-8',
+        'Element = p:$pn',
+        ])
     res += sif_block('Solver 4', [
         'Exec Solver = Always',
         'Equation = "ResultOutput"',
