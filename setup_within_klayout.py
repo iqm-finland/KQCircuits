@@ -73,6 +73,9 @@ if __name__ == "__main__":
         pip_args = "requirements_within_klayout_unix.txt"  # Linux
         if platform == "darwin":  # macOS
             td = get_klayout_packages_path("/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions")
+            if not os.path.exists(td):
+                # Homebrew installs under /Applications/KLayout/klayout.app
+                td = get_klayout_packages_path("/Applications/KLayout/klayout.app/Contents/Frameworks/Python.framework/Versions")
             # KLayout may use either its own site-packages or the system site-packages, depending on the build
             if os.path.exists(td):
                 target_dir = td
