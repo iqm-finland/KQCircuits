@@ -524,8 +524,11 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
-<div class="viewcode-block" id="export_and_run"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.export_and_run.html#kqcircuits.simulations.export.export_and_run.export_and_run">[docs]</a><span class="k">def</span> <span class="nf">export_and_run</span><span class="p">(</span><span class="n">export_script</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">export_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="export_and_run"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.export_and_run.html#kqcircuits.simulations.export.export_and_run.export_and_run">[docs]</a><span class="k">def</span> <span class="nf">export_and_run</span><span class="p">(</span><span class="n">export_script</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">export_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports and runs a KQC simulation.</span>
 
@@ -533,14 +536,25 @@
 <span class="sd">        export_script(Path): path to the simulation export script</span>
 <span class="sd">        export_path(Path): path where simulation files are exported</span>
 <span class="sd">        quiet(bool): if True all the GUI dialogs are shown, otherwise not.</span>
+<span class="sd">        args(list): a list of strings describing arguments to be passed to the simulation script</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        a tuple containing</span>
+
+<span class="sd">            * export_script(Path): path to the simulation export script</span>
+<span class="sd">            * export_path(Path): path where simulation files are exported</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">quiet</span><span class="p">:</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">export_script</span><span class="p">,</span>
-            <span class="s1">&#39;--simulation-export-path&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">),</span> <span class="s1">&#39;-q&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">export_script</span><span class="p">,</span>
-            <span class="s1">&#39;--simulation-export-path&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="s1">&#39;--simulation-export-path&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;--simulation-export-path is not allowed!&quot;</span><span class="p">)</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">export_script</span><span class="p">,</span>
+        <span class="s1">&#39;--simulation-export-path&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">)]</span> <span class="o">+</span> <span class="n">args</span> <span class="o">+</span> <span class="p">([</span><span class="s1">&#39;-q&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="p">[]))</span>
 
 
     <span class="k">if</span> <span class="p">(</span><span class="n">export_path</span> <span class="o">/</span> <span class="s1">&#39;simulation.sh&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
@@ -553,7 +567,9 @@
     <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>  <span class="c1"># macOS</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">simulation_shell_script</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>  <span class="c1"># Linux</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">simulation_shell_script</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">))</span></div>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="s1">&#39;bash&#39;</span><span class="p">,</span> <span class="n">simulation_shell_script</span><span class="p">],</span> <span class="n">cwd</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">export_script</span><span class="p">,</span> <span class="n">export_path</span></div>
 </pre></div>
 
            </div>

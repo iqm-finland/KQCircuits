@@ -540,7 +540,9 @@ generation for simulation files.
 <li><p><code class="docutils literal notranslate"><span class="pre">create_xsections_from_simulations</span></code>, a high level method to take a cross-section
 for each simulation object using two <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> values</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">xsection_call</span></code>, a low level method requiring a path to the input and output
-OAS files, two <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> values and, optionally, a path to a process file</p></li>
+OAS files, two <code class="docutils literal notranslate"><span class="pre">DPoint</span></code> values and, optionally, a path to a process file.
+If <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/xsection/kqc_process.xs">xsection/kqc_process.xs</a> process file is used, make sure to
+provide a path to the parameters json file as well.</p></li>
 </ul>
 </div></blockquote>
 <p>An example of using XSection tool to produce cross-section simulation files is

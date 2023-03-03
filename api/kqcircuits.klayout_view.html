@@ -550,6 +550,11 @@ top cell. Defaults to True if <code class="docutils literal notranslate"><span c
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.layout_view">
+<span class="sig-name descname"><span class="pre">layout_view</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">klayout.laycore.LayoutView</span></em><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.layout_view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.insert_cell">
 <span class="sig-name descname"><span class="pre">insert_cell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inst_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rec_levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.insert_cell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.insert_cell" title="Permalink to this definition">¶</a></dt>
@@ -597,6 +602,12 @@ Default is None</p></li>
 <dd><p>In KLayout, show this LayoutView as the current in the main window.</p>
 <p>In standalone python, display an image of the view. Requires IPython / Jupyter. Keyword arguments are passed
 to <code class="docutils literal notranslate"><span class="pre">KLayoutView.get_pixels</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.klayout_view.KLayoutView.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#KLayoutView.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.KLayoutView.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the current LayoutView.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -738,21 +749,9 @@ KLayoutView instance, use the <code class="docutils literal notranslate"><span c
 </dd></dl>
 
 <dl class="py exception">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.ViewException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">ViewException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#ViewException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.ViewException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-<dl class="py exception">
 <dt class="sig sig-object py" id="kqcircuits.klayout_view.MissingUILibraryException">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">MissingUILibraryException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Missing</span> <span class="pre">KLayout</span> <span class="pre">UI</span> <span class="pre">library.'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#MissingUILibraryException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.MissingUILibraryException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="kqcircuits.klayout_view.InvalidViewException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.klayout_view.</span></span><span class="sig-name descname"><span class="pre">InvalidViewException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">view</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/klayout_view.html#InvalidViewException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.klayout_view.InvalidViewException" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#kqcircuits.klayout_view.ViewException" title="kqcircuits.klayout_view.ViewException"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.klayout_view.ViewException</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="py function">

@@ -517,6 +517,7 @@
 <p>Without this module, the API would need to be imported using <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pya</span></code> for usage in KLayout Editor and using
 <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">klayout.db</span></code> for usage with standalone klayout package. To make it simple to create a python module for both
 use cases, this module automatically imports the correct module and exposes it as <code class="docutils literal notranslate"><span class="pre">pya</span></code>.</p>
+<p>It also contains convenience functions to find the KLayout executable and the running session type.</p>
 <dl class="simple">
 <dt>Usage:</dt><dd><p>from kqcircuits.pya_resolver import pya</p>
 </dd>
@@ -525,6 +526,12 @@ use cases, this module automatically imports the correct module and exposes it a
 <dt class="sig sig-object py" id="kqcircuits.pya_resolver.is_standalone_session">
 <span class="sig-prename descclassname"><span class="pre">kqcircuits.pya_resolver.</span></span><span class="sig-name descname"><span class="pre">is_standalone_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/pya_resolver.html#is_standalone_session"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.pya_resolver.is_standalone_session" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.pya_resolver.klayout_executable_command">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.pya_resolver.</span></span><span class="sig-name descname"><span class="pre">klayout_executable_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/pya_resolver.html#klayout_executable_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.pya_resolver.klayout_executable_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the KLayout executable command’s full path in the current OS. Or <code class="docutils literal notranslate"><span class="pre">None</span></code> if it is not found.</p>
+</dd></dl>
 
 <img alt="../_images/kqcircuits.pya_resolver.png" src="../_images/kqcircuits.pya_resolver.png" />
 </div>

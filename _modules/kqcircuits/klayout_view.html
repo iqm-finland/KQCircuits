@@ -562,6 +562,8 @@
 <span class="sd">    Several methods are available to export PNG files of the current view or specific cells and layers.</span>
 <span class="sd">    In Jupyter notebooks, the ``show`` method displays the current view inline in the notebook.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lay</span><span class="p">,</span> <span class="s2">&quot;LayoutView&quot;</span><span class="p">):</span>
+        <span class="n">layout_view</span><span class="p">:</span> <span class="n">lay</span><span class="o">.</span><span class="n">LayoutView</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">current</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">initialize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;#ffffff&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a ``KLayoutView`` instance.</span>
@@ -655,6 +657,13 @@
                 <span class="k">if</span> <span class="n">main_window</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="p">:</span>
                     <span class="n">main_window</span><span class="o">.</span><span class="n">current_view_index</span> <span class="o">=</span> <span class="n">i</span>
                     <span class="k">break</span></div>
+
+<div class="viewcode-block" id="KLayoutView.close"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Closes the current LayoutView.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">destroy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lay</span><span class="o">.</span><span class="n">MainWindow</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">close_current_view</span><span class="p">()</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cell_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;lay.CellView&quot;</span><span class="p">:</span>
@@ -772,6 +781,8 @@
             <span class="n">width</span> <span class="o">=</span> <span class="n">height</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_width</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_height</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">height</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">height</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_height</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">viewport_width</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">layers_set</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">layers_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">layers_set</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">export_callback</span><span class="p">():</span>
             <span class="n">pixel_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">get_pixels</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
@@ -818,7 +829,7 @@
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">name</span>
         <span class="k">if</span> <span class="n">layers_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">layers_set</span> <span class="o">=</span> <span class="n">mask_bitmap_export_layers</span>
+            <span class="n">layers_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">)</span> <span class="k">for</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="n">mask_bitmap_export_layers</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">layers_set</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">layer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">layers_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
@@ -832,40 +843,45 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_export_bitmap_configure</span><span class="p">(</span><span class="n">export_callback</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">layers_set</span><span class="p">,</span> <span class="n">z_box</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_export_bitmap_configure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">export_callback</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">layers_set</span><span class="p">,</span> <span class="n">z_box</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Common configuration for export functions &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Common configuration for export functions. &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_visibility_state</span><span class="p">():</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Get the current layer visibility and drawing focus state&quot;&quot;&quot;</span>
+            <span class="n">current_layer_visibility</span> <span class="o">=</span> <span class="p">[</span><span class="n">_layer</span><span class="o">.</span><span class="n">visible</span> <span class="k">for</span> <span class="n">_layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">()]</span>
+            <span class="n">current_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span>
+            <span class="n">current_hier</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">min_hier_levels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">max_hier_levels</span><span class="p">)</span>
+            <span class="n">current_zoom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">box</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">current_layer_visibility</span><span class="p">,</span> <span class="n">current_cell</span><span class="p">,</span> <span class="n">current_zoom</span><span class="p">,</span> <span class="n">current_hier</span>
+
+        <span class="k">def</span> <span class="nf">restore_visibility_state</span><span class="p">(</span><span class="n">layer_visibility</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">hier</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Restore the layer visibility and drawing focus state.</span>
+<span class="sd">            Assumes order of layers has not changed since calling ``get_visibility_state`` &quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">_layer</span><span class="p">,</span> <span class="n">_visible</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">(),</span> <span class="n">layer_visibility</span><span class="p">):</span>
+                <span class="n">_layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">_visible</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">min_hier_levels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">max_hier_levels</span> <span class="o">=</span> <span class="n">hier</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_box</span><span class="p">(</span><span class="n">zoom</span><span class="p">)</span>
+
+        <span class="n">visibility_state</span> <span class="o">=</span> <span class="n">get_visibility_state</span><span class="p">()</span>
+
         <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span>
 
-        <span class="c1"># TODO - undo this side-effect</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">max_hier</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_fit</span><span class="p">()</span>  <span class="c1"># Has to be done also before zoom_box</span>
 
         <span class="k">if</span> <span class="n">z_box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">zoom_box</span><span class="p">(</span><span class="n">z_box</span><span class="p">)</span>
 
-        <span class="c1"># first make all layers visible, then take a screenshot</span>
         <span class="k">if</span> <span class="n">layers_set</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">layers_set</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
-
-            <span class="c1"># TODO - undo this side-effect</span>
             <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
                 <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
 
-            <span class="c1"># hide unwanted layers from the bitmap files</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">layer_to_hide</span> <span class="ow">in</span> <span class="n">all_layers_bitmap_hide_layers</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_layer</span> <span class="o">==</span> <span class="n">layer_to_hide</span><span class="o">.</span><span class="n">layer</span> <span class="ow">and</span> <span class="n">layer</span><span class="o">.</span><span class="n">source_datatype</span> <span class="o">==</span> <span class="n">layer_to_hide</span><span class="o">.</span><span class="n">datatype</span><span class="p">:</span>
                         <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">False</span>
                         <span class="k">break</span>
-
-            <span class="n">export_return</span> <span class="o">=</span> <span class="n">export_callback</span><span class="p">()</span>
-        <span class="c1"># take screenshots of only specific layers</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># get the current visibility condition of the layers</span>
-            <span class="n">current_layer_visibility</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
-                <span class="n">current_layer_visibility</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">visible</span><span class="p">)</span>
-
-            <span class="c1"># only show the wanted layers</span>
             <span class="n">layer_infos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">():</span>
                 <span class="c1"># need to avoid hiding layer groups, because that could hide also layers in layers_set</span>
@@ -882,36 +898,23 @@
                         <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="kc">True</span>
                         <span class="k">break</span>
 
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lay</span><span class="p">,</span> <span class="s2">&quot;Application&quot;</span><span class="p">):</span>
-                <span class="c1"># Make sure the layer property changes are reflected before saving the image</span>
-                <span class="n">lay</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">process_events</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># TODO: Figure out how to make the layer visibility changes appear in standalone mode</span>
-                <span class="k">pass</span>
-            <span class="n">export_return</span> <span class="o">=</span> <span class="n">export_callback</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">lay</span><span class="p">,</span> <span class="s2">&quot;Application&quot;</span><span class="p">):</span>
+            <span class="c1"># Make sure the layer property changes are reflected before saving the image</span>
+            <span class="n">lay</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">process_events</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Undocumented method timer does basically the same thing as process_events in GUI.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">timer</span><span class="p">()</span>
 
-            <span class="c1"># return the layer visibility to before screenshot state</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout_view</span><span class="o">.</span><span class="n">each_layer</span><span class="p">()):</span>
-                <span class="n">layer</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">current_layer_visibility</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">export_return</span> <span class="o">=</span> <span class="n">export_callback</span><span class="p">()</span>
+
+        <span class="n">restore_visibility_state</span><span class="p">(</span><span class="o">*</span><span class="n">visibility_state</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">export_return</span></div>
 
 
-<div class="viewcode-block" id="ViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.ViewException">[docs]</a><span class="k">class</span> <span class="nc">ViewException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="ne">Exception</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="MissingUILibraryException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">[docs]</a><span class="k">class</span> <span class="nc">MissingUILibraryException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
+<div class="viewcode-block" id="MissingUILibraryException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.MissingUILibraryException">[docs]</a><span class="k">class</span> <span class="nc">MissingUILibraryException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Missing KLayout UI library.&quot;</span><span class="p">):</span>
-        <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="InvalidViewException"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.InvalidViewException">[docs]</a><span class="k">class</span> <span class="nc">InvalidViewException</span><span class="p">(</span><span class="n">ViewException</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="p">):</span>
-        <span class="n">ViewException</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
-            <span class="bp">self</span><span class="p">,</span>
-            <span class="s2">&quot;Invalid layout view [</span><span class="si">{}</span><span class="s2">].&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">view</span><span class="p">))</span>
-        <span class="p">)</span></div>
+        <span class="ne">Exception</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="resolve_default_layer_info"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">[docs]</a><span class="nd">@logged</span>

@@ -528,11 +528,17 @@
 <span class="sd">``import klayout.db`` for usage with standalone klayout package. To make it simple to create a python module for both</span>
 <span class="sd">use cases, this module automatically imports the correct module and exposes it as ``pya``.</span>
 
+<span class="sd">It also contains convenience functions to find the KLayout executable and the running session type.</span>
+
 <span class="sd">Usage:</span>
 <span class="sd">    from kqcircuits.pya_resolver import pya</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">which</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">pya</span>
     <span class="kn">import</span> <span class="nn">pya</span> <span class="k">as</span> <span class="nn">lay</span>  <span class="c1"># pylint: disable=unused-import</span>
@@ -543,6 +549,28 @@
 
 <div class="viewcode-block" id="is_standalone_session"><a class="viewcode-back" href="../../api/kqcircuits.pya_resolver.html#kqcircuits.pya_resolver.is_standalone_session">[docs]</a><span class="k">def</span> <span class="nf">is_standalone_session</span><span class="p">():</span>
     <span class="k">return</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="p">,</span> <span class="s1">&#39;Application&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="klayout_executable_command"><a class="viewcode-back" href="../../api/kqcircuits.pya_resolver.html#kqcircuits.pya_resolver.klayout_executable_command">[docs]</a><span class="k">def</span> <span class="nf">klayout_executable_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the KLayout executable command&#39;s full path in the current OS. Or ``None`` if it is not found.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+            <span class="n">klayout_path</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;klayout_app.exe&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">klayout_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># try the default location</span>
+                <span class="n">dwp</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;APPDATA&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;KLayout/klayout_app.exe&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dwp</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">dwp</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">klayout_path</span>
+        <span class="n">klayout_path</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;klayout&quot;</span><span class="p">)</span>  <span class="c1"># Linux is simple :)</span>
+        <span class="k">if</span> <span class="n">klayout_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+            <span class="n">dwp</span> <span class="o">=</span> <span class="s2">&quot;/Applications/klayout.app/Contents/MacOS/klayout&quot;</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">dwp</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">dwp</span>
+            <span class="n">dwp</span> <span class="o">=</span> <span class="s2">&quot;/Applications/KLayout/klayout.app/Contents/MacOS/klayout&quot;</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">dwp</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">dwp</span>
+        <span class="k">return</span> <span class="n">klayout_path</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># The path of the currently running KLayout application</span>
+        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">applicationFilePath</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

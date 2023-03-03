@@ -519,7 +519,7 @@
 <span id="kqcircuits-simulations-export-export-and-run"></span><h1>kqcircuits.simulations.export.export_and_run<a class="headerlink" href="#module-kqcircuits.simulations.export.export_and_run" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.simulations.export.export_and_run.export_and_run">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.export_and_run.</span></span><span class="sig-name descname"><span class="pre">export_and_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/export_and_run.html#export_and_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.export_and_run.export_and_run" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.export.export_and_run.</span></span><span class="sig-name descname"><span class="pre">export_and_run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">export_script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pathlib.Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/export/export_and_run.html#export_and_run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.export.export_and_run.export_and_run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exports and runs a KQC simulation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -527,7 +527,18 @@
 <li><p><strong>export_script</strong> (<em>Path</em>) – path to the simulation export script</p></li>
 <li><p><strong>export_path</strong> (<em>Path</em>) – path where simulation files are exported</p></li>
 <li><p><strong>quiet</strong> (<em>bool</em>) – if True all the GUI dialogs are shown, otherwise not.</p></li>
+<li><p><strong>args</strong> (<em>list</em>) – a list of strings describing arguments to be passed to the simulation script</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>a tuple containing</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>export_script(Path): path to the simulation export script</p></li>
+<li><p>export_path(Path): path where simulation files are exported</p></li>
+</ul>
+</div></blockquote>
+</p>
 </dd>
 </dl>
 </dd></dl>

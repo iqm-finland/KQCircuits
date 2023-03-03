@@ -532,6 +532,45 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.merge.merge_layout_layers_on_face">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.merge.</span></span><span class="sig-name descname"><span class="pre">merge_layout_layers_on_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.004</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/merge.html#merge_layout_layers_on_face"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.merge.merge_layout_layers_on_face" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates “base_metal_gap” layer on given face.</p>
+<p>The layer shape is combination of three layers using subtract (-) and insert (+) operations:</p>
+<blockquote>
+<div><p>“base_metal_gap” = “base_metal_gap_wo_grid” - “base_metal_addition” + “ground_grid”</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – Layout containing the cell</p></li>
+<li><p><strong>cell</strong> – Cell to merge</p></li>
+<li><p><strong>face</strong> – face dictionary containing layer names as keys and layer info objects as values</p></li>
+<li><p><strong>tolerance</strong> – gap length to be ignored while merging (µm)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.merge.convert_child_instances_to_static">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.merge.</span></span><span class="sig-name descname"><span class="pre">convert_child_instances_to_static</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.Layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_elements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/merge.html#convert_child_instances_to_static"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.merge.convert_child_instances_to_static" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert child instances of a cell to static.</p>
+<p>This function avoids duplicating cells: in case there are multiple instances pointing to the same PCell, only
+one static cell is created and all instances are pointed to that cell. This is in contrast to calling
+<code class="docutils literal notranslate"><span class="pre">Instance.convert_to_static()</span></code> on each instance separately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layout</strong> – the Layout that contains the cell</p></li>
+<li><p><strong>cell</strong> – static cell that may contain PCell instances to be converted</p></li>
+<li><p><strong>only_elements</strong> – if True (default), only PCells which are descendants of Element are made static</p></li>
+<li><p><strong>prune</strong> – if True, the PCells are deleted if they are no longer used anywhere in the layout.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <img alt="../_images/kqcircuits.util.merge.png" src="../_images/kqcircuits.util.merge.png" />
 </div>
 
