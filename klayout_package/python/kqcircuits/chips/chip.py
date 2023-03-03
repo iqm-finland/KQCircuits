@@ -37,6 +37,7 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import Flip
 
 
 @logged
+@add_parameters_from(Tsv, "tsv_type")
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand",
