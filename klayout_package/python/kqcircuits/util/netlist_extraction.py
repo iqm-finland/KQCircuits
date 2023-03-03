@@ -109,7 +109,7 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         subcircuits = list(circuit.each_subcircuit())
         for subcircuit in subcircuits:
             internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
-            if internal_cell.name.split('$')[0] in default_netlist_breakdown:
+            if internal_cell.name.split('$')[0].replace('*', ' ') in default_netlist_breakdown:
                 circuit.flatten_subcircuit(subcircuit)
 
     nets_for_export = {}

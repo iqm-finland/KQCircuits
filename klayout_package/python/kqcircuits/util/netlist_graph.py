@@ -70,7 +70,7 @@ def network_as_graph(network):
     for subcircuit_id in used_subcircuit_ids:
         subcircuit = network["subcircuits"][str(subcircuit_id)]
         graph.nodes[subcircuit_id]["cell_name"] = subcircuit["cell_name"]
-        graph.nodes[subcircuit_id]["cell_type"] = subcircuit["cell_name"].split('$')[0]
+        graph.nodes[subcircuit_id]["cell_type"] = subcircuit["cell_name"].split('$')[0].replace('*', ' ')
         graph.nodes[subcircuit_id]["location"] = subcircuit["subcircuit_location"]
         if "instance_name" in subcircuit and subcircuit["instance_name"] is not None:
             instance_name = subcircuit["instance_name"]
