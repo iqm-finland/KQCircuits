@@ -18,7 +18,6 @@
 
 import ast
 import json
-import logging
 import os
 import subprocess
 from pathlib import Path
@@ -52,20 +51,23 @@ def xsection_call(input_oas: Path, output_oas: Path, cut1: pya.DPoint, cut2: pya
         raise SystemError("Error: unsupported operating system")
     xsection_plugin_path = os.path.join(os.path.expanduser("~"), klayout_dir_name, "salt/xsection/macros/xsection.lym")
     cut_string = f"{cut1.x},{cut1.y};{cut2.x},{cut2.y}"
-    try:
-        # Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin
-        xs_run = str(process_path).replace("\\\\?\\", "")
-        xs_params = str(parameters_path).replace("\\\\?\\", "")
-        # When debugging, remove '-z' argument to see ruby error messages
-        subprocess.run([klayout_executable_command(), input_oas.absolute(), '-z', '-nc', '-rx',
-                        '-r', xsection_plugin_path,
-                        '-rd', f'xs_run={xs_run}',
-                        '-rd', f'xs_params={xs_params}',
-                        '-rd', f'xs_cut={cut_string}',
-                        '-rd', f'xs_out={output_oas.absolute()}'],
-            check=True, startupinfo=STARTUPINFO)
-    except FileNotFoundError:
-        logging.warning("Klayout executable not found.")
+
+    if not klayout_executable_command():
+        raise Exception("Can't find klayout executable command!")
+    if not Path(xsection_plugin_path).is_file():
+        raise Exception("The 'xsection' plugin is missing in KLayout! Go to 'Tools->Manage Packages' to install it.")
+
+    # Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin
+    xs_run = str(process_path).replace("\\\\?\\", "")
+    xs_params = str(parameters_path).replace("\\\\?\\", "")
+    # When debugging, remove '-z' argument to see ruby error messages
+    subprocess.run([klayout_executable_command(), input_oas.absolute(), '-z', '-nc', '-rx',
+                    '-r', xsection_plugin_path,
+                    '-rd', f'xs_run={xs_run}',
+                    '-rd', f'xs_params={xs_params}',
+                    '-rd', f'xs_cut={cut_string}',
+                    '-rd', f'xs_out={output_oas.absolute()}'],
+        check=True, startupinfo=STARTUPINFO)
 
 
 # pylint: disable=dangerous-default-value

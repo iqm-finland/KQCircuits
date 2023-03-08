@@ -195,22 +195,11 @@ def open_with_klayout_or_default_application(filepath):
     if argv[-1] == "-q":  # quiet mode, do not run viewer
         return
 
-    try:
-        subprocess.call((klayout_executable_command(), filepath))
-        return
-    except FileNotFoundError:
+    exe = klayout_executable_command()
+    if not exe:
         logging.warning("Klayout executable not found.")
-
-    try:
-        if platform.system() == 'Windows':  # Windows
-            subprocess.call(filepath, shell=True, startupinfo=STARTUPINFO)
-        elif platform.system() == 'Darwin':  # macOS
-            subprocess.call(('open', filepath))
-        else:  # Linux
-            subprocess.call(('xdg-open', filepath))
-    except FileNotFoundError:
-        logging.warning("Unable to open file %s.", filepath)
-
+    else:
+        subprocess.call((exe, filepath))
 
 def get_klayout_version():
     if is_standalone_session():
