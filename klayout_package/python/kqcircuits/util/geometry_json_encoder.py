@@ -33,8 +33,6 @@ class GeometryJsonEncoder(json.JSONEncoder):
             return o.layer
         if isinstance(o, pya.DPath):
             return [(p.x, p.y) for p in o.each_point()]
-        if isinstance(o, np.generic):
-            return o.item()
         return None
 
     def default(self, o):
