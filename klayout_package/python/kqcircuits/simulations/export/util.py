@@ -55,12 +55,12 @@ def find_edge_from_point_in_polygons(polygons: List[pya.Polygon], point: pya.DPo
              for (i, polygon) in enumerate(polygons)
              for (j, edge) in enumerate(polygon.each_edge())
              ]
-    (sq_distance, i, j, nearest_edge) = \
-        sorted([(((edge.p1 + edge.p2)/2).sq_distance(point), i, j, edge) for (i, j, edge) in edges])[0]
-    if sq_distance < tolerance**2:
+    (distance, i, j, nearest_edge) = \
+        sorted([(edge.distance_abs(point), i, j, edge) for (i, j, edge) in edges])[0]
+    if distance < tolerance:
         return i, j, nearest_edge
     else:
-        raise ValueError(f"No edge found at {point=}, {nearest_edge=}, {sq_distance=}")
+        raise ValueError(f"No edge found at {point=}, {nearest_edge=}, {distance=}")
 
 
 def get_enclosing_polygon(points: List[List[float]]):
