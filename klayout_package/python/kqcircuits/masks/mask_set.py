@@ -32,6 +32,7 @@ from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, defau
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.geometry_json_encoder import encode_python_obj_as_dict
 
 
 @logged
@@ -173,16 +174,14 @@ class MaskSet:
                 return None
 
             def _params_to_str(params):  # flatten a parameters dictionary to a string
+                params = encode_python_obj_as_dict(params)
                 ps = ""
                 for n, v in params.items():
                     if isinstance(v, str):
                         ps += f",{n}={repr(v)}"
-                    elif isinstance(v, pya.DBox):
-                        ps += f",{n}=pya.DBox({v.p1.x}, {v.p1.y}, {v.p2.x}, {v.p2.y})"
-                    elif isinstance(v, pya.DVector):
-                        ps += f",{n}=pya.DVector({v.x}, {v.y})"
-                    elif isinstance(v, pya.DPoint):
-                        ps += f",{n}=pya.DPoint({v.x}, {v.y})"
+                    # Either a geometry object or a list/tuple which might contain geometry objects
+                    elif isinstance(v, (list, tuple, dict)):
+                        ps += f",{n}=decode_dict_as_python_obj({v})"
                     else:
                         ps += f",{n}={v}"
                 return ps
@@ -446,6 +445,7 @@ from pathlib import Path
 from kqcircuits.masks.mask_export import export_chip
 from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView
+from kqcircuits.util.geometry_json_encoder import decode_dict_as_python_obj
 from kqcircuits.util.log_router import route_log
 ${element_import}
 

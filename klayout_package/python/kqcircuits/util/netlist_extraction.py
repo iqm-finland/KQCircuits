@@ -46,10 +46,13 @@ def export_cell_netlist(cell, filename, pcell=None):
     except for Launchers.
 
     The ``subcircuits`` section is a dictionary of the used cells: ``<subcircuit_id>: {"cell_name":
-    "...", "subcircuit_location": [<x>, <y>]}``. Where ``cell_name`` is the name of the used Element
+    "...", "subcircuit_location": {"_pya_type": "DPoint", "x": <x>, "y": <y>}, ...}``.
+    Where ``cell_name`` is the name of the used Element
     optionally appended with ``$<n>`` if there are more than one Elements of the same type.
     Different instances of the same cell will have different ``subcircuit_id`` but identical
-    ``cell_name``.
+    ``cell_name``. ``subcircuit_location`` defines the center of the bounding box spanned by the
+    geometry in ``base_metal_gap_wo_grid`` layers, while ``subcircuit_origin`` defines the center
+    of the bounding box spanned by the netlist ports of the cell.
 
     The ``circuits`` section maps ``cell_name`` to a dictionary of the named Element's parameters.
 
@@ -145,7 +148,7 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
             possible_instances = [(i,i_trans) for i,i_trans in original_instances
                                                 if i.cell.cell_index() == original_cell_index]
         else:
-            log.warning(('%s element has no cell mapping in %s between circuit layout and orignal layout,'
+            log.info(('%s element has no cell mapping in %s between circuit layout and orignal layout,'
                     ' using subcircuit center point as subcircuit_location instead'), internal_cell.name, circuit.name)
             possible_instances = []
 
@@ -185,11 +188,11 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
                 # we also transform the point by instance's predecessors' transformation
                 subcircuit_location = correct_instance_trans * combined_bbox.center()
             else:
-                log.warning(('%s element has no bounding boxes in *_base_metal_gap_wo_grid layers in %s,'
+                log.info(('%s element has no bounding boxes in *_base_metal_gap_wo_grid layers in %s,'
                     ' using subcircuit center point as subcircuit_location instead'),
                     internal_cell.name, circuit.name)
         elif possible_instances:
-            log.warning(('Could not find a matching element for %s subcircuit in the orignal layout of %s,'
+            log.info(('Could not find a matching element for %s subcircuit in the orignal layout of %s,'
                     ' using subcircuit center point as subcircuit_location instead'), internal_cell.name, circuit.name)
 
         subcircuits_for_export[subcircuit.id()] = {

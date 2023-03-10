@@ -49,7 +49,10 @@ def produce_cross_section_mesh(json_data, msh_file):
 
     # Limiting boundary box (use variable 'box' if it is given. Otherwise, use bounding bo of the geometry.)
     if 'box' in json_data:
-        bbox = pya.DBox(pya.DPoint(*json_data['box'][0]), pya.DPoint(*json_data['box'][1])).to_itype(layout.dbu)
+        bbox = pya.DBox(json_data['box']['p1']['x'],
+                        json_data['box']['p1']['y'],
+                        json_data['box']['p2']['x'],
+                        json_data['box']['p2']['y']).to_itype(layout.dbu)
     else:
         bbox = cell.bbox()
 
