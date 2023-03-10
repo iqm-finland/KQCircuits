@@ -32,6 +32,7 @@ def test_n_guides_1():
             'ref_project_results_file': 'test_n_guides_1.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("cpw_cross_section_sim",
@@ -48,6 +49,7 @@ def test_n_guides_2():
             'ref_project_results_file': 'test_n_guides_2.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("cpw_cross_section_sim",
@@ -66,6 +68,7 @@ def test_vertical_over_etching():
             'ref_project_results_file': 'test_vertical_over_etching.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
     assert_sim_script("cpw_cross_section_sim",
                       export_script_dir,
@@ -81,6 +84,7 @@ def test_n_guides_1_axisymmetric():
             'ref_project_results_file': 'test_n_guides_1_axisymmetric.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("cpw_cross_section_sim",

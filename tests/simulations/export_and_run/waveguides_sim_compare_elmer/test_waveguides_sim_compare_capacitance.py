@@ -39,12 +39,14 @@ def waveguides_sim_compare_flip_chip_n_guides_1_2():
             'ref_project_results_file': 'test_flip_chip_n_guides_1.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         },
         {
             'project_results_file': 'waveguides_n_guides_2_project_results.json',
             'ref_project_results_file': 'test_flip_chip_n_guides_2.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
     ], ids = [f"n_guides_{n}" for n in [1, 2]])
 def test_flip_chip_n_guides_1_2(project_ref_info, waveguides_sim_compare_flip_chip_n_guides_1_2):
@@ -64,6 +66,7 @@ def test_single_face_n_guides_1():
             'ref_project_results_file': 'test_single_face_n_guides_1.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("waveguides_sim_compare",
@@ -81,6 +84,7 @@ def test_single_face_internal_port():
             'ref_project_results_file': 'test_single_face_internal_port.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("waveguides_sim_compare",

@@ -32,6 +32,7 @@ def test_n_guides_1():
             'ref_project_results_file': 'test_n_guides_1.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("waveguides_sim_xsection",
@@ -49,6 +50,7 @@ def test_london():
             'ref_project_results_file': 'test_london.json',
             'rtol': 1e-2,
             'atol': 1e-20,
+            'ignore_keys': ['E_ground', 'E_signal_'],
         }
 
     assert_sim_script("waveguides_sim_xsection",

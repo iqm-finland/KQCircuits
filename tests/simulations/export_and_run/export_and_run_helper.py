@@ -22,7 +22,7 @@ from kqcircuits.simulations.export.export_and_run import export_and_run
 from kqcircuits.defaults import SIM_SCRIPT_PATH, TMP_PATH
 
 
-def assert_dicts(d1, d2, rtol, atol):
+def assert_dicts(d1, d2, rtol, atol, ignore_keys=None, only_keys=None):
     """
     Checks if fem data in dictionaries d1 and d2 is equivalent.
     Equivalent if
@@ -32,25 +32,40 @@ def assert_dicts(d1, d2, rtol, atol):
 
     Args:
 
-      * d1(dict()): first dictionary containing the first fem data
-      * d2(dict()): second dictionary containing the second fem data
+      d1(dict()): first dictionary containing the first fem data
+      d2(dict()): second dictionary containing the second fem data
+      ignore_keys(list): keys that are not taken into account in the comparison
+      only_keys(list): keys that are only taken into account in the comparison
     """
     if d1 is None and d2 is None:
         return True
-
+    if ignore_keys is None:
+        ignore_keys = []
+    if only_keys is not None:
+        ignore_keys = set(d1.keys()) + set(d2.keys())
+        ignore_keys -= set(only_keys)
+        ignore_keys = list(ignore_keys)
     keys1 = set(d1.keys())
     keys2 = set(d2.keys())
-
     assert keys1 == keys2
-
     for key in keys1:
-        val1 = d1[key]
-        val2 = d2[key]
-        assert np.allclose(val1, val2, rtol=rtol, atol=atol)
+        if key not in ignore_keys:
+            val1 = d1[key]
+            val2 = d2[key]
+            if val1 is None:
+                assert val2 is None
+            elif isinstance(val1, dict):
+                assert isinstance(val2, dict)
+                assert assert_dicts(val1, val2, rtol, atol, ignore_keys=ignore_keys, only_keys=only_keys)
+            elif isinstance(val1, str):
+                assert isinstance(val2, str)
+                assert val1 == val2
+            else:
+                assert np.allclose(val1, val2, rtol=rtol, atol=atol), f"{val1} and {val2} for {key} do not match"
     return True
 
 def assert_project_results_equal(project_results_path: Path,
-        ref_project_results_path: Path, rtol, atol,
+        ref_project_results_path: Path, rtol, atol, ignore_keys=None,
         generate_ref_results=False):
     """
     Checks whether the project results correspond to the reference
@@ -60,6 +75,7 @@ def assert_project_results_equal(project_results_path: Path,
     ref_project_results_path(dict): path to reference project results in dict format
     rtol(float): see `numpy.allclose`
     atol(float): see `numpy.allclose`
+    ignore_keys(list): keys that are not taken into account in the comparison
     generate_ref_results(bool): if true, generates the reference results json based on the simulation to be tested
     """
 
@@ -73,11 +89,7 @@ def assert_project_results_equal(project_results_path: Path,
     with open(ref_project_results_path) as f:
         ref_results = json.load(f)
 
-    ref_cdata = ref_results.pop('Cdata', None)
-    cdata = results.pop('Cdata', None)
-
-    return assert_dicts(ref_results, results, rtol, atol) \
-            and assert_dicts(ref_cdata, cdata, rtol, atol)
+    return assert_dicts(ref_results, results, rtol, atol, ignore_keys=ignore_keys)
 
 def export_and_run_test(export_script_name: str, args:list):
     """
@@ -119,6 +131,7 @@ def assert_sim_script(export_script_name: str,
             * ref_project_results_file(dict): reference project results file
             * rtol(float): see `numpy.allclose`
             * atol(float): see `numpy.allclose`
+            * ignore_keys(list): keys that are not taken into account in the comparison
 
         generate_ref_results(bool): if True, generates the reference
             results json based on the simulation to be tested (test
@@ -132,6 +145,7 @@ def assert_sim_script(export_script_name: str,
             'ref_project_results_path': asset_dir / project_ref_info['ref_project_results_file'],
             'rtol': project_ref_info['rtol'],
             'atol': project_ref_info['atol'],
+            'ignore_keys': project_ref_info['ignore_keys'],
         }
 
     assert_project_results_equal(**project_ref, generate_ref_results=generate_ref_results)
