@@ -83,7 +83,7 @@ sweep_parameters = {
 cpw_length = args.cpw_length
 
 if edge_ports:
-    box_size_x = 100
+    box_size_x = cpw_length
     box_size_y = 1000
     cpw_length = box_size_x
 else:

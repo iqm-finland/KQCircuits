@@ -116,7 +116,6 @@ if tool == 'cross-section':
     if workflow.get('run_elmergrid', True):
         run_elmer_grid(msh_file, elmer_n_processes, path)
     if workflow.get('run_elmer', True):
-        # TODO: here we should also use p-elements and the vectorized Elmer
         sif_files = produce_cross_section_sif_files(json_data, path.joinpath(name))
         for sif_file in sif_files:
             run_elmer_solver(name.joinpath(sif_file), elmer_n_processes, path)
@@ -127,8 +126,6 @@ if tool == 'cross-section':
             json.dump(res, f, indent=4)
     if workflow.get('run_paraview', False):
         run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
-
-
 else:
     # Generate mesh
     if workflow.get('run_gmsh', True):
@@ -138,10 +135,8 @@ else:
         if 'gmsh_n_threads' in workflow:
             params['gmsh_n_threads'] = workflow['gmsh_n_threads']
         msh_filepath, model_data = export_gmsh_msh(json_data, path, json_data['mesh_size'], **params)
-        model_data['frequency'] = json_data['frequency']
-        model_data['linear_system_method'] = json_data['linear_system_method']
-        model_data['p_element_order'] = json_data['p_element_order']
-        sif_filepath = export_elmer_sif(path, msh_filepath, model_data)
+        json_data.update({**model_data})
+        export_elmer_sif(json_data, path.joinpath(name))
     else:
         msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
 
@@ -154,9 +149,9 @@ else:
     if workflow.get('run_elmergrid', True):
         run_elmer_grid(msh_filepath, elmer_n_processes, path)
     if workflow.get('run_elmer', True):
-        run_elmer_solver(f'sif/{msh_filepath.stem}.sif', elmer_n_processes, path)
+        run_elmer_solver(name / f'{name}.sif', elmer_n_processes, path)
     if workflow.get('run_paraview', False):
-        run_paraview(f'{msh_filepath.stem}/{msh_filepath.stem}', elmer_n_processes, path)
+        run_paraview(path / name / name, elmer_n_processes, path)
 
     # Write result file
     if args.write_project_results:

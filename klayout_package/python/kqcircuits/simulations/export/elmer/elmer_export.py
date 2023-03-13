@@ -29,6 +29,7 @@ from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.defaults import ELMER_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
+from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 
 
@@ -44,42 +45,69 @@ def copy_elmer_scripts_to_directory(path: Path):
             copy_tree(str(script_path), str(path), update=1)
 
 
-def export_elmer_json(simulation: Simulation,
+def export_elmer_json(simulation,
                       path: Path,
                       tool='capacitance',
                       linear_system_method='bicgstab',
                       p_element_order=1,
                       frequency=5,
                       mesh_size=None,
-                      workflow=None):
+                      workflow=None,
+                      dielectric_surfaces=None,
+                      is_axisymmetric=False):
     """
     Export Elmer simulation into json and gds files.
 
     Args:
         simulation: The simulation to be exported.
         path: Location where to write json.
-        tool(str): Available: "capacitance" and "wave_equation" (Default: capacitance)
+        tool(str): Available: "capacitance", "wave_equation" and "cross-section" (Default: capacitance)
         linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
         p_element_order(int): polynomial order of p-elements (Default: 1)
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
+        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
+            the simulation. The loss tangent is post-processed to the participation to get the quality factor.
+            Default is None. Input is of the form::
+
+                'substrate': {
+                    'tan_delta_surf': 5e-7
+                },
+                'layerMA': {  # metal–vacuum
+                    'tan_delta_surf': 0.001,  # loss tangent
+                },
+                'layerMS': { # metal–substrate
+                    'tan_delta_surf': 0.001,
+                },
+                'layerSA': { # substrate–vacuum
+                    'tan_delta_surf': 0.001,
+                }
+        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
 
     Returns:
          Path to exported json file.
     """
-    if simulation is None or not isinstance(simulation, Simulation):
+    is_cross_section = isinstance(simulation, CrossSectionSimulation)
+
+    if simulation is None or not isinstance(simulation, (Simulation, CrossSectionSimulation)):
         raise ValueError("Cannot export without simulation")
 
     # collect data for .json file
+    if is_cross_section:
+        layers = simulation.layer_dict
+
     json_data = {
         'tool': tool,
-        'linear_system_method': linear_system_method,
-        'p_element_order': p_element_order,
         **simulation.get_simulation_data(),
+        **({'layers': {k: (v.layer, v.datatype) for k, v in layers.items()}} if is_cross_section else {}),
         'mesh_size': {} if mesh_size is None else mesh_size,
         'workflow': {} if workflow is None else workflow,
         'frequency': frequency,
+        **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
+        'linear_system_method': linear_system_method,
+        'p_element_order': p_element_order,
+        'is_axisymmetric': is_axisymmetric,
     }
 
     # write .json file
@@ -90,7 +118,7 @@ def export_elmer_json(simulation: Simulation,
     # write .gds file
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
     export_layers(gds_filename, simulation.layout, [simulation.cell], output_format='GDS2',
-                  layers=simulation.get_layers())
+                  layers=layers.values() if is_cross_section else simulation.get_layers())
 
     return json_filename
 
@@ -259,12 +287,14 @@ def export_elmer(simulations: [],
                  path: Path,
                  tool='capacitance',
                  linear_system_method='bicgstab',
-                 p_element_order=1,
+                 p_element_order=3,
                  frequency=5,
                  file_prefix='simulation',
                  script_file='scripts/run.py',
                  mesh_size=None,
                  workflow=None,
+                 dielectric_surfaces=None,
+                 is_axisymmetric=False,
                  skip_errors=False):
     """
     Exports an elmer simulation model to the simulation path.
@@ -273,7 +303,7 @@ def export_elmer(simulations: [],
 
         simulations(list(Simulation)): list of all the simulations
         path(Path): Location where to output the simulation model
-        tool(str): Available: "capacitance" and "wave_equation" (Default: capacitance)
+        tool(str): Available: "capacitance", "wave_equation" and "cross-section" (Default: capacitance)
         linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
         p_element_order(int): polynomial order of p-elements (Default: 1)
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
@@ -281,6 +311,23 @@ def export_elmer(simulations: [],
         script_file: Name of the script file to run.
         mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
+        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
+            the simulation. The loss tangent is post-processed to the participation to get the quality factor.
+            Default is None. Input is of the form::
+
+                'substrate': {
+                    'tan_delta_surf': 5e-7
+                },
+                'layerMA': {  # metal–vacuum
+                    'tan_delta_surf': 0.001,  # loss tangent
+                },
+                'layerMS': { # metal–substrate
+                    'tan_delta_surf': 0.001,
+                },
+                'layerSA': { # substrate–vacuum
+                    'tan_delta_surf': 0.001,
+                }
+        is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
         skip_errors(bool): Skip simulations that cause errors. (Default: False)
 
             .. warning::
@@ -310,8 +357,16 @@ def export_elmer(simulations: [],
     json_filenames = []
     for simulation in simulations:
         try:
-            json_filenames.append(export_elmer_json(simulation, path, tool, linear_system_method,
-                                                    p_element_order, frequency, mesh_size, workflow))
+            json_filenames.append(export_elmer_json(simulation=simulation,
+                                                    path=path,
+                                                    tool=tool,
+                                                    linear_system_method=linear_system_method,
+                                                    p_element_order=p_element_order,
+                                                    frequency=frequency,
+                                                    mesh_size=mesh_size,
+                                                    workflow=workflow,
+                                                    dielectric_surfaces=dielectric_surfaces,
+                                                    is_axisymmetric=is_axisymmetric))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

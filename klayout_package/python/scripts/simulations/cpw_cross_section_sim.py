@@ -27,7 +27,7 @@ import numpy as np
 
 from kqcircuits.elements.element import Element
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
-from kqcircuits.simulations.export.elmer.cross_section_elmer_export import export_cross_section_elmer
+from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, cross_sweep_simulation
 
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
@@ -202,7 +202,7 @@ if is_axisymmetric:
 
 
 # Export simulation files
-export_cross_section_elmer(simulations, dir_path, mesh_size=mesh_size, workflow=workflow,
+export_elmer(simulations, dir_path, tool='cross-section', mesh_size=mesh_size, workflow=workflow,
     dielectric_surfaces=dielectric_surfaces, p_element_order=args.p_element_order, linear_system_method='mg',
     is_axisymmetric=is_axisymmetric)
 
