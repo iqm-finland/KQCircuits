@@ -45,6 +45,7 @@ for sim_tool in sim_tools:
         'internal_island_ports': sim_tool != 'eigenmode',  # DoublePads specific
         'participation_sheet_distance': 5e-3 if sim_tool == 'eigenmode' else 0.0,  # in µm
         'participation_sheet_thickness': 0.0,
+        'waveguide_length': 200,
     }
 
     dir_path = create_or_empty_tmp_directory(Path(__file__).stem + f'_output_{sim_tool}')

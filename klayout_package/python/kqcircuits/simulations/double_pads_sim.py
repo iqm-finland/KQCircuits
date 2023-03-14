@@ -58,4 +58,4 @@ class DoublePadsSim(Simulation):
             )
 
         self.produce_waveguide_to_port(refp["port_cplr"], refp["port_cplr_corner"], (port_i := port_i + 1),
-            "top", waveguide_length=200, face=port_face)
+            "top", waveguide_length=self.waveguide_length, face=port_face)
