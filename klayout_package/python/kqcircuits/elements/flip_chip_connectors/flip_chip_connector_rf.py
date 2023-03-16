@@ -50,8 +50,9 @@ class FlipChipConnectorRf(FlipChipConnector):
     n_center_bumps = Param(pdt.TypeInt, "Number of center bumps in series", 1)
 
     def build(self):
+
         # Flip-chip bump
-        bump = self.add_element(FlipChipConnectorDc)
+        bump = self.add_element(FlipChipConnectorDc, face_ids=self.face_ids)
         for i in range(self.n_center_bumps):
             self.insert_cell(bump, pya.DTrans((i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance, 0))
         bump_ref = self.get_refpoints(bump)
@@ -76,14 +77,17 @@ class FlipChipConnectorRf(FlipChipConnector):
                 region -= rounded_plate_with_trace(-l/2, (i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance,
                                                    self.a, self.connector_a, self.connector_a)
 
-            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(region)
-            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", 1)).insert(region.transformed(pya.ICplxTrans(tt)))
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", 0)).insert(region)
+            self.cell.shapes(self.get_layer("base_metal_gap_wo_grid",
+                                            1)).insert(region.transformed(pya.ICplxTrans(tt)))
             self.add_protection(avoid_region)
             self.add_protection(avoid_region.transformed(pya.ICplxTrans(tt)), 1, 0)
 
             # add reference point
-            self.add_port("{}_port".format(self.face_ids[0]), pya.DPoint(-l/2, 0), pya.DVector(-1, 0), 0)
-            self.add_port("{}_port".format(self.face_ids[1]), tt * pya.DPoint(-l/2, 0), tt * pya.DVector(-1, 0), 1)
+            self.add_port("{}_port".format(self.face_ids[0])
+                          , pya.DPoint(-l/2, 0), pya.DVector(-1, 0), 0)
+            self.add_port("{}_port".format(self.face_ids[1]),
+                          tt * pya.DPoint(-l/2, 0), tt * pya.DVector(-1, 0), 1)
         else:
             # Taper geometry
             s = self.ubm_diameter + (self.n_center_bumps - 1) * self.inter_bump_distance
@@ -93,7 +97,8 @@ class FlipChipConnectorRf(FlipChipConnector):
                              launcher_frame_gap=self.connector_b)
             self.insert_cell(Launcher, tt * trans, self.face_ids[1], s=s, l=self.ubm_diameter,
                              a_launcher=self.connector_a, b_launcher=self.connector_b,
-                             launcher_frame_gap=self.connector_b, face_ids=[self.face_ids[1], self.face_ids[0]])
+                             launcher_frame_gap=self.connector_b, face_ids=[self.face_ids[1],
+                                                                            self.face_ids[0]])
 
         # Insert ground bumps
         if self.connector_type == "GSG":

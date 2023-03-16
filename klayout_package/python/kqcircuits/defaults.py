@@ -181,6 +181,9 @@ node_editor_valid_elements = [
     'FingerCapacitorSquare', 'FingerCapacitorTaper', 'FlipChipConnectorRf', 'SmoothCapacitor',
     'WaveguideCoplanarSplitter']
 
+node_editor_layer_changing_elements = ['FlipChipConnectorRf']
+
+
 # Path to the layer configuration file, which defines layer/face related defaults.
 # The path can be either absolute or relative.
 layer_config_path = Path(__file__).parent/"layer_config"/"default_layer_config.py"

@@ -24,6 +24,7 @@ from autologging import logged
 
 from scipy.optimize import root_scalar
 
+from kqcircuits.defaults import node_editor_layer_changing_elements
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.util.library_helper import element_by_class_name
@@ -175,8 +176,8 @@ class Node:
 
 @add_parameters_from(WaveguideCoplanarTaper, taper_length=100)
 @add_parameters_from(Airbridge, "airbridge_type")
-@add_parameters_from(FlipChipConnectorRf)
 @add_parameters_from(WaveguideCoplanar, "term1", "term2")
+@add_parameters_from(FlipChipConnectorRf)
 @logged
 class WaveguideComposite(Element):
     """A composite waveguide made of waveguides and other elements.
@@ -426,6 +427,7 @@ class WaveguideComposite(Element):
         subclass. Elements are oriented collinear to the preceding Node and an automatic bend is
         inserted after if the next Node is not collinear.
         """
+
         self._nodes = Node.nodes_from_string(self.nodes)
         self._child_refpoints = {}
         if len(self._nodes) < 2:
@@ -436,29 +438,27 @@ class WaveguideComposite(Element):
         self._wg_start_pos = self._nodes[0].position
         self._wg_start_dir = self._node_entrance_direction(0)
 
+        self.old_id = self.face_ids[0]
+
         for i, node in enumerate(self._nodes):
             self.__log.debug(f' Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},'
                              f' {node.params}')
+            if 'face_id' in node.params:
+                self.new_id = node.params['face_id']
+            else:
+                self.new_id = self.old_id
+
             if node.element is None:
                 if 'a' in node.params or 'b' in node.params:
                     self._add_taper(i)
                 elif 'face_id' in node.params:
-                    self._add_fc_bump(i)
+                    self._add_layer_changing_element(i)
             else:
-                if node.element is AirbridgeConnection:
-                    self._add_airbridge(i)
-                elif issubclass(node.element, Airbridge):
-                    if node.element is not Airbridge:   # change default if specific type is used
-                        self.airbridge_type = node.element.default_type
-                    self._add_airbridge(i, with_side_airbridges=False)
-                elif node.element is WaveguideCoplanarTaper:
-                    self._add_taper(i)
-                elif node.element is FlipChipConnectorRf:
-                    self._add_fc_bump(i)
-                else:
-                    self._add_simple_element(i)
+                self.check_node_type(node, i)
 
                 self._terminator(i)
+
+            self.old_id = self.new_id
 
         # pylint: disable=undefined-loop-variable
         if node.element is None:
@@ -476,6 +476,22 @@ class WaveguideComposite(Element):
         self.add_port("b", self._wg_start_pos, self._wg_start_dir)
 
 
+    def check_node_type(self, node, i):
+        """Iterate over supported Node types and run approriate function"""
+
+        if node.element is AirbridgeConnection:
+            self._add_airbridge(i)
+        elif issubclass(node.element, Airbridge):
+            if node.element is not Airbridge:  # change default if specific type is used
+                self.airbridge_type = node.element.default_type
+            self._add_airbridge(i, with_side_airbridges=False)
+        elif node.element is WaveguideCoplanarTaper:
+            self._add_taper(i)
+        elif node.element in [element_by_class_name(el) for el in node_editor_layer_changing_elements]:
+            self._add_layer_changing_element(i, node.element)
+        else:
+            self._add_simple_element(i)
+
     def _add_taper(self, ind):
         """Create a WaveguideCoplanarTaper and change default a/b."""
 
@@ -492,23 +508,20 @@ class WaveguideComposite(Element):
         self.a = a
         self.b = b
 
-    def _add_fc_bump(self, ind):
-        """Add FlipChipConnectorRF and change default face_id."""
+    def _add_layer_changing_element(self, ind, element=FlipChipConnectorRf):
+        """Add element which changes face_id and change default face_id."""
         node = self._nodes[ind]
-        if "face_id" not in node.params:
-            node.params["face_id"] = self.face_ids[1]
-        params = {**self.pcell_params_by_name(FlipChipConnectorRf), **node.params}
-        new_id = node.params.pop("face_id")
-        old_id = self.face_ids[0]
-        if new_id == old_id:  # no change, just a Node
+        params = {**self.pcell_params_by_name(element), **node.params}
+
+        if self.new_id == self.old_id:  # no change, just a Node
             return
-        # TODO support vias?
 
-        fc_cell = self.add_element(FlipChipConnectorRf, **params)
-        self._insert_cell_and_waveguide(ind, fc_cell, before=f'{old_id}_port', after=f'{new_id}_port')
+        params['face_ids'] = [self.old_id, self.new_id]
 
-        self.face_ids[0] = new_id
-        self.face_ids[1] = old_id
+        fc_cell = self.add_element(element, **params)
+
+        self._insert_cell_and_waveguide(ind, fc_cell, before=f'{self.old_id}_port', after=f'{self.new_id}_port')
+        self.face_ids = [self.new_id] + [a for a in self.face_ids if a != self.new_id]
 
     def _add_airbridge(self, ind, **kwargs):
         """Add an airbridge with tapers at both sides and change default a/b if required."""
