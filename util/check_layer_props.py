@@ -86,18 +86,18 @@ def _add_new_layer(root, layers, name):
 
 
 def check_file(file_name, diagnostic_mode=True):
-    if not props_file.is_file():
-        print(f"Can't find '{props_file}'!")
+    if not file_name.is_file():
+        print(f"Can't find '{file_name}'!")
         sys.exit(-1)
 
     if diagnostic_mode:
-        print(f"Checking file '{props_file}'. Use '-w' switch to interactively modify it.\n")
+        print(f"Checking file '{file_name}'.\nUse '-w' switch to interactively modify it.\n")
 
     errcnt = 0
     old_layers = []
     layers = {name.replace('_', ' ') : (ids.layer, ids.datatype) for name, ids in default_layers.items()}
 
-    tree = ET.parse(props_file)
+    tree = ET.parse(file_name)
     root = tree.getroot()
 
     for prop in root.iter("properties"):
@@ -144,7 +144,7 @@ def check_file(file_name, diagnostic_mode=True):
             _add_new_layer(root, layers, name)
 
     if not diagnostic_mode:
-        tree.write(props_file, encoding="utf-8", xml_declaration=True)
+        tree.write(file_name, encoding="utf-8", xml_declaration=True)
     sys.exit(errcnt)
 
 

@@ -13,5 +13,6 @@ User Guide
     macro_workflow
     mask_export
     simulations
+    file_system_and_utilities
     xsection
     terminology
