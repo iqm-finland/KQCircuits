@@ -19,6 +19,7 @@ import sys
 
 from kqcircuits.util.dependencies import install_kqc_dependencies
 
+# pylint: disable=undefined-variable
 from ._version import __version__
 if hasattr(sys.modules[__name__], "_version"):
     del _version  # remove to avoid confusion with __version__

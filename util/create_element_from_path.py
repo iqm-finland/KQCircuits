@@ -89,6 +89,7 @@ register_plugins()
 logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 route_log(lowest_visible_level="INFO", filename=f"{TMP_PATH}/kqc.log")
 
+# pylint: disable=undefined-variable
 logging.info(f"Element path: {element_path}")
 
 # Figure out the python import path from the specified file path
