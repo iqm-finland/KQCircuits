@@ -6,3 +6,11 @@ kqcircuits.layer\_config
 
    kqcircuits.layer_config.default_layer_config
    kqcircuits.layer_config.example_layer_config
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.layer_config
+   :members:
+   :undoc-members:
+   :show-inheritance:

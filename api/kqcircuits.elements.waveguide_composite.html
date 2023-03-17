@@ -212,7 +212,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -339,6 +342,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -654,9 +658,44 @@ flip chip, taper or any custom element.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_cells">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_segment_cells</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.get_segment_cells"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_cells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the subcells of a <code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code> cell, ordered by node index.</p>
+<p>The subcells include <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code>, <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanarTaper</span></code> and <code class="docutils literal notranslate"><span class="pre">Meander</span></code> cells for straight,
+tapered and meandering segments, respectively, and any element cells that were inserted explicitly
+(<code class="docutils literal notranslate"><span class="pre">element</span></code> argument) or implicitly (changing <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> or <code class="docutils literal notranslate"><span class="pre">face_id</span></code>) at any <code class="docutils literal notranslate"><span class="pre">Node</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">node_index</span></code> returned with each subcell is an index to the <code class="docutils literal notranslate"><span class="pre">nodes</span></code> parameter of the
+<code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code> cell. It points to the node that _created_ the subcell, which is the node following a
+segment for regular <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> segments, and the node that specified the element or parameter change
+otherwise.</p>
+<p>Note that there may be multiple subcells per node, and some nodes may not have associated subcells (in
+particular, regular <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> segments are merged when possible). Subscells are returned in the
+order in which they appear in the waveguide.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cell</strong> – A WaveguideComposite cell. Can be a PCell or static cell created from a PCell.</p>
+</dd>
+</dl>
+<p>Returns: A list of tuples (node_index: int, subcell: pya.Cell) ordered by node_index.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_segment_lengths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.get_segment_lengths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Retreives the segment lengths of each waveguide segment in a WaveguideComposite cell</p>
+<dd><p>Retrieves the segment lengths of each waveguide segment in a WaveguideComposite cell.</p>
+<p>Waveguide segments are <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code>, <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanarTaper</span></code> and <code class="docutils literal notranslate"><span class="pre">Meander</span></code> subcells.
+This method returns a list with the same length as the <code class="docutils literal notranslate"><span class="pre">nodes</span></code> parameter, where each element is the total
+length of all waveguides directly preceding and/or defined in that node. For example, for a taper node both the
+preceding regular waveguide and the taper itself are counted.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">WaveguideComposite</span></code> merges consecutive waveguide segments if they have no special elements. As
+a consequence, the corresponding waveguide lengths all accumulate in the next index which has a taper, meander
+or other element, and the length for nodes that contain ony <code class="docutils literal notranslate"><span class="pre">WaveguideCoplanar</span></code> is reported as 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cell</strong> – A WaveguideComposite cell. Can be a PCell or static cell created from a PCell.</p>
+</dd>
+</dl>
+<p>Returns: A list waveguide lengths per node</p>
 </dd></dl>
 
 <dl class="py method">

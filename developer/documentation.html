@@ -212,7 +212,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -339,6 +342,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -518,10 +522,6 @@
 command line in the <code class="docutils literal notranslate"><span class="pre">docs</span></code> folder and write <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>. If you want to
 completely rebuild the documentation, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> to remove the built
 files first.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>KLayout needs to be installed for generating PCell images.</p>
-</div>
 <p>The API documentation is generated from the <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files in <code class="docutils literal notranslate"><span class="pre">docs/api</span></code>
 folder, which are generated automatically by sphinx-apidoc when you run
 <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code>. The template files used to generate these are in
@@ -530,11 +530,10 @@ folder, which are generated automatically by sphinx-apidoc when you run
 these are in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/sphinxext">docs/sphinxext</a> folder. Also the
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/make_pcell_images.py">docs/make_pcell_images.py</a> script is used by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> to create a .png
 image of every PCell into the pcell_images directory, these get included in the
-API documentation. Image generation may produce harmless error messages in
-Windows.</p>
+API documentation.</p>
 <p>The docstring of PCell classes may contain a <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y</span> <span class="pre">x2,y2,</span>
 <span class="pre">...</span></code> line that will annotate the generated .png image with “rulers”
-documenting the important dimensions of the design.  The rulers are placed
+documenting the important dimensions of the design. The rulers are placed
 according to KLayout’s rules going through the specified <code class="docutils literal notranslate"><span class="pre">x,</span> <span class="pre">y</span></code> coordinates.</p>
 </div>
 

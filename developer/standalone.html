@@ -212,7 +212,10 @@
 </li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -339,6 +342,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -528,6 +532,11 @@ Python 3 and <code class="docutils literal notranslate"><span class="pre">pip</s
 <ul class="simple">
 <li><p>Python 3.7.6, 3.8.5</p></li>
 </ul>
+<p>Older versions of klayout (&lt;0.28) do not support certain new features of
+KQCircuits. If you want to use older klayout you may need to check out a
+suitable older version of KQCircuits too. API changes of klayout are backwards
+compatible so you are safe using older KQCircuits versions with the latest
+KLayout.</p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
@@ -544,15 +553,24 @@ terminal:</p>
 <p>The previous command installs only the packages which are always required
 when using KQC. Other packages may be required for specific purposes, and
 these can be installed by using instead a command like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;klayout_package/python[docs,tests,notebooks]&quot;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="s2">&quot;klayout_package/python[docs,tests,notebooks,simulations]&quot;</span>
 </pre></div>
 </div>
 <p>You can choose for which purposes you want to install the requirements by
 modifying the text in the square brackets. Note that there should not be any
 spaces within the brackets.</p>
-<p>The required packages are defined in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/setup.py">setup.py</a> (in KQCircuits <cite>python</cite> directory), so
-if there are problems with some specific package, you may try modifying it or
-install those packages manually.</p>
+<div class="section" id="pypi-installation">
+<h3>PyPI Installation<a class="headerlink" href="#pypi-installation" title="Permalink to this headline">¶</a></h3>
+<p>If you do not need all KQCircuits sources but only the core KQC classes you may simply run <code class="docutils literal notranslate"><span class="pre">pip</span>
+<span class="pre">install</span> <span class="pre">kqcircuits</span></code> to get the Python package only. You can use this the same way as the full
+developer installation but remember that scripts, masks, documentation and notebooks are not part of
+the Python package. A new Python package is automatically uploaded to PyPI for every tagged commit
+in GitHub.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> Python package may be used with an independently downloaded KQCircuits source
+directory to run tests, simulation scripts or build documentation or masks from there. You are
+supposed to run most of these from the source directory or you may need to specify the
+<code class="docutils literal notranslate"><span class="pre">KQC_ROOT_PATH</span></code> environment variable so that <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> finds the sources.</p>
+</div>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -560,6 +578,15 @@ install those packages manually.</p>
 KQCircuits fully within a Python IDE of your choice. For example, standalone
 debuggers and automated testing (see <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Testing</span></a>) can be done, which would
 not be possible without the standalone KLayout module.</p>
+<p>It is possible to generate masks, run simulation scripts or even the actual simulations on the
+command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">masks</span><span class="o">/</span><span class="n">quick_demo</span><span class="o">.</span><span class="n">py</span>
+<span class="n">python</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">simulations</span><span class="o">/</span><span class="n">double_pads_sim</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
+<span class="n">kqc</span> <span class="n">simulate</span> <span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
+</pre></div>
+</div>
+<p>The output of the above commands will be in the automaticaly created <code class="docutils literal notranslate"><span class="pre">tmp</span></code> directory. If you
+desire the outputs elsewhere set the <code class="docutils literal notranslate"><span class="pre">KQC_TMP_PATH</span></code> environment variable to some other path.</p>
 <p>The preferred way to instantiate a drawing environment in standalone mode is with the <a class="reference internal" href="../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView" title="kqcircuits.klayout_view.KLayoutView"><code class="xref py py-class docutils literal notranslate"><span class="pre">KLayoutView</span></code></a> object:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>

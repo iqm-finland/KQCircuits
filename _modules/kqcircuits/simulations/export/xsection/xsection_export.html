@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -524,7 +528,6 @@
 
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
@@ -558,20 +561,23 @@
         <span class="k">raise</span> <span class="ne">SystemError</span><span class="p">(</span><span class="s2">&quot;Error: unsupported operating system&quot;</span><span class="p">)</span>
     <span class="n">xsection_plugin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s2">&quot;~&quot;</span><span class="p">),</span> <span class="n">klayout_dir_name</span><span class="p">,</span> <span class="s2">&quot;salt/xsection/macros/xsection.lym&quot;</span><span class="p">)</span>
     <span class="n">cut_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cut1</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">cut1</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">;</span><span class="si">{</span><span class="n">cut2</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">cut2</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin</span>
-        <span class="n">xs_run</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">process_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">xs_params</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="c1"># When debugging, remove &#39;-z&#39; argument to see ruby error messages</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">klayout_executable_command</span><span class="p">(),</span> <span class="n">input_oas</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s1">&#39;-z&#39;</span><span class="p">,</span> <span class="s1">&#39;-nc&#39;</span><span class="p">,</span> <span class="s1">&#39;-rx&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="n">xsection_plugin_path</span><span class="p">,</span>
-                        <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_run=</span><span class="si">{</span><span class="n">xs_run</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_params=</span><span class="si">{</span><span class="n">xs_params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_cut=</span><span class="si">{</span><span class="n">cut_string</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_out=</span><span class="si">{</span><span class="n">output_oas</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span>
-            <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Klayout executable not found.&quot;</span><span class="p">)</span></div>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">klayout_executable_command</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find klayout executable command!&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">xsection_plugin_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The &#39;xsection&#39; plugin is missing in KLayout! Go to &#39;Tools-&gt;Manage Packages&#39; to install it.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Hack: Weird prefix keeps getting added when path is converted to string which breaks the ruby plugin</span>
+    <span class="n">xs_run</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">process_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">xs_params</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parameters_path</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="c1"># When debugging, remove &#39;-z&#39; argument to see ruby error messages</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">klayout_executable_command</span><span class="p">(),</span> <span class="n">input_oas</span><span class="o">.</span><span class="n">absolute</span><span class="p">(),</span> <span class="s1">&#39;-z&#39;</span><span class="p">,</span> <span class="s1">&#39;-nc&#39;</span><span class="p">,</span> <span class="s1">&#39;-rx&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="n">xsection_plugin_path</span><span class="p">,</span>
+                    <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_run=</span><span class="si">{</span><span class="n">xs_run</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_params=</span><span class="si">{</span><span class="n">xs_params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_cut=</span><span class="si">{</span><span class="n">cut_string</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;-rd&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;xs_out=</span><span class="si">{</span><span class="n">output_oas</span><span class="o">.</span><span class="n">absolute</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">],</span>
+        <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span></div>
 
 
 <span class="c1"># pylint: disable=dangerous-default-value</span>

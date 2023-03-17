@@ -5,3 +5,11 @@ kqcircuits.simulations.export.xsection
 .. toctree::
 
    kqcircuits.simulations.export.xsection.xsection_export
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.simulations.export.xsection
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -5,3 +5,11 @@ kqcircuits.simulations.export.ansys
 .. toctree::
 
    kqcircuits.simulations.export.ansys.ansys_export
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.simulations.export.ansys
+   :members:
+   :undoc-members:
+   :show-inheritance:

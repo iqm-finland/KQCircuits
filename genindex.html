@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -1250,6 +1254,8 @@
         <li><a href="api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.get_schema">(kqcircuits.simulations.simulation.Simulation class method)</a>
 </li>
       </ul></li>
+      <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_cells">get_segment_cells() (kqcircuits.elements.waveguide_composite.WaveguideComposite static method)</a>
+</li>
       <li><a href="api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths">get_segment_lengths() (kqcircuits.elements.waveguide_composite.WaveguideComposite static method)</a>
 </li>
       <li><a href="api/kqcircuits.simulations.cross_section_simulation.html#kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation.get_sim_layer">get_sim_layer() (kqcircuits.simulations.cross_section_simulation.CrossSectionSimulation method)</a>
@@ -1850,8 +1856,6 @@
         <li><a href="api/kqcircuits.klayout_view.html#module-kqcircuits.klayout_view">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_cluster
 
@@ -1859,6 +1863,15 @@
         <li><a href="api/kqcircuits.layer_cluster.html#module-kqcircuits.layer_cluster">module</a>
 </li>
       </ul></li>
+      <li>
+    kqcircuits.layer_config
+
+      <ul>
+        <li><a href="api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kqcircuits.layer_config.default_layer_config
 
@@ -1993,10 +2006,24 @@
 </li>
       </ul></li>
       <li>
+    kqcircuits.simulations.export.ansys
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.ansys.html#module-kqcircuits.simulations.export.ansys">module</a>
+</li>
+      </ul></li>
+      <li>
     kqcircuits.simulations.export.ansys.ansys_export
 
       <ul>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_export.html#module-kqcircuits.simulations.export.ansys.ansys_export">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.export.elmer
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.elmer.html#module-kqcircuits.simulations.export.elmer">module</a>
 </li>
       </ul></li>
       <li>
@@ -2053,6 +2080,13 @@
 
       <ul>
         <li><a href="api/kqcircuits.simulations.export.util.html#module-kqcircuits.simulations.export.util">module</a>
+</li>
+      </ul></li>
+      <li>
+    kqcircuits.simulations.export.xsection
+
+      <ul>
+        <li><a href="api/kqcircuits.simulations.export.xsection.html#module-kqcircuits.simulations.export.xsection">module</a>
 </li>
       </ul></li>
       <li>
@@ -2666,6 +2700,8 @@
 </li>
         <li><a href="api/kqcircuits.layer_cluster.html#module-kqcircuits.layer_cluster">kqcircuits.layer_cluster</a>
 </li>
+        <li><a href="api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">kqcircuits.layer_config</a>
+</li>
         <li><a href="api/kqcircuits.layer_config.default_layer_config.html#module-kqcircuits.layer_config.default_layer_config">kqcircuits.layer_config.default_layer_config</a>
 </li>
         <li><a href="api/kqcircuits.layer_config.example_layer_config.html#module-kqcircuits.layer_config.example_layer_config">kqcircuits.layer_config.example_layer_config</a>
@@ -2704,7 +2740,11 @@
 </li>
         <li><a href="api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">kqcircuits.simulations.export</a>
 </li>
+        <li><a href="api/kqcircuits.simulations.export.ansys.html#module-kqcircuits.simulations.export.ansys">kqcircuits.simulations.export.ansys</a>
+</li>
         <li><a href="api/kqcircuits.simulations.export.ansys.ansys_export.html#module-kqcircuits.simulations.export.ansys.ansys_export">kqcircuits.simulations.export.ansys.ansys_export</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.export.elmer.html#module-kqcircuits.simulations.export.elmer">kqcircuits.simulations.export.elmer</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.elmer.cross_section_elmer_export.html#module-kqcircuits.simulations.export.elmer.cross_section_elmer_export">kqcircuits.simulations.export.elmer.cross_section_elmer_export</a>
 </li>
@@ -2721,6 +2761,8 @@
         <li><a href="api/kqcircuits.simulations.export.sonnet.sonnet_export.html#module-kqcircuits.simulations.export.sonnet.sonnet_export">kqcircuits.simulations.export.sonnet.sonnet_export</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.util.html#module-kqcircuits.simulations.export.util">kqcircuits.simulations.export.util</a>
+</li>
+        <li><a href="api/kqcircuits.simulations.export.xsection.html#module-kqcircuits.simulations.export.xsection">kqcircuits.simulations.export.xsection</a>
 </li>
         <li><a href="api/kqcircuits.simulations.export.xsection.xsection_export.html#module-kqcircuits.simulations.export.xsection.xsection_export">kqcircuits.simulations.export.xsection.xsection_export</a>
 </li>

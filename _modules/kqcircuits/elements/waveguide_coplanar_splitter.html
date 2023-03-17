@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -535,7 +539,7 @@
 <span class="sd">    The PCell declaration of a multiway waveguide splitter. The number of ports is defined by the length of the</span>
 <span class="sd">    parameter lists. Ports are labelled by letters starting from ``a``</span>
 
-<span class="sd">    .. MARKERS_FOR_PNG -15.1,3.96,-9.91,6.96 -5.85,0,2.8,4.93</span>
+<span class="sd">    .. MARKERS_FOR_PNG -9,4 -1,-8 9,9</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">lengths</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Waveguide length per port, measured from origin&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">11</span><span class="p">])</span>
     <span class="n">angles</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeList</span><span class="p">,</span> <span class="s2">&quot;Angle of each port (degrees)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">270</span><span class="p">])</span>

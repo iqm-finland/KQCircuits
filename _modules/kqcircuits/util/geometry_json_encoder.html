@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -539,8 +543,6 @@
             <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">layer</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">[(</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="n">each_point</span><span class="p">()]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">generic</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">o</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="GeometryJsonEncoder.default"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_json_encoder.html#kqcircuits.util.geometry_json_encoder.GeometryJsonEncoder.default">[docs]</a>    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>

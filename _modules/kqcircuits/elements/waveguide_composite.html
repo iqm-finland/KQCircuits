@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -750,17 +754,72 @@
 
         <span class="k">return</span> <span class="n">cell</span></div>
 
+<div class="viewcode-block" id="WaveguideComposite.get_segment_cells"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_cells">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_segment_cells</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the subcells of a ``WaveguideComposite`` cell, ordered by node index.</span>
+
+<span class="sd">        The subcells include ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` cells for straight,</span>
+<span class="sd">        tapered and meandering segments, respectively, and any element cells that were inserted explicitly</span>
+<span class="sd">        (``element`` argument) or implicitly (changing ``a``, ``b`` or ``face_id``) at any ``Node``.</span>
+
+<span class="sd">        The ``node_index`` returned with each subcell is an index to the ``nodes`` parameter of the</span>
+<span class="sd">        ``WaveguideComposite`` cell. It points to the node that _created_ the subcell, which is the node following a</span>
+<span class="sd">        segment for regular ``WaveguideCoplanar`` segments, and the node that specified the element or parameter change</span>
+<span class="sd">        otherwise.</span>
+
+<span class="sd">        Note that there may be multiple subcells per node, and some nodes may not have associated subcells (in</span>
+<span class="sd">        particular, regular ``WaveguideCoplanar`` segments are merged when possible). Subscells are returned in the</span>
+<span class="sd">        order in which they appear in the waveguide.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: A WaveguideComposite cell. Can be a PCell or static cell created from a PCell.</span>
+
+<span class="sd">        Returns: A list of tuples (node_index: int, subcell: pya.Cell) ordered by node_index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
+
+        <span class="n">segment_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+            <span class="c1"># Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235</span>
+            <span class="n">child_cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span>
+
+            <span class="n">node_index</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">property</span><span class="p">(</span><span class="s2">&quot;waveguide_composite_node_index&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">node_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">segment_data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node_index</span><span class="p">,</span> <span class="n">child_cell</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">segment_data</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div>
+
 <div class="viewcode-block" id="WaveguideComposite.get_segment_lengths"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.get_segment_lengths">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_segment_lengths</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retreives the segment lengths of each waveguide segment in a WaveguideComposite cell</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Retrieves the segment lengths of each waveguide segment in a WaveguideComposite cell.</span>
+
+<span class="sd">        Waveguide segments are ``WaveguideCoplanar``, ``WaveguideCoplanarTaper`` and ``Meander`` subcells.</span>
+<span class="sd">        This method returns a list with the same length as the ``nodes`` parameter, where each element is the total</span>
+<span class="sd">        length of all waveguides directly preceding and/or defined in that node. For example, for a taper node both the</span>
+<span class="sd">        preceding regular waveguide and the taper itself are counted.</span>
+
+<span class="sd">        Note that ``WaveguideComposite`` merges consecutive waveguide segments if they have no special elements. As</span>
+<span class="sd">        a consequence, the corresponding waveguide lengths all accumulate in the next index which has a taper, meander</span>
+<span class="sd">        or other element, and the length for nodes that contain ony ``WaveguideCoplanar`` is reported as 0.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cell: A WaveguideComposite cell. Can be a PCell or static cell created from a PCell.</span>
+
+<span class="sd">        Returns: A list waveguide lengths per node</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Measure segment lengths, counting only &quot;regular waveguides&quot;</span>
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
-        <span class="c1"># Note: Using layout.cell(inst.cell_index) instead of inst.cell to work around KLayout issue #235</span>
-        <span class="n">child_cells</span> <span class="o">=</span> <span class="p">[</span><span class="n">layout</span><span class="o">.</span><span class="n">cell</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">cell_index</span><span class="p">)</span> <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">()]</span>
-        <span class="n">segment_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">child_cell</span><span class="p">)</span> <span class="k">for</span> <span class="n">child_cell</span> <span class="ow">in</span> <span class="n">child_cells</span>
-                           <span class="k">if</span> <span class="n">child_cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Waveguide Coplanar&quot;</span><span class="p">]</span>
+        <span class="n">waveguide_segment_types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Waveguide Coplanar&quot;</span><span class="p">,</span> <span class="s2">&quot;Waveguide Coplanar Taper&quot;</span><span class="p">,</span> <span class="s2">&quot;Meander&quot;</span><span class="p">}</span>
+
+        <span class="n">segment_data</span> <span class="o">=</span> <span class="n">WaveguideComposite</span><span class="o">.</span><span class="n">get_segment_cells</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">segment_lengths</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">segment_data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">node_index</span><span class="p">,</span> <span class="n">child_cell</span> <span class="ow">in</span> <span class="n">segment_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">child_cell</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">waveguide_segment_types</span><span class="p">:</span>
+                <span class="n">segment_lengths</span><span class="p">[</span><span class="n">node_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">get_cell_path_length</span><span class="p">(</span><span class="n">child_cell</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">segment_lengths</span></div>
 
@@ -1023,7 +1082,8 @@
             <span class="n">trans</span> <span class="o">*=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="o">-</span><span class="n">rel_ref</span><span class="p">[</span><span class="n">before</span> <span class="k">if</span> <span class="n">ind</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">after</span><span class="p">])</span>
 
         <span class="c1"># Insert element cell with computed transformation</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
+        <span class="n">cell_inst</span><span class="p">,</span> <span class="n">ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
+        <span class="n">cell_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;waveguide_composite_node_index&quot;</span><span class="p">,</span> <span class="n">ind</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">inst_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">ref</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_child_refpoints</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">inst_name</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
@@ -1057,7 +1117,8 @@
         <span class="k">if</span> <span class="n">end_index</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">end_index</span><span class="p">]</span><span class="o">.</span><span class="n">element</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="s1">&#39;term2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">wg_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg_cell</span><span class="p">)</span>
+        <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg_cell</span><span class="p">)</span>
+        <span class="n">cell_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;waveguide_composite_node_index&quot;</span><span class="p">,</span> <span class="n">end_index</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_waveguide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_index</span><span class="p">,</span> <span class="n">end_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates waveguide from `self._wg_start_idx` until `end_index`.</span>
@@ -1178,8 +1239,9 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">meander_len</span> <span class="o">-=</span> <span class="n">start_len</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">n1</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span> <span class="o">-</span> <span class="n">turn_start</span><span class="p">)</span><span class="o">.</span><span class="n">length</span><span class="p">()</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">[</span><span class="n">meander_start</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">meander_start</span><span class="o">.</span><span class="n">y</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="p">[</span><span class="n">meander_end</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">meander_end</span><span class="o">.</span><span class="n">y</span><span class="p">],</span>
-                                 <span class="n">length</span><span class="o">=</span><span class="n">meander_len</span><span class="p">,</span> <span class="o">**</span><span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+                <span class="n">cell_inst</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Meander</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">[</span><span class="n">meander_start</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">meander_start</span><span class="o">.</span><span class="n">y</span><span class="p">],</span>
+                                                <span class="n">end</span><span class="o">=</span><span class="p">[</span><span class="n">meander_end</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">meander_end</span><span class="o">.</span><span class="n">y</span><span class="p">],</span> <span class="n">length</span><span class="o">=</span><span class="n">meander_len</span><span class="p">,</span> <span class="o">**</span><span class="n">node1</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+                <span class="n">cell_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;waveguide_composite_node_index&quot;</span><span class="p">,</span> <span class="n">end_index</span><span class="p">)</span>
                 <span class="n">wg_points</span> <span class="o">=</span> <span class="n">point0</span> <span class="o">+</span> <span class="n">points</span><span class="p">[</span><span class="n">p0</span><span class="p">:</span><span class="n">p1</span><span class="p">]</span> <span class="o">+</span> <span class="p">([]</span> <span class="k">if</span> <span class="n">start_len</span> <span class="o">&lt;</span> <span class="mf">1e-4</span> <span class="k">else</span> <span class="p">[</span><span class="n">meander_start</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_insert_wg_cell</span><span class="p">(</span><span class="n">wg_points</span><span class="p">,</span> <span class="n">n0</span><span class="p">,</span> <span class="n">n1</span><span class="p">)</span>
                 <span class="n">n0</span> <span class="o">=</span> <span class="n">n1</span>

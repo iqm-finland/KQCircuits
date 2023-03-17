@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -576,7 +580,7 @@
     <span class="k">for</span> <span class="n">subcircuit_id</span> <span class="ow">in</span> <span class="n">used_subcircuit_ids</span><span class="p">:</span>
         <span class="n">subcircuit</span> <span class="o">=</span> <span class="n">network</span><span class="p">[</span><span class="s2">&quot;subcircuits&quot;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">subcircuit_id</span><span class="p">)]</span>
         <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">subcircuit_id</span><span class="p">][</span><span class="s2">&quot;cell_name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="p">[</span><span class="s2">&quot;cell_name&quot;</span><span class="p">]</span>
-        <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">subcircuit_id</span><span class="p">][</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="p">[</span><span class="s2">&quot;cell_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">subcircuit_id</span><span class="p">][</span><span class="s2">&quot;cell_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="p">[</span><span class="s2">&quot;cell_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
         <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">subcircuit_id</span><span class="p">][</span><span class="s2">&quot;location&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="p">[</span><span class="s2">&quot;subcircuit_location&quot;</span><span class="p">]</span>
         <span class="k">if</span> <span class="s2">&quot;instance_name&quot;</span> <span class="ow">in</span> <span class="n">subcircuit</span> <span class="ow">and</span> <span class="n">subcircuit</span><span class="p">[</span><span class="s2">&quot;instance_name&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">instance_name</span> <span class="o">=</span> <span class="n">subcircuit</span><span class="p">[</span><span class="s2">&quot;instance_name&quot;</span><span class="p">]</span>

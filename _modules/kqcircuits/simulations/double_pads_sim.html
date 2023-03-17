@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -564,7 +568,7 @@
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_cplr&quot;</span><span class="p">],</span> <span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_cplr_corner&quot;</span><span class="p">],</span> <span class="p">(</span><span class="n">port_i</span> <span class="o">:=</span> <span class="n">port_i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="n">port_face</span><span class="p">)</span></div></div>
+            <span class="s2">&quot;top&quot;</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">waveguide_length</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="n">port_face</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

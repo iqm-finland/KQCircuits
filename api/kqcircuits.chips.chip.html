@@ -212,7 +212,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -339,6 +342,7 @@
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -800,6 +804,7 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>box</strong><em> (Shape)</em><span> - Bounding box of the chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+<li><p><strong>tsv_type</strong><em> (String)</em><span> - TSV type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Tsv</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Tsv</span> <span class="pre">Standard',</span> <span class="pre">'Tsv</span> <span class="pre">Ellipse']</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.chip.png" src="../_images/kqcircuits.chips.chip.png" />
 </div>

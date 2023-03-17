@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -701,22 +705,11 @@
     <span class="k">if</span> <span class="n">argv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-q&quot;</span><span class="p">:</span>  <span class="c1"># quiet mode, do not run viewer</span>
         <span class="k">return</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">((</span><span class="n">klayout_executable_command</span><span class="p">(),</span> <span class="n">filepath</span><span class="p">))</span>
-        <span class="k">return</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+    <span class="n">exe</span> <span class="o">=</span> <span class="n">klayout_executable_command</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">exe</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Klayout executable not found.&quot;</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>  <span class="c1"># Windows</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Darwin&#39;</span><span class="p">:</span>  <span class="c1"># macOS</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">((</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># Linux</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">((</span><span class="s1">&#39;xdg-open&#39;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unable to open file </span><span class="si">%s</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span></div>
-
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">((</span><span class="n">exe</span><span class="p">,</span> <span class="n">filepath</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="get_klayout_version"><a class="viewcode-back" href="../../../api/kqcircuits.util.export_helper.html#kqcircuits.util.export_helper.get_klayout_version">[docs]</a><span class="k">def</span> <span class="nf">get_klayout_version</span><span class="p">():</span>
     <span class="k">if</span> <span class="n">is_standalone_session</span><span class="p">():</span>

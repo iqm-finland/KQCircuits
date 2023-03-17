@@ -6,3 +6,11 @@ kqcircuits.simulations.export.elmer
 
    kqcircuits.simulations.export.elmer.cross_section_elmer_export
    kqcircuits.simulations.export.elmer.elmer_export
+
+Module contents
+---------------
+
+.. automodule:: kqcircuits.simulations.export.elmer
+   :members:
+   :undoc-members:
+   :show-inheritance:

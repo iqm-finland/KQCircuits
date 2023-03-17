@@ -210,7 +210,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../developer/standalone.html">KLayout Standalone Usage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#installation">Installation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../developer/standalone.html#pypi-installation">PyPI Installation</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/standalone.html#jupyter-notebook-usage">Jupyter notebook usage</a></li>
 </ul>
@@ -337,6 +340,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html">kqcircuits.layer_config</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.default_layer_config.html">kqcircuits.layer_config.default_layer_config</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.example_layer_config.html">kqcircuits.layer_config.example_layer_config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.layer_config.html#module-kqcircuits.layer_config">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/kqcircuits.masks.html">kqcircuits.masks</a><ul>
@@ -601,9 +605,7 @@
             <span class="k">if</span> <span class="n">lib_path</span> <span class="o">==</span> <span class="n">path</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
-    <span class="n">pcell_classes</span> <span class="o">=</span> <span class="n">_get_all_pcell_classes</span><span class="p">(</span><span class="n">flush</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pcell_classes</span><span class="p">:</span>
+    <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">_get_all_pcell_classes</span><span class="p">(</span><span class="n">flush</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 
         <span class="n">library_name</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_NAME</span>
         <span class="n">library_path</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_PATH</span>
@@ -792,7 +794,7 @@
 <span class="sd">        path: path (relative to SRC_PATH) from which the classes are searched</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List of the PCell (class, module path) tuples</span>
+<span class="sd">        List of the PCell classes</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pcell_classes</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -821,7 +823,7 @@
 
                 <span class="n">classes</span> <span class="o">=</span> <span class="n">_get_pcell_classes</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">classes</span><span class="p">:</span>
-                    <span class="n">pcell_classes</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">classes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mp</span><span class="p">))</span>  <span class="c1"># touple of class and its file path</span>
+                    <span class="n">pcell_classes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">classes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">return</span> <span class="n">pcell_classes</span>
 
