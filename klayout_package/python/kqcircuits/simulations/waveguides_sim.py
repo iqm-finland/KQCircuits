@@ -32,6 +32,8 @@ class WaveGuidesSim(Simulation):
     add_bumps = Param(pdt.TypeBoolean, "Add ground bumps", False)
     port_termination_end = Param(pdt.TypeBoolean, "Port termination end", True)
     use_edge_ports = Param(pdt.TypeBoolean, "Use edge ports", True)
+    etch_opposite_face = Param(pdt.TypeBoolean, "Remove the whole opposite face metal if flip chip", False)
+
 
     def build(self):
         self.produce_guides()
@@ -75,6 +77,10 @@ class WaveGuidesSim(Simulation):
                     wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath([p0, p2], 0), term1=0,
                                                term2=self.b, face_ids=[guide_face_id])
                     self.insert_cell(wg_cell)
+
+            if self.etch_opposite_face:
+                region = pya.Region(self.box.to_itype(self.layout.dbu))
+                self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", face_id=1)).insert(region)
 
     def produce_ground_bumps(self):
         n_guides = self.n_guides

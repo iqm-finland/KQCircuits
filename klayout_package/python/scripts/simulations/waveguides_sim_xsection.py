@@ -37,6 +37,7 @@ parser.add_argument('--n-guides', nargs="+", default=[1, 2, 3],
 parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
 parser.add_argument('--london-penetration-depth', default=0.0, type=float,
                     help='London penetration depth of superconductor in [m]')
+parser.add_argument('--etch-opposite-face', action="store_true", help='If true, the top face metal will be etched away')
 
 args, unknown = parser.parse_known_args()
 
@@ -62,6 +63,7 @@ sim_parameters = {
     'box': pya.DBox(pya.DPoint(-cpw_length/2., -sim_box_height/2.), pya.DPoint(cpw_length/2., sim_box_height/2.)),
     'cpw_length': cpw_length,
     'face_stack': ['1t1', '2b1'] if multiface else ['1t1'],
+    'etched_top': args.etch_opposite_face,
 }
 
 workflow = {
