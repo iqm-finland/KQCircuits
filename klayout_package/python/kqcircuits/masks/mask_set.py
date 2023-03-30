@@ -17,22 +17,22 @@
 
 import copy
 import os
-import subprocess
+import logging
+from sys import argv
 from time import perf_counter
-from string import Template
 from inspect import isclass
-from multiprocessing.pool import ThreadPool
+from multiprocessing import Pool
 from pathlib import Path
 
 from autologging import logged
 from tqdm import tqdm
 
-from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executable_command
-from kqcircuits.defaults import default_bar_format, TMP_PATH, STARTUPINFO, default_face_id
+from kqcircuits.util.log_router import route_log
+from kqcircuits.pya_resolver import pya, is_standalone_session
+from kqcircuits.defaults import default_bar_format, TMP_PATH, default_face_id
 from kqcircuits.masks.mask_export import export_chip, export_mask_set
 from kqcircuits.masks.mask_layout import MaskLayout
 from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.util.geometry_json_encoder import encode_python_obj_as_dict
 
 
 @logged
@@ -42,14 +42,14 @@ class MaskSet:
     A mask set consists of one or more MaskLayouts, each of which is for a certain face.
 
     To create a mask, add mask layouts to the mask set using add_mask_layout() and add chips to these mask layouts using
-    add_chips() or add_chip(). These functions also export some files for each chip. Then call build() to create the
+    add_chip(). These functions also export some files for each chip. Then call build() to create the
     cell hierarchy of the entire mask, and finally export mask files by calling export().
 
     Example:
         mask = MaskSet(...)
         mask.add_mask_layout(...)
         mask.add_mask_layout(...)
-        mask.add_chips(...)
+        mask.add_chip(...)
         mask.build()
         mask.export()
 
@@ -83,11 +83,18 @@ class MaskSet:
         self.mask_layouts = []
         self.mask_export_layers = mask_export_layers if mask_export_layers is not None else []
         self.used_chips = {}
-        self.template_imports = []
-        self._thread_create_chip_parameters = {}
+        self._extra_params = {}
         self._mask_set_dir = Path(export_path)/f"{name}_v{version}"
 
         self._mask_set_dir.mkdir(parents=True, exist_ok=True)
+
+        self._extra_params["enable_debug"] = '-d' in argv
+        self._single_process = self._extra_params["enable_debug"] or not is_standalone_session()
+
+        self._cpu_override = 0
+        if '-c' in argv and len(argv) > argv.index('-c') + 1:
+            self._cpu_override = int(argv[argv.index('-c') + 1])
+
 
     def add_mask_layout(self, chips_map, face_id=default_face_id, mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
@@ -109,187 +116,93 @@ class MaskSet:
         self.mask_layouts.append(mask_layout)
         return mask_layout
 
-    def load_cell_from_file(self, file_name):
-        """Load GDS or OASIS cell from file.
+    def add_chip(self, chips, variant_name=None, cpus=None, **kwargs):
+        """Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.
 
-        Load a cell (usually a chip) from the specified file.
+        Note the complex polymorphism used here: ``chips`` is either a single chip class or a list of ``(chip, variant,
+        parameters)`` tuples. In the latter case the rest of the arguments (except ``cpus``) are ignored. Also,
+        ``chips`` (or the individual chip part of tuples) may be a simple file name to load a static .oas file instead.
 
-        Args:
-            file_name: name of the file (with path) to be loaded
-
-        Returns:
-            the loaded cell
-        """
-        load_opts = pya.LoadLayoutOptions()
-        if hasattr(pya.LoadLayoutOptions, "CellConflictResolution"):
-            load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
-        self.layout.read(file_name, load_opts)
-        return self.layout.top_cells()[-1]
-
-    def add_chips(self, chips, threads=None):
-        """Adds a list of chips with parameters to self.chips_map_legend and exports the files for each chip.
+        Chips are created in parallel in separate processes but the user may choose to use a ``-d`` switch on
+        the command line for debugging with a single process. It is also possible to manually limit the number of
+        concurrently used CPUs for resource management purposes with the ``-c 4`` switch (to 4 in this example).
 
         Args:
-            chips: List of tuples that ``add_chip`` uses. Parameters are optional.
-                For example, ``(QualityFactor, "QDG", parameters)``.
-            threads: Number of parallel threads to use for generation. By default uses ``os.cpu_count()`` threads.
-                Uses subprocesses and consequently a lot of memory. In standalone python mode always uses 1 thread.
-
-        Warning:
-            It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.
-            The same applies for exporting large and complex geometry.
+            chip: A chip class. Or a list of tuples, like ``[(QualityFactor, "QDG", parameters),...]``,
+                  parameters are optional.
+            variant_name: Name for specific variant, the same as in the mask layout. Or None, if multiple
+                          chips are given
+            cpus: Number of parallel processes to use for chip generation. By default uses ``os.cpu_count()``
+                  or the number of chips, whichever is smaller.
+            **kwargs: Any parameters passed to the a single chip PCell. Not used with multiple chips.
         """
         self._time['ADD_CHIPS'] = perf_counter()
 
-        if threads is None:
-            threads = os.cpu_count()
-        if threads is None or threads < 1 or is_standalone_session():
-            threads = 1
+        if not isinstance(chips, list):  # only one chip
+            cpus = 1
+            chips = [(chips, variant_name, kwargs)]
 
-        if threads == 1:
-            for chip_class, variant_name, *params in tqdm(chips, desc='Building variants',
-                                                          bar_format=default_bar_format):
-                self.add_chip(chip_class, variant_name, **(params[0] if params else {}))
+        if cpus is None:
+            cpus = min(len(chips), os.cpu_count())
+        if self._cpu_override > 0:
+            cpus = self._cpu_override
+
+        # Pool.map() needs all arguments packed into a single list
+        xargs = (self.name, self.with_grid, self._mask_set_dir, self.export_drc, self._extra_params)
+        chip_args = ((chip, xargs) for chip in chips)
+
+        file_names = []
+        if cpus == 1 or self._single_process:
+            file_names += map(self._create_chip, chip_args)
         else:
-            print(f"Building chip variants in parallel using {threads} threads...")
+            print(f"Building chip variants in parallel using {cpus} processes...")
+            with Pool(cpus) as pool:
+                file_names += pool.map(self._create_chip, chip_args)
 
-            template = self._get_template()
+        # import chip cells exported by the parallel processes into the mask
+        for variant, file_name in tqdm(file_names, desc='Add chips into mask', bar_format=default_bar_format):
+            self._load_chip_into_mask(file_name, variant)
 
-            class ChipSubprocessException(Exception):
-                def __init__(self, err, chip_variant):
-                    super().__init__()
-                    self.err = err
-                    self.chip_variant = chip_variant
-                def __str__(self):
-                    return f'Building the {self.chip_variant} chip variant caused the following error:'\
-                    f'{os.linesep}{self.err}'
+    @staticmethod
+    def _create_chip(chip_arg):
+        """Create chip, possibly in a separate process."""
 
-            def _subprocess_worker(args):
-                with subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                      startupinfo=STARTUPINFO) as proc:
-                    _, errs = proc.communicate()
-                    # Process has error return code, return error stream
-                    if proc.returncode > 0:
-                        return errs.decode('UTF-8')
-                return None
+        chip, xargs = chip_arg
+        chip_class, variant_name, *chip_params = chip
+        name, with_grid, _mask_set_dir, export_drc, _extra_params = xargs
 
-            def _params_to_str(params):  # flatten a parameters dictionary to a string
-                params = encode_python_obj_as_dict(params)
-                ps = ""
-                for n, v in params.items():
-                    if isinstance(v, str):
-                        ps += f",{n}={repr(v)}"
-                    # Either a geometry object or a list/tuple which might contain geometry objects
-                    elif isinstance(v, (list, tuple, dict)):
-                        ps += f",{n}=decode_dict_as_python_obj({v})"
-                    else:
-                        ps += f",{n}={v}"
-                return ps
-
-            tp = ThreadPool(threads)
-            file_names = []
-            processes = {}
-            for chip_class, variant_name, *param_list in chips:
-                # create the script for generating this chip with the correct parameters and exporting the chip files
-                params = {
-                    'name_chip': variant_name,
-                    'name_mask': self.name,
-                    'with_grid': self.with_grid,
-                    'merge_base_metal_gap': True,
-                    }
-                if param_list:
-                    params.update(param_list[0])
-
-                element_import = f'from {chip_class.__module__} import {chip_class.__name__}'
-                create_element = f'cell = {chip_class.__name__}.create(layout {_params_to_str(params)})'
-                chip_path = self._mask_set_dir/"Chips"/f"{variant_name}"
-                chip_path.mkdir(parents=True, exist_ok=True)
-                script_name = str(chip_path / f"{variant_name}.py")
-                file_names.append((variant_name, str(chip_path / f"{variant_name}.oas"), script_name))
-
-                substitution_parameters = {
-                    'name_mask': self.name,
-                    'chip_path': str(chip_path),
-                    'variant_name': variant_name,
-                    'chip_class': chip_class.__name__,
-                    'element_import': element_import,
-                    'create_element': create_element,
-                    'export_drc': self.export_drc
-                }
-                substitution_parameters.update(self._thread_create_chip_parameters)
-                result = template.substitute(**substitution_parameters)
-                with open(script_name, "w") as f:
-                    f.write(result)
-
-                # launch klayout process that runs the created script
-                try:  # pylint: disable=consider-using-with
-                    processes[variant_name] = tp.apply_async(_subprocess_worker,
-                                   ([klayout_executable_command(), "-e", "-z", "-nc", "-rm", script_name],)
-                                   )
-                except subprocess.CalledProcessError as e:
-                    self.__log.error(e.output)
-
-            # wait for processes to end
-            tp.close()
-            for variant_name, process in processes.items():
-                process_error = process.get()
-                if process_error is not None:
-                    raise ChipSubprocessException(process_error, variant_name)
-            tp.join()
-
-            # import chip cells exported by the parallel processes into the mask
-            for variant_name, file_name, script_name in tqdm(file_names, desc='Building variants (parallel)',
-                                                             bar_format=default_bar_format):
-                self._load_chip_into_mask(file_name, variant_name)
-                # remove the script that was used to generate the chip
-                if os.path.exists(script_name):
-                    os.remove(script_name)
-
-    def add_chip(self, chip, variant_name, **kwargs):
-        """Adds a chip with the given name and parameters to self.chips_map_legend and exports chip files.
-
-        Args:
-            chip: the chip type class (for PCell chip), or a chip cell (for manually designed chip)
-            variant_name: name for specific variant, the same as in the mask layout
-            **kwargs: any parameters passed to the chip PCell
-        """
-
-        chip_path = self._mask_set_dir/"Chips"/f"{variant_name}"
+        chip_path = _mask_set_dir/"Chips"/f"{variant_name}"
         chip_path.mkdir(parents=True, exist_ok=True)
 
-        if isclass(chip):
-            cell = self.variant_definition(chip, variant_name, **kwargs)[variant_name]
-            export_chip(cell, variant_name, chip_path, self.layout, self.export_drc)
-            self.layout.delete_cell_rec(cell.cell_index())
-        else:
-            export_chip(chip, variant_name, chip_path, self.layout, self.export_drc)
+        logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
+        route_log(filename=chip_path/f"{variant_name}.log", stdout=_extra_params["enable_debug"])
 
-        self._load_chip_into_mask(str(chip_path / f"{variant_name}.oas"), variant_name)
+        view = KLayoutView()
+        layout = view.layout
 
-    def variant_definition(self, chip_class, variant_name, **kwargs):
-        """Returns chip variant definition with default mask specific parameters.
+        if isclass(chip_class):
+            params = {
+                'name_chip': variant_name,
+                'name_mask': name,
+                'with_grid': with_grid,
+                'merge_base_metal_gap': True,
+                'display_name': variant_name,
+                'name_copy': None,
+            }
+            if chip_params:
+                params.update(chip_params[0])
+            cell = chip_class.create(layout, **params)
+        else:  # its a file name, load it
+            load_opts = pya.LoadLayoutOptions()
+            if hasattr(pya.LoadLayoutOptions, "CellConflictResolution"):
+                load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
+            layout.read(chip_class, load_opts)
+            cell = layout.top_cells()[-1]
 
-        Args:
-            chip_class: the chip type class
-            variant_name: name for specific variant, the same as in the mask layout
-            **kwargs: any parameters passed to the chip PCell
+        export_chip(cell, variant_name, chip_path, layout, export_drc)
+        view.close()
 
-        Returns:
-            dictionary compatible with mask map structure
-        """
-        self.__log.info("Resolving %s", variant_name)
-
-        chip_parameters = {
-            "merge_base_metal_gap": True,
-            "name_chip": variant_name,
-            "display_name": variant_name,
-            "name_mask": self.name,
-            "name_copy": None,
-            "with_grid": self.with_grid,
-            **kwargs
-        }
-
-        return {variant_name: chip_class.create(self.layout, **chip_parameters)}
+        return variant_name, str(chip_path / f"{variant_name}.oas")
 
     def build(self, remove_guiding_shapes=True):
         """Builds the mask set.
@@ -419,57 +332,3 @@ class MaskSet:
         load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
         self.layout.read(file_name, load_opts)
         self.chips_map_legend.update({variant_name: self.layout.top_cells()[-1]})
-
-    def _get_template(self):
-        """Returns an updated template string."""
-
-        temp = _CREATE_CHIP_TEMPLATE
-        for i in self.template_imports:
-            temp = temp.replace('#TEMPLATE_IMPORT#', i, 1)
-        return Template(temp)
-
-
-# Template for creating and exporting a chip during mask generation.
-#
-# This is used in _get_template() to create a template used in add_chips() to create chips in
-# parallel. The "#TEMPLATE_IMPORT#" strings in it will be replaced by "template_imports" elements
-# to update the template itself.
-
-_CREATE_CHIP_TEMPLATE = """
-
-import logging
-import sys
-import traceback
-#TEMPLATE_IMPORT#
-from pathlib import Path
-from kqcircuits.masks.mask_export import export_chip
-from kqcircuits.pya_resolver import pya
-from kqcircuits.klayout_view import KLayoutView
-from kqcircuits.util.geometry_json_encoder import decode_dict_as_python_obj
-from kqcircuits.util.log_router import route_log
-${element_import}
-
-try:
-    logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
-    chip_path = Path(r"${chip_path}")
-    route_log(filename=chip_path/"${variant_name}.log")
-
-    view = KLayoutView()
-    layout, top_cell = view.layout, view.top_cell
-
-    # cell definition and arbitrary code here
-    ${create_element}
-
-    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))
-
-    # export chip files
-    export_chip(cell, "${variant_name}", chip_path, layout, ${export_drc})
-
-#TEMPLATE_IMPORT#
-
-except Exception as err:
-    print(traceback.format_exc(), file=sys.stderr)
-    pya.Application.instance().exit(1)
-pya.Application.instance().exit(0)
-
-"""

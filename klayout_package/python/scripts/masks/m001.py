@@ -80,10 +80,9 @@ view_2.top_cell.write(file_name, save_opts)
 view_2.close()
 
 print("Loading:", file_name)
-qdd = m001.load_cell_from_file(file_name)
-m001.add_chip(qdd, "QDD")
+m001.add_chip(file_name, "QDD")
 
-m001.add_chips([
+m001.add_chip([
     (AirbridgeCrossings, "AB1", {'crossings': 1}),
     (AirbridgeCrossings, "AB2", {'crossings': 10}),
     (QualityFactor, "QSG", {**parameters_qs, 'n_ab': 6 * [0], 'res_term': 6 * ["galvanic"]}),

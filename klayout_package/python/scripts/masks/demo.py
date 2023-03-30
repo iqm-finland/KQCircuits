@@ -89,7 +89,7 @@ mdemo.add_mask_layout([
 # pylint: enable=line-too-long
 
 # chip definitions
-mdemo.add_chips([
+mdemo.add_chip([
     (AirbridgeCrossings, "AC1", {'b_number': 4, 'crossings': 8}),
     (Chip, "CH1"),
     (Demo, "DE1"),

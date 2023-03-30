@@ -51,12 +51,12 @@ qdemo.add_mask_layout([
 
 
 # chip definitions
-qdemo.add_chips([
+qdemo.add_chip([
     (Chip, "CH1"),
     (Demo, "DE1"),
-], threads=2)
+], cpus=2)
 
-# Alternatively
+# Alternatively, to add them one-by-one:
 #qdemo.add_chip(Chip, "CH1")
 #qdemo.add_chip(Demo, "DE1")
 
