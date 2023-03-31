@@ -119,7 +119,7 @@ _face_layers['2b1'] = {
 
 # Ceiling face layers
 _face_layers['2t1'] = {
-    **_shift_layers(_common_layers, 128, 1),     # same common layers at the "ceiling"
+    **_shift_layers(_common_b_t_layers, 128, 1),     # same common layers at the "ceiling"
 }
 
 # Other auxiliary layers [Layer 220-229]
@@ -139,7 +139,7 @@ _aux_layers_dict = {
 #   - for all the available layers in that face: key "Layer_name", value pya.LayerInfo object for that layer
 #
 default_faces = {}
-for f in ('1b1', '1t1', '2b1', '2t1'):
+for f in ('1t1', '2b1', '1b1', '2t1'):
     default_faces[f] = {n: pya.LayerInfo(i[0], i[1], f'{f}_{n}') for n, i in _face_layers[f].items()}
 
 # pya layer information
@@ -147,7 +147,7 @@ default_layers = {n: pya.LayerInfo(i[0], i[1], n) for n, i in _aux_layers_dict.i
 for face, layers in default_faces.items():
     default_layers.update({f'{face}_{name}': li for name, li in layers.items()})
 
-for f in ('1b1', '1t1', '2b1', '2t1'):
+for f in ('1t1', '2b1', '1b1', '2t1'):
     default_faces[f]['id'] = f
 
 default_face_id = "1t1"  # face_id of the face that is used by default in some contexts

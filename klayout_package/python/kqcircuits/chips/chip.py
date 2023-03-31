@@ -272,7 +272,7 @@ class Chip(Element):
             self._produce_ground_tsvs(face_id=[0, 2])
         if self.with_face1_gnd_tsvs:
             tsv_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
-            self._produce_ground_tsvs(face_id=[1, 3], tsv_box=tsv_box)
+            self._produce_ground_tsvs(face_id=[3, 1], tsv_box=tsv_box)
 
         if self.with_gnd_bumps:
             self._produce_ground_bumps()
