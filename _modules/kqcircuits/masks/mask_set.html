@@ -542,6 +542,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">encode_python_obj_as_dict</span>
 
 
 <div class="viewcode-block" id="MaskSet"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet">[docs]</a><span class="nd">@logged</span>
@@ -683,16 +684,14 @@
                 <span class="k">return</span> <span class="kc">None</span>
 
             <span class="k">def</span> <span class="nf">_params_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>  <span class="c1"># flatten a parameters dictionary to a string</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="n">encode_python_obj_as_dict</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
                 <span class="n">ps</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                 <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                         <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">):</span>
-                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=pya.DBox(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">):</span>
-                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=pya.DVector(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">):</span>
-                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=pya.DPoint(</span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">y</span><span class="si">}</span><span class="s2">)&quot;</span>
+                    <span class="c1"># Either a geometry object or a list/tuple which might contain geometry objects</span>
+                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
+                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=decode_dict_as_python_obj(</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">)&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="k">return</span> <span class="n">ps</span>
@@ -956,6 +955,7 @@
 <span class="s2">from kqcircuits.masks.mask_export import export_chip</span>
 <span class="s2">from kqcircuits.pya_resolver import pya</span>
 <span class="s2">from kqcircuits.klayout_view import KLayoutView</span>
+<span class="s2">from kqcircuits.util.geometry_json_encoder import decode_dict_as_python_obj</span>
 <span class="s2">from kqcircuits.util.log_router import route_log</span>
 <span class="s2">$</span><span class="si">{element_import}</span>
 

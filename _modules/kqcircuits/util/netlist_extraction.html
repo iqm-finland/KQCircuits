@@ -556,10 +556,13 @@
 <span class="sd">    except for Launchers.</span>
 
 <span class="sd">    The ``subcircuits`` section is a dictionary of the used cells: ``&lt;subcircuit_id&gt;: {&quot;cell_name&quot;:</span>
-<span class="sd">    &quot;...&quot;, &quot;subcircuit_location&quot;: [&lt;x&gt;, &lt;y&gt;]}``. Where ``cell_name`` is the name of the used Element</span>
+<span class="sd">    &quot;...&quot;, &quot;subcircuit_location&quot;: {&quot;_pya_type&quot;: &quot;DPoint&quot;, &quot;x&quot;: &lt;x&gt;, &quot;y&quot;: &lt;y&gt;}, ...}``.</span>
+<span class="sd">    Where ``cell_name`` is the name of the used Element</span>
 <span class="sd">    optionally appended with ``$&lt;n&gt;`` if there are more than one Elements of the same type.</span>
 <span class="sd">    Different instances of the same cell will have different ``subcircuit_id`` but identical</span>
-<span class="sd">    ``cell_name``.</span>
+<span class="sd">    ``cell_name``. ``subcircuit_location`` defines the center of the bounding box spanned by the</span>
+<span class="sd">    geometry in ``base_metal_gap_wo_grid`` layers, while ``subcircuit_origin`` defines the center</span>
+<span class="sd">    of the bounding box spanned by the netlist ports of the cell.</span>
 
 <span class="sd">    The ``circuits`` section maps ``cell_name`` to a dictionary of the named Element&#39;s parameters.</span>
 
@@ -655,7 +658,7 @@
             <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span><span class="n">i_trans</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">i_trans</span> <span class="ow">in</span> <span class="n">original_instances</span>
                                                 <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">()</span> <span class="o">==</span> <span class="n">original_cell_index</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> element has no cell mapping in </span><span class="si">%s</span><span class="s1"> between circuit layout and orignal layout,&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> element has no cell mapping in </span><span class="si">%s</span><span class="s1"> between circuit layout and orignal layout,&#39;</span>
                     <span class="s1">&#39; using subcircuit center point as subcircuit_location instead&#39;</span><span class="p">),</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">circuit</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">possible_instances</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -695,11 +698,11 @@
                 <span class="c1"># we also transform the point by instance&#39;s predecessors&#39; transformation</span>
                 <span class="n">subcircuit_location</span> <span class="o">=</span> <span class="n">correct_instance_trans</span> <span class="o">*</span> <span class="n">combined_bbox</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> element has no bounding boxes in *_base_metal_gap_wo_grid layers in </span><span class="si">%s</span><span class="s1">,&#39;</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">((</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> element has no bounding boxes in *_base_metal_gap_wo_grid layers in </span><span class="si">%s</span><span class="s1">,&#39;</span>
                     <span class="s1">&#39; using subcircuit center point as subcircuit_location instead&#39;</span><span class="p">),</span>
                     <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">circuit</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">possible_instances</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">((</span><span class="s1">&#39;Could not find a matching element for </span><span class="si">%s</span><span class="s1"> subcircuit in the orignal layout of </span><span class="si">%s</span><span class="s1">,&#39;</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">((</span><span class="s1">&#39;Could not find a matching element for </span><span class="si">%s</span><span class="s1"> subcircuit in the orignal layout of </span><span class="si">%s</span><span class="s1">,&#39;</span>
                     <span class="s1">&#39; using subcircuit center point as subcircuit_location instead&#39;</span><span class="p">),</span> <span class="n">internal_cell</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">circuit</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
         <span class="n">subcircuits_for_export</span><span class="p">[</span><span class="n">subcircuit</span><span class="o">.</span><span class="n">id</span><span class="p">()]</span> <span class="o">=</span> <span class="p">{</span>

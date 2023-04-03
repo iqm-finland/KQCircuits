@@ -535,10 +535,13 @@ overlapping pins that belong to two different components each identified by a un
 <code class="docutils literal notranslate"><span class="pre">subcircuit_id</span></code>. One of these is almost always a waveguide. Unconnected pins are not shown
 except for Launchers.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">subcircuits</span></code> section is a dictionary of the used cells: <code class="docutils literal notranslate"><span class="pre">&lt;subcircuit_id&gt;:</span> <span class="pre">{&quot;cell_name&quot;:</span>
-<span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;subcircuit_location&quot;:</span> <span class="pre">[&lt;x&gt;,</span> <span class="pre">&lt;y&gt;]}</span></code>. Where <code class="docutils literal notranslate"><span class="pre">cell_name</span></code> is the name of the used Element
+<span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;subcircuit_location&quot;:</span> <span class="pre">{&quot;_pya_type&quot;:</span> <span class="pre">&quot;DPoint&quot;,</span> <span class="pre">&quot;x&quot;:</span> <span class="pre">&lt;x&gt;,</span> <span class="pre">&quot;y&quot;:</span> <span class="pre">&lt;y&gt;},</span> <span class="pre">...}</span></code>.
+Where <code class="docutils literal notranslate"><span class="pre">cell_name</span></code> is the name of the used Element
 optionally appended with <code class="docutils literal notranslate"><span class="pre">$&lt;n&gt;</span></code> if there are more than one Elements of the same type.
 Different instances of the same cell will have different <code class="docutils literal notranslate"><span class="pre">subcircuit_id</span></code> but identical
-<code class="docutils literal notranslate"><span class="pre">cell_name</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">cell_name</span></code>. <code class="docutils literal notranslate"><span class="pre">subcircuit_location</span></code> defines the center of the bounding box spanned by the
+geometry in <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code> layers, while <code class="docutils literal notranslate"><span class="pre">subcircuit_origin</span></code> defines the center
+of the bounding box spanned by the netlist ports of the cell.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">circuits</span></code> section maps <code class="docutils literal notranslate"><span class="pre">cell_name</span></code> to a dictionary of the named Element’s parameters.</p>
 <p>If the Cell object is a Chip, the <code class="docutils literal notranslate"><span class="pre">chip</span></code> section contains bounding boxes of each face in the chip.</p>
 <dl class="field-list simple">
