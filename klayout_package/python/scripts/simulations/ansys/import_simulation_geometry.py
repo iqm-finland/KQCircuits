@@ -130,10 +130,12 @@ for lname, ldata in layers.items():
         # Create object covering full box
         objects[lname] = [lname]
         if thickness != 0.0:
-            create_box(oEditor, lname, box[0][0], box[0][1], z, box[1][0] - box[0][0], box[1][1] - box[0][1], thickness,
+            create_box(oEditor, lname, box['p1']['x'], box['p1']['y'],
+                       z, box['p2']['x'] - box['p1']['x'], box['p2']['y'] - box['p1']['y'], thickness,
                        units)
         else:
-            create_rectangle(oEditor, lname, box[0][0], box[0][1], z, box[1][0] - box[0][0], box[1][1] - box[0][1], 'Z',
+            create_rectangle(oEditor, lname, box['p1']['x'], box['p1']['y'],
+                             z, box['p2']['x'] - box['p1']['x'], box['p2']['y'] - box['p1']['y'], 'Z',
                              units)
 
     # Set material
