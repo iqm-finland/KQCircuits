@@ -59,6 +59,8 @@ class MaskLayout:
         mask_text_scale: text scaling factor for graphical representation layer (float)
         mask_marker_offset: offset of mask markers from wafer center in horizontal and vertical directions (float)
         mask_export_layers: list of layer names (without face_ids) to be exported as individual mask `.oas` files
+        mask_export_density_layers: list of layer names (without face_ids) for which we want to calculate the coverage
+         density
         submasks: list of submasks, each element is a tuple (submask mask_layout, submask position)
         extra_id: extra string used to create unique name for mask layouts with the same face_id
         extra_chips: List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional
@@ -101,6 +103,7 @@ class MaskLayout:
         self.mask_marker_offset = kwargs.get("mask_marker_offset", default_mask_parameters[self.face_id][
             "mask_marker_offset"])
         self.mask_export_layers = kwargs.get("mask_export_layers", default_mask_export_layers)
+        self.mask_export_density_layers = kwargs.get("mask_export_density_layers", [])
         self.submasks = kwargs.get("submasks", [])
         self.extra_id = kwargs.get("extra_id", "")
         self.extra_chips = kwargs.get("extra_chips", [])

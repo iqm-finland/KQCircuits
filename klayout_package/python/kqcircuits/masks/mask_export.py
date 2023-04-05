@@ -20,6 +20,7 @@ import json
 import os
 import subprocess
 from importlib import import_module
+from math import pi
 
 from autologging import logged
 
@@ -31,9 +32,9 @@ from kqcircuits.klayout_view import resolve_default_layer_info
 from kqcircuits.pya_resolver import pya, klayout_executable_command
 from kqcircuits.util.area import get_area_and_density
 from kqcircuits.util.count_instances import count_instances_in_cell
+from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.util.netlist_extraction import export_cell_netlist
-from kqcircuits.util.geometry_helper import circle_polygon
 
 
 @logged
@@ -66,7 +67,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     # export .oas file with pcells (requires exporting a cell one hierarchy level above chip pcell)
     dummy_cell = layout.create_cell(chip_name)
     dummy_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), pya.DTrans()))
-    _export_cell(chip_dir/f"{chip_name}_with_pcells.oas", dummy_cell, "all")
+    _export_cell(chip_dir / f"{chip_name}_with_pcells.oas", dummy_cell, "all")
     dummy_cell.delete()
     static_cell = layout.cell(layout.convert_cell_to_static(chip_cell.cell_index()))
 
@@ -74,10 +75,10 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     save_opts = pya.SaveLayoutOptions()
     save_opts.format = "OASIS"
     save_opts.write_context_info = False  # to save all cells as static cells
-    static_cell.write(str(chip_dir/f"{chip_name}.oas"), save_opts)
+    static_cell.write(str(chip_dir / f"{chip_name}.oas"), save_opts)
 
     # export netlist
-    export_cell_netlist(static_cell, chip_dir/f"{chip_name}-netlist.json", chip_cell)
+    export_cell_netlist(static_cell, chip_dir / f"{chip_name}-netlist.json", chip_cell)
     # calculate flip-chip bump count
     bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
     # find layer areas and densities
@@ -95,7 +96,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
         "Layer areas and densities": layer_areas_and_densities
     }
 
-    with open(chip_dir/(chip_name + ".json"), "w") as f:
+    with open(chip_dir / (chip_name + ".json"), "w") as f:
         json.dump(chip_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
 
     # export .gds files for EBL or laser writer
@@ -146,6 +147,23 @@ def export_masks_of_face(export_dir, mask_layout, mask_set):
     for layer_name in mask_layout.mask_export_layers:
         export_mask(export_dir_for_face, layer_name, mask_layout, mask_set)
 
+    # Find area and density for the layers defined in mask_layout.mask_export_density_layers
+    layer_infos = [resolve_default_layer_info(layer_name, mask_layout.face_id)
+                   for layer_name in mask_layout.mask_export_density_layers]
+    area_data = get_area_and_density(mask_layout.top_cell, layer_infos)
+
+    wafer_area = pi * mask_layout.wafer_rad ** 2  # Use circular wafer area instead of rectangular bounding boxes
+    layer_areas_and_densities = {name: {
+        "area": round(area, 2),
+        "density": round(area / wafer_area * 100, 2)
+    } for name, area, _ in zip(*area_data)}
+
+    mask_json = {
+        "layer_areas_and_densities": layer_areas_and_densities,
+    }
+    with open(export_dir_for_face / (subdir_name_for_face + ".json"), "w") as f:
+        json.dump(mask_json, f, cls=GeometryJsonEncoder, sort_keys=True, indent=4)
+
 
 def export_mask(export_dir, layer_name, mask_layout, mask_set):
     """ Exports a mask from a single layer of a single face of a mask set.
@@ -183,10 +201,11 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         layout.copy_layer(tmp_layer, layer)
     layout.delete_layer(tmp_layer)
 
+
 @logged
 def export_docs(mask_set, filename="Mask_Documentation.md"):
     """Exports mask documentation containing mask layouts and parameters of all chips in the mask_set."""
-    file_location = str(mask_set._mask_set_dir/filename)
+    file_location = str(mask_set._mask_set_dir / filename)
 
     with open(file_location, "w+", encoding="utf-8") as f:
         f.write("# Mask Set Name: {}\n".format(mask_set.name))
@@ -256,8 +275,8 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
                 params_schema = cls.get_schema()
                 for param_name, param_declaration in params_schema.items():
                     f.write("| **{}** | {} |\n".format(
-                            param_declaration.description.replace("|", "&#124;"),
-                            str(params[param_name])))
+                        param_declaration.description.replace("|", "&#124;"),
+                        str(params[param_name])))
             f.write("\n")
 
             f.write("### Other Chip Information\n")
@@ -315,7 +334,7 @@ def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
     # export bitmaps for mask layouts
     for mask_layout in mask_set.mask_layouts:
         mask_layout_dir_name = _get_mask_layout_full_name(mask_set, mask_layout)
-        mask_layout_dir = _get_directory(mask_set._mask_set_dir/str(mask_layout_dir_name))
+        mask_layout_dir = _get_directory(mask_set._mask_set_dir / str(mask_layout_dir_name))
         filename = _get_mask_layout_full_name(mask_set, mask_layout)
         view = mask_set.view
         if view:
@@ -324,9 +343,9 @@ def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
             view.export_layers_bitmaps(mask_layout_dir, mask_layout.top_cell, filename=filename,
                                        layers_set=spec_layers, face_id=mask_layout.face_id)
     # export bitmaps for chips
-    chips_dir = _get_directory(mask_set._mask_set_dir/"Chips")
+    chips_dir = _get_directory(mask_set._mask_set_dir / "Chips")
     for name, cell in mask_set.used_chips.items():
-        chip_dir = _get_directory(chips_dir/name)
+        chip_dir = _get_directory(chips_dir / name)
         if view:
             view.export_all_layers_bitmap(chip_dir, cell, filename=name)
     if view:
