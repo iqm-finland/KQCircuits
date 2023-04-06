@@ -29,7 +29,7 @@ def test_generate_quick_demo(tmp_path):
 
     _run_mask("masks/quick_demo.py", tmp_path)
 
-    mask_path = tmp_path.joinpath('Quick_v1/Quick_v1 1t1')
+    mask_path = tmp_path.joinpath('Quick_v1/Quick_v1-1t1')
     chips_path = tmp_path.joinpath('Quick_v1/Chips')
 
     assert chips_path.joinpath('DE1').exists()
@@ -38,8 +38,8 @@ def test_generate_quick_demo(tmp_path):
     assert chips_path.joinpath('CH1').exists()
     assert chips_path.joinpath('CH1/CH1.png').exists()
     assert chips_path.joinpath('CH1/CH1.oas').exists()
-    assert mask_path.joinpath('Quick_v1 1t1.oas').exists()
-    assert mask_path.joinpath('Quick_v1 1t1.png').exists()
+    assert mask_path.joinpath('Quick_v1-1t1.oas').exists()
+    assert mask_path.joinpath('Quick_v1-1t1.png').exists()
 
 
 def _run_mask(path, tmp_path):

@@ -326,7 +326,7 @@ class KLayoutView:
             layers_set = [resolve_default_layer_info(layer_name) for layer_name in mask_bitmap_export_layers]
 
         if len(layers_set) == 1:
-            layer_str = " " + layers_set[0].name
+            layer_str = "-" + layers_set[0].name
         else:
             layer_str = ""
         cell_png_name = path / "{}{}.png".format(filename, layer_str)

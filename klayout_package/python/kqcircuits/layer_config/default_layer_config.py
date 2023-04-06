@@ -207,19 +207,19 @@ all_layers_bitmap_hide_layers = [default_layers[l] for l in _aux_layers_dict] + 
 # Dictionary with items "cluster name: LayerCluster".
 chip_export_layer_clusters = {
     # 1b1-face
-    "SIS 1b1": LayerCluster(["1b1_SIS_junction", "1b1_SIS_shadow", "1b1_SIS_junction_2"],
+    "SIS-1b1": LayerCluster(["1b1_SIS_junction", "1b1_SIS_shadow", "1b1_SIS_junction_2"],
                             ["1b1_base_metal_gap_for_EBL"], "1b1"),
-    "airbridges 1b1": LayerCluster(["1b1_airbridge_pads", "1b1_airbridge_flyover"],
+    "airbridges-1b1": LayerCluster(["1b1_airbridge_pads", "1b1_airbridge_flyover"],
                                    ["1b1_base_metal_gap_wo_grid"], "1b1"),
     # 1t1-face
-    "SIS 1t1": LayerCluster(["1t1_SIS_junction", "1t1_SIS_shadow", "1t1_SIS_junction_2"],
+    "SIS-1t1": LayerCluster(["1t1_SIS_junction", "1t1_SIS_shadow", "1t1_SIS_junction_2"],
                             ["1t1_base_metal_gap_for_EBL"], "1t1"),
-    "airbridges 1t1": LayerCluster(["1t1_airbridge_pads", "1t1_airbridge_flyover"],
+    "airbridges-1t1": LayerCluster(["1t1_airbridge_pads", "1t1_airbridge_flyover"],
                                    ["1t1_base_metal_gap_wo_grid"], "1t1"),
     # 2b1-face
-    "SIS 2b1": LayerCluster(["2b1_SIS_junction", "2b1_SIS_shadow", "2b1_SIS_junction_2"],
+    "SIS-2b1": LayerCluster(["2b1_SIS_junction", "2b1_SIS_shadow", "2b1_SIS_junction_2"],
                             ["2b1_base_metal_gap_for_EBL"], "2b1"),
-    "airbridges 2b1": LayerCluster(["2b1_airbridge_pads", "2b1_airbridge_flyover"],
+    "airbridges-2b1": LayerCluster(["2b1_airbridge_pads", "2b1_airbridge_flyover"],
                                    ["2b1_base_metal_gap_wo_grid"], "2b1"),
 }
 

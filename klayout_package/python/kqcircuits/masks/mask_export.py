@@ -116,7 +116,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
             temporary_cell.insert(pya.DCellInstArray(static_cell.cell_index(), default_mask_parameters[
                 layer_cluster.face_id]["chip_trans"]))
             layers_to_export = {name: layout.layer(default_layers[name]) for name in layer_cluster.all_layers()}
-            path = chip_dir / "{} {}.gds".format(chip_name, cluster_name)
+            path = chip_dir / f"{chip_name}-{cluster_name}.gds"
             _export_cell(path, temporary_cell, layers_to_export)
             temporary_cell.delete()
 
@@ -175,7 +175,7 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         top_cell.shapes(layer).insert(wafer ^ disc)
 
     layers_to_export = {layer_info.name: layer}
-    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f" {layer_info.name}.oas")
+    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f"-{layer_info.name}.oas")
     _export_cell(path, top_cell, layers_to_export)
 
     if invert:
@@ -195,8 +195,8 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
         for mask_layout in mask_set.mask_layouts:
 
             f.write("## Mask Layout {}:\n".format(mask_layout.face_id + mask_layout.extra_id))
-            mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout).replace(" ", "%20")
-            f.write(f"![alt text]({mask_layout_str}/{mask_layout_str}%20mask_graphical_rep.png)\n")
+            mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout)
+            f.write(f"![alt text]({mask_layout_str}/{mask_layout_str}-mask_graphical_rep.png)\n")
 
             f.write("### Number of Chips in Mask Layout {}\n".format(mask_layout.face_id + mask_layout.extra_id))
 
@@ -296,17 +296,13 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
             f.write("### Mask Files:\n")
             for file_name in os.listdir(mask_layout_path):
                 if file_name.endswith(".oas"):
-                    # the spaces are replaced by "%20" to make links to filenames with spaces work
-                    f.write(" + [{}]({})\n".format(file_name,
-                                                   os.path.join(mask_layout_str, file_name).replace(" ", "%20")))
+                    f.write(" + [{}]({})\n".format(file_name, os.path.join(mask_layout_str, file_name)))
             f.write("\n")
 
             f.write("### Mask Images:\n")
             for file_name in os.listdir(mask_layout_path):
                 if file_name.endswith(".png"):
-                    # the spaces are replaced by "%20" to make links to filenames with spaces work
-                    f.write("+ [{}]({})\n".format(file_name,
-                                                  os.path.join(mask_layout_str, file_name).replace(" ", "%20")))
+                    f.write("+ [{}]({})\n".format(file_name, os.path.join(mask_layout_str, file_name)))
 
         f.close()
 
@@ -391,4 +387,4 @@ def _get_directory(directory):
 
 
 def _get_mask_layout_full_name(mask_set, mask_layout):
-    return f"{mask_set.name}_v{mask_set.version} {mask_layout.face_id}{mask_layout.extra_id}"
+    return f"{mask_set.name}_v{mask_set.version}-{mask_layout.face_id}{mask_layout.extra_id}"
