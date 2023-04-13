@@ -85,8 +85,7 @@ default_tsv_type = "Tsv Standard"
 
 default_drc_runset = "example.lydrc"
 
-# default elements to breakdown before netlist export
-# list of strings
+# Default list of Elements to break down before netlist export.
 default_netlist_breakdown = [
     "Waveguide Composite",
     "Meander",

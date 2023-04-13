@@ -54,7 +54,7 @@ def export_designs(mask_set):
         export_masks_of_face(mask_set._mask_set_dir, mask_layout, mask_set)
 
 
-def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
+def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc, alt_netlists=None):
     """Exports a chip used in a maskset."""
 
     is_pcell = chip_cell.pcell_declaration() is not None
@@ -78,7 +78,7 @@ def export_chip(chip_cell, chip_name, chip_dir, layout, export_drc):
     static_cell.write(str(chip_dir / f"{chip_name}.oas"), save_opts)
 
     # export netlist
-    export_cell_netlist(static_cell, chip_dir / f"{chip_name}-netlist.json", chip_cell)
+    export_cell_netlist(static_cell, chip_dir / f"{chip_name}-netlist.json", chip_cell, alt_netlists)
     # calculate flip-chip bump count
     bump_count = count_instances_in_cell(chip_cell, FlipChipConnectorDc)
     # find layer areas and densities

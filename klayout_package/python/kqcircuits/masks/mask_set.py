@@ -45,6 +45,10 @@ class MaskSet:
     add_chip(). These functions also export some files for each chip. Then call build() to create the
     cell hierarchy of the entire mask, and finally export mask files by calling export().
 
+    Chips are created in parallel in separate processes but the user may choose to use a ``-d`` switch on
+    the command line for debugging with a single process. It is also possible to manually limit the number of
+    concurrently used CPUs for resource management purposes with the ``-c 4`` switch (to 4 in this example).
+
     Example:
         mask = MaskSet(...)
         mask.add_mask_layout(...)
@@ -116,31 +120,29 @@ class MaskSet:
         self.mask_layouts.append(mask_layout)
         return mask_layout
 
-    def add_chip(self, chips, variant_name=None, cpus=None, **kwargs):
+    def add_chip(self, chips, variant_name=None, cpus=None, **parameters):
         """Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.
 
         Note the complex polymorphism used here: ``chips`` is either a single chip class or a list of ``(chip, variant,
         parameters)`` tuples. In the latter case the rest of the arguments (except ``cpus``) are ignored. Also,
         ``chips`` (or the individual chip part of tuples) may be a simple file name to load a static .oas file instead.
 
-        Chips are created in parallel in separate processes but the user may choose to use a ``-d`` switch on
-        the command line for debugging with a single process. It is also possible to manually limit the number of
-        concurrently used CPUs for resource management purposes with the ``-c 4`` switch (to 4 in this example).
+        The chip's parameters dictionary may also contain an ``alt_netlists`` dictionary to specify alternative ways of
+        generating netlists. See ``export_cell_netlist()`` or the ``quick_demo.py`` mask for further information.
 
         Args:
             chip: A chip class. Or a list of tuples, like ``[(QualityFactor, "QDG", parameters),...]``,
                   parameters are optional.
-            variant_name: Name for specific variant, the same as in the mask layout. Or None, if multiple
-                          chips are given
+            variant_name: Name for specific variant, the same as in the mask layout.
             cpus: Number of parallel processes to use for chip generation. By default uses ``os.cpu_count()``
                   or the number of chips, whichever is smaller.
-            **kwargs: Any parameters passed to the a single chip PCell. Not used with multiple chips.
+            **parameters: Any parameters passed to the a single chip PCell.
         """
         self._time['ADD_CHIPS'] = perf_counter()
 
         if not isinstance(chips, list):  # only one chip
             cpus = 1
-            chips = [(chips, variant_name, kwargs)]
+            chips = [(chips, variant_name, parameters)]
 
         if cpus is None:
             cpus = min(len(chips), os.cpu_count())
@@ -168,8 +170,10 @@ class MaskSet:
         """Create chip, possibly in a separate process."""
 
         chip, xargs = chip_arg
-        chip_class, variant_name, *chip_params = chip
         name, with_grid, _mask_set_dir, export_drc, _extra_params = xargs
+        chip_class, variant_name, *chip_params = chip
+        chip_params = chip_params[0] if chip_params else {}
+        alt_netlists = chip_params.pop("alt_netlists", None)
 
         chip_path = _mask_set_dir/"Chips"/f"{variant_name}"
         chip_path.mkdir(parents=True, exist_ok=True)
@@ -190,7 +194,7 @@ class MaskSet:
                 'name_copy': None,
             }
             if chip_params:
-                params.update(chip_params[0])
+                params.update(chip_params)
             cell = chip_class.create(layout, **params)
         else:  # its a file name, load it
             load_opts = pya.LoadLayoutOptions()
@@ -199,7 +203,7 @@ class MaskSet:
             layout.read(chip_class, load_opts)
             cell = layout.top_cells()[-1]
 
-        export_chip(cell, variant_name, chip_path, layout, export_drc)
+        export_chip(cell, variant_name, chip_path, layout, export_drc, alt_netlists)
         view.close()
 
         return variant_name, str(chip_path / f"{variant_name}.oas")

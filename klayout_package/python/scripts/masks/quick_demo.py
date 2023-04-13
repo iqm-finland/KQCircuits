@@ -49,11 +49,13 @@ qdemo.add_mask_layout([
     ["---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---", "---"],
 ], "1t1", layers_to_mask=layers_to_mask)
 
+# This is just a demonstration how to generate netlists with something else than 'default_netlist_breakdown'.
+alt_nets = {"2nd": ["Meander"], "3rd": []}
 
 # chip definitions
 qdemo.add_chip([
     (Chip, "CH1"),
-    (Demo, "DE1"),
+    (Demo, "DE1", {"alt_netlists": alt_nets}),
 ], cpus=2)
 
 # Alternatively, to add them one-by-one:

@@ -18,6 +18,7 @@
 
 import json
 import logging
+import os.path
 from os import cpu_count
 
 from kqcircuits.defaults import default_layers, default_netlist_breakdown, default_faces
@@ -28,8 +29,8 @@ from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 log = logging.getLogger(__name__)
 
 
-def export_cell_netlist(cell, filename, pcell=None):
-    """ Exports netlist into `filename` in JSON
+def export_cell_netlist(cell, filename, pcell=None, alt_netlists=None):
+    """Exports netlist(s) in JSON into file(s).
 
     The file will have four sections:
     ``{"nets": {...}, "subcircuits": {...}, "circuits": {...}, "chip": {...}}``
@@ -47,24 +48,41 @@ def export_cell_netlist(cell, filename, pcell=None):
 
     The ``subcircuits`` section is a dictionary of the used cells: ``<subcircuit_id>: {"cell_name":
     "...", "subcircuit_location": {"_pya_type": "DPoint", "x": <x>, "y": <y>}, ...}``.
-    Where ``cell_name`` is the name of the used Element
-    optionally appended with ``$<n>`` if there are more than one Elements of the same type.
-    Different instances of the same cell will have different ``subcircuit_id`` but identical
-    ``cell_name``. ``subcircuit_location`` defines the center of the bounding box spanned by the
-    geometry in ``base_metal_gap_wo_grid`` layers, while ``subcircuit_origin`` defines the center
-    of the bounding box spanned by the netlist ports of the cell.
+    Where ``cell_name`` is the name of the used Element optionally appended with ``$<n>`` if there
+    are more than one Elements of the same type. Different instances of the same cell will have
+    different ``subcircuit_id`` but identical ``cell_name``. ``subcircuit_location`` defines the
+    center of the bounding box of the subcircuit's geometry in ``base_metal_gap_wo_grid`` layer,
+    while ``subcircuit_origin`` defines the center of the bounding box of netlist ports of the cell.
 
     The ``circuits`` section maps ``cell_name`` to a dictionary of the named Element's parameters.
 
     If the Cell object is a Chip, the ``chip`` section contains bounding boxes of each face in the chip.
 
+    This function may generate alternative netlists too as specified in the ``alt_netlists``
+    dictionary. The keys should be tags that get added to the generated netlist filenames and the
+    values are the corresponding Element breakdown lists used to generate them. The default netlist
+    is generated regadless of this parameter.
+
     Args:
         cell: pya Cell object
         filename: absolute path as convertible to string
         pcell: pya PCell object. If None, an attempt is made to treat cell as pcell
+        alt_netlists: optional dictionary of file name postfixes and element breakdown lists
     """
     if pcell is None:
         pcell = cell
+
+    _export_cell_netlist_breakdown(cell, filename, pcell, default_netlist_breakdown)
+
+    if isinstance(alt_netlists, dict):
+        fn, ext = os.path.splitext(filename)
+        for tag, breakdown in alt_netlists.items():
+            fnt = f"{fn}_{tag}{ext}"
+            _export_cell_netlist_breakdown(cell, fnt, pcell, breakdown)
+
+
+def _export_cell_netlist_breakdown(cell, filename, pcell, breakdown_list):
+    """A helper function of ``export_cell_netlist``, processes a single breakdown list."""
 
     # get LayoutToNetlist object
     layout = cell.layout()
@@ -89,13 +107,13 @@ def export_cell_netlist(cell, filename, pcell=None):
     circuit = ltn.netlist().circuit_by_cell_index(reverse_cell_map[cell.cell_index()])
     if circuit:
         log.info(f"Exporting netlist to {filename}")
-        export_netlist(circuit, filename, ltn.internal_layout(), layout, cm, pcell)
+        _export_netlist(circuit, filename, ltn.internal_layout(), layout, cm, pcell, breakdown_list)
     else:
         log.info(f"No circuit found for {cell.display_title()}")
 
 
-def export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping, pcell=None):
-    """ Exports `circuit` into `filename` in JSON
+def _export_netlist(circuit, filename, internal_layout, original_layout, cell_mapping, pcell, breakdown_list):
+    """A helper function of ``export_cell_netlist``,  exports ``circuit`` into ``filename``.
 
     Args:
         circuit: pya Circuit object
@@ -103,16 +121,17 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         internal_layout: pya layout object where the netlist cells are registered
         original_layout: pya Layout object where the original cells and pcells are registered
         cell_mapping: CellMapping object as given by pya LayoutToNetlist object
-        pcell: pya PCell object from which circuit was extracted, if available
-
+        pcell: pya PCell object from which circuit was extracted
+        breakdown_list: a list of Elements to break down for the netlist
     """
+
     # first flatten subcircuits mentioned in elements to breakdown
     # TODO implement an efficient depth first search or similar solution
     for _ in range(internal_layout.top_cell().hierarchy_levels()):
         subcircuits = list(circuit.each_subcircuit())
         for subcircuit in subcircuits:
             internal_cell = internal_layout.cell(subcircuit.circuit_ref().cell_index)
-            if internal_cell.name.split('$')[0].replace('*', ' ') in default_netlist_breakdown:
+            if internal_cell.name.split('$')[0].replace('*', ' ') in breakdown_list:
                 circuit.flatten_subcircuit(subcircuit)
 
     nets_for_export = {}
@@ -208,7 +227,7 @@ def export_netlist(circuit, filename, internal_layout, original_layout, cell_map
         circuits_for_export[internal_cell.name] = extract_circuits(cell_mapping, internal_cell, original_layout)
 
     chip_for_export = {}
-    if pcell is not None and pcell.pcell_declaration() is not None:
+    if pcell.pcell_declaration() is not None:
         chip_params = pcell.pcell_parameters_by_name()
         if {'frames_enabled', 'face_boxes', 'face_ids', 'box'} <= set(chip_params.keys()):
             for face in chip_params['frames_enabled']:
