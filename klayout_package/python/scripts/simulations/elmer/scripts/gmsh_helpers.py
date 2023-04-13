@@ -885,6 +885,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
 
     # Set ports
+    shared_signals = {}
     for port in port_data_gmsh:
         face = port['face']
         if 'ground_location' in port:
@@ -896,8 +897,16 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
         for dim_tag in face_dim_tag_dicts[face]['signal']:
             if gmsh.model.isInside(*dim_tag, signal_location):
                 port['signal_dim_tag'] = dim_tag
-                port['signal_physical_name'] = 'signal_' + str(port['number'])
-                set_physical_name(dim_tag, port['signal_physical_name'])
+                if dim_tag not in shared_signals:
+                    shared_signals[dim_tag] = []
+                shared_signals[dim_tag].append(port)
+
+    for dim_tag, port_list in shared_signals.items():
+        port_numbers = [str(port['number']) for port in port_list]
+        signal_physical_name = 'signal_' + '_'.join(port_numbers)
+        for port in port_list:
+            port['signal_physical_name'] = signal_physical_name
+            set_physical_name(dim_tag, port['signal_physical_name'])
 
     for _ in face_dim_tag_dicts:
         body_dim_tags = gmsh.model.getEntities(3)
@@ -918,7 +927,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
                 else:
                     port['dim_tags'] = get_entities_in_bounding_boxes([port['occ_bounding_box']], 2)
                     for i, dim_tag in enumerate(port['dim_tags']):
-                        port_physical_name = 'port_{}_{}'.format(port['number'], i)
+                        port_physical_name = 'port_{}_{}'.format(port['number'], i+1)
                         set_physical_name(dim_tag, port_physical_name)
                         parent_body_dim_tag = get_parent_body(dim_tag, body_dim_tags)
                         if parent_body_dim_tag is not None:
@@ -935,11 +944,11 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
     for side_name in ['xmin', 'ymin', 'zmin', 'xmax', 'ymax', 'zmax']:
         bbox_all_dim_tags = get_entities_in_bounding_boxes([bbox_all_sides[side_name]], 2)
         for i, dim_tag in enumerate(bbox_all_dim_tags):
-            set_physical_name(dim_tag, '{}_{}'.format(side_name, i))
+            set_physical_name(dim_tag, '{}_{}'.format(side_name, i+1))
 
     ground_names = []
     for i, dim_tag in enumerate(new_ground_dim_tags):
-        ground_name = 'ground_{}'.format(i)
+        ground_name = 'ground_{}'.format(i+1)
         set_physical_name(dim_tag, ground_name)
         ground_names.append(ground_name)
 
@@ -966,7 +975,9 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
     model_data = {
         'tool': sim_data['tool'],
         'faces': len(faces),
-        'port_signal_names': [p['signal_physical_name'] for p in port_data_gmsh if 'signal_physical_name' in p],
+        'ports': port_data_gmsh,
+        'port_signal_names': list(set(p['signal_physical_name']
+                                       for p in port_data_gmsh if 'signal_physical_name' in p)),
         'body_port_phys_map': body_port_phys_map,
         'body_dim_tags': body_dim_tags,
         'body_materials': body_materials,

@@ -64,15 +64,17 @@ class WaveGuidesSim(Simulation):
                 wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath([p1, p2], 0), term1=0,
                                            term2=0, face_ids=[guide_face_id])
                 self.insert_cell(wg_cell)
-                self.ports.append(EdgePort(i + 1, p1, face=face_id[guide_face_id]))
+                self.ports.append(EdgePort(i+1, p1, face=face_id[guide_face_id]))
+                if self.port_termination_end:
+                    self.ports.append(EdgePort(n_guides+i+1, p2, face=face_id[guide_face_id]))
             else:
                 if self.port_termination_end:
-                    self.produce_waveguide_to_port(p0, p1, 2*i, waveguide_length=cpw_length/2.,
+                    self.produce_waveguide_to_port(p0, p1, i+1, waveguide_length=cpw_length/2.,
                                                    a=a, b=b, face=face_id[guide_face_id])
-                    self.produce_waveguide_to_port(p0, p2, 2*i+1, waveguide_length=cpw_length/2.,
+                    self.produce_waveguide_to_port(p0, p2, n_guides+i+1, waveguide_length=cpw_length/2.,
                                                    a=a, b=b, face=face_id[guide_face_id])
                 else:
-                    self.produce_waveguide_to_port(p0, p1, i, waveguide_length=cpw_length/2.,
+                    self.produce_waveguide_to_port(p0, p1, i+1, waveguide_length=cpw_length/2.,
                                                    a=a, b=b, face=face_id[guide_face_id])
                     wg_cell = self.add_element(WaveguideCoplanar, path=pya.DPath([p0, p2], 0), term1=0,
                                                term2=self.b, face_ids=[guide_face_id])

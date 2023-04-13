@@ -205,6 +205,14 @@ def get_vector_helmholtz(ordinate, angular_frequency):
         '! include block.sif ',
         '! lagrange gauge = logical true',
         '! lagrange gauge penalization coefficient = real 1',
+        '! Model lumping',
+        '  Constraint Modes Analysis = Logical True',
+        '  Constraint Modes Lumped = Logical True',
+        '  Constraint Modes Fluxes = Logical True',
+        '  Constraint Modes EM Wave = Logical True',
+        '  Constraint Modes Fluxes Results = Logical True',
+        '!  Constraint Modes Fluxes Symmetric = Logical True',
+        '  Constraint Modes Fluxes Filename = File "SMatrix.dat"',
         ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
@@ -219,12 +227,12 @@ def get_vector_helmholtz_calc_fields(ordinate, angular_frequency):
         '!Eletric field Variable = String "E"',
        f'Angular Frequency = Real {angular_frequency}',
         'Calculate Elemental Fields = Logical True',
-        'Calculate Magnetic Field Strength = Logical false',
-        'Calculate Magnetic Flux Density = Logical false',
-        'Calculate Poynting vector = Logical true',
-        'Calculate Div of Poynting Vector = Logical false',
+        'Calculate Magnetic Field Strength = Logical True',
+        'Calculate Magnetic Flux Density = Logical True',
+        'Calculate Poynting vector = Logical True',
+        'Calculate Div of Poynting Vector = Logical True',
         'Calculate Electric field = Logical True',
-        'Calculate Energy Functional = Logical true',
+        'Calculate Energy Functional = Logical True',
         'Steady State Convergence Tolerance = 1',
         'Linear System Solver = "Iterative"',
         'Linear System Preconditioning = None',
@@ -853,6 +861,13 @@ def sif_circuit_definitions(json_data):
     # (beta a, phi') + phi_component(1) (beta grad phi_0, grad phi') = i_component(1)
     return res
 
+def get_port_from_boundary_physical_names(ports, name):
+    for port in ports:
+        print(name, port['physical_names'])
+        if name in [t[1] for t in port['physical_names']]:
+            return port
+    return None
+
 def sif_wave_equation(json_data: dict, folder_path: Path):
     """
     Returns the wave equation solver sif.
@@ -915,22 +930,25 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
         body_id = i+1+n_bodies
         bodies += sif_body(
                 ordinate=body_id,
-                target_bodies=[f'chip_{face}'],
+                target_bodies=[f'{body_id}'],
                 equation=2,
                 material=1 if json_data['body_materials'][body_dim_tag] == 'vacuum' else 2)
 
-        boundary_physical_names = json_data['body_port_phys_map'][body_dim_tag]
-
-        boundary_conditions += sif_boundary_condition(
-                                    ordinate=i+1+n_boundaries,
-                                    target_boundaries=boundary_physical_names,
-                                    conditions=[
-                                        f'Body Id = {body_id}',
-                                        'TEM Potential im = variable potential',
-                                        '  real matc "2*beta*tx"',
-                                        'electric robin coefficient im = real $ beta',
-                                        ]
-                                    )
+        for boundary_physical_name in json_data['body_port_phys_map'][body_dim_tag]:
+            n_boundaries += 1
+            beta_string = 'beta0' if json_data['body_materials'][body_dim_tag] == 'vacuum' else 'beta'
+            port = get_port_from_boundary_physical_names(json_data['ports'], boundary_physical_name)
+            boundary_conditions += sif_boundary_condition(
+                                        ordinate=i+n_boundaries,
+                                        target_boundaries=[boundary_physical_name],
+                                        conditions=[
+                                            f'Body Id = {body_id}',
+                                            'TEM Potential im = variable potential',
+                                            f'  real matc "2*{beta_string}*tx"',
+                                            f'electric robin coefficient im = real $ {beta_string}',
+                                            f'Constraint Mode = Integer {port["number"]}'
+                                            ]
+                                        )
 
     matc_blocks = sif_matc_block([
            f'f0 = {1e9*json_data["frequency"]}',
