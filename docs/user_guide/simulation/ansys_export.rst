@@ -1,5 +1,5 @@
 Ansys export
-------------
+============
 
 Once the ``simulation`` object is created, call function ``export_ansys_json`` to export the geometry as GDSII file and meta-data in json format. Parameter ``ansys_tool`` determines whether to use HFSS ('hfss') or Q3D Extractor ('q3d').
 HFSS eigenmode simulations are done with 'eigenmode', this is used for :ref:`py-epr` as well::
@@ -21,19 +21,19 @@ Alternatively, you can call ``export_ansys`` to cover last three steps. This exp
     bat = export_ansys([simulation], path, ansys_tool='hfss')
 
 Ansys scripts
-^^^^^^^^^^^^^
+-------------
 
 The folder :git_url:`scripts/simulations/ansys/ <klayout_package/python/scripts/simulations/ansys>` contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.
 
-The scripts are developed and tested with Ansys Electronic Desktop 2021 R1 on Windows x64.
+The scripts are developed and tested with Ansys Electronic Desktop 2022 R2 on Windows x64.
 
 
 The primary use case is to estimate capacitive couplings between different elements in the layout, where each element
 of interest has a port in the simulation. The capacitances are represented as a matrix, where the *Cij* is the
 capacitance between two ports *i* and *j*, and *Cii* is the capacitance between port *i* and ground.
 
-Main scripts:
-"""""""""""""
+Main scripts
+^^^^^^^^^^^^
 
 * :git_url:`import_simulation_geometry.py <klayout_package/python/scripts/simulations/ansys/import_simulation_geometry.py>`
 
@@ -76,8 +76,8 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 
 The optional scripts are listed below.
 
-Optional scripts:
-"""""""""""""""""
+Optional scripts
+^^^^^^^^^^^^^^^^
 
 * :git_url:`export_snp_no_deembed.py <klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py>`
 
@@ -100,9 +100,14 @@ Optional scripts:
 .. _py-epr:
 
 pyEPR
-"""""
+^^^^^
 
 `pyEPR <https://github.com/zlatko-minev/pyEPR>`_ is supported for HFSS eigenmode simulations.
 A simulation needs to be created with ``ansys_tool=eigenmode`` and ``simulation_flags=['pyepr']``.
 An example simulation is found at :git_url:`klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py`.
-See ``notebooks\pyEPR_example.ipynb`` for an example on using pyEPR itself.
+See `pyEPR_example.ipynb <https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/pyEPR_example.ipynb>`_ in the `KQCircuits-Examples <https://github.com/iqm-finland/KQCircuits-Examples/>`_ repository for an example on using pyEPR itself.
+
+TLS-limited :math:`T_1` estimation with EPR
+"""""""""""""""""""""""""""""""""""""""""""
+
+Do as in `pyEPR` but additionally include ``intermediate_processing_command='python "scripts/t1_estimate.py"'``. This will run :git_url:`t1_estimate.py <klayout_package/python/scripts/simulations/ansys/t1_estimate.py>` between queued simulations and compute the electrical participations in the lossy interfaces. See :git_url:`double_pads_sim.py <klayout_package/python/scripts/simulations/double_pads_sim.py>` for an example and `N. Savola, ‘Design and modelling of long-coherence qubits using energy participation ratios’, Master's thesis, Aalto University, 2023`, for details on the method.

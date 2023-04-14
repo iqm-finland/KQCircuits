@@ -17,6 +17,7 @@ excluded_paths=( \
 "*.git*" \
 "*.png" \
 "*.gif" \
+"*.svg" \
 "*tmp" \
 "*pycache*" \
 "./grain.xml" \

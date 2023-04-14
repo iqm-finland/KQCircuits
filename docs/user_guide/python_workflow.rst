@@ -82,6 +82,7 @@ libraries see the KLayout documentation pages
 `Class Library <https://www.klayout.de/doc-qt5/code/class_Library.html>`_, and
 `Coding PCells In Ruby <https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426>`_ (in Ruby).
 
+.. _python_workflow_parameters:
 
 Parameters
 ^^^^^^^^^^
@@ -237,6 +238,8 @@ This can then be used in a chip::
 
 A quick way to check all available sampleholder types is to use the
 :class:`.Launchers` chip and change its ``sampleholder_type`` parameter.
+
+.. _python_workflow_refpoints:
 
 Refpoints
 ---------

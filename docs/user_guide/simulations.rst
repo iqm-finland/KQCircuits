@@ -11,6 +11,7 @@ KQCircuits supports exports to following external simulation tools:
     :glob:
 
     simulation/simulation_object
+    simulation/simulation_settings
     simulation/ansys_export
     simulation/sonnet_export
     simulation/gmsh_elmer_export
