@@ -38,9 +38,9 @@ class DoublePadsSplines(DoublePads):
                     "There is a spline for each consequent series of four control points"))
 
 
-    def _build_island1(self, squid_height):
+    def _build_island1(self, squid_height, taper_height):
         island1_bottom = self.squid_offset + squid_height / 2
-        curve_start = pya.DPoint(0, island1_bottom + self.island1_taper_height)
+        curve_start = pya.DPoint(0, island1_bottom + taper_height)
         island1_control_points = [curve_start + pya.DPoint(-self.island1_taper_width / 2, 0)] + \
             [curve_start + pya.DPoint(float(self.island_spline[idx]), float(self.island_spline[idx+1]))
                 for idx in range(0, len(self.island_spline), 2)]
@@ -53,20 +53,20 @@ class DoublePadsSplines(DoublePads):
         island1_region = pya.Region(island1_polygon.to_itype(self.layout.dbu))
         island1_taper = pya.Region(pya.DPolygon([
             #pertrude taper into island in case of precision errors
-            pya.DPoint( self.island1_taper_width / 2, island1_bottom + self.island1_taper_height + 1),
-            pya.DPoint( self.island1_taper_width / 2, island1_bottom + self.island1_taper_height),
+            pya.DPoint( self.island1_taper_width / 2, island1_bottom + taper_height + 1),
+            pya.DPoint( self.island1_taper_width / 2, island1_bottom + taper_height),
             pya.DPoint( self.island1_taper_junction_width / 2, island1_bottom),
             pya.DPoint(-self.island1_taper_junction_width / 2, island1_bottom),
-            pya.DPoint(-self.island1_taper_width / 2, island1_bottom + self.island1_taper_height),
+            pya.DPoint(-self.island1_taper_width / 2, island1_bottom + taper_height),
             #pertrude taper into island in case of precision errors
-            pya.DPoint(-self.island1_taper_width / 2, island1_bottom + self.island1_taper_height + 1),
+            pya.DPoint(-self.island1_taper_width / 2, island1_bottom + taper_height + 1),
         ]).to_itype(self.layout.dbu))
         return island1_region + island1_taper
 
 
-    def _build_island2(self, squid_height):
+    def _build_island2(self, squid_height, taper_height):
         island2_top = self.squid_offset - squid_height / 2
-        curve_start = pya.DPoint(0, island2_top - self.island2_taper_height)
+        curve_start = pya.DPoint(0, island2_top - taper_height)
         island2_control_points = [curve_start + pya.DPoint(-self.island2_taper_width / 2, 0)] + \
             [curve_start + pya.DPoint(float(self.island_spline[idx]), -float(self.island_spline[idx+1]))
                 for idx in range(0, len(self.island_spline), 2)]
@@ -79,12 +79,12 @@ class DoublePadsSplines(DoublePads):
         island2_region = pya.Region(island2_polygon.to_itype(self.layout.dbu))
         island2_taper = pya.Region(pya.DPolygon([
             #pertrude taper into island in case of precision errors
-            pya.DPoint( self.island2_taper_width / 2, island2_top - self.island2_taper_height - 1),
-            pya.DPoint( self.island2_taper_width / 2, island2_top - self.island2_taper_height),
+            pya.DPoint( self.island2_taper_width / 2, island2_top - taper_height - 1),
+            pya.DPoint( self.island2_taper_width / 2, island2_top - taper_height),
             pya.DPoint( self.island2_taper_junction_width / 2, island2_top),
             pya.DPoint(-self.island2_taper_junction_width / 2, island2_top),
-            pya.DPoint(-self.island2_taper_width / 2, island2_top - self.island2_taper_height),
+            pya.DPoint(-self.island2_taper_width / 2, island2_top - taper_height),
             #pertrude taper into island in case of precision errors
-            pya.DPoint(-self.island2_taper_width / 2, island2_top - self.island2_taper_height - 1),
+            pya.DPoint(-self.island2_taper_width / 2, island2_top - taper_height - 1),
         ]).to_itype(self.layout.dbu))
         return island2_region + island2_taper
