@@ -96,14 +96,14 @@ Video tutorials for the GUI installation can be found on YouTube.
 Install
 ^^^^^^^
 
-KQCircuits can be used in either `Salt package <https://sami.klayout.org/>`__ or developer setup mode.
-The Salt package is easier to install and try out but has some limitations.
-As such, advanced users are recommended to use the developer setup below.
+KQCircuits can be used in either Salt package or developer setup mode.
+The Salt package is easier to install and get started, but the built-in elements cannot be modified.
+The developer setup is recommended for advanced users and to contribute to the project.
 
-Easy Salt package
-"""""""""""""""""
+Salt installation and getting started
+"""""""""""""""""""""""""""""""""""""
 
-Follow the instructions in the `getting started documentation <https://iqm-finland.github.io/KQCircuits/start/installation.html>`__.
+Follow the instructions in the `getting started documentation <https://iqm-finland.github.io/KQCircuits/salt.html>`__.
 
 Developer setup
 """""""""""""""
