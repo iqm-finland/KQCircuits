@@ -521,8 +521,8 @@
 <span id="kqcircuits-util-log-router"></span><h1>kqcircuits.util.log_router<a class="headerlink" href="#module-kqcircuits.util.log_router" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.log_router.route_log">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.log_router.</span></span><span class="sig-name descname"><span class="pre">route_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowest_visible_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_old_handlers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/log_router.html#route_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.log_router.route_log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routes the log output to stdout and to an optional file</p>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.log_router.</span></span><span class="sig-name descname"><span class="pre">route_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowest_visible_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'INFO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_old_handlers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stdout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/log_router.html#route_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.log_router.route_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routes the log output to stdout and/or the specified logfile.</p>
 <p>Enables monitoring the log in KLayout console. If requested it also appends logs to the
 specified file. By default removes old handlers from root logger to avoid output to other places
 than defined here.</p>
@@ -532,6 +532,7 @@ than defined here.</p>
 <li><p><strong>lowest_visible_level</strong> (<em>String</em>) – one of DEBUG, INFO, WARNING, ERROR, CRITICAL</p></li>
 <li><p><strong>remove_old_handlers</strong> (<em>Boolean</em>) – determines if old handlers are removed from the root logger</p></li>
 <li><p><strong>filename</strong> – name of the file to append logs to</p></li>
+<li><p><strong>stdout</strong> – enable printing logs to standard output</p></li>
 </ul>
 </dd>
 </dl>

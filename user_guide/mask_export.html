@@ -523,10 +523,19 @@ mask and the parameters of those chips. These scripts will export
 as well as auxiliary files such as netlists, images and automatic mask
 documentation. There are three ways to run the mask scripts:</p>
 <ul class="simple">
-<li><p>From the KLayout macro editor.</p></li>
-<li><p>In KLayout from the command line using <code class="docutils literal notranslate"><span class="pre">klayout</span> <span class="pre">-z</span> <span class="pre">-r</span> <span class="pre">./scripts/masks/maskname.py</span></code>.</p></li>
-<li><p>As standalone python script. In this case, mask generation always runs single threaded.</p></li>
+<li><p>With the console script: <code class="docutils literal notranslate"><span class="pre">kqc</span> <span class="pre">mask</span> <span class="pre">quick_demo.py</span></code>. This uses multiple processes for efficiency.
+This should be the default way of usage.</p></li>
+<li><p>As a standalone python script from the console in a single process for debugging: <code class="docutils literal notranslate"><span class="pre">python</span>
+<span class="pre">./scripts/masks/quick_demo.py</span> <span class="pre">-d</span></code> or <code class="docutils literal notranslate"><span class="pre">kqc</span> <span class="pre">mask</span> <span class="pre">quick_demo.py</span> <span class="pre">-d</span></code>. This also prints out debug
+information.</p></li>
+<li><p>From the KLayout macro editor. Slow single process execution, good to observe the created mask
+without loading it from file.</p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Windows and Mac needs the console script (<code class="docutils literal notranslate"><span class="pre">kqc</span></code>) to export a mask using multiprocessing but in Linux you may
+run them directly from the terminal with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">scripts/masks/quick_demo.py</span></code>.</p>
+</div>
 <div class="section" id="tutorial">
 <h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="basic-mask-script-and-export">
@@ -617,14 +626,21 @@ masks that are really produced.</p>
 </pre></div>
 </div>
 </li>
-<li><p>Add the new chips:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">DemoTwoface</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">)</span>
-<span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">QualityFactor</span><span class="p">,</span> <span class="s2">&quot;QF1&quot;</span><span class="p">)</span>
+<li><p>Add a new variant of the demo chip with different parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">Demo</span><span class="p">,</span> <span class="s2">&quot;DE2&quot;</span><span class="p">,</span> <span class="n">include_couplers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readout_res_lengths</span><span class="o">=</span><span class="p">[</span><span class="mi">5400</span><span class="p">,</span> <span class="mi">5500</span><span class="p">,</span> <span class="mi">5600</span><span class="p">,</span> <span class="mi">5700</span><span class="p">])</span>
 </pre></div>
 </div>
 </li>
-<li><p>Add a new variant of the demo chip with different parameters:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">Demo</span><span class="p">,</span> <span class="s2">&quot;DE2&quot;</span><span class="p">,</span> <span class="n">include_couplers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">readout_res_lengths</span><span class="o">=</span><span class="p">[</span><span class="mi">5400</span><span class="p">,</span> <span class="mi">5500</span><span class="p">,</span> <span class="mi">5600</span><span class="p">,</span> <span class="mi">5700</span><span class="p">])</span>
+<li><p>Add several chips at once in parallel:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">([</span>
+    <span class="p">(</span><span class="n">DemoTwoface</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">QualityFactor</span><span class="p">,</span> <span class="s2">&quot;QF1&quot;</span><span class="p">),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</li>
+<li><p>You may also add chips generated elsewhere and stored in a .oas file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_mask</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="s2">&quot;/home/user/my_chip.oas&quot;</span><span class="p">,</span> <span class="s2">&quot;MCF&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>

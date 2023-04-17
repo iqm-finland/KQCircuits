@@ -527,22 +527,22 @@
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">argv</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">perf_counter</span>
-<span class="kn">from</span> <span class="nn">string</span> <span class="kn">import</span> <span class="n">Template</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
-<span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span><span class="p">,</span> <span class="n">default_face_id</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.log_router</span> <span class="kn">import</span> <span class="n">route_log</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">default_face_id</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_export</span> <span class="kn">import</span> <span class="n">export_chip</span><span class="p">,</span> <span class="n">export_mask_set</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.masks.mask_layout</span> <span class="kn">import</span> <span class="n">MaskLayout</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">encode_python_obj_as_dict</span>
 
 
 <div class="viewcode-block" id="MaskSet"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet">[docs]</a><span class="nd">@logged</span>
@@ -552,14 +552,14 @@
 <span class="sd">    A mask set consists of one or more MaskLayouts, each of which is for a certain face.</span>
 
 <span class="sd">    To create a mask, add mask layouts to the mask set using add_mask_layout() and add chips to these mask layouts using</span>
-<span class="sd">    add_chips() or add_chip(). These functions also export some files for each chip. Then call build() to create the</span>
+<span class="sd">    add_chip(). These functions also export some files for each chip. Then call build() to create the</span>
 <span class="sd">    cell hierarchy of the entire mask, and finally export mask files by calling export().</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        mask = MaskSet(...)</span>
 <span class="sd">        mask.add_mask_layout(...)</span>
 <span class="sd">        mask.add_mask_layout(...)</span>
-<span class="sd">        mask.add_chips(...)</span>
+<span class="sd">        mask.add_chip(...)</span>
 <span class="sd">        mask.build()</span>
 <span class="sd">        mask.export()</span>
 
@@ -593,11 +593,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span> <span class="o">=</span> <span class="n">mask_export_layers</span> <span class="k">if</span> <span class="n">mask_export_layers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used_chips</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">template_imports</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">export_path</span><span class="p">)</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_v</span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-d&#39;</span> <span class="ow">in</span> <span class="n">argv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_single_process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_standalone_session</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="s1">&#39;-c&#39;</span> <span class="ow">in</span> <span class="n">argv</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
 
 <div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">default_face_id</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a mask layout from chips_map and adds it to self.mask_layouts.</span>
@@ -619,187 +626,93 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_layout</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mask_layout</span></div>
 
-<div class="viewcode-block" id="MaskSet.load_cell_from_file"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.load_cell_from_file">[docs]</a>    <span class="k">def</span> <span class="nf">load_cell_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load GDS or OASIS cell from file.</span>
+<div class="viewcode-block" id="MaskSet.add_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">[docs]</a>    <span class="k">def</span> <span class="nf">add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.</span>
 
-<span class="sd">        Load a cell (usually a chip) from the specified file.</span>
+<span class="sd">        Note the complex polymorphism used here: ``chips`` is either a single chip class or a list of ``(chip, variant,</span>
+<span class="sd">        parameters)`` tuples. In the latter case the rest of the arguments (except ``cpus``) are ignored. Also,</span>
+<span class="sd">        ``chips`` (or the individual chip part of tuples) may be a simple file name to load a static .oas file instead.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            file_name: name of the file (with path) to be loaded</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            the loaded cell</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">,</span> <span class="s2">&quot;CellConflictResolution&quot;</span><span class="p">):</span>
-            <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
-
-<div class="viewcode-block" id="MaskSet.add_chips"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chips">[docs]</a>    <span class="k">def</span> <span class="nf">add_chips</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a list of chips with parameters to self.chips_map_legend and exports the files for each chip.</span>
+<span class="sd">        Chips are created in parallel in separate processes but the user may choose to use a ``-d`` switch on</span>
+<span class="sd">        the command line for debugging with a single process. It is also possible to manually limit the number of</span>
+<span class="sd">        concurrently used CPUs for resource management purposes with the ``-c 4`` switch (to 4 in this example).</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            chips: List of tuples that ``add_chip`` uses. Parameters are optional.</span>
-<span class="sd">                For example, ``(QualityFactor, &quot;QDG&quot;, parameters)``.</span>
-<span class="sd">            threads: Number of parallel threads to use for generation. By default uses ``os.cpu_count()`` threads.</span>
-<span class="sd">                Uses subprocesses and consequently a lot of memory. In standalone python mode always uses 1 thread.</span>
-
-<span class="sd">        Warning:</span>
-<span class="sd">            It is advised to lower the thread number if your system has a lot of CPU cores but not a lot of memory.</span>
-<span class="sd">            The same applies for exporting large and complex geometry.</span>
+<span class="sd">            chip: A chip class. Or a list of tuples, like ``[(QualityFactor, &quot;QDG&quot;, parameters),...]``,</span>
+<span class="sd">                  parameters are optional.</span>
+<span class="sd">            variant_name: Name for specific variant, the same as in the mask layout. Or None, if multiple</span>
+<span class="sd">                          chips are given</span>
+<span class="sd">            cpus: Number of parallel processes to use for chip generation. By default uses ``os.cpu_count()``</span>
+<span class="sd">                  or the number of chips, whichever is smaller.</span>
+<span class="sd">            **kwargs: Any parameters passed to the a single chip PCell. Not used with multiple chips.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="s1">&#39;ADD_CHIPS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">threads</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">threads</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">threads</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">threads</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">is_standalone_session</span><span class="p">():</span>
-            <span class="n">threads</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chips</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># only one chip</span>
+            <span class="n">cpus</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">chips</span> <span class="o">=</span> <span class="p">[(</span><span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)]</span>
 
-        <span class="k">if</span> <span class="n">threads</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">params</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">chips</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Building variants&#39;</span><span class="p">,</span>
-                                                          <span class="n">bar_format</span><span class="o">=</span><span class="n">default_bar_format</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">add_chip</span><span class="p">(</span><span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">params</span> <span class="k">else</span> <span class="p">{}))</span>
+        <span class="k">if</span> <span class="n">cpus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cpus</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chips</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">cpus</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span>
+
+        <span class="c1"># Pool.map() needs all arguments packed into a single list</span>
+        <span class="n">xargs</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">)</span>
+        <span class="n">chip_args</span> <span class="o">=</span> <span class="p">((</span><span class="n">chip</span><span class="p">,</span> <span class="n">xargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">chip</span> <span class="ow">in</span> <span class="n">chips</span><span class="p">)</span>
+
+        <span class="n">file_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">cpus</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_process</span><span class="p">:</span>
+            <span class="n">file_names</span> <span class="o">+=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_chip</span><span class="p">,</span> <span class="n">chip_args</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building chip variants in parallel using </span><span class="si">{</span><span class="n">threads</span><span class="si">}</span><span class="s2"> threads...&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building chip variants in parallel using </span><span class="si">{</span><span class="n">cpus</span><span class="si">}</span><span class="s2"> processes...&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">Pool</span><span class="p">(</span><span class="n">cpus</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+                <span class="n">file_names</span> <span class="o">+=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_chip</span><span class="p">,</span> <span class="n">chip_args</span><span class="p">)</span>
 
-            <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_template</span><span class="p">()</span>
+        <span class="c1"># import chip cells exported by the parallel processes into the mask</span>
+        <span class="k">for</span> <span class="n">variant</span><span class="p">,</span> <span class="n">file_name</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">file_names</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Add chips into mask&#39;</span><span class="p">,</span> <span class="n">bar_format</span><span class="o">=</span><span class="n">default_bar_format</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_chip_into_mask</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">variant</span><span class="p">)</span></div>
 
-            <span class="k">class</span> <span class="nc">ChipSubprocessException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-                <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">chip_variant</span><span class="p">):</span>
-                    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">err</span> <span class="o">=</span> <span class="n">err</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">chip_variant</span> <span class="o">=</span> <span class="n">chip_variant</span>
-                <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;Building the </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chip_variant</span><span class="si">}</span><span class="s1"> chip variant caused the following error:&#39;</span>\
-                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">linesep</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">err</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_create_chip</span><span class="p">(</span><span class="n">chip_arg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create chip, possibly in a separate process.&quot;&quot;&quot;</span>
 
-            <span class="k">def</span> <span class="nf">_subprocess_worker</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-                <span class="k">with</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-                                      <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span> <span class="k">as</span> <span class="n">proc</span><span class="p">:</span>
-                    <span class="n">_</span><span class="p">,</span> <span class="n">errs</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
-                    <span class="c1"># Process has error return code, return error stream</span>
-                    <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">errs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">chip</span><span class="p">,</span> <span class="n">xargs</span> <span class="o">=</span> <span class="n">chip_arg</span>
+        <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">with_grid</span><span class="p">,</span> <span class="n">_mask_set_dir</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">_extra_params</span> <span class="o">=</span> <span class="n">xargs</span>
 
-            <span class="k">def</span> <span class="nf">_params_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>  <span class="c1"># flatten a parameters dictionary to a string</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="n">encode_python_obj_as_dict</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">ps</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                    <span class="c1"># Either a geometry object or a list/tuple which might contain geometry objects</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
-                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=decode_dict_as_python_obj(</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">)&quot;</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">ps</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;,</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="k">return</span> <span class="n">ps</span>
-
-            <span class="n">tp</span> <span class="o">=</span> <span class="n">ThreadPool</span><span class="p">(</span><span class="n">threads</span><span class="p">)</span>
-            <span class="n">file_names</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">processes</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">param_list</span> <span class="ow">in</span> <span class="n">chips</span><span class="p">:</span>
-                <span class="c1"># create the script for generating this chip with the correct parameters and exporting the chip files</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;name_chip&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
-                    <span class="s1">&#39;name_mask&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="s1">&#39;with_grid&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span>
-                    <span class="s1">&#39;merge_base_metal_gap&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                    <span class="p">}</span>
-                <span class="k">if</span> <span class="n">param_list</span><span class="p">:</span>
-                    <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">param_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-                <span class="n">element_import</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;from </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1"> import </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">&#39;</span>
-                <span class="n">create_element</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;cell = </span><span class="si">{</span><span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">.create(layout </span><span class="si">{</span><span class="n">_params_to_str</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s1">)&#39;</span>
-                <span class="n">chip_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-                <span class="n">script_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.py&quot;</span><span class="p">)</span>
-                <span class="n">file_names</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">),</span> <span class="n">script_name</span><span class="p">))</span>
-
-                <span class="n">substitution_parameters</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s1">&#39;name_mask&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                    <span class="s1">&#39;chip_path&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span><span class="p">),</span>
-                    <span class="s1">&#39;variant_name&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
-                    <span class="s1">&#39;chip_class&#39;</span><span class="p">:</span> <span class="n">chip_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                    <span class="s1">&#39;element_import&#39;</span><span class="p">:</span> <span class="n">element_import</span><span class="p">,</span>
-                    <span class="s1">&#39;create_element&#39;</span><span class="p">:</span> <span class="n">create_element</span><span class="p">,</span>
-                    <span class="s1">&#39;export_drc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span>
-                <span class="p">}</span>
-                <span class="n">substitution_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thread_create_chip_parameters</span><span class="p">)</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="o">**</span><span class="n">substitution_parameters</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">script_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-
-                <span class="c1"># launch klayout process that runs the created script</span>
-                <span class="k">try</span><span class="p">:</span>  <span class="c1"># pylint: disable=consider-using-with</span>
-                    <span class="n">processes</span><span class="p">[</span><span class="n">variant_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">tp</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">_subprocess_worker</span><span class="p">,</span>
-                                   <span class="p">([</span><span class="n">klayout_executable_command</span><span class="p">(),</span> <span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="s2">&quot;-z&quot;</span><span class="p">,</span> <span class="s2">&quot;-nc&quot;</span><span class="p">,</span> <span class="s2">&quot;-rm&quot;</span><span class="p">,</span> <span class="n">script_name</span><span class="p">],)</span>
-                                   <span class="p">)</span>
-                <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
-
-            <span class="c1"># wait for processes to end</span>
-            <span class="n">tp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">process</span> <span class="ow">in</span> <span class="n">processes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="n">process_error</span> <span class="o">=</span> <span class="n">process</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">process_error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">ChipSubprocessException</span><span class="p">(</span><span class="n">process_error</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)</span>
-            <span class="n">tp</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-
-            <span class="c1"># import chip cells exported by the parallel processes into the mask</span>
-            <span class="k">for</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">script_name</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">file_names</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Building variants (parallel)&#39;</span><span class="p">,</span>
-                                                             <span class="n">bar_format</span><span class="o">=</span><span class="n">default_bar_format</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_load_chip_into_mask</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)</span>
-                <span class="c1"># remove the script that was used to generate the chip</span>
-                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">script_name</span><span class="p">):</span>
-                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">script_name</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="MaskSet.add_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">[docs]</a>    <span class="k">def</span> <span class="nf">add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chip</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a chip with the given name and parameters to self.chips_map_legend and exports chip files.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            chip: the chip type class (for PCell chip), or a chip cell (for manually designed chip)</span>
-<span class="sd">            variant_name: name for specific variant, the same as in the mask layout</span>
-<span class="sd">            **kwargs: any parameters passed to the chip PCell</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">chip_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">chip_path</span> <span class="o">=</span> <span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">chip</span><span class="p">):</span>
-            <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variant_definition</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)[</span><span class="n">variant_name</span><span class="p">]</span>
-            <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">delete_cell_rec</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">cell_index</span><span class="p">())</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">export_chip</span><span class="p">(</span><span class="n">chip</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">export_drc</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>  <span class="c1"># this level is NOT actually used</span>
+        <span class="n">route_log</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">chip_path</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.log&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_load_chip_into_mask</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">),</span> <span class="n">variant_name</span><span class="p">)</span></div>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">layout</span>
 
-<div class="viewcode-block" id="MaskSet.variant_definition"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.variant_definition">[docs]</a>    <span class="k">def</span> <span class="nf">variant_definition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns chip variant definition with default mask specific parameters.</span>
+        <span class="k">if</span> <span class="n">isclass</span><span class="p">(</span><span class="n">chip_class</span><span class="p">):</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;name_chip&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
+                <span class="s1">&#39;name_mask&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s1">&#39;with_grid&#39;</span><span class="p">:</span> <span class="n">with_grid</span><span class="p">,</span>
+                <span class="s1">&#39;merge_base_metal_gap&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
+                <span class="s1">&#39;name_copy&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">chip_params</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chip_params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># its a file name, load it</span>
+            <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">,</span> <span class="s2">&quot;CellConflictResolution&quot;</span><span class="p">):</span>
+                <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
+            <span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chip_class</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            chip_class: the chip type class</span>
-<span class="sd">            variant_name: name for specific variant, the same as in the mask layout</span>
-<span class="sd">            **kwargs: any parameters passed to the chip PCell</span>
+        <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">)</span>
+        <span class="n">view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            dictionary compatible with mask map structure</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Resolving </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">)</span>
-
-        <span class="n">chip_parameters</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;merge_base_metal_gap&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="s2">&quot;name_chip&quot;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
-            <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
-            <span class="s2">&quot;name_mask&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;name_copy&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="s2">&quot;with_grid&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">}</span>
-
-        <span class="k">return</span> <span class="p">{</span><span class="n">variant_name</span><span class="p">:</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">chip_parameters</span><span class="p">)}</span></div>
+        <span class="k">return</span> <span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MaskSet.build"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remove_guiding_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Builds the mask set.</span>
@@ -928,61 +841,7 @@
         <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
         <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">variant_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span>
-
-    <span class="k">def</span> <span class="nf">_get_template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an updated template string.&quot;&quot;&quot;</span>
-
-        <span class="n">temp</span> <span class="o">=</span> <span class="n">_CREATE_CHIP_TEMPLATE</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template_imports</span><span class="p">:</span>
-            <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;#TEMPLATE_IMPORT#&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span></div>
-
-
-<span class="c1"># Template for creating and exporting a chip during mask generation.</span>
-<span class="c1">#</span>
-<span class="c1"># This is used in _get_template() to create a template used in add_chips() to create chips in</span>
-<span class="c1"># parallel. The &quot;#TEMPLATE_IMPORT#&quot; strings in it will be replaced by &quot;template_imports&quot; elements</span>
-<span class="c1"># to update the template itself.</span>
-
-<span class="n">_CREATE_CHIP_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-
-<span class="s2">import logging</span>
-<span class="s2">import sys</span>
-<span class="s2">import traceback</span>
-<span class="s2">#TEMPLATE_IMPORT#</span>
-<span class="s2">from pathlib import Path</span>
-<span class="s2">from kqcircuits.masks.mask_export import export_chip</span>
-<span class="s2">from kqcircuits.pya_resolver import pya</span>
-<span class="s2">from kqcircuits.klayout_view import KLayoutView</span>
-<span class="s2">from kqcircuits.util.geometry_json_encoder import decode_dict_as_python_obj</span>
-<span class="s2">from kqcircuits.util.log_router import route_log</span>
-<span class="s2">$</span><span class="si">{element_import}</span>
-
-<span class="s2">try:</span>
-<span class="s2">    logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used</span>
-<span class="s2">    chip_path = Path(r&quot;$</span><span class="si">{chip_path}</span><span class="s2">&quot;)</span>
-<span class="s2">    route_log(filename=chip_path/&quot;$</span><span class="si">{variant_name}</span><span class="s2">.log&quot;)</span>
-
-<span class="s2">    view = KLayoutView()</span>
-<span class="s2">    layout, top_cell = view.layout, view.top_cell</span>
-
-<span class="s2">    # cell definition and arbitrary code here</span>
-<span class="s2">    $</span><span class="si">{create_element}</span>
-
-<span class="s2">    top_cell.insert(pya.DCellInstArray(cell.cell_index(), pya.DTrans()))</span>
-
-<span class="s2">    # export chip files</span>
-<span class="s2">    export_chip(cell, &quot;$</span><span class="si">{variant_name}</span><span class="s2">&quot;, chip_path, layout, $</span><span class="si">{export_drc}</span><span class="s2">)</span>
-
-<span class="s2">#TEMPLATE_IMPORT#</span>
-
-<span class="s2">except Exception as err:</span>
-<span class="s2">    print(traceback.format_exc(), file=sys.stderr)</span>
-<span class="s2">    pya.Application.instance().exit(1)</span>
-<span class="s2">pya.Application.instance().exit(0)</span>
-
-<span class="s2">&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chips_map_legend</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">variant_name</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span></div>
 </pre></div>
 
            </div>

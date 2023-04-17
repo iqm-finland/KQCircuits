@@ -7,9 +7,18 @@ mask and the parameters of those chips. These scripts will export
 as well as auxiliary files such as netlists, images and automatic mask
 documentation. There are three ways to run the mask scripts:
 
-- From the KLayout macro editor.
-- In KLayout from the command line using ``klayout -z -r ./scripts/masks/maskname.py``.
-- As standalone python script. In this case, mask generation always runs single threaded.
+
+- With the console script: ``kqc mask quick_demo.py``. This uses multiple processes for efficiency.
+  This should be the default way of usage.
+- As a standalone python script from the console in a single process for debugging: ``python
+  ./scripts/masks/quick_demo.py -d`` or ``kqc mask quick_demo.py -d``. This also prints out debug
+  information.
+- From the KLayout macro editor. Slow single process execution, good to observe the created mask
+  without loading it from file.
+
+.. note::
+    Windows and Mac needs the console script (``kqc``) to export a mask using multiprocessing but in Linux you may
+    run them directly from the terminal with ``python scripts/masks/quick_demo.py``.
 
 Tutorial
 --------
@@ -102,14 +111,20 @@ Adding and modifying chips
     from kqcircuits.chips.demo_twoface import DemoTwoface
     from kqcircuits.chips.quality_factor import QualityFactor
 
-#. Add the new chips::
-
-    test_mask.add_chip(DemoTwoface, "DT1")
-    test_mask.add_chip(QualityFactor, "QF1")
-
 #. Add a new variant of the demo chip with different parameters::
 
     test_mask.add_chip(Demo, "DE2", include_couplers=False, readout_res_lengths=[5400, 5500, 5600, 5700])
+
+#. Add several chips at once in parallel::
+
+    test_mask.add_chip([
+        (DemoTwoface, "DT1"),
+        (QualityFactor, "QF1"),
+    ])
+
+#. You may also add chips generated elsewhere and stored in a .oas file::
+
+    test_mask.add_chip("/home/user/my_chip.oas", "MCF")
 
 #. Replace some of the "DE1" entries in the mask layout by "DT1", "QF1" and
    "DE2". This will determine where those chips are placed in the mask.
