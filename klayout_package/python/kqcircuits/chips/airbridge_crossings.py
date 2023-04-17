@@ -42,7 +42,14 @@ class AirbridgeCrossings(Chip):
 
     def build(self):
 
-        launchers = self.produce_launchers("SMA8")
+        launchers = self.produce_launchers("SMA8",
+            launcher_assignments={
+                1: "PL-1-IN", 2: "PL-2-IN",
+                3: "PL-4-IN", 4: "PL-4-OUT",
+                5: "PL-2-OUT", 6: "PL-1-OUT",
+                7: "PL-3-OUT", 8: "PL-3-IN"
+            }
+        )
         self._produce_transmission_lines(launchers)
         self._produce_mechanical_test_array()
 
@@ -51,25 +58,25 @@ class AirbridgeCrossings(Chip):
         # Left transmission line
         self.insert_cell(WaveguideCoplanar,
             path=pya.DPath([
-                launchers["NW"][0],
-                launchers["SW"][0]
+                launchers["PL-1-IN"][0],
+                launchers["PL-1-OUT"][0]
             ], 1)
         )
 
         # Right transmission line
         self.insert_cell(WaveguideCoplanar,
             path=pya.DPath([
-                launchers["NE"][0],
-                launchers["SE"][0]
+                launchers["PL-2-IN"][0],
+                launchers["PL-2-OUT"][0]
             ], 1)
         )
 
         # Crossing transmission line
-        nodes = [Node(launchers["WN"][0])]
-        ref_x = launchers["NW"][0].x
-        last_y = launchers["WN"][0].y
+        nodes = [Node(launchers["PL-3-IN"][0])]
+        ref_x = launchers["PL-1-IN"][0].x
+        last_y = launchers["PL-3-IN"][0].y
         crossings = self.crossings  # must be even
-        step = (launchers["WN"][0].y - launchers["WS"][0].y) / (crossings - 0.5) / 2
+        step = (launchers["PL-3-IN"][0].y - launchers["PL-3-OUT"][0].y) / (crossings - 0.5) / 2
         wiggle = 250
         for _ in range(crossings):
             nodes.append(Node((ref_x - wiggle, last_y)))
@@ -80,14 +87,14 @@ class AirbridgeCrossings(Chip):
             nodes.append(Node((ref_x, last_y), AirbridgeConnection))
             nodes.append(Node((ref_x - wiggle, last_y)))
             last_y -= step
-        nodes.append(Node(launchers["WS"][0]))
+        nodes.append(Node(launchers["PL-3-OUT"][0]))
         waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes)
         self.insert_cell(waveguide_cell)
 
         # TL without crossings
-        nodes = [Node(launchers["EN"][0])]
-        ref_x = launchers["NE"][0].x + 2 * wiggle + 50
-        last_y = launchers["EN"][0].y
+        nodes = [Node(launchers["PL-4-IN"][0])]
+        ref_x = launchers["PL-2-IN"][0].x + 2 * wiggle + 50
+        last_y = launchers["PL-4-IN"][0].y
         for _ in range(crossings):
             nodes.append(Node((ref_x + wiggle, last_y)))
             nodes.append(Node((ref_x - wiggle, last_y)))
@@ -95,7 +102,7 @@ class AirbridgeCrossings(Chip):
             nodes.append(Node((ref_x - wiggle, last_y)))
             nodes.append(Node((ref_x + wiggle, last_y)))
             last_y -= step
-        nodes.append(Node(launchers["ES"][0]))
+        nodes.append(Node(launchers["PL-4-OUT"][0]))
         waveguide_cell = self.add_element(WaveguideComposite, nodes=nodes)
         self.insert_cell(waveguide_cell)
 

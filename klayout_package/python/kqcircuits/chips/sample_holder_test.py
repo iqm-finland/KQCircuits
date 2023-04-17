@@ -39,26 +39,36 @@ class SampleHolderTest(Chip):
     launcher_indent = Param(pdt.TypeDouble, "Launcher indent from edge", 520, unit="μm")
 
     def build(self):
-        self.produce_n_launchers(self.n_launchers, "RF", self.launcher_width, self.launcher_gap, self.launcher_indent,
-                                 self.launcher_pitch)
-
         nr_pads_per_side = int(self.n_launchers / 4.)
 
-        def _produce_waveguide(i, j, straight_distance):
+        # North edge
+        launcher_assigments = {i: f"PL-{i}-IN" for i in range(1, nr_pads_per_side + 1)}
+        # East edge
+        launcher_assigments.update({pin: f"PL-{pl+1}-OUT" for pl, pin in
+                                    enumerate(range(2 * nr_pads_per_side, nr_pads_per_side, -1))})
+        # South edge
+        launcher_assigments.update({pin: f"PL-{pl + nr_pads_per_side + 1}-OUT" for pl, pin in
+                                    enumerate(range(2 * nr_pads_per_side + 1, 3 * nr_pads_per_side + 1))})
+        # West edge
+        launcher_assigments.update({pin: f"PL-{pl + nr_pads_per_side + 1}-IN" for pl, pin in
+                                    enumerate(range(4 * nr_pads_per_side, 3 * nr_pads_per_side, -1))})
+
+        self.produce_n_launchers(self.n_launchers, "RF", self.launcher_width, self.launcher_gap, self.launcher_indent,
+                                 self.launcher_pitch, launcher_assignments=launcher_assigments)
+
+        def _produce_waveguide(i, straight_distance, first_port, second_port):
             cell = self.add_element(WaveguideComposite, nodes=[
-                Node(self.refpoints[f'{i}_port']),
-                Node(self.refpoints[f'{i}_port_corner'] + pya.DVector(0, straight_distance)),
-                Node(self.refpoints[f'{j}_port_corner'] + pya.DVector(straight_distance, 0)),
-                Node(self.refpoints[f'{j}_port']),
+                Node(self.refpoints[f'PL-{i}-{first_port}_port']),
+                Node(self.refpoints[f'PL-{i}-{first_port}_port_corner'] + pya.DVector(0, straight_distance)),
+                Node(self.refpoints[f'PL-{i}-{second_port}_port_corner'] + pya.DVector(straight_distance, 0)),
+                Node(self.refpoints[f'PL-{i}-{second_port}_port']),
             ])
             self.insert_cell(cell)
 
-            self.__log.info("%s: Waveguide %d-%d length: %s", self.name_chip, i, j, cell.length())
+            self.__log.info(f"{self.name_chip}: Waveguide PL-{i} length: {cell.length()}")
 
-        for i, j in zip(range(1, nr_pads_per_side + 1),
-                        range(2 * nr_pads_per_side, nr_pads_per_side, -1)):
-            _produce_waveguide(i, j, -1200)
+        for i in range(1, nr_pads_per_side + 1):
+            _produce_waveguide(i, -1200, first_port="IN", second_port="OUT")
 
-        for i, j in zip(range(2 * nr_pads_per_side + 1, 3 * nr_pads_per_side + 1),
-                        range(4 * nr_pads_per_side, 3 * nr_pads_per_side, -1)):
-            _produce_waveguide(i, j, 1200)
+        for i in range(nr_pads_per_side + 1, nr_pads_per_side * 2 + 1):
+            _produce_waveguide(i, 1200, first_port="OUT", second_port="IN")

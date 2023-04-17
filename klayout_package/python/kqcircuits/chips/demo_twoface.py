@@ -39,16 +39,16 @@ class DemoTwoface(Chip):
         launcher_assignments = {
             # N
             2: "FL-QB1",
-            3: "PL-A-IN",
-            4: "PL-B-IN",
+            3: "PL-1-IN",
+            4: "PL-2-IN",
             5: "FL-QB2",
             # E
             7: "DL-QB2",
             12: "DL-QB4",
             # S
             14: "FL-QB4",
-            15: "PL-B-OUT",
-            16: "PL-A-OUT",
+            15: "PL-2-OUT",
+            16: "PL-1-OUT",
             17: "FL-QB3",
             # W
             19: "DL-QB3",
@@ -172,8 +172,8 @@ class DemoTwoface(Chip):
         self.insert_cell(tcross_cell, tcross_trans, inst_name="PL{}".format(qubit_nr), label_trans=pya.DCplxTrans(0.2))
 
     def produce_probelines(self):
-        self.produce_probeline("PL-A", 1, 3, True, 4)
-        self.produce_probeline("PL-B", 2, 4, False, 6)
+        self.produce_probeline("PL-1", 1, 3, True, 4)
+        self.produce_probeline("PL-2", 2, 4, False, 6)
 
     def produce_probeline(self, probeline_name, qubit_a_nr, qubit_b_nr, mirrored, cap_finger_nr):
 

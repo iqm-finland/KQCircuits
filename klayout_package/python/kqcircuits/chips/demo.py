@@ -44,16 +44,16 @@ class Demo(Chip):
         launcher_assignments = {
             # N
             2: "FL-QB1",
-            3: "PL-A-IN",
-            4: "PL-A-OUT",
+            3: "PL-1-IN",
+            4: "PL-1-OUT",
             5: "FL-QB2",
             # E
             7: "DL-QB2",
             12: "DL-QB4",
             # S
             14: "FL-QB4",
-            15: "PL-B-IN",
-            16: "PL-B-OUT",
+            15: "PL-2-IN",
+            16: "PL-2-OUT",
             17: "FL-QB3",
             # W
             19: "DL-QB3",
@@ -176,8 +176,8 @@ class Demo(Chip):
                          **t_cross_parameters(a=self.a, b=self.b, a2=self.a, b2=self.b, length_extra_side=30))
 
     def produce_probelines(self):
-        self.produce_probeline("PL-A", 1, 2, False, 6)
-        self.produce_probeline("PL-B", 4, 3, True, 3)
+        self.produce_probeline("PL-1", 1, 2, False, 6)
+        self.produce_probeline("PL-2", 4, 3, True, 3)
 
     def produce_probeline(self, probeline_name, qubit_a_nr, qubit_b_nr, mirrored, cap_finger_nr):
 

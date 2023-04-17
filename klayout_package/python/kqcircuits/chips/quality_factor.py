@@ -83,31 +83,31 @@ class QualityFactor(Chip):
 
         # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from top
         launchers = self.produce_n_launchers(8, "RF", 300, 180, self.launcher_indent,
-                                             chip_side - 2 * self.launcher_top_dist, {8: "PL-IN", 3: "PL-OUT"})
+                                             chip_side - 2 * self.launcher_top_dist, {8: "PL-1-IN", 3: "PL-1-OUT"})
 
         # Define start and end of feedline
-        points_fl = [launchers["PL-IN"][0]]
-        if abs(launchers["PL-IN"][0].y - wg_top_y) > 1:
+        points_fl = [launchers["PL-1-IN"][0]]
+        if abs(launchers["PL-1-IN"][0].y - wg_top_y) > 1:
             # Bend in the feedline needed
             points_fl += [
-                launchers["PL-IN"][0] + pya.DVector(self.r + self.marker_safety, 0),
-                pya.DPoint(launchers["PL-IN"][0].x + self.r + self.feedline_bend_distance + self.marker_safety,
+                launchers["PL-1-IN"][0] + pya.DVector(self.r + self.marker_safety, 0),
+                pya.DPoint(launchers["PL-1-IN"][0].x + self.r + self.feedline_bend_distance + self.marker_safety,
                            wg_top_y)
             ]
             points_fl_end = [
-                pya.DPoint(launchers["PL-OUT"][0].x - self.r - self.feedline_bend_distance - self.marker_safety,
+                pya.DPoint(launchers["PL-1-OUT"][0].x - self.r - self.feedline_bend_distance - self.marker_safety,
                            wg_top_y),
-                launchers["PL-OUT"][0] + pya.DVector(-self.r - self.marker_safety, 0),
+                launchers["PL-1-OUT"][0] + pya.DVector(-self.r - self.marker_safety, 0),
             ]
         elif self.marker_safety > 0:
-            points_fl += [launchers["PL-IN"][0] + pya.DVector(self.marker_safety, 0)]
+            points_fl += [launchers["PL-1-IN"][0] + pya.DVector(self.marker_safety, 0)]
             points_fl_end = [
-                launchers["PL-OUT"][0] + pya.DVector(-self.marker_safety, 0),
+                launchers["PL-1-OUT"][0] + pya.DVector(-self.marker_safety, 0),
             ]
         else:
             points_fl_end = []
 
-        points_fl_end += [launchers["PL-OUT"][0]]
+        points_fl_end += [launchers["PL-1-OUT"][0]]
 
         tl_start = points_fl[-1]
         tl_end = points_fl_end[0]
