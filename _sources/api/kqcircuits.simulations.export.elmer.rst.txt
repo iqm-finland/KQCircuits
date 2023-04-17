@@ -4,7 +4,6 @@ kqcircuits.simulations.export.elmer
 
 .. toctree::
 
-   kqcircuits.simulations.export.elmer.cross_section_elmer_export
    kqcircuits.simulations.export.elmer.elmer_export
 
 Module contents
