@@ -20,9 +20,9 @@ API.
    :target: https://github.com/iqm-finland/kqcircuits/blob/master/LICENSE
    :alt: License
 
-.. image:: https://img.shields.io/github/v/tag/iqm-finland/KQCircuits?label=version&sort=semver
-   :target: https://github.com/iqm-finland/KQCircuits/releases/
-   :alt: Latest version
+.. image:: https://img.shields.io/pypi/v/kqcircuits
+   :target: https://pypi.org/project/kqcircuits/
+   :alt: PyPI Package
 
 .. image:: https://img.shields.io/badge/click-for%20documentation%20%F0%9F%93%92-lightgrey
    :target: https://iqm-finland.github.io/KQCircuits/index.html
