@@ -14,7 +14,8 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-
+# pylint: disable=R0904
+# TODO: Consider refactoring to reduce number of public methods
 
 import numpy
 from autologging import logged
@@ -457,17 +458,24 @@ class Chip(Element):
         _h = self.box.p2.y - self.box.p1.y
         sides = [_w, _h, _w, _h]
 
-        launchers = {}  # dictionary of point, heading, distance from chip edge
+        return self._insert_launchers(dirs, enabled, launcher_assignments, launcher_cell, launcher_indent,
+                                      launcher_width, pad_pitch, pads_per_side, sides, trans)
 
-        port_id = 0
+    def _insert_launchers(self, dirs, enabled, launcher_assignments, launcher_cell, launcher_indent, launcher_width,
+                          pad_pitch, pads_per_side, sides, trans):
+
+        """Inserts launcher cell at predefined parameters and returns launcher cells
+
+        """
+        port_id, launchers = 0, {}
         for np, dr, tr, si in zip(pads_per_side, dirs, trans, sides):
             for i in range(np):
                 port_id += 1
                 if launcher_assignments:
-                    if port_id in launcher_assignments:
-                        name = launcher_assignments[port_id]
-                    else:
+                    if port_id not in launcher_assignments:
                         continue
+                    name = launcher_assignments[port_id]
+
                 else:
                     name = str(port_id)
 
@@ -481,7 +489,6 @@ class Chip(Element):
                 launcher_inst, launcher_refpoints = self.insert_cell(launcher_cell, transf, name)
                 launcher_inst.set_property("port_id", port_id)
                 self.add_port(name, launcher_refpoints["port"])
-
         return launchers
 
     def make_grid_locations(self, box, delta_x=100, delta_y=100):  # pylint: disable=no-self-use
