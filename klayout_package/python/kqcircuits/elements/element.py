@@ -423,10 +423,11 @@ class Element(pya.PCellDeclarationHelper):
 
         Args:
             layer_name: layer name text
-            face_id: index of the face id, default=0
-
+            face_id: Name or index of the face to use, default=0
         """
-        if (face_id == 0) and (layer_name not in self.face(0)):
+        if isinstance(face_id, str):
+            return self.layout.layer(self.face(self.face_ids.index(face_id))[layer_name])
+        elif (face_id == 0) and (layer_name not in self.face(0)):
             return self.layout.layer(default_layers[layer_name])
         else:
             return self.layout.layer(self.face(face_id)[layer_name])
