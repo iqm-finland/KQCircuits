@@ -729,8 +729,9 @@ class WaveguideComposite(Element):
                     else:
                         meander_len -= start_len + (self._nodes[n1-1].position - turn_start).length()
 
+                params = {**node1.params, "a": self.a, "b": self.b}
                 cell_inst, _ = self.insert_cell(Meander, start=[meander_start.x, meander_start.y],
-                                                end=[meander_end.x, meander_end.y], length=meander_len, **node1.params)
+                                                end=[meander_end.x, meander_end.y], length=meander_len, **params)
                 cell_inst.set_property("waveguide_composite_node_index", end_index)
                 wg_points = point0 + points[p0:p1] + ([] if start_len < 1e-4 else [meander_start])
                 self._insert_wg_cell(wg_points, n0, n1)
