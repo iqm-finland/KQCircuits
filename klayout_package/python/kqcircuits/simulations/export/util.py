@@ -16,6 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+import math
 from typing import List
 from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_output_format
@@ -46,17 +47,40 @@ def find_edge_from_point_in_cell(cell: pya.Cell, layer: int, point: pya.DPoint, 
     return find_edge_from_point_in_polygons(cell.shapes(layer).each(pya.Shapes.SPolygons), point, dbu, tolerance)
 
 
+def _dist(edge: pya.Edge, point: pya.Point):
+    """
+    If point projected to line by edge is in edge then use `distance_abs`
+    but otherwise take the minimum distance to end points
+    """
+    v_edge = pya.Vector(edge.p2-edge.p1)
+    if v_edge.sprod(v_edge) > 0:
+        v_point_start = pya.Vector(point-edge.p1)
+        v_point_end = pya.Vector(point-edge.p2)
+
+        v_point_start_projection = v_edge.sprod(v_point_start)/math.sqrt(v_edge.sprod(v_edge))
+        v_point_end_projection = v_edge.sprod(v_point_end)/math.sqrt(v_edge.sprod(v_edge))
+
+        if edge.length() >= abs(v_point_start_projection+v_point_end_projection):
+            out = edge.distance_abs(point)
+        else:
+            out = min(point.distance(edge.p1), point.distance(edge.p2))
+    else:
+        out = min(point.distance(edge.p1), point.distance(edge.p2))
+    return out
+
+
 def find_edge_from_point_in_polygons(polygons: List[pya.Polygon], point: pya.DPoint, dbu, tolerance=0.01):
     """
     Finds the edge closest to a point, and returns the edge as well as it's polygon and edge index
     """
+
     # Find closest edge to point
     edges = [(i, j, edge.to_dtype(dbu))
              for (i, polygon) in enumerate(polygons)
              for (j, edge) in enumerate(polygon.each_edge())
              ]
     (distance, i, j, nearest_edge) = \
-        sorted([(edge.distance_abs(point), i, j, edge) for (i, j, edge) in edges])[0]
+        sorted([(_dist(edge, point), i, j, edge) for (i, j, edge) in edges])[0]
     if distance < tolerance:
         return i, j, nearest_edge
     else:
