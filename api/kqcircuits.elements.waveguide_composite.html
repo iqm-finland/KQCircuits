@@ -752,6 +752,12 @@ subclass. Elements are oriented collinear to the preceding Node and an automatic
 inserted after if the next Node is not collinear.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.waveguide_composite.WaveguideComposite.check_node_type">
+<span class="sig-name descname"><span class="pre">check_node_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_composite.html#WaveguideComposite.check_node_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_composite.WaveguideComposite.check_node_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over supported Node types and run approriate function</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py function">
@@ -786,8 +792,6 @@ inserted after if the next Node is not collinear.</p>
 <li><p><strong>gui_path</strong><em> (Shape)</em><span> - </span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>gui_path_shadow</strong><em> (Shape)</em><span> - Hidden path to detect GUI operations</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;200,0)</span> <span class="pre">w=1</span> <span class="pre">bx=0</span> <span class="pre">ex=0</span> <span class="pre">r=false</span></code></p></li>
 <li><p><strong>tight_routing</strong><em> (Boolean)</em><span> - Tight routing for corners</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">64</span></code></p></li>
@@ -805,6 +809,8 @@ inserted after if the next Node is not collinear.</p>
 <li><p><strong>connector_b</strong><em> (Double)</em><span> - Gap width at the connector area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">40</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>round_connector</strong><em> (Boolean)</em><span> - Use round connector shape</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>n_center_bumps</strong><em> (Int)</em><span> - Number of center bumps in series</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><strong>term1</strong><em> (Double)</em><span> - Termination length start</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>term2</strong><em> (Double)</em><span> - Termination length end</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>airbridge_type</strong><em> (String)</em><span> - Airbridge type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Airbridge</span> <span class="pre">Rectangular</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Airbridge</span> <span class="pre">Rectangular',</span> <span class="pre">'Airbridge</span> <span class="pre">Multi</span> <span class="pre">Face']</span></code></p></li>
 <li><p><strong>taper_length</strong><em> (Double)</em><span> - Taper length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>

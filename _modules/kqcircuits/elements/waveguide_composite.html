@@ -534,6 +534,7 @@
 
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">root_scalar</span>
 
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">node_editor_layer_changing_elements</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">element_by_class_name</span>
@@ -685,8 +686,8 @@
 
 <div class="viewcode-block" id="WaveguideComposite"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanarTaper</span><span class="p">,</span> <span class="n">taper_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Airbridge</span><span class="p">,</span> <span class="s2">&quot;airbridge_type&quot;</span><span class="p">)</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="s2">&quot;term1&quot;</span><span class="p">,</span> <span class="s2">&quot;term2&quot;</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">)</span>
 <span class="nd">@logged</span>
 <span class="k">class</span> <span class="nc">WaveguideComposite</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A composite waveguide made of waveguides and other elements.</span>
@@ -936,6 +937,7 @@
 <span class="sd">        subclass. Elements are oriented collinear to the preceding Node and an automatic bend is</span>
 <span class="sd">        inserted after if the next Node is not collinear.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="n">Node</span><span class="o">.</span><span class="n">nodes_from_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_child_refpoints</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -946,29 +948,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_entrance_direction</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39; Node #</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">: (</span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">, </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">), </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="vm">__class__</span><span class="si">}</span><span class="s1">,&#39;</span>
                              <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s1">&#39;face_id&#39;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">new_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;face_id&#39;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">new_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_id</span>
+
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s1">&#39;a&#39;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span> <span class="ow">or</span> <span class="s1">&#39;b&#39;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_add_taper</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="s1">&#39;face_id&#39;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_fc_bump</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_layer_changing_element</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">AirbridgeConnection</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_airbridge</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="p">,</span> <span class="n">Airbridge</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Airbridge</span><span class="p">:</span>   <span class="c1"># change default if specific type is used</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_type</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">default_type</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_airbridge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">with_side_airbridges</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">WaveguideCoplanarTaper</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_taper</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">FlipChipConnectorRf</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_fc_bump</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_simple_element</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">check_node_type</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_terminator</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">old_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_id</span>
 
         <span class="c1"># pylint: disable=undefined-loop-variable</span>
         <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -986,6 +986,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wg_start_dir</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="WaveguideComposite.check_node_type"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_composite.html#kqcircuits.elements.waveguide_composite.WaveguideComposite.check_node_type">[docs]</a>    <span class="k">def</span> <span class="nf">check_node_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over supported Node types and run approriate function&quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">AirbridgeConnection</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_airbridge</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="p">,</span> <span class="n">Airbridge</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">Airbridge</span><span class="p">:</span>  <span class="c1"># change default if specific type is used</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">airbridge_type</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="o">.</span><span class="n">default_type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_airbridge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">with_side_airbridges</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">is</span> <span class="n">WaveguideCoplanarTaper</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_taper</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span> <span class="ow">in</span> <span class="p">[</span><span class="n">element_by_class_name</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">node_editor_layer_changing_elements</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_layer_changing_element</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_simple_element</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
     <span class="k">def</span> <span class="nf">_add_taper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a WaveguideCoplanarTaper and change default a/b.&quot;&quot;&quot;</span>
 
@@ -1002,23 +1018,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">_add_fc_bump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add FlipChipConnectorRF and change default face_id.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_add_layer_changing_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">element</span><span class="o">=</span><span class="n">FlipChipConnectorRf</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add element which changes face_id and change default face_id.&quot;&quot;&quot;</span>
         <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;face_id&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
-            <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;face_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">),</span> <span class="o">**</span><span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">}</span>
-        <span class="n">new_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;face_id&quot;</span><span class="p">)</span>
-        <span class="n">old_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">new_id</span> <span class="o">==</span> <span class="n">old_id</span><span class="p">:</span>  <span class="c1"># no change, just a Node</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">element</span><span class="p">),</span> <span class="o">**</span><span class="n">node</span><span class="o">.</span><span class="n">params</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_id</span><span class="p">:</span>  <span class="c1"># no change, just a Node</span>
             <span class="k">return</span>
-        <span class="c1"># TODO support vias?</span>
 
-        <span class="n">fc_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell_and_waveguide</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">fc_cell</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">old_id</span><span class="si">}</span><span class="s1">_port&#39;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">new_id</span><span class="si">}</span><span class="s1">_port&#39;</span><span class="p">)</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;face_ids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">old_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="p">]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">old_id</span>
+        <span class="n">fc_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_insert_cell_and_waveguide</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">fc_cell</span><span class="p">,</span> <span class="n">before</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">old_id</span><span class="si">}</span><span class="s1">_port&#39;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="si">}</span><span class="s1">_port&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_add_airbridge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an airbridge with tapers at both sides and change default a/b if required.&quot;&quot;&quot;</span>

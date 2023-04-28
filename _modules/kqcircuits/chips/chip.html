@@ -524,7 +524,8 @@
 <span class="c1"># The software distribution should follow IQM trademark policy for open-source software</span>
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
-
+<span class="c1"># pylint: disable=R0904</span>
+<span class="c1"># TODO: Consider refactoring to reduce number of public methods</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
@@ -967,17 +968,24 @@
         <span class="n">_h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p2</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">p1</span><span class="o">.</span><span class="n">y</span>
         <span class="n">sides</span> <span class="o">=</span> <span class="p">[</span><span class="n">_w</span><span class="p">,</span> <span class="n">_h</span><span class="p">,</span> <span class="n">_w</span><span class="p">,</span> <span class="n">_h</span><span class="p">]</span>
 
-        <span class="n">launchers</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># dictionary of point, heading, distance from chip edge</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_launchers</span><span class="p">(</span><span class="n">dirs</span><span class="p">,</span> <span class="n">enabled</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">launcher_cell</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span>
+                                      <span class="n">launcher_width</span><span class="p">,</span> <span class="n">pad_pitch</span><span class="p">,</span> <span class="n">pads_per_side</span><span class="p">,</span> <span class="n">sides</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span></div>
 
-        <span class="n">port_id</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">_insert_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">enabled</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">launcher_cell</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span>
+                          <span class="n">pad_pitch</span><span class="p">,</span> <span class="n">pads_per_side</span><span class="p">,</span> <span class="n">sides</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Inserts launcher cell at predefined parameters and returns launcher cells</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">port_id</span><span class="p">,</span> <span class="n">launchers</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">np</span><span class="p">,</span> <span class="n">dr</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">si</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pads_per_side</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">sides</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="p">):</span>
                 <span class="n">port_id</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="n">launcher_assignments</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">port_id</span> <span class="ow">in</span> <span class="n">launcher_assignments</span><span class="p">:</span>
-                        <span class="n">name</span> <span class="o">=</span> <span class="n">launcher_assignments</span><span class="p">[</span><span class="n">port_id</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">port_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">launcher_assignments</span><span class="p">:</span>
                         <span class="k">continue</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="n">launcher_assignments</span><span class="p">[</span><span class="n">port_id</span><span class="p">]</span>
+
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">port_id</span><span class="p">)</span>
 
@@ -991,8 +999,7 @@
                 <span class="n">launcher_inst</span><span class="p">,</span> <span class="n">launcher_refpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">launcher_cell</span><span class="p">,</span> <span class="n">transf</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
                 <span class="n">launcher_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;port_id&quot;</span><span class="p">,</span> <span class="n">port_id</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_port</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">launcher_refpoints</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">launchers</span></div>
+        <span class="k">return</span> <span class="n">launchers</span>
 
 <div class="viewcode-block" id="Chip.make_grid_locations"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.make_grid_locations">[docs]</a>    <span class="k">def</span> <span class="nf">make_grid_locations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">delta_x</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">delta_y</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>  <span class="c1"># pylint: disable=no-self-use</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
