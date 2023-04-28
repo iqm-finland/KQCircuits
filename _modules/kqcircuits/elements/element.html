@@ -933,10 +933,11 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            layer_name: layer name text</span>
-<span class="sd">            face_id: index of the face id, default=0</span>
-
+<span class="sd">            face_id: Name or index of the face to use, default=0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">face_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">face_id</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">face_id</span><span class="p">))[</span><span class="n">layer_name</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">face_id</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">layer_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="mi">0</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">default_layers</span><span class="p">[</span><span class="n">layer_name</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">face</span><span class="p">(</span><span class="n">face_id</span><span class="p">)[</span><span class="n">layer_name</span><span class="p">])</span></div>
