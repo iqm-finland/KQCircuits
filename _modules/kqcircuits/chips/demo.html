@@ -554,16 +554,16 @@
         <span class="n">launcher_assignments</span> <span class="o">=</span> <span class="p">{</span>
             <span class="c1"># N</span>
             <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;FL-QB1&quot;</span><span class="p">,</span>
-            <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;PL-A-IN&quot;</span><span class="p">,</span>
-            <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;PL-A-OUT&quot;</span><span class="p">,</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;PL-1-IN&quot;</span><span class="p">,</span>
+            <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;PL-1-OUT&quot;</span><span class="p">,</span>
             <span class="mi">5</span><span class="p">:</span> <span class="s2">&quot;FL-QB2&quot;</span><span class="p">,</span>
             <span class="c1"># E</span>
             <span class="mi">7</span><span class="p">:</span> <span class="s2">&quot;DL-QB2&quot;</span><span class="p">,</span>
             <span class="mi">12</span><span class="p">:</span> <span class="s2">&quot;DL-QB4&quot;</span><span class="p">,</span>
             <span class="c1"># S</span>
             <span class="mi">14</span><span class="p">:</span> <span class="s2">&quot;FL-QB4&quot;</span><span class="p">,</span>
-            <span class="mi">15</span><span class="p">:</span> <span class="s2">&quot;PL-B-IN&quot;</span><span class="p">,</span>
-            <span class="mi">16</span><span class="p">:</span> <span class="s2">&quot;PL-B-OUT&quot;</span><span class="p">,</span>
+            <span class="mi">15</span><span class="p">:</span> <span class="s2">&quot;PL-2-IN&quot;</span><span class="p">,</span>
+            <span class="mi">16</span><span class="p">:</span> <span class="s2">&quot;PL-2-OUT&quot;</span><span class="p">,</span>
             <span class="mi">17</span><span class="p">:</span> <span class="s2">&quot;FL-QB3&quot;</span><span class="p">,</span>
             <span class="c1"># W</span>
             <span class="mi">19</span><span class="p">:</span> <span class="s2">&quot;DL-QB3&quot;</span><span class="p">,</span>
@@ -686,8 +686,8 @@
                          <span class="o">**</span><span class="n">t_cross_parameters</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b2</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="n">length_extra_side</span><span class="o">=</span><span class="mi">30</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Demo.produce_probelines"><a class="viewcode-back" href="../../../api/kqcircuits.chips.demo.html#kqcircuits.chips.demo.Demo.produce_probelines">[docs]</a>    <span class="k">def</span> <span class="nf">produce_probelines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_probeline</span><span class="p">(</span><span class="s2">&quot;PL-A&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_probeline</span><span class="p">(</span><span class="s2">&quot;PL-B&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_probeline</span><span class="p">(</span><span class="s2">&quot;PL-1&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">produce_probeline</span><span class="p">(</span><span class="s2">&quot;PL-2&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Demo.produce_probeline"><a class="viewcode-back" href="../../../api/kqcircuits.chips.demo.html#kqcircuits.chips.demo.Demo.produce_probeline">[docs]</a>    <span class="k">def</span> <span class="nf">produce_probeline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">probeline_name</span><span class="p">,</span> <span class="n">qubit_a_nr</span><span class="p">,</span> <span class="n">qubit_b_nr</span><span class="p">,</span> <span class="n">mirrored</span><span class="p">,</span> <span class="n">cap_finger_nr</span><span class="p">):</span>
 

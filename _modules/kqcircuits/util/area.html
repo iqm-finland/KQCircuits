@@ -526,6 +526,7 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">cpu_count</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">perf_counter</span>
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
@@ -547,11 +548,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">*</span> <span class="p">(</span><span class="n">dbu</span> <span class="o">*</span> <span class="n">dbu</span><span class="p">)</span>  <span class="c1"># report as um^2</span></div></div>
 
 
-<div class="viewcode-block" id="get_area_and_density"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density">[docs]</a><span class="k">def</span> <span class="nf">get_area_and_density</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">):</span>
+<div class="viewcode-block" id="get_area_and_density"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.get_area_and_density">[docs]</a><span class="k">def</span> <span class="nf">get_area_and_density</span><span class="p">(</span><span class="n">cell</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">Cell</span><span class="p">,</span> <span class="n">layer_infos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Get total area and density :math:`\\rho=\\frac{area}{bbox.area}` of all layers.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cell: target cell to get area from all layers</span>
+<span class="sd">        cell: target cell to get area from</span>
+<span class="sd">        layer_infos: list of ``LayerInfo`` to get area for, or None to get area for all layers.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple: tuple containing lists of</span>
@@ -561,20 +563,21 @@
 <span class="sd">          * density between 0 and 1 as float</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
 
     <span class="n">tp</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">TilingProcessor</span><span class="p">()</span>
     <span class="n">tp</span><span class="o">.</span><span class="n">threads</span> <span class="o">=</span> <span class="n">cpu_count</span><span class="p">()</span>
     <span class="n">tp</span><span class="o">.</span><span class="n">tile_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">)</span>  <span class="c1"># microns</span>
+    <span class="k">if</span> <span class="n">layer_infos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">layer_infos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">())</span>
+    <span class="n">layer_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">AreaReceiver</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">]</span>
+    <span class="n">layer_bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AreaReceiver</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">]</span>
 
-    <span class="n">layer_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layout</span><span class="o">.</span><span class="n">layer_infos</span><span class="p">()]</span>
-    <span class="n">layer_areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">AreaReceiver</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">layer_names</span><span class="p">]</span>
-    <span class="n">layer_bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AreaReceiver</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">layer_names</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">area_receiver</span><span class="p">,</span> <span class="n">bbox_receiver</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer_indexes</span><span class="p">(),</span> <span class="n">layer_names</span><span class="p">,</span> <span class="n">layer_areas</span><span class="p">,</span> <span class="n">layer_bboxes</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># if `name` starts with a number, tp.execute() fails, so we add an underscore to avoid that</span>
+    <span class="k">for</span> <span class="n">layer_info</span><span class="p">,</span> <span class="n">area_receiver</span><span class="p">,</span> <span class="n">bbox_receiver</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">layer_infos</span><span class="p">,</span> <span class="n">layer_areas</span><span class="p">,</span> <span class="n">layer_bboxes</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>  <span class="c1"># if `name` starts with a number, tp.execute() fails, so we add an underscore</span>
         <span class="n">area</span><span class="p">,</span> <span class="n">bbox</span> <span class="o">=</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_area&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;_bbox&#39;</span>
-        <span class="n">tp</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">tp</span><span class="o">.</span><span class="n">input</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer_info</span><span class="p">)))</span>
         <span class="n">tp</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">area_receiver</span><span class="p">)</span>
         <span class="n">tp</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">bbox</span><span class="p">,</span> <span class="n">bbox_receiver</span><span class="p">)</span>
         <span class="n">tp</span><span class="o">.</span><span class="n">queue</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;_output(</span><span class="si">{</span><span class="n">area</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.area)&quot;</span><span class="p">)</span>
@@ -583,8 +586,11 @@
 
     <span class="n">areas</span> <span class="o">=</span> <span class="p">[</span><span class="n">area</span><span class="o">.</span><span class="n">area</span> <span class="k">for</span> <span class="n">area</span> <span class="ow">in</span> <span class="n">layer_areas</span><span class="p">]</span>
     <span class="n">bboxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">bbox</span><span class="o">.</span><span class="n">area</span> <span class="k">for</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="n">layer_bboxes</span><span class="p">]</span>
+    <span class="n">layer_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">layer_info</span> <span class="ow">in</span> <span class="n">layer_infos</span><span class="p">]</span>
     <span class="n">densities</span> <span class="o">=</span> <span class="p">[</span><span class="n">area</span> <span class="o">/</span> <span class="n">bbox</span> <span class="k">if</span> <span class="n">bbox</span> <span class="o">!=</span> <span class="mf">0.0</span> <span class="k">else</span> <span class="mf">0.0</span> <span class="k">for</span> <span class="n">area</span><span class="p">,</span> <span class="n">bbox</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">bboxes</span><span class="p">)]</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Got layer areas: </span><span class="si">{</span><span class="n">areas</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;For cell </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> got layer areas: </span><span class="si">{</span><span class="n">areas</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Area calculation took </span><span class="si">{</span><span class="n">perf_counter</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">:</span><span class="s1">.1f</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">layer_names</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">densities</span></div>
 </pre></div>

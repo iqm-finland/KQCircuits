@@ -569,6 +569,8 @@
 <span class="sd">        mask_text_scale: text scaling factor for graphical representation layer (float)</span>
 <span class="sd">        mask_marker_offset: offset of mask markers from wafer center in horizontal and vertical directions (float)</span>
 <span class="sd">        mask_export_layers: list of layer names (without face_ids) to be exported as individual mask `.oas` files</span>
+<span class="sd">        mask_export_density_layers: list of layer names (without face_ids) for which we want to calculate the coverage</span>
+<span class="sd">         density</span>
 <span class="sd">        submasks: list of submasks, each element is a tuple (submask mask_layout, submask position)</span>
 <span class="sd">        extra_id: extra string used to create unique name for mask layouts with the same face_id</span>
 <span class="sd">        extra_chips: List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional</span>
@@ -611,6 +613,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_marker_offset</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask_marker_offset&quot;</span><span class="p">,</span> <span class="n">default_mask_parameters</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_id</span><span class="p">][</span>
             <span class="s2">&quot;mask_marker_offset&quot;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask_export_layers&quot;</span><span class="p">,</span> <span class="n">default_mask_export_layers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_density_layers</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mask_export_density_layers&quot;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submasks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;submasks&quot;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extra_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_chips</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;extra_chips&quot;</span><span class="p">,</span> <span class="p">[])</span>

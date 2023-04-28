@@ -536,11 +536,14 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.area.get_area_and_density">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.area.</span></span><span class="sig-name descname"><span class="pre">get_area_and_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.Cell</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/area.html#get_area_and_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.area.get_area_and_density" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.area.</span></span><span class="sig-name descname"><span class="pre">get_area_and_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">klayout.dbcore.Cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_infos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/area.html#get_area_and_density"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.area.get_area_and_density" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get total area and density <span class="math notranslate nohighlight">\(\rho=\frac{area}{bbox.area}\)</span> of all layers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>cell</strong> – target cell to get area from all layers</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cell</strong> – target cell to get area from</p></li>
+<li><p><strong>layer_infos</strong> – list of <code class="docutils literal notranslate"><span class="pre">LayerInfo</span></code> to get area for, or None to get area for all layers.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><p>tuple containing lists of</p>
