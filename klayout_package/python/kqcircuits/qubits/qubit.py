@@ -98,13 +98,18 @@ class Qubit(Element):
 
         return refpoints_rel
 
-    def produce_fluxline(self, **parameters):
+    def produce_fluxline(self, rot=0, trans=pya.DVector(), **parameters):
         """Produces the fluxline.
 
         Creates the fluxline cell and inserts it as a subcell. The "flux" and "flux_corner" ports
-        are made available for the qubit.
+        are made available for the qubit. By default, fluxlines align their "origin_fluxline" refpoint to
+        "origin_squid" refpoint in the direction of "port_common". However, the user might tweak the alignment direction
+        by using the argument rot and the relative position by an extra pya.DVector(x, y) allowing to tune the position
+        to achieve the desired design parameters.
 
         Args:
+            rot: Extra rotation of the fluxline, in degrees
+            trans (DVector): fluxline x/y translation
             parameters: parameters for the fluxline to overwrite default and subclass parameters
         """
 
@@ -117,7 +122,7 @@ class Qubit(Element):
         squid_edge = refpoints_so_far["origin_squid"]
         a = (squid_edge - refpoints_so_far['port_common'])
         rotation = math.atan2(a.y, a.x) / math.pi * 180 + 90
-        transf = pya.DCplxTrans(1, rotation, False, squid_edge - self.refpoints["base"])
+        total_transformation = pya.DCplxTrans(1, rotation + rot, False, squid_edge - self.refpoints["base"] + trans)
 
-        cell_inst, _ = self.insert_cell(cell, transf)
+        cell_inst, _ = self.insert_cell(cell, total_transformation)
         self.copy_port("flux", cell_inst)
