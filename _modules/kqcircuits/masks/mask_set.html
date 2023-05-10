@@ -555,6 +555,10 @@
 <span class="sd">    add_chip(). These functions also export some files for each chip. Then call build() to create the</span>
 <span class="sd">    cell hierarchy of the entire mask, and finally export mask files by calling export().</span>
 
+<span class="sd">    Chips are created in parallel in separate processes but the user may choose to use a ``-d`` switch on</span>
+<span class="sd">    the command line for debugging with a single process. It is also possible to manually limit the number of</span>
+<span class="sd">    concurrently used CPUs for resource management purposes with the ``-c 4`` switch (to 4 in this example).</span>
+
 <span class="sd">    Example:</span>
 <span class="sd">        mask = MaskSet(...)</span>
 <span class="sd">        mask.add_mask_layout(...)</span>
@@ -626,31 +630,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_layout</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mask_layout</span></div>
 
-<div class="viewcode-block" id="MaskSet.add_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">[docs]</a>    <span class="k">def</span> <span class="nf">add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MaskSet.add_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">[docs]</a>    <span class="k">def</span> <span class="nf">add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.</span>
 
 <span class="sd">        Note the complex polymorphism used here: ``chips`` is either a single chip class or a list of ``(chip, variant,</span>
 <span class="sd">        parameters)`` tuples. In the latter case the rest of the arguments (except ``cpus``) are ignored. Also,</span>
 <span class="sd">        ``chips`` (or the individual chip part of tuples) may be a simple file name to load a static .oas file instead.</span>
 
-<span class="sd">        Chips are created in parallel in separate processes but the user may choose to use a ``-d`` switch on</span>
-<span class="sd">        the command line for debugging with a single process. It is also possible to manually limit the number of</span>
-<span class="sd">        concurrently used CPUs for resource management purposes with the ``-c 4`` switch (to 4 in this example).</span>
+<span class="sd">        The chip&#39;s parameters dictionary may also contain an ``alt_netlists`` dictionary to specify alternative ways of</span>
+<span class="sd">        generating netlists. See ``export_cell_netlist()`` or the ``quick_demo.py`` mask for further information.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            chip: A chip class. Or a list of tuples, like ``[(QualityFactor, &quot;QDG&quot;, parameters),...]``,</span>
 <span class="sd">                  parameters are optional.</span>
-<span class="sd">            variant_name: Name for specific variant, the same as in the mask layout. Or None, if multiple</span>
-<span class="sd">                          chips are given</span>
+<span class="sd">            variant_name: Name for specific variant, the same as in the mask layout.</span>
 <span class="sd">            cpus: Number of parallel processes to use for chip generation. By default uses ``os.cpu_count()``</span>
 <span class="sd">                  or the number of chips, whichever is smaller.</span>
-<span class="sd">            **kwargs: Any parameters passed to the a single chip PCell. Not used with multiple chips.</span>
+<span class="sd">            **parameters: Any parameters passed to the a single chip PCell.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="s1">&#39;ADD_CHIPS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">chips</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>  <span class="c1"># only one chip</span>
             <span class="n">cpus</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">chips</span> <span class="o">=</span> <span class="p">[(</span><span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)]</span>
+            <span class="n">chips</span> <span class="o">=</span> <span class="p">[(</span><span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)]</span>
 
         <span class="k">if</span> <span class="n">cpus</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cpus</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chips</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span>
@@ -678,8 +680,10 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create chip, possibly in a separate process.&quot;&quot;&quot;</span>
 
         <span class="n">chip</span><span class="p">,</span> <span class="n">xargs</span> <span class="o">=</span> <span class="n">chip_arg</span>
-        <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip</span>
         <span class="n">name</span><span class="p">,</span> <span class="n">with_grid</span><span class="p">,</span> <span class="n">_mask_set_dir</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">_extra_params</span> <span class="o">=</span> <span class="n">xargs</span>
+        <span class="n">chip_class</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="o">*</span><span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip</span>
+        <span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip_params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">chip_params</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">alt_netlists</span> <span class="o">=</span> <span class="n">chip_params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;alt_netlists&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">chip_path</span> <span class="o">=</span> <span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -700,7 +704,7 @@
                 <span class="s1">&#39;name_copy&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="n">chip_params</span><span class="p">:</span>
-                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chip_params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chip_params</span><span class="p">)</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># its a file name, load it</span>
             <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
@@ -709,7 +713,7 @@
             <span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chip_class</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">)</span>
+        <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="p">)</span>
         <span class="n">view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>

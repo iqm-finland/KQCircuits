@@ -521,8 +521,8 @@
 <span id="kqcircuits-util-netlist-extraction"></span><h1>kqcircuits.util.netlist_extraction<a class="headerlink" href="#module-kqcircuits.util.netlist_extraction" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kqcircuits.util.netlist_extraction.export_cell_netlist">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.netlist_extraction.</span></span><span class="sig-name descname"><span class="pre">export_cell_netlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/netlist_extraction.html#export_cell_netlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.netlist_extraction.export_cell_netlist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exports netlist into <cite>filename</cite> in JSON</p>
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.netlist_extraction.</span></span><span class="sig-name descname"><span class="pre">export_cell_netlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alt_netlists</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/netlist_extraction.html#export_cell_netlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.netlist_extraction.export_cell_netlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports netlist(s) in JSON into file(s).</p>
 <p>The file will have four sections:
 <code class="docutils literal notranslate"><span class="pre">{&quot;nets&quot;:</span> <span class="pre">{...},</span> <span class="pre">&quot;subcircuits&quot;:</span> <span class="pre">{...},</span> <span class="pre">&quot;circuits&quot;:</span> <span class="pre">{...},</span> <span class="pre">&quot;chip&quot;:</span> <span class="pre">{...}}</span></code></p>
 <p>KLayout’s <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/lvs_overview.html">terminology</a> differs
@@ -536,38 +536,24 @@ overlapping pins that belong to two different components each identified by a un
 except for Launchers.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">subcircuits</span></code> section is a dictionary of the used cells: <code class="docutils literal notranslate"><span class="pre">&lt;subcircuit_id&gt;:</span> <span class="pre">{&quot;cell_name&quot;:</span>
 <span class="pre">&quot;...&quot;,</span> <span class="pre">&quot;subcircuit_location&quot;:</span> <span class="pre">{&quot;_pya_type&quot;:</span> <span class="pre">&quot;DPoint&quot;,</span> <span class="pre">&quot;x&quot;:</span> <span class="pre">&lt;x&gt;,</span> <span class="pre">&quot;y&quot;:</span> <span class="pre">&lt;y&gt;},</span> <span class="pre">...}</span></code>.
-Where <code class="docutils literal notranslate"><span class="pre">cell_name</span></code> is the name of the used Element
-optionally appended with <code class="docutils literal notranslate"><span class="pre">$&lt;n&gt;</span></code> if there are more than one Elements of the same type.
-Different instances of the same cell will have different <code class="docutils literal notranslate"><span class="pre">subcircuit_id</span></code> but identical
-<code class="docutils literal notranslate"><span class="pre">cell_name</span></code>. <code class="docutils literal notranslate"><span class="pre">subcircuit_location</span></code> defines the center of the bounding box spanned by the
-geometry in <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code> layers, while <code class="docutils literal notranslate"><span class="pre">subcircuit_origin</span></code> defines the center
-of the bounding box spanned by the netlist ports of the cell.</p>
+Where <code class="docutils literal notranslate"><span class="pre">cell_name</span></code> is the name of the used Element optionally appended with <code class="docutils literal notranslate"><span class="pre">$&lt;n&gt;</span></code> if there
+are more than one Elements of the same type. Different instances of the same cell will have
+different <code class="docutils literal notranslate"><span class="pre">subcircuit_id</span></code> but identical <code class="docutils literal notranslate"><span class="pre">cell_name</span></code>. <code class="docutils literal notranslate"><span class="pre">subcircuit_location</span></code> defines the
+center of the bounding box of the subcircuit’s geometry in <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code> layer,
+while <code class="docutils literal notranslate"><span class="pre">subcircuit_origin</span></code> defines the center of the bounding box of netlist ports of the cell.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">circuits</span></code> section maps <code class="docutils literal notranslate"><span class="pre">cell_name</span></code> to a dictionary of the named Element’s parameters.</p>
 <p>If the Cell object is a Chip, the <code class="docutils literal notranslate"><span class="pre">chip</span></code> section contains bounding boxes of each face in the chip.</p>
+<p>This function may generate alternative netlists too as specified in the <code class="docutils literal notranslate"><span class="pre">alt_netlists</span></code>
+dictionary. The keys should be tags that get added to the generated netlist filenames and the
+values are the corresponding Element breakdown lists used to generate them. The default netlist
+is generated regadless of this parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>cell</strong> – pya Cell object</p></li>
 <li><p><strong>filename</strong> – absolute path as convertible to string</p></li>
 <li><p><strong>pcell</strong> – pya PCell object. If None, an attempt is made to treat cell as pcell</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kqcircuits.util.netlist_extraction.export_netlist">
-<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.netlist_extraction.</span></span><span class="sig-name descname"><span class="pre">export_netlist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal_layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">original_layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/netlist_extraction.html#export_netlist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.netlist_extraction.export_netlist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exports <cite>circuit</cite> into <cite>filename</cite> in JSON</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>circuit</strong> – pya Circuit object</p></li>
-<li><p><strong>filename</strong> – absolute path as convertible to string</p></li>
-<li><p><strong>internal_layout</strong> – pya layout object where the netlist cells are registered</p></li>
-<li><p><strong>original_layout</strong> – pya Layout object where the original cells and pcells are registered</p></li>
-<li><p><strong>cell_mapping</strong> – CellMapping object as given by pya LayoutToNetlist object</p></li>
-<li><p><strong>pcell</strong> – pya PCell object from which circuit was extracted, if available</p></li>
+<li><p><strong>alt_netlists</strong> – optional dictionary of file name postfixes and element breakdown lists</p></li>
 </ul>
 </dd>
 </dl>

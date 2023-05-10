@@ -528,6 +528,9 @@
 <p>To create a mask, add mask layouts to the mask set using add_mask_layout() and add chips to these mask layouts using
 add_chip(). These functions also export some files for each chip. Then call build() to create the
 cell hierarchy of the entire mask, and finally export mask files by calling export().</p>
+<p>Chips are created in parallel in separate processes but the user may choose to use a <code class="docutils literal notranslate"><span class="pre">-d</span></code> switch on
+the command line for debugging with a single process. It is also possible to manually limit the number of
+concurrently used CPUs for resource management purposes with the <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">4</span></code> switch (to 4 in this example).</p>
 <p class="rubric">Example</p>
 <p>mask = MaskSet(…)
 mask.add_mask_layout(…)
@@ -616,24 +619,22 @@ mask.export()</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_set.MaskSet.add_chip">
-<span class="sig-name descname"><span class="pre">add_chip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chip" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_chip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.</p>
 <p>Note the complex polymorphism used here: <code class="docutils literal notranslate"><span class="pre">chips</span></code> is either a single chip class or a list of <code class="docutils literal notranslate"><span class="pre">(chip,</span> <span class="pre">variant,</span>
 <span class="pre">parameters)</span></code> tuples. In the latter case the rest of the arguments (except <code class="docutils literal notranslate"><span class="pre">cpus</span></code>) are ignored. Also,
 <code class="docutils literal notranslate"><span class="pre">chips</span></code> (or the individual chip part of tuples) may be a simple file name to load a static .oas file instead.</p>
-<p>Chips are created in parallel in separate processes but the user may choose to use a <code class="docutils literal notranslate"><span class="pre">-d</span></code> switch on
-the command line for debugging with a single process. It is also possible to manually limit the number of
-concurrently used CPUs for resource management purposes with the <code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">4</span></code> switch (to 4 in this example).</p>
+<p>The chip’s parameters dictionary may also contain an <code class="docutils literal notranslate"><span class="pre">alt_netlists</span></code> dictionary to specify alternative ways of
+generating netlists. See <code class="docutils literal notranslate"><span class="pre">export_cell_netlist()</span></code> or the <code class="docutils literal notranslate"><span class="pre">quick_demo.py</span></code> mask for further information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>chip</strong> – A chip class. Or a list of tuples, like <code class="docutils literal notranslate"><span class="pre">[(QualityFactor,</span> <span class="pre">&quot;QDG&quot;,</span> <span class="pre">parameters),...]</span></code>,
 parameters are optional.</p></li>
-<li><p><strong>variant_name</strong> – Name for specific variant, the same as in the mask layout. Or None, if multiple
-chips are given</p></li>
+<li><p><strong>variant_name</strong> – Name for specific variant, the same as in the mask layout.</p></li>
 <li><p><strong>cpus</strong> – Number of parallel processes to use for chip generation. By default uses <code class="docutils literal notranslate"><span class="pre">os.cpu_count()</span></code>
 or the number of chips, whichever is smaller.</p></li>
-<li><p><strong>**kwargs</strong> – Any parameters passed to the a single chip PCell. Not used with multiple chips.</p></li>
+<li><p><strong>**parameters</strong> – Any parameters passed to the a single chip PCell.</p></li>
 </ul>
 </dd>
 </dl>
