@@ -244,7 +244,6 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 1.0,
         "mask_marker_offset": 50000,
-        "mask_name_offset": pya.DPoint(0, -7200),
     },
     "1t1": {
         "wafer_rad": 76200,
@@ -256,7 +255,6 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 1.0,
         "mask_marker_offset": 50000,
-        "mask_name_offset": pya.DPoint(0, -7200),
     },
     "2b1": {
         "wafer_rad": 76200,
@@ -268,7 +266,6 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 0.7,
         "mask_marker_offset": 50000,
-        "mask_name_offset": pya.DPoint(0, -6500),
     },
     "2t1": {
         "wafer_rad": 76200,
@@ -280,7 +277,6 @@ default_mask_parameters = {
         "text_margin": 100,
         "mask_text_scale": 0.7,
         "mask_marker_offset": 50000,
-        "mask_name_offset": pya.DPoint(0, -6500),
     }
 }
 
