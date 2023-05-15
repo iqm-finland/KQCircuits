@@ -1,3 +1,5 @@
+.. _python_workflow:
+
 Python workflow tutorial
 ========================
 
@@ -21,24 +23,24 @@ KQCircuits code is divided into the :git_url:`kqcircuits <klayout_package/python
 These two folders are also (after installation process) linked as symbolic links ``kqcircuits`` and
 ``kqcircuits_scripts`` in the ``~/.klayout`` or ``~/KLayout`` folder.
 
-The ``kqcircuits`` folder contains all the KQCircuits PCell classes and many
-other modules used by them or by scripts. Folders directly under under
-``kqcircuits`` containing PCell classes correspond to different PCell
+The ``kqcircuits`` folder contains all the KQCircuits elements and many
+other modules used by them or by scripts. Folders directly under
+``kqcircuits`` containing Element classes correspond to different Element
 libraries such as elements, chips, or test structures.
 
 The ``scripts`` folder contains macros to be run in KLayout GUI and
-scripts for generating simulation files or mask files. The files there are in
-general not meant to be imported in other Python files. The outputs of
+scripts for generating simulation files or mask files. Usually, these files are
+not meant to be imported in other Python files. The outputs of
 simulation or mask scripts can be found in the ``tmp`` folder below the main
 KQCircuits folder.
 
-Structure of  PCell code
-------------------------
+Structure of Element code
+-------------------------
 
 :class:`.Element` class
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-Any KQCircuits PCells must be derived from the :class:`.Element` class, and we
+Any KQCircuits Elements must be derived from the :class:`.Element` class, and we
 call them "elements". For example, to define a new element ``MyElement`` you
 would start the code with::
 
@@ -49,17 +51,18 @@ instead of Element directly::
 
     class MyElement2(MyElement):
 
-The KQCircuits Element class offers many useful features compared to normal
+KQCircuit Elements are based on KLayout PCells. However, the KQCircuits Element class
+offers many useful features compared to normal
 KLayout PCells. These features include helper functions for inserting subcells
 and for using layers, a refpoint system for positioning elements, nicer
-parameter syntax, automatic loading into a pcell library, and more.
+parameter syntax, automatic loading into a library, and more.
 Further details about the code architecture of KQCircuits elements can be
 found in :ref:`architecture_elements`.
 
-PCell Libraries
-^^^^^^^^^^^^^^^
+Libraries
+^^^^^^^^^
 
-There are separate PCell libraries in KQCircuits for certain kinds of
+There are separate libraries in KQCircuits for certain kinds of
 elements, such as qubits or chips. To add your element into a specific
 library, it must be put in the corresponding subfolder (or its subfolders) in
 ``kqcircuits`` folder and it must be a child class of the corresponding base
@@ -68,27 +71,29 @@ need to have::
 
     class MyQubit(Qubit):
 
-in a file ``my_qubit.py`` in ``kqcircuits/qubits`` folder. The registration
-of PCell classes to different libraries is handled by KQCircuits code in
+in a file ``my_qubit.py`` in ``kqcircuits/qubits`` folder.
+
+The registration
+of Element classes to different libraries is handled by KQCircuits code in
 :git_url:`library_helper.py <klayout_package/python/kqcircuits/util/library_helper.py>` and :git_url:`element.py
-<klayout_package/python/kqcircuits/elements/element.py>`. For more information about PCell libraries see the KLayout
-documentation pages
-https://www.klayout.de/doc-qt5/about/about_libraries.html,
-https://www.klayout.de/doc-qt5/code/class_Library.html, and
-https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426 (in Ruby).
+<klayout_package/python/kqcircuits/elements/element.py>`. For more information about the underlying PCell
+libraries see the KLayout documentation pages
+`About Libraries <https://www.klayout.de/doc-qt5/about/about_libraries.html>`_,
+`Class Library <https://www.klayout.de/doc-qt5/code/class_Library.html>`_, and
+`Coding PCells In Ruby <https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426>`_ (in Ruby).
 
 
 Parameters
 ^^^^^^^^^^
 
-PCell parameters are used to create PCell instances with different parameter
-values. They can be modified in GUI or when creating the instance in code.
-The PCell parameters of a KQCircuits element are defined using ``Param``
+Different element instances with varying features can be created by setting different parameters.
+Parameters can be modified in GUI or when creating the instance in code.
+The parameters of a KQCircuits element are defined using ``Param``
 objects as class-level variables, for example::
 
     bridge_length = Param(pdt.TypeDouble, "Bridge length (from pad to pad)", 44, unit="μm")
 
-The ``Param``  definition always has type, description and default value, and
+The ``Param`` definition always has type, description and default value, and
 optionally some other information such as the unit or ``hidden=True`` to hide
 it from GUI. More information about parameters can be found in
 :ref:`architecture_parameters` section.
@@ -97,14 +102,16 @@ Build
 ^^^^^
 
 The geometry for any KQCircuit element is created in the ``build`` method, so
-generally you should define at least that method in you element classes. See
+generally you should define at least that method in your element classes. See
 :ref:`architecture_elements` section for more details about how this works.
 
 Example of defining an :class:`.Element` class
 ----------------------------------------------
 
-Here is an example of defining a new element, with code comments explaining
-the different parts::
+In Elements, one often uses the `KLayout geometry API <https://www.klayout.de/doc-qt5/code/module_db.html>`_ to define
+shapes (such as ``DBox`` and ``DPolygon``), and insert the shapes into the appropriate KQCircuits layers.
+
+Here is an example of defining a new element, with code comments explaining the different parts::
 
     # Import any modules, classes or functions used in our code.
     from kqcircuits.elements.element import Element
@@ -116,7 +123,7 @@ the different parts::
     # Any KQCircuits element must inherit from Element.
     class SimpleCross(Element):
 
-        # Define PCell parameters for this class here.
+        # Define parameters for this class here.
         # Each parameter definition contains the parameter type, description and default value.
         # Other optional data such as the unit can also be defined for parameters.
         arm_length = Param(pdt.TypeDouble, "Cross arm length", 100, unit="μm")
@@ -149,8 +156,8 @@ the different parts::
 
 To include this element in the KQCircuits element library, copy this code to a
 new Python-file ``simple_cross.py`` in the
-``klayout_package/python/kqcircuits/elements`` folder. Then ``SimpleCross``
-can be used like any other KQCircuits element.
+``klayout_package/python/kqcircuits/elements`` folder, or in the corresponding folder in your user package if you are
+using the Salt installation. After reloading the libraries, ``SimpleCross`` can be used like any other KQCircuits element.
 
 Example of defining a Chip and inserting elements into it
 ---------------------------------------------------------
@@ -182,7 +189,7 @@ element created in the previous section into a new chip::
             half_width = self.box.width()/2
 
             # Elements can be inserted to other elements (including chips) using the insert_cell function.
-            # Giving the class name, instance transformation and pcell parameters, it creates a cell
+            # Giving the class name, instance transformation and parameters, it creates a cell
             # object with the given parameter values and places an instance of that cell inside this cell
             # with the given transformation.
             # (Note that the chip origin is at the bottom left corner of the chip)
@@ -287,8 +294,8 @@ using refpoints::
 How to use the points once they exist? Several styles have evolved:
 
 - Just use them as a point and perhaps do some geometry calculations to come up with other points
-  relative to it. This style is mostly useful inside element code, since it is there you really need
-  to decide on geometry.
+  relative to it. This style is mostly useful inside element code, since that is the part of the code
+  where the geometry is being implemented anyway.
 - On the Chip or Simulation level you can use ``align`` and ``align_to`` arguments of
   ``insert_cell()``. These can be either a point or a string name referring to a refpoint name, and
   will displace (but not rotate!) the element such that the two points overlap. For example,
@@ -310,6 +317,41 @@ refpoints. If there are many overlapping refpoints the texts can be hard to read
 ``texts/top refpoints`` layer may be used to see only the top-level refpoints. For this choose a new
 top cell by right clicking the chip in the cell view of KLayout and selecting "Show As New Top".
 This can be very useful to see "chip-level" refpoints only.
+
+KQCircuit's Layers
+------------------
+
+KLayout's right panel shows a layer tree. Layers containing meaningful device geometry are grouped
+by faces: ``1t1-face``, ``2b1-face`` and ``2t1-face``. By default layer numbers 0-127 are used for
+the bottom face of the chips and 128-255 are used for the top face, and the data type indicates the
+chip number (data type 0 is used for layers not belonging to chip faces). Other texts, annotations
+and miscellaneous things not strictly belonging to a particular face are under the ``texts`` layer
+group. Other layers used only for simulations are under the aptly named ``simulations`` layer group.
+
+Most layers have self-describing names like ``refpoints`` or ``instance names`` but others need a
+bit of explanation:
+
+- ``base metal gap wo grid`` -- This is the layer most used in code. Here you place the shapes of gaps
+  (areas without metal) in the base metal layer that is laid out on a silicon substrate.
+
+- ``ground grid avoidance`` -- In this layer you should draw shapes that encompass everything in
+  ``base metal gap wo grid`` plus a small margin, usually set by the ``margin`` parameter.
+
+- ``groud grid`` -- This layer is auto generated if the "Make ground plane grid" parameter is
+  enabled in a chip. It fills in the chip area *outside* of shapes in the ``ground grid avoidance``
+  layer with a metal grid. Technically, this layer contains the square shaped gaps in the grid, not
+  the metal grid itself. Hidden by default.
+
+- ``base metal addition`` -- In some cases, you want to add metal back where it is already removed by
+  another element. This is rarely used, for example in qubits to make sure the junctions connect correctly.
+
+- ``base metal gap`` -- This layer has the final geometry of chips *in masks*. This is generated automatically
+  when the "Merge grid and other gaps into base_metal_gap layer" parameter is enabled in chips with the formula:
+  ``base_metal_gap = base_metal_gap_wo_grid + ground_grid - base_metal_addition``. In this layer any rounding errors
+  in the geometry are also automatically resolved, such that elements that should touch connect without gaps.
+  Hidden by default.
+
+Find more details in :git_url:`defaults.py <klayout_package/python/kqcircuits/defaults.py>`.
 
 Faces
 -----
@@ -404,39 +446,6 @@ configuration file) must be modified or another layer properties file must be
 set as default in KLayout Setup menu. The layer properties file can be edited
 directly or by modifying the layers list in GUI and saving them using KLayout
 ``File -> Save Layer Properties``.
-
-KQCircuit's Layers
-------------------
-
-KLayout's right panel shows a layer tree. Layers containing meaningful device geometry are grouped
-by faces: ``1t1-face``, ``2b1-face`` and ``2t1-face``. By default layer numbers 0-127 are used for
-the bottom face of the chips and 128-255 are used for the top face, and the data type indicates the
-chip number (data type 0 is used for layers not belonging to chip faces). Other texts, annotations
-and miscellaneous things not strictly belonging to a particular face are under the ``texts`` layer
-group. Other layers used only for simulations are under the aptly named ``simulations`` layer group.
-
-Most layers have self-describing names like ``refpoints`` or ``instance names`` but others need a
-bit of explanation:
-
-- ``base metal gap`` -- Important layer with the final geometry of chips *in masks*. It has the
-  shapes of gaps (areas without metal) in the base metal layer that is laid out on a silicon
-  substrate.  Note that this layer is populated during mask export and therefore usually empty. It is hidden by default.
-
-- ``base metal gap wo grid`` -- Like above, it has the gaps around shapes "etched" into metal but
-  *without* the ground grid that is slow to produce.  This is the most used layer in elements.
-
-- ``groud grid`` -- This layer is auto generated if the "Make ground plane grid" PCell parameter is
-  enabled in a chip. It fills in the chip area *outside* of shapes in the ``ground grid avoidance``
-  layer with a metal grid.  Technically, this layer contains the square shaped gaps in the grid, not
-  the metal grid itself. Hidden by default.
-
-- ``base metal addition`` -- Puts back metal to places where it is already removed. This is a
-  technical layer helping us to construct the final shapes in a more elegant way, particularly here:
-  ``base_metal_gap = base_metal_gap_wo_grid + ground_grid - base_metal_addition``. It is also used
-  in ``base metal gap for EBL``, i.e. Electron Beam Litography.
-
-Find more details in `defaults.py <../api/kqcircuits.defaults.html>`_.
-
 
 Opening :class:`.Element` or :class:`.Chip` from an IDE
 -------------------------------------------------------

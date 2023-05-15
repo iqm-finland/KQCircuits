@@ -46,8 +46,8 @@ Documentation
    :maxdepth: 2
 
    installation
-   user_guide/index
    salt
+   user_guide/index
    developer/index
    api/kqcircuits
    support

@@ -101,6 +101,16 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../salt.html">Getting started (Salt package)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#first-look-around">First look around</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#setting-up-a-user-package-directory">Setting up a user package directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#defining-a-custom-element">Defining a custom element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#defining-a-custom-chip">Defining a custom chip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#release-notes">Release Notes</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gui_features.html">GUI Features</a><ul>
@@ -117,9 +127,9 @@
 <li class="toctree-l2"><a class="reference internal" href="gui_workflow.html">Point-and-click workflow tutorial</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Python workflow tutorial</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#file-system-hierarchy">File system hierarchy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#structure-of-pcell-code">Structure of  PCell code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#structure-of-element-code">Structure of Element code</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#element-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pcell-libraries">PCell Libraries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#libraries">Libraries</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#parameters">Parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#build">Build</a></li>
 </ul>
@@ -130,12 +140,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#refpoints">Refpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -184,13 +194,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../salt.html">Salt Package Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#user-specific-content">User Specific Content</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#release-notes">Release Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a><ul>
@@ -516,7 +519,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="python-workflow-tutorial">
-<h1>Python workflow tutorial<a class="headerlink" href="#python-workflow-tutorial" title="Permalink to this headline">¶</a></h1>
+<span id="python-workflow"></span><h1>Python workflow tutorial<a class="headerlink" href="#python-workflow-tutorial" title="Permalink to this headline">¶</a></h1>
 <p>This is a collection of tips and tricks about the “Python workflow”.</p>
 <p>To unlock the full potential of KQCircuits the user often needs to define new Chips and Elements,
 which is done by writing Python code. This can be done in the Macro Editor included in KLayout, or
@@ -533,21 +536,21 @@ KQCircuits code is divided into the <a class="reference external" href="https://
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts">scripts</a> folders in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python">klayout_package/python</a>.
 These two folders are also (after installation process) linked as symbolic links <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> and
 <code class="docutils literal notranslate"><span class="pre">kqcircuits_scripts</span></code> in the <code class="docutils literal notranslate"><span class="pre">~/.klayout</span></code> or <code class="docutils literal notranslate"><span class="pre">~/KLayout</span></code> folder.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits PCell classes and many
-other modules used by them or by scripts. Folders directly under under
-<code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> containing PCell classes correspond to different PCell
+<p>The <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder contains all the KQCircuits elements and many
+other modules used by them or by scripts. Folders directly under
+<code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> containing Element classes correspond to different Element
 libraries such as elements, chips, or test structures.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">scripts</span></code> folder contains macros to be run in KLayout GUI and
-scripts for generating simulation files or mask files. The files there are in
-general not meant to be imported in other Python files. The outputs of
+scripts for generating simulation files or mask files. Usually, these files are
+not meant to be imported in other Python files. The outputs of
 simulation or mask scripts can be found in the <code class="docutils literal notranslate"><span class="pre">tmp</span></code> folder below the main
 KQCircuits folder.</p>
 </div>
-<div class="section" id="structure-of-pcell-code">
-<h2>Structure of  PCell code<a class="headerlink" href="#structure-of-pcell-code" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="structure-of-element-code">
+<h2>Structure of Element code<a class="headerlink" href="#structure-of-element-code" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="element-class">
 <h3><a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#element-class" title="Permalink to this headline">¶</a></h3>
-<p>Any KQCircuits PCells must be derived from the <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class, and we
+<p>Any KQCircuits Elements must be derived from the <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class, and we
 call them “elements”. For example, to define a new element <code class="docutils literal notranslate"><span class="pre">MyElement</span></code> you
 would start the code with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
@@ -558,16 +561,17 @@ instead of Element directly:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyElement2</span><span class="p">(</span><span class="n">MyElement</span><span class="p">):</span>
 </pre></div>
 </div>
-<p>The KQCircuits Element class offers many useful features compared to normal
+<p>KQCircuit Elements are based on KLayout PCells. However, the KQCircuits Element class
+offers many useful features compared to normal
 KLayout PCells. These features include helper functions for inserting subcells
 and for using layers, a refpoint system for positioning elements, nicer
-parameter syntax, automatic loading into a pcell library, and more.
+parameter syntax, automatic loading into a library, and more.
 Further details about the code architecture of KQCircuits elements can be
 found in <a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a>.</p>
 </div>
-<div class="section" id="pcell-libraries">
-<h3>PCell Libraries<a class="headerlink" href="#pcell-libraries" title="Permalink to this headline">¶</a></h3>
-<p>There are separate PCell libraries in KQCircuits for certain kinds of
+<div class="section" id="libraries">
+<h3>Libraries<a class="headerlink" href="#libraries" title="Permalink to this headline">¶</a></h3>
+<p>There are separate libraries in KQCircuits for certain kinds of
 elements, such as qubits or chips. To add your element into a specific
 library, it must be put in the corresponding subfolder (or its subfolders) in
 <code class="docutils literal notranslate"><span class="pre">kqcircuits</span></code> folder and it must be a child class of the corresponding base
@@ -576,24 +580,25 @@ need to have:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyQubit</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
 </pre></div>
 </div>
-<p>in a file <code class="docutils literal notranslate"><span class="pre">my_qubit.py</span></code> in <code class="docutils literal notranslate"><span class="pre">kqcircuits/qubits</span></code> folder. The registration
-of PCell classes to different libraries is handled by KQCircuits code in
-<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>. For more information about PCell libraries see the KLayout
-documentation pages
-<a class="reference external" href="https://www.klayout.de/doc-qt5/about/about_libraries.html">https://www.klayout.de/doc-qt5/about/about_libraries.html</a>,
-<a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Library.html">https://www.klayout.de/doc-qt5/code/class_Library.html</a>, and
-<a class="reference external" href="https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426">https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426</a> (in Ruby).</p>
+<p>in a file <code class="docutils literal notranslate"><span class="pre">my_qubit.py</span></code> in <code class="docutils literal notranslate"><span class="pre">kqcircuits/qubits</span></code> folder.</p>
+<p>The registration
+of Element classes to different libraries is handled by KQCircuits code in
+<a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/util/library_helper.py">library_helper.py</a> and <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/elements/element.py">element.py</a>. For more information about the underlying PCell
+libraries see the KLayout documentation pages
+<a class="reference external" href="https://www.klayout.de/doc-qt5/about/about_libraries.html">About Libraries</a>,
+<a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_Library.html">Class Library</a>, and
+<a class="reference external" href="https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426">Coding PCells In Ruby</a> (in Ruby).</p>
 </div>
 <div class="section" id="parameters">
 <h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
-<p>PCell parameters are used to create PCell instances with different parameter
-values. They can be modified in GUI or when creating the instance in code.
-The PCell parameters of a KQCircuits element are defined using <code class="docutils literal notranslate"><span class="pre">Param</span></code>
+<p>Different element instances with varying features can be created by setting different parameters.
+Parameters can be modified in GUI or when creating the instance in code.
+The parameters of a KQCircuits element are defined using <code class="docutils literal notranslate"><span class="pre">Param</span></code>
 objects as class-level variables, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bridge_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Bridge length (from pad to pad)&quot;</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">Param</span></code>  definition always has type, description and default value, and
+<p>The <code class="docutils literal notranslate"><span class="pre">Param</span></code> definition always has type, description and default value, and
 optionally some other information such as the unit or <code class="docutils literal notranslate"><span class="pre">hidden=True</span></code> to hide
 it from GUI. More information about parameters can be found in
 <a class="reference internal" href="../developer/architecture.html#architecture-parameters"><span class="std std-ref">PCell parameters</span></a> section.</p>
@@ -601,14 +606,15 @@ it from GUI. More information about parameters can be found in
 <div class="section" id="build">
 <h3>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h3>
 <p>The geometry for any KQCircuit element is created in the <code class="docutils literal notranslate"><span class="pre">build</span></code> method, so
-generally you should define at least that method in you element classes. See
+generally you should define at least that method in your element classes. See
 <a class="reference internal" href="../developer/architecture.html#architecture-elements"><span class="std std-ref">Elements</span></a> section for more details about how this works.</p>
 </div>
 </div>
 <div class="section" id="example-of-defining-an-element-class">
 <h2>Example of defining an <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> class<a class="headerlink" href="#example-of-defining-an-element-class" title="Permalink to this headline">¶</a></h2>
-<p>Here is an example of defining a new element, with code comments explaining
-the different parts:</p>
+<p>In Elements, one often uses the <a class="reference external" href="https://www.klayout.de/doc-qt5/code/module_db.html">KLayout geometry API</a> to define
+shapes (such as <code class="docutils literal notranslate"><span class="pre">DBox</span></code> and <code class="docutils literal notranslate"><span class="pre">DPolygon</span></code>), and insert the shapes into the appropriate KQCircuits layers.</p>
+<p>Here is an example of defining a new element, with code comments explaining the different parts:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import any modules, classes or functions used in our code.</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -619,7 +625,7 @@ the different parts:</p>
 <span class="c1"># Any KQCircuits element must inherit from Element.</span>
 <span class="k">class</span> <span class="nc">SimpleCross</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 
-    <span class="c1"># Define PCell parameters for this class here.</span>
+    <span class="c1"># Define parameters for this class here.</span>
     <span class="c1"># Each parameter definition contains the parameter type, description and default value.</span>
     <span class="c1"># Other optional data such as the unit can also be defined for parameters.</span>
     <span class="n">arm_length</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Cross arm length&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
@@ -653,8 +659,8 @@ the different parts:</p>
 </div>
 <p>To include this element in the KQCircuits element library, copy this code to a
 new Python-file <code class="docutils literal notranslate"><span class="pre">simple_cross.py</span></code> in the
-<code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/elements</span></code> folder. Then <code class="docutils literal notranslate"><span class="pre">SimpleCross</span></code>
-can be used like any other KQCircuits element.</p>
+<code class="docutils literal notranslate"><span class="pre">klayout_package/python/kqcircuits/elements</span></code> folder, or in the corresponding folder in your user package if you are
+using the Salt installation. After reloading the libraries, <code class="docutils literal notranslate"><span class="pre">SimpleCross</span></code> can be used like any other KQCircuits element.</p>
 </div>
 <div class="section" id="example-of-defining-a-chip-and-inserting-elements-into-it">
 <h2>Example of defining a Chip and inserting elements into it<a class="headerlink" href="#example-of-defining-a-chip-and-inserting-elements-into-it" title="Permalink to this headline">¶</a></h2>
@@ -684,7 +690,7 @@ element created in the previous section into a new chip:</p>
         <span class="n">half_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">/</span><span class="mi">2</span>
 
         <span class="c1"># Elements can be inserted to other elements (including chips) using the insert_cell function.</span>
-        <span class="c1"># Giving the class name, instance transformation and pcell parameters, it creates a cell</span>
+        <span class="c1"># Giving the class name, instance transformation and parameters, it creates a cell</span>
         <span class="c1"># object with the given parameter values and places an instance of that cell inside this cell</span>
         <span class="c1"># with the given transformation.</span>
         <span class="c1"># (Note that the chip origin is at the bottom left corner of the chip)</span>
@@ -786,8 +792,8 @@ using refpoints:</p>
 <p>How to use the points once they exist? Several styles have evolved:</p>
 <ul class="simple">
 <li><p>Just use them as a point and perhaps do some geometry calculations to come up with other points
-relative to it. This style is mostly useful inside element code, since it is there you really need
-to decide on geometry.</p></li>
+relative to it. This style is mostly useful inside element code, since that is the part of the code
+where the geometry is being implemented anyway.</p></li>
 <li><p>On the Chip or Simulation level you can use <code class="docutils literal notranslate"><span class="pre">align</span></code> and <code class="docutils literal notranslate"><span class="pre">align_to</span></code> arguments of
 <code class="docutils literal notranslate"><span class="pre">insert_cell()</span></code>. These can be either a point or a string name referring to a refpoint name, and
 will displace (but not rotate!) the element such that the two points overlap. For example,
@@ -807,6 +813,35 @@ refpoints. If there are many overlapping refpoints the texts can be hard to read
 <code class="docutils literal notranslate"><span class="pre">texts/top</span> <span class="pre">refpoints</span></code> layer may be used to see only the top-level refpoints. For this choose a new
 top cell by right clicking the chip in the cell view of KLayout and selecting “Show As New Top”.
 This can be very useful to see “chip-level” refpoints only.</p>
+</div>
+<div class="section" id="kqcircuit-s-layers">
+<h2>KQCircuit’s Layers<a class="headerlink" href="#kqcircuit-s-layers" title="Permalink to this headline">¶</a></h2>
+<p>KLayout’s right panel shows a layer tree. Layers containing meaningful device geometry are grouped
+by faces: <code class="docutils literal notranslate"><span class="pre">1t1-face</span></code>, <code class="docutils literal notranslate"><span class="pre">2b1-face</span></code> and <code class="docutils literal notranslate"><span class="pre">2t1-face</span></code>. By default layer numbers 0-127 are used for
+the bottom face of the chips and 128-255 are used for the top face, and the data type indicates the
+chip number (data type 0 is used for layers not belonging to chip faces). Other texts, annotations
+and miscellaneous things not strictly belonging to a particular face are under the <code class="docutils literal notranslate"><span class="pre">texts</span></code> layer
+group. Other layers used only for simulations are under the aptly named <code class="docutils literal notranslate"><span class="pre">simulations</span></code> layer group.</p>
+<p>Most layers have self-describing names like <code class="docutils literal notranslate"><span class="pre">refpoints</span></code> or <code class="docutils literal notranslate"><span class="pre">instance</span> <span class="pre">names</span></code> but others need a
+bit of explanation:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">gap</span> <span class="pre">wo</span> <span class="pre">grid</span></code> – This is the layer most used in code. Here you place the shapes of gaps
+(areas without metal) in the base metal layer that is laid out on a silicon substrate.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">grid</span> <span class="pre">avoidance</span></code> – In this layer you should draw shapes that encompass everything in
+<code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">gap</span> <span class="pre">wo</span> <span class="pre">grid</span></code> plus a small margin, usually set by the <code class="docutils literal notranslate"><span class="pre">margin</span></code> parameter.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">groud</span> <span class="pre">grid</span></code> – This layer is auto generated if the “Make ground plane grid” parameter is
+enabled in a chip. It fills in the chip area <em>outside</em> of shapes in the <code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">grid</span> <span class="pre">avoidance</span></code>
+layer with a metal grid. Technically, this layer contains the square shaped gaps in the grid, not
+the metal grid itself. Hidden by default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">addition</span></code> – In some cases, you want to add metal back where it is already removed by
+another element. This is rarely used, for example in qubits to make sure the junctions connect correctly.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">gap</span></code> – This layer has the final geometry of chips <em>in masks</em>. This is generated automatically
+when the “Merge grid and other gaps into base_metal_gap layer” parameter is enabled in chips with the formula:
+<code class="docutils literal notranslate"><span class="pre">base_metal_gap</span> <span class="pre">=</span> <span class="pre">base_metal_gap_wo_grid</span> <span class="pre">+</span> <span class="pre">ground_grid</span> <span class="pre">-</span> <span class="pre">base_metal_addition</span></code>. In this layer any rounding errors
+in the geometry are also automatically resolved, such that elements that should touch connect without gaps.
+Hidden by default.</p></li>
+</ul>
+<p>Find more details in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/defaults.py">defaults.py</a>.</p>
 </div>
 <div class="section" id="faces">
 <h2>Faces<a class="headerlink" href="#faces" title="Permalink to this headline">¶</a></h2>
@@ -894,33 +929,6 @@ set as default in KLayout Setup menu. The layer properties file can be edited
 directly or by modifying the layers list in GUI and saving them using KLayout
 <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Save</span> <span class="pre">Layer</span> <span class="pre">Properties</span></code>.</p>
 </div>
-</div>
-<div class="section" id="kqcircuit-s-layers">
-<h2>KQCircuit’s Layers<a class="headerlink" href="#kqcircuit-s-layers" title="Permalink to this headline">¶</a></h2>
-<p>KLayout’s right panel shows a layer tree. Layers containing meaningful device geometry are grouped
-by faces: <code class="docutils literal notranslate"><span class="pre">1t1-face</span></code>, <code class="docutils literal notranslate"><span class="pre">2b1-face</span></code> and <code class="docutils literal notranslate"><span class="pre">2t1-face</span></code>. By default layer numbers 0-127 are used for
-the bottom face of the chips and 128-255 are used for the top face, and the data type indicates the
-chip number (data type 0 is used for layers not belonging to chip faces). Other texts, annotations
-and miscellaneous things not strictly belonging to a particular face are under the <code class="docutils literal notranslate"><span class="pre">texts</span></code> layer
-group. Other layers used only for simulations are under the aptly named <code class="docutils literal notranslate"><span class="pre">simulations</span></code> layer group.</p>
-<p>Most layers have self-describing names like <code class="docutils literal notranslate"><span class="pre">refpoints</span></code> or <code class="docutils literal notranslate"><span class="pre">instance</span> <span class="pre">names</span></code> but others need a
-bit of explanation:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">gap</span></code> – Important layer with the final geometry of chips <em>in masks</em>. It has the
-shapes of gaps (areas without metal) in the base metal layer that is laid out on a silicon
-substrate.  Note that this layer is populated during mask export and therefore usually empty. It is hidden by default.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">gap</span> <span class="pre">wo</span> <span class="pre">grid</span></code> – Like above, it has the gaps around shapes “etched” into metal but
-<em>without</em> the ground grid that is slow to produce.  This is the most used layer in elements.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">groud</span> <span class="pre">grid</span></code> – This layer is auto generated if the “Make ground plane grid” PCell parameter is
-enabled in a chip. It fills in the chip area <em>outside</em> of shapes in the <code class="docutils literal notranslate"><span class="pre">ground</span> <span class="pre">grid</span> <span class="pre">avoidance</span></code>
-layer with a metal grid.  Technically, this layer contains the square shaped gaps in the grid, not
-the metal grid itself. Hidden by default.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">addition</span></code> – Puts back metal to places where it is already removed. This is a
-technical layer helping us to construct the final shapes in a more elegant way, particularly here:
-<code class="docutils literal notranslate"><span class="pre">base_metal_gap</span> <span class="pre">=</span> <span class="pre">base_metal_gap_wo_grid</span> <span class="pre">+</span> <span class="pre">ground_grid</span> <span class="pre">-</span> <span class="pre">base_metal_addition</span></code>. It is also used
-in <code class="docutils literal notranslate"><span class="pre">base</span> <span class="pre">metal</span> <span class="pre">gap</span> <span class="pre">for</span> <span class="pre">EBL</span></code>, i.e. Electron Beam Litography.</p></li>
-</ul>
-<p>Find more details in <a class="reference external" href="../api/kqcircuits.defaults.html">defaults.py</a>.</p>
 </div>
 <div class="section" id="opening-element-or-chip-from-an-ide">
 <h2>Opening <a class="reference internal" href="../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a> or <a class="reference internal" href="../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip" title="kqcircuits.chips.chip.Chip"><code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code></a> from an IDE<a class="headerlink" href="#opening-element-or-chip-from-an-ide" title="Permalink to this headline">¶</a></h2>

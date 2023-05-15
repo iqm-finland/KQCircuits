@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Salt Package Guide &mdash; KQCircuits  documentation</title>
+  <title>Getting started (Salt package) &mdash; KQCircuits  documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Developer Guide" href="developer/index.html" />
-    <link rel="prev" title="Terminology" href="user_guide/terminology.html" /> 
+    <link rel="next" title="User Guide" href="user_guide/index.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,6 +101,16 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started (Salt package)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-look-around">First look around</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-a-user-package-directory">Setting up a user package directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-custom-element">Defining a custom element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-a-custom-chip">Defining a custom chip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-notes">Release Notes</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/index.html">User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html">Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/gui_features.html">GUI Features</a><ul>
@@ -117,9 +127,9 @@
 <li class="toctree-l2"><a class="reference internal" href="user_guide/gui_workflow.html">Point-and-click workflow tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/python_workflow.html">Python workflow tutorial</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#file-system-hierarchy">File system hierarchy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#structure-of-pcell-code">Structure of  PCell code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#structure-of-element-code">Structure of Element code</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#element-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#pcell-libraries">PCell Libraries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#libraries">Libraries</a></li>
 <li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#parameters">Parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#build">Build</a></li>
 </ul>
@@ -130,12 +140,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#refpoints">Refpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="user_guide/python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="user_guide/python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -184,13 +194,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="user_guide/terminology.html">Terminology</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Salt Package Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#user-specific-content">User Specific Content</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#release-notes">Release Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Guide</a><ul>
@@ -492,7 +495,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Salt Package Guide</li>
+      <li>Getting started (Salt package)</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -513,12 +516,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="salt-package-guide">
-<span id="salt-package"></span><h1>Salt Package Guide<a class="headerlink" href="#salt-package-guide" title="Permalink to this headline">¶</a></h1>
-<p>A stable version of KQCircuits is often released as an easily accessible KLayout Salt Package.</p>
+  <div class="section" id="getting-started-salt-package">
+<span id="salt-package"></span><h1>Getting started (Salt package)<a class="headerlink" href="#getting-started-salt-package" title="Permalink to this headline">¶</a></h1>
+<p>The easiest way to get started with KQCircuits is to install the so-called Salt package from the KLayout package
+manager. The Salt package allows you to use all of the KQC features:</p>
+<ul class="simple">
+<li><p>Place and use any of the built-in KQC elements and chips</p></li>
+<li><p>Create your own elements and chips in a user-defined location</p></li>
+<li><p>Run scripts, define and export simulations, etc.</p></li>
+</ul>
+<p>However, the Salt package itself is read-only, so using this mode does not allow you to modify existing KQC elements
+or chips. To modify KQC elements, use the <a class="reference internal" href="developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a> instead. It is also possible to migrate to the
+Developer setup later on, just uninstall the Salt package first.</p>
+<p>This guide shows you how to get started with the Salt package, and how to define your own elements and chips.</p>
 <div class="section" id="installing-kqcircuits-salt-package">
 <h2>Installing KQCircuits Salt Package<a class="headerlink" href="#installing-kqcircuits-salt-package" title="Permalink to this headline">¶</a></h2>
-<p>Select “Tools -&gt; Manage Packages” in the KLayout menu to install the KQCircuits package:</p>
+<p>First, make sure you have a recent version of KLayout installed. Open KLayout in edit mode, and select
+“Tools -&gt; Manage Packages” in the KLayout menu to install the KQCircuits package:</p>
 <img alt="_images/install.gif" src="_images/install.gif" />
 <p>Note that KLayout was started in edit mode, see <a class="reference internal" href="user_guide/usage.html#usage"><span class="std std-ref">Usage</span></a>.</p>
 <div class="admonition note">
@@ -529,35 +543,88 @@ problem with the specific KLayout version/build you are using, see
 <a class="reference internal" href="installation.html#installation-issues"><span class="std std-ref">Known installation issues</span></a> section for possible solutions.</p>
 </div>
 </div>
-<div class="section" id="user-specific-content">
-<h2>User Specific Content<a class="headerlink" href="#user-specific-content" title="Permalink to this headline">¶</a></h2>
-<p>KLayout Salt packages are read-only. The user may open the code (say, <strong>[Package
-KQCircuits]/kqcircuits/chips/simple</strong>) with the embedded macro editor (<strong>F5</strong>) but it can not be
-directly changed here. Of course, external code editors may be used to change these files or their
-copies, but Salt package upgrades will override these changes.</p>
-<p>Users may extend KQCircuits with their own Python packages using <strong>KQCircuits -&gt; Add User Package</strong>
-menu entry. Packages have a name and a directory linked to it. <strong>Remove User Package</strong> will undo the
-linking without deleting the user created files. Package name should be a single lowercase word.
-Remember to restart KLayout after adding or removing a user specific Python package.</p>
-<p>PCell files should be added under the individual library directories using your favourite code
-editor providing additional elements, chips etc. After adding or editing a file remember to use
-<strong>Reload libraries</strong> menu entry so that it shows correctly in KLayout.</p>
-<p>For example create a <strong>user</strong> package, this (by default) will be linked to a <strong>user</strong> directory in your
-home folder. Copy KQC’s <code class="docutils literal notranslate"><span class="pre">finger_capacitor_square.py</span></code> to <code class="docutils literal notranslate"><span class="pre">user/elements/my_capacitor.py</span></code> then edit
-this file and change the <code class="docutils literal notranslate"><span class="pre">FingerCapacitorSquare</span></code> class name to <code class="docutils literal notranslate"><span class="pre">MyCapacitor</span></code>. After restarting
-KLayout the newly added <code class="docutils literal notranslate"><span class="pre">MyCapacitor</span></code> element will be available together with the standard
-KQCircuits elements. Afterwards you may create a copy of <code class="docutils literal notranslate"><span class="pre">simple.py</span></code> chip, rename it and change the
-capacitors using <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">user.elements.my_capacitor</span> <span class="pre">import</span> <span class="pre">MyCapacitor</span></code>. After reloading the libraries
-your new chip will appear using your new capacitor.</p>
+<div class="section" id="first-look-around">
+<h2>First look around<a class="headerlink" href="#first-look-around" title="Permalink to this headline">¶</a></h2>
+<p>Once KQCircuits is installed, KLayout will look like this:</p>
+<img alt="_images/after_installation.png" src="_images/after_installation.png" />
+<ul class="simple">
+<li><p>In the <strong>Libraries</strong> panel, you can choose the KQCircuits libraries with Chips, Elements, Qubits, Junctions and Test
+structures. You can drag these elements from the library to the drawing area to place them. After placing an element,
+press <code class="docutils literal notranslate"><span class="pre">*</span></code> and <strong>F2</strong> to make sure everything is visible.</p></li>
+<li><p>In the <strong>Layers</strong> panel, the KQCircuits layers are defined. They are grouped by face, most things are drawn in the
+<strong>1t1-face</strong> by default.</p></li>
+</ul>
+<p>See <a class="reference internal" href="user_guide/gui_features.html#gui-features"><span class="std std-ref">GUI Features</span></a> for more information on placing and using elements in the graphical user interface.</p>
+</div>
+<div class="section" id="setting-up-a-user-package-directory">
+<h2>Setting up a user package directory<a class="headerlink" href="#setting-up-a-user-package-directory" title="Permalink to this headline">¶</a></h2>
+<p>To create your own elements and chips, you have to set a directory as user package. In KLayout, choose the
+<strong>KQCircuits -&gt; Add User Package</strong> menu entry, and fill the following dialog box:</p>
+<img alt="_images/add_user_package.png" src="_images/add_user_package.png" />
+<p>Packages have a name and a directory linked to it. The package name should be a single lowercase word, possibly with
+underscores. The directory can be anywhere on your system. Click <code class="docutils literal notranslate"><span class="pre">Add</span></code> to complete the setup.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After setting up a user package, close and restart KLayout for the changes to complete.</p>
+</div>
+<p>If you choose a new directory for the user package, subdirectories for all KQC libraries are created automatically.
+You can view the user package content in the Macro Editor (press <strong>F5</strong>), under <strong>Python</strong>, <strong>[Local - python branch]</strong>.</p>
+<img alt="_images/user_package_directory.png" src="_images/user_package_directory.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To remove a user package, use the <strong>KQCircuits -&gt; Remove User Package</strong> menu. This will remove links to the package,
+but it will not delete any actual files.</p>
+</div>
+</div>
+<div class="section" id="defining-a-custom-element">
+<h2>Defining a custom element<a class="headerlink" href="#defining-a-custom-element" title="Permalink to this headline">¶</a></h2>
+<p>Here, we will show an example how to create your own element. After following this example, see <a class="reference internal" href="user_guide/python_workflow.html#python-workflow"><span class="std std-ref">Python workflow tutorial</span></a>
+for more detail on coding elements and chips.</p>
+<p>Each element must be placed in a new python file in the directory corresponding to the correct library, and inside the
+file a single class is defined.</p>
+<p>For example, to create an element called <code class="docutils literal notranslate"><span class="pre">My</span> <span class="pre">Element</span></code>, right click the <code class="docutils literal notranslate"><span class="pre">elements</span></code> directory in the macro editor
+and click <strong>New</strong>. Choose <strong>Plain python file</strong>, and name it <code class="docutils literal notranslate"><span class="pre">my_element</span></code>. In the new file, place the definition of
+the <code class="docutils literal notranslate"><span class="pre">MyElement</span></code> class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The python file name and element class name should match. In the file name, use lower case and underscore to
+separate words. In the class name, use a capital letter for each first letter of a word.</p>
+</div>
+<p>The following code is an example element definition:</p>
+<img alt="_images/element_example.png" src="_images/element_example.png" />
+<p>In the code above, we define the <code class="docutils literal notranslate"><span class="pre">MyElement</span></code> class with a single method <code class="docutils literal notranslate"><span class="pre">build</span></code>. Inside the <code class="docutils literal notranslate"><span class="pre">build</span></code> method, we
+define any code needed to draw the geometry. In this example, a square (box) is placed in the <code class="docutils literal notranslate"><span class="pre">base_metal_gap_wo_grid</span></code>
+layer.</p>
+<p>After editing the code, save the changes (<strong>Ctrl+S</strong>), and in the KLayout main window choose the
+<strong>KQCircuits -&gt; Reload libraries</strong> menu item. Now, the element will appear in the <strong>Elements</strong> library, and you can
+place it by dragging and dropping to the drawing canvas. As usual, after placing the element press <code class="docutils literal notranslate"><span class="pre">*</span></code> and <strong>F2</strong> to
+make sure everything is visible.</p>
+<img alt="_images/element_example_2.png" src="_images/element_example_2.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each time you make changes to an element in the Macro Editor, you must Reload libraries for the changes to appear.
+If there are errors in the code, you may get an error message while reloading.</p>
+</div>
+</div>
+<div class="section" id="defining-a-custom-chip">
+<h2>Defining a custom chip<a class="headerlink" href="#defining-a-custom-chip" title="Permalink to this headline">¶</a></h2>
+<p>Next, we will define a custom chip that uses our new element. The process is the same as with elements, just create
+the file in the <code class="docutils literal notranslate"><span class="pre">chips</span></code> directory.</p>
+<p>Here is an example to create a chip:</p>
+<img alt="_images/chip_example.png" src="_images/chip_example.png" />
+<p>Note, that for standard KQC elements we use the import statement <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">kqc.elements...</span></code>, but for our custom elements
+we import it from our user package, in this case <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">my_package.elements...</span></code>.</p>
+<p>After saving the chip and reloading libraries, the new chip appears in the Chips library:</p>
+<img alt="_images/chip_example_2.png" src="_images/chip_example_2.png" />
+<p>For more information on coding elements and chips, see <a class="reference internal" href="user_guide/python_workflow.html#python-workflow"><span class="std std-ref">Python workflow tutorial</span></a>. Also see the API documentation for
+details on the built-in elements and chips available in KQCircuits.</p>
 </div>
 <div class="section" id="upgrading-or-removing-salt-package">
 <h2>Upgrading or Removing Salt Package<a class="headerlink" href="#upgrading-or-removing-salt-package" title="Permalink to this headline">¶</a></h2>
-<p>After upgrading KQCircuits package KLayout needs to be restarted. See the release notes
+<p>After upgrading the KQCircuits Salt package, KLayout needs to be restarted. See the release notes
 for further details.</p>
 <p>Downgrading or upgrading several steps at once is not guaranteed to always work. Upgrading KQC
 usually works but the safest approach is to uninstall KQC and then install a new version.</p>
-<p>For serious development work we suggest removing the Salt package and following the
-<a class="reference internal" href="developer/setup.html#developer-setup"><span class="std std-ref">Developer Setup</span></a>.</p>
 </div>
 <div class="section" id="release-notes">
 <h2>Release Notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h2>
@@ -580,8 +647,8 @@ reinstall multiple versions of the same file will be left behind.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="developer/index.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="user_guide/terminology.html" class="btn btn-neutral float-left" title="Terminology" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="user_guide/index.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

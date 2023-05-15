@@ -1,3 +1,5 @@
+.. _gui_features:
+
 GUI Features
 ============
 

@@ -101,6 +101,16 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../salt.html">Getting started (Salt package)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#first-look-around">First look around</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#setting-up-a-user-package-directory">Setting up a user package directory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#defining-a-custom-element">Defining a custom element</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#defining-a-custom-chip">Defining a custom chip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../salt.html#release-notes">Release Notes</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">User Guide</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">GUI Features</a><ul>
@@ -117,9 +127,9 @@
 <li class="toctree-l2"><a class="reference internal" href="gui_workflow.html">Point-and-click workflow tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="python_workflow.html">Python workflow tutorial</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#file-system-hierarchy">File system hierarchy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#structure-of-pcell-code">Structure of  PCell code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#structure-of-element-code">Structure of Element code</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="python_workflow.html#element-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="python_workflow.html#pcell-libraries">PCell Libraries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="python_workflow.html#libraries">Libraries</a></li>
 <li class="toctree-l4"><a class="reference internal" href="python_workflow.html#parameters">Parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="python_workflow.html#build">Build</a></li>
 </ul>
@@ -130,12 +140,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#refpoints">Refpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#faces">Faces</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="python_workflow.html#layer-configuration-files">Layer configuration files</a></li>
 <li class="toctree-l4"><a class="reference internal" href="python_workflow.html#adding-a-new-face">Adding a new face</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="python_workflow.html#kqcircuit-s-layers">KQCircuit’s Layers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="python_workflow.html#opening-element-or-chip-from-an-ide">Opening <code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">Chip</span></code> from an IDE</a></li>
 </ul>
 </li>
@@ -184,13 +194,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="terminology.html">Terminology</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../salt.html">Salt Package Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#installing-kqcircuits-salt-package">Installing KQCircuits Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#user-specific-content">User Specific Content</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#upgrading-or-removing-salt-package">Upgrading or Removing Salt Package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../salt.html#release-notes">Release Notes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Guide</a><ul>
@@ -516,7 +519,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="gui-features">
-<h1>GUI Features<a class="headerlink" href="#gui-features" title="Permalink to this headline">¶</a></h1>
+<span id="id1"></span><h1>GUI Features<a class="headerlink" href="#gui-features" title="Permalink to this headline">¶</a></h1>
 <p>The GUI usage of KQCircuits is mostly the same as in KLayout without KQCircuits,
 so it is recommended to read the section <a class="reference external" href="https://www.klayout.de/doc-qt5/manual/basic.html">KLayout Basics</a> of the
 KLayout documentation. It explains for example cell hierarchy and other important concepts. In this section we explain
@@ -580,7 +583,7 @@ by accident, one can disable each type under <em>Edit</em> -&gt; <em>Select</em>
 </ul>
 </div>
 <div class="section" id="modifying-waveguides">
-<span id="id1"></span><h2>Modifying waveguides<a class="headerlink" href="#modifying-waveguides" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>Modifying waveguides<a class="headerlink" href="#modifying-waveguides" title="Permalink to this headline">¶</a></h2>
 <p>For some elements, the shape can be edited directly in the GUI. For example, <code class="docutils literal notranslate"><span class="pre">Waveguide</span> <span class="pre">Coplanar</span></code>,
 <code class="docutils literal notranslate"><span class="pre">Waveguide</span> <span class="pre">Composite</span></code> and <code class="docutils literal notranslate"><span class="pre">Spiral</span> <span class="pre">Resonator</span> <span class="pre">Polygon</span></code> have paths that can be edited with the <strong>Partial</strong> tool.</p>
 <p>The following operations are supported:</p>
