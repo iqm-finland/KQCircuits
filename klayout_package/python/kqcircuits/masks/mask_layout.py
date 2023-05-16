@@ -51,7 +51,7 @@ class MaskLayout:
         dice_width: Dicing width for this mask layout
         text_margin: Text margin for this mask layout
         chip_size: side width of the chips (assuming square chips)
-        edge_clearance: minimum clearance of outer chips from the edge of the mask, measured from the chip center
+        edge_clearance: minimum clearance of outer chips from the edge of the mask
         chip_box_offset: Offset (pya.DVector) from chip origin of the chip frame boxes for this face
         chip_trans: DTrans applied to all chips
         mask_name_offset: mask name label offset from default position (DPoint)
@@ -92,7 +92,7 @@ class MaskLayout:
         self.dice_width = kwargs.get("dice_width", default_mask_parameters[self.face_id]["dice_width"])
         self.text_margin = kwargs.get("text_margin", default_mask_parameters[self.face_id]["text_margin"])
         self.chip_size = kwargs.get("chip_size", default_mask_parameters[self.face_id]["chip_size"])
-        self.edge_clearance = kwargs.get("edge_clearance", self.chip_size)
+        self.edge_clearance = kwargs.get("edge_clearance", self.chip_size / 2)
         self.chip_box_offset = kwargs.get("chip_box_offset", default_mask_parameters[self.face_id]["chip_box_offset"])
         self.chip_trans = kwargs.get("chip_trans", default_mask_parameters[self.face_id]["chip_trans"])
         self.mask_name_offset = kwargs.get("mask_name_offset", default_mask_parameters[self.face_id][
@@ -155,9 +155,6 @@ class MaskLayout:
 
                 self.chips_map_legend[name] = new_cell
 
-        step_ver = pya.DVector(0, -self.chip_size)
-        step_hor = pya.DVector(self.chip_size, 0)
-
         region_covered = self._mask_create_geometry()
         if len(self.submasks) > 0:
             region_covered = pya.Region()  # don't fill with metal gap layer if using submasks
@@ -170,14 +167,21 @@ class MaskLayout:
         # add chips from chips_map
         for (i, row) in enumerate(tqdm(self.chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
             for (j, chip_name) in enumerate(row):
-                position = pya.DPoint(step_ver * (i + 1) + step_hor * j) - self.chips_map_offset \
-                           + pya.DVector(-self.wafer_rad, self.wafer_rad)
-                if (position - step_ver*0.5 + step_hor*0.5 - self.wafer_center).abs() - self.wafer_rad < \
-                        -self.edge_clearance:
+                if chip_name == "---":
+                    continue
+                position = pya.DPoint(self.chip_size * j, -self.chip_size * (i + 1)) - self.chips_map_offset + \
+                           pya.DVector(-self.wafer_rad, self.wafer_rad)
+                pos = position - self.wafer_center
+                test_x = self.chip_size if pos.x + self.chip_size / 2 > 0 else 0
+                test_y = self.chip_size if pos.y + self.chip_size / 2 > 0 else 0
+                d_edge = self.wafer_rad - (pos + pya.DVector(test_x, test_y)).abs()
+                if  d_edge > self.edge_clearance:
                     added_chip, region_chip = self._add_chip(chip_name, position, self.chip_trans)
+                    region_covered -= region_chip
                 else:
-                    added_chip, region_chip = False, pya.Region()
-                region_covered -= region_chip
+                    print(f" Warning, dropping chip {chip_name} at ({i}, {j}), '{self.face_id}' - too close to edge:"
+                          f" {d_edge:.2f} < {self.edge_clearance}")
+                    added_chip = False
                 if not added_chip:
                     self.chips_map[i][j] = "---"
 
