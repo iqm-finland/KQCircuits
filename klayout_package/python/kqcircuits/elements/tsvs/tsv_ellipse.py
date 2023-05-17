@@ -43,6 +43,7 @@ class TsvEllipse(Tsv):
         r = self.tsv_diameter / 2
         w = self.tsv_elliptical_width / 2
         m = self.margin
+        n = self.n
 
         # parametric representation is taken from https://en.wikipedia.org/wiki/Superellipse
         p1 = 6
@@ -51,12 +52,12 @@ class TsvEllipse(Tsv):
         tsv_pts_avoidance = [pya.DPoint(
             numpy.abs(math.cos(a)) ** (2 / p1) * (w + m) * numpy.sign(math.cos(a)),
             numpy.abs(math.sin(a)) ** (2 / p2) * (r + m) * numpy.sign(math.sin(a))) for a in
-            (x / 32 * math.pi for x in range(0, 65))]
+            (x / n * 2 * math.pi for x in range(0, n + 1))]
 
         tsv_pts = [
             pya.DPoint(numpy.abs(math.cos(a)) ** (2 / p1) * w * numpy.sign(math.cos(a)),
                        numpy.abs(math.sin(a)) ** (2 / p2) * r * numpy.sign(math.sin(a))) for
-            a in (x / 32 * math.pi for x in range(0, 65))]
+            a in (x / n * 2 * math.pi for x in range(0, n + 1))]
 
         shape = pya.DPolygon(tsv_pts_avoidance)
         # ground avoidance layer 1t1 face
