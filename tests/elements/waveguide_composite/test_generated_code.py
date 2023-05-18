@@ -31,7 +31,7 @@ def test_generated_code_of_waveguide_composite():
     with open(macro, "r") as fp:
         xml = fp.read()
     start_ind = xml.find("<text>") + len("<text>")
-    end_ind = xml.rfind("</text>")
+    end_ind = xml.rfind("#END-TEST-HERE")
     code1 = xml[start_ind:end_ind]
     view1 = _run_macro(code1)
 

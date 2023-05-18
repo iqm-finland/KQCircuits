@@ -22,8 +22,10 @@ from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 
 
+@add_parameters_from(WaveguideCoplanarStraight, "add_metal")
 @add_parameters_from(FingerCapacitorSquare, a2=Element.a*2, b2=Element.b*2)
 class WaveguideCoplanarTaper(Element):
     """The PCell declaration of a taper segment of a coplanar waveguide.
@@ -71,12 +73,16 @@ class WaveguideCoplanarTaper(Element):
         ]
         shape = pya.DPolygon(pts)
         self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
+        if self.add_metal:
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
         pts = [
             pya.DPoint(0, 0),
             pya.DPoint(self.taper_length, 0),
         ]
         shape = pya.DPath(pts, min(self.a, self.a2))
         self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
+        if self.add_metal:
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
         # refpoints for connecting to waveguides
         self.add_port("a", pya.DPoint(0, 0), pya.DVector(-1, 0))
         self.add_port("b", pya.DPoint(self.taper_length, 0), pya.DVector(1, 0))

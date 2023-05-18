@@ -21,7 +21,8 @@ from math import pi, sin, cos
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import vector_length_and_direction
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 
 
 def arc(r, start, stop, n):
@@ -47,6 +48,7 @@ def arc(r, start, stop, n):
     return pts
 
 
+@add_parameters_from(WaveguideCoplanarStraight, "add_metal")
 class WaveguideCoplanarCurved(Element):
     """The PCell declaration of a curved segment of a coplanar waveguide.
 
@@ -80,6 +82,8 @@ class WaveguideCoplanarCurved(Element):
         pts = annotation_arc
         shape = pya.DPath(pts, self.a)
         self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
+        if self.add_metal:
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
 
     @staticmethod
     def create_curve_arcs(elem, angle):

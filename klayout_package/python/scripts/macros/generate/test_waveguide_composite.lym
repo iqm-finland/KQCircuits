@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -43,6 +44,7 @@ from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
+from kqcircuits.defaults import default_faces
 
 
 view = KLayoutView()
@@ -98,11 +100,16 @@ nodes = [
     Node(pya.DPoint(700, -1400), length_before=2000),               # Specify waveguide length between this and previous node
     Node(pya.DPoint(800, -1400), FingerCapacitorSquare),
     Node(pya.DPoint(1300, -900), length_before=1500, n_bridges=5),  # Airbridges can also be added when length_before is used
-    Node(pya.DPoint(1300, -800)),
+    Node(pya.DPoint(1300, -800), add_metal=1),                      # WaveguideCoplanar element may continue in "empty space"
     Node(pya.DPoint(500, -600), FingerCapacitorSquare, length_before=1000, n_bridges=4),  # Works also when ending at an element
 ]
 
 view.insert_cell(WaveguideComposite, nodes=nodes, r=50)
+#END-TEST-HERE this is needed as pytest uses the above code for testing code generated geometry
+
+# Insert square in base metal gap, i.e. "empty space".
+lm = view.layout.layer(default_faces['1t1']["base_metal_gap_wo_grid"])
+view.top_cell.shapes(lm).insert(pya.DBox(1250, -910, 1350, -810))
 
 view.focus()
 </text>

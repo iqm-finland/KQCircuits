@@ -28,6 +28,7 @@ class WaveguideCoplanarStraight(Element):
     """
 
     l = Param(pdt.TypeDouble, "Length", 30)
+    add_metal = Param(pdt.TypeBoolean, "Add trace in base metal addition too", False)
 
     def build(self):
         # Refpoint in the first end
@@ -65,3 +66,5 @@ class WaveguideCoplanarStraight(Element):
         ]
         shape = pya.DPath(pts, self.a)
         self.cell.shapes(self.get_layer("waveguide_path")).insert(shape)
+        if self.add_metal:
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)

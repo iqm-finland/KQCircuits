@@ -176,7 +176,7 @@ class Node:
 
 @add_parameters_from(WaveguideCoplanarTaper, taper_length=100)
 @add_parameters_from(Airbridge, "airbridge_type")
-@add_parameters_from(WaveguideCoplanar, "term1", "term2")
+@add_parameters_from(WaveguideCoplanar, "term1", "term2", "add_metal")
 @add_parameters_from(FlipChipConnectorRf)
 @logged
 class WaveguideComposite(Element):
@@ -207,6 +207,10 @@ class WaveguideComposite(Element):
     the waveguide between that node and the previous one. It will in fact create a Meander element
     instead of a normal waveguide between those nodes to achieve the correct length. Alternative parameter
     ``length_increment`` sets the waveguide length increment compared to normal waveguide.
+
+    If ``add_metal`` parameter is set to ``True`` for a node then the specified WaveguideCoplanar
+    segment will also use the "base metal addition" layer so that a waveguide trace may continue
+    inside a metal gap region.
 
     A notable implementation detail is that every Airbridge (sub)class is done as AirbridgeConnection.
     This way a waveguide taper is automatically inserted before and after the airbridge so the user
@@ -447,6 +451,9 @@ class WaveguideComposite(Element):
                 self.new_id = node.params['face_id']
             else:
                 self.new_id = self.old_id
+
+            if 'add_metal' in node.params:
+                self.add_metal = node.params['add_metal']
 
             if node.element is None:
                 if 'a' in node.params or 'b' in node.params:

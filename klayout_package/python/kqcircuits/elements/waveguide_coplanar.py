@@ -19,13 +19,14 @@
 import math
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.util.parameters import Param, pdt
+from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 
 
+@add_parameters_from(WaveguideCoplanarStraight, "add_metal")
 class WaveguideCoplanar(Element):
     """The PCell declaration for an arbitrary coplanar waveguide.
 

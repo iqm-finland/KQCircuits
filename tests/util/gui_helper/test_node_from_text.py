@@ -28,7 +28,7 @@ from kqcircuits.elements.waveguide_composite import Node
 from kqcircuits.util.gui_helper import node_from_text, node_to_text
 
 
-def test_nodes():
+def _test_nodes():
     return [
         Node(pya.DPoint(0, 0)),
         Node(pya.DPoint(800, 0), FingerCapacitorSquare),
@@ -45,7 +45,7 @@ def test_nodes():
     ]
 
 
-@pytest.mark.parametrize('node', test_nodes())
+@pytest.mark.parametrize('node', _test_nodes())
 def test_nodes_from_text_is_inverse_of_nodes_to_text(node):
     """
     Test that nodes_from_text is the inverse of node_to_text
