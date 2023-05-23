@@ -36,6 +36,7 @@ Usage:
 
 
 import os
+import argparse
 from sys import platform
 from setup_helper import setup_symlinks, klayout_configdir
 
@@ -54,6 +55,11 @@ if __name__ == "__main__":
     # KQCircuits source path
     kqc_root_path = os.path.dirname(os.path.abspath(__file__))
 
+    parser = argparse.ArgumentParser(description='KQC setup within klayout')
+    parser.add_argument('--unlink', action="store_true", help='remove links')
+    args = parser.parse_args()
+
+    configdir = klayout_configdir(kqc_root_path)
     # create symlink between KLayout python folder and kqcircuits folder
     link_map = (
         ("klayout_package/python/kqcircuits", "python/kqcircuits"),
@@ -61,28 +67,31 @@ if __name__ == "__main__":
         ("klayout_package/python/drc", "drc/kqcircuits"),
     )
 
-    configdir = klayout_configdir(kqc_root_path)
-    setup_symlinks(kqc_root_path, configdir, link_map)
+    setup_symlinks(kqc_root_path, configdir, link_map, unlink=args.unlink)
 
-    print("Installing required packages")
-    target_dir = "the system Python environment"
-    if os.name == "nt":  # Windows
-        target_dir = get_klayout_packages_path(os.path.join(os.getenv("APPDATA"), "KLayout"))
-        pip_args = f'requirements_within_klayout_windows.txt --target="{target_dir}"'
-    elif os.name == "posix":
-        pip_args = "requirements_within_klayout_unix.txt"  # Linux
-        if platform == "darwin":  # macOS
-            td = get_klayout_packages_path("/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions")
-            if not os.path.exists(td):
-                # Homebrew installs under /Applications/KLayout/klayout.app
-                td = get_klayout_packages_path("/Applications/KLayout/klayout.app/Contents/Frameworks/Python.framework/Versions")
-            # KLayout may use either its own site-packages or the system site-packages, depending on the build
-            if os.path.exists(td):
-                target_dir = td
-                pip_args += f' --target="{target_dir}"'
+    if not args.unlink:
+        print("Installing required packages")
+        target_dir = "the system Python environment"
+        if os.name == "nt":  # Windows
+            target_dir = get_klayout_packages_path(os.path.join(os.getenv("APPDATA"), "KLayout"))
+            pip_args = f'requirements_within_klayout_windows.txt --target="{target_dir}"'
+        elif os.name == "posix":
+            pip_args = "requirements_within_klayout_unix.txt"  # Linux
+            if platform == "darwin":  # macOS
+                td = get_klayout_packages_path("/Applications/klayout.app/Contents/Frameworks/Python.framework/Versions")
+                if not os.path.exists(td):
+                    # Homebrew installs under /Applications/KLayout/klayout.app
+                    td = get_klayout_packages_path("/Applications/KLayout/klayout.app/Contents/Frameworks/Python.framework/Versions")
+                # KLayout may use either its own site-packages or the system site-packages, depending on the build
+                if os.path.exists(td):
+                    target_dir = td
+                    pip_args += f' --target="{target_dir}"'
+        else:
+            raise SystemError("Unsupported operating system.")
+
+        print(f'Required packages will be installed in "{target_dir}".')
+        os.system(f"pip install -r {pip_args}")
+        print("Finished setting up KQC.")
     else:
-        raise SystemError("Unsupported operating system.")
+        print("KQC unlinked from the Klayout installation")
 
-    print(f'Required packages will be installed in "{target_dir}".')
-    os.system(f"pip install -r {pip_args}")
-    print("Finished setting up KQC.")

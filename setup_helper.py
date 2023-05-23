@@ -49,22 +49,31 @@ def klayout_configdir(root_path, configdir=""):
         dir_name = os.path.split(root_path)[1]
         return klayout_configdir(root_path, f"{configdir}_alt/{dir_name}")
     else:  # Several alternatives with identical name. Discourage and overwrite.
-        print("Warning: {configdir} already used! Reconfiguring for this source directory.")
+        print(f"Warning: {configdir} already used! Reconfiguring for this source directory.")
         return configdir
 
 
 # This function createst KLayout symlinks. Used by setup_within_klayout.py.
-def setup_symlinks(root_path, configdir, link_map):
+def setup_symlinks(root_path, configdir, link_map, unlink=False):
     for target, name in link_map:
-        link_target = os.path.join(root_path, target)
+        if target is not None:
+            link_target = os.path.join(root_path, target)
+        else:
+            link_target="Unknown"
 
         link_name = os.path.join(configdir, name)
         if os.path.lexists(link_name):
             os.unlink(link_name)
-        if os.name == "nt":
-            # On Windows, create a Junction to avoid requiring Administrative privileges
-            subprocess.check_call(['cmd', '/c', 'mklink', '/J',
-                                   os.path.normpath(link_name), os.path.normpath(link_target)])
-        else:
-            os.symlink(link_target, link_name, target_is_directory=True)
-        print("Created symlink \"{}\" to \"{}\"".format(link_name, link_target))
+            if unlink:
+                print(f"Removed symlink \"{link_name}\" to \"{link_target}\"")
+        elif unlink:
+            print(f"You set `unlink=True`, but symlink \"{link_name}\" to \"{link_target}\" does not exist... This is doing nothing.")
+
+        if not unlink:
+            if os.name == "nt":
+                # On Windows, create a Junction to avoid requiring Administrative privileges
+                subprocess.check_call(['cmd', '/c', 'mklink', '/J',
+                                       os.path.normpath(link_name), os.path.normpath(link_target)])
+            else:
+                os.symlink(link_target, link_name, target_is_directory=True)
+            print(f"Created symlink \"{link_name}\" to \"{link_target}\"")

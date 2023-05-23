@@ -67,6 +67,14 @@ libpython*.dll on Windows.
    problem with the specific KLayout version/build you are using, see
    :ref:`installation_issues` section for possible solutions.
 
+Unlinking
+---------
+
+Installation command links your KQCircuits installation with your Klayout
+installation automatically. If you wish to unlink, then write in your terminal::
+
+    python3 setup_within_klayout.py --unlink
+
 Update
 ------
 
