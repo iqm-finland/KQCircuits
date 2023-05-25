@@ -20,7 +20,8 @@ import sys
 from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.circular_capacitor_sim import CircularCapacitorSim
+from kqcircuits.elements.circular_capacitor import CircularCapacitor
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
@@ -29,7 +30,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = CircularCapacitorSim  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(CircularCapacitor)  # pylint: disable=invalid-name
 
 # Simulation parameters
 sim_parameters = {

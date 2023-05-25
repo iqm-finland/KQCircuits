@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2021 IQM Finland Oy
+# Copyright (C) 2023 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -15,20 +15,20 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from kqcircuits.elements.circular_capacitor import CircularCapacitor
+from kqcircuits.elements.capacitive_x_coupler import CapacitiveXCoupler
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.util.parameters import add_parameters_from
 
 
-@add_parameters_from(CircularCapacitor)
-class CircularCapacitorSim(Simulation):
+def test_can_create(get_simulation):
+    get_simulation(CapacitiveXCoupler)
 
-    def build(self):
-        capacitor_cell = self.add_element(CircularCapacitor, **self.get_parameters())
 
-        cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
-        _, refp = self.insert_cell(capacitor_cell, cap_trans)
+# TODO: refactor so box doesn't need to be specified.
+def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(CapacitiveXCoupler,
+                                                    box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250)))
 
-        self.produce_waveguide_to_port(refp["port_a"], refp["port_a_corner"], 1, 'left')
-        self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right')
+
+def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
+    perform_test_sonnet_export_produces_output_files(CapacitiveXCoupler,
+                                                     box=pya.DBox(pya.DPoint(-250, -250), pya.DPoint(250, 250)))

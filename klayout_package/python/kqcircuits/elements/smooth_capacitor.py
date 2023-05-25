@@ -192,3 +192,7 @@ class SmoothCapacitor(Element):
         # Create ports
         self.add_port("a", pya.DPoint(-xport, 0), pya.DVector(-1, 0))
         self.add_port("b", pya.DPoint(xport, 0), pya.DVector(1, 0))
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return Element.left_and_right_waveguides(simulation)

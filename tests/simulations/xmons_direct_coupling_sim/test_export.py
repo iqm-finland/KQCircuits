@@ -18,9 +18,9 @@
 from kqcircuits.simulations.xmons_direct_coupling_full_chip_sim import XMonsDirectCouplingFullChipSim
 
 
-def test_ansys_export_produces_output_files(layout, perform_test_ansys_export_produces_output_files):
-    perform_test_ansys_export_produces_output_files(XMonsDirectCouplingFullChipSim(layout))
+def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(XMonsDirectCouplingFullChipSim)
 
 
-def test_sonnet_export_produces_output_files(layout, perform_test_sonnet_export_produces_output_files):
-    perform_test_sonnet_export_produces_output_files(XMonsDirectCouplingFullChipSim(layout))
+def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
+    perform_test_sonnet_export_produces_output_files(XMonsDirectCouplingFullChipSim)

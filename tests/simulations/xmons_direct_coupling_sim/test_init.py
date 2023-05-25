@@ -18,5 +18,5 @@
 from kqcircuits.simulations.xmons_direct_coupling_full_chip_sim import XMonsDirectCouplingFullChipSim
 
 
-def test_can_create(layout):
-    simulation = XMonsDirectCouplingFullChipSim(layout)
+def test_can_create(get_simulation):
+    get_simulation(XMonsDirectCouplingFullChipSim)

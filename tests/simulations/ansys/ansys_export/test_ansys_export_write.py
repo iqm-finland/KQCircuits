@@ -16,6 +16,8 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
+from kqcircuits.simulations.empty_simulation import EmptySimulation
 
-def test_export_produces_output_files(empty_simulation, perform_test_ansys_export_produces_output_files):
-    perform_test_ansys_export_produces_output_files(empty_simulation)
+
+def test_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(EmptySimulation)

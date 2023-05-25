@@ -20,6 +20,7 @@ from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_composite import WaveguideComposite
 from kqcircuits.elements.waveguide_composite import Node
+from kqcircuits.util.refpoints import WaveguideToSimPort
 
 
 class HangerResonator(Element):
@@ -103,3 +104,12 @@ class HangerResonator(Element):
         self.copy_port("b", cells_pl, "pl_b")
         self.copy_port("a", cells_resonator)
         self.copy_port("b", cells_resonator)
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return [WaveguideToSimPort("port_pl_a", use_internal_ports=False,
+                                   a=simulation.pl_a, b=simulation.pl_b, turn_radius=0),
+                WaveguideToSimPort("port_pl_b", use_internal_ports=False,
+                                   a=simulation.pl_a, b=simulation.pl_b, turn_radius=0),
+                WaveguideToSimPort("port_a", side="left", a=simulation.a, b=simulation.b),
+                WaveguideToSimPort("port_b", side="right", a=simulation.a, b=simulation.b)]

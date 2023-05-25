@@ -20,42 +20,21 @@ import logging
 import sys
 from pathlib import Path
 
-from math import inf
 import numpy as np
 from kqcircuits.elements.smooth_capacitor import SmoothCapacitor
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
 
-from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
-from kqcircuits.util.parameters import add_parameters_from
 
-
-@add_parameters_from(SmoothCapacitor)
-class SmoothCapacitorSim(Simulation):
-
-    def build(self):
-        if self.chip_distance == inf:
-            self.face_stack = ['1t1']
-            self.chip_distance = 1e30
-        else:
-            self.face_stack = ['1t1', '2b1']
-        capacitor_cell = self.add_element(SmoothCapacitor, **{**self.get_parameters()})
-
-        cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
-        _, refp = self.insert_cell(capacitor_cell, cap_trans)
-
-        a2 = self.a if self.a2 < 0 else self.a2
-        b2 = self.b if self.b2 < 0 else self.b2
-        self.produce_waveguide_to_port(refp["port_a"], refp["port_a_corner"], 1, 'left', a=self.a, b=self.b)
-        self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right', a=a2, b=b2)
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = SmoothCapacitorSim  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(SmoothCapacitor)  # pylint: disable=invalid-name
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
@@ -79,16 +58,17 @@ export_parameters = {
     'minimum_passes': 15
 }
 
+infinite = 1e30
 # Sweep ranges
 finger_numbers = [round(v, 5) for v in np.linspace(0.2, 5, 49)]
-chip_distances = [4, 5.5, 8, 16, inf]
+chip_distances = [4, 5.5, 8, 16, infinite]
 a_def = [10]
 b_def = [6]
 
 num = 4
 finger_numbers_comp = [round((5**(1/num))**i, 1) for i in range(-num,num+1)]
 print(finger_numbers_comp)
-chip_distances_comp = [4, 8, inf]
+chip_distances_comp = [4, 8, infinite]
 as_comp = [2,10,20]
 bs_comp = [2,6,18,32]
 
@@ -100,18 +80,28 @@ layout = get_active_or_new_layout()
 simulations = []
 
 # Default sweep
-simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {
+simulations += cross_sweep_simulation(layout, sim_class, {**sim_parameters, 'face_stack': ['1t1', '2b1']}, {
     'finger_control': finger_numbers,
-    'chip_distance': chip_distances,
+    'chip_distance': [d for d in chip_distances if d != infinite],
     'a': a_def,
     'b': b_def,
     'a2': a_def,
     'b2': b_def
 })
+if infinite in chip_distances:
+    simulations += cross_sweep_simulation(layout, sim_class,
+        {**sim_parameters, 'face_stack': ['1t1'], 'chip_distance': infinite}, {
+        'finger_control': finger_numbers,
+        'a': a_def,
+        'b': b_def,
+        'a2': a_def,
+        'b2': b_def
+    })
 
 # Compensation
 for n in finger_numbers_comp:
     for d in chip_distances_comp:
+        sim_params = {**sim_parameters, 'face_stack': ['1t1'] if d == infinite else ['1t1', '2b1']}
         for a in as_comp:
             for b in bs_comp:
                 for a2 in as_comp:
@@ -120,7 +110,7 @@ for n in finger_numbers_comp:
                             continue  # do not create defaults again
                         if a + b > a2 + b2:
                             continue  # due to symmetry, we can skip almost half of the simulations
-                        simulations += cross_sweep_simulation(layout, sim_class, sim_parameters, {
+                        simulations += cross_sweep_simulation(layout, sim_class, sim_params, {
                             'finger_control': [n],
                             'chip_distance': [d],
                             'a': [a],

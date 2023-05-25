@@ -21,6 +21,7 @@ import math
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.refpoints import JunctionSimPort
 
 
 class Swissmon(Qubit):
@@ -195,3 +196,7 @@ class Swissmon(Qubit):
         # Probepoint
         probepoint = pya.DPoint(0, 0)
         self.refpoints["probe_qb_c"] = probepoint
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return [JunctionSimPort()]

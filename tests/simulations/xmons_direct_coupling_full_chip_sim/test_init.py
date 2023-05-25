@@ -18,5 +18,5 @@
 from kqcircuits.simulations.xmons_direct_coupling_sim import XMonsDirectCouplingSim
 
 
-def test_can_create(layout):
-    simulation = XMonsDirectCouplingSim(layout)
+def test_can_create(get_simulation):
+    get_simulation(XMonsDirectCouplingSim)

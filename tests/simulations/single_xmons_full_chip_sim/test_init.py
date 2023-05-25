@@ -18,5 +18,5 @@
 from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChipSim
 
 
-def test_can_create(layout):
-    simulation = SingleXmonsFullChipSim(layout)
+def test_can_create(get_simulation):
+    get_simulation(SingleXmonsFullChipSim)

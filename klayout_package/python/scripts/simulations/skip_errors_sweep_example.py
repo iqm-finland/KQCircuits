@@ -21,8 +21,9 @@ from pathlib import Path
 
 import numpy as np
 
-from kqcircuits.simulations.single_xmon import SingleXmon
 from kqcircuits.pya_resolver import pya
+from kqcircuits.qubits.swissmon import Swissmon
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
@@ -30,13 +31,14 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 
 
 # Simulation parameters
-sim_class = SingleXmon  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(Swissmon)  # pylint: disable=invalid-name
 sim_parameters = {
     'name': 'single_xmon_sim',
     'use_internal_ports': True,
     'use_ports': True,
     'face_stack': ['1t1', '2b1'],
     'chip_distance': 5.5,
+    'face_ids': ['2b1', '1t1'],
     'box': pya.DBox(pya.DPoint(0,0), pya.DPoint(3000, 3000)),
 }
 

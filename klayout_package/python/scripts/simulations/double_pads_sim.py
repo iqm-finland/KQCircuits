@@ -21,7 +21,8 @@ from pathlib import Path
 
 import numpy as np
 
-from kqcircuits.simulations.double_pads_sim import DoublePadsSim
+from kqcircuits.qubits.double_pads import DoublePads
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
@@ -34,7 +35,7 @@ sim_tools = ['elmer', 'eigenmode', 'q3d']
 
 for sim_tool in sim_tools:
     # Simulation parameters
-    sim_class = DoublePadsSim  # pylint: disable=invalid-name
+    sim_class = get_single_element_sim_class(DoublePads)  # pylint: disable=invalid-name
     sim_parameters = {
         'name': 'double_pads',
         'use_internal_ports': True,
@@ -42,7 +43,7 @@ for sim_tool in sim_tools:
         'face_stack': ['1t1'],
         'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
 
-        'internal_island_ports': sim_tool != 'eigenmode',  # DoublePads specific
+        'separate_island_internal_ports': sim_tool != 'eigenmode',  # DoublePads specific
         'participation_sheet_distance': 5e-3 if sim_tool == 'eigenmode' else 0.0,  # in µm
         'participation_sheet_thickness': 0.0,
         'waveguide_length': 200,

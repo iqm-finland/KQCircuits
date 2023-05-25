@@ -20,10 +20,10 @@ from kqcircuits.simulations.single_xmons_full_chip_sim import SingleXmonsFullChi
 
 
 @pytest.mark.slow
-def test_ansys_export_produces_output_files(layout, perform_test_ansys_export_produces_output_files):
-    perform_test_ansys_export_produces_output_files(SingleXmonsFullChipSim(layout))
+def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(SingleXmonsFullChipSim)
 
 
 @pytest.mark.slow
-def test_sonnet_export_produces_output_files(layout, perform_test_sonnet_export_produces_output_files):
-    perform_test_sonnet_export_produces_output_files(SingleXmonsFullChipSim(layout))
+def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
+    perform_test_sonnet_export_produces_output_files(SingleXmonsFullChipSim)

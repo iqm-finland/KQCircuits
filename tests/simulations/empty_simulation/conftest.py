@@ -15,9 +15,10 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-
+import pytest
 from kqcircuits.simulations.empty_simulation import EmptySimulation
 
-
-def test_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
-    perform_test_sonnet_export_produces_output_files(EmptySimulation)
+@pytest.fixture
+def empty_simulation(get_simulation):
+    """ Return an instance of EmptySimulation """
+    return get_simulation(EmptySimulation)

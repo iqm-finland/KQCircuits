@@ -25,6 +25,7 @@ from kqcircuits.junctions.manhattan_single_junction import ManhattanSingleJuncti
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.pya_resolver import pya
+from kqcircuits.util.refpoints import WaveguideToSimPort, JunctionSimPort
 
 
 @add_parameters_from(Squid, junction_type="Manhattan")
@@ -181,3 +182,7 @@ class DoublePads(Qubit):
             pya.DPoint(-self.island2_taper_width / 2, island2_top - taper_height),
         ]).to_itype(self.layout.dbu))
         return island2_region + island2_taper
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return [JunctionSimPort(), WaveguideToSimPort("port_cplr", side="top")]

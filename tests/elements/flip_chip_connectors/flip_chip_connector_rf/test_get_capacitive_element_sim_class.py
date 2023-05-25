@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2021 IQM Finland Oy
+# Copyright (C) 2023 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -15,22 +15,18 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.pya_resolver import pya
-from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
-from kqcircuits.util.parameters import add_parameters_from
+import pytest
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 
 
-@add_parameters_from(FingerCapacitorSquare)
-class FingerCapacitorSim(Simulation):
+def test_can_create(get_simulation):
+    get_simulation(FlipChipConnectorRf, face_stack=['1t1', '2b1'])
 
-    def build(self):
-        capacitor_cell = self.add_element(FingerCapacitorSquare)
 
-        cap_trans = pya.DTrans(0, False, (self.box.left + self.box.right) / 2, (self.box.bottom + self.box.top) / 2)
-        _, refp = self.insert_cell(capacitor_cell, cap_trans)
+def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(FlipChipConnectorRf, face_stack=['1t1', '2b1'])
 
-        a2 = self.a if self.a2 < 0 else self.a2
-        b2 = self.b if self.b2 < 0 else self.b2
-        self.produce_waveguide_to_port(refp["port_a"], refp["port_a_corner"], 1, 'left', a=self.a, b=self.b)
-        self.produce_waveguide_to_port(refp["port_b"], refp["port_b_corner"], 2, 'right', a=a2, b=b2)
+
+@pytest.mark.skip("Sonnet export test currently breaks for multiface simulations")
+def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
+    perform_test_sonnet_export_produces_output_files(FlipChipConnectorRf, face_stack=['1t1', '2b1'])

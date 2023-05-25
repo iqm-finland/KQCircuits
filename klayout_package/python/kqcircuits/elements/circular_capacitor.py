@@ -132,3 +132,7 @@ class CircularCapacitor(Element):
             pya.DPoint(x_guide, -y_right),
             pya.DPoint(x_end - self.margin, -y_right),
         ]).to_itype(self.layout.dbu)])
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return Element.left_and_right_waveguides(simulation)

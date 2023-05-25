@@ -1,5 +1,5 @@
 # This code is part of KQCircuits
-# Copyright (C) 2021 IQM Finland Oy
+# Copyright (C) 2023 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
 # License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
@@ -15,12 +15,16 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from kqcircuits.simulations.finger_capacitor_sim import FingerCapacitorSim
+from kqcircuits.qubits.swissmon import Swissmon
 
 
-def test_ansys_export_produces_output_files(layout, perform_test_ansys_export_produces_output_files):
-    perform_test_ansys_export_produces_output_files(FingerCapacitorSim(layout))
+def test_can_create(get_simulation):
+    get_simulation(Swissmon)
 
 
-def test_sonnet_export_produces_output_files(layout, perform_test_sonnet_export_produces_output_files):
-        perform_test_sonnet_export_produces_output_files(FingerCapacitorSim(layout))
+def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(Swissmon)
+
+
+def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
+    perform_test_sonnet_export_produces_output_files(Swissmon)

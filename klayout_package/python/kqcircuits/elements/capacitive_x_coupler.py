@@ -23,6 +23,7 @@ from kqcircuits.elements.waveguide_composite import Node
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
+from kqcircuits.util.refpoints import RefpointToEdgePort
 
 
 @add_parameters_from(FingerCapacitorSquare, ground_padding=6)
@@ -151,3 +152,10 @@ class CapacitiveXCoupler(Element):
         self.insert_cell(WaveguideComposite, nodes=nodes1)
         self.insert_cell(WaveguideComposite, nodes=nodes2)
         self.insert_cell(WaveguideComposite, nodes=nodes3)
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return [RefpointToEdgePort('p11'),
+                RefpointToEdgePort('p21'),
+                RefpointToEdgePort('p31'),
+                RefpointToEdgePort('p41')]

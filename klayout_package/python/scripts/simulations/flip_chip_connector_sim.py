@@ -20,9 +20,10 @@ import logging
 from pathlib import Path
 
 from kqcircuits.pya_resolver import pya
+from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
-from kqcircuits.simulations.flip_chip_connector_sim import FlipChipConnectorSim
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
 
@@ -30,7 +31,7 @@ from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_act
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = FlipChipConnectorSim  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(FlipChipConnectorRf)  # pylint: disable=invalid-name
 sim_parameters = {
     'name': 'flip_chip',
     'use_internal_ports': False,

@@ -22,6 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.qubits.qubit import Qubit
 from kqcircuits.util.geometry_helper import circle_polygon, arc_points
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
+from kqcircuits.util.refpoints import WaveguideToSimPort, JunctionSimPort
 
 
 @add_parameters_from(Element, n=180)
@@ -182,3 +183,10 @@ class ConcentricTransmon(Qubit):
         # Region which we don't want to cover with the automatically generated ground grid
         protection_region = region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)
         return protection_region
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        ports = [JunctionSimPort()]
+        return ports + [WaveguideToSimPort(f"port_coupler_{i+1}", side="bottom",
+                                           a=simulation.couplers_a[i],
+                                           b=simulation.couplers_b[i]) for i in range(len(simulation.couplers_angle))]

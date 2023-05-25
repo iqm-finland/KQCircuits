@@ -18,8 +18,9 @@
 from pathlib import Path
 
 import pytest
-from kqcircuits.simulations.empty_simulation import EmptySimulation
+from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.pya_resolver import pya
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.sonnet.sonnet_export import export_sonnet
 
@@ -31,25 +32,27 @@ def layout():
 
 
 @pytest.fixture
-def empty_simulation(layout):
-    """ Return an instance of EmptySimulation """
-    return EmptySimulation(layout)
+def get_simulation(layout):
+    def get_sim(cls, **parameters):
+        if issubclass(cls, Simulation):
+            return cls(layout, **parameters)
+        return get_single_element_sim_class(cls)(layout, **parameters)
+    return get_sim
 
 
 @pytest.fixture
-def perform_test_ansys_export_produces_output_files(tmp_path):
-    def perform_test_ansys_export_produces_output_implementation(simulation):
-        bat_filename = export_ansys([simulation], path=tmp_path)
+def perform_test_ansys_export_produces_output_files(tmp_path, get_simulation):
+    def perform_test_ansys_export_produces_output_implementation(cls, **parameters):
+        bat_filename = export_ansys([get_simulation(cls, **parameters)], path=tmp_path)
         assert Path(bat_filename).exists()
 
     return perform_test_ansys_export_produces_output_implementation
 
 
 @pytest.fixture
-def perform_test_sonnet_export_produces_output_files(tmp_path):
-    def perform_test_sonnet_export_produces_output_implementation(simulation):
-        son_filename = export_sonnet([simulation], path=tmp_path)[0]
+def perform_test_sonnet_export_produces_output_files(tmp_path, get_simulation):
+    def perform_test_sonnet_export_produces_output_implementation(cls, **parameters):
+        son_filename = export_sonnet([get_simulation(cls, **parameters)], path=tmp_path)[0]
         assert Path(son_filename).exists()
 
     return perform_test_sonnet_export_produces_output_implementation
-

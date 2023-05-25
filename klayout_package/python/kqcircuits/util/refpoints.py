@@ -77,3 +77,85 @@ class Refpoints:
     def values(self):
         """Returns a list of positions."""
         return self.dict().values()
+
+class RefpointToSimPort:
+    """Class that takes a refpoint of an Element class with given string
+    and places appropriate Simulation port(s) at the refpoint's location
+    if the simulation object was instantiated using the `get_single_element_sim_class`
+    class builder.
+
+    Attributes:
+        refpoint: Refpoint name string
+        face: index of the face where the refpoint is located
+    """
+    def __init__(self, refpoint, face=0):
+        self.refpoint, self.face = refpoint, face
+
+class RefpointToInternalPort(RefpointToSimPort):
+    """Creates an InternalPort at refpoint with given string
+    """
+    def __init__(self, refpoint, ground_refpoint,
+                 resistance=50, reactance=0, inductance=0, capacitance=0,
+                 face=0, junction=False, signal_layer='signal'):
+        super().__init__(refpoint, face)
+        self.ground_refpoint, self.resistance, self.reactance, self.inductance, self.capacitance, \
+            self.junction, self.signal_layer = \
+            ground_refpoint, resistance, reactance, inductance, capacitance, junction, signal_layer
+
+class RefpointToEdgePort(RefpointToSimPort):
+    """Creates an EdgePort at refpoint with given string
+    """
+    def __init__(self, refpoint,
+                 resistance=50, reactance=0, inductance=0, capacitance=0,
+                 face=0, deembed_len=None, junction=False):
+        super().__init__(refpoint, face)
+        self.resistance, self.reactance, self.inductance, self.capacitance, \
+            self.deembed_len, self.junction = \
+            resistance, reactance, inductance, capacitance, deembed_len, junction
+
+
+class WaveguideToSimPort(RefpointToSimPort):
+    """A waveguide is created leading to the port at the refpoint with given string in the Simulation object
+
+    Attributes:
+        refpoint: Refpoint name string
+        face: index of the face where the `refpoint` is located
+        towards: Another refpoint name string towards which direction the waveguide will extend.
+                 If set to None, will default to "{refpoint}_corner"
+        side: Indicate on which edge the port should be located. Ignored for internal ports.
+              Must be one of `left`, `right`, `top` or `bottom`
+        use_internal_ports: if True, ports will be inside the simulation. If False, ports will be
+            brought out to an edge of the box, determined by `side`.
+            Defaults to the value of the `use_internal_ports` parameter
+        waveguide_length: length of the waveguide (μm), used only for internal ports
+            Defaults to the value of the `waveguide_length` parameter
+        term1: Termination gap (μm) at the location of `refpoint`
+        turn_radius: Turn radius of the waveguide. Not relevant for internal ports.
+            Defaults to the value of the `r` parameter
+        a: Center conductor width. Defaults to the value of the `a` parameter
+        b: Conductor gap width. Defaults to the value of the `b` parameter
+        over_etching: Expansion of gaps. Defaults to the value of the `over_etching` parameter
+        airbridge: if True, an airbridge will be inserted at location of the `refpoint`. Default False
+    """
+    def __init__(self, refpoint, face=0, towards=None, side=None, use_internal_ports=None,
+                 waveguide_length=None, term1=0, turn_radius=None, a=None, b=None, over_etching=None, airbridge=False):
+        super().__init__(refpoint, face)
+        self.towards, self.side, self.use_internal_ports, self.waveguide_length, \
+            self.term1, self.turn_radius, self.a, self.b, self.over_etching, self.airbridge = \
+            towards, side, use_internal_ports, waveguide_length, term1, turn_radius, a, b, over_etching, airbridge
+
+class JunctionSimPort(RefpointToSimPort):
+    """Creates internal ports for a junction in the Simulation object.
+
+    Depending on the value of the `separate_island_internal_ports` parameter, will either create
+    two internal ports at both ends of the junction, or one port that covers both junctions.
+
+    Attributes:
+        refpoint: Refpoint name string. Defaults to "port_squid_a" as most commonly used junction port name
+        other_refpoint: Refpoint name string of the other end of the junction
+                        Defaults to "port_squid_b" as most commonly used junction port name
+        face: index of the face where the `refpoint` is located
+    """
+    def __init__(self, refpoint="port_squid_a", other_refpoint="port_squid_b", face=0):
+        super().__init__(refpoint, face)
+        self.other_refpoint = other_refpoint

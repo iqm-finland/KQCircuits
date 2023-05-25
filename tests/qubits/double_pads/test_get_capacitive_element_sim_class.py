@@ -15,19 +15,16 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from kqcircuits.simulations.simulation import Simulation
-from kqcircuits.simulations.port import EdgePort
-from kqcircuits.util.parameters import add_parameters_from
-from kqcircuits.elements.capacitive_x_coupler import CapacitiveXCoupler
+from kqcircuits.qubits.double_pads import DoublePads
 
 
-@add_parameters_from(CapacitiveXCoupler)
-class CapacitiveXCouplerSim(Simulation):
+def test_can_create(get_simulation):
+    get_simulation(DoublePads)
 
-    def build(self):
-        wg_cell = self.add_element(CapacitiveXCoupler)
-        _, refp = self.insert_cell(wg_cell)
-        self.ports.append(EdgePort(1, refp['p11']))
-        self.ports.append(EdgePort(2, refp['p21']))
-        self.ports.append(EdgePort(3, refp['p31']))
-        self.ports.append(EdgePort(4, refp['p41']))
+
+def test_ansys_export_produces_output_files(perform_test_ansys_export_produces_output_files):
+    perform_test_ansys_export_produces_output_files(DoublePads)
+
+
+def test_sonnet_export_produces_output_files(perform_test_sonnet_export_produces_output_files):
+    perform_test_sonnet_export_produces_output_files(DoublePads)

@@ -24,14 +24,15 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas
 
-from kqcircuits.simulations.finger_capacitor_sim import FingerCapacitorSim
+from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
-sim_class = FingerCapacitorSim  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(FingerCapacitorSquare)  # pylint: disable=invalid-name
 
 # Simulation parameters, using multiface interdigital as starting point
 sim_parameters = {
@@ -39,6 +40,8 @@ sim_parameters = {
     'use_internal_ports': True,
     'use_ports': True,
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(1000, 1000)),
+    'a2': -1,
+    'b2': -1,
     "finger_number": 5,
     "finger_width": 15,
     "finger_gap": 5,

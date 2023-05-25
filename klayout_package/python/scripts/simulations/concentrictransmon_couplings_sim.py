@@ -21,25 +21,27 @@ from pathlib import Path
 
 import numpy as np
 
+from kqcircuits.qubits.concentric_transmon import ConcentricTransmon
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.simulation_export import cross_sweep_simulation, export_simulation_oas, \
     sweep_simulation
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
-from kqcircuits.simulations.concentrictransmon_couplings_sim import ConcentricTransmonCouplingsSim
+from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
 
 # Prepare output directory
 dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 # Simulation parameters
-sim_class = ConcentricTransmonCouplingsSim  # pylint: disable=invalid-name
+sim_class = get_single_element_sim_class(ConcentricTransmon)  # pylint: disable=invalid-name
 sim_parameters = {
     # Arguments for the base Simulation class
     'name': 'concentrictransmon',
     'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),  # total area for simulation
     'use_ports': True,
     'use_internal_ports': True,  # wave ports are actually internal (lumped) ports instead of at the edge
+    'separate_island_internal_ports': True,
     'waveguide_length': 100,  # wave port length before terminating with InternalPort in this case
 
     # Nominal qubit parameters for the inherited ConcentricTransmon
