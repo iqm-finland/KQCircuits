@@ -539,7 +539,8 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">vector_length_and_direction</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_straight</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarStraight</span>
 
 
 <div class="viewcode-block" id="arc"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.arc">[docs]</a><span class="k">def</span> <span class="nf">arc</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -565,7 +566,8 @@
     <span class="k">return</span> <span class="n">pts</span></div>
 
 
-<div class="viewcode-block" id="WaveguideCoplanarCurved"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved">[docs]</a><span class="k">class</span> <span class="nc">WaveguideCoplanarCurved</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveguideCoplanarCurved"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">WaveguideCoplanarStraight</span><span class="p">,</span> <span class="s2">&quot;add_metal&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">WaveguideCoplanarCurved</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The PCell declaration of a curved segment of a coplanar waveguide.</span>
 
 <span class="sd">    Coordinate origin is left at the center of the arc.</span>
@@ -597,7 +599,9 @@
         <span class="c1"># Waveguide lenght</span>
         <span class="n">pts</span> <span class="o">=</span> <span class="n">annotation_arc</span>
         <span class="n">shape</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_path&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;waveguide_path&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_metal</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="s2">&quot;base_metal_addition&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="WaveguideCoplanarCurved.create_curve_arcs"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.create_curve_arcs">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create_curve_arcs</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
