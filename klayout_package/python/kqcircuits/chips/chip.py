@@ -381,7 +381,7 @@ class Chip(Element):
                     label_trans = label_trans * rel_label_trans
                 self.insert_cell(cell, label_trans)
 
-    def produce_launchers(self, sampleholder_type, launcher_assignments=None, enabled=None):
+    def produce_launchers(self, sampleholder_type, launcher_assignments=None, enabled=None, face_id=0):
         """Produces launchers for typical sample holders and sets chip size (``self.box``) accordingly.
 
         This is a wrapper around ``produce_n_launchers()`` to generate typical launcher configurations.
@@ -390,6 +390,7 @@ class Chip(Element):
             sampleholder_type: name of the sample holder type
             launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
             enabled: list of enabled launchers, empty means all
+            face_id: index of face_ids in which to insert the launchers
 
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
@@ -402,11 +403,12 @@ class Chip(Element):
 
         if sampleholder_type in default_sampleholders:
             return self.produce_n_launchers(**default_sampleholders[sampleholder_type],
-                                            launcher_assignments=launcher_assignments, enabled=enabled)
+                                            launcher_assignments=launcher_assignments, enabled=enabled, face_id=face_id)
         return {}
 
     def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent, pad_pitch,
-                            launcher_assignments=None, launcher_frame_gap=None, enabled=None, chip_box=None):
+                            launcher_assignments=None, launcher_frame_gap=None, enabled=None, chip_box=None,
+                            face_id=0):
         """Produces n launchers at default locations and optionally changes the chip size.
 
         Launcher pads are equally distributed around the chip. This may be overridden by specifying
@@ -426,6 +428,7 @@ class Chip(Element):
             launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
             enabled: optional list of enabled launchers
             chip_box: optionally changes the chip size (``self.box``)
+            face_id: index of face_ids in which to insert the launchers
 
         Returns:
             launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`
@@ -438,11 +441,11 @@ class Chip(Element):
             self.box = chip_box
 
         if launcher_type == "DC":
-            launcher_cell = self.add_element(LauncherDC, width=launcher_width)
+            launcher_cell = self.add_element(LauncherDC, width=launcher_width, face_ids=[self.face_ids[face_id]])
         else:
             launcher_cell = self.add_element(Launcher, s=launcher_width, l=launcher_width,
                                              a_launcher=launcher_width, b_launcher=launcher_gap,
-                                             launcher_frame_gap=launcher_frame_gap)
+                                             launcher_frame_gap=launcher_frame_gap, face_ids=[self.face_ids[face_id]])
 
         pads_per_side = n
         if not isinstance(n, tuple):
