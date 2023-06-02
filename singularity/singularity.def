@@ -1,35 +1,320 @@
-BootStrap: debootstrap
-OSVersion: focal
-MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+Bootstrap: docker
+From: centos:7.9.2009
 
 %help
-    This container can be used to run Elmer simulations for KQCircuits simulations
+    This container can be used to run Elmer simulations for KQCircuits.
+    
+    The main `runscript` corresponds to using the `kqc` command provided by KQCircuits. Alternatively, to get into a shell in the container use `singularity shell image` 
 
 %labels
+    org.opencontainers.image.title "KQCircuits simulations image"
     org.opencontainers.image.authors "IQM"
     org.opencontainers.image.source "https://github.com/iqm-finland/KQCircuits"
-    org.opencontainers.image.description "This container can be used to run Elmer simulations for KQCircuits simulations"
+    org.opencontainers.image.documentation "https://iqm-finland.github.io/KQCircuits"
+    org.opencontainers.image.description "This container can be used to run Elmer simulations for KQCircuits"
+    org.opencontainers.image.licenses "GPL-3.0-only"
+
+%files
+    MUMPS_Makefile.inc /opt/Makefile.inc
 
 %runscript
-    echo "There is no runscript at the moment."
+    exec kqc "$@"
 
-%post
-    sed -i 's/$/ universe/' /etc/apt/sources.list
-    apt-get install -y software-properties-common
-    add-apt-repository "deb http://fi.archive.ubuntu.com/ubuntu/ focal multiverse" && \
-    add-apt-repository ppa:elmer-csc-ubuntu/elmer-csc-ppa && \
-    apt-get update && apt-get install -y apt-utils && apt-get upgrade -y && \
-    apt-get install -y wget xvfb python-is-python3 python3-pip git libcurl4 libglu1-mesa libxft-dev && \
-    apt-get install -y elmerfem-csc && \
-    apt-get install -y paraview && \
-    wget -q https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.3-1_amd64.deb && \
-    echo "5779feaecc03d85e31b174088b6232c7  klayout_0.27.3-1_amd64.deb" > klayout.md5 && \
-    md5sum --check klayout.md5  && \
-    apt-get install -y ./klayout_0.27.3-1_amd64.deb && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* ./klayout* && apt-get clean && \
-    python -m pip install --upgrade pip && \
+%environment
+    export SLURM_MPI_TYPE=pmi2
+    export PMIX_MCA_gds=hash
+    source /opt/rh/devtoolset-11/enable
+    source /opt/rh/rh-git218/enable
+    export ELMER_HOME="/opt/elmer"
+    export PATH=$ELMER_HOME/bin:$PATH
+    export LD_LIBRARY_PATH=$ELMER_HOME/include:$ELMER_HOME/lib:/opt/elmer/share/elmersolver/lib:/opt/hypre/lib:/opt/scalapack/lib:/opt/mumps/lib:/opt/netcdf/lib64:/opt/mmg/lib64:/opt/parmmg/lib64:/opt/nn/lib:/opt/csa/lib:$LD_LIBRARY_PATH
+
+%post -c /bin/bash
+    #!/bin/bash
+
+    ####################
+    # Config variables #
+    ####################
+
+    export PYTHON_VERSION="3.10.11"
+    export OPENSSL_VERSION="1.1.1t"
+    # KLayout version
+    export KL_FILE="klayout-0.28.8-0.x86_64.rpm"
+    export KL_HASH="8e5083035046f806d16072f3203ad782"
+    # Target CPU architecture for compilation, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
+    # Examples include `znver3` for AMD Zen 3, and `alderlake` for Intel 12th gen.
+    export MARCH="native"
+
+    ######################
+    # Elmer installation #
+    ######################
+    # This section is based on an image provided by CSC
+
+    # Upgrade packages to most recent versions
+    yum -y upgrade
+
+    # Enable EPEL (required by NVIDIA packages)
+    yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+    # Install newer gcc
+    yum -y install centos-release-scl
+    yum -y install devtoolset-11
+    yum -y install rh-git218
+    yum -y remove cmake
+    yum -y install cmake3
+    # shellcheck source=/dev/null
+    source /opt/rh/devtoolset-11/enable
+    # shellcheck source=/dev/null
+    source /opt/rh/rh-git218/enable
+    yum -y install libcurl
+
+    # Install additional stuff
+    yum -y install wget cmake lbzip2 libsndfile numactl zlib perl
+
+    # Install mpich
+    wget -qO- http://www.mpich.org/static/downloads/4.0.2/mpich-4.0.2.tar.gz | tar xvz
+    cd mpich-4.0.2 || exit
+
+    ./configure --enable-fast=all,O3 --prefix=/usr FFLAGS="-std=legacy" FCFLAGS="-std=legacy"
+
+    make -j "$(nproc)"
+    make install
+    ldconfig
+
+    # additionally needed libraries
+    yum -y install openblas-devel
+    yum -y install m4
+    yum -y install curl-devel
+    yum -y install hdf5-devel
+
+    which gcc
+    which mpicc
+    which gfortran
+    which mpif90
+
+    # compiling libraries
+    mkdir  /opt/src
+    cd /opt/src || exit
+
+    # compile/install netcdf
+    git clone --depth 1 --branch v4.6.3 https://github.com/Unidata/netcdf-c.git
+    cd netcdf-c || exit
+    mkdir build
+    cd build/ || exit
+    cmake3 -DCMAKE_INSTALL_PREFIX=/opt/netcdf  -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops" -DENABLE_HDF5:BOOL=FALSE ..
+    make -j "$(nproc)"
+    make install
+    export LD_LIBRARY_PATH="/opt/netcdf/lib64:$LD_LIBRARY_PATH"
+    cd /opt/src || exit
+    git clone --depth 1 --branch v4.5.2 https://github.com/Unidata/netcdf-fortran
+    cd netcdf-fortran/ || exit
+    mkdir build
+    cd build/ || exit
+    cmake3 -DCMAKE_INSTALL_PREFIX=/opt/netcdf   -DENABLE_HDF5:BOOL=FALSE -DUSE_HDF5:BOOL=FALSE -DCMAKE_Fortran_FLAGS="-std=legacy -O3 -fopenmp -funroll-loops" -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops"  ..
+    make -j "$(nproc)"
+    make install
+    cd /opt/src || exit
+    rm -rf netcdf-c netcdf-fortran
+
+    # compile/install hypre
+    git clone https://github.com/hypre-space/hypre.git
+    cd /opt/src/hypre/src || exit
+    ./configure --with-openmp --with-blas --with-lapack --prefix="/opt/hypre"  CC="mpicc -fPIC -O3 -march=$MARCH"
+    make -j "$(nproc)"
+    make install
+    cd /opt/src || exit
+    rm -rf hypre
+    export LD_LIBRARY_PATH="/opt/hypre/lib:$LD_LIBRARY_PATH"
+
+    # compile/install BLACS/Scalapack (needed by MUMPS)
+    git clone https://github.com/Reference-ScaLAPACK/scalapack.git
+    cd scalapack || exit
+    mkdir build
+    cd build || exit
+    cmake3 -DCMAKE_INSTALL_PREFIX=/opt/scalapack  -DBUILD_SHARED_LIBS=ON -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -fPIC -funroll-loops" ..
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+    rm -rf scalapack
+    export LD_LIBRARY_PATH="/opt/scalapack/lib:$LD_LIBRARY_PATH"
+
+    # compile/install MUMPS
+    wget -qO- https://zenodo.org/record/7888117/files/MUMPS_5.6.0.tar.gz?download=1 | tar xvz
+    cd MUMPS_5.6.0 || exit
+    cp /opt/Makefile.inc ./
+    make -j "$(nproc)"
+    mkdir /opt/mumps
+    mv lib /opt/mumps
+    mv include /opt/mumps
+    cd ..
+    rm -rf MUMPS_5.6.0
+    export LD_LIBRARY_PATH="/opt/mumps/lib:$LD_LIBRARY_PATH"
+
+    # compile/install MMG/PARMMG
+    cd /opt/src || exit
+    git clone -b v5.7.1 https://github.com/MmgTools/mmg.git
+    cd mmg || exit
+    mkdir build
+    cd build || exit
+    cmake3 -DCMAKE_INSTALL_PREFIX="/opt/mmg" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DBUILD_SHARED_LIBS:BOOL=TRUE ..
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+    git clone https://github.com/MmgTools/ParMmg.git
+    cd ParMmg || exit
+    # Checkout the feature/tetFromTria-API branch
+    git checkout 5b4622a6d0776d576e239fd8954008964b589f3e
+    mkdir build
+    cd build || exit
+    cmake3 -DCMAKE_INSTALL_PREFIX="/opt/parmmg" -DCMAKE_BUILD_TYPE=RelWithDebInfo -DUSE_SCOTCH:BOOL=FALSE  -DUSE_VTK:BOOL=FALSE -DBUILD_SHARED_LIBS:BOOL=TRUE -DDOWNLOAD_MMG=OFF -DMMG_DIR=/opt/src/mmg -DMMG_BUILDDIR=/opt/src/mmg/build -DLIBPARMMG_SHARED=ON -DLIBPARMMG_STATIC=OFF -DCMAKE_Fortran_FLAGS="-O3 -std=legacy -march=$MARCH -ffast-math -funroll-loops" ..
+    make -j "$(nproc)" install
+    export LD_LIBRARY_PATH="/opt/mmg/lib64:/opt/parmmg/lib64:$LD_LIBRARY_PATH"
+    cd /opt/src || exit
+    rm -rf mmg/ ParMmg/
+
+    # NN (for ScatteredDataInterpolator)
+    git clone https://github.com/sakov/nn-c.git
+    cd nn-c/nn || exit
+    export CFLAGS="-fPIC -O3 -march=$MARCH -ffast-math -funroll-loops"
+    ./configure --prefix="/opt/nn"
+    make clean
+    gcc -c -DTRILIBRARY -fPIC -O2 -w -ffloat-store -I. triangle.c
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+    rm -rf nn-c
+
+    # csa
+    git clone https://github.com/sakov/csa-c.git
+    cd csa-c/csa || exit
+    ./configure --prefix="/opt/csa"
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+    rm -rf csa-c
+
+    export LD_LIBRARY_PATH="/opt/nn/lib:/opt/csa/lib:$LD_LIBRARY_PATH"
+
+    # and, finally, Elmer
+    git clone https://github.com/ElmerCSC/elmerfem.git
+    cd elmerfem || exit
+    # git checkout ee78a0131594f37bcac78786567d808040c143da   # TODO mmg include location
+    git submodule update --init
+    mkdir build
+    cd build || exit
+    cmake3 ../ -DCMAKE_INSTALL_PREFIX=/opt/elmer \
+            -DWITH_MPI:BOOL=TRUE \
+            -DWITH_LUA:BOOL=TRUE \
+            -DWITH_OpenMP:BOOL=TRUE \
+        -DWITH_ElmerIce:BOOL=TRUE \
+        -DWITH_NETCDF:BOOL=TRUE \
+            -DWITH_GridDataReader:BOOL=TRUE \
+            -DNETCDF_INCLUDE_DIR="/opt/netcdf/include" \
+            -DNETCDF_LIBRARY="/opt/netcdf/lib64/libnetcdf.so" \
+            -DNETCDFF_LIBRARY="/opt/netcdf/lib64/libnetcdff.so" \
+            -DWITH_Zoltan:BOOL=TRUE \
+            -DWITH_Mumps:BOOL=TRUE \
+            -DMUMPS_ROOT="/opt/mumps" \
+            -DSCALAPACK_LIBRARIES="-L/opt/scalapack/lib -lscalapack" \
+            -DWITH_Hypre:BOOL=TRUE \
+            -DHYPRE_ROOT="/opt/hypre" \
+            -DWITH_ScatteredDataInterpolator:BOOL=TRUE \
+            -DCSA_LIBRARY="/opt/csa/lib/libcsa.a" \
+            -DCSA_INCLUDE_DIR="/opt/csa/include" \
+            -DNN_INCLUDE_DIR="/opt/nn/include" \
+            -DNN_LIBRARY="/opt/nn/lib/libnn.a" \
+            -DWITH_MMG:BOOL=TRUE \
+            -DMMG_INCLUDE_DIR="/opt/mmg/include/" \
+            -DMMG_LIBRARY="/opt/mmg/lib64/libmmg.so" \
+        -DMMG_LIBDIR="/opt/mmg/lib64" \
+        -DPARMMG_INCLUDE_DIR="/opt/parmmg/include" \
+        -DPARMMG_LIBRARY="/opt/parmmg/lib64/libparmmg.so" \
+            -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops -march=$MARCH" \
+            -DCMAKE_Fortran_FLAGS="-O3 -fPIC -funroll-loops -march=$MARCH"
+
+    make install || exit
+    cd /opt/src || exit
+    rm -rf elmerfem
+
+    ###########################
+    # KQCircuits installation #
+    ###########################
+
+    yum -y install -y xorg-x11-server-Xvfb mesa-libGL libXft-devel
+    yum -y install -y paraview
+
+    wget -q "https://www.klayout.org/downloads/CentOS_7/$KL_FILE"
+    echo "$KL_HASH  $KL_FILE" > klayout.md5
+    md5sum --check klayout.md5
+    yum install -y "./$KL_FILE"
+    rm $KL_FILE klayout.md5
+
+    # Get gmsh (and its deps.), see https://gitlab.onelab.info/gmsh/gmsh/-/wikis/Gmsh-compilation
+    wget -qO- http://download.savannah.gnu.org/releases/freetype/freetype-2.12.1.tar.gz | tar xvz
+    cd freetype-2.12.1 || exit
+    ./configure
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+
+    wget -qO- "http://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=refs/tags/V7_7_1;sf=tgz" | tar xvz
+    cd occt-V7_7_1 || exit
+    mkdir build
+    cd build || exit
+    cmake3 -DCMAKE_BUILD_TYPE=Release -DBUILD_MODULE_Draw=0 -DBUILD_MODULE_Visualization=0 -DBUILD_MODULE_ApplicationFramework=0 ..
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+
+    git clone -b release-1.3.8 https://github.com/fltk/fltk.git
+    cd fltk || exit
+    mkdir build
+    cd build || exit
+    cmake3 -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+    make -j "$(nproc)" install
+    cd /opt/src || exit
+
+    git clone -b gmsh_4_11_1 http://gitlab.onelab.info/gmsh/gmsh.git
+    cd gmsh || exit
+    mkdir build
+    cd build || exit
+    cmake3 -DENABLE_BUILD_DYNAMIC=1 -DCMAKE_CXX_FLAGS="-O3 -march=$MARCH" ..
+    make -j "$(nproc)" && make install
+    mkdir ../lib
+    ln -s "$(pwd)/libgmsh.so.4.11.1" "$(pwd)/libgmsh.so.4.11" "$(pwd)/libgmsh.so" "$(pwd)/../lib"
+    ln -s "$(pwd)/libgmsh.so.4.11.1" "$(pwd)/libgmsh.so.4.11" "$(pwd)/libgmsh.so" "/usr/local/lib"
+    cd ../api || exit
+    export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+    # retain PYTHONPATH when running container
+    export SINGULARITYENV_PYTHONPATH=$PYTHONPATH
+    cd /opt/src || exit
+
+    # Get recent OpenSSL (required for pip)
+    yum -y install openssl-devel bzip2-devel libffi-devel
+    yum -y groupinstall "Development Tools"
+    yum -y install perl-IPC-Cmd perl-Test-Simple
+    wget -qO- "https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz" | tar xvz
+    cd "openssl-$OPENSSL_VERSION" || exit
+    ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib no-shared zlib-dynamic
+    make -j "$(nproc)" && make test && make install
+    cd .. || exit
+
+    # Update Python
+    yum clean all  # need to clean before installing Python 3, as system Python 2 breaks
+    wget -qO- "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz" | tar xvz
+    cd "Python-$PYTHON_VERSION" || exit
+    export CFLAGS="-march=$MARCH -O3 -pipe"
+    ./configure --enable-optimizations --with-openssl=/usr
+    make -j "$(nproc)" altinstall
+    cd .. || exit
+    rm -rf Python-"$PYTHON_VERSION"
+    # Convert e.g. 3.10.2 => 3.10
+    PYTHON_BIN_VERSION=$(echo "$PYTHON_VERSION" | awk -F'.' '{print $1"."$2}')
+    alternatives --install /usr/bin/python python "/usr/local/bin/python$PYTHON_BIN_VERSION" 1
+    alternatives --set python "/usr/local/bin/python$PYTHON_BIN_VERSION"
+
+
+    python -m pip install --upgrade pip
     rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
-    git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits && \
+    git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits || exit
     python -m pip install -e klayout_package/python
-    python -m pip install gmsh pandas
+    python -m pip install pandas
     ln -s /usr/bin/python /usr/bin/kqclib
+
+    # set version as label, works for Singularity versions >= 3.7
+    # KQC_VERSION="$(python -m pip show kqcircuits | grep -oP 'Version: \K.*')"
+    # echo "org.opencontainers.image.version $KQC_VERSION" >> "$SINGULARITY_LABELS"
