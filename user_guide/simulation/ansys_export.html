@@ -48,7 +48,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Sonnet export" href="sonnet_export.html" />
-    <link rel="prev" title="Creating simulation object" href="simulation_object.html" /> 
+    <link rel="prev" title="Simulation export settings" href="simulation_settings.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -174,11 +174,15 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../simulations.html">External simulation tools</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="simulation_object.html">Creating simulation object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simulation_object.html">Creating a simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#simulation-box">Simulation box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#ports">Ports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#example-simulation">Example simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#simulation-scripts">Simulation scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="simulation_settings.html">Simulation export settings</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Ansys export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ansys-scripts">Ansys scripts</a></li>
 </ul>
@@ -550,12 +554,12 @@ HFSS eigenmode simulations are done with ‘eigenmode’, this is used for <a cl
 <div class="section" id="ansys-scripts">
 <h2>Ansys scripts<a class="headerlink" href="#ansys-scripts" title="Permalink to this headline">¶</a></h2>
 <p>The folder <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys">scripts/simulations/ansys/</a> contains several IronPython scripts to run simulations in Ansys Electronics Desktop. Scripts support HFSS and Q3D Extractor frameworks.</p>
-<p>The scripts are developed and tested with Ansys Electronic Desktop 2021 R1 on Windows x64.</p>
+<p>The scripts are developed and tested with Ansys Electronic Desktop 2022 R2 on Windows x64.</p>
 <p>The primary use case is to estimate capacitive couplings between different elements in the layout, where each element
 of interest has a port in the simulation. The capacitances are represented as a matrix, where the <em>Cij</em> is the
 capacitance between two ports <em>i</em> and <em>j</em>, and <em>Cii</em> is the capacitance between port <em>i</em> and ground.</p>
 <div class="section" id="main-scripts">
-<h3>Main scripts:<a class="headerlink" href="#main-scripts" title="Permalink to this headline">¶</a></h3>
+<h3>Main scripts<a class="headerlink" href="#main-scripts" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/import_simulation_geometry.py">import_simulation_geometry.py</a></p>
 <p>Argument: path to json file exported by <code class="docutils literal notranslate"><span class="pre">export_ansys_json</span></code>.</p>
@@ -589,7 +593,7 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <p>The optional scripts are listed below.</p>
 </div>
 <div class="section" id="optional-scripts">
-<h3>Optional scripts:<a class="headerlink" href="#optional-scripts" title="Permalink to this headline">¶</a></h3>
+<h3>Optional scripts<a class="headerlink" href="#optional-scripts" title="Permalink to this headline">¶</a></h3>
 <ul>
 <li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/export_snp_no_deembed.py">export_snp_no_deembed.py</a></p>
 <p>No argument.</p>
@@ -608,7 +612,11 @@ e.g., to enable exporting Time Domain Reflectometry (TDR) and non-de-embedded To
 <p><a class="reference external" href="https://github.com/zlatko-minev/pyEPR">pyEPR</a> is supported for HFSS eigenmode simulations.
 A simulation needs to be created with <code class="docutils literal notranslate"><span class="pre">ansys_tool=eigenmode</span></code> and <code class="docutils literal notranslate"><span class="pre">simulation_flags=['pyepr']</span></code>.
 An example simulation is found at <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py">klayout_package/python/scripts/simulations/xmons_direct_coupling_pyepr.py</a>.
-See <code class="docutils literal notranslate"><span class="pre">notebooks\pyEPR_example.ipynb</span></code> for an example on using pyEPR itself.</p>
+See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/pyEPR_example.ipynb">pyEPR_example.ipynb</a> in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits-Examples/">KQCircuits-Examples</a> repository for an example on using pyEPR itself.</p>
+<div class="section" id="tls-limited-t-1-estimation-with-epr">
+<h4>TLS-limited <span class="math notranslate nohighlight">\(T_1\)</span> estimation with EPR<a class="headerlink" href="#tls-limited-t-1-estimation-with-epr" title="Permalink to this headline">¶</a></h4>
+<p>Do as in <cite>pyEPR</cite> but additionally include <code class="docutils literal notranslate"><span class="pre">intermediate_processing_command='python</span> <span class="pre">&quot;scripts/t1_estimate.py&quot;'</span></code>. This will run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/ansys/t1_estimate.py">t1_estimate.py</a> between queued simulations and compute the electrical participations in the lossy interfaces. See <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/double_pads_sim.py">double_pads_sim.py</a> for an example and <cite>N. Savola, ‘Design and modelling of long-coherence qubits using energy participation ratios’, Master’s thesis, Aalto University, 2023</cite>, for details on the method.</p>
+</div>
 </div>
 </div>
 </div>
@@ -620,7 +628,7 @@ See <code class="docutils literal notranslate"><span class="pre">notebooks\pyEPR
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="sonnet_export.html" class="btn btn-neutral float-right" title="Sonnet export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="simulation_object.html" class="btn btn-neutral float-left" title="Creating simulation object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="simulation_settings.html" class="btn btn-neutral float-left" title="Simulation export settings" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Creating a simulation object &mdash; KQCircuits  documentation</title>
+  <title>Simulation export settings &mdash; KQCircuits  documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Simulation export settings" href="simulation_settings.html" />
-    <link rel="prev" title="External simulation tools" href="../simulations.html" /> 
+    <link rel="next" title="Ansys export" href="ansys_export.html" />
+    <link rel="prev" title="Creating a simulation object" href="simulation_object.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -173,15 +173,15 @@
 </ul>
 </li>
 <li class="toctree-l2 current"><a class="reference internal" href="../simulations.html">External simulation tools</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Creating a simulation object</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#simulation-box">Simulation box</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ports">Ports</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#example-simulation">Example simulation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#simulation-scripts">Simulation scripts</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="simulation_object.html">Creating a simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#simulation-box">Simulation box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#ports">Ports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#example-simulation">Example simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#simulation-scripts">Simulation scripts</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="simulation_settings.html">Simulation export settings</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Simulation export settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ansys_export.html">Ansys export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="ansys_export.html#ansys-scripts">Ansys scripts</a></li>
 </ul>
@@ -508,14 +508,14 @@
         
           <li><a href="../simulations.html">External simulation tools</a> &raquo;</li>
         
-      <li>Creating a simulation object</li>
+      <li>Simulation export settings</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/simulation/simulation_object.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/user_guide/simulation/simulation_settings.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -529,153 +529,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="creating-a-simulation-object">
-<h1>Creating a simulation object<a class="headerlink" href="#creating-a-simulation-object" title="Permalink to this headline">¶</a></h1>
-<p>To export a simulation, the geometry to simulate must be defined in a simulation object, which is an instance of the
-<a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class. The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class works very similar to regular KQCircuits elements: the
-simulation should implement a <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.build" title="kqcircuits.simulations.simulation.Simulation.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> method which generates the
-geometry, typically by inserting other elements. See also the <a class="reference internal" href="../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.build" title="kqcircuits.elements.element.Element.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a>
-method of class <a class="reference internal" href="../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Often, a simulation is defined in code by implementing a subclass of <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a>. This allows arbitrary
-geometry and port definitions. However, there are also macros and convenience methods to create simulations directly
-from existing geometry. See Geometry from KLayout GUI below for more information on these.</p>
-</div>
-<p>The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class supports most of the same concepts as <a class="reference internal" href="../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a>.
-For example, <a class="reference internal" href="../python_workflow.html#python-workflow-refpoints"><span class="std std-ref">Refpoints</span></a> can be used to connect child elements together and
-simulations can have <a class="reference internal" href="../python_workflow.html#python-workflow-parameters"><span class="std std-ref">Parameters</span></a> with the same syntax as in <a class="reference internal" href="../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><code class="xref py py-class docutils literal notranslate"><span class="pre">Element</span></code></a>. A simulation can
-inherit parameters from regular elements with the <a class="reference internal" href="../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameter" title="kqcircuits.util.parameters.add_parameter"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_parameter()</span></code></a> and <a class="reference internal" href="../../api/kqcircuits.util.parameters.html#kqcircuits.util.parameters.add_parameters_from" title="kqcircuits.util.parameters.add_parameters_from"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_parameters_from()</span></code></a>
-decorators.</p>
-<p>The parameter values can be set when creating an instance of the simulation, by passing keyword arguments to the
-constructor. Parameters are often used to export parameter sweeps of a simulation, and there are helper functions
-<a class="reference internal" href="../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.sweep_simulation" title="kqcircuits.simulations.export.simulation_export.sweep_simulation"><code class="xref py py-func docutils literal notranslate"><span class="pre">sweep_simulation()</span></code></a> and <a class="reference internal" href="../../api/kqcircuits.simulations.export.simulation_export.html#kqcircuits.simulations.export.simulation_export.cross_sweep_simulation" title="kqcircuits.simulations.export.simulation_export.cross_sweep_simulation"><code class="xref py py-func docutils literal notranslate"><span class="pre">cross_sweep_simulation()</span></code></a> to generate sweeps. See <a class="reference internal" href="#simulation-scripts"><span class="std std-ref">Simulation scripts</span></a>
-for examples on their usage.</p>
-<div class="section" id="simulation-box">
-<h2>Simulation box<a class="headerlink" href="#simulation-box" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> also has some extra features that are important for creating simulations. Fist of all,
-the simulation area is defined by the <code class="docutils literal notranslate"><span class="pre">box</span></code> parameter, which should be a <a class="reference external" href="https://www.klayout.de/doc-qt5/code/class_DBox.html"><code class="docutils literal notranslate"><span class="pre">pya.DBox</span></code></a>.</p>
-<p>The simulation area should not be overly large; consider what is necessary for the purpose. Since <code class="docutils literal notranslate"><span class="pre">box</span></code> is a
-parameter, it can be set during export.</p>
-<img alt="../../_images/simulation_area.svg" src="../../_images/simulation_area.svg" /></div>
-<div class="section" id="ports">
-<h2>Ports<a class="headerlink" href="#ports" title="Permalink to this headline">¶</a></h2>
-<p>Ports define the inputs and outputs of the simulation. Two types of ports are supported, <a class="reference internal" href="../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.EdgePort" title="kqcircuits.simulations.port.EdgePort"><code class="xref py py-class docutils literal notranslate"><span class="pre">EdgePort</span></code></a> at the edge
-of the simulation box and and <a class="reference internal" href="../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort" title="kqcircuits.simulations.port.InternalPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">InternalPort</span></code></a> for ports inside the geometry. Ports are defined in the <code class="docutils literal notranslate"><span class="pre">build</span></code>
-method by adding instances of the corresponding port class to the pre-defined <code class="docutils literal notranslate"><span class="pre">Simulations.ports</span></code> list.</p>
-<p>To create an internal port, two points <code class="docutils literal notranslate"><span class="pre">signal_location</span></code> and <code class="docutils literal notranslate"><span class="pre">ground_location</span></code> must be supplied as <code class="docutils literal notranslate"><span class="pre">pya.DPoint</span></code>.
-These must be exactly on the midpoint of geometry edges in the simulation. The actual port will be drawn as a rectangle
-touching these edges. For example, the following snippet creates an internal port across the junction of a single-island qubit,
-where <code class="docutils literal notranslate"><span class="pre">refp</span></code> is a <a class="reference internal" href="../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints" title="kqcircuits.util.refpoints.Refpoints"><code class="xref py py-class docutils literal notranslate"><span class="pre">Refpoints</span></code></a> instance obtained when inserting the corresponding qubit cell.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="n">InternalPort</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">signal_location</span><span class="o">=</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_squid_a&quot;</span><span class="p">],</span> <span class="n">ground_location</span><span class="o">=</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_squid_b&quot;</span><span class="p">])</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-<p>The <a class="reference internal" href="../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.InternalPort" title="kqcircuits.simulations.port.InternalPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">InternalPort</span></code></a> is mapped to a <cite>Lumped Port</cite> in Ansys HFSS. In Q3D and Elmer capacitance simulations only
-<code class="docutils literal notranslate"><span class="pre">signal_location</span></code> is used and <code class="docutils literal notranslate"><span class="pre">ground_location</span></code> can be omitted. For qubits with multiple islands, usually a
-separate port is needed for each island.</p>
-<p>Edge ports can be created similarly by adding <a class="reference internal" href="../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.EdgePort" title="kqcircuits.simulations.port.EdgePort"><code class="xref py py-class docutils literal notranslate"><span class="pre">EdgePort</span></code></a> instances. Edge ports only
-have a <code class="docutils literal notranslate"><span class="pre">signal_location</span></code>, and it must be on the edge of <code class="docutils literal notranslate"><span class="pre">Simulation.box</span></code>.</p>
-<p>For ports that connect via waveguides, the convenience method
-<a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port" title="kqcircuits.simulations.simulation.Simulation.produce_waveguide_to_port"><code class="xref py py-meth docutils literal notranslate"><span class="pre">produce_waveguide_to_port()</span></code></a> draws both the waveguide and adds
-the required port. It supports both internal and edge ports, for example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a 100um long waveguide that ends in an internal port</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_2&quot;</span><span class="p">],</span> <span class="n">towards</span><span class="o">=</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_2_corner&quot;</span><span class="p">],</span> <span class="n">port_nr</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                               <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-<span class="c1"># Create a waveguide that bends and terminates as an edge port on the right side of Simulation.box</span>
-<span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_3&quot;</span><span class="p">],</span> <span class="n">towards</span><span class="o">=</span><span class="n">refp</span><span class="p">[</span><span class="s2">&quot;port_3_corner&quot;</span><span class="p">],</span> <span class="n">port_nr</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                               <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="example-simulation">
-<h2>Example simulation<a class="headerlink" href="#example-simulation" title="Permalink to this headline">¶</a></h2>
-<p>In the following example, a Swissmon qubit is placed at the center of the simulation box, waveguide ports are connected
-to the couplers, and an internal port is placed at the junctions:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.port</span> <span class="kn">import</span> <span class="n">InternalPort</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.simulation</span> <span class="kn">import</span> <span class="n">Simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">add_parameters_from</span>
-
-
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="s2">&quot;Sim&quot;</span><span class="p">,</span> <span class="n">fluxline_type</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">)</span>
-<span class="k">class</span> <span class="nc">SwissmonSimulation</span><span class="p">(</span><span class="n">Simulation</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Place a Swissmon qubit in the center of the simulation</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">refpoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">Swissmon</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="o">.</span><span class="n">center</span><span class="p">()))</span>
-
-        <span class="c1"># Add waveguide ports to the three couplers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;port_cplr0&#39;</span><span class="p">],</span> <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;port_cplr0_corner&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;port_cplr1&#39;</span><span class="p">],</span> <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;port_cplr1_corner&#39;</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;top&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_waveguide_to_port</span><span class="p">(</span><span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;port_cplr2&#39;</span><span class="p">],</span> <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;port_cplr2_corner&#39;</span><span class="p">],</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;right&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Add junction port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ports</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InternalPort</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;squid_port_squid_a&#39;</span><span class="p">],</span> <span class="n">refpoints</span><span class="p">[</span><span class="s1">&#39;squid_port_squid_b&#39;</span><span class="p">]))</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="simulation-scripts">
-<span id="id1"></span><h2>Simulation scripts<a class="headerlink" href="#simulation-scripts" title="Permalink to this headline">¶</a></h2>
-<p>Once a simulation class is defined, instances of it can be created with desired parameter values, and the instances
-can be exported as geometry or to one of the supported simulation tools. The following example script shows how to
-generate some instances and sweep a parameter, and export the resulting geometry as an OAS file.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.simulation_export</span> <span class="kn">import</span> <span class="n">export_simulation_oas</span><span class="p">,</span> <span class="n">sweep_simulation</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">create_or_empty_tmp_directory</span>
-
-<span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
-
-<span class="n">simulations</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="c1"># Generate the simulation with default parameters</span>
-<span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SwissmonSimulation</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">layout</span><span class="p">))</span>
-
-<span class="c1"># Generate the simulation for some other parameter</span>
-<span class="n">simulations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SwissmonSimulation</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">arm_length</span><span class="o">=</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;arm_length_500&#39;</span><span class="p">))</span>
-
-<span class="c1"># Make a 4-point sweep of gap width</span>
-<span class="n">simulations</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">sweep_simulation</span><span class="p">(</span>
-    <span class="n">view</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
-    <span class="n">SwissmonSimulation</span><span class="p">,</span>
-    <span class="n">sim_parameters</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;gap_sweep&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;arm_length&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
-    <span class="p">},</span>
-    <span class="n">sweeps</span><span class="o">=</span><span class="p">{</span>
-        <span class="s1">&#39;gap_width&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">25</span><span class="p">]],</span>
-    <span class="p">}</span>
-<span class="p">))</span>
-
-<span class="c1"># Export the list of simulation instances as OAS file in the kqcircuits/tmp/swissmon_simulation_output folder</span>
-<span class="n">dir_path</span> <span class="o">=</span> <span class="n">create_or_empty_tmp_directory</span><span class="p">(</span><span class="s2">&quot;swissmon_simulation_output&quot;</span><span class="p">)</span>
-<span class="n">export_simulation_oas</span><span class="p">(</span><span class="n">simulations</span><span class="p">,</span> <span class="n">dir_path</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This script can be run as a regular python script, or in the KLayout macro editor. To run the example, place the
-<code class="docutils literal notranslate"><span class="pre">SwissmonSimulation</span></code> class definition above in the same file. The output files will be written to a folder in the
-KQCircuits <code class="docutils literal notranslate"><span class="pre">tmp</span></code> folder.</p>
-<p>The example above only exports an OAS file with the geometry. See the following sections for information on exporting
-to different simulation tools.</p>
-<p>More example scripts are available in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/scripts/simulations">scripts/simulations</a>.</p>
-</div>
-<div class="section" id="geometry-from-klayout-gui">
-<h2>Geometry from Klayout GUI<a class="headerlink" href="#geometry-from-klayout-gui" title="Permalink to this headline">¶</a></h2>
-<p>An alternative way to export simulations is by drawing the geometry (placing elements or drawing manually) in
-KLayout, and running one of the following macros.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_ansys.lym">scripts/macros/export/export_ansys.lym</a></p></li>
-<li><p><a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/macros/export/export_sonnet.lym">scripts/macros/export/export_sonnet.lym</a></p></li>
+  <div class="section" id="simulation-export-settings">
+<h1>Simulation export settings<a class="headerlink" href="#simulation-export-settings" title="Permalink to this headline">¶</a></h1>
+<p>The settings depend highly on the employed tool, but some settings are universal. These are primarily given to the <a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> class as PCell parameters in contrast to export functions corresponding to different programs. Please refer to the docstrings and implementations for details:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.ansys.ansys_export.html#kqcircuits.simulations.export.ansys.ansys_export.export_ansys" title="kqcircuits.simulations.export.ansys.ansys_export.export_ansys"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_ansys()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer" title="kqcircuits.simulations.export.elmer.elmer_export.export_elmer"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_elmer()</span></code></a></p></li>
+<li><p><a class="reference internal" href="../../api/kqcircuits.simulations.export.sonnet.sonnet_export.html#kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet" title="kqcircuits.simulations.export.sonnet.sonnet_export.export_sonnet"><code class="xref py py-func docutils literal notranslate"><span class="pre">export_sonnet()</span></code></a></p></li>
 </ul>
-<p>Similarly, simulation instances can be created from an existing KLayout Cell <code class="docutils literal notranslate"><span class="pre">cell</span></code> in code:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simulation</span> <span class="o">=</span> <span class="n">Simulation</span><span class="o">.</span><span class="n">from_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Dev&#39;</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>These methods export the geometry, but do not add any ports to the simulation. Hence, this is most useful if you want
-to manually create ports or make other changes for example in Ansys.</p>
-</div>
+</div></blockquote>
+<p>Elmer export, on the other hand, has some details explained in <a class="reference internal" href="gmsh_elmer_export.html#gmsh-elmer-export"><span class="std std-ref">Gmsh/Elmer export</span></a>.</p>
 </div>
 
 
@@ -684,8 +548,8 @@ to manually create ports or make other changes for example in Ansys.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="simulation_settings.html" class="btn btn-neutral float-right" title="Simulation export settings" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../simulations.html" class="btn btn-neutral float-left" title="External simulation tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ansys_export.html" class="btn btn-neutral float-right" title="Ansys export" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="simulation_object.html" class="btn btn-neutral float-left" title="Creating a simulation object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -173,11 +173,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="simulations.html">External simulation tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="simulation/simulation_object.html">Creating simulation object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="simulation/simulation_object.html">Creating a simulation object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#simulation-box">Simulation box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#ports">Ports</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#example-simulation">Example simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#simulation-scripts">Simulation scripts</a></li>
 <li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#geometry-from-klayout-gui">Geometry from Klayout GUI</a></li>
-<li class="toctree-l4"><a class="reference internal" href="simulation/simulation_object.html#geometry-from-kqcircuits-library">Geometry from KQCircuits library</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="simulation/simulation_settings.html">Simulation export settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="simulation/ansys_export.html">Ansys export</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="simulation/ansys_export.html#ansys-scripts">Ansys scripts</a></li>
 </ul>
@@ -595,7 +599,7 @@ libraries see the KLayout documentation pages
 <a class="reference external" href="https://www.klayout.de/doc-qt5/programming/ruby_pcells.html#h2-426">Coding PCells In Ruby</a> (in Ruby).</p>
 </div>
 <div class="section" id="parameters">
-<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<span id="python-workflow-parameters"></span><h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
 <p>Different element instances with varying features can be created by setting different parameters.
 Parameters can be modified in GUI or when creating the instance in code.
 The parameters of a KQCircuits element are defined using <code class="docutils literal notranslate"><span class="pre">Param</span></code>
@@ -745,7 +749,7 @@ example:</p>
 </div>
 </div>
 <div class="section" id="refpoints">
-<h2>Refpoints<a class="headerlink" href="#refpoints" title="Permalink to this headline">¶</a></h2>
+<span id="python-workflow-refpoints"></span><h2>Refpoints<a class="headerlink" href="#refpoints" title="Permalink to this headline">¶</a></h2>
 <p>In an Element definition <code class="docutils literal notranslate"><span class="pre">refpoints</span></code> is just a dictionary of points. You can add to it by
 assigning a point to a name, <code class="docutils literal notranslate"><span class="pre">self.refpoints['name']</span> <span class="pre">=</span> <span class="pre">pya.DPoint(...)</span></code>.</p>
 <p>There are several ways the refpoints are used:</p>
