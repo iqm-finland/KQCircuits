@@ -24,6 +24,7 @@ import argparse
 
 from pathlib import Path
 from distutils.dir_util import copy_tree
+from typing import Sequence
 
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
@@ -53,6 +54,9 @@ def export_elmer_json(simulation,
                       frequency=5,
                       mesh_size=None,
                       workflow=None,
+                      percent_error=0.005,
+                      maximum_passes=1,
+                      minimum_passes=1,
                       dielectric_surfaces=None,
                       is_axisymmetric=False):
     """
@@ -67,6 +71,9 @@ def export_elmer_json(simulation,
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
+        percent_error(float): Stopping criterion in adaptive meshing.
+        maximum_passes(int): Maximum number of adaptive meshing iterations.
+        minimum_passes(int): Minimum number of adaptive meshing iterations.
         dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
             the simulation. The loss tangent is post-processed to the participation to get the quality factor.
             Default is None. Input is of the form::
@@ -103,6 +110,9 @@ def export_elmer_json(simulation,
         **({'layers': {k: (v.layer, v.datatype) for k, v in layers.items()}} if is_cross_section else {}),
         'mesh_size': {} if mesh_size is None else mesh_size,
         'workflow': {} if workflow is None else workflow,
+        'percent_error': percent_error,
+        'maximum_passes': maximum_passes,
+        'minimum_passes': minimum_passes,
         'frequency': frequency,
         **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
         'linear_system_method': linear_system_method,
@@ -117,8 +127,13 @@ def export_elmer_json(simulation,
 
     # write .gds file
     gds_filename = str(path.joinpath(simulation.name + '.gds'))
-    export_layers(gds_filename, simulation.layout, [simulation.cell], output_format='GDS2',
-                  layers=layers.values() if is_cross_section else simulation.get_layers())
+    export_layers(
+        gds_filename,
+        simulation.layout,
+        [simulation.cell],
+        output_format='GDS2',
+        layers=layers.values() if is_cross_section else simulation.get_layers()
+    )
 
     return json_filename
 
@@ -283,7 +298,7 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
     return main_script_filename
 
 
-def export_elmer(simulations: [],
+def export_elmer(simulations: Sequence[Simulation],
                  path: Path,
                  tool='capacitance',
                  linear_system_method='bicgstab',
@@ -293,6 +308,9 @@ def export_elmer(simulations: [],
                  script_file='scripts/run.py',
                  mesh_size=None,
                  workflow=None,
+                 percent_error=0.005,
+                 maximum_passes=1,
+                 minimum_passes=1,
                  dielectric_surfaces=None,
                  is_axisymmetric=False,
                  skip_errors=False):
@@ -311,6 +329,9 @@ def export_elmer(simulations: [],
         script_file: Name of the script file to run.
         mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
+        percent_error(float): Stopping criterion in adaptive meshing.
+        maximum_passes(int): Maximum number of adaptive meshing iterations.
+        minimum_passes(int): Minimum number of adaptive meshing iterations.
         dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
             the simulation. The loss tangent is post-processed to the participation to get the quality factor.
             Default is None. Input is of the form::
@@ -357,16 +378,23 @@ def export_elmer(simulations: [],
     json_filenames = []
     for simulation in simulations:
         try:
-            json_filenames.append(export_elmer_json(simulation=simulation,
-                                                    path=path,
-                                                    tool=tool,
-                                                    linear_system_method=linear_system_method,
-                                                    p_element_order=p_element_order,
-                                                    frequency=frequency,
-                                                    mesh_size=mesh_size,
-                                                    workflow=workflow,
-                                                    dielectric_surfaces=dielectric_surfaces,
-                                                    is_axisymmetric=is_axisymmetric))
+            json_filenames.append(
+                export_elmer_json(
+                    simulation=simulation,
+                    path=path,
+                    tool=tool,
+                    linear_system_method=linear_system_method,
+                    p_element_order=p_element_order,
+                    frequency=frequency,
+                    mesh_size=mesh_size,
+                    workflow=workflow,
+                    percent_error=percent_error,
+                    maximum_passes=maximum_passes,
+                    minimum_passes=minimum_passes,
+                    dielectric_surfaces=dielectric_surfaces,
+                    is_axisymmetric=is_axisymmetric
+                )
+            )
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

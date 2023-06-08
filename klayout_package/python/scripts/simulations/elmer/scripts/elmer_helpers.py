@@ -14,12 +14,15 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
+# pylint: disable=too-many-lines
 import csv
 import json
 from pathlib import Path
+from typing import Union, Sequence, Any, Dict
+
 from scipy.constants import epsilon_0
 
-def coordinate_scaling(json_data):
+def coordinate_scaling(json_data: Dict[str, Any]) -> float:
     """
     Returns coordinate scaling, which is determined by parameters 'units' in json_data.
 
@@ -33,7 +36,13 @@ def coordinate_scaling(json_data):
     return {'nm': 1e-9, 'um': 1e-6, 'µm': 1e-6, 'mm': 1e-3}.get(units, 1.0)
 
 
-def sif_common_header(json_data, folder_path, angular_frequency=None, def_file=None, dim="3"):
+def sif_common_header(
+    json_data: Dict[str, Any],
+    folder_path: Union[Path, str],
+    angular_frequency=None,
+    def_file=None,
+    dim="3",
+) -> str:
     """
     Returns common header and simulation blocks of a sif file in string format.
     Optional definition file name is given in 'def_file'.
@@ -45,6 +54,11 @@ def sif_common_header(json_data, folder_path, angular_frequency=None, def_file=N
         res += 'INCLUDE {}/{}\n'.format(folder_path, def_file)
     res += sif_block('Header', [
         'Mesh DB "." "{}"'.format(folder_path)])
+    if json_data.get("maximum_passes", 1) > 1:
+        res += sif_block('Run Control', [
+            f'Run Control Iterations = {json_data["maximum_passes"]}',
+            'Reset Adaptive Mesh = Logical True'
+        ])
     res += sif_block('Simulation', [
         'Max Output Level = 3',
         ('Coordinate System = "Axi Symmetric"' if json_data.get('is_axisymmetric', False)
@@ -55,7 +69,7 @@ def sif_common_header(json_data, folder_path, angular_frequency=None, def_file=N
         'Coordinate Scaling = {}'.format(coordinate_scaling(json_data))])
     return res
 
-def sif_block(block_name, data):
+def sif_block(block_name: str, data: Sequence[str]) -> str:
     """Returns block segment of sif file in string format. Argument data is list of lines inside the block.
     The block is of shape:
 
@@ -72,7 +86,7 @@ def sif_block(block_name, data):
     res += 'End\n'
     return res
 
-def sif_matc_block(data):
+def sif_matc_block(data: Sequence[str]) -> str:
     """Returns several matc statements to be used in sif (user does not need to type $-sign in front of lines).
     The block is of shape:
       $ data[0]
@@ -88,7 +102,7 @@ def sif_matc_block(data):
     return res
 
 
-def sif_linsys(method='mg', p_element_order=3):
+def sif_linsys(method='mg', p_element_order=3) -> Sequence[str]:
     """
     Returns a linear system definition in sif format.
 
@@ -105,7 +119,7 @@ def sif_linsys(method='mg', p_element_order=3):
                 'Linear System Solver = Iterative',
                 'Linear System Iterative Method = BiCGStab',
                 'Linear System Max Iterations = 200',
-                'Linear System Convergence Tolerance = 1.0e-12',
+                'Linear System Convergence Tolerance = 1.0e-15',
                 'Linear System Preconditioning = ILU1',
                 'Linear System ILUT Tolerance = 1.0e-03',
                 ]
@@ -114,7 +128,7 @@ def sif_linsys(method='mg', p_element_order=3):
                 'Linear System Solver = Iterative',
                 'Linear System Iterative Method = GCR ',
                 'Linear System Max Iterations = 30',
-                'Linear System Convergence Tolerance = 1.0e-12',
+                'Linear System Convergence Tolerance = 1.0e-15',
                 'Linear System Abort Not Converged = False',
                 'Linear System Residual Output = 10',
                 'Linear System Preconditioning = multigrid !ILU2',
@@ -133,12 +147,46 @@ def sif_linsys(method='mg', p_element_order=3):
                 ]
     return linsys
 
-def get_port_solver(ordinate):
+
+def sif_adaptive_mesh(percent_error=0.005, minimum_passes=1) -> Sequence[str]:
+    """Returns a definition of adaptive meshing settings in sif format.
+
+    Args:
+        percent_error(float): Stopping criterion in adaptive meshing.
+
+    Returns:
+        (str): adaptive meshing definitions in sif format.
+
+    Note:
+        ``maximum_passes`` is already set in :func:`~sif_common_header`
+    """
+    adaptive_lines = [
+        # TODO how should the constraint modes be set?
+        'Constraint Modes Analysis = Logical True',
+        'Constraint Modes Lumped = Logical True',
+        'Constraint Modes Fluxes = Logical True',
+        'Constraint Modes Fluxes Symmetric = Logical True',
+        # 'Constraint Modes Fluxes Results = Logical True',
+        # 'Constraint Modes Fluxes Norm = Logical True',
+        'Run Control Constraint Modes = Logical True',
+        'Adaptive Mesh Refinement = True',
+        'Adaptive Remesh = True',
+        f'Adaptive Error Limit = {percent_error}',
+        'Adaptive Remesh Use MMG = Logical True',
+        'Adaptive Mesh Numbering = False',
+        f'Adaptive Min Depth = {minimum_passes}',
+    ]
+    return adaptive_lines
+
+def get_port_solver(ordinate, percent_error=0.005, maximum_passes=1, minimum_passes=1) -> str:
     """
     Returns a port solver for wave equation in sif format.
 
     Args:
         ordinate(int): solver ordinate
+        percent_error(float): Stopping criterion in adaptive meshing.
+        maximum_passes(int): Maximum number of adaptive meshing iterations.
+        minimum_passes(int): Minimum number of adaptive meshing iterations.
 
     Returns:
         (str): port solver in sif format.
@@ -157,10 +205,12 @@ def get_port_solver(ordinate):
         'Linear System Residual Output = 0',
         'Linear System Max Iterations = 5000',
         'linear system abort not converged = false',
-        ]
+    ]
+    if maximum_passes > 1:
+        solver_lines += sif_adaptive_mesh(percent_error=percent_error, minimum_passes=minimum_passes)
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_vector_helmholtz(ordinate, angular_frequency):
+def get_vector_helmholtz(ordinate, angular_frequency) -> str:
     """
     Returns a vector Helmholtz equation solver in sif file format.
 
@@ -216,7 +266,7 @@ def get_vector_helmholtz(ordinate, angular_frequency):
         ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_vector_helmholtz_calc_fields(ordinate, angular_frequency):
+def get_vector_helmholtz_calc_fields(ordinate: Union[str, int], angular_frequency: Union[str, float]) -> str:
     solver_lines = [
         '!  exec solver = never',
         'Equation = "calcfields"',
@@ -244,10 +294,16 @@ def get_vector_helmholtz_calc_fields(ordinate, angular_frequency):
         ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_electrostatics_solver(ordinate,
-                              capacitance_file,
-                              method='mg',
-                              p_element_order=3):
+
+def get_electrostatics_solver(
+    ordinate: Union[str, int],
+    capacitance_file: Union[Path, str],
+    method='mg',
+    p_element_order=3,
+    percent_error=0.005,
+    maximum_passes=1,
+    minimum_passes=1
+):
     """
     Returns electrostatics solver in sif file format.
 
@@ -256,29 +312,36 @@ def get_electrostatics_solver(ordinate,
         capacitance_file(str): name of the capacitance matrix data file
         method(str): linear system method, see `sif_linsys`
         p_element_order(int): p-element order, see `sif_linsys`
+        percent_error(float): Stopping criterion in adaptive meshing.
+        maximum_passes(int): Maximum number of adaptive meshing iterations.
+        minimum_passes(int): Minimum number of adaptive meshing iterations.
 
     Returns:
         (str): electrostatics solver in sif file format
     """
+    # Adaptive meshing not yet working with vectorised version (github.com/ElmerCSC/elmerfem/issues/401)
+    useVectorised = maximum_passes <= 1
+    solver = "StatElecSolveVec" if useVectorised else "StatElecSolve"
     solver_lines = [
         'Equation = Electro Statics',
-        'Procedure = "StatElecSolveVec" "StatElecSolver"',
+        f'Procedure = "{solver}" "StatElecSolver"',
         'Variable = Potential',
         'Calculate Capacitance Matrix = True',
         f'Capacitance Matrix Filename = {capacitance_file}',
         'Nonlinear System Max Iterations = 1',
         'Nonlinear System Consistent Norm = True',
-       ]
+    ]
 
     solver_lines += sif_linsys(method=method, p_element_order=p_element_order)
-    solver_lines += [
-                    'Vector Assembly = True',
-                    'Element = p:$pn',
-                    ]
+    if maximum_passes > 1:
+        solver_lines += sif_adaptive_mesh(percent_error=percent_error, minimum_passes=minimum_passes)
+    if useVectorised:
+        solver_lines += ['Vector Assembly = True']
+        solver_lines += ['Element = p:$pn']
 
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_circuit_solver(ordinate, p_element_order, exec_solver='Always'):
+def get_circuit_solver(ordinate: Union[str, int], p_element_order: int, exec_solver='Always'):
     """
     Returns circuit solver in sif file format.
 
@@ -301,7 +364,7 @@ def get_circuit_solver(ordinate, p_element_order, exec_solver='Always'):
         ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_circuit_output_solver(ordinate, exec_solver='Always'):
+def get_circuit_output_solver(ordinate: Union[str, int], exec_solver='Always'):
     """
     Returns circuit output solver in sif file format.
     This solver writes the circuit variables.
@@ -320,13 +383,18 @@ def get_circuit_output_solver(ordinate, exec_solver='Always'):
         ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_magneto_dynamics_2d_harmonic_solver(ordinate, p_element_order):
+
+def get_magneto_dynamics_2d_harmonic_solver(
+    ordinate: Union[str, int], percent_error=0.005, maximum_passes=1, minimum_passes=1
+):
     """
     Returns magneto-dynamics 2d solver in sif file format.
 
     Args:
         ordinate(int): solver ordinate
-        p_element_order(int): p-element order, see `sif_linsys`
+        percent_error(float): Stopping criterion in adaptive meshing.
+        maximum_passes(int): Maximum number of adaptive meshing iterations.
+        minimum_passes(int): Minimum number of adaptive meshing iterations.
 
     Returns:
         (str): magneto-dynamics 2d solver in sif file format
@@ -349,12 +417,17 @@ def get_magneto_dynamics_2d_harmonic_solver(ordinate, p_element_order):
         'Linear System ILUT Tolerance=1e-8',
         'BicgStabL Polynomial Degree = 6',
         'Steady State Convergence Tolerance = 1e-06',
-       f'$pn={p_element_order}',
+    ]
+    if maximum_passes > 1:
+        solver_lines += sif_adaptive_mesh(percent_error=percent_error, minimum_passes=minimum_passes)
+    solver_lines += [
+        'Vector Assembly = True',
         'Element = p:$pn',
-        ]
+    ]
+
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_magneto_dynamics_calc_fields(ordinate, p_element_order):
+def get_magneto_dynamics_calc_fields(ordinate: Union[str, int], p_element_order: int):
     """
     Returns magneto-dynamics calculate fields solver in sif file format.
 
@@ -382,7 +455,7 @@ def get_magneto_dynamics_calc_fields(ordinate, p_element_order):
         'Linear System Convergence Tolerance = 1.0e-8',
        f'$pn={p_element_order}',
         'Element = p:$pn',
-        ]
+    ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
 def get_result_output_solver(ordinate, output_file_name, exec_solver="Always"):
@@ -676,18 +749,25 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
     constants = sif_block('Constants', [f'Permittivity Of Vacuum = {epsilon_0}'])
 
     solvers = get_electrostatics_solver(
-                    ordinate=1,
-                    capacitance_file=folder_path / f'{name}.dat',
-                    method=json_data['linear_system_method'],
-                    p_element_order=json_data['p_element_order'])
+        ordinate=1,
+        capacitance_file=folder_path / f'{name}.dat',
+        method=json_data['linear_system_method'],
+        p_element_order=json_data['p_element_order'],
+        maximum_passes=json_data['maximum_passes'],
+        minimum_passes=json_data['minimum_passes'],
+        percent_error=json_data['percent_error'],
+    )
     solvers += get_result_output_solver(
-                    ordinate=2,
-                    output_file_name=vtu_name,
-                    exec_solver='Always',)
+        ordinate=2,
+        output_file_name=vtu_name,
+        exec_solver='Always',
+    )
     solvers += get_save_data_solver(ordinate=3, result_file=name)
-    equations = get_equation(ordinate=1,
-                             solver_ids=[1, 2],
-                             keywords=['Calculate Electric Energy = True'] if dim==2 else [])
+    equations = get_equation(
+        ordinate=1,
+        solver_ids=[1, 2],
+        keywords=['Calculate Electric Energy = True'] if dim == 2 else [],
+    )
 
     body_list = get_body_list(json_data, dim=dim)
     permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim)
@@ -756,16 +836,20 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
                                  p_element_order=json_data['p_element_order'],
                                  exec_solver='Always')
 
-    solvers += get_magneto_dynamics_2d_harmonic_solver(ordinate=2,
-                                  p_element_order=json_data['p_element_order'])
+    solvers += get_magneto_dynamics_2d_harmonic_solver(
+        ordinate=2,
+        maximum_passes=json_data['maximum_passes'],
+        minimum_passes=json_data['minimum_passes'],
+        percent_error=json_data['percent_error'],
+    )
 
-    solvers += get_magneto_dynamics_calc_fields(ordinate=3,
-                                  p_element_order=json_data['p_element_order'])
+    solvers += get_magneto_dynamics_calc_fields(ordinate=3, p_element_order=json_data['p_element_order'])
 
     solvers += get_result_output_solver(
-                    ordinate=4,
-                    output_file_name='inductance',
-                    exec_solver='Always',)
+        ordinate=4,
+        output_file_name='inductance',
+        exec_solver='Always',
+    )
 
     solvers += get_circuit_output_solver(ordinate=5, exec_solver='Always')
     solvers += get_save_data_solver(ordinate=6, result_file=f'{folder_path}/inductance.dat')
@@ -960,7 +1044,12 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
             'beta0 = w*sqrt(eps0*mu0)',
             ])
 
-    solvers = get_port_solver(ordinate=1)
+    solvers = get_port_solver(
+        ordinate=1,
+        maximum_passes=json_data['maximum_passes'],
+        minimum_passes=json_data['minimum_passes'],
+        percent_error=json_data['percent_error'],
+    )
     solvers += get_vector_helmholtz(ordinate=2, angular_frequency='$ w')
     solvers += get_vector_helmholtz_calc_fields(ordinate=3, angular_frequency='$ w')
     solvers += get_result_output_solver(
