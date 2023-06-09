@@ -81,7 +81,26 @@ from kqcircuits.util.plugin_startup import register_plugins
 #        "isDefault": true
 #      }
 #    }
-
+# To use this as a macro command in Vim/NeoVim
+#   1. Open your Vim or NeoVim configuration file.
+#      
+#      Linux/macOS:
+#        * Vim: The configuration file is located at ~/.vimrc.
+#        * NeoVim: The configuration file is located at ~/.config/nvim/init.vim.
+#      Windows:
+#        * Vim: The configuration file is located at $HOME/vimfiles/vimrc or $VIM/_vimrc. (These are default paths, Usually installed in this path unless changed upon installation)
+#        * NeoVim: The configuration file is located at $HOME/AppData/Local/nvim/init.vim. (These are default paths, Usually installed in this path unless changed upon installation)
+#
+#   2. Add the following lines to your configuration file:
+#       " Define a kqc command
+#       command! -nargs=0 kqc execute "!klayout -e -rm " . expand("%:p:h") . "/util/create_element_from_path.py -rd element_path=" . expand("%:p") | redraw!
+#       " Create a mapping to run the kqc command
+#       nnoremap <leader>kqc :kqc<CR>
+#
+#   3. Save the configuration file and restart Vim or NeoVim for the changes to take effect.
+#       Now, you can use the mapping <leader>kqc (where <leader> is a customizable key, often \ by default) while editing a Python file containing the element to create. 
+#       Pressing the mapping will execute the :kqc command, which runs the external tool command to open the file in KLayout.
+#
 # Register KQC plugins into KLayout (must happen before the layout view is created)
 register_plugins()
 
