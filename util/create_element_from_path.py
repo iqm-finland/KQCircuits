@@ -91,11 +91,18 @@ from kqcircuits.util.plugin_startup import register_plugins
 #        * Vim: The configuration file is located at $HOME/vimfiles/vimrc or $VIM/_vimrc. (These are default paths, Usually installed in this path unless changed upon installation)
 #        * NeoVim: The configuration file is located at $HOME/AppData/Local/nvim/init.vim. (These are default paths, Usually installed in this path unless changed upon installation)
 #
+#        The configuration file may not be present, in which case you need to create one at a specified location.
+#        Use the following command to verify that vim loaded the expected configuration file:
+#            :e $MYVIMRC
+#
 #   2. Add the following lines to your configuration file:
 #       " Define a kqc command
-#       command! -nargs=0 kqc execute "!klayout -e -rm " . expand("%:p:h") . "/util/create_element_from_path.py -rd element_path=" . expand("%:p") | redraw!
+#       command! -nargs=0 Kqc execute "!klayout -e -rm {FULL PATH TO create_element_from_path.py} -rd element_path=" . expand("%:p") | redraw!
 #       " Create a mapping to run the kqc command
-#       nnoremap <leader>kqc :kqc<CR>
+#       nnoremap <leader>kqc :Kqc<CR>
+#
+#       After copy-pasting, substitute {FULL PATH TO create_element_from_path.py} with the absolute path to the util/create_element_from_path.py python script
+#       On Windows, klayout command does not work automatically, in which case it is best to substitute klayout keyword with the expanded absolute path to %APPDATA%/KLayout/klayout_app.exe
 #
 #   3. Save the configuration file and restart Vim or NeoVim for the changes to take effect.
 #       Now, you can use the mapping <leader>kqc (where <leader> is a customizable key, often \ by default) while editing a Python file containing the element to create. 
