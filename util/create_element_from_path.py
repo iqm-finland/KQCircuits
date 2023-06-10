@@ -121,8 +121,9 @@ logging.info(f"Element path: {element_path}")
 # Figure out the python import path from the specified file path
 path_without_extension = pathlib.Path(element_path).with_suffix('')
 # Remove 'KQCircuits' or similar folder from beginning
-if 'Circuits' in path_without_extension.parts[0]:
-    path_without_extension = path_without_extension.relative_to(*path_without_extension.parts[:1])
+for idx, part in reversed(list(enumerate(path_without_extension.parts))):
+    if 'Circuits' in part:
+        path_without_extension = path_without_extension.relative_to(*path_without_extension.parts[:idx+1])
 
 if path_without_extension.parts[0] == "klayout_package" and path_without_extension.parts[1] == "python":
     module_path = '.'.join(path_without_extension.parts[2:])
