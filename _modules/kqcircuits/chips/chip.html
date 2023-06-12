@@ -211,6 +211,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#unlinking">Unlinking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../developer/setup.html#manual-installation">Manual installation</a><ul>
@@ -903,7 +904,7 @@
                     <span class="n">label_trans</span> <span class="o">=</span> <span class="n">label_trans</span> <span class="o">*</span> <span class="n">rel_label_trans</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">label_trans</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Chip.produce_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampleholder_type</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Chip.produce_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampleholder_type</span><span class="p">,</span> <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces launchers for typical sample holders and sets chip size (``self.box``) accordingly.</span>
 
 <span class="sd">        This is a wrapper around ``produce_n_launchers()`` to generate typical launcher configurations.</span>
@@ -912,6 +913,7 @@
 <span class="sd">            sampleholder_type: name of the sample holder type</span>
 <span class="sd">            launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers</span>
 <span class="sd">            enabled: list of enabled launchers, empty means all</span>
+<span class="sd">            face_id: index of face_ids in which to insert the launchers</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`</span>
@@ -924,11 +926,12 @@
 
         <span class="k">if</span> <span class="n">sampleholder_type</span> <span class="ow">in</span> <span class="n">default_sampleholders</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce_n_launchers</span><span class="p">(</span><span class="o">**</span><span class="n">default_sampleholders</span><span class="p">[</span><span class="n">sampleholder_type</span><span class="p">],</span>
-                                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">)</span>
+                                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="n">launcher_assignments</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">face_id</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
 <div class="viewcode-block" id="Chip.produce_n_launchers"><a class="viewcode-back" href="../../../api/kqcircuits.chips.chip.html#kqcircuits.chips.chip.Chip.produce_n_launchers">[docs]</a>    <span class="k">def</span> <span class="nf">produce_n_launchers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">launcher_type</span><span class="p">,</span> <span class="n">launcher_width</span><span class="p">,</span> <span class="n">launcher_gap</span><span class="p">,</span> <span class="n">launcher_indent</span><span class="p">,</span> <span class="n">pad_pitch</span><span class="p">,</span>
-                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_box</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                            <span class="n">launcher_assignments</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chip_box</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="n">face_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces n launchers at default locations and optionally changes the chip size.</span>
 
 <span class="sd">        Launcher pads are equally distributed around the chip. This may be overridden by specifying</span>
@@ -948,6 +951,7 @@
 <span class="sd">            launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers</span>
 <span class="sd">            enabled: optional list of enabled launchers</span>
 <span class="sd">            chip_box: optionally changes the chip size (``self.box``)</span>
+<span class="sd">            face_id: index of face_ids in which to insert the launchers</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            launchers as a dictionary :code:`{name: (point, heading, distance from chip edge)}`</span>
@@ -960,11 +964,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">chip_box</span>
 
         <span class="k">if</span> <span class="n">launcher_type</span> <span class="o">==</span> <span class="s2">&quot;DC&quot;</span><span class="p">:</span>
-            <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">LauncherDC</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">)</span>
+            <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">LauncherDC</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_id</span><span class="p">]])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">launcher_cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">Launcher</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span> <span class="n">l</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span>
                                              <span class="n">a_launcher</span><span class="o">=</span><span class="n">launcher_width</span><span class="p">,</span> <span class="n">b_launcher</span><span class="o">=</span><span class="n">launcher_gap</span><span class="p">,</span>
-                                             <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="n">launcher_frame_gap</span><span class="p">)</span>
+                                             <span class="n">launcher_frame_gap</span><span class="o">=</span><span class="n">launcher_frame_gap</span><span class="p">,</span> <span class="n">face_ids</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">face_ids</span><span class="p">[</span><span class="n">face_id</span><span class="p">]])</span>
 
         <span class="n">pads_per_side</span> <span class="o">=</span> <span class="n">n</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>

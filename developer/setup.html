@@ -213,6 +213,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#sources">Sources</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install">Install</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unlinking">Unlinking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#update">Update</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#secondary-install">Secondary install</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
@@ -580,6 +581,14 @@ libpython*.dll on Windows.</p>
 not visible, running any macro gives an error, etc.), there might be some
 problem with the specific KLayout version/build you are using, see
 <a class="reference internal" href="../installation.html#installation-issues"><span class="std std-ref">Known installation issues</span></a> section for possible solutions.</p>
+</div>
+</div>
+<div class="section" id="unlinking">
+<h2>Unlinking<a class="headerlink" href="#unlinking" title="Permalink to this headline">¶</a></h2>
+<p>Installation command links your KQCircuits installation with your Klayout
+installation automatically. If you wish to unlink, then write in your terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="n">setup_within_klayout</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">unlink</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="update">
