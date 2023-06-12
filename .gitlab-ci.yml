@@ -15,7 +15,7 @@ test:
   stage: test
   parallel:
     matrix:
-      - KLAYOUT_VERSION: [0.26.7, 0.26.12, 0.27.13, 1.latest]
+      - KLAYOUT_VERSION: [0.26.12, 0.27.13, 1.latest]
   script:
     - pip install --force-reinstall "klayout<=$KLAYOUT_VERSION"
     - tox -e matrix
