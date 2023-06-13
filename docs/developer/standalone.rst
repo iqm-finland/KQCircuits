@@ -99,13 +99,8 @@ This creates the required object structure and has helper methods for inserting 
 Jupyter notebook usage
 ----------------------
 
-There is an example Jupyter notebook :git_url:`viewer.ipynb <notebooks/viewer.ipynb>` in the notebooks
+There is an example Jupyter notebook `KQCircuits-Examples/notebooks/viewer.ipynb <https://github.com/iqm-finland/KQCircuits-Examples/blob/main/notebooks/viewer.ipynb>`__ in the notebooks
 folder, which shows how to create and visualize KQCircuits elements with the
 standalone KLayout module. Run it like::
 
     jupyter-notebook notebooks/viewer.ipynb
-
-Any other files in the notebooks folder will be ignored by git, so you can
-create your own notebooks based on :git_url:`viewer.ipynb <notebooks/viewer.ipynb>` in that folder. This
-notebook requires that ``notebooks`` was specified as a feature during
-installation.
