@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -39,42 +40,77 @@
 #
 # Note, that useful terminology is defined in https://www.klayout.de/doc-qt5/manual/lvs_overview.html
 
-
+import math
+import re
 from kqcircuits.pya_resolver import pya
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.defaults import default_layers
 from kqcircuits.util.refpoints import Refpoints
 
-# Macro argument
+# Macro arguments
 # GLOBAL displays coordinates relative to layout
 # LOCAL displays coordinates relative to the selected cell
 COORDINATE_ARG = "GLOBAL"
+# Define a box in which reference points it should print. Box coordinates take the `COORDINATE_ARG` setting into account.
+BOX_ARG = pya.DBox(-math.inf, -math.inf, math.inf, math.inf) # (left, bottom, right, top)
+# Only print reference points with these names. Given as a regex, so separate multiple names with a "|"
+REFPOINT_REGEX = r""
+# Only print cell names (and their (grand)-children) with these names. Given as a regex.
+CELL_REGEX = r""
 
 view = KLayoutView(current=True)
 layout = view.layout
 
-print("Refpoints of selected cell(s)")
+print("Refpoints of selected with the following settings:")
+print(f"Coordinates are &lt;{COORDINATE_ARG}&gt; coordinates")
+print(f"Search space is &lt;{BOX_ARG}&gt;")
+print(f"Reference point names follow the regex &lt;'{REFPOINT_REGEX}'&gt;")
+print(f"Reference point are in cells that follow the regex &lt;'{CELL_REGEX}'&gt;")
 print("")
 no_selection = True
+
+def print_child_cell_refs(inst, base_transformation, longest_refpoint_name, ignore_cell_regex=False, indentation = ""):
+    cell = layout.cell(inst.cell_index)
+    refpoints = Refpoints(layout.layer(default_layers["refpoints"]), cell, base_transformation, 0).dict()
+    child_refs = ""
+    cell_regex_match = re.search(CELL_REGEX, inst.cell.name)
+    ignore_cell_regex = ignore_cell_regex or cell_regex_match
+    for child_inst in cell.each_inst():
+        child_refs += print_child_cell_refs(child_inst, base_transformation * child_inst.dcplx_trans, longest_refpoint_name, ignore_cell_regex, indentation + "  ")
+    res = ""
+    refpoint_str = ""
+    if refpoints and ignore_cell_regex:
+      for refpoint, position in refpoints.items():
+        if (BOX_ARG.empty() or BOX_ARG.contains(position)) and re.search(REFPOINT_REGEX, refpoint):
+          whitespace = ' ' * (longest_refpoint_name + 4 - len(refpoint))
+          refpoint_str += f"{indentation}{refpoint}{whitespace}{str(position)}\n"
+    if child_refs or refpoint_str:
+        separator = '═' * (longest_refpoint_name + 23)
+        res += f"\n{indentation}{separator}\n"
+        res += (f"{indentation}{inst.cell.name}\n")
+        separator = '─' * (longest_refpoint_name + 23)
+        res += f"{indentation}{separator}\n"
+
+    res += refpoint_str
+    res += child_refs
+    return res
+    
+
 for obj in view.layout_view.object_selection:
     no_selection = False
+    # TODO: replace by `cell = obj.inst().cell` once KLayout bug (#235) is fixed
     # workaround for getting the cell due to KLayout bug, see
     # https://www.klayout.de/forum/discussion/1191/cell-shapes-cannot-call-non-const-method-on-a-const-reference
-    # TODO: replace by `cell = obj.inst().cell` once KLayout bug is fixed
     cell = obj.layout().cell(obj.cell_index())
-    transformation = pya.DTrans()
+    transformation = pya.DCplxTrans()
     if COORDINATE_ARG == "GLOBAL":
         for i in obj.each_inst():
-            transformation = transformation * i.inst().dtrans
+            transformation = transformation * i.inst().dcplx_trans
+
     refpoints = Refpoints(layout.layer(default_layers["refpoints"]), cell, transformation, None).dict()
     longest_refpoint_name = max([len(name) for name in refpoints.keys()])
-    print(cell.basic_name())
-    separator = '=' * (longest_refpoint_name + 20)
-    print(separator)
-    for refpoint, position in refpoints.items():
-        whitespace = ' ' * (longest_refpoint_name + 4 - len(refpoint))
-        print(f'{refpoint}{whitespace}{str(position)}')
-    print("")
+    print(print_child_cell_refs(obj.inst(), transformation, longest_refpoint_name))
+
 if no_selection:
     print("No selected cells detected")
     print("")</text>
