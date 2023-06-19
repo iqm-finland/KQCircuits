@@ -41,7 +41,7 @@ LIBOTHERS = -lpthread
 CDEFS   = -DAdd_
 
 # Begin Optimized options
-OPTF    = -O3 -fPIC -fopenmp -funroll-loops
+OPTF    = -O3 -fPIC -fopenmp -funroll-loops -fallow-argument-mismatch
 OPTL    = -O3 -fPIC -fopenmp -funroll-loops
 OPTC    = -O3 -fPIC -fopenmp -funroll-loops
 #End Optimized options

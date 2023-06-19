@@ -53,18 +53,25 @@ def sif_common_header(
     if def_file:
         res += 'INCLUDE {}/{}\n'.format(folder_path, def_file)
     res += sif_block('Header', [
-        'Mesh DB "." "{}"'.format(folder_path)])
+        'Mesh DB "." "{}"'.format(folder_path),
+        'Results Directory "{}"'.format(folder_path)])
+
     if json_data.get("maximum_passes", 1) > 1:
-        res += sif_block('Run Control', [
-            f'Run Control Iterations = {json_data["maximum_passes"]}',
-            'Reset Adaptive Mesh = Logical True'
-        ])
+        reset_adaptive_remesh_str = ['Reset Adaptive Mesh = Logical True']
+    else:
+        reset_adaptive_remesh_str = []
+
+    res += sif_block('Run Control', [
+        'Constraint Modes Analysis = True',
+        ] + reset_adaptive_remesh_str)
+
     res += sif_block('Simulation', [
-        'Max Output Level = 3',
+        'Max Output Level = 4',
         ('Coordinate System = "Axi Symmetric"' if json_data.get('is_axisymmetric', False)
          else f'Coordinate System = "Cartesian {dim}D"'),
         'Simulation Type = "Steady State"',
-        'Steady State Max Iterations = 1',
+        f'Steady State Max Iterations = {json_data.get("maximum_passes", 1)}',
+        f'Steady State Min Iterations = {json_data.get("minimum_passes", 1)}',
         ('' if angular_frequency is None else 'Angular Frequency = {}'.format(angular_frequency)),
         'Coordinate Scaling = {}'.format(coordinate_scaling(json_data))])
     return res
@@ -102,7 +109,7 @@ def sif_matc_block(data: Sequence[str]) -> str:
     return res
 
 
-def sif_linsys(method='mg', p_element_order=3) -> Sequence[str]:
+def sif_linsys(method='mg', p_element_order=3, steady_state_error=None) -> Sequence[str]:
     """
     Returns a linear system definition in sif format.
 
@@ -116,43 +123,50 @@ def sif_linsys(method='mg', p_element_order=3) -> Sequence[str]:
     linsys = ['$pn={}'.format(p_element_order)]
     if method == 'bicgstab':
         linsys += [
-                'Linear System Solver = Iterative',
-                'Linear System Iterative Method = BiCGStab',
-                'Linear System Max Iterations = 200',
-                'Linear System Convergence Tolerance = 1.0e-15',
-                'Linear System Preconditioning = ILU1',
-                'Linear System ILUT Tolerance = 1.0e-03',
+            'Linear System Solver = Iterative',
+            'Linear System Iterative Method = BiCGStab',
+            'Linear System Max Iterations = 200',
+            'Linear System Convergence Tolerance = 1.0e-15',
+            'Linear System Preconditioning = ILU1',
+            'Linear System ILUT Tolerance = 1.0e-03',
+            f'Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}',
                 ]
     elif method == 'mg':
         linsys += [
-                'Linear System Solver = Iterative',
-                'Linear System Iterative Method = GCR ',
-                'Linear System Max Iterations = 30',
-                'Linear System Convergence Tolerance = 1.0e-15',
-                'Linear System Abort Not Converged = False',
-                'Linear System Residual Output = 10',
-                'Linear System Preconditioning = multigrid !ILU2',
-                'Linear System Refactorize = False',
-                'MG Method = p',
-                'MG Levels = $pn',
-                'MG Smoother = SGS ! cg',
-                'MG Pre Smoothing iterations = 2',
-                'MG Post Smoothing Iterations = 2',
-                'MG Lowest Linear Solver = iterative',
-                'mglowest: Linear System Scaling = False',
-                'mglowest: Linear System Iterative Method = CG !BiCGStabl',
-                'mglowest: Linear System Preconditioning = none !ILU0',
-                'mglowest: Linear System Max Iterations = 100',
-                'mglowest: Linear System Convergence Tolerance = 1.0e-4',
-                ]
+            'Linear System Solver = Iterative',
+            'Linear System Iterative Method = GCR ',
+            'Linear System Max Iterations = 30',
+            'Linear System Convergence Tolerance = 1.0e-15',
+            'Linear System Abort Not Converged = False',
+            'Linear System Residual Output = 10',
+            'Linear System Preconditioning = multigrid !ILU2',
+            'Linear System Refactorize = False',
+            'MG Method = p',
+            'MG Levels = $pn',
+            'MG Smoother = SGS ! cg',
+            'MG Pre Smoothing iterations = 2',
+            'MG Post Smoothing Iterations = 2',
+            'MG Lowest Linear Solver = iterative',
+            'mglowest: Linear System Scaling = False',
+            'mglowest: Linear System Iterative Method = CG !BiCGStabl',
+            'mglowest: Linear System Preconditioning = none !ILU0',
+            'mglowest: Linear System Max Iterations = 100',
+            'mglowest: Linear System Convergence Tolerance = 1.0e-4',
+            f'Steady State Convergence Tolerance = {1e-9 if steady_state_error is None else steady_state_error*1e-1}',
+               ]
     return linsys
 
 
-def sif_adaptive_mesh(percent_error=0.005, minimum_passes=1) -> Sequence[str]:
+def sif_adaptive_mesh(percent_error=0.005,
+                      max_error_scale=2,
+                      max_outlier_fraction=1e-3,
+                      minimum_passes=1) -> Sequence[str]:
     """Returns a definition of adaptive meshing settings in sif format.
 
     Args:
         percent_error(float): Stopping criterion in adaptive meshing.
+        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
+        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
 
     Returns:
         (str): adaptive meshing definitions in sif format.
@@ -161,13 +175,6 @@ def sif_adaptive_mesh(percent_error=0.005, minimum_passes=1) -> Sequence[str]:
         ``maximum_passes`` is already set in :func:`~sif_common_header`
     """
     adaptive_lines = [
-        # TODO how should the constraint modes be set?
-        'Constraint Modes Analysis = Logical True',
-        'Constraint Modes Lumped = Logical True',
-        'Constraint Modes Fluxes = Logical True',
-        'Constraint Modes Fluxes Symmetric = Logical True',
-        # 'Constraint Modes Fluxes Results = Logical True',
-        # 'Constraint Modes Fluxes Norm = Logical True',
         'Run Control Constraint Modes = Logical True',
         'Adaptive Mesh Refinement = True',
         'Adaptive Remesh = True',
@@ -175,16 +182,25 @@ def sif_adaptive_mesh(percent_error=0.005, minimum_passes=1) -> Sequence[str]:
         'Adaptive Remesh Use MMG = Logical True',
         'Adaptive Mesh Numbering = False',
         f'Adaptive Min Depth = {minimum_passes}',
+        f'Adaptive Max Error Scale = Real {max_error_scale}',
+        f'Adaptive Max Outlier Fraction = Real {max_outlier_fraction}'
     ]
     return adaptive_lines
 
-def get_port_solver(ordinate, percent_error=0.005, maximum_passes=1, minimum_passes=1) -> str:
+def get_port_solver(ordinate,
+                    percent_error=0.005,
+                    max_error_scale=2,
+                    max_outlier_fraction=1e-3,
+                    maximum_passes=1,
+                    minimum_passes=1) -> str:
     """
     Returns a port solver for wave equation in sif format.
 
     Args:
         ordinate(int): solver ordinate
         percent_error(float): Stopping criterion in adaptive meshing.
+        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
+        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         maximum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
 
@@ -207,7 +223,10 @@ def get_port_solver(ordinate, percent_error=0.005, maximum_passes=1, minimum_pas
         'linear system abort not converged = false',
     ]
     if maximum_passes > 1:
-        solver_lines += sif_adaptive_mesh(percent_error=percent_error, minimum_passes=minimum_passes)
+        solver_lines += sif_adaptive_mesh(percent_error=percent_error,
+                                          max_error_scale=max_error_scale,
+                                          max_outlier_fraction=max_outlier_fraction,
+                                          minimum_passes=minimum_passes)
     return sif_block(f'Solver {ordinate}', solver_lines)
 
 def get_vector_helmholtz(ordinate, angular_frequency) -> str:
@@ -257,6 +276,7 @@ def get_vector_helmholtz(ordinate, angular_frequency) -> str:
         '! lagrange gauge penalization coefficient = real 1',
         '! Model lumping',
         '  Constraint Modes Analysis = Logical True',
+        'Run Control Constraint Modes = Logical True',
         '  Constraint Modes Lumped = Logical True',
         '  Constraint Modes Fluxes = Logical True',
         '  Constraint Modes EM Wave = Logical True',
@@ -301,6 +321,8 @@ def get_electrostatics_solver(
     method='mg',
     p_element_order=3,
     percent_error=0.005,
+    max_error_scale=2,
+    max_outlier_fraction=1e-3,
     maximum_passes=1,
     minimum_passes=1
 ):
@@ -313,14 +335,16 @@ def get_electrostatics_solver(
         method(str): linear system method, see `sif_linsys`
         p_element_order(int): p-element order, see `sif_linsys`
         percent_error(float): Stopping criterion in adaptive meshing.
-        maximum_passes(int): Maximum number of adaptive meshing iterations.
+        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
+        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
+        minimum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
 
     Returns:
         (str): electrostatics solver in sif file format
     """
     # Adaptive meshing not yet working with vectorised version (github.com/ElmerCSC/elmerfem/issues/401)
-    useVectorised = maximum_passes <= 1
+    useVectorised = p_element_order > 1
     solver = "StatElecSolveVec" if useVectorised else "StatElecSolve"
     solver_lines = [
         'Equation = Electro Statics',
@@ -332,9 +356,12 @@ def get_electrostatics_solver(
         'Nonlinear System Consistent Norm = True',
     ]
 
-    solver_lines += sif_linsys(method=method, p_element_order=p_element_order)
-    if maximum_passes > 1:
-        solver_lines += sif_adaptive_mesh(percent_error=percent_error, minimum_passes=minimum_passes)
+    solver_lines += sif_linsys(method=method, p_element_order=p_element_order, steady_state_error=percent_error)
+    if maximum_passes>1:
+        solver_lines += sif_adaptive_mesh(percent_error=percent_error,
+                                          max_error_scale=max_error_scale,
+                                          max_outlier_fraction=max_outlier_fraction,
+                                          minimum_passes=minimum_passes)
     if useVectorised:
         solver_lines += ['Vector Assembly = True']
         solver_lines += ['Element = p:$pn']
@@ -385,7 +412,12 @@ def get_circuit_output_solver(ordinate: Union[str, int], exec_solver='Always'):
 
 
 def get_magneto_dynamics_2d_harmonic_solver(
-    ordinate: Union[str, int], percent_error=0.005, maximum_passes=1, minimum_passes=1
+    ordinate: Union[str, int],
+    percent_error=0.005,
+    max_error_scale=2,
+    max_outlier_fraction=1e-3,
+    maximum_passes=1,
+    minimum_passes=1
 ):
     """
     Returns magneto-dynamics 2d solver in sif file format.
@@ -393,6 +425,8 @@ def get_magneto_dynamics_2d_harmonic_solver(
     Args:
         ordinate(int): solver ordinate
         percent_error(float): Stopping criterion in adaptive meshing.
+        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
+        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         maximum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
 
@@ -416,10 +450,13 @@ def get_magneto_dynamics_2d_harmonic_solver(
         'Linear System Abort not Converged = False',
         'Linear System ILUT Tolerance=1e-8',
         'BicgStabL Polynomial Degree = 6',
-        'Steady State Convergence Tolerance = 1e-06',
+        'Steady State Convergence Tolerance = 1e-05',
     ]
     if maximum_passes > 1:
-        solver_lines += sif_adaptive_mesh(percent_error=percent_error, minimum_passes=minimum_passes)
+        solver_lines += sif_adaptive_mesh(percent_error=percent_error,
+                                          max_error_scale=max_error_scale,
+                                          max_outlier_fraction=max_outlier_fraction,
+                                          minimum_passes=minimum_passes)
     solver_lines += [
         'Vector Assembly = True',
         'Element = p:$pn',
@@ -476,7 +513,7 @@ def get_result_output_solver(ordinate, output_file_name, exec_solver="Always"):
         f'Output File Name = "{output_file_name}"',
         'Vtu format = Logical True',
         'Discontinuous Bodies = Logical True',
-        'Save All Meshes = Logical True',
+        '!Save All Meshes = Logical True',
         'Save Geometry Ids = Logical True',
        ]
 
@@ -494,7 +531,7 @@ def get_save_data_solver(ordinate, result_file='results.dat'):
         (str): save data solver in sif file format
     """
     solver_lines = [
-       'Exec Solver = Always',
+       'Exec Solver = After All',
        'Equation = "sv"',
        'Procedure = "SaveData" "SaveScalars"',
        f'Filename = {result_file}',
@@ -689,6 +726,23 @@ def get_permittivities(json_data, with_zero, dim):
             [1.0 if with_zero or s == 'vacuum' else json_data.get('substrate_permittivity', 1.0) for s in bodies]
     return permittivities
 
+def get_gaps(json_data, dim):
+    """
+    Returns model gaps.
+
+    Args:
+        json_data(json): all the model data produced by `export_elmer_json`
+        dim(int): dimensionality of the model (options: 2 or 3)
+
+    Returns:
+        (list(str)): list of gaps
+    """
+    if dim == 2:
+        gaps = [n for n in json_data['layers'].keys() if 'gap' in n]
+    elif dim == 3:
+        gaps = json_data['gap_names']
+    return gaps
+
 def get_signals(json_data, dim):
     """
     Returns model signals.
@@ -756,6 +810,8 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
         maximum_passes=json_data['maximum_passes'],
         minimum_passes=json_data['minimum_passes'],
         percent_error=json_data['percent_error'],
+        max_error_scale=json_data['max_error_scale'],
+        max_outlier_fraction=json_data['max_outlier_fraction'],
     )
     solvers += get_result_output_solver(
         ordinate=2,
@@ -765,7 +821,7 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
     solvers += get_save_data_solver(ordinate=3, result_file=name)
     equations = get_equation(
         ordinate=1,
-        solver_ids=[1, 2],
+        solver_ids=[1],
         keywords=['Calculate Electric Energy = True'] if dim == 2 else [],
     )
 
@@ -795,20 +851,31 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
 
     grounds = get_grounds(json_data, dim=dim)
     signals = get_signals(json_data, dim=dim)
+    gaps = get_gaps(json_data, dim=dim)
 
     ground_boundaries = [f'{g}_boundary' for g in grounds] if dim == 2 else grounds
     signals_boundaries = [f'{s}_boundary' for s in signals] if dim == 2 else signals
+    gaps_boundaries = [f'{gp}_boundary' for gp in signals] if dim == 2 else gaps
 
+    n_ground_bcs = 1
     boundary_conditions += sif_boundary_condition(
-                                ordinate=1,
+                                ordinate=n_ground_bcs,
                                 target_boundaries=ground_boundaries,
                                 conditions=['Potential = 0.0'])
 
     for i, s in enumerate(signals_boundaries, 1):
+        n_signals = i+1
         boundary_conditions += sif_boundary_condition(
-                                    ordinate=i+1,
+                                    ordinate=n_signals,
                                     target_boundaries=[s],
                                     conditions=[f'Capacitance Body = {i}'])
+
+    boundary_conditions += sif_boundary_condition(
+                                ordinate=n_signals+n_ground_bcs,
+                                target_boundaries=gaps_boundaries,
+                                conditions=['! This BC does not do anything, but',
+                                            '! MMG does not conserve GeometryIDs if there is no BC defined.',
+                                            ])
 
     return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
 
@@ -841,6 +908,8 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
         maximum_passes=json_data['maximum_passes'],
         minimum_passes=json_data['minimum_passes'],
         percent_error=json_data['percent_error'],
+        max_error_scale=json_data['max_error_scale'],
+        max_outlier_fraction=json_data['max_outlier_fraction'],
     )
 
     solvers += get_magneto_dynamics_calc_fields(ordinate=3, p_element_order=json_data['p_element_order'])
@@ -983,13 +1052,13 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
 
     boundary_conditions = ""
     matc_blocks = ""
-    n_boundaries += 1
 
     equations = get_equation(ordinate=1, solver_ids=[2, 3])
     equations += get_equation(ordinate=2, solver_ids=[1])
 
+    n_boundaries += 1
     boundary_conditions += sif_boundary_condition(
-                                ordinate=1,
+                                ordinate=n_boundaries,
                                 target_boundaries=json_data['ground_names'],
                                 conditions=[
                                     'E re {e} = 0',
@@ -998,10 +1067,19 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
                                     ]
                                 )
 
+    n_boundaries += 1
+    boundary_conditions += sif_boundary_condition(
+                                ordinate=n_boundaries,
+                                target_boundaries=json_data['gap_names'],
+                                conditions=[
+                                    '! This is a place holder for gap boundary conditions'
+                                    ]
+                                )
+
     for i, port_signal_name in enumerate(json_data['port_signal_names']):
         n_boundaries += 1
         boundary_conditions += sif_boundary_condition(
-                                    ordinate=i+2,
+                                    ordinate=i+3,
                                     target_boundaries=[port_signal_name],
                                     conditions=[
                                         'E re {e} = 0',
@@ -1049,6 +1127,8 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
         maximum_passes=json_data['maximum_passes'],
         minimum_passes=json_data['minimum_passes'],
         percent_error=json_data['percent_error'],
+        max_error_scale=json_data['max_error_scale'],
+        max_outlier_fraction=json_data['max_outlier_fraction'],
     )
     solvers += get_vector_helmholtz(ordinate=2, angular_frequency='$ w')
     solvers += get_vector_helmholtz_calc_fields(ordinate=3, angular_frequency='$ w')
@@ -1075,7 +1155,7 @@ def write_project_results_json(path: Path, msh_filepath):
 
         with open(c_matrix_filename, 'r') as file:
             my_reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
-            c_matrix = [row[0:-1] for row in my_reader]
+            c_matrix = list(my_reader)
 
         c_data = {"C_Net{}_Net{}".format(net_i+1, net_j+1): [c_matrix[net_j][net_i]] for net_j in range(len(c_matrix))
                 for net_i in range(len(c_matrix))}

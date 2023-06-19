@@ -99,10 +99,6 @@ if use_elmer:
         **export_parameters,
         mesh_size=mesh_size,
         workflow=workflow,
-        # Uncomment for adaptive meshing
-        percent_error=0.005,
-        maximum_passes=3,
-        minimum_passes=2
     )
 else:
     export_parameters = {

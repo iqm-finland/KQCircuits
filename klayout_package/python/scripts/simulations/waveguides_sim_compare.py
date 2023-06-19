@@ -141,9 +141,18 @@ if use_elmer:
             'linear_system_method': 'mg',
             'p_element_order': args.p_element_order,
         }
+        if elmer_n_processes == 1:
+            export_parameters_elmer.update(
+                {
+                    'percent_error': 0.0001,
+                    'max_error_scale': 2,          # allow outlier where error is 2*0.005
+                    'max_outlier_fraction': 1e-3,  # allow 0.1% of outliers
+                    'maximum_passes': 3,
+                    'minimum_passes': 2
+                })
 
     workflow = {
-        'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
+        'run_gmsh_gui': False,  # For GMSH: if true, the mesh is shown after it is done
                                # (for large meshes this can take a long time)
         'run_elmergrid': True,
         'run_elmer': True,

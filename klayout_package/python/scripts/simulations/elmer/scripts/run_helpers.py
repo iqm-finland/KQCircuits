@@ -22,6 +22,7 @@ import subprocess
 import sys
 import platform
 import json
+import glob
 from pathlib import Path
 
 def write_simulation_machine_versions_file(path, name):
@@ -118,9 +119,11 @@ def run_paraview(result_path, n_processes, exec_path_override=None):
     paraview_executable = shutil.which('paraview')
     if paraview_executable is not None:
         if n_processes > 1:
-            subprocess.check_call([paraview_executable, '{}_t0001.pvtu'.format(result_path)], cwd=exec_path_override)
+            pvtu_files = glob.glob('{}*.pvtu'.format(result_path))
+            subprocess.check_call([paraview_executable]+pvtu_files, cwd=exec_path_override)
         else:
-            subprocess.check_call([paraview_executable, '{}_t0001.vtu'.format(result_path)], cwd=exec_path_override)
+            vtu_files = glob.glob('{}*.vtu'.format(result_path))
+            subprocess.check_call([paraview_executable]+vtu_files, cwd=exec_path_override)
     else:
         logging.warning("Paraview was not found! Make sure you have it installed: https://www.paraview.org/")
         sys.exit()

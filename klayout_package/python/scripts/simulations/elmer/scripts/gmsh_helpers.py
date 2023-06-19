@@ -934,6 +934,11 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
                             port['physical_names'].append((parent_body_dim_tag, port_physical_name))
                             body_port_phys_map[parent_body_dim_tag].append(port_physical_name)
 
+    gap_names = []
+    for i, dim_tag in enumerate(face_dim_tag_dicts[face]['gap']):
+        gap_names.append(f'gap_{i+1}')
+        set_physical_name(dim_tag, gap_names[-1])
+
     for face in faces:
         set_physical_name(chips[face], 'chip_{}'.format(face))
     set_physical_name(vacuum, 'vacuum')
@@ -982,6 +987,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
         'body_dim_tags': body_dim_tags,
         'body_materials': body_materials,
         'ground_names': ground_names,
+        'gap_names': gap_names,
         'substrate_permittivity': sim_data['material_dict'][sim_data['layers']['substrate']['material']][
             'permittivity'],
     }

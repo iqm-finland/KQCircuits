@@ -1,8 +1,10 @@
 #!/bin/bash
 
+SINGULARITY_DEF_FILE="singularity_ubuntu.def"
+
 USE_SUDO="true"
-{ echo "Building singularity image with fakeroot..." && singularity build --fakeroot kqclib singularity.def && USE_SUDO="false"; } || \
-	{ echo "Fakeroot build failed, let's try using sudo" && sudo singularity build kqclib singularity.def; } && \
+{ echo "Building singularity image with fakeroot..." && singularity build --fakeroot kqclib $SINGULARITY_DEF_FILE && USE_SUDO="false"; } || \
+	{ echo "Fakeroot build failed, let's try using sudo" && sudo singularity build kqclib $SINGULARITY_DEF_FILE; } && \
 	mv kqclib libexec && mkdir -p bin && ln -s ../libexec/kqclib.sh bin/kqclib || exit
 
 if [[ "${USE_SUDO}" == "true" ]]; then

@@ -55,6 +55,8 @@ def export_elmer_json(simulation,
                       mesh_size=None,
                       workflow=None,
                       percent_error=0.005,
+                      max_error_scale=2,
+                      max_outlier_fraction=1e-3,
                       maximum_passes=1,
                       minimum_passes=1,
                       dielectric_surfaces=None,
@@ -72,6 +74,8 @@ def export_elmer_json(simulation,
         mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
         percent_error(float): Stopping criterion in adaptive meshing.
+        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
+        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         maximum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
         dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
@@ -111,6 +115,8 @@ def export_elmer_json(simulation,
         'mesh_size': {} if mesh_size is None else mesh_size,
         'workflow': {} if workflow is None else workflow,
         'percent_error': percent_error,
+        'max_error_scale': max_error_scale,
+        'max_outlier_fraction': max_outlier_fraction,
         'maximum_passes': maximum_passes,
         'minimum_passes': minimum_passes,
         'frequency': frequency,
@@ -309,6 +315,8 @@ def export_elmer(simulations: Sequence[Simulation],
                  mesh_size=None,
                  workflow=None,
                  percent_error=0.005,
+                 max_error_scale=2,
+                 max_outlier_fraction=1e-3,
                  maximum_passes=1,
                  minimum_passes=1,
                  dielectric_surfaces=None,
@@ -330,6 +338,8 @@ def export_elmer(simulations: Sequence[Simulation],
         mesh_size(dict): Parameters to determine mesh element sizes
         workflow(dict): Parameters for simulation workflow
         percent_error(float): Stopping criterion in adaptive meshing.
+        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
+        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements
         maximum_passes(int): Maximum number of adaptive meshing iterations.
         minimum_passes(int): Minimum number of adaptive meshing iterations.
         dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in
@@ -389,6 +399,8 @@ def export_elmer(simulations: Sequence[Simulation],
                     mesh_size=mesh_size,
                     workflow=workflow,
                     percent_error=percent_error,
+                    max_error_scale=max_error_scale,
+                    max_outlier_fraction=max_outlier_fraction,
                     maximum_passes=maximum_passes,
                     minimum_passes=minimum_passes,
                     dielectric_surfaces=dielectric_surfaces,
