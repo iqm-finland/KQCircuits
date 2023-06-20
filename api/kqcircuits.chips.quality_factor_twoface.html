@@ -544,13 +544,40 @@
 <dd><p>Child classes re-define this method to build the PCell.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.chips.quality_factor_twoface.QualityFactorTwoface.produce_resonator">
+<span class="sig-name descname"><span class="pre">produce_resonator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_fingers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l_fingers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_coupler</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resonator_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'capped'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">connector_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_resonator_avoidance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/quality_factor_twoface.html#QualityFactorTwoface.produce_resonator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.quality_factor_twoface.QualityFactorTwoface.produce_resonator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a single spiral resonator and corresponding input capacitor.</p>
+<p>The resonator is attached to the chip refpoint <code class="docutils literal notranslate"><span class="pre">pl_{i}_t_port_c</span></code>, where <cite>i</cite> is the resonator index (this can
+be any identifier, as long as it is used the same way in the refpoint name). The direction of the resonator
+is set by the corresponding <code class="docutils literal notranslate"><span class="pre">_corner</span></code> refpoint, but the spiral can be left or right depending on <code class="docutils literal notranslate"><span class="pre">mirror</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> – Resonator index</p></li>
+<li><p><strong>a</strong> – CPW line width</p></li>
+<li><p><strong>b</strong> – CPW gap width</p></li>
+<li><p><strong>length</strong> – Resonator length (excluding capacitor)</p></li>
+<li><p><strong>n_fingers</strong> – Capacitor finger number, or finger_control for <code class="docutils literal notranslate"><span class="pre">SmoothCapacitor</span></code></p></li>
+<li><p><strong>l_fingers</strong> – Capacitor finger length</p></li>
+<li><p><strong>type_coupler</strong> – Type of capacitor, see <code class="docutils literal notranslate"><span class="pre">cap_params</span></code></p></li>
+<li><p><strong>face_ids</strong> – list of face ids for the resonator</p></li>
+<li><p><strong>resonator_type</strong> – String, type of resonator, one of <code class="docutils literal notranslate"><span class="pre">etched</span></code>, <code class="docutils literal notranslate"><span class="pre">capped</span></code>, <code class="docutils literal notranslate"><span class="pre">solid</span></code> or <code class="docutils literal notranslate"><span class="pre">twoface</span></code></p></li>
+<li><p><strong>connector_distance</strong> – For <code class="docutils literal notranslate"><span class="pre">twoface</span></code> resonators, distance of the flip chip connector starting from capacitor</p></li>
+<li><p><strong>extra_resonator_avoidance</strong> – Extra <code class="docutils literal notranslate"><span class="pre">ground_grid_avoidance</span></code> margin around the resonator</p></li>
+<li><p><strong>mirror</strong> – Turn clockwise if False, or counter-clockwise if True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>resonator_types</strong><em> (List)</em><span> - Choices: ‘capped’, ‘twoface’, ‘etched’, ‘solid’</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['capped',</span> <span class="pre">'capped',</span> <span class="pre">'capped',</span> <span class="pre">'capped',</span> <span class="pre">'capped',</span> <span class="pre">'capped']</span></code></p></li>
 <li><p><strong>resonator_faces</strong><em> (List)</em><span> - Resonator face order list</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
-<li><p><strong>connector_distances</strong><em> (List)</em><span> - Distances of face to face connectors from resonator inputs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[500,</span> <span class="pre">1300,</span> <span class="pre">2100,</span> <span class="pre">2900,</span> <span class="pre">3700,</span> <span class="pre">4500]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
+<li><p><strong>connector_distances</strong><em> (List)</em><span> - Distances of face to face connectors from resonator inputs</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[500,</span> <span class="pre">1300,</span> <span class="pre">2100,</span> <span class="pre">2900,</span> <span class="pre">3700,</span> <span class="pre">4500,</span> <span class="pre">500,</span> <span class="pre">1300,</span> <span class="pre">2100,</span> <span class="pre">2900,</span> <span class="pre">3700,</span> <span class="pre">4500]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>spiral_box_height</strong><em> (Double)</em><span> - Spiral resonator box height</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2000</span></code></p></li>
 <li><p><strong>spiral_box_width</strong><em> (Double)</em><span> - Spiral resonator box width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
 <li><p><strong>x_indentation</strong><em> (Double)</em><span> - Resonator/connector indentation from side edges</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">800</span></code></p></li>

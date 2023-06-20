@@ -460,6 +460,8 @@ command-line).  The script is used as::
     klayout -e -rx -rm util/create_element_from_path.py -rd element_path=kqcircuits/chips/demo.py
 
 And can be easily incorporated as a macro to your IDE.  Check the comments in the function on how to
-use it in PyCharm or Visual Studio Code. The ``element_path`` argument can strip a leading
-`*Circuits/klayout_package/python/` or `klayout_package/python/`, use what is easiest to implement
-for your workflow.
+use it in PyCharm, Visual Studio Code or Vim/NeoVim. The ``element_path`` argument can be given
+as a file path that starts from `*Circuits` or `klayout_package/python/`.
+The ``element_path`` argument can also be given as an absolute path as long as it has
+`*Circuits/klayout_package/python` in the path.
+Use what is easiest to implement for your workflow.
