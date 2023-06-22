@@ -456,10 +456,10 @@ class WaveguideComposite(Element):
                 self.add_metal = node.params['add_metal']
 
             if node.element is None:
-                if 'a' in node.params or 'b' in node.params:
-                    self._add_taper(i)
-                elif 'face_id' in node.params:
+                if self.new_id != self.old_id:
                     self._add_layer_changing_element(i)
+                elif 'a' in node.params or 'b' in node.params:
+                    self._add_taper(i)
             else:
                 self.check_node_type(node, i)
 
@@ -525,9 +525,17 @@ class WaveguideComposite(Element):
 
         params['face_ids'] = [self.old_id, self.new_id]
 
+        # Allow face changing elements to change waveguide widths
+        new_a, new_b = params.get('a', self.a), params.get('b', self.b)
+        if not (new_a == self.a and new_b == self.b):
+            params['a2'], params['b2'] = new_a, new_b
+            params['a'], params['b'] = self.a, self.b
+
         fc_cell = self.add_element(element, **params)
 
         self._insert_cell_and_waveguide(ind, fc_cell, before=f'{self.old_id}_port', after=f'{self.new_id}_port')
+
+        self.a, self.b = new_a, new_b
         self.face_ids = [self.new_id] + [a for a in self.face_ids if a != self.new_id]
 
     def _add_airbridge(self, ind, **kwargs):
