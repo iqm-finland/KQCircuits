@@ -42,6 +42,7 @@ class MaskLayout:
         layers_to_mask: dictionary of layers with mask label postfix for mask label and mask covered region creation
         covered_region_excluded_layers: list of layers in `layers_to_mask` for which mask covered region is not created
         chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)
+        align_to: optional exact point of placement, an (x,  y) coordinate tuple. By default the mask is centered.
         chips_map_legend: Dictionary where keys are chip names, values are chip cells
         wafer_rad: Wafer radius
         wafer_center: Wafer center as a pya.DVector
@@ -111,6 +112,31 @@ class MaskLayout:
         self.top_cell = self.layout.create_cell(f"{self.name} {self.face_id}")
         self.added_chips = []
 
+        self.align_to = kwargs.get("align_to", None)
+        self.chip_counts = {}
+        self.extra_chips_maps = []
+
+        self._max_x = 0
+        self._max_y = 0
+        self._min_x = 0
+        self._min_y = 0
+
+    def add_chips_map(self, chips_map, align=None, align_to=None, chip_size=None):
+        """Add additional chip maps to the main chip map.
+
+        The specified extra chip map, a.k.a. sub-grid, will be attached to the main grid. It may use
+        different chip size than the main grid. For convenience left and rigtht sub-grids will be
+        rotated 90 degrees clockwise.
+
+        Args:
+            chips_map: List of lists (2D-array) of strings, each string is a chip name (or --- for no chip)
+            align: to what side of the main grid this sub-grid attaches. Allowed values: top, left, right and bottom.
+            align_to: optional exact point of placement. (x,  y) coordinate tuple
+            chip_size: a different chip size may be used in each sub-grid
+        """
+        chip_size = self.chip_size if not chip_size else chip_size
+        self.extra_chips_maps.append((chips_map, chip_size, align, align_to))
+
     def build(self, chips_map_legend):
         """Builds the cell hierarchy for this mask layout.
 
@@ -126,9 +152,8 @@ class MaskLayout:
         self.chips_map_legend = {}
 
         for name, cell in tqdm(chips_map_legend.items(), desc='Building cell hierarchy', bar_format=default_bar_format):
-
-            # pylint: disable=use-a-generator
-            if any([name in row for row in self.chips_map] + [chip[0] == name for chip in self.extra_chips]):
+            self.chip_counts[name] = 0
+            if [name in row for row in self.chips_map] or [chip[0] == name for chip in self.extra_chips]:
 
                 # create copies of the chips, so that modifying these only affects the ones in this MaskLayout
                 new_cell = self.layout.create_cell(name)
@@ -155,9 +180,9 @@ class MaskLayout:
 
                 self.chips_map_legend[name] = new_cell
 
-        region_covered = self._mask_create_geometry()
+        self.region_covered = self._mask_create_geometry()
         if len(self.submasks) > 0:
-            region_covered = pya.Region()  # don't fill with metal gap layer if using submasks
+            self.region_covered = pya.Region()  # don't fill with metal gap layer if using submasks
             for submask_layout, submask_pos in self.submasks:
                 self.top_cell.insert(
                     pya.DCellInstArray(submask_layout.top_cell.cell_index(),
@@ -165,36 +190,20 @@ class MaskLayout:
                 )
 
         # add chips from chips_map
-        for (i, row) in enumerate(tqdm(self.chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
-            for (j, chip_name) in enumerate(row):
-                if chip_name == "---":
-                    continue
-                position = pya.DPoint(self.chip_size * j, -self.chip_size * (i + 1)) - self.chips_map_offset + \
-                           pya.DVector(-self.wafer_rad, self.wafer_rad)
-                pos = position - self.wafer_center
-                test_x = self.chip_size if pos.x + self.chip_size / 2 > 0 else 0
-                test_y = self.chip_size if pos.y + self.chip_size / 2 > 0 else 0
-                d_edge = self.wafer_rad - (pos + pya.DVector(test_x, test_y)).abs()
-                if  d_edge > self.edge_clearance:
-                    added_chip, region_chip = self._add_chip(chip_name, position, self.chip_trans)
-                    region_covered -= region_chip
-                else:
-                    print(f" Warning, dropping chip {chip_name} at ({i}, {j}), '{self.face_id}' - too close to edge:"
-                          f" {d_edge:.2f} < {self.edge_clearance}")
-                    added_chip = False
-                if not added_chip:
-                    self.chips_map[i][j] = "---"
+        self._add_chips_from_map(self.chips_map, self.chip_size, None, self.align_to)
+        for (chips_map, chip_size, align, align_to) in self.extra_chips_maps:
+            self._add_chips_from_map(chips_map, chip_size, align, align_to)
 
         # add chips outside chips_map
         for name, pos, *trans in self.extra_chips:  # trans is optional
             if name in chips_map_legend:
-                region_covered -= self._add_chip(name, pos, trans[0] if trans else self.chip_trans)[1]
-                self.chips_map.append([name])  # to get correct amount of chips in mask documentation
+                self.region_covered -= self._add_chip(name, pos, trans[0] if trans else self.chip_trans)[1]
+                self.chip_counts[name] += 1
 
         maskextra_cell: pya.Cell = self.layout.create_cell("MaskExtra")
 
         self._insert_mask_name_label(self.top_cell, default_layers["mask_graphical_rep"])
-        self._mask_create_covered_region(maskextra_cell, region_covered, self.layers_to_mask)
+        self._mask_create_covered_region(maskextra_cell, self.region_covered, self.layers_to_mask)
         convert_child_instances_to_static(self.layout, maskextra_cell, only_elements=True, prune=True)
         merge_layout_layers_on_face(self.layout, maskextra_cell, self.face())
 
@@ -267,6 +276,53 @@ class MaskLayout:
 
         region_covered = pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
         return region_covered
+
+    def _add_chips_from_map(self, chips_map, chip_size, align, align_to):
+        orig = pya.DVector(-self.wafer_rad, self.wafer_rad) - self.chips_map_offset
+        if align_to:
+            orig = pya.DVector(*align_to)
+        elif align:  # autoalign to the specified side of the existing layout
+            w = len(chips_map[0]) * chip_size / 2
+            h = len(chips_map) * chip_size
+            if align == "top":
+                orig = pya.DVector(-w, h + self._max_y * self.layout.dbu)
+            elif align == "bottom":
+                orig = pya.DVector(-w, self._min_y * self.layout.dbu)
+            elif align == "left":
+                orig = pya.DVector(-h + self._min_x * self.layout.dbu, w)
+            elif align == "right":
+                orig = pya.DVector(self._max_x * self.layout.dbu, w)
+        if align in ("left", "right"):  # rotate clockwise
+            chips_map = zip(*reversed(chips_map))
+
+        orig_chip_size = self.chip_size
+        self.chip_size = chip_size
+        region_used = pya.Region()
+        for (i, row) in enumerate(tqdm(chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
+            for (j, name) in enumerate(row):
+                if name == "---":
+                    continue
+                position = pya.DPoint(chip_size * j, -chip_size * (i + 1)) + orig
+                pos = position - self.wafer_center
+                test_x = chip_size if pos.x + chip_size / 2 > 0 else 0
+                test_y = chip_size if pos.y + chip_size / 2 > 0 else 0
+                d_edge = self.wafer_rad - (pos + pya.DVector(test_x, test_y)).abs()
+                if  d_edge > self.edge_clearance:
+                    added_chip, region_chip = self._add_chip(name, position, self.chip_trans)
+                    region_used += region_chip
+                    if added_chip:
+                        self.chip_counts[name] += 1
+                else:
+                    print(f" Warning, dropping chip {name} at ({i}, {j}), '{self.face_id}' - too close to edge:"
+                          f" {d_edge:.2f} < {self.edge_clearance}")
+
+        self.region_covered -= region_used
+        box = region_used.bbox()
+        self._min_x = min(box.p1.x, self._min_x)
+        self._min_y = min(box.p1.y, self._min_y)
+        self._max_x = max(box.p2.x, self._max_x)
+        self._max_y = max(box.p2.y, self._max_y)
+        self.chip_size = orig_chip_size
 
     def _add_chip(self, name, position, trans):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""

@@ -275,9 +275,7 @@ class MaskSet:
         # populate used_chips with chips which exist in some mask_layout
         for chip_name, cell in self.chips_map_legend.items():
             for mask_layout in self.mask_layouts:
-                # pylint: disable=use-a-generator
-                if any([chip_name in row for row in mask_layout.chips_map]):
-                # pylint: enable=use-a-generator
+                if mask_layout.chip_counts[chip_name]:
                     self.used_chips[chip_name] = cell
                     break
 

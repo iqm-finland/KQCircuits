@@ -219,28 +219,11 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
 
             f.write("### Number of Chips in Mask Layout {}\n".format(mask_layout.face_id + mask_layout.extra_id))
 
-            chip_counts = {}
-
-            def count_chips(mlayout, counts):
-
-                for _, row_chips in enumerate(mlayout.chips_map):
-                    for _, curr_name in enumerate(row_chips):
-                        if curr_name == "---":
-                            continue
-                        if curr_name in counts:
-                            counts[curr_name] += 1
-                        else:
-                            counts[curr_name] = 1
-
-                for submask_layout, _ in mlayout.submasks:
-                    count_chips(submask_layout, counts)
-
-            count_chips(mask_layout, chip_counts)
-
             f.write("| **Chip Name** | **Amount** |\n")
             f.write("| :--- | :--- |\n")
-            for chip, amount in chip_counts.items():
-                f.write("| **{}** | **{}** |\n".format(chip, amount))
+            for chip, amount in mask_layout.chip_counts.items():
+                if amount > 0:
+                    f.write("| **{}** | **{}** |\n".format(chip, amount))
             f.write("\n")
 
         f.write("___\n")
