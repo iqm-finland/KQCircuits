@@ -159,7 +159,7 @@ class QualityFactorTwoface(Chip):
             res_params = {
                 "airbridge_type": "Airbridge Multi Face",
                 "include_bumps": False,
-                "bridge_length": a + 2 * (b + self.margin),
+                "bridge_length": a + 2 * (b + self.margin + extra_resonator_avoidance),
                 "bridge_width": 2,
                 "pad_length": 2,
                 "bridge_spacing": self.bridge_spacing,
@@ -194,6 +194,7 @@ class QualityFactorTwoface(Chip):
             l0 = self.get_layer("ground_grid_avoidance", int(self.resonator_faces[0]))
             region = pya.Region(inst_res.cell.begin_shapes_rec(l0)).transformed(inst_res.trans)
             region += pya.Region(inst_cplr.cell.begin_shapes_rec(l0)).transformed(inst_cplr.trans)
+            protection_region = region.sized(self.margin / self.layout.dbu)
             opposite_face = int(self.resonator_faces[1])
-            self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face)).insert(region)
+            self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face)).insert(protection_region)
             self.cell.shapes(self.get_layer("base_metal_gap_wo_grid", opposite_face)).insert(region)
