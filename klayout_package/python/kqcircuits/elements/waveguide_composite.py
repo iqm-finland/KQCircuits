@@ -37,6 +37,7 @@ from kqcircuits.elements.meander import Meander
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_taper import WaveguideCoplanarTaper
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
+from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter
 
 
 class Node:
@@ -512,6 +513,9 @@ class WaveguideComposite(Element):
         taper_cell = self.add_element(WaveguideCoplanarTaper, **{**params, 'a2': a, 'b2': b, 'm2': self.margin})
         self._insert_cell_and_waveguide(ind, taper_cell)
 
+        if 'r' in node.params:
+            self.r = params['r']
+
         self.a = a
         self.b = b
 
@@ -538,6 +542,9 @@ class WaveguideComposite(Element):
         self.a, self.b = new_a, new_b
         self.face_ids = [self.new_id] + [a for a in self.face_ids if a != self.new_id]
 
+        if 'r' in node.params:
+            self.r = params['r']
+
     def _add_airbridge(self, ind, **kwargs):
         """Add an airbridge with tapers at both sides and change default a/b if required."""
 
@@ -561,6 +568,9 @@ class WaveguideComposite(Element):
         cell = self.add_element(AirbridgeConnection, **params)
         self._insert_cell_and_waveguide(ind, cell)
 
+        if 'r' in node.params:
+            self.r = params['r']
+
         self.a, self.b = a, b
 
     def _add_simple_element(self, ind):
@@ -571,6 +581,9 @@ class WaveguideComposite(Element):
 
         cell = self.add_element(node.element, **params)
         self._insert_cell_and_waveguide(ind, cell, node.inst_name, *node.align)
+
+        if 'r' in node.params and not node.element is WaveguideCoplanarSplitter:
+            self.r = params['r']
 
     def _insert_cell_and_waveguide(self, ind, cell, inst_name=None, before="port_a", after="port_b"):
         """Place a cell and create the preceding waveguide.

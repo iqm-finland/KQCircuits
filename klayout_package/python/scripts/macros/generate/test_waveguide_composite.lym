@@ -87,9 +87,11 @@ nodes = [
          length_extra_side=100, **t_cross_parameters(length_extra_side=100)),
     Node(pya.DPoint(400, -750)),
     Node(pya.DPoint(500, -750), WaveguideCoplanarSplitter, **t_cross_parameters(),
+         r=50,                                             # "Element Nodes" may change curvature for the following section(s)
          align=("port_bottom", "port_right")),             # Ports can be at arbitrary angles if they have corner refpoints
     Node(pya.DPoint(600, -1000)),
     Node(pya.DPoint(600, -1100), face_id="2b1",
+         r=100,                                            # Waveguide curvature changed back to normal
          output_rotation=90),                              # Flip chip connectors can also make corners
     Node(pya.DPoint(400, -1000)),
 ]
