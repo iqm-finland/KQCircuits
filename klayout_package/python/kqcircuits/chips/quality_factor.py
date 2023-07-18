@@ -51,8 +51,7 @@ class QualityFactor(Chip):
     tl_airbridges = Param(pdt.TypeBoolean, "Airbridges on transmission line", True)
     res_airbridge_types = Param(pdt.TypeList, "Airbridge type for each resonator",
                          default=[default_airbridge_type]*6)
-    launcher_top_dist = Param(pdt.TypeDouble, "Launcher distance from top", 2800, unit="μm")
-    launcher_indent = Param(pdt.TypeDouble, "Launcher indentation from edge", 800, unit="μm")
+    sample_holder_type = Param(pdt.TypeInt, "Sample holder type for the chip", "SMA8", choices=["SMA8", "ARD24"])
     marker_safety = Param(pdt.TypeDouble, "Distance between launcher and first curve", 1000, unit="μm")
     feedline_bend_distance = Param(pdt.TypeDouble, "Horizontal distance of feedline bend", 100, unit="μm")
     resonators_both_sides = Param(pdt.TypeBoolean, "Place resonators on both sides of feedline", False)
@@ -81,9 +80,10 @@ class QualityFactor(Chip):
         else:
             wg_top_y = (chip_side + max_res_len) / 2
 
-        # Non-standard Launchers mimicking SMA8 at 1cm chip size, but keeping fixed distance from top
-        launchers = self.produce_n_launchers(8, "RF", 300, 180, self.launcher_indent,
-                                             chip_side - 2 * self.launcher_top_dist, {8: "PL-1-IN", 3: "PL-1-OUT"})
+        if self.sample_holder_type == "ARD24":
+            launchers = self.produce_launchers("ARD24", {24: "PL-1-IN", 7: "PL-1-OUT"})
+        elif self.sample_holder_type == "SMA8":
+            launchers = self.produce_launchers("SMA8", {8: "PL-1-IN", 3: "PL-1-OUT"})
 
         # Define start and end of feedline
         points_fl = [launchers["PL-1-IN"][0]]
