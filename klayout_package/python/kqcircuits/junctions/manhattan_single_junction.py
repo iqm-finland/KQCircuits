@@ -38,6 +38,8 @@ class ManhattanSingleJunction(Junction):
     finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 1.0, unit="μm")
     height = Param(pdt.TypeDouble, "Height of the junction element.", 22.0, unit="μm")
     width = Param(pdt.TypeDouble, "Width of the junction element.", 22.0, unit="μm")
+    pad_height = Param(pdt.TypeDouble, "Height of the junction pad.", 6.0, unit="μm")
+    pad_width = Param(pdt.TypeDouble, "Width of the junction pad.", 12.0, unit="μm")
 
     def build(self):
         self.produce_manhattan_junction()
@@ -45,8 +47,9 @@ class ManhattanSingleJunction(Junction):
     def produce_manhattan_junction(self):
 
         # geometry constants
-        p_height = 6  # pad height
-        p_width = self.a + 2  # pad width
+        p_height = self.pad_height  # pad height
+        p_width = self.pad_width  # pad width
+        pad_to_pad_separation = 6 # distance between the two Al pads
 
         # corner rounding parameters
         rounding_params = {
@@ -60,7 +63,7 @@ class ManhattanSingleJunction(Junction):
         shadow_shapes = []
 
         # create rounded bottom part
-        y0 = self.height / 2 - 9
+        y0 = (self.height / 2) - (self.pad_height) - 3
         bp_pts_left = [
             pya.DPoint(-p_width / 2, y0),
             pya.DPoint(-p_width / 2, y0 + p_height)
@@ -76,10 +79,12 @@ class ManhattanSingleJunction(Junction):
         self._round_corners_and_append(bp_shadow_shape, shadow_shapes, rounding_params)
 
         # create rounded top part
-        tp_shape = pya.DTrans(0, False, 0, 12) * polygon_with_vsym(bp_pts_left)
+        tp_shape = pya.DTrans(0, False, 0,
+                              self.pad_height + pad_to_pad_separation) * polygon_with_vsym(bp_pts_left)
         self._round_corners_and_append(tp_shape, junction_shapes_top, rounding_params)
 
-        tp_shadow_shape = pya.DTrans(0, False, 0, 12) * polygon_with_vsym(bp_shadow_pts_left)
+        tp_shadow_shape = pya.DTrans(0, False, 0,
+                                     self.pad_height + pad_to_pad_separation) * polygon_with_vsym(bp_shadow_pts_left)
         self._round_corners_and_append(tp_shadow_shape, shadow_shapes, rounding_params)
 
         # create rectangular junction-support structures and junctions
