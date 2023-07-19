@@ -64,11 +64,12 @@ class MaskLayout:
          density
         submasks: list of submasks, each element is a tuple (submask mask_layout, submask position)
         extra_id: extra string used to create unique name for mask layouts with the same face_id
-        extra_chips: List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional
-            transformation to use in place of self.chip_trans
+        extra_chips: List of tuples (name, position, trans, position_label) for chips placed outside chips_map
+            trans is an optional transformation to use in place of self.chip_trans
+            position_label is an optional string that overrides the automatic chip position label in the mask grid
         top_cell: Top cell of this mask layout
-        added_chips: List of (chip name, chip position, chip bounding box, chip dtrans) populated by chips added during
-            build()
+        added_chips: List of (chip name, chip position, chip bounding box, chip dtrans, position_label)
+            populated by chips added during build()
     """
 
     def __init__(self, layout, name, version, with_grid, chips_map, face_id, **kwargs):
@@ -195,9 +196,18 @@ class MaskLayout:
             self._add_chips_from_map(chips_map, chip_size, align, align_to)
 
         # add chips outside chips_map
-        for name, pos, *trans in self.extra_chips:  # trans is optional
+        for name, pos, *optional in self.extra_chips:
+            trans, position_label = None, None
+            if optional and isinstance(optional[0], pya.DTrans):
+                trans = optional[0]
+                if len(optional) > 1 and isinstance(optional[1], str):
+                    position_label = optional[1]
+            else:
+                trans = self.chip_trans
+                if optional and isinstance(optional[0], str):
+                    position_label = optional[0]
             if name in chips_map_legend:
-                self.region_covered -= self._add_chip(name, pos, trans[0] if trans else self.chip_trans)[1]
+                self.region_covered -= self._add_chip(name, pos, trans, position_label)[1]
                 self.chip_counts[name] += 1
 
         maskextra_cell: pya.Cell = self.layout.create_cell("MaskExtra")
@@ -231,33 +241,42 @@ class MaskLayout:
         chips_dict = {}  # {(pos_x, pos_y): chip_name, chip_pos (in submask coordinates), chip_inst, mask_layout}
         xvals = set()
         yvals = set()
-        for chip_name, pos, bbox, dtrans in self.added_chips:
-            xvals.add(pos.x)
-            yvals.add(pos.y)
-            chips_dict[(pos.x, pos.y)] = chip_name, pos, bbox, dtrans, self
+        for chip_name, pos, bbox, dtrans, position_label in self.added_chips:
+            if not position_label:
+                xvals.add(pos.x)
+                yvals.add(pos.y)
+            chips_dict[(pos.x, pos.y)] = chip_name, pos, bbox, dtrans, position_label, self
         for submask_layout, submask_pos in self.submasks:
-            for chip_name, pos, bbox, dtrans in submask_layout.added_chips:
+            for chip_name, pos, bbox, dtrans, position_label in submask_layout.added_chips:
                 pos2 = pos + submask_pos
-                xvals.add(pos2.x)
-                yvals.add(pos2.y)
-                chips_dict[(pos2.x, pos2.y)] = chip_name, pos, bbox, dtrans, submask_layout
+                if not position_label:
+                    xvals.add(pos2.x)
+                    yvals.add(pos2.y)
+                chips_dict[(pos2.x, pos2.y)] = chip_name, pos, bbox, dtrans, position_label, submask_layout
 
         # produce the labels such that chips with identical x-coordinate (y-coordinate) have identical number (letter)
-        for i, y in enumerate(sorted(yvals, reverse=True)):
-            for j, x in enumerate(sorted(xvals)):
-                if (x, y) in chips_dict:
-                    chip_name, _, bbox, dtrans, mask_layout = chips_dict[(x, y)]
-                    labels_cell_2 = labels_cells[mask_layout]
-                    pos_index_name = chr(ord("A") + i) + ("{:02d}".format(j))
-                    bbox_x1 = bbox.left if dtrans.is_mirror() else bbox.right
-                    produce_label(labels_cell_2, pos_index_name, dtrans*(pya.DPoint(bbox_x1, bbox.bottom)),
-                                  LabelOrigin.BOTTOMRIGHT, mask_layout.dice_width, mask_layout.text_margin,
-                                  [mask_layout.face()[layer] for layer in layers],
-                                  mask_layout.face()["ground_grid_avoidance"])
-                    bbox_x2 = bbox.right if dtrans.is_mirror() else bbox.left
-                    mask_layout._add_chip_graphical_representation_layer(chip_name,
-                                                                         dtrans*(pya.DPoint(bbox_x2, bbox.bottom)),
-                                                                         pos_index_name, bbox.width(), labels_cell_2)
+        used_position_labels = set()
+        for (x, y), (chip_name, _, bbox, dtrans, position_label, mask_layout) in chips_dict.items():
+            labels_cell_2 = labels_cells[mask_layout]
+            if not position_label:
+                if x not in xvals or y not in yvals:
+                    raise ValueError("No position_label override yet label was not automatically generated")
+                i = sorted(yvals, reverse=True).index(y)
+                j = sorted(xvals).index(x)
+                position_label = chr(ord("A") + i) + ("{:02d}".format(j))
+            if position_label in used_position_labels:
+                raise ValueError(f"Duplicate use of chip position label {position_label}. "
+                            f"When using extra_chips, please make sure to only use unreserved position labels")
+            used_position_labels.add(position_label)
+            bbox_x1 = bbox.left if dtrans.is_mirror() else bbox.right
+            produce_label(labels_cell_2, position_label, dtrans*(pya.DPoint(bbox_x1, bbox.bottom)),
+                            LabelOrigin.BOTTOMRIGHT, mask_layout.dice_width, mask_layout.text_margin,
+                            [mask_layout.face()[layer] for layer in layers],
+                            mask_layout.face()["ground_grid_avoidance"])
+            bbox_x2 = bbox.right if dtrans.is_mirror() else bbox.left
+            mask_layout._add_chip_graphical_representation_layer(chip_name,
+                                                                    dtrans*(pya.DPoint(bbox_x2, bbox.bottom)),
+                                                                    position_label, bbox.width(), labels_cell_2)
 
     def face(self):
         """Returns the face dictionary for this mask layout"""
@@ -324,7 +343,7 @@ class MaskLayout:
         self._max_y = max(box.p2.y, self._max_y)
         self.chip_size = orig_chip_size
 
-    def _add_chip(self, name, position, trans):
+    def _add_chip(self, name, position, trans, position_label=None):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""
         chip_region = pya.Region()
         if name in self.chips_map_legend.keys():
@@ -332,7 +351,7 @@ class MaskLayout:
             trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset)*trans
             self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
             chip_region = pya.Region(pya.Box(trans*bounding_box*(1/self.layout.dbu)))
-            self.added_chips.append((name, position, bounding_box, trans))
+            self.added_chips.append((name, position, bounding_box, trans, position_label))
             return True, chip_region
         return False, chip_region
 
