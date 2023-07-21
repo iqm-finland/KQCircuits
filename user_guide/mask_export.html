@@ -168,6 +168,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#ground-grid">Ground grid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#adding-and-modifying-chips">Adding and modifying chips</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#multi-face-masks">Multi-face masks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#composite-mask-maps">Composite mask maps</a></li>
 </ul>
 </li>
 </ul>
@@ -708,6 +709,60 @@ top” to verify that “Test 1t1” contains the parts of DemoTwoface in
 “1t1”-face and “Test 2b1” contains the parts of DemoTwoface in “2b1”-face
 (with proper mirroring and rotation).</p></li>
 </ol>
+</div>
+<div class="section" id="composite-mask-maps">
+<h3>Composite mask maps<a class="headerlink" href="#composite-mask-maps" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">add_mask_layout()</span></code> function returns a layout object that may be used to construct more
+complicated mask layouts using the <code class="docutils literal notranslate"><span class="pre">add_chips_map()</span></code> function. This function adds further
+“sub-grids” to the “main” mask map added by <code class="docutils literal notranslate"><span class="pre">add_mask_layout()</span></code>. Usually a central rectangular
+part is added first then it is extended with sub-layouts from all four sides. These may be added
+many times. The following example will create a layout like Demo’s “Bottom face (1t1) mask” but with
+9 big chips in the middle and regular size chips all around it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">layout</span> <span class="o">=</span> <span class="n">mdemo</span><span class="o">.</span><span class="n">add_mask_layout</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">],</span>
+<span class="p">],</span> <span class="s2">&quot;1t1&quot;</span><span class="p">,</span> <span class="n">layers_to_mask</span><span class="o">=</span><span class="n">layers_to_mask</span><span class="p">,</span> <span class="n">align_to</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">45000</span><span class="p">,</span> <span class="mi">45000</span><span class="p">),</span> <span class="n">chip_size</span><span class="o">=</span><span class="mi">30000</span><span class="p">,</span> <span class="n">edge_clearance</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+
+<span class="n">layout</span><span class="o">.</span><span class="n">add_chips_map</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">,</span> <span class="s2">&quot;CH1&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">chip_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">layout</span><span class="o">.</span><span class="n">add_chips_map</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;JT1&quot;</span><span class="p">,</span> <span class="s2">&quot;QF1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;AC1&quot;</span><span class="p">,</span> <span class="s2">&quot;ST1&quot;</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">chip_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">layout</span><span class="o">.</span><span class="n">add_chips_map</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">,</span> <span class="s2">&quot;JT2&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;SX1&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span> <span class="n">chip_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">layout</span><span class="o">.</span><span class="n">add_chips_map</span><span class="p">([</span>
+    <span class="p">[</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">,</span> <span class="s2">&quot;DE1&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;AC1&quot;</span><span class="p">,</span> <span class="s2">&quot;AC1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">,</span> <span class="s2">&quot;DT1&quot;</span><span class="p">],</span>
+<span class="p">],</span> <span class="n">align_to</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">45000</span><span class="p">,</span> <span class="mi">65000</span><span class="p">),</span> <span class="n">chip_size</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="o">...</span>
+
+<span class="n">mdemo</span><span class="o">.</span><span class="n">add_chip</span><span class="p">([</span>
+<span class="o">...</span>
+<span class="p">(</span><span class="n">Chip</span><span class="p">,</span> <span class="s2">&quot;CH2&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">30000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">))}),</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">add_mask_layout()</span></code> works as usual but we may choose to specify only the “interesting”
+central parts without all the <code class="docutils literal notranslate"><span class="pre">&quot;---&quot;</span></code> placeholders. In this case the <code class="docutils literal notranslate"><span class="pre">align_to</span></code> parameter has to
+be used to place this mask map fragment at the desired <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y)</span></code> coordinates.</p>
+<p>After that we may call <code class="docutils literal notranslate"><span class="pre">add_chips_map()</span></code> as many times as we wish. The function attaches the
+specified mask map fragmet to the already added mask map, the <code class="docutils literal notranslate"><span class="pre">align</span></code> parameter is used to choose
+the side to attach to. The mask fragment will be centerd by default, and if it is “left” or “right”
+aligned then it is also rotated 90 degrees clockwise.</p>
+<p>Note that the last “top”  fragment is only covering the top-left side of the wafer. As we do not
+want to center this it is “manually” placed using the <code class="docutils literal notranslate"><span class="pre">align_to</span></code> parameter. In this case the
+<code class="docutils literal notranslate"><span class="pre">align</span></code> parameter may be omitted, but it still can be useful if we want to exploit its rotation
+feature for left or right parts.</p>
 </div>
 </div>
 </div>

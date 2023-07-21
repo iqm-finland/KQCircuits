@@ -168,6 +168,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/mask_export.html#ground-grid">Ground grid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/mask_export.html#adding-and-modifying-chips">Adding and modifying chips</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../user_guide/mask_export.html#multi-face-masks">Multi-face masks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../user_guide/mask_export.html#composite-mask-maps">Composite mask maps</a></li>
 </ul>
 </li>
 </ul>
@@ -587,6 +588,12 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.align_to">
+<span class="sig-name descname"><span class="pre">align_to</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.align_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>optional exact point of placement, an (x,  y) coordinate tuple. By default the mask is centered.</p>
+</dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.chips_map_legend">
 <span class="sig-name descname"><span class="pre">chips_map_legend</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.chips_map_legend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary where keys are chip names, values are chip cells</p>
@@ -710,8 +717,9 @@ density</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.extra_chips">
 <span class="sig-name descname"><span class="pre">extra_chips</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.extra_chips" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of tuples (name, position, trans) for chips placed outside chips_map, trans is an optional
-transformation to use in place of self.chip_trans</p>
+<dd><p>List of tuples (name, position, trans, position_label) for chips placed outside chips_map
+trans is an optional transformation to use in place of self.chip_trans
+position_label is an optional string that overrides the automatic chip position label in the mask grid</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -723,8 +731,27 @@ transformation to use in place of self.chip_trans</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.added_chips">
 <span class="sig-name descname"><span class="pre">added_chips</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.added_chips" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of (chip name, chip position, chip bounding box, chip dtrans) populated by chips added during
-build()</p>
+<dd><p>List of (chip name, chip position, chip bounding box, chip dtrans, position_label)
+populated by chips added during build()</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.add_chips_map">
+<span class="sig-name descname"><span class="pre">add_chips_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.add_chips_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.add_chips_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add additional chip maps to the main chip map.</p>
+<p>The specified extra chip map, a.k.a. sub-grid, will be attached to the main grid. It may use
+different chip size than the main grid. For convenience left and rigtht sub-grids will be
+rotated 90 degrees clockwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chips_map</strong> – List of lists (2D-array) of strings, each string is a chip name (or — for no chip)</p></li>
+<li><p><strong>align</strong> – to what side of the main grid this sub-grid attaches. Allowed values: top, left, right and bottom.</p></li>
+<li><p><strong>align_to</strong> – optional exact point of placement. (x,  y) coordinate tuple</p></li>
+<li><p><strong>chip_size</strong> – a different chip size may be used in each sub-grid</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

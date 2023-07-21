@@ -166,6 +166,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/mask_export.html#ground-grid">Ground grid</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/mask_export.html#adding-and-modifying-chips">Adding and modifying chips</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../user_guide/mask_export.html#multi-face-masks">Multi-face masks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../user_guide/mask_export.html#composite-mask-maps">Composite mask maps</a></li>
 </ul>
 </li>
 </ul>
@@ -544,6 +545,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.junctions.squid</span> <span class="kn">import</span> <span class="n">Squid</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.junctions.manhattan</span> <span class="kn">import</span> <span class="n">Manhattan</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.junctions.manhattan_single_junction</span> <span class="kn">import</span> <span class="n">ManhattanSingleJunction</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span><span class="p">,</span> <span class="n">add_parameters_from</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.qubits.qubit</span> <span class="kn">import</span> <span class="n">Qubit</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -551,6 +553,7 @@
 
 <div class="viewcode-block" id="DoublePads"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.double_pads.html#kqcircuits.qubits.double_pads.DoublePads">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Squid</span><span class="p">,</span> <span class="n">junction_type</span><span class="o">=</span><span class="s2">&quot;Manhattan&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Manhattan</span><span class="p">)</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ManhattanSingleJunction</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DoublePads</span><span class="p">(</span><span class="n">Qubit</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A two-island qubit, consisting of two rounded rectangles shunted by a junction, with one capacitive coupler.</span>
 

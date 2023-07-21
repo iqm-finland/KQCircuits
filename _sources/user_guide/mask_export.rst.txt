@@ -177,3 +177,60 @@ additional :git_url:`mask_layout <klayout_package/python/kqcircuits/masks/mask_l
    top" to verify that "Test 1t1" contains the parts of DemoTwoface in
    "1t1"-face and "Test 2b1" contains the parts of DemoTwoface in "2b1"-face
    (with proper mirroring and rotation).
+
+Composite mask maps
+^^^^^^^^^^^^^^^^^^^
+
+The ``add_mask_layout()`` function returns a layout object that may be used to construct more
+complicated mask layouts using the ``add_chips_map()`` function. This function adds further
+"sub-grids" to the "main" mask map added by ``add_mask_layout()``. Usually a central rectangular
+part is added first then it is extended with sub-layouts from all four sides. These may be added
+many times. The following example will create a layout like Demo's "Bottom face (1t1) mask" but with
+9 big chips in the middle and regular size chips all around it::
+
+    layout = mdemo.add_mask_layout([
+        ["CH2", "CH2", "CH2"],
+        ["CH2", "CH2", "CH2"],
+        ["CH2", "CH2", "CH2"],
+    ], "1t1", layers_to_mask=layers_to_mask, align_to=(-45000, 45000), chip_size=30000, edge_clearance=5000)
+
+    layout.add_chips_map([
+        ["CH1", "CH1", "CH1", "CH1", "CH1", "CH1", "CH1", "CH1", "CH1"],
+        ["---", "---", "DE1", "DE1", "DE1", "DE1", "DE1", "---", "---"],
+    ], align="left", chip_size=10000)
+
+    layout.add_chips_map([
+        ["---", "---", "DT1", "SX1", "DE1", "DE1", "DE1", "---", "---"],
+        ["JT1", "QF1", "DT1", "SX1", "DE1", "DE1", "DE1", "AC1", "ST1"],
+    ], align="right", chip_size=10000)
+
+    layout.add_chips_map([
+        ["JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2", "JT2"],
+        ["---", "---", "SX1", "SX1", "SX1", "SX1", "SX1", "---", "---"],
+    ], align="bottom", chip_size=10000)
+
+    layout.add_chips_map([
+        ["---", "---", "DE1", "DE1", "DE1"],
+        ["AC1", "AC1", "DT1", "DT1", "DT1"],
+    ], align_to=(-45000, 65000), chip_size=10000)
+
+    ...
+
+    mdemo.add_chip([
+    ...
+    (Chip, "CH2", {"box": pya.DBox(pya.DPoint(0, 0), pya.DPoint(30000, 30000))}),
+    ...
+
+Note that ``add_mask_layout()`` works as usual but we may choose to specify only the "interesting"
+central parts without all the ``"---"`` placeholders. In this case the ``align_to`` parameter has to
+be used to place this mask map fragment at the desired ``(x, y)`` coordinates.
+
+After that we may call ``add_chips_map()`` as many times as we wish. The function attaches the
+specified mask map fragmet to the already added mask map, the ``align`` parameter is used to choose
+the side to attach to. The mask fragment will be centerd by default, and if it is "left" or "right"
+aligned then it is also rotated 90 degrees clockwise.
+
+Note that the last "top"  fragment is only covering the top-left side of the wafer. As we do not
+want to center this it is "manually" placed using the ``align_to`` parameter. In this case the
+``align`` parameter may be omitted, but it still can be useful if we want to exploit its rotation
+feature for left or right parts.
