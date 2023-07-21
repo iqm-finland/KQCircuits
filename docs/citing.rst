@@ -15,10 +15,13 @@ If no reference to a specific version is needed,
 the following ``.bib`` file can be used::
 
    @software{kqcircuits,
-     author       = {Heinsoo, Johannes and
+     author       = {Cucurachi, Daniele and
+                     Guthrie, Andrew and
+                     Heinsoo, Johannes and
                      Inel, Sinan and
                      Janzsó, Dávid and
                      Jenei, Máté and
+                     Juliusson, Kristinn and
                      Kotilahti, Janne and
                      Landra, Alessandro and
                      Ockeloen-Korppi, Caspar and
