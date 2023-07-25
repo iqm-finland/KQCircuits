@@ -52,7 +52,7 @@ for sim_tool in sim_tools:
 
     # Add eigenmode and Q3D specific settings
     export_parameters_ansys = {
-        'percent_error': 0.3,
+        'percent_error': 0.2,
         'maximum_passes': 18,
         'minimum_passes': 2,
         'minimum_converged_passes': 2,
@@ -141,26 +141,29 @@ for sim_tool in sim_tools:
     # according to the Manhattan junction
 
     simulations = []
-    for gap_height, junction_taper_width, island_width in zip([15.25, 55.25], [31, 31.7], [700, 775]):
+    for island_island_gap, island_width, island1_taper_width, island2_taper_width\
+            in zip([70, 150], [700, 775], [16.17, 37.6], [39.17, 61.3]):
         name = sim_parameters["name"]
-        name = f'{name}_island_dist_{int(2*gap_height + 39.5)}'
+        name = f'{name}_island_dist_{int(island_island_gap)}'
         simulations += [sim_class(layout, **{
-                **sim_parameters,
-                'ground_gap': [900, 900],
-                'coupler_extent': [round(coupler_width), 20],
-                'island1_extent': [round(island_width), 200],
-                'island2_extent': [round(island_width), 200],
-                'junction_type': 'Manhattan',
-                'junction_total_length': 39.5,
-                'island1_taper_width': 2 * gap_height * np.tan(np.radians(15)) + 8,
-                'island1_taper_height': gap_height,
-                'island1_taper_junction_width': 8,
-                'island2_taper_width': 2 * gap_height * np.tan(np.radians(15)) + junction_taper_width,
-                'island2_taper_height': gap_height,
-                'island2_taper_junction_width': junction_taper_width,
-                'name': f'{name}_coupler_width_{round(coupler_width)}'
-            })
-            for coupler_width in np.linspace(50, 800, 21)
+            **sim_parameters,
+            'ground_gap': [900, 900],
+            'a': 5,
+            'b': 20,
+            'coupler_a': 5,
+            'coupler_extent': [round(coupler_width), 20],
+            'island1_extent': [round(island_width), 200],
+            'island2_extent': [round(island_width), 200],
+            'island_island_gap': island_island_gap,
+            'island1_taper_width': island1_taper_width,
+            'island2_taper_width': island2_taper_width,
+            'coupler_offset': 100,
+            'junction_type': 'Manhattan',
+            'island2_taper_junction_width': 31.7,
+            'junction_total_length': 39.5,
+            'name': f'{name}_coupler_width_{round(coupler_width)}'
+        })
+            for coupler_width in np.linspace(20, 300, 51)
         ]
 
     # Create simulation
