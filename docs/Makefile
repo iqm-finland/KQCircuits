@@ -7,6 +7,7 @@ SPHINXOPTS    ?=
 SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = .
 BUILDDIR      = _build
+IMGOPTS       =
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -18,7 +19,7 @@ clean:
 	rm -rf api pcell_images _build
 
 pcell_images:
-	python make_pcell_images.py
+	python make_pcell_images.py $(IMGOPTS)
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).

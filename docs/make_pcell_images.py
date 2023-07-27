@@ -37,7 +37,8 @@ if __name__ == "__main__":
     print(f"Creating PCell images in {DIR}...")
     os.makedirs(DIR, exist_ok=True)
 
-    pcells = _get_all_pcell_classes()
+    skip = True if  '--skip-excluded-modules' in sys.argv else False
+    pcells = _get_all_pcell_classes(skip_modules=skip)
     pool = Pool(os.cpu_count())
     err = pool.map(to_png, pcells)
 

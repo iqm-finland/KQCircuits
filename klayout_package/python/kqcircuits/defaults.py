@@ -182,6 +182,8 @@ node_editor_valid_elements = [
 
 node_editor_layer_changing_elements = ['FlipChipConnectorRf']
 
+# List of modules to be excluded from documentation generation. Plain module file names without '.py'.
+excluded_module_names = ()
 
 # Path to the layer configuration file, which defines layer/face related defaults.
 # The path can be either absolute or relative.

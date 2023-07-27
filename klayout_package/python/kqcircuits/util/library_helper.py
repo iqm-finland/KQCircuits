@@ -34,7 +34,7 @@ import importlib
 from pathlib import Path
 from autologging import logged
 
-from kqcircuits.defaults import SRC_PATHS, kqc_library_names
+from kqcircuits.defaults import SRC_PATHS, kqc_library_names, excluded_module_names
 from kqcircuits.pya_resolver import pya
 
 
@@ -276,12 +276,13 @@ def _load_manual_designs(library_name):
 
 
 @logged
-def _get_all_pcell_classes(reload=False, path=""):
+def _get_all_pcell_classes(reload=False, path="", skip_modules=False):
     """Returns all PCell classes in the given path.
 
     Args:
         reload: Boolean determining if the modules in kqcircuits should be reloaded.
         path: path (relative to SRC_PATH) from which the classes are searched
+        skip_modules: Do not consider some pcells classes defined in ``excluded_module_names``.
 
     Returns:
         List of the PCell classes
@@ -296,11 +297,13 @@ def _get_all_pcell_classes(reload=False, path=""):
         else:
             library_src_paths = [src.joinpath(path)]
 
+        skip_list = _excluded_module_names if not skip_modules else _excluded_module_names + excluded_module_names
+
         for library_src in library_src_paths:
             module_paths = library_src.rglob("*.py")
             for mp in module_paths:
                 module_name = mp.stem
-                if module_name in _excluded_module_names:
+                if module_name in skip_list:
                     continue
                 # Get the module path starting from the "pkg" directory below project root directory.
                 import_path_parts = mp.parts[::-1][mp.parts[::-1].index(pkg)::-1]
