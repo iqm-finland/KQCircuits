@@ -20,4 +20,5 @@
 
 marker_type_choices = [
     'Marker Standard',
+    'Mask Marker Fc',
 ]

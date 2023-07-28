@@ -22,7 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.defaults import default_layers, default_brand, default_faces, default_mask_parameters, \
     default_layers_to_mask, default_covered_region_excluded_layers, default_mask_export_layers, default_bar_format
 from kqcircuits.elements.markers.marker import Marker
-from kqcircuits.elements.mask_marker_fc import MaskMarkerFc
+from kqcircuits.elements.markers.mask_marker_fc import MaskMarkerFc
 from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.merge import merge_layout_layers_on_face, convert_child_instances_to_static
 
@@ -59,6 +59,7 @@ class MaskLayout:
         mask_name_scale: text scaling factor for mask name label (float)
         mask_name_box_margin: margin around the mask name that determines the box size around the name (float)
         mask_text_scale: text scaling factor for graphical representation layer (float)
+        mask_markers_dict: dictionary of all markers to be placed and kwargs to determine their position (dict)
         mask_marker_offset: offset of mask markers from wafer center in horizontal and vertical directions (float)
         mask_export_layers: list of layer names (without face_ids) to be exported as individual mask `.oas` files
         mask_export_density_layers: list of layer names (without face_ids) for which we want to calculate the coverage
@@ -102,6 +103,7 @@ class MaskLayout:
         self.mask_name_scale = kwargs.get("mask_name_scale", 1)
         self.mask_name_box_margin = kwargs.get("mask_name_box_margin", 1000)
         self.mask_text_scale = kwargs.get("mask_text_scale", default_mask_parameters[self.face_id]["mask_text_scale"])
+        self.mask_markers_dict = kwargs.get("mask_markers_dict", {Marker: {}, MaskMarkerFc: {}})
         self.mask_markers_type = kwargs.get("mask_markers_type", "all")
         self.mask_marker_offset = kwargs.get("mask_marker_offset", default_mask_parameters[self.face_id][
             "mask_marker_offset"])
@@ -382,22 +384,18 @@ class MaskLayout:
              for a in range(0, 64 + 1)], 100)
         maskextra_cell.shapes(self.layout.layer(default_layers["mask_graphical_rep"])).insert(circle)
 
-        offset = self.mask_marker_offset
-        # Corner mask markers
-        if self.mask_markers_type in ["all", "only_corners"]:
-            cell_marker = Marker.create(self.layout, window=True, face_ids=[self.face_id])
-            marker_transes = [pya.DTrans(self.wafer_center.x - offset, self.wafer_center.y - offset) * pya.DTrans.R180,
-                              pya.DTrans(self.wafer_center.x + offset, self.wafer_center.y - offset) * pya.DTrans.R270,
-                              pya.DTrans(self.wafer_center.x - offset, self.wafer_center.y + offset) * pya.DTrans.R90,
-                              pya.DTrans(self.wafer_center.x + offset, self.wafer_center.y + offset) * pya.DTrans.R0]
-            self._add_markers(maskextra_cell, region_covered, cell_marker, marker_transes)
-        # Side mask markers
-        if self.mask_markers_type in ["all", "only_sides"]:
-            cell_marker = MaskMarkerFc.create(self.layout, window=True, face_ids=[self.face_id])
-            marker_transes = [
-                pya.DTrans(self.wafer_center.x - offset * 1.9 ** 0.5, self.wafer_center.y) * pya.DTrans.M90,
-                pya.DTrans(self.wafer_center.x + offset * 1.9 ** 0.5, self.wafer_center.y) * pya.DTrans.R0]
-            self._add_markers(maskextra_cell, region_covered, cell_marker, marker_transes)
+        # add all markers to the mask
+        for marker, m_kwargs in self.mask_markers_dict.items():
+            # load values into kwargs
+            m_kwargs['window'] = m_kwargs.get("window", True)
+            m_kwargs['face_ids'] = m_kwargs.get("face_ids", [self.face_id])
+            m_kwargs['wafer_rad'] = m_kwargs.get("wafer_rad", self.wafer_rad)
+            m_kwargs['edge_clearance'] = m_kwargs.get("edge_clearance", self.edge_clearance)
+            cell_marker = marker.create(self.layout, **m_kwargs)
+            marker_transes = marker.get_marker_locations(cell_marker, **m_kwargs)
+            for trans in marker_transes:
+                inst = maskextra_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans))
+                region_covered -= marker.get_marker_region(inst, **m_kwargs)
 
         maskextra_cell.shapes(self.layout.layer(default_layers["mask_graphical_rep"])).insert(region_covered)
         # remove unwanted circle boundary and filling from `layers_to_mask` which have been excluded in
@@ -407,11 +405,6 @@ class MaskLayout:
                 maskextra_cell.shapes(self.layout.layer(self.face()[layer_name])).insert(region_covered)
 
         self.top_cell.insert(pya.DCellInstArray(maskextra_cell.cell_index(), pya.DTrans()))
-
-    def _add_markers(self, maskextra_cell, region_covered, cell_marker, marker_transes):
-        for trans in marker_transes:
-            inst = maskextra_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans))
-            region_covered -= pya.Region(inst.bbox()).extents(1e3 / self.layout.dbu)
 
     def _get_chip_name(self, search_cell):
         for chip_name, cell in self.chips_map_legend.items():

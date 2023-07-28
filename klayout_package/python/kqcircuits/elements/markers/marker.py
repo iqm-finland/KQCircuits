@@ -22,6 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
 from kqcircuits.defaults import default_marker_type
+import numpy as np
 
 
 @logged
@@ -113,3 +114,55 @@ class Marker(Element):
             self.diagonals += ds.to_itype(self.layout.dbu)
             self.cell.shapes(layer_protection).insert(
                 pya.DCplxTrans(20, 0, False, pya.DVector(50 * i - 20 * 6, 50 * i - 20 * 6)) * sqr)
+
+    @classmethod
+    def get_marker_locations(cls, cell_marker, **kwargs):
+        """Locations in the wafer for this marker type.
+        By default, places four markers at the corners as close as possible
+        to the edge clearance.
+        Implement this method for your own Marker subclass if you wish to
+        have customized placement for your specific marker type.
+
+        Args:
+            cls - class that houses this class method
+            cell_marker - Marker Cell
+            kwargs - keyword arguments needed to determine the mask locations
+        Returns:
+            A list of placement encoded as DTrans objects that will
+            transform the marker cells at their preferred location
+        """
+        wafer_center_x = kwargs.get('wafer_center_x', 0)
+        wafer_center_y = kwargs.get('wafer_center_y', 0)
+        wafer_rad = kwargs.get('wafer_rad', 75000)
+        edge_clearance = kwargs.get('edge_clearance', 1000)
+        margin = kwargs.get('box_margin', 1000)
+        _h = cell_marker.dbbox().height()
+        _w = cell_marker.dbbox().width()
+        coordinate = (wafer_rad - edge_clearance) / np.sqrt(2)
+        return [
+                pya.DTrans(wafer_center_x - (coordinate - _w/2 - margin), wafer_center_y - (coordinate - _h/2 - margin))
+                * pya.DTrans.R180,
+                pya.DTrans(wafer_center_x + (coordinate - _w/2 - margin), wafer_center_y - (coordinate - _h/2 - margin))
+                * pya.DTrans.R270,
+                pya.DTrans(wafer_center_x - (coordinate - _w/2 - margin), wafer_center_y + (coordinate - _h/2 - margin))
+                * pya.DTrans.R90,
+                pya.DTrans(wafer_center_x + (coordinate - _w/2 - margin), wafer_center_y + (coordinate - _h/2 - margin))
+                * pya.DTrans.R0,
+                ]
+
+    @classmethod
+    def get_marker_region(cls, inst, **kwargs):
+        """The Region covered by the marker and surrounding area to be removed from the ground plane.
+        By default, a box around the marker extended by the parameter box_margin.
+        Implement this method for your own Marker subclass if you wish to
+        have a different Region for your specific marker type.
+
+        Args:
+            cls - class that houses this class method
+            inst - instance of the marker
+            kwargs - keyword arguments possibly needed for the region
+        Returns:
+            pya.Region that can be used to subtract from the ground plane
+        """
+        margin = kwargs.get('box_margin', 1000)
+        return pya.Region(inst.bbox()).extents(margin / inst.cell.layout().dbu)
