@@ -30,7 +30,7 @@ from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStr
 class WaveguideCoplanarTaper(Element):
     """The PCell declaration of a taper segment of a coplanar waveguide.
 
-    .. MARKERS_FOR_PNG 0,0,31.2,0 0,5,0,-5 31.2,-10,31.2,10
+    .. MARKERS_FOR_PNG 0,0,31.2,0,taper_length 0,5,0,-5,a 31.2,-10,31.2,10,a2
     """
 
     taper_length = Param(pdt.TypeDouble, "Taper length", 10 * math.pi, unit="μm")
