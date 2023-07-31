@@ -38,7 +38,8 @@ from kqcircuits.pya_resolver import pya
 
 
 # Ruler places are specified as space delimited x,y coordinate pairs after a "MARKERS_FOR_PNG" tag.
-# Ruler places can also be added manually using x1,y1,x2,y2 format.
+# The last argument may be a param name, i.e. x,y,name. Ruler places can also be added manually
+# using x1,y1,x2,y2[,name] format.
 def add_rulers(cls, view):
     if not cls.__doc__:
         return
@@ -47,18 +48,24 @@ def add_rulers(cls, view):
     if markers:
         rulers += markers[0].split()
 
-    #Check for autoruler in x,y format or manual ruler in x1,y1,x2,y2 format
+    #Check for autoruler in x,y[,name] format or manual ruler in x1,y1,x2,y2[,name] format
     for ruler in rulers:
-        markers = [float(x) for x in ruler.split(',')]
+        markers = [x for x in ruler.split(',')]
+
+        pname = ''
+        if len(markers) in (3, 5):
+            pname = markers.pop(-1) + "\n"
+        markers = [float(x) for x in markers]
+
         if len(markers) == 2:
             ant = view.layout_view.create_measure_ruler(pya.DPoint(markers[0], markers[1]))
-            ant.fmt = "$(sprintf('%.1f',D))"
+            ant.fmt = f"$(sprintf('{pname}%.1f',D))"
         elif len(markers) == 4:
             ant = pya.Annotation()
             ant.p1 = pya.DPoint(markers[0],markers[1])
             ant.p2 = pya.DPoint(markers[2],markers[3])
             ant.style = pya.Annotation.StyleRuler
-            ant.fmt = "$(sprintf('%.1f',D))"
+            ant.fmt = f"$(sprintf('{pname}%.1f',D))"
             view.layout_view.insert_annotation(ant)
 
 # Get arguments from command line, if not already processed by KLayout.

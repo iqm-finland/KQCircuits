@@ -29,7 +29,7 @@ class FingerCapacitorSquare(Element):
     Two ports with reference points. The arm leading to the finger has the same width as fingers. The feedline has
     the same length as the width of the ground gap around the coupler.
 
-    .. MARKERS_FOR_PNG 20,-10 0,17 0,5
+    .. MARKERS_FOR_PNG 20,-10,ground_padding 0,17,finger_width 0,5,finger_gap
     """
 
     a2 = Param(pdt.TypeDouble, "Width of center conductor on the other end", -1, unit="μm",
