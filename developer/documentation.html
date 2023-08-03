@@ -545,10 +545,13 @@ these are in the <a class="reference external" href="https://github.com/iqm-finl
 <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/make_pcell_images.py">docs/make_pcell_images.py</a> script is used by <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> to create a .png
 image of every PCell into the pcell_images directory, these get included in the
 API documentation.</p>
-<p>The docstring of PCell classes may contain a <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y</span> <span class="pre">x2,y2,</span>
-<span class="pre">...</span></code> line that will annotate the generated .png image with “rulers”
-documenting the important dimensions of the design. The rulers are placed
-according to KLayout’s rules going through the specified <code class="docutils literal notranslate"><span class="pre">x,</span> <span class="pre">y</span></code> coordinates.</p>
+<p>The docstring of PCell classes may contain a <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y</span> <span class="pre">x_2,y_2,</span> <span class="pre">...</span></code> line that will
+annotate the generated .png image with “rulers” documenting the important dimensions of the design.
+The rulers are placed according to KLayout’s rules for rulers going through a specified point.
+These annotations should preferably also have the name of the parameter controlling the illustrated
+dimensions, like <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y,param_name</span></code>. Some times KLayout’s automatic ruler
+placement is not satisfactory in this case the user may specify both starting and ending points of
+the ruler <code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">MARKERS_FOR_PNG</span> <span class="pre">x,y,x2,y2[,param_name]</span></code>.</p>
 </div>
 
 
