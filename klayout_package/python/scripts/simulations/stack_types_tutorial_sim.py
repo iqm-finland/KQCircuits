@@ -108,10 +108,9 @@ class TutorialSim(Simulation):
 
         # create through silicon via
         for faces in self.tsv_faces:
-            for face in faces:
-                cell = self.add_element(TsvStandard, face_ids=[face])
-                trans = pya.DTrans(0, False, self.box.center().x, element_y)
-                _, refp = self.insert_cell(cell, trans)
+            cell = self.add_element(TsvStandard, face_ids=faces)
+            trans = pya.DTrans(0, False, self.box.center().x, element_y)
+            _, refp = self.insert_cell(cell, trans)
             element_y += self.box.height() / (number_of_elements + 1)
 
 
