@@ -303,14 +303,25 @@ class Simulation:
                 base_z = dielectric_z
         return z_dict
 
-    def merged_region_from_layer(self, face_id, layer_name, expansion=0.0):
-        """ Returns a `Region` containing all geometry from a specified layer merged together """
+    def region_from_layer(self, face_id, layer_name):
+        """ Returns a `Region` containing all geometry from a specified layer """
         face_layers = default_faces[face_id] if face_id in default_faces else dict()
         if layer_name in face_layers:
-            return region_with_merged_polygons(
-                pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face_layers[layer_name]))),
-                tolerance=self.polygon_tolerance / self.layout.dbu, expansion=expansion / self.layout.dbu)
+            return pya.Region(self.cell.begin_shapes_rec(self.layout.layer(face_layers[layer_name])))
         return pya.Region()
+
+    def simplified_region(self, region, expansion=0.0):
+        """ Returns a region that is simplified by functions region_with_merged_polygons and region_with_merged_points.
+        More precisely:
+        - Merges polygons ignoring gaps that are smaller than self.polygon_tolerance
+        - Expands/shrinks region by amount given by 'expansion'
+        - In each polygon of the region, removes points that are closer to other points than self.minimum_point_spacing
+        """
+        return region_with_merged_points(
+            region_with_merged_polygons(region,
+                                        tolerance=self.polygon_tolerance / self.layout.dbu,
+                                        expansion=expansion / self.layout.dbu),
+            tolerance=self.minimum_point_spacing / self.layout.dbu)
 
     def insert_layer(self, region, layer_name, **params):
         """Merges points in the `region` and inserts the result in a target layer. The params are forwarded to the
@@ -383,19 +394,18 @@ class Simulation:
     def insert_layers_between_faces(self, i, opp_i, layer_name, **params):
         """Helper function to be used to produce indium bumps and TSVs"""
         z = self.face_z_levels()
-        mps = self.minimum_point_spacing / self.layout.dbu
         face_stack = self.face_stack_list_of_lists()
         box_region = pya.Region(self.box.to_itype(self.layout.dbu))
         sum_region = pya.Region()
         for face_id in face_stack[i]:
-            region = region_with_merged_points(self.merged_region_from_layer(face_id, layer_name) & box_region, mps)
+            region = self.simplified_region(self.region_from_layer(face_id, layer_name) & box_region)
             if region.is_empty():
                 continue
             sum_region += region
             if 0 <= opp_i < len(face_stack):
                 for opp_id in face_stack[opp_i]:
-                    common_region = region & region_with_merged_points(
-                        self.merged_region_from_layer(opp_id, layer_name) & box_region, mps)
+                    common_region = region & self.simplified_region(
+                        self.region_from_layer(opp_id, layer_name) & box_region)
                     if common_region.is_empty():
                         continue
                     if f'{opp_id}_{face_id}_{layer_name}' not in self.layers:  # if statement is to avoid duplicates
@@ -424,7 +434,6 @@ class Simulation:
         """
 
         z = self.face_z_levels()
-        mps = self.minimum_point_spacing / self.layout.dbu
         face_stack = self.face_stack_list_of_lists()
         for i, face_ids in enumerate(face_stack):
             sign = (-1) ** (i + int(self.lower_box_height > 0))
@@ -438,9 +447,9 @@ class Simulation:
 
             for j, face_id in enumerate(face_ids):
                 ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
-                metal_gap_region = self.merged_region_from_layer(face_id, "base_metal_gap_wo_grid", self.over_etching)
-                metal_add_region = self.merged_region_from_layer(face_id, "base_metal_addition", -self.over_etching)
-                lithography_region = metal_gap_region - metal_add_region
+                metal_gap_region = self.region_from_layer(face_id, "base_metal_gap_wo_grid")
+                metal_add_region = self.region_from_layer(face_id, "base_metal_addition")
+                lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
 
                 if lithography_region.is_empty():
                     signal_region = pya.Region()
@@ -458,6 +467,7 @@ class Simulation:
                         for port in self.ports:
                             if self.face_ids[port.face] == face_id:
                                 if hasattr(port, 'ground_location'):
+                                    mps = self.minimum_point_spacing / self.layout.dbu
                                     v_unit = port.signal_location-port.ground_location
                                     v_unit = v_unit/v_unit.abs()
                                     signal_loc = (port.signal_location+mps*v_unit).to_itype(self.layout.dbu)
@@ -472,13 +482,14 @@ class Simulation:
                     ground_region.merge()
                     signal_region -= ground_region
 
-                dielectric_region = ground_box_region - self.merged_region_from_layer(face_id, "dielectric_etch")
+                dielectric_region = ground_box_region - self.simplified_region(
+                    self.region_from_layer(face_id, "dielectric_etch"))
 
-                # Merge points of each region to optimize the simulations. Subtract TSV region.
-                signal_region = region_with_merged_points(signal_region, mps) - tsv_region
-                ground_region = region_with_merged_points(ground_region, mps) - tsv_region
-                dielectric_region = region_with_merged_points(dielectric_region, mps) - tsv_region
+                # Create gap region. Subtract TSVs and ground-grid from regions.
                 gap_region = ground_box_region - signal_region - ground_region
+                signal_region -= tsv_region
+                ground_region -= tsv_region
+                dielectric_region -= tsv_region
                 if self.with_grid:
                     ground_region -= self.ground_grid_region(face_id)
 
@@ -505,11 +516,12 @@ class Simulation:
 
                 # Insert airbridges
                 bridge_z = sign * self.airbridge_height
-                self.insert_layer(self.merged_region_from_layer(face_id, "airbridge_flyover") & ground_box_region,
-                                  face_id + "_airbridge_flyover", z=z[face_id][1] + bridge_z, thickness=0.0,
-                                  material='pec')
-                self.insert_layer(self.merged_region_from_layer(face_id, "airbridge_pads") & ground_box_region,
-                                  face_id + "_airbridge_pads", z=z[face_id][1], thickness=bridge_z, material='pec')
+                self.insert_layer(
+                    self.simplified_region(self.region_from_layer(face_id, "airbridge_flyover")) & ground_box_region,
+                    face_id + "_airbridge_flyover", z=z[face_id][1] + bridge_z, thickness=0.0, material='pec')
+                self.insert_layer(
+                    self.simplified_region(self.region_from_layer(face_id, "airbridge_pads")) & ground_box_region,
+                    face_id + "_airbridge_pads", z=z[face_id][1], thickness=bridge_z, material='pec')
 
                 # Insert participation layers (no material)
                 if j == 0 and self.participation_sheet_distance + self.participation_sheet_thickness > 0.0:
@@ -553,7 +565,7 @@ class Simulation:
         """Returns region of ground grid for the given face id."""
         box = self.ground_grid_box & self.box  # restrict self.ground_grid_box inside self.box
         grid_area = box * (1 / self.layout.dbu)
-        protection = self.merged_region_from_layer(face_id, "ground_grid_avoidance")
+        protection = self.simplified_region(self.region_from_layer(face_id, "ground_grid_avoidance"))
         grid_mag_factor = 1
         return make_grid(grid_area, protection,
                          grid_step=10 * (1 / self.layout.dbu) * grid_mag_factor,
