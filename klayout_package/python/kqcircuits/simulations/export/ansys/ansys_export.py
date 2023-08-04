@@ -148,7 +148,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
 
 
 def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_after_run=False,
-                     ansys_executable=r"%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe",
+                     ansys_executable=r"%PROGRAMFILES%\AnsysEM\v232\Win64\ansysedt.exe",
                      import_script_folder='scripts', import_script='import_and_simulate.py',
                      post_process_script='export_batch_results.py', intermediate_processing_command=None,
                      use_rel_path=True):
@@ -226,7 +226,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                  max_delta_f=0.1, n_modes=2, gap_max_element_length=None, substrate_loss_tangent=0,
                  dielectric_surfaces=None, exit_after_run=False,
-                 ansys_executable=r"%PROGRAMFILES%\AnsysEM\v222\Win64\ansysedt.exe",
+                 ansys_executable=r"%PROGRAMFILES%\AnsysEM\v232\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
                  ansys_project_template=None, skip_errors=False):

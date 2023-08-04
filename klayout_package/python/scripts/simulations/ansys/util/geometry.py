@@ -201,7 +201,7 @@ def subtract(oEditor, objects, tool_objects, keep_originals=False):
             ["NAME:Selections",
              "Blank Parts:=", ",".join(objects),
              "Tool Parts:=", ",".join(tool_objects)],
-            ["NAME:SubtractParameters", "KeepOriginals:=", keep_originals])
+            ["NAME:SubtractParameters", "KeepOriginals:=", keep_originals, "TurnOnNBodyBoolean:=", True])
 
 
 def unite(oEditor, objects, keep_originals=False):
@@ -209,7 +209,7 @@ def unite(oEditor, objects, keep_originals=False):
     if len(objects) > 1:
         oEditor.Unite(
             ["NAME:Selections", "Selections:=", ",".join(objects)],
-            ["NAME:UniteParameters", "KeepOriginals:=", keep_originals])
+            ["NAME:UniteParameters", "KeepOriginals:=", keep_originals, "TurnOnNBodyBoolean:=", True])
 
 
 def objects_from_sheet_edges(oEditor, objects, thickness, units):
