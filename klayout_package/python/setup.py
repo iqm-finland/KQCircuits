@@ -57,7 +57,7 @@ setup(
         "tests": ["pytest>=6.0.2", "pytest-cov~=2.8", "pytest-xdist>=2.1", "tox>=3.18", "pylint==2.9",
                   "networkx>=2.7", "matplotlib>=3.5.1"],
         "notebooks": ["jupyter~=1.0.0", "klayout>=0.28"],
-        "graphs": ["networkx>=2.7", "matplotlib>=3.5.1"],
+        "graphs": ["networkx>=3.0", "matplotlib>=3.6.3"],
         "simulations": ["gmsh>=4.11.1", "pandas>=1.5.3"],
     },
     entry_points={
