@@ -73,14 +73,39 @@ def run_elmer_grid(msh_path, n_processes, exec_path_override=None):
                         "https://github.com/ElmerCSC/elmerfem")
         sys.exit()
 
+# Helper function to check if wsl is used
+def is_microsoft(exec_path_override=None) -> bool:
+    # See if version file contains the string microsoft -> wsl
+    run_cmd = ['grep', '-qi', 'microsoft', '/proc/version']
+    ret = subprocess.call(run_cmd, cwd=exec_path_override)
+    # subprocess returns 0 if substring is found, 1 if not and some other error code is the call fails
+    if ret not in (0,1):
+        raise RuntimeError(f'Unexpected return code {ret} in is_microsoft() subprocess call')
+    return not ret
+
+# Helper function to check if Elmer is run with singularity
+# Note that this function only works when run OUTSIDE of singularity
+def is_singularity(exec_path_override=None) -> bool:
+    # Follow the symbolic link pointing to ElmerSolver and check if path contains "singularity"
+    run_cmd = ['readlink', '-f', '$(which', 'ElmerSolver)', '|', 'grep', '-qi', 'singularity']
+    ret = subprocess.call(' '.join(run_cmd), shell=True, cwd=exec_path_override)
+    # subprocess returns 0 if substring is found, 1 if not and some other error code is the call fails
+    if ret not in (0,1):
+        raise RuntimeError(f'Unexpected return code {ret} is_singularity() subprocess call')
+    return not ret
 
 def run_elmer_solver(sif_path, n_processes, exec_path_override=None):
     elmersolver_executable = shutil.which('ElmerSolver')
     elmersolver_mpi_executable = shutil.which('ElmerSolver_mpi')
     if n_processes > 1 and elmersolver_mpi_executable is not None:
-        mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
-        subprocess.check_call([mpi_command, '-np', str(n_processes), elmersolver_mpi_executable,
-                               sif_path], cwd=exec_path_override)
+        if is_microsoft(exec_path_override) and is_singularity(exec_path_override):
+            # If using wsl and singularity the mpi command needs to be given inside singularity
+            run_cmd = [elmersolver_mpi_executable, sif_path, '-np', str(n_processes)]
+        else:
+            mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
+            run_cmd = [mpi_command, '-np', str(n_processes), elmersolver_mpi_executable,
+                                sif_path]
+        subprocess.check_call(run_cmd, cwd=exec_path_override)
     elif elmersolver_executable is not None:
         subprocess.check_call([elmersolver_executable, sif_path], cwd=exec_path_override)
     else:
