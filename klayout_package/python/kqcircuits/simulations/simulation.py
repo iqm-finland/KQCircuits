@@ -115,7 +115,9 @@ class Simulation:
 
     use_ports = Param(pdt.TypeBoolean, "Turn off to disable all ports (for debugging)", True)
     use_internal_ports = Param(pdt.TypeBoolean, "Use internal (lumped) ports. The alternative is wave ports.", True)
-    port_size = Param(pdt.TypeDouble, "Width and height of wave ports", 400.0, unit="µm")
+    port_size = Param(pdt.TypeDouble, "Width and height of wave ports", 400.0, unit="µm",
+                      docstring="The port size can also be set as a list specifying the extensions from the center of "
+                                "the port to left, right, down and up, respectively.")
 
     upper_box_height = Param(pdt.TypeDouble, "Height of vacuum above top substrate", 1000.0, unit="µm")
     lower_box_height = Param(pdt.TypeDouble, "Height of vacuum below bottom substrate", 0, unit="µm",
@@ -468,13 +470,12 @@ class Simulation:
                         for port in self.ports:
                             if self.face_ids[port.face] == face_id:
                                 if hasattr(port, 'ground_location'):
-                                    mps = self.minimum_point_spacing / self.layout.dbu
-                                    v_unit = port.signal_location-port.ground_location
-                                    v_unit = v_unit/v_unit.abs()
-                                    signal_loc = (port.signal_location+mps*v_unit).to_itype(self.layout.dbu)
+                                    v_mps = port.signal_location-port.ground_location
+                                    v_mps = self.minimum_point_spacing * v_mps / v_mps.abs()
+                                    signal_loc = (port.signal_location + v_mps).to_itype(self.layout.dbu)
                                     ground_region -= ground_region.interacting(pya.Edge(signal_loc, signal_loc))
 
-                                    ground_loc = (port.ground_location-mps*v_unit).to_itype(self.layout.dbu)
+                                    ground_loc = (port.ground_location - v_mps).to_itype(self.layout.dbu)
                                     ground_region += signal_region.interacting(pya.Edge(ground_loc, ground_loc))
                                 else:
                                     signal_loc = port.signal_location.to_itype(self.layout.dbu)
@@ -738,34 +739,36 @@ class Simulation:
                 # Define a 3D polygon for each port
                 if isinstance(port, EdgePort):
 
-                    port_z0 = max(z[face_id][0] - simulation.port_size / 2, z[0])
-                    port_z1 = min(z[face_id][0] + simulation.port_size / 2, z[-1])
+                    ps = (simulation.port_size if isinstance(simulation.port_size, list)
+                          else [simulation.port_size / 2] * 4)
+
+                    port_z0 = max(z[face_id][0] - ps[2], z[0])
+                    port_z1 = min(z[face_id][0] + ps[3], z[-1])
 
                     # Determine which edge this port is on
-                    if (port.signal_location.x == simulation.box.left
-                            or port.signal_location.x == simulation.box.right):
-                        port_y0 = max(port.signal_location.y - simulation.port_size / 2, simulation.box.bottom)
-                        port_y1 = min(port.signal_location.y + simulation.port_size / 2, simulation.box.top)
-                        p_data['polygon'] = [
-                            [port.signal_location.x, port_y0, port_z0],
-                            [port.signal_location.x, port_y1, port_z0],
-                            [port.signal_location.x, port_y1, port_z1],
-                            [port.signal_location.x, port_y0, port_z1]
-                        ]
-
-                    elif (port.signal_location.y == simulation.box.top
-                          or port.signal_location.y == simulation.box.bottom):
-                        port_x0 = max(port.signal_location.x - simulation.port_size / 2, simulation.box.left)
-                        port_x1 = min(port.signal_location.x + simulation.port_size / 2, simulation.box.right)
-                        p_data['polygon'] = [
-                            [port_x0, port.signal_location.y, port_z0],
-                            [port_x1, port.signal_location.y, port_z0],
-                            [port_x1, port.signal_location.y, port_z1],
-                            [port_x0, port.signal_location.y, port_z1]
-                        ]
-
+                    port_x0 = port_x1 = port.signal_location.x
+                    port_y0 = port_y1 = port.signal_location.y
+                    if abs(port.signal_location.x - simulation.box.left) < self.layout.dbu:
+                        port_y0 = max(port.signal_location.y - ps[1], simulation.box.bottom)
+                        port_y1 = min(port.signal_location.y + ps[0], simulation.box.top)
+                    elif abs(port.signal_location.x - simulation.box.right) < self.layout.dbu:
+                        port_y0 = max(port.signal_location.y - ps[0], simulation.box.bottom)
+                        port_y1 = min(port.signal_location.y + ps[1], simulation.box.top)
+                    elif abs(port.signal_location.y - simulation.box.bottom) < self.layout.dbu:
+                        port_x0 = max(port.signal_location.x - ps[0], simulation.box.left)
+                        port_x1 = min(port.signal_location.x + ps[1], simulation.box.right)
+                    elif abs(port.signal_location.y - simulation.box.top) < self.layout.dbu:
+                        port_x0 = max(port.signal_location.x - ps[1], simulation.box.left)
+                        port_x1 = min(port.signal_location.x + ps[0], simulation.box.right)
                     else:
                         raise ValueError(f"Port {port.number} is an EdgePort but not on the edge of the simulation box")
+
+                    p_data['polygon'] = [
+                        [port_x0, port_y0, port_z0],
+                        [port_x1, port_y1, port_z0],
+                        [port_x1, port_y1, port_z1],
+                        [port_x0, port_y0, port_z1]
+                    ]
 
                 elif isinstance(port, InternalPort):
                     if hasattr(port, 'ground_location'):
