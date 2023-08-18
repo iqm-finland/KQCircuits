@@ -28,7 +28,8 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.pya_resolver import pya
 from kqcircuits.simulations.port import Port, InternalPort, EdgePort
-from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points
+from kqcircuits.util.geometry_helper import region_with_merged_polygons, region_with_merged_points, \
+    match_points_on_edges
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
 from kqcircuits.simulations.export.util import get_enclosing_polygon
@@ -560,6 +561,9 @@ class Simulation:
         subtract = [n for n, v in self.layers.items() if v.get('material', None) is not None and
                     v.get('thickness', 0.0) != 0.0]
         self.layers['vacuum'] = {'z': z[0], 'thickness': z[-1] - z[0], 'material': 'vacuum', 'subtract': subtract}
+
+        # Eliminate gaps and overlaps caused by transformation to simple_polygon
+        match_points_on_edges(self.cell, self.layout, [get_simulation_layer_by_name(n) for n in self.layers])
 
     def ground_grid_region(self, face_id):
         """Returns region of ground grid for the given face id."""

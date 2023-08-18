@@ -21,6 +21,7 @@
 from math import cos, sin, radians, atan2, degrees, pi, ceil
 from typing import List
 import numpy as np
+from scipy import spatial
 from kqcircuits.defaults import default_layers, default_path_length_layers
 from kqcircuits.pya_resolver import pya
 
@@ -213,6 +214,51 @@ def region_with_merged_polygons(region, tolerance, expansion=0.0):
     new_region.size(expansion - 0.5 * tolerance)  # shrink polygons back to original shape (+ optional expansion)
     new_region = new_region.smoothed(2)  # smooth out the slight jaggedness on the edges
     return new_region
+
+
+def match_points_on_edges(cell, layout, layers):
+    """ Goes through each polygon edge and splits the edge whenever it passes through a point of another polygon.
+
+    This function can eliminate gaps and overlaps caused by transformation to simple_polygon.
+
+    Arguments:
+        cell: A cell object.
+        layout: A layout object
+        layers: List of layers to be considered and modified
+    """
+    # Gather points from layers to `all_points` dictionary. This ignores duplicate points.
+    all_points = dict()
+    for layer in layers:
+        shapes = cell.shapes(layout.layer(layer))
+        for shape in shapes:
+            all_points.update({point: list() for point in shape.simple_polygon.each_point()})
+
+    # For each point, assign a list of surrounding points using Voronoi diagram
+    point_list = list(all_points)
+    vor = spatial.Voronoi([(p.x, p.y) for p in point_list])
+    for link in vor.ridge_points:
+        all_points[point_list[link[0]]].append(point_list[link[1]])
+        all_points[point_list[link[1]]].append(point_list[link[0]])
+
+    # Travel through polygon edges and split edge whenever it passes through a point
+    for layer in layers:
+        shapes = cell.shapes(layout.layer(layer))
+        for shape in shapes:
+            points = list(shape.simple_polygon.each_point())
+            new_points = []
+            for i, p1 in enumerate(points):
+                p0 = points[i - 1]
+                edge = pya.Edge(p0, p1)
+                # Travel from p0 to p1 in Voronoi diagram
+                while p0 != p1:
+                    # Update p0 to be the neighbour closest to p1
+                    p0 = min(all_points[p0], key=lambda x, y=p1: x.sq_distance(y))
+                    if edge.contains(p0):
+                        new_points.append(p0)  # Add point if edge contains it. Finally, p0 is equal to p1 here.
+
+            # Replace polygon if any points are added
+            if len(new_points) != len(points):
+                shapes.replace(shape, pya.SimplePolygon(new_points, True))
 
 
 def is_clockwise(polygon_points):
