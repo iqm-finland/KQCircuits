@@ -9,6 +9,7 @@ kqcircuits.simulations
 .. toctree::
 
    kqcircuits.simulations.airbridges_sim
+   kqcircuits.simulations.capacitive_x_coupler_sim
    kqcircuits.simulations.circular_capacitor_sim
    kqcircuits.simulations.cross_section_simulation
    kqcircuits.simulations.double_pads_sim

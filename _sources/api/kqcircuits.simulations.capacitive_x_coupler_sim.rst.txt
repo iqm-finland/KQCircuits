@@ -1,0 +1,10 @@
+kqcircuits.simulations.capacitive\_x\_coupler\_sim
+==================================================
+
+.. automodule:: kqcircuits.simulations.capacitive_x_coupler_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.capacitive_x_coupler_sim
+.. image:: ../pcell_images/kqcircuits.simulations.capacitive_x_coupler_sim.png

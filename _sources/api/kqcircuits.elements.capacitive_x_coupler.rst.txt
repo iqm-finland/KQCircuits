@@ -1,0 +1,10 @@
+kqcircuits.elements.capacitive\_x\_coupler
+==========================================
+
+.. automodule:: kqcircuits.elements.capacitive_x_coupler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.capacitive_x_coupler
+.. image:: ../pcell_images/kqcircuits.elements.capacitive_x_coupler.png

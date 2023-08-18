@@ -321,6 +321,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.airbridge_connection.html">kqcircuits.elements.airbridge_connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.capacitive_x_coupler.html">kqcircuits.elements.capacitive_x_coupler</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.chip_frame.html">kqcircuits.elements.chip_frame</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.circular_capacitor.html">kqcircuits.elements.circular_capacitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
@@ -385,6 +386,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
@@ -545,6 +547,7 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">radians</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">ceil</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">spatial</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_path_length_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
@@ -737,6 +740,51 @@
     <span class="n">new_region</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">expansion</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">tolerance</span><span class="p">)</span>  <span class="c1"># shrink polygons back to original shape (+ optional expansion)</span>
     <span class="n">new_region</span> <span class="o">=</span> <span class="n">new_region</span><span class="o">.</span><span class="n">smoothed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># smooth out the slight jaggedness on the edges</span>
     <span class="k">return</span> <span class="n">new_region</span></div>
+
+
+<div class="viewcode-block" id="match_points_on_edges"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.match_points_on_edges">[docs]</a><span class="k">def</span> <span class="nf">match_points_on_edges</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">layers</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Goes through each polygon edge and splits the edge whenever it passes through a point of another polygon.</span>
+
+<span class="sd">    This function can eliminate gaps and overlaps caused by transformation to simple_polygon.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        cell: A cell object.</span>
+<span class="sd">        layout: A layout object</span>
+<span class="sd">        layers: List of layers to be considered and modified</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Gather points from layers to `all_points` dictionary. This ignores duplicate points.</span>
+    <span class="n">all_points</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+            <span class="n">all_points</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">point</span><span class="p">:</span> <span class="nb">list</span><span class="p">()</span> <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">shape</span><span class="o">.</span><span class="n">simple_polygon</span><span class="o">.</span><span class="n">each_point</span><span class="p">()})</span>
+
+    <span class="c1"># For each point, assign a list of surrounding points using Voronoi diagram</span>
+    <span class="n">point_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">all_points</span><span class="p">)</span>
+    <span class="n">vor</span> <span class="o">=</span> <span class="n">spatial</span><span class="o">.</span><span class="n">Voronoi</span><span class="p">([(</span><span class="n">p</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">point_list</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">link</span> <span class="ow">in</span> <span class="n">vor</span><span class="o">.</span><span class="n">ridge_points</span><span class="p">:</span>
+        <span class="n">all_points</span><span class="p">[</span><span class="n">point_list</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_list</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="n">all_points</span><span class="p">[</span><span class="n">point_list</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_list</span><span class="p">[</span><span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+
+    <span class="c1"># Travel through polygon edges and split edge whenever it passes through a point</span>
+    <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layout</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">shape</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">shape</span><span class="o">.</span><span class="n">simple_polygon</span><span class="o">.</span><span class="n">each_point</span><span class="p">())</span>
+            <span class="n">new_points</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="n">p0</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">edge</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Edge</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+                <span class="c1"># Travel from p0 to p1 in Voronoi diagram</span>
+                <span class="k">while</span> <span class="n">p0</span> <span class="o">!=</span> <span class="n">p1</span><span class="p">:</span>
+                    <span class="c1"># Update p0 to be the neighbour closest to p1</span>
+                    <span class="n">p0</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">all_points</span><span class="p">[</span><span class="n">p0</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">p1</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sq_distance</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">edge</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">p0</span><span class="p">):</span>
+                        <span class="n">new_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span>  <span class="c1"># Add point if edge contains it. Finally, p0 is equal to p1 here.</span>
+
+            <span class="c1"># Replace polygon if any points are added</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_points</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+                <span class="n">shapes</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">SimplePolygon</span><span class="p">(</span><span class="n">new_points</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="is_clockwise"><a class="viewcode-back" href="../../../api/kqcircuits.util.geometry_helper.html#kqcircuits.util.geometry_helper.is_clockwise">[docs]</a><span class="k">def</span> <span class="nf">is_clockwise</span><span class="p">(</span><span class="n">polygon_points</span><span class="p">):</span>

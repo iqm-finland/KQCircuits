@@ -13,6 +13,7 @@ kqcircuits.elements
 .. toctree::
 
    kqcircuits.elements.airbridge_connection
+   kqcircuits.elements.capacitive_x_coupler
    kqcircuits.elements.chip_frame
    kqcircuits.elements.circular_capacitor
    kqcircuits.elements.element
