@@ -22,7 +22,7 @@ import logging
 
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
-def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, args=None):
+def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, export_only: bool=False, args=None):
     """
     Exports and runs a KQC simulation.
 
@@ -30,6 +30,7 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, ar
         export_script(Path): path to the simulation export script
         export_path(Path): path where simulation files are exported
         quiet(bool): if True all the GUI dialogs are shown, otherwise not.
+        export_only(bool): if True no simulation is run, only export files.
         args(list): a list of strings describing arguments to be passed to the simulation script
 
     Returns:
@@ -49,7 +50,8 @@ def export_and_run(export_script: Path, export_path: Path, quiet: bool=False, ar
 
     subprocess.call([sys.executable, export_script,
         '--simulation-export-path', str(export_path)] + args + (['-q'] if quiet else []))
-
+    if export_only:
+        return export_script, export_path
 
     if (export_path / 'simulation.sh').is_file():
         simulation_shell_script = 'simulation.sh'

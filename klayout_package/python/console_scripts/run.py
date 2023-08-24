@@ -18,6 +18,8 @@ import argparse
 import logging
 import sys
 import subprocess
+from os import listdir
+from os.path import isfile, join
 from pathlib import Path
 from kqcircuits.simulations.export.export_and_run import export_and_run
 from kqcircuits.defaults import TMP_PATH, SCRIPTS_PATH
@@ -29,7 +31,7 @@ def run():
 
     subparser = parser.add_subparsers(dest="command")
 
-    simulate_parser = subparser.add_parser('simulate', help='KQC simulation \
+    simulate_parser = subparser.add_parser('sim', help='KQC simulation \
             export and run script. Run and export with a single command!')
     mask_parser = subparser.add_parser('mask', help='Build KQC Mask.')
 
@@ -38,6 +40,8 @@ def run():
                                  help='The export folder will be `TMP_PATH / Path(export_path_basename)`, \
                                        if not given, then it will be `TMP_PATH / Path(args.export_script).stem`')
     simulate_parser.add_argument('-q', '--quiet', action="store_true", help='Quiet mode: No GUI')
+    simulate_parser.add_argument('-e', '--export-only', action="store_true",
+                                 help='Do not run simulation, only export generated files.')
 
     mask_parser.add_argument('mask_script', type=str, help='Name of the mask script')
     mask_parser.add_argument('-d', '--debug', action="store_true", help="Debug mode. Use a single process and "
@@ -46,7 +50,13 @@ def run():
 
     args, args_for_script = parser.parse_known_args()
 
-    if args.command == "simulate":
+    if args.command == "sim":
+        if args.export_script == "ls":
+            simdir = Path(SCRIPTS_PATH / "simulations")
+            for f in listdir(simdir):
+                if isfile(join(simdir, f)):
+                    print(f)
+            return
         script_file = Path(args.export_script)
         if not script_file.is_file():
             script_file = Path(SCRIPTS_PATH / "simulations" / args.export_script)
@@ -57,8 +67,14 @@ def run():
             export_path = TMP_PATH / args.export_path_basename
         else:
             export_path = TMP_PATH / Path(args.export_script).stem
-        export_and_run(script_file, export_path, args.quiet, args_for_script)
+        export_and_run(script_file, export_path, args.quiet, args.export_only, args_for_script)
     elif args.command == "mask":
+        if args.mask_script == "ls":
+            maskdir = Path(SCRIPTS_PATH / "masks")
+            for f in listdir(maskdir):
+                if isfile(join(maskdir, f)):
+                    print(f)
+            return
         script_file = Path(args.mask_script)
         if not script_file.is_file():
             script_file = Path(SCRIPTS_PATH / "masks" / args.mask_script)

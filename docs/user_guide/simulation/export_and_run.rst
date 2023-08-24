@@ -7,11 +7,11 @@ with the :git_url:`export_and_run.py <klayout_package/python/kqcircuits/simulati
 
 Go to directory 'klayout_package/python' and run::
 
-    kqc simulate klayout_package/python/scripts/simulations/waveguides_sim_compare.py
+    kqc sim klayout_package/python/scripts/simulations/waveguides_sim_compare.py
 
 or if you do not want the GUI dialogs::
     
-    kqc simulate klayout_package/python/scripts/simulations/waveguides_sim_compare.py -q
+    kqc sim klayout_package/python/scripts/simulations/waveguides_sim_compare.py -q
 
 .. note::
    On Windows you may need to install KQC (``pip install -e .``) with admin priviledges

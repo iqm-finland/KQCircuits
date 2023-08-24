@@ -79,7 +79,7 @@ command line::
 
     python klayout_package/python/scripts/masks/quick_demo.py
     python klayout_package/python/scripts/simulations/double_pads_sim.py -q
-    kqc simulate waveguides_sim_compare.py -q
+    kqc sim waveguides_sim_compare.py -q
 
 The output of the above commands will be in the automaticaly created ``tmp`` directory. If you
 desire the outputs elsewhere set the ``KQC_TMP_PATH`` environment variable to some other path.
