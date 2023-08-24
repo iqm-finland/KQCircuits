@@ -18,6 +18,7 @@ import os
 import json
 from pathlib import Path
 import argparse
+import pickle
 
 from gmsh_helpers import export_gmsh_msh
 from elmer_helpers import export_elmer_sif, write_project_results_json
@@ -27,13 +28,16 @@ from cross_section_helpers import produce_cross_section_mesh, produce_cross_sect
 
 parser = argparse.ArgumentParser(description='Run script for Gmsh-Elmer workflow')
 parser.add_argument('json_filename', type=str, help='KQC simulation data')
+
 parser.add_argument('--skip-gmsh', action='store_true', help="Run everything else but Gmsh")
 parser.add_argument('--skip-elmergrid', action='store_true', help="Run everything else but Elmergrid")
+parser.add_argument('--skip-elmer-sifs', action='store_true', help="Run everything else but Elmer sif generation")
 parser.add_argument('--skip-elmer', action='store_true', help="Run everything else but Elmer")
 parser.add_argument('--skip-paraview', action='store_true', help="Run everything else but Paraview")
 
 parser.add_argument('--only-gmsh', action='store_true', help="Run only Gmsh")
 parser.add_argument('--only-elmergrid', action='store_true', help="Run only Elmergrid")
+parser.add_argument('--only-elmer-sifs', action='store_true', help="Only write the elmer sif simulation files")
 parser.add_argument('--only-elmer', action='store_true', help="Run only Elmer")
 parser.add_argument('--only-paraview', action='store_true', help="Run only Paraview")
 
@@ -72,25 +76,36 @@ if args.write_versions_file:
 
 if args.only_gmsh:
     args.skip_elmergrid = True
+    args.skip_elmer_sifs = True
     args.skip_elmer = True
     args.skip_paraview = True
 elif args.only_elmergrid:
     args.skip_gmsh = True
+    args.skip_elmer_sifs = True
+    args.skip_elmer = True
+    args.skip_paraview = True
+elif args.only_elmer_sifs:
+    args.skip_gmsh = True
+    args.skip_elmergrid = True
     args.skip_elmer = True
     args.skip_paraview = True
 elif args.only_elmer:
     args.skip_gmsh = True
     args.skip_elmergrid = True
+    args.skip_elmer_sifs = True
     args.skip_paraview = True
 elif args.only_paraview:
     args.skip_gmsh = True
     args.skip_elmergrid = True
+    args.skip_elmer_sifs = True
     args.skip_elmer = True
 
 if args.skip_gmsh:
     workflow['run_gmsh'] = False
 if args.skip_elmergrid:
     workflow['run_elmergrid'] = False
+if args.skip_elmer_sifs:
+    workflow['write_elmer_sifs'] = False
 if args.skip_elmer:
     workflow['run_elmer'] = False
 if args.skip_paraview:
@@ -109,23 +124,32 @@ tool = json_data.get('tool', 'capacitance')
 if tool == 'cross-section':
     # Generate mesh
     msh_file = f'{name}.msh'
+
     if workflow.get('run_gmsh', True):
         produce_cross_section_mesh(json_data, path.joinpath(msh_file))
 
     # Run sub-processes
     if workflow.get('run_elmergrid', True):
         run_elmer_grid(msh_file, elmer_n_processes, path)
+
+    if workflow.get('write_elmer_sifs', True):
+        produce_cross_section_sif_files(json_data, path.joinpath(name))
+
     if workflow.get('run_elmer', True):
-        sif_files = produce_cross_section_sif_files(json_data, path.joinpath(name))
-        for sif_file in sif_files:
-            run_elmer_solver(name.joinpath(sif_file), elmer_n_processes, path)
+        for sif_file in json_data['sif_names']:
+            run_elmer_solver(name.joinpath(f'{sif_file}.sif'), elmer_n_processes, path)
+
+    if workflow.get('run_paraview', False):
+        run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
+
+    if args.write_project_results:
         res = get_cross_section_capacitance_and_inductance(json_data, path.joinpath(name))
         if 'dielectric_surfaces' in json_data:  # Compute quality factors with energy participation ratio method
             res = {**res, **get_interface_quality_factors(json_data, path.joinpath(name))}
+
         with open(path.joinpath(f'{name}_result.json'), 'w') as f:
             json.dump(res, f, indent=4)
-    if workflow.get('run_paraview', False):
-        run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
+
 else:
     # Generate mesh
     if workflow.get('run_gmsh', True):
@@ -136,25 +160,29 @@ else:
             params['gmsh_n_threads'] = workflow['gmsh_n_threads']
         msh_filepath, model_data = export_gmsh_msh(json_data, path, json_data['mesh_size'], **params)
         json_data.update({**model_data})
-        export_elmer_sif(json_data, path.joinpath(name))
+
+        # Need to pickle as the keys contain tuples which cannot be saved in json
+        with open(json_filename.replace('.json', '.pickle'), "wb") as f:
+            pickle.dump(json_data, f)
     else:
         msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
-
-    # Set number of processes for elmer
-    elmer_n_processes = workflow.get('elmer_n_processes', 1)
-    if elmer_n_processes == -1:
-        elmer_n_processes = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
 
     # Run sub-processes
     if workflow.get('run_elmergrid', True):
         run_elmer_grid(msh_filepath, elmer_n_processes, path)
+    if workflow.get('write_elmer_sifs', True):
+        with open(json_filename.replace('.json', '.pickle'), "rb") as f:
+            json_data = pickle.load(f)
+        export_elmer_sif(json_data, path.joinpath(name))
     if workflow.get('run_elmer', True):
-        run_elmer_solver(name / f'{name}.sif', elmer_n_processes, path)
+        for sif_file in json_data['sif_names']:
+            run_elmer_solver(name.joinpath(f'{sif_file}.sif'), elmer_n_processes, path)
     if workflow.get('run_paraview', False):
         run_paraview(path / name / name, elmer_n_processes, path)
 
     # Write result file
     if args.write_project_results:
         write_project_results_json(path, msh_filepath)
-    elif args.write_versions_file:
-        write_simulation_machine_versions_file(path, json_data['parameters']['name'])
+
+if args.write_versions_file:
+    write_simulation_machine_versions_file(path, json_data['parameters']['name'])

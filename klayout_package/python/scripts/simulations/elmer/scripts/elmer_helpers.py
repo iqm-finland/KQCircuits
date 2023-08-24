@@ -17,9 +17,9 @@
 # pylint: disable=too-many-lines
 import csv
 import json
+import logging
 from pathlib import Path
 from typing import Union, Sequence, Any, Dict
-
 from scipy.constants import epsilon_0
 
 def coordinate_scaling(json_data: Dict[str, Any]) -> float:
@@ -73,7 +73,8 @@ def sif_common_header(
         f'Steady State Max Iterations = {json_data.get("maximum_passes", 1)}',
         f'Steady State Min Iterations = {json_data.get("minimum_passes", 1)}',
         ('' if angular_frequency is None else 'Angular Frequency = {}'.format(angular_frequency)),
-        'Coordinate Scaling = {}'.format(coordinate_scaling(json_data))])
+        'Coordinate Scaling = {}'.format(coordinate_scaling(json_data)),
+        f'Mesh Levels = {json_data.get("mesh_size", {}).get("mesh_levels", 1)}'])
     return res
 
 def sif_block(block_name: str, data: Sequence[str]) -> str:
@@ -643,14 +644,13 @@ def sif_boundary_condition(ordinate, target_boundaries, conditions):
 
     return sif_block(f'Boundary Condition {ordinate}', value_list)
 
-def export_elmer_sif(json_data: dict, folder_path: Path):
+def export_elmer_sif(json_data: dict, path: Path):
     """
     Exports an elmer simulation model to the simulation path.
 
     Args:
-
-        path(Path): Location where to output the simulation model
         json_data(dict): Simulation model data including following terms:
+        path(Path): Location where to output the simulation model
 
             * 'tool': Available: "capacitance" and "wave_equation" (Default: capacitance)
             * 'faces': Number of faces
@@ -666,28 +666,27 @@ def export_elmer_sif(json_data: dict, folder_path: Path):
 
     Returns:
 
-        sif_filepath: Path to exported sif file
+        sif_filepaths: Paths to exported sif files
 
     """
-    if json_data['tool'] == 'capacitance':
-        content = \
-                sif_capacitance(json_data,
-                                folder_path,
-                                vtu_name=folder_path,
-                                angular_frequency=0,
-                                dim=3,
-                                with_zero=False)
-    if json_data['tool'] == 'wave_equation':
-        content = \
-                sif_wave_equation(json_data, folder_path)
+    sif_names = json_data['sif_names']
+    if len(sif_names) != 1:
+        logging.warning(f"Wave-equation and capacitance tools only support 1 sif name, given {len(sif_names)}")
+    if sif_names[0] != path.stem:
+        logging.warning(f"Coflicting sif file names: given {path.stem}, should be {sif_names[0]}")
 
-    sif_filepath = folder_path.joinpath('{}.sif'.format(folder_path.stem))
+    if json_data['tool'] == 'capacitance':
+        content = sif_capacitance(json_data, path, vtu_name=path, angular_frequency=0, dim=3, with_zero=False)
+    if json_data['tool'] == 'wave_equation':
+        content = sif_wave_equation(json_data, path)
+
+    sif_filepath = path.joinpath('{}.sif'.format(sif_names[0]))
 
     sif_filepath.parent.mkdir(exist_ok=True, parents=True)
     with open(sif_filepath, 'w') as f:
         f.write(content)
 
-    return sif_filepath
+    return [sif_filepath]
 
 def get_body_list(json_data, dim):
     """

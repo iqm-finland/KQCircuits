@@ -17,6 +17,7 @@
 
 import re
 import os
+import logging
 from pathlib import Path
 
 import numpy as np
@@ -179,21 +180,25 @@ def produce_cross_section_sif_files(json_data, folder_path):
             f.write(content)
         return file_name
 
-    sif_files = [save('capacitance.sif', sif_capacitance(json_data,
+    sif_names = json_data['sif_names']
+    if len(sif_names) != 2:
+        logging.warning(f"Cross-section tool requires 2 sif names, given {len(sif_names)}")
+
+    sif_files = [save(f'{sif_names[0]}.sif', sif_capacitance(json_data,
                                                          folder_path,
-                                                         vtu_name='capacitance',
+                                                         vtu_name=sif_names[0],
                                                          angular_frequency=0,
                                                          dim=2,
                                                          with_zero=False))]
     london_penetration_depth = json_data.get('london_penetration_depth', 0.0)
     if london_penetration_depth > 0:
         circuit_definitions_file = save('inductance.definitions', sif_circuit_definitions(json_data))
-        sif_files.append(save('inductance.sif',
+        sif_files.append(save(f'{sif_names[1]}.sif',
                               sif_inductance(json_data, folder_path, angular_frequency, circuit_definitions_file)))
     else:
-        sif_files.append(save('capacitance0.sif', sif_capacitance(json_data,
+        sif_files.append(save(f'{sif_names[1]}.sif', sif_capacitance(json_data,
                                                                   folder_path,
-                                                                  vtu_name='capacitance0',
+                                                                  vtu_name=sif_names[1],
                                                                   angular_frequency=0,
                                                                   dim=2,
                                                                   with_zero=True)))
@@ -271,6 +276,7 @@ def get_interface_quality_factors(json_data, path):
         total_energy = energies.sum()
         energy_dict = dict(zip(energy_layers, energies))
         all_energies = {f'E_{k}': energy for k, energy in energy_dict.items()}
+        all_participations = {f'p_{k}': energy / total_energy for k, energy in energy_dict.items()}
         # remove non-interface bodies after getting total energy
         energy_layers = frozenset(energy_layers) & frozenset(interfaces.keys())
         energy_dict = {k: energy_dict[k] for k in energy_layers}
@@ -281,7 +287,7 @@ def get_interface_quality_factors(json_data, path):
         }
         quality_factors['Q_total'] = 1 / sum(1 / q for q in quality_factors.values())
 
-        return {**all_energies, **participations, **quality_factors}
+        return {**all_energies, **all_participations, **quality_factors}
 
     except FileNotFoundError:
         return {'Q_total': None}

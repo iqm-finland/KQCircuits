@@ -56,8 +56,11 @@ def write_simulation_machine_versions_file(path, name):
 
     paraview_command = 'paraview'
     if shutil.which(paraview_command) is not None:
-        output = subprocess.check_output([paraview_command, '--version'])
-        versions['paraview'] = output.decode('ascii').split('\n', maxsplit=1)[0]
+        try:
+            output = subprocess.check_output([paraview_command, '--version'])
+            versions['paraview'] = output.decode('ascii').split('\n', maxsplit=1)[0]
+        except subprocess.CalledProcessError:
+            versions['paraview'] = 'unknown_version'
 
     with open('SIMULATION_MACHINE_VERSIONS.json', 'w') as file:
         json.dump(versions, file)
