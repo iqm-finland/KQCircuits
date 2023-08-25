@@ -77,9 +77,8 @@ elmer_export_parameters = {
     'p_element_order': 2,  # Polynomial order of FEM basis functions, computationally more expensive but more accurate.
     'mesh_size': {  # check implementation of `export_gmsh_msh` for detais. Employs 'mesh size fields'.
         'global_max': 80.,
-        'gap&signal': [4., 8.],
-        'gap&ground': [4., 8.],
-        'port': [2., 8.],
+        '1t1_gap&1t1_signal': [4., 8.],
+        '1t1_gap&1t1_ground': [4., 8.],
     }
 }
 

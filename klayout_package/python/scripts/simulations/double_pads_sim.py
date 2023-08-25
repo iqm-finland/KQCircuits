@@ -123,9 +123,8 @@ for sim_tool in sim_tools:
         },
         'mesh_size': {
             'global_max': 50.,
-            'gap&signal': [2., 4.],
-            'gap&ground': [2., 4.],
-            'port': [1., 4.],
+            '1t1_gap&1t1_signal': [2., 4.],
+            '1t1_gap&1t1_ground': [2., 4.],
         }
     }
 

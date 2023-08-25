@@ -18,10 +18,9 @@ import os
 import json
 from pathlib import Path
 import argparse
-import pickle
 
-from gmsh_helpers import export_gmsh_msh
-from elmer_helpers import export_elmer_sif, write_project_results_json
+from gmsh_helpers import produce_mesh
+from elmer_helpers import produce_sif_files, write_project_results_json
 from run_helpers import run_elmer_grid, run_elmer_solver, run_paraview, write_simulation_machine_versions_file
 from cross_section_helpers import produce_cross_section_mesh, produce_cross_section_sif_files, \
     get_cross_section_capacitance_and_inductance, get_interface_quality_factors
@@ -152,37 +151,28 @@ if tool == 'cross-section':
 
 else:
     # Generate mesh
-    if workflow.get('run_gmsh', True):
-        params = {}
-        if 'run_gmsh_gui' in workflow:
-            params['show'] = workflow['run_gmsh_gui']
-        if 'gmsh_n_threads' in workflow:
-            params['gmsh_n_threads'] = workflow['gmsh_n_threads']
-        msh_filepath, model_data = export_gmsh_msh(json_data, path, json_data['mesh_size'], **params)
-        json_data.update({**model_data})
+    msh_file = f'{name}.msh'
 
-        # Need to pickle as the keys contain tuples which cannot be saved in json
-        with open(json_filename.replace('.json', '.pickle'), "wb") as f:
-            pickle.dump(json_data, f)
-    else:
-        msh_filepath = path.joinpath(json_data['parameters']['name'] + '.msh')
+    if workflow.get('run_gmsh', True):
+        produce_mesh(json_data, path.joinpath(msh_file))
 
     # Run sub-processes
     if workflow.get('run_elmergrid', True):
-        run_elmer_grid(msh_filepath, elmer_n_processes, path)
+        run_elmer_grid(msh_file, elmer_n_processes, path)
+
     if workflow.get('write_elmer_sifs', True):
-        with open(json_filename.replace('.json', '.pickle'), "rb") as f:
-            json_data = pickle.load(f)
-        export_elmer_sif(json_data, path.joinpath(name))
+        produce_sif_files(json_data, path.joinpath(name))
+
     if workflow.get('run_elmer', True):
         for sif_file in json_data['sif_names']:
             run_elmer_solver(name.joinpath(f'{sif_file}.sif'), elmer_n_processes, path)
+
     if workflow.get('run_paraview', False):
         run_paraview(path / name / name, elmer_n_processes, path)
 
     # Write result file
     if args.write_project_results:
-        write_project_results_json(path, msh_filepath)
+        write_project_results_json(path, path.joinpath(msh_file))
 
 if args.write_versions_file:
     write_simulation_machine_versions_file(path, json_data['parameters']['name'])

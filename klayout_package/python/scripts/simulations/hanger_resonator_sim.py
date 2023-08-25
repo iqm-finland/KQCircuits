@@ -78,8 +78,9 @@ if use_elmer:
 
     mesh_size = {
         'global_max': 100.,
-        'gap': 10.,
-        'port': 10,
+        '1t1_gap': 10.,
+        **{f'port_{i}': 50 for i in [1, 2]},  # edge ports
+        **{f'port_{i}': 10 for i in [3, 4]},  # internal ports
     }
 
     if wave_equation:

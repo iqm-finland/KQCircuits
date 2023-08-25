@@ -22,6 +22,19 @@ from pathlib import Path
 from typing import Union, Sequence, Any, Dict
 from scipy.constants import epsilon_0
 
+
+def read_mesh_names(path):
+    """Returns names from mesh.names file"""
+    list_of_names = []
+    with open(path.joinpath('mesh.names')) as file:
+        for line in file:
+            if line.startswith('$ '):
+                eq_sign = line.find(' =')
+                if eq_sign > 2:
+                    list_of_names.append(line[2: eq_sign])
+    return list_of_names
+
+
 def coordinate_scaling(json_data: Dict[str, Any]) -> float:
     """
     Returns coordinate scaling, which is determined by parameters 'units' in json_data.
@@ -126,7 +139,7 @@ def sif_linsys(method='mg', p_element_order=3, steady_state_error=None) -> Seque
         linsys += [
             'Linear System Solver = Iterative',
             'Linear System Iterative Method = BiCGStab',
-            'Linear System Max Iterations = 200',
+            'Linear System Max Iterations = 500',
             'Linear System Convergence Tolerance = 1.0e-15',
             'Linear System Preconditioning = ILU1',
             'Linear System ILUT Tolerance = 1.0e-03',
@@ -644,25 +657,15 @@ def sif_boundary_condition(ordinate, target_boundaries, conditions):
 
     return sif_block(f'Boundary Condition {ordinate}', value_list)
 
-def export_elmer_sif(json_data: dict, path: Path):
+
+def produce_sif_files(json_data: dict, path: Path):
     """
     Exports an elmer simulation model to the simulation path.
 
     Args:
-        json_data(dict): Simulation model data including following terms:
-        path(Path): Location where to output the simulation model
-
-            * 'tool': Available: "capacitance" and "wave_equation" (Default: capacitance)
-            * 'faces': Number of faces
-            * 'port_signal_names': List of signal names in gmsh model for each port
-            * 'ground_names': List of ground names in gmsh model
-            * 'substrate_permittivity': Permittivity of the substrates
-            * 'body_dim_tags': a list of dim_tags of the bodies in the model
-            * 'body_materials': a dictionary mapping the bodies to their materials
-            * 'body_port_phys_map': a dictionary mapping the bodies to the physical names of the port faces
-            * 'frequency': the exitation frequency of the model
 
         json_data(dict): Complete parameter json for simulation
+        path(Path): Location where to output the simulation model
 
     Returns:
 
@@ -688,24 +691,27 @@ def export_elmer_sif(json_data: dict, path: Path):
 
     return [sif_filepath]
 
-def get_body_list(json_data, dim):
+
+def get_body_list(json_data, dim, mesh_names):
     """
     Returns body list for 2d or 3d model.
 
     Args:
         json_data(json): all the model data produced by `export_elmer_json`
         dim(int): dimensionality of the model (options: 2 or 3)
+        mesh_names(list): list of physical group names from the mesh.names file
 
     Returns:
         (list(str)): list of model bodies
     """
-    if dim==2:
-        bodies = list(set(json_data['layers'].keys()) | {'vacuum'})
-    elif dim==3:
-        bodies = ['vacuum'] + [f'chip_{face}' for face in range(json_data['faces'])]
-    return bodies
+    if dim == 2:
+        return [n for n in {*json_data['layers'].keys(), 'vacuum'} if n in mesh_names]
+    elif dim == 3:
+        return [n for n in {'vacuum', 'pec', *json_data['material_dict'].keys()} if n in mesh_names]
+    return []
 
-def get_permittivities(json_data, with_zero, dim):
+
+def get_permittivities(json_data, with_zero, dim, mesh_names):
     """
     Returns permittivities of bodies.
 
@@ -713,69 +719,59 @@ def get_permittivities(json_data, with_zero, dim):
         json_data(json): all the model data produced by `export_elmer_json`
         with_zero(bool): without dielectrics if true
         dim(int): dimensionality of the model (options: 2 or 3)
+        mesh_names(list): list of physical group names from the mesh.names file
 
     Returns:
         (list(str)): list of body permittivities
     """
-    bodies = get_body_list(json_data, dim)
+    bodies = get_body_list(json_data, dim, mesh_names)
     if dim == 2:
-        permittivities = [1.0 if with_zero else json_data.get(f'{s}_permittivity', 1.0) for s in bodies]
+        return [1.0 if with_zero else json_data.get(f'{s}_permittivity', 1.0) for s in bodies]
     elif dim == 3:
-        permittivities = \
-            [1.0 if with_zero or s == 'vacuum' else json_data.get('substrate_permittivity', 1.0) for s in bodies]
-    return permittivities
+        return [1.0 if with_zero else json_data['material_dict'].get(n, dict()).get('permittivity', 1.0)
+                for n in bodies]
+    return []
 
-def get_gaps(json_data, dim):
-    """
-    Returns model gaps.
 
-    Args:
-        json_data(json): all the model data produced by `export_elmer_json`
-        dim(int): dimensionality of the model (options: 2 or 3)
-
-    Returns:
-        (list(str)): list of gaps
-    """
-    if dim == 2:
-        gaps = [n for n in json_data['layers'].keys() if 'gap' in n]
-    elif dim == 3:
-        gaps = json_data['gap_names']
-    return gaps
-
-def get_signals(json_data, dim):
+def get_signals(json_data, dim, mesh_names):
     """
     Returns model signals.
 
     Args:
         json_data(json): all the model data produced by `export_elmer_json`
         dim(int): dimensionality of the model (options: 2 or 3)
+        mesh_names(list): list of physical group names from the mesh.names file
 
     Returns:
         (list(str)): list of signals
     """
     if dim == 2:
-        signals = [n for n in json_data['layers'].keys() if 'signal' in n]
+        return [n for n in json_data['layers'].keys() if 'signal' in n and n in mesh_names]
     elif dim == 3:
-        signals = json_data['port_signal_names']
-    return signals
+        port_numbers = sorted([port['number'] for port in json_data['ports']])
+        return [n for n in [f'signal_{i}' for i in port_numbers] if n in mesh_names]
+    return []
 
-def get_grounds(json_data, dim):
+
+def get_grounds(json_data, dim, mesh_names):
     """
     Returns model grounds.
 
     Args:
         json_data(json): all the model data produced by `export_elmer_json`
         dim(int): dimensionality of the model (options: 2 or 3)
+        mesh_names(list): list of physical group names from the mesh.names file
 
     Returns:
         (list(str)): list of grounds
     """
     if dim == 2:
-        signals = get_signals(json_data, dim)
-        grounds = [n for n in json_data['layers'].keys() if 'ground' in n and n not in signals]
+        signals = get_signals(json_data, dim, mesh_names)
+        return [n for n in json_data['layers'].keys() if 'ground' in n and n not in signals and n in mesh_names]
     elif dim == 3:
-        grounds = json_data['ground_names']
-    return grounds
+        return [n for n in mesh_names if n.startswith('ground')]
+    return []
+
 
 def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
                     angular_frequency: float, dim: int,
@@ -798,7 +794,7 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
 
     name = 'capacitance0' if with_zero else 'capacitance'
 
-    header = sif_common_header(json_data, folder_path, angular_frequency = angular_frequency, dim=dim)
+    header = sif_common_header(json_data, folder_path, angular_frequency=angular_frequency, dim=dim)
     constants = sif_block('Constants', [f'Permittivity Of Vacuum = {epsilon_0}'])
 
     solvers = get_electrostatics_solver(
@@ -824,14 +820,14 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
         keywords=['Calculate Electric Energy = True'] if dim == 2 else [],
     )
 
-    body_list = get_body_list(json_data, dim=dim)
-    permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim)
+    mesh_names = read_mesh_names(folder_path)
+    body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
+    permittivity_list = get_permittivities(json_data, with_zero=with_zero, dim=dim, mesh_names=mesh_names)
 
     if 'dielectric_surfaces' in json_data and not with_zero:  # no EPR for inductance
         solvers += get_save_energy_solver(ordinate=4,
                                           energy_file='energy.dat',
                                           bodies=body_list)
-
 
     bodies = ""
     materials = ""
@@ -844,39 +840,37 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
 
         materials += sif_block(f'Material {i}', [ f'Relative Permittivity = {perm}'])
 
-
+    # Boundary conditions
     boundary_conditions = ""
-    matc_blocks = ""
-
-    grounds = get_grounds(json_data, dim=dim)
-    signals = get_signals(json_data, dim=dim)
-    gaps = get_gaps(json_data, dim=dim)
-
+    grounds = get_grounds(json_data, dim=dim, mesh_names=mesh_names)
     ground_boundaries = [f'{g}_boundary' for g in grounds] if dim == 2 else grounds
+    boundary_conditions += sif_boundary_condition(
+        ordinate=1,
+        target_boundaries=ground_boundaries,
+        conditions=['Potential = 0.0'])
+    n_boundaries = 1
+
+    signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
     signals_boundaries = [f'{s}_boundary' for s in signals] if dim == 2 else signals
-    gaps_boundaries = [f'{gp}_boundary' for gp in signals] if dim == 2 else gaps
-
-    n_ground_bcs = 1
-    boundary_conditions += sif_boundary_condition(
-                                ordinate=n_ground_bcs,
-                                target_boundaries=ground_boundaries,
-                                conditions=['Potential = 0.0'])
-
     for i, s in enumerate(signals_boundaries, 1):
-        n_signals = i+1
         boundary_conditions += sif_boundary_condition(
-                                    ordinate=n_signals,
-                                    target_boundaries=[s],
-                                    conditions=[f'Capacitance Body = {i}'])
+            ordinate=i + n_boundaries,
+            target_boundaries=[s],
+            conditions=[f'Capacitance Body = {i}'])
+    n_boundaries += len(signals)
 
-    boundary_conditions += sif_boundary_condition(
-                                ordinate=n_signals+n_ground_bcs,
-                                target_boundaries=gaps_boundaries,
-                                conditions=['! This BC does not do anything, but',
-                                            '! MMG does not conserve GeometryIDs if there is no BC defined.',
-                                            ])
+    # Add place-holder boundaries (if additional physical groups are given)
+    other_groups = [n for n in mesh_names if n not in body_list + grounds + signals and not n.startswith('port_')]
+    for i, s in enumerate(other_groups, 1):
+        boundary_conditions += sif_boundary_condition(
+            ordinate=i + n_boundaries,
+            target_boundaries=[s],
+            conditions=['! This BC does not do anything, but',
+                        '! MMG does not conserve GeometryIDs if there is no BC defined.'])
+    n_boundaries += len(other_groups)
 
-    return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
+    return header + constants + solvers + equations + materials + bodies + boundary_conditions
+
 
 def sif_inductance(json_data, folder_path, angular_frequency, circuit_definitions_file):
     """
@@ -923,8 +917,9 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     solvers += get_save_data_solver(ordinate=6, result_file='inductance.dat')
 
     # Divide layers into different materials
-    signals = get_signals(json_data, dim=2)
-    grounds = get_grounds(json_data, dim=2)
+    mesh_names = read_mesh_names(folder_path)
+    signals = get_signals(json_data, dim=2, mesh_names=mesh_names)
+    grounds = get_grounds(json_data, dim=2, mesh_names=mesh_names)
     others = ['vacuum', *[n for n in json_data['layers'].keys() if n not in signals + grounds and n != 'vacuum']]
 
     bodies = sif_body(ordinate=1, target_bodies=others, equation=1, material=1)
@@ -1031,6 +1026,7 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     Returns:
         (str): elmer solver input file for wave equation
     """
+    dim = 3
     header = sif_common_header(json_data, folder_path)
     constants = sif_block('Constants', [f'Permittivity Of Vacuum = {epsilon_0}'])
 
@@ -1038,89 +1034,101 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     n_bodies = 0
     n_boundaries = 0
 
-    bodies = sif_body(ordinate=1, target_bodies=['vacuum'], equation=1, material=1)
+    # Bodies and materials
+    mesh_names = read_mesh_names(folder_path)
+    body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
+    permittivity_list = get_permittivities(json_data, with_zero=False, dim=dim, mesh_names=mesh_names)
 
-    n_bodies += 1
-    for face in range(json_data['faces']):
-        bodies += sif_body(ordinate=face + 2, target_bodies=[f'chip_{face}'], equation=1, material=2)
-        n_bodies += 1
+    bodies = ""
+    materials = ""
+    betas = []
+    for i, (body, perm) in enumerate(zip(body_list, permittivity_list), 1):
+        bodies += sif_body(ordinate=i,
+                           target_bodies=[body],
+                           equation=1,
+                           material=i)
+        materials += sif_block(f'Material {i}', [ f'Relative Permittivity = {perm}'])
+        betas.append(f'beta_{body} = w*sqrt({perm}*eps0*mu0)')
+    n_bodies = len(body_list)
 
-    # materials
-    materials = sif_block('Material 1', ['Relative Permittivity = 1'])
-    materials += sif_block('Material 2', [f'Relative Permittivity = {json_data["substrate_permittivity"]}'])
+    # Matc block
+    matc_blocks = sif_matc_block([
+        f'f0 = {1e9*json_data["frequency"]}',
+        'w=2*pi*(f0)',
+        'mu0=4e-7*pi',
+        'eps0 = 8.854e-12',
+        *betas
+        ])
 
-    boundary_conditions = ""
-    matc_blocks = ""
-
+    # Equations
     equations = get_equation(ordinate=1, solver_ids=[2, 3])
     equations += get_equation(ordinate=2, solver_ids=[1])
 
-    n_boundaries += 1
+    # Boundary conditions
+    boundary_conditions = ""
+    grounds = get_grounds(json_data, dim=dim, mesh_names=mesh_names)
     boundary_conditions += sif_boundary_condition(
-                                ordinate=n_boundaries,
-                                target_boundaries=json_data['ground_names'],
-                                conditions=[
-                                    'E re {e} = 0',
-                                    'E im {e} = 0',
-                                    'Potential = 0',
-                                    ]
-                                )
+        ordinate=1,
+        target_boundaries=grounds,
+        conditions=['E re {e} = 0',
+                    'E im {e} = 0',
+                    'Potential = 0'])
+    n_boundaries = 1
 
-    n_boundaries += 1
-    boundary_conditions += sif_boundary_condition(
-                                ordinate=n_boundaries,
-                                target_boundaries=json_data['gap_names'],
-                                conditions=[
-                                    '! This is a place holder for gap boundary conditions'
-                                    ]
-                                )
-
-    for i, port_signal_name in enumerate(json_data['port_signal_names']):
-        n_boundaries += 1
+    signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
+    for i, s in enumerate(signals, 1):
         boundary_conditions += sif_boundary_condition(
-                                    ordinate=i+3,
-                                    target_boundaries=[port_signal_name],
-                                    conditions=[
-                                        'E re {e} = 0',
-                                        'E im {e} = 0',
-                                        'Potential = 1',
-                                        ]
-                                    )
+            ordinate=i + n_boundaries,
+            target_boundaries=[s],
+            conditions=['E re {e} = 0',
+                        'E im {e} = 0',
+                        'Potential = 1'])
+    n_boundaries += len(signals)
 
-    for i, body_dim_tag in enumerate(json_data['body_dim_tags']):
-        body_id = i+1+n_bodies
-        bodies += sif_body(
-                ordinate=body_id,
-                target_bodies=[f'{body_id}'],
-                equation=2,
-                material=1 if json_data['body_materials'][body_dim_tag] == 'vacuum' else 2)
+    # Port boundaries
+    body_ids = {b: None for b in body_list}
+    for i, port in enumerate(json_data['ports'], 1):
+        port_name = f'port_{port["number"]}'
+        if port['type'] == 'EdgePort':
+            # The edge port is split by dielectric materials
+            port_parts = [(n, n[len(port_name + '_'):]) for n in mesh_names if n.startswith(port_name + '_')]
+        else:
+            # The material is assumed to be homogeneous throughout the internal port, so any material can be used.
+            # We pick 'vacuum' by default if it exists.
+            any_material = 'vacuum' if 'vacuum' in body_list else body_list[0]
+            port_parts = [(port_name, any_material)] if port_name in mesh_names else []
 
-        for boundary_physical_name in json_data['body_port_phys_map'][body_dim_tag]:
+        for name, mat in port_parts:
+            # Add body for the port equation, if it doesn't exist yet
+            if body_ids[mat] is None:
+                n_bodies += 1
+                body_ids[mat] = n_bodies
+                bodies += sif_body(ordinate=body_ids[mat],
+                                   target_bodies=[f'{body_ids[mat]}'],
+                                   equation=2,
+                                   material=body_list.index(mat) + 1)
+
+            # Add boundary condition for the port
             n_boundaries += 1
-            beta_string = 'beta0' if json_data['body_materials'][body_dim_tag] == 'vacuum' else 'beta'
-            port = get_port_from_boundary_physical_names(json_data['ports'], boundary_physical_name)
             boundary_conditions += sif_boundary_condition(
-                                        ordinate=i+n_boundaries,
-                                        target_boundaries=[boundary_physical_name],
-                                        conditions=[
-                                            f'Body Id = {body_id}',
-                                            'TEM Potential im = variable potential',
-                                            f'  real matc "2*{beta_string}*tx"',
-                                            f'electric robin coefficient im = real $ {beta_string}',
-                                            f'Constraint Mode = Integer {port["number"]}'
-                                            ]
-                                        )
+                ordinate=n_boundaries,
+                target_boundaries=[name],
+                conditions=[f'Body Id = {body_ids[mat]}',
+                            'TEM Potential im = variable potential',
+                            f'  real matc "2*beta_{mat}*tx"',
+                            f'electric robin coefficient im = real $ beta_{mat}',
+                            f'Constraint Mode = Integer {port["number"]}'])
 
-    matc_blocks = sif_matc_block([
-           f'f0 = {1e9*json_data["frequency"]}',
-            'w=2*pi*(f0)',
-            'mu0=4e-7*pi',
-            'eps0 = 8.854e-12',
-           f'epsr = {json_data["substrate_permittivity"]}',
-            'beta = w*sqrt(eps0*epsr*mu0)',
-            'beta0 = w*sqrt(eps0*mu0)',
-            ])
+    # Add place-holder boundaries (if additional physical groups are given)
+    other_groups = [n for n in mesh_names if n not in body_list + grounds + signals and not n.startswith('port_')]
+    for i, s in enumerate(other_groups, 1):
+        boundary_conditions += sif_boundary_condition(
+            ordinate=i + n_boundaries,
+            target_boundaries=[s],
+            conditions=['! This is a place holder for other boundary conditions'])
+    n_boundaries += len(other_groups)
 
+    # Solvers
     solvers = get_port_solver(
         ordinate=1,
         maximum_passes=json_data['maximum_passes'],

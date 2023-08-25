@@ -124,8 +124,8 @@ if use_elmer:
     elmer_n_processes = args.elmer_n_processes
     mesh_size = {
         'global_max': args.global_mesh_size,
-        'gap': args.gap_mesh_size,
-        'port': args.port_mesh_size,
+        '1t1_gap': args.gap_mesh_size,
+        **{f'port_{i+1}': args.port_mesh_size for i in range(args.n_guides_range[1])}
     }
 
     if wave_equation:

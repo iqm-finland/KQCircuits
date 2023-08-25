@@ -83,8 +83,8 @@ if use_elmer:
     }
     mesh_size = {
         'global_max': 200.,
-        'gap&signal': 2.,
-        'gap&ground': 2.,
+        '1t1_gap&1t1_signal': 2.,
+        '1t1_gap&1t1_ground': 2.,
     }
     workflow = {
         'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done

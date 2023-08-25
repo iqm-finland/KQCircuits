@@ -47,9 +47,8 @@ export_parameters = {
 # Gmsh meshing parameters
 mesh_size = {
     'global_max': 400.,
-    'gap': 16.,
-    'port': 8.,
-    'signal&gap': 8,
+    '1t1_gap': 16.,
+    '1t1_signal&1t1_gap': 8,
 }
 
 # Here we select to use up to 4*2=8 cores with two levels of parallelisation

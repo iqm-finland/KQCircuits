@@ -71,10 +71,8 @@ sim_parameters = {
 if use_elmer:
     mesh_size = {
         'global_max': 100.,
-        'ground_grid': 10,
-        'gap&signal': 1,
-        'gap&ground': 1,
-        'port': 1.,
+        '2b1_gap&2b1_signal': 1,
+        '2b1_gap&2b1_ground': 1,
     }
 
     export_parameters_elmer = {

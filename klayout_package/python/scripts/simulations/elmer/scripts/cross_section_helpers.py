@@ -87,14 +87,14 @@ def produce_cross_section_mesh(json_data, msh_file):
             hull_point_coordinates = [
                 (point.x * layout.dbu, point.y * layout.dbu, 0) for point in poly.each_point_hull()
             ]
-            hull_plane_surface_id = add_polygon(hull_point_coordinates)
+            hull_plane_surface_id, _ = add_polygon(hull_point_coordinates)
             hull_dim_tag = (2, hull_plane_surface_id)
             hole_dim_tags = []
             for hole in range(poly.holes()):
                 hole_point_coordinates = [
                     (point.x * layout.dbu, point.y * layout.dbu, 0) for point in poly.each_point_hole(hole)
                 ]
-                hole_plane_surface_id = add_polygon(hole_point_coordinates)
+                hole_plane_surface_id, _ = add_polygon(hole_point_coordinates)
                 hole_dim_tags.append((2, hole_plane_surface_id))
             if hole_dim_tags:
                 layer_dim_tags += gmsh.model.occ.cut([hull_dim_tag], hole_dim_tags)[0]

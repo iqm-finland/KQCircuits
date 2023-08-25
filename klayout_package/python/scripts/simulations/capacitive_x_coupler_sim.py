@@ -58,10 +58,10 @@ sim_parameters = {
 if use_elmer:
     mesh_size = {
         'global_max': 50.,
-        'gap': 2.,
-        'gap&ground':[0.5,0.5,2],
-        'gap&signal':[0.5,0.5,2],
-        'port': 2.,
+        '1t1_gap': 2.,
+        '1t1_gap&1t1_ground': [0.5,0.5,2],
+        '1t1_gap&1t1_signal': [0.5,0.5,2],
+        **{f'port_{i}': 20. for i in range(1, 5)},
     }
 
     if wave_equation:
