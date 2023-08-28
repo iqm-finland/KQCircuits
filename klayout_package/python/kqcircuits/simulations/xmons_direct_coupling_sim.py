@@ -54,7 +54,6 @@ class XMonsDirectCouplingSim(Simulation):
         self.produce_waveguide_to_port(
             port_nr=1,
             location=self.refpoints["QB1_port_drive"],
-            side="left",
             term1=10,
             towards=self.refpoints["QB1_port_drive"] + pya.DVector(-1, 1)
         )
@@ -62,7 +61,6 @@ class XMonsDirectCouplingSim(Simulation):
         self.produce_waveguide_to_port(
             port_nr=2,
             location=self.refpoints["QB2_port_drive"],
-            side="bottom",
             term1=10,
             towards=self.refpoints["QB2_port_drive"] + pya.DVector(0, -1)
         )
@@ -70,7 +68,6 @@ class XMonsDirectCouplingSim(Simulation):
         self.produce_waveguide_to_port(
             port_nr=3,
             location=self.refpoints["QB3_port_drive"],
-            side="right",
             term1=10,
             towards=self.refpoints["QB3_port_drive"] + pya.DVector(1, 1),
         )
@@ -81,7 +78,6 @@ class XMonsDirectCouplingSim(Simulation):
             a=5,
             b=20,
             location=self.refpoints["QB1_port_cplr1"],
-            side="top",
             towards=self.refpoints["QB1_port_cplr1"] + pya.DVector(0, 1),
             use_internal_ports=True
         )
@@ -91,7 +87,6 @@ class XMonsDirectCouplingSim(Simulation):
             a=5,
             b=20,
             location=self.refpoints["QB2_port_cplr1"],
-            side="top",
             towards=self.refpoints["QB2_port_cplr1"] + pya.DVector(0, 1),
             use_internal_ports=True
         )
@@ -101,7 +96,6 @@ class XMonsDirectCouplingSim(Simulation):
             a=5,
             b=20,
             location=self.refpoints["QB3_port_cplr1"],
-            side="top",
             towards=self.refpoints["QB3_port_cplr1"] + pya.DVector(0, 1),
             use_internal_ports=True
         )
