@@ -590,7 +590,7 @@ class Simulation:
                 The waveguide will start from `location` and go towards `towards`
             port_nr (int): Port index for the simulation engine starting from 1
             side (str): Indicate on which edge the port should be located. Ignored for internal ports.
-                Must be one of `left`, `right`, `top` or `bottom`
+                Must be one of `left`, `right`, `top` or `bottom`. If `None` then direction is inferred from `towards`.
             use_internal_ports (bool, optional): if True, ports will be inside the simulation. If False, ports will be
                 brought out to an edge of the box, determined by `side`.
                 Defaults to the value of the `use_internal_ports` parameter
@@ -653,8 +653,9 @@ class Simulation:
             ]
         else:
             corner_point = location + (waveguide_length + turn_radius) * direction
-            if side is None:
-                raise ValueError("Waveport side in the arguments of `produce_waveguide_to_ports` is not specified")
+            if side is None:  # infer EdgePort location if not given
+                d = towards - location
+                side = (("left", "right"), ("bottom", "top"))[abs(d.x) < abs(d.y)][d.x + d.y > 0]
             port_edge_point = {
                 "left": pya.DPoint(self.box.left, corner_point.y),
                 "right": pya.DPoint(self.box.right, corner_point.y),
