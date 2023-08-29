@@ -836,7 +836,7 @@ polygons without holes.</p>
 The waveguide will start from <cite>location</cite> and go towards <cite>towards</cite></p></li>
 <li><p><strong>port_nr</strong> (<em>int</em>) – Port index for the simulation engine starting from 1</p></li>
 <li><p><strong>side</strong> (<em>str</em>) – Indicate on which edge the port should be located. Ignored for internal ports.
-Must be one of <cite>left</cite>, <cite>right</cite>, <cite>top</cite> or <cite>bottom</cite></p></li>
+Must be one of <cite>left</cite>, <cite>right</cite>, <cite>top</cite> or <cite>bottom</cite>. If <cite>None</cite> then direction is inferred from <cite>towards</cite>.</p></li>
 <li><p><strong>use_internal_ports</strong> (<em>bool</em><em>, </em><em>optional</em>) – if True, ports will be inside the simulation. If False, ports will be
 brought out to an edge of the box, determined by <cite>side</cite>.
 Defaults to the value of the <cite>use_internal_ports</cite> parameter</p></li>
