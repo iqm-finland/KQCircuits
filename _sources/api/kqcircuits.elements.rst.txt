@@ -19,6 +19,7 @@ kqcircuits.elements
    kqcircuits.elements.element
    kqcircuits.elements.finger_capacitor_square
    kqcircuits.elements.finger_capacitor_taper
+   kqcircuits.elements.hanger_resonator
    kqcircuits.elements.launcher
    kqcircuits.elements.launcher_dc
    kqcircuits.elements.mask_marker_fc

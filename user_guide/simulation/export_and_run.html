@@ -329,6 +329,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.hanger_resonator.html">kqcircuits.elements.hanger_resonator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
@@ -395,6 +396,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
@@ -539,11 +541,11 @@
 It is convenient to run KQC simulations as a one liner. This can be done
 with the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/kqcircuits/simulations/export/export_and_run.py">export_and_run.py</a> script.</p>
 <p>Go to directory ‘klayout_package/python’ and run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">simulate</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">simulations</span><span class="o">/</span><span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">sim</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">simulations</span><span class="o">/</span><span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <p>or if you do not want the GUI dialogs:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">simulate</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">simulations</span><span class="o">/</span><span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">sim</span> <span class="n">klayout_package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">simulations</span><span class="o">/</span><span class="n">waveguides_sim_compare</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">q</span>
 </pre></div>
 </div>
 <div class="admonition note">

@@ -16,6 +16,7 @@ kqcircuits.simulations
    kqcircuits.simulations.empty_simulation
    kqcircuits.simulations.finger_capacitor_sim
    kqcircuits.simulations.flip_chip_connector_sim
+   kqcircuits.simulations.hanger_resonator_sim
    kqcircuits.simulations.port
    kqcircuits.simulations.simulation
    kqcircuits.simulations.single_xmon

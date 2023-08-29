@@ -327,6 +327,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.element.html">kqcircuits.elements.element</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.finger_capacitor_square.html">kqcircuits.elements.finger_capacitor_square</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.finger_capacitor_taper.html">kqcircuits.elements.finger_capacitor_taper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.hanger_resonator.html">kqcircuits.elements.hanger_resonator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
@@ -393,6 +394,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
@@ -548,7 +550,7 @@
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 
-<div class="viewcode-block" id="export_and_run"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.export_and_run.html#kqcircuits.simulations.export.export_and_run.export_and_run">[docs]</a><span class="k">def</span> <span class="nf">export_and_run</span><span class="p">(</span><span class="n">export_script</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">export_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="export_and_run"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.export_and_run.html#kqcircuits.simulations.export.export_and_run.export_and_run">[docs]</a><span class="k">def</span> <span class="nf">export_and_run</span><span class="p">(</span><span class="n">export_script</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">export_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">export_only</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports and runs a KQC simulation.</span>
 
@@ -556,6 +558,7 @@
 <span class="sd">        export_script(Path): path to the simulation export script</span>
 <span class="sd">        export_path(Path): path where simulation files are exported</span>
 <span class="sd">        quiet(bool): if True all the GUI dialogs are shown, otherwise not.</span>
+<span class="sd">        export_only(bool): if True no simulation is run, only export files.</span>
 <span class="sd">        args(list): a list of strings describing arguments to be passed to the simulation script</span>
 
 <span class="sd">    Returns:</span>
@@ -575,7 +578,8 @@
 
     <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="n">sys</span><span class="o">.</span><span class="n">executable</span><span class="p">,</span> <span class="n">export_script</span><span class="p">,</span>
         <span class="s1">&#39;--simulation-export-path&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">export_path</span><span class="p">)]</span> <span class="o">+</span> <span class="n">args</span> <span class="o">+</span> <span class="p">([</span><span class="s1">&#39;-q&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">quiet</span> <span class="k">else</span> <span class="p">[]))</span>
-
+    <span class="k">if</span> <span class="n">export_only</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">export_script</span><span class="p">,</span> <span class="n">export_path</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">export_path</span> <span class="o">/</span> <span class="s1">&#39;simulation.sh&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
         <span class="n">simulation_shell_script</span> <span class="o">=</span> <span class="s1">&#39;simulation.sh&#39;</span>

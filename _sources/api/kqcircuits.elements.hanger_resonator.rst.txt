@@ -1,0 +1,10 @@
+kqcircuits.elements.hanger\_resonator
+=====================================
+
+.. automodule:: kqcircuits.elements.hanger_resonator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.elements.hanger_resonator
+.. image:: ../pcell_images/kqcircuits.elements.hanger_resonator.png

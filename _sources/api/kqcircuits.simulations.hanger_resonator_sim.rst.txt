@@ -1,0 +1,10 @@
+kqcircuits.simulations.hanger\_resonator\_sim
+=============================================
+
+.. automodule:: kqcircuits.simulations.hanger_resonator_sim
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.hanger_resonator_sim
+.. image:: ../pcell_images/kqcircuits.simulations.hanger_resonator_sim.png
