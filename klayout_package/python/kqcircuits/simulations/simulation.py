@@ -128,6 +128,10 @@ class Simulation:
     substrate_height = Param(pdt.TypeList, "Height of the substrates", [550.0, 375.0], unit="[µm]",
                              docstring="The value can be scalar or list of scalars. Set as list to use individual "
                                        "substrate heights from bottom to top.")
+    substrate_box = Param(pdt.TypeList, "x and y dimensions of substrates", [None],
+                          docstring="Set as a list of pya.DBox objects to give substrate dimensions individually from "
+                                    "bottom to top. If a value in the list is not pya.DBox object, the corresponding"
+                                    "substrate covers fully the general boundary box.")
     substrate_material = Param(pdt.TypeList, "Material of the substrates.", ['silicon'],
                                docstring="Value can be string or list of strings. Use only keywords introduced in "
                                          "material_dict. Set as list to use individual materials from bottom to top.")
@@ -259,6 +263,13 @@ class Simulation:
     def face_stack_list_of_lists(self):
         """Return self.face_stack forced to be list of lists"""
         return [f if isinstance(f, list) else [f] for f in self.face_stack]
+
+    def _face_box(self, i):
+        """ Return the boundary box for given face number.
+        Boundary box is the intersection of the global boundary box and the substrate x-y-dimension box.
+        """
+        box = self.ith_value(self.substrate_box, (i + int(self.lower_box_height <= 0)) // 2)
+        return self.box & box if isinstance(box, pya.DBox) else self.box
 
     @staticmethod
     def ith_value(list_or_constant, i):
@@ -398,7 +409,10 @@ class Simulation:
         """Helper function to be used to produce indium bumps and TSVs"""
         z = self.face_z_levels()
         face_stack = self.face_stack_list_of_lists()
-        box_region = pya.Region(self.box.to_itype(self.layout.dbu))
+        box = self._face_box(i)
+        if 0 <= opp_i < len(face_stack):
+            box = box & self._face_box(opp_i)
+        box_region = pya.Region(box.to_itype(self.layout.dbu))
         sum_region = pya.Region()
         for face_id in face_stack[i]:
             region = self.simplified_region(self.region_from_layer(face_id, layer_name) & box_region)
@@ -449,7 +463,7 @@ class Simulation:
             self.insert_layers_between_faces(i, i + sign, "indium_bump", material='pec')
 
             for j, face_id in enumerate(face_ids):
-                ground_box_region = pya.Region(self.box.to_itype(self.layout.dbu))
+                ground_box_region = pya.Region(self._face_box(i).to_itype(self.layout.dbu))
                 metal_gap_region = self.region_from_layer(face_id, "base_metal_gap_wo_grid")
                 metal_add_region = self.region_from_layer(face_id, "base_metal_addition")
                 lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
@@ -553,10 +567,16 @@ class Simulation:
             subtract = [k for k in self.layers if any(t in k for t in layers) and any(t in k for t in faces)]
 
             # insert substrate layer
-            name = 'substrate' if i < 2 else f'substrate_{i // 2}'
-            self.layers[name] = {'z': z[i], 'thickness': z[i + 1] - z[i],
-                                 'material': self.ith_value(self.substrate_material, i // 2),
-                                 **({'subtract': subtract} if subtract else dict())}
+            name = 'substrate' if len(face_stack) - int(self.lower_box_height > 0) < 2 else f'substrate_{i // 2}'
+            params = {'z': z[i],
+                      'thickness': z[i + 1] - z[i],
+                      'material': self.ith_value(self.substrate_material, i // 2),
+                      **({'subtract': subtract} if subtract else dict())}
+            box = self._face_box(i)
+            if box == self.box:
+                self.layers[name] = params
+            else:
+                self.insert_layer(pya.Region(self._face_box(i).to_itype(self.layout.dbu)), name, **params)
 
         # Insert vacuum
         subtract = [n for n, v in self.layers.items() if v.get('material', None) is not None and
@@ -568,8 +588,7 @@ class Simulation:
 
     def ground_grid_region(self, face_id):
         """Returns region of ground grid for the given face id."""
-        box = self.ground_grid_box & self.box  # restrict self.ground_grid_box inside self.box
-        grid_area = box * (1 / self.layout.dbu)
+        grid_area = self.ground_grid_box * (1 / self.layout.dbu)
         protection = self.simplified_region(self.region_from_layer(face_id, "ground_grid_avoidance"))
         grid_mag_factor = 1
         return make_grid(grid_area, protection,
