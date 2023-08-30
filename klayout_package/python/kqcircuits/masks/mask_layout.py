@@ -52,6 +52,8 @@ class MaskLayout:
         dice_width: Dicing width for this mask layout
         text_margin: Text margin for this mask layout
         chip_size: side width of the chips (assuming square chips)
+        chip_array_to_export: List of lists where for each chip in the array we have the following record - (row,
+         column, Active/inactive, chip ID, chip type). Gets exported as an external csv file
         edge_clearance: minimum clearance of outer chips from the edge of the mask
         chip_box_offset: Offset (pya.DVector) from chip origin of the chip frame boxes for this face
         chip_trans: DTrans applied to all chips
@@ -119,6 +121,7 @@ class MaskLayout:
         self.align_to = kwargs.get("align_to", None)
         self.chip_counts = {}
         self.extra_chips_maps = []
+        self.chip_array_to_export = []
         # For mask name the letter I stats at x=750
         self._mask_name_letter_I_offset = 750
 
@@ -258,7 +261,8 @@ class MaskLayout:
                     xvals.add(pos2.x)
                     yvals.add(pos2.y)
                 chips_dict[(pos2.x, pos2.y)] = chip_name, pos, bbox, dtrans, position_label, submask_layout
-
+        def get_position_label(i, j):
+            return chr(ord("A") + i) + ("{:02d}".format(j))
         # produce the labels such that chips with identical x-coordinate (y-coordinate) have identical number (letter)
         used_position_labels = set()
         for (x, y), (chip_name, _, bbox, dtrans, position_label, mask_layout) in chips_dict.items():
@@ -268,7 +272,7 @@ class MaskLayout:
                     raise ValueError("No position_label override yet label was not automatically generated")
                 i = sorted(yvals, reverse=True).index(y)
                 j = sorted(xvals).index(x)
-                position_label = chr(ord("A") + i) + ("{:02d}".format(j))
+                position_label = get_position_label(i, j)
             if position_label in used_position_labels:
                 raise ValueError(f"Duplicate use of chip position label {position_label}. "
                                  f"When using extra_chips, please make sure to only use unreserved position labels")
@@ -282,6 +286,22 @@ class MaskLayout:
             mask_layout._add_chip_graphical_representation_layer(chip_name,
                                                                  dtrans * (pya.DPoint(bbox_x2, bbox.bottom)),
                                                                  position_label, bbox.width(), labels_cell_2)
+            self.chip_array_to_export.append([i, j, "Active", position_label, chip_name])
+
+        # Fill in gaps in the grid and mark them as inactive
+        for i in range(max([x[0] for x in self.chip_array_to_export]) + 1):
+            for j in range(max([x[1] for x in self.chip_array_to_export]) + 1):
+                entry_found = False
+                for chip_info in self.chip_array_to_export:
+                    if chip_info[0] == i and chip_info[1] == j:
+                        entry_found = True
+                        break
+                if not entry_found:
+                    self.chip_array_to_export.append([i, j, "Inactive", get_position_label(i, j), "---"])
+        # Sort entries primarily by row and secondarily by column
+        self.chip_array_to_export.sort(key=lambda x: x[1])
+        self.chip_array_to_export.sort(key=lambda x: x[0])
+
 
     def face(self):
         """Returns the face dictionary for this mask layout"""
@@ -342,7 +362,6 @@ class MaskLayout:
                     region_used += region_chip
                     if added_chip:
                         self.chip_counts[name] += 1
-
         self.region_covered -= region_used
         box = region_used.bbox()
         self._min_x = min(box.p1.x, self._min_x)

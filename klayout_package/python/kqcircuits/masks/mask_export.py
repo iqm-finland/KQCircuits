@@ -21,6 +21,7 @@ import os
 import subprocess
 from importlib import import_module
 from math import pi
+import csv
 
 from autologging import logged
 
@@ -308,6 +309,14 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
 
         f.close()
 
+    for mask_layout in mask_set.mask_layouts:
+        mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout)
+        chips_map_file_name = mask_set._mask_set_dir / mask_layout_str / f"{mask_layout_str}-chips_map.csv"
+        with open(chips_map_file_name, "w+", encoding="utf-8", newline="") as g:
+            writer = csv.writer(g)
+            writer.writerows(
+                [['x', 'y', 'Active/Inactive', 'pixel id', 'pixel type']] + mask_layout.chip_array_to_export)
+        g.close()
 
 @logged
 def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
