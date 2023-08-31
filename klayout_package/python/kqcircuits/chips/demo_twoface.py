@@ -20,6 +20,7 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.elements.meander import Meander
+from kqcircuits.junctions.junction import Junction
 from kqcircuits.qubits.swissmon import Swissmon
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
@@ -29,6 +30,7 @@ from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.chips.demo import Demo
 
 @add_parameters_from(Demo, "readout_res_lengths", "include_couplers", frames_enabled=[0, 1])
+@add_parameters_from(Junction, "junction_type")
 class DemoTwoface(Chip):
     """Demonstration chip for 3D-integration (multi-face) features."""
 
