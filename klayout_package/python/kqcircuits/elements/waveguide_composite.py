@@ -177,7 +177,7 @@ class Node:
 
 @add_parameters_from(WaveguideCoplanarTaper, taper_length=100)
 @add_parameters_from(Airbridge, "airbridge_type")
-@add_parameters_from(WaveguideCoplanar, "term1", "term2", "add_metal")
+@add_parameters_from(WaveguideCoplanar, "term1", "term2", "add_metal", "ground_grid_in_trace")
 @add_parameters_from(FlipChipConnectorRf)
 @logged
 class WaveguideComposite(Element):
@@ -636,13 +636,13 @@ class WaveguideComposite(Element):
             return vector_length_and_direction(self._nodes[prev + 1].position - self._nodes[prev].position)[1]
         return get_direction(fixed_angle)
 
-    def _insert_wg_cell(self, points, start_index, end_index):
+    def _insert_wg_cell(self, points, start_index, end_index, **params):
         """Create and insert waveguide cell.
         Avoid termination if in the middle or if the ends are actual elements.
         """
         if len(points) < 2:
             return
-        params = {**self.pcell_params_by_name(WaveguideCoplanar), "path": points}
+        params.update({**self.pcell_params_by_name(WaveguideCoplanar), "path": points})
         if start_index != 0 or self._nodes[start_index].element:
             params['term1'] = 0
         if end_index != len(self._nodes) - 1 or self._nodes[end_index].element:
@@ -782,7 +782,8 @@ class WaveguideComposite(Element):
             elif "n_bridges" in node1.params and node1.params["n_bridges"] > 0:
                 ab_len = node1.params['bridge_length'] if "bridge_length" in node1.params else None
                 self._ab_across(points[p1-1], points[p1], node1.params["n_bridges"], ab_len)
-        self._insert_wg_cell(point0 + points[p0:], n0, end_index)
+
+        self._insert_wg_cell(point0 + points[p0:], n0, end_index, **node1.params)
 
         # Keep track of current position, direction, and index for the future elements
         self._wg_start_pos = points[-1]

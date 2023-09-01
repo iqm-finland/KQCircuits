@@ -29,6 +29,7 @@ class WaveguideCoplanarStraight(Element):
 
     l = Param(pdt.TypeDouble, "Length", 30)
     add_metal = Param(pdt.TypeBoolean, "Add trace in base metal addition too", False)
+    ground_grid_in_trace = Param(pdt.TypeBoolean, "Add ground grid also to the waveguide", False)
 
     def build(self):
         # Refpoint in the first end
@@ -39,8 +40,9 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(self.l, self.a / 2 + self.b),
             pya.DPoint(0, self.a / 2 + self.b)
         ]
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
+        shape_1 = pya.DPolygon(pts)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_1)
+
         # Right gap
         pts = [
             pya.DPoint(0, -self.a / 2 + 0),
@@ -48,17 +50,24 @@ class WaveguideCoplanarStraight(Element):
             pya.DPoint(self.l, -self.a / 2 - self.b),
             pya.DPoint(0, -self.a / 2 - self.b)
         ]
-        shape = pya.DPolygon(pts)
-        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
+        shape_2 = pya.DPolygon(pts)
+        self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape_2)
+
+
         # Protection layer
-        w = self.a / 2 + self.b + self.margin
-        pts = [
-            pya.DPoint(0, -w),
-            pya.DPoint(self.l, -w),
-            pya.DPoint(self.l, w),
-            pya.DPoint(0, w)
-        ]
-        self.add_protection(pya.DPolygon(pts))
+        if self.ground_grid_in_trace:
+            self.add_protection(shape_1.sized(1))
+            self.add_protection(shape_2.sized(1))
+        else:
+            w = self.a / 2 + self.b + self.margin
+            pts = [
+                pya.DPoint(0, -w),
+                pya.DPoint(self.l, -w),
+                pya.DPoint(self.l, w),
+                pya.DPoint(0, w)
+            ]
+            self.add_protection(pya.DPolygon(pts))
+
         # Waveguide length
         pts = [
             pya.DPoint(0, 0),

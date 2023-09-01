@@ -18,6 +18,8 @@
 
 from math import pi, cos, sin, tan, atan, atan2, degrees, sqrt
 from scipy.optimize import brentq
+from kqcircuits.util.parameters import add_parameters_from
+from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStraight
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
@@ -27,7 +29,7 @@ from kqcircuits.elements.element import Element
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.util.geometry_helper import vector_length_and_direction, get_angle
 
-
+@add_parameters_from(WaveguideCoplanarStraight, "ground_grid_in_trace")
 class Meander(Element):
     """The PCell declaration for a meandering waveguide.
 
@@ -136,7 +138,7 @@ class Meander(Element):
             self._produce_bridges(points, transf)
 
         # Insert waveguide and ports
-        waveguide = self.add_element(WaveguideCoplanar, path=points)
+        waveguide = self.add_element(WaveguideCoplanar, path=points, ground_grid_in_trace=self.ground_grid_in_trace)
         wg_inst, _ = self.insert_cell(waveguide, transf)
         self.copy_port("a", wg_inst)
         self.copy_port("b", wg_inst)

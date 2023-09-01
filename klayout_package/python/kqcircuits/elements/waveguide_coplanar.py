@@ -26,7 +26,7 @@ from kqcircuits.elements.waveguide_coplanar_straight import WaveguideCoplanarStr
 from kqcircuits.elements.waveguide_coplanar_curved import WaveguideCoplanarCurved
 
 
-@add_parameters_from(WaveguideCoplanarStraight, "add_metal")
+@add_parameters_from(WaveguideCoplanarStraight, "add_metal", "ground_grid_in_trace")
 class WaveguideCoplanar(Element):
     """The PCell declaration for an arbitrary coplanar waveguide.
 

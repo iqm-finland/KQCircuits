@@ -57,6 +57,7 @@ class QualityFactor(Chip):
     resonators_both_sides = Param(pdt.TypeBoolean, "Place resonators on both sides of feedline", False)
     max_res_len = Param(pdt.TypeDouble, "Maximal straight length of resonators", 1e30, unit="μm",
                         docstring="Resonators exceeding this length become meandering")
+    ground_grid_in_trace = Param(pdt.TypeList, "Include ground-grid in the trace", [0]*18)
     # override box to have hidden=False and allow GUI editing
     box = Param(pdt.TypeShape, "Border", pya.DBox(pya.DPoint(0, 0), pya.DPoint(10000, 10000)))
 
@@ -152,10 +153,13 @@ class QualityFactor(Chip):
             if res_term[i] == "airbridge":
                 node_end = Node(pos_res_end, AirbridgeConnection, with_side_airbridges=False,
                                 with_right_waveguide=False, n_bridges=n_ab[i],
-                                bridge_length=bridge_length, length_increment=length_increment)
+                                bridge_length=bridge_length, length_increment=length_increment,
+                                ground_grid_in_trace=int(self.ground_grid_in_trace[i]))
             else:
                 node_end = Node(pos_res_end, n_bridges=n_ab[i],
-                                bridge_length=bridge_length, length_increment=length_increment)
+                                bridge_length=bridge_length,
+                                length_increment=length_increment,
+                                ground_grid_in_trace=int(self.ground_grid_in_trace[i]))
 
             airbridge_type = default_airbridge_type
             if i < len(self.res_airbridge_types):
