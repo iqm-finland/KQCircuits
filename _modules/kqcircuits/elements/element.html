@@ -388,18 +388,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.concentrictransmon_couplings_sim.html">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -556,7 +549,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_cell_path_length</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.library_helper</span> <span class="kn">import</span> <span class="n">load_libraries</span><span class="p">,</span> <span class="n">to_library_name</span><span class="p">,</span> <span class="n">to_module_name</span><span class="p">,</span> <span class="n">element_by_class_name</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">Refpoints</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.refpoints</span> <span class="kn">import</span> <span class="n">Refpoints</span><span class="p">,</span> <span class="n">WaveguideToSimPort</span>
 
 
 <div class="viewcode-block" id="get_refpoints"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.get_refpoints">[docs]</a><span class="k">def</span> <span class="nf">get_refpoints</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">cell_transf</span><span class="o">=</span><span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(),</span> <span class="n">rec_levels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1116,7 +1109,40 @@
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
                     <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json_str</span><span class="p">)</span></div></div>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">pname</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">json_str</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Element.get_sim_ports"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.get_sim_ports">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_sim_ports</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">simulation</span><span class="p">):</span> <span class="c1"># pylint: disable=unused-argument</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of RefpointToSimPort objects defining which refpoints</span>
+<span class="sd">        should be turned to simulation ports for the given element class</span>
+
+<span class="sd">        Returns empty list if not implemented for Element subclass.</span>
+<span class="sd">        When implementing this method, the best practice is for this method</span>
+<span class="sd">        to have no &quot;side effects&quot;, that is all code contained within this method</span>
+<span class="sd">        should only serve to derive the list of RefpointToSimPort objects and nothing</span>
+<span class="sd">        else: no change in element&#39;s geometry or parameter values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls: Element class, this is a class method</span>
+<span class="sd">            simulation: Simulation object where a cell of this element class is placed.</span>
+<span class="sd">                Use this argument if you need to decide certain arguments</span>
+<span class="sd">                for RefpointToSimPort objects based on simulation&#39;s parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of RefpointToSimPort objects, empty list by default</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Element.left_and_right_waveguides"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element.left_and_right_waveguides">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">left_and_right_waveguides</span><span class="p">(</span><span class="n">simulation</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A common implementation of get_sim_ports that adds left and right waveguides</span>
+<span class="sd">        to port_a and port_b respectively. The a and b values of right waveguide</span>
+<span class="sd">        can be adjusted separately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a2</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a</span> <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">a2</span>
+        <span class="n">b2</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b</span> <span class="k">if</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b2</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">b2</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="s2">&quot;port_a&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">simulation</span><span class="o">.</span><span class="n">b</span><span class="p">),</span>
+                <span class="n">WaveguideToSimPort</span><span class="p">(</span><span class="s2">&quot;port_b&quot;</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b2</span><span class="p">)]</span></div></div>
 </pre></div>
 
            </div>

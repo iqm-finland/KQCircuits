@@ -390,18 +390,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.concentrictransmon_couplings_sim.html">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -595,6 +588,155 @@ element creation process in KQC.</p>
 <dt class="sig sig-object py" id="kqcircuits.util.refpoints.Refpoints.values">
 <span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#Refpoints.values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.Refpoints.values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a list of positions.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.RefpointToSimPort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">RefpointToSimPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#RefpointToSimPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.RefpointToSimPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that takes a refpoint of an Element class with given string
+and places appropriate Simulation port(s) at the refpoint’s location
+if the simulation object was instantiated using the <cite>get_single_element_sim_class</cite>
+class builder.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.RefpointToSimPort.refpoint">
+<span class="sig-name descname"><span class="pre">refpoint</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.RefpointToSimPort.refpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refpoint name string</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.RefpointToSimPort.face">
+<span class="sig-name descname"><span class="pre">face</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.RefpointToSimPort.face" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of the face where the refpoint is located</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.RefpointToInternalPort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">RefpointToInternalPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ground_refpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reactance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacitance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signal_layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'signal'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#RefpointToInternalPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.RefpointToInternalPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.util.refpoints.RefpointToSimPort</span></code></a></p>
+<p>Creates an InternalPort at refpoint with given string</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.RefpointToEdgePort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">RefpointToEdgePort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resistance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reactance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capacitance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deembed_len</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">junction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#RefpointToEdgePort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.RefpointToEdgePort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.util.refpoints.RefpointToSimPort</span></code></a></p>
+<p>Creates an EdgePort at refpoint with given string</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">WaveguideToSimPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">towards</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">side</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_internal_ports</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">waveguide_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turn_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">over_etching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">airbridge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#WaveguideToSimPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.util.refpoints.RefpointToSimPort</span></code></a></p>
+<p>A waveguide is created leading to the port at the refpoint with given string in the Simulation object</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.refpoint">
+<span class="sig-name descname"><span class="pre">refpoint</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.refpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refpoint name string</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.face">
+<span class="sig-name descname"><span class="pre">face</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.face" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of the face where the <cite>refpoint</cite> is located</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.towards">
+<span class="sig-name descname"><span class="pre">towards</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.towards" title="Permalink to this definition">¶</a></dt>
+<dd><p>Another refpoint name string towards which direction the waveguide will extend.
+If set to None, will default to “{refpoint}_corner”</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.side">
+<span class="sig-name descname"><span class="pre">side</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.side" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indicate on which edge the port should be located. Ignored for internal ports.
+Must be one of <cite>left</cite>, <cite>right</cite>, <cite>top</cite> or <cite>bottom</cite></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.use_internal_ports">
+<span class="sig-name descname"><span class="pre">use_internal_ports</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.use_internal_ports" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True, ports will be inside the simulation. If False, ports will be
+brought out to an edge of the box, determined by <cite>side</cite>.
+Defaults to the value of the <cite>use_internal_ports</cite> parameter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.waveguide_length">
+<span class="sig-name descname"><span class="pre">waveguide_length</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.waveguide_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>length of the waveguide (μm), used only for internal ports
+Defaults to the value of the <cite>waveguide_length</cite> parameter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.term1">
+<span class="sig-name descname"><span class="pre">term1</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.term1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Termination gap (μm) at the location of <cite>refpoint</cite></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.turn_radius">
+<span class="sig-name descname"><span class="pre">turn_radius</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.turn_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn radius of the waveguide. Not relevant for internal ports.
+Defaults to the value of the <cite>r</cite> parameter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.a">
+<span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.a" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center conductor width. Defaults to the value of the <cite>a</cite> parameter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.b">
+<span class="sig-name descname"><span class="pre">b</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.b" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conductor gap width. Defaults to the value of the <cite>b</cite> parameter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.over_etching">
+<span class="sig-name descname"><span class="pre">over_etching</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.over_etching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expansion of gaps. Defaults to the value of the <cite>over_etching</cite> parameter</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.WaveguideToSimPort.airbridge">
+<span class="sig-name descname"><span class="pre">airbridge</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.WaveguideToSimPort.airbridge" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True, an airbridge will be inserted at location of the <cite>refpoint</cite>. Default False</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.util.refpoints.</span></span><span class="sig-name descname"><span class="pre">JunctionSimPort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'port_squid_a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_refpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'port_squid_b'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/refpoints.html#JunctionSimPort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#kqcircuits.util.refpoints.RefpointToSimPort" title="kqcircuits.util.refpoints.RefpointToSimPort"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.util.refpoints.RefpointToSimPort</span></code></a></p>
+<p>Creates internal ports for a junction in the Simulation object.</p>
+<p>Depending on the value of the <cite>separate_island_internal_ports</cite> parameter, will either create
+two internal ports at both ends of the junction, or one port that covers both junctions.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort.refpoint">
+<span class="sig-name descname"><span class="pre">refpoint</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort.refpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refpoint name string. Defaults to “port_squid_a” as most commonly used junction port name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort.other_refpoint">
+<span class="sig-name descname"><span class="pre">other_refpoint</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort.other_refpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refpoint name string of the other end of the junction
+Defaults to “port_squid_b” as most commonly used junction port name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.util.refpoints.JunctionSimPort.face">
+<span class="sig-name descname"><span class="pre">face</span></span><a class="headerlink" href="#kqcircuits.util.refpoints.JunctionSimPort.face" title="Permalink to this definition">¶</a></dt>
+<dd><p>index of the face where the <cite>refpoint</cite> is located</p>
 </dd></dl>
 
 </dd></dl>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kqcircuits.simulations.concentrictransmon_couplings_sim &mdash; KQCircuits  documentation</title>
+  <title>kqcircuits.simulations.single_element_simulation &mdash; KQCircuits  documentation</title>
   
 
   
@@ -46,8 +46,8 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.simulations.cross_section_simulation" href="kqcircuits.simulations.cross_section_simulation.html" />
-    <link rel="prev" title="kqcircuits.simulations.circular_capacitor_sim" href="kqcircuits.simulations.circular_capacitor_sim.html" /> 
+    <link rel="next" title="kqcircuits.simulations.single_xmons_full_chip_sim" href="kqcircuits.simulations.single_xmons_full_chip_sim.html" />
+    <link rel="prev" title="kqcircuits.simulations.simulation" href="kqcircuits.simulations.simulation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -390,18 +390,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -516,14 +509,14 @@
         
           <li><a href="kqcircuits.simulations.html">kqcircuits.simulations</a> &raquo;</li>
         
-      <li>kqcircuits.simulations.concentrictransmon_couplings_sim</li>
+      <li>kqcircuits.simulations.single_element_simulation</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
             
-              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.simulations.concentrictransmon_couplings_sim.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/iqm-finland/KQCircuits/blob/main/docs/api/kqcircuits.simulations.single_element_simulation.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -537,80 +530,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-kqcircuits.simulations.concentrictransmon_couplings_sim">
-<span id="kqcircuits-simulations-concentrictransmon-couplings-sim"></span><h1>kqcircuits.simulations.concentrictransmon_couplings_sim<a class="headerlink" href="#module-kqcircuits.simulations.concentrictransmon_couplings_sim" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="kqcircuits.simulations.concentrictransmon_couplings_sim.ConcentricTransmonCouplingsSim">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.concentrictransmon_couplings_sim.</span></span><span class="sig-name descname"><span class="pre">ConcentricTransmonCouplingsSim</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/concentrictransmon_couplings_sim.html#ConcentricTransmonCouplingsSim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.concentrictransmon_couplings_sim.ConcentricTransmonCouplingsSim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></code></a></p>
-<p>Initialize a Simulation.</p>
-<p>The initializer parses parameters, creates a top cell, and then calls <cite>self.build</cite> to create
-the simulation geometry, followed by <cite>self.create_simulation_layers</cite> to process the geometry
-so it is ready for exporting.</p>
+  <div class="section" id="module-kqcircuits.simulations.single_element_simulation">
+<span id="kqcircuits-simulations-single-element-simulation"></span><h1>kqcircuits.simulations.single_element_simulation<a class="headerlink" href="#module-kqcircuits.simulations.single_element_simulation" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.simulations.single_element_simulation.get_single_element_sim_class">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.simulations.single_element_simulation.</span></span><span class="sig-name descname"><span class="pre">get_single_element_sim_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">element_class</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="kqcircuits.elements.element.html#kqcircuits.elements.element.Element" title="kqcircuits.elements.element.Element"><span class="pre">kqcircuits.elements.element.Element</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_ports</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transformation_from_center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">klayout.dbcore.Cell</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">klayout.dbcore.DTrans</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Type</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation" title="kqcircuits.simulations.simulation.Simulation"><span class="pre">kqcircuits.simulations.simulation.Simulation</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/simulations/single_element_simulation.html#get_single_element_sim_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.single_element_simulation.get_single_element_sim_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formulates a simulation class containing a single cell of a given Element class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>layout</strong> – the layout on which to create the simulation</p>
-</dd>
-<dt class="field-even">Keyword Arguments</dt>
-<dd class="field-even"><p><strong>**kwargs</strong> – <p>Any parameter can be passed as a keyword argument.</p>
-<p>In addition, <cite>cell</cite> can be passed as keyword argument. If <cite>cell</cite> is supplied, it will be
-used as the top cell for the simulation. Otherwise, a new cell will be created. See
-<cite>Simulation.from_cell</cite> for creating simulations from existing cells.</p>
-</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>element_class</strong> – an Element class for which a simulation class is returned</p></li>
+<li><p><strong>ignore_ports</strong> – If list of strings is given, simulation ports will not be created for the given
+refpoints in the simulation class.</p></li>
+<li><p><strong>transformation_from_center</strong> – If None, simulated element is placed in the middle of simulation’s box.
+Otherwise should be a function that takes an element cell as argument and returns a DTrans object.
+The returned transformation is applied to the element cell
+after placing it in the middle of simulation’s box.
+The function should not cause any side-effects, i.e. change the cell parameters</p></li>
+</ul>
 </dd>
 </dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.concentrictransmon_couplings_sim.ConcentricTransmonCouplingsSim.build">
-<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/concentrictransmon_couplings_sim.html#ConcentricTransmonCouplingsSim.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.concentrictransmon_couplings_sim.ConcentricTransmonCouplingsSim.build" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build simulation geometry.</p>
-<p>This method is to be overridden, and the overriding method should create the geometry to be
-simulated and add any ports to <cite>self.ports</cite>.</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.simulations.concentrictransmon_couplings_sim.ConcentricTransmonCouplingsSim.ports">
-<span class="sig-name descname"><span class="pre">ports</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="kqcircuits.simulations.port.html#kqcircuits.simulations.port.Port" title="kqcircuits.simulations.port.Port"><span class="pre">kqcircuits.simulations.port.Port</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#kqcircuits.simulations.concentrictransmon_couplings_sim.ConcentricTransmonCouplingsSim.ports" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<strong>PCell parameters:</strong><div class="line"><br /></div>
-<ul class="simple">
-<li><p><strong>qubit_faces</strong><em> (List)</em><span> - List of faces</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1',</span> <span class="pre">'2b1']</span></code></p></li>
-<li><p><strong>a</strong><em> (Double)</em><span> - Width of center conductor</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>b</strong><em> (Double)</em><span> - Width of gap</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>n</strong><em> (Int)</em><span> - Number of points on turns</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">180</span></code></p></li>
-<li><p><strong>r</strong><em> (Double)</em><span> - Turn radius</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>margin</strong><em> (Double)</em><span> - Margin of the protection layer</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">5</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>face_ids</strong><em> (List)</em><span> - Chip face IDs list</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1',</span> <span class="pre">'2b1',</span> <span class="pre">'1b1',</span> <span class="pre">'2t1']</span></code></p></li>
-<li><p><strong>display_name</strong><em> (String)</em><span> - Name displayed in GUI (empty for default)</span><em>, default=</em><code class="docutils literal notranslate"></code></p></li>
-<li><p><strong>protect_opposite_face</strong><em> (Boolean)</em><span> - Add opposite face protection too</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>mirror_squid</strong><em> (Boolean)</em><span> - Mirror SQUID by its Y axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-<li><p><strong>junction_total_length</strong><em> (Double)</em><span> - Simulation junction total length</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">33</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Sim</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'Sim']</span></code></p></li>
-<li><p><strong>junction_width</strong><em> (Double)</em><span> - Junction width (only used for code generated element)</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0.02</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>junction_parameters</strong><em> (String)</em><span> - Extra Junction Parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
-<li><p><strong>_junction_parameters</strong><em> (String)</em><span> - Previous state of *_parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
-<li><p><strong>loop_area</strong><em> (Double)</em><span> - Loop area</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm^2</span></code></p></li>
-<li><p><strong>fluxline_type</strong><em> (String)</em><span> - Fluxline Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">none</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['none',</span> <span class="pre">'Fluxline</span> <span class="pre">Standard',</span> <span class="pre">'Fluxline</span> <span class="pre">Straight']</span></code></p></li>
-<li><p><strong>fluxline_gap_width</strong><em> (Double)</em><span> - Fluxline gap width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>fluxline_parameters</strong><em> (String)</em><span> - Extra Fluxline Parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
-<li><p><strong>_fluxline_parameters</strong><em> (String)</em><span> - Previous state of *_parameters</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{}</span></code></p></li>
-<li><p><strong>r_inner</strong><em> (Double)</em><span> - Radius of the outer edge of the inner island</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">120</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>r_outer</strong><em> (Double)</em><span> - Radius of the external qubit island</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">250</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>outer_island_width</strong><em> (Double)</em><span> - Width of the external island</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>ground_gap</strong><em> (Double)</em><span> - Ground plane padding</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">80</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>squid_angle</strong><em> (Double)</em><span> - Angular position of the Josephson Junction/s, where the positive x-axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">120</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
-<li><p><strong>couplers_r</strong><em> (Double)</em><span> - Radius of the couplers positioning</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">290</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>couplers_a</strong><em> (List)</em><span> - Width of the coupler waveguide’s center conductors</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">3,</span> <span class="pre">4.5]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>couplers_b</strong><em> (List)</em><span> - Width of the coupler waveguide’s gaps</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[6,</span> <span class="pre">32,</span> <span class="pre">20]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>couplers_angle</strong><em> (List)</em><span> - Positioning angles of the couplers, where 0deg corresponds to positive x-axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[340,</span> <span class="pre">60,</span> <span class="pre">210]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[degrees]</span></code></p></li>
-<li><p><strong>couplers_width</strong><em> (List)</em><span> - Radial widths of the arc couplers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[10,</span> <span class="pre">20,</span> <span class="pre">30]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
-<li><p><strong>couplers_arc_amplitude</strong><em> (List)</em><span> - Couplers angular extension</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[35,</span> <span class="pre">45,</span> <span class="pre">15]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[degrees]</span></code></p></li>
-<li><p><strong>drive_angle</strong><em> (Double)</em><span> - Angle of the drive port, where 0deg corresponds to positive x-axis</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">300</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">degrees</span></code></p></li>
-<li><p><strong>drive_distance</strong><em> (Double)</em><span> - Distance of the driveline, measured from qubit centre</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">400</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
-</ul>
-<img alt="../_images/kqcircuits.simulations.concentrictransmon_couplings_sim.png" src="../_images/kqcircuits.simulations.concentrictransmon_couplings_sim.png" />
+<img alt="../_images/kqcircuits.simulations.single_element_simulation.png" src="../_images/kqcircuits.simulations.single_element_simulation.png" />
 </div>
 
 
@@ -619,8 +561,8 @@ simulated and add any ports to <cite>self.ports</cite>.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.simulations.cross_section_simulation.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.cross_section_simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kqcircuits.simulations.circular_capacitor_sim.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.circular_capacitor_sim" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kqcircuits.simulations.single_xmons_full_chip_sim.html" class="btn btn-neutral float-right" title="kqcircuits.simulations.single_xmons_full_chip_sim" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.simulations.simulation.html" class="btn btn-neutral float-left" title="kqcircuits.simulations.simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

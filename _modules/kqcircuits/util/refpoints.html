@@ -388,18 +388,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.concentrictransmon_couplings_sim.html">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -607,6 +600,88 @@
 <div class="viewcode-block" id="Refpoints.values"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.Refpoints.values">[docs]</a>    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of positions.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span></div></div>
+
+<div class="viewcode-block" id="RefpointToSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToSimPort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToSimPort</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class that takes a refpoint of an Element class with given string</span>
+<span class="sd">    and places appropriate Simulation port(s) at the refpoint&#39;s location</span>
+<span class="sd">    if the simulation object was instantiated using the `get_single_element_sim_class`</span>
+<span class="sd">    class builder.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        refpoint: Refpoint name string</span>
+<span class="sd">        face: index of the face where the refpoint is located</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span></div>
+
+<div class="viewcode-block" id="RefpointToInternalPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToInternalPort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToInternalPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an InternalPort at refpoint with given string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">ground_refpoint</span><span class="p">,</span>
+                 <span class="n">resistance</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">reactance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inductance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">capacitance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">signal_layer</span><span class="o">=</span><span class="s1">&#39;signal&#39;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ground_refpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">junction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_layer</span> <span class="o">=</span> \
+            <span class="n">ground_refpoint</span><span class="p">,</span> <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">junction</span><span class="p">,</span> <span class="n">signal_layer</span></div>
+
+<div class="viewcode-block" id="RefpointToEdgePort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.RefpointToEdgePort">[docs]</a><span class="k">class</span> <span class="nc">RefpointToEdgePort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an EdgePort at refpoint with given string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span>
+                 <span class="n">resistance</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">reactance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inductance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">capacitance</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">deembed_len</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">junction</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inductance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">deembed_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">junction</span> <span class="o">=</span> \
+            <span class="n">resistance</span><span class="p">,</span> <span class="n">reactance</span><span class="p">,</span> <span class="n">inductance</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">,</span> <span class="n">deembed_len</span><span class="p">,</span> <span class="n">junction</span></div>
+
+
+<div class="viewcode-block" id="WaveguideToSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.WaveguideToSimPort">[docs]</a><span class="k">class</span> <span class="nc">WaveguideToSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A waveguide is created leading to the port at the refpoint with given string in the Simulation object</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        refpoint: Refpoint name string</span>
+<span class="sd">        face: index of the face where the `refpoint` is located</span>
+<span class="sd">        towards: Another refpoint name string towards which direction the waveguide will extend.</span>
+<span class="sd">                 If set to None, will default to &quot;{refpoint}_corner&quot;</span>
+<span class="sd">        side: Indicate on which edge the port should be located. Ignored for internal ports.</span>
+<span class="sd">              Must be one of `left`, `right`, `top` or `bottom`</span>
+<span class="sd">        use_internal_ports: if True, ports will be inside the simulation. If False, ports will be</span>
+<span class="sd">            brought out to an edge of the box, determined by `side`.</span>
+<span class="sd">            Defaults to the value of the `use_internal_ports` parameter</span>
+<span class="sd">        waveguide_length: length of the waveguide (μm), used only for internal ports</span>
+<span class="sd">            Defaults to the value of the `waveguide_length` parameter</span>
+<span class="sd">        term1: Termination gap (μm) at the location of `refpoint`</span>
+<span class="sd">        turn_radius: Turn radius of the waveguide. Not relevant for internal ports.</span>
+<span class="sd">            Defaults to the value of the `r` parameter</span>
+<span class="sd">        a: Center conductor width. Defaults to the value of the `a` parameter</span>
+<span class="sd">        b: Conductor gap width. Defaults to the value of the `b` parameter</span>
+<span class="sd">        over_etching: Expansion of gaps. Defaults to the value of the `over_etching` parameter</span>
+<span class="sd">        airbridge: if True, an airbridge will be inserted at location of the `refpoint`. Default False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">towards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">side</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">waveguide_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">term1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">turn_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">over_etching</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">airbridge</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">towards</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">side</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_internal_ports</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">waveguide_length</span><span class="p">,</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">term1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">turn_radius</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">over_etching</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">airbridge</span> <span class="o">=</span> \
+            <span class="n">towards</span><span class="p">,</span> <span class="n">side</span><span class="p">,</span> <span class="n">use_internal_ports</span><span class="p">,</span> <span class="n">waveguide_length</span><span class="p">,</span> <span class="n">term1</span><span class="p">,</span> <span class="n">turn_radius</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">over_etching</span><span class="p">,</span> <span class="n">airbridge</span></div>
+
+<div class="viewcode-block" id="JunctionSimPort"><a class="viewcode-back" href="../../../api/kqcircuits.util.refpoints.html#kqcircuits.util.refpoints.JunctionSimPort">[docs]</a><span class="k">class</span> <span class="nc">JunctionSimPort</span><span class="p">(</span><span class="n">RefpointToSimPort</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates internal ports for a junction in the Simulation object.</span>
+
+<span class="sd">    Depending on the value of the `separate_island_internal_ports` parameter, will either create</span>
+<span class="sd">    two internal ports at both ends of the junction, or one port that covers both junctions.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        refpoint: Refpoint name string. Defaults to &quot;port_squid_a&quot; as most commonly used junction port name</span>
+<span class="sd">        other_refpoint: Refpoint name string of the other end of the junction</span>
+<span class="sd">                        Defaults to &quot;port_squid_b&quot; as most commonly used junction port name</span>
+<span class="sd">        face: index of the face where the `refpoint` is located</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">refpoint</span><span class="o">=</span><span class="s2">&quot;port_squid_a&quot;</span><span class="p">,</span> <span class="n">other_refpoint</span><span class="o">=</span><span class="s2">&quot;port_squid_b&quot;</span><span class="p">,</span> <span class="n">face</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">refpoint</span><span class="p">,</span> <span class="n">face</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_refpoint</span> <span class="o">=</span> <span class="n">other_refpoint</span></div>
 </pre></div>
 
            </div>

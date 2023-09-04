@@ -388,18 +388,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.concentrictransmon_couplings_sim.html">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.finger_capacitor_sim.html">kqcircuits.simulations.finger_capacitor_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.flip_chip_connector_sim.html">kqcircuits.simulations.flip_chip_connector_sim</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.hanger_resonator_sim.html">kqcircuits.simulations.hanger_resonator_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.port.html">kqcircuits.simulations.port</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.simulation.html">kqcircuits.simulations.simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_xmon.html">kqcircuits.simulations.single_xmon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_element_simulation.html">kqcircuits.simulations.single_element_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.single_xmons_full_chip_sim.html">kqcircuits.simulations.single_xmons_full_chip_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.waveguides_sim.html">kqcircuits.simulations.waveguides_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../../api/kqcircuits.simulations.xmons_direct_coupling_full_chip_sim.html">kqcircuits.simulations.xmons_direct_coupling_full_chip_sim</a></li>
@@ -554,6 +547,7 @@
 
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">distutils.dir_util</span> <span class="kn">import</span> <span class="n">copy_tree</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.simulations.export.util</span> <span class="kn">import</span> <span class="n">export_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">write_commit_reference_file</span>
@@ -583,6 +577,11 @@
                       <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                       <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">percent_error</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+                      <span class="n">max_error_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                      <span class="n">max_outlier_fraction</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+                      <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                      <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -597,6 +596,11 @@
 <span class="sd">        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.</span>
 <span class="sd">        mesh_size(dict): Parameters to determine mesh element sizes</span>
 <span class="sd">        workflow(dict): Parameters for simulation workflow</span>
+<span class="sd">        percent_error(float): Stopping criterion in adaptive meshing.</span>
+<span class="sd">        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.</span>
+<span class="sd">        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements</span>
+<span class="sd">        maximum_passes(int): Maximum number of adaptive meshing iterations.</span>
+<span class="sd">        minimum_passes(int): Minimum number of adaptive meshing iterations.</span>
 <span class="sd">        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in</span>
 <span class="sd">            the simulation. The loss tangent is post-processed to the participation to get the quality factor.</span>
 <span class="sd">            Default is None. Input is of the form::</span>
@@ -633,6 +637,11 @@
         <span class="o">**</span><span class="p">({</span><span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="p">{}),</span>
         <span class="s1">&#39;mesh_size&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
         <span class="s1">&#39;workflow&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">workflow</span><span class="p">,</span>
+        <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>
+        <span class="s1">&#39;max_error_scale&#39;</span><span class="p">:</span> <span class="n">max_error_scale</span><span class="p">,</span>
+        <span class="s1">&#39;max_outlier_fraction&#39;</span><span class="p">:</span> <span class="n">max_outlier_fraction</span><span class="p">,</span>
+        <span class="s1">&#39;maximum_passes&#39;</span><span class="p">:</span> <span class="n">maximum_passes</span><span class="p">,</span>
+        <span class="s1">&#39;minimum_passes&#39;</span><span class="p">:</span> <span class="n">minimum_passes</span><span class="p">,</span>
         <span class="s1">&#39;frequency&#39;</span><span class="p">:</span> <span class="n">frequency</span><span class="p">,</span>
         <span class="o">**</span><span class="p">({}</span> <span class="k">if</span> <span class="n">dielectric_surfaces</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{</span><span class="s1">&#39;dielectric_surfaces&#39;</span><span class="p">:</span> <span class="n">dielectric_surfaces</span><span class="p">}),</span>
         <span class="s1">&#39;linear_system_method&#39;</span><span class="p">:</span> <span class="n">linear_system_method</span><span class="p">,</span>
@@ -647,8 +656,13 @@
 
     <span class="c1"># write .gds file</span>
     <span class="n">gds_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.gds&#39;</span><span class="p">))</span>
-    <span class="n">export_layers</span><span class="p">(</span><span class="n">gds_filename</span><span class="p">,</span> <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span> <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
-                  <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">())</span>
+    <span class="n">export_layers</span><span class="p">(</span>
+        <span class="n">gds_filename</span><span class="p">,</span>
+        <span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span>
+        <span class="p">[</span><span class="n">simulation</span><span class="o">.</span><span class="n">cell</span><span class="p">],</span>
+        <span class="n">output_format</span><span class="o">=</span><span class="s1">&#39;GDS2&#39;</span><span class="p">,</span>
+        <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="n">simulation</span><span class="o">.</span><span class="n">get_layers</span><span class="p">()</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">json_filename</span></div>
 
@@ -813,7 +827,7 @@
     <span class="k">return</span> <span class="n">main_script_filename</span></div>
 
 
-<div class="viewcode-block" id="export_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a><span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">:</span> <span class="p">[],</span>
+<div class="viewcode-block" id="export_elmer"><a class="viewcode-back" href="../../../../../api/kqcircuits.simulations.export.elmer.elmer_export.html#kqcircuits.simulations.export.elmer.elmer_export.export_elmer">[docs]</a><span class="k">def</span> <span class="nf">export_elmer</span><span class="p">(</span><span class="n">simulations</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Simulation</span><span class="p">],</span>
                  <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
                  <span class="n">tool</span><span class="o">=</span><span class="s1">&#39;capacitance&#39;</span><span class="p">,</span>
                  <span class="n">linear_system_method</span><span class="o">=</span><span class="s1">&#39;bicgstab&#39;</span><span class="p">,</span>
@@ -823,6 +837,11 @@
                  <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span>
                  <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">percent_error</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
+                 <span class="n">max_error_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">max_outlier_fraction</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+                 <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">is_axisymmetric</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -841,6 +860,11 @@
 <span class="sd">        script_file: Name of the script file to run.</span>
 <span class="sd">        mesh_size(dict): Parameters to determine mesh element sizes</span>
 <span class="sd">        workflow(dict): Parameters for simulation workflow</span>
+<span class="sd">        percent_error(float): Stopping criterion in adaptive meshing.</span>
+<span class="sd">        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.</span>
+<span class="sd">        max_outlier_fraction(float): Maximum fraction of outliers from the total number of elements</span>
+<span class="sd">        maximum_passes(int): Maximum number of adaptive meshing iterations.</span>
+<span class="sd">        minimum_passes(int): Minimum number of adaptive meshing iterations.</span>
 <span class="sd">        dielectric_surfaces: Loss tangents for dielectric interfaces, thickness and permittivity should be specified in</span>
 <span class="sd">            the simulation. The loss tangent is post-processed to the participation to get the quality factor.</span>
 <span class="sd">            Default is None. Input is of the form::</span>
@@ -887,16 +911,25 @@
     <span class="n">json_filenames</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">simulation</span> <span class="ow">in</span> <span class="n">simulations</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">export_elmer_json</span><span class="p">(</span><span class="n">simulation</span><span class="o">=</span><span class="n">simulation</span><span class="p">,</span>
-                                                    <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
-                                                    <span class="n">tool</span><span class="o">=</span><span class="n">tool</span><span class="p">,</span>
-                                                    <span class="n">linear_system_method</span><span class="o">=</span><span class="n">linear_system_method</span><span class="p">,</span>
-                                                    <span class="n">p_element_order</span><span class="o">=</span><span class="n">p_element_order</span><span class="p">,</span>
-                                                    <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
-                                                    <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
-                                                    <span class="n">workflow</span><span class="o">=</span><span class="n">workflow</span><span class="p">,</span>
-                                                    <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="n">dielectric_surfaces</span><span class="p">,</span>
-                                                    <span class="n">is_axisymmetric</span><span class="o">=</span><span class="n">is_axisymmetric</span><span class="p">))</span>
+            <span class="n">json_filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">export_elmer_json</span><span class="p">(</span>
+                    <span class="n">simulation</span><span class="o">=</span><span class="n">simulation</span><span class="p">,</span>
+                    <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                    <span class="n">tool</span><span class="o">=</span><span class="n">tool</span><span class="p">,</span>
+                    <span class="n">linear_system_method</span><span class="o">=</span><span class="n">linear_system_method</span><span class="p">,</span>
+                    <span class="n">p_element_order</span><span class="o">=</span><span class="n">p_element_order</span><span class="p">,</span>
+                    <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+                    <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
+                    <span class="n">workflow</span><span class="o">=</span><span class="n">workflow</span><span class="p">,</span>
+                    <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
+                    <span class="n">max_error_scale</span><span class="o">=</span><span class="n">max_error_scale</span><span class="p">,</span>
+                    <span class="n">max_outlier_fraction</span><span class="o">=</span><span class="n">max_outlier_fraction</span><span class="p">,</span>
+                    <span class="n">maximum_passes</span><span class="o">=</span><span class="n">maximum_passes</span><span class="p">,</span>
+                    <span class="n">minimum_passes</span><span class="o">=</span><span class="n">minimum_passes</span><span class="p">,</span>
+                    <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="n">dielectric_surfaces</span><span class="p">,</span>
+                    <span class="n">is_axisymmetric</span><span class="o">=</span><span class="n">is_axisymmetric</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>

@@ -9,7 +9,12 @@ method of class :class:`.Element`.
 
 .. note::
     Often, a simulation is defined in code by implementing a subclass of :class:`.Simulation`. This allows arbitrary
-    geometry and port definitions. However, there are also macros and convenience methods to create simulations directly
+    geometry and port definitions. To save you the trouble of writing a :class:`.Simulation` subclass for single
+    element simulations, you can use the
+    :py:meth:`~kqcircuits.simulations.single_element_simulation.get_single_element_sim_class`
+    classbuilder method, provided that the element class to be simulated has the
+    :py:meth:`~kqcircuits.elements.element.Element.get_sim_ports` method implemented.
+    There are also macros and convenience methods to create simulations directly
     from existing geometry. See Geometry from KLayout GUI below for more information on these.
 
 The :class:`.Simulation` class supports most of the same concepts as :class:`.Element`.
@@ -26,7 +31,7 @@ for examples on their usage.
 Simulation box
 ^^^^^^^^^^^^^^
 
-The :class:`.Simulation` also has some extra features that are important for creating simulations. Fist of all,
+The :class:`.Simulation` also has some extra features that are important for creating simulations. First of all,
 the simulation area is defined by the ``box`` parameter, which should be a |pya.DBox|_.
 
 .. hack to get monospaced URLs
@@ -42,7 +47,7 @@ Ports
 ^^^^^
 
 Ports define the inputs and outputs of the simulation. Two types of ports are supported, :class:`.EdgePort` at the edge
-of the simulation box and and :class:`.InternalPort` for ports inside the geometry. Ports are defined in the ``build``
+of the simulation box and :class:`.InternalPort` for ports inside the geometry. Ports are defined in the ``build``
 method by adding instances of the corresponding port class to the pre-defined ``Simulations.ports`` list.
 
 To create an internal port, two points ``signal_location`` and ``ground_location`` must be supplied as ``pya.DPoint``.
@@ -75,8 +80,49 @@ the required port. It supports both internal and edge ports, for example::
 
 Example simulation
 ^^^^^^^^^^^^^^^^^^
-In the following example, a Swissmon qubit is placed at the center of the simulation box, waveguide ports are connected
-to the couplers, and an internal port is placed at the junctions::
+Suppose we want to simulate a :class:`.Swissmon` qubit. The simplest way to do it is to use the class builder to build a single
+element simulation::
+
+    from kqcircuits.qubits.swissmon import Swissmon
+    from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
+
+    view = KLayoutView()
+    sim_parameters = {...} # Some Swissmon parameters
+
+    sim_class = get_single_element_sim_class(Swissmon) # Builds a simulation class for Swissmon
+    simulation = sim_class(view.layout, **sim_parameters)  # Builds an instance of the simulation class
+
+Returned ``sim_class`` is a dynamically built subclass of :class:`.Simulation` that contains a cell of
+the Swissmon qubit placed at the center of the simulation box.
+``sim_class`` can be instantiated with a parameters dict that sets the parameter values to the internal Swissmon PCell.
+
+You can see that currently
+the :git_url:`Swissmon code <klayout_package/python/kqcircuits/qubits/swissmon.py>`
+defines one :class:`.RefpointToSimPort` object to return in the
+``get_sim_ports`` method. That is the :class:`.JunctionSimPort`,
+which with default arguments places an internal port between refpoints ``"port_squid_a"`` and ``"port_squid_b"``.
+
+Suppose we want to also have waveguides connected to the Swissmon couplers in the simulation. We can do this
+by simply having :py:meth:`~kqcircuits.qubits.Swissmon.get_sim_ports` return :class:`.WaveguideToSimPort` objects
+that lead to refpoints ``"port_cplr0"``, ``"port_cplr1"`` and ``"port_cplr2"``::
+
+    @classmethod
+    def get_sim_ports(cls, simulation):
+        return [JunctionSimPort(), WaveguideToSimPort('port_cplr0'),
+                WaveguideToSimPort('port_cplr1'), WaveguideToSimPort('port_cplr2')]
+
+If we then decide to not produce the waveguides for the next simulation, instead of reverting the change we just made
+to :class:`.Swissmon` we can specify which refpoints should not generate ports in the simulation object::
+
+    sim_class = get_single_element_sim_class(Swissmon, ignore_ports=['port_cplr0', 'port_cplr1', 'port_cplr2'])
+
+For more information on how to use the :py:meth:`~kqcircuits.simulations.single_element_simulation.get_single_element_sim_class`
+simulation class builder, please consult the API docs for the method
+as well as the API docs for different implementations of the :class:`.RefpointToSimPort`.
+
+Instead of using the class builder we can also code the simulation class by hand. The following code snippet
+implements essentially the same simulation class as was returned by the
+:py:meth:`~kqcircuits.simulations.single_element_simulation.get_single_element_sim_class` class builder::
 
     from kqcircuits.pya_resolver import pya
     from kqcircuits.qubits.swissmon import Swissmon
@@ -99,6 +145,9 @@ to the couplers, and an internal port is placed at the junctions::
             # Add junction port
             self.ports.append(InternalPort(3, refpoints['squid_port_squid_a'], refpoints['squid_port_squid_b']))
 
+This could be a better approach if further flexibility is required, for example, to place multiple elements
+into the same simulation or to simulate full chips or portions of the chip.
+
 .. _simulation_scripts:
 
 Simulation scripts
@@ -108,6 +157,8 @@ can be exported as geometry or to one of the supported simulation tools. The fol
 generate some instances and sweep a parameter, and export the resulting geometry as an OAS file.::
 
     from kqcircuits.klayout_view import KLayoutView
+    from kqcircuits.qubits.swissmon import Swissmon
+    from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
     from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
     from kqcircuits.util.export_helper import create_or_empty_tmp_directory
 
@@ -115,16 +166,19 @@ generate some instances and sweep a parameter, and export the resulting geometry
 
     simulations = []
 
+    # Using the class builder to define the simulaiton class of Swissmon
+    sim_class = get_single_element_sim_class(Swissmon)
+
     # Generate the simulation with default parameters
-    simulations.append(SwissmonSimulation(view.layout))
+    simulations.append(sim_class(view.layout))
 
     # Generate the simulation for some other parameter
-    simulations.append(SwissmonSimulation(view.layout, arm_length=[500, 500, 500, 500], name='arm_length_500'))
+    simulations.append(sim_class(view.layout, arm_length=[500, 500, 500, 500], name='arm_length_500'))
 
     # Make a 4-point sweep of gap width
     simulations.extend(sweep_simulation(
         view.layout,
-        SwissmonSimulation,
+        sim_class,
         sim_parameters={
             'name': 'gap_sweep',
             'arm_length': [500, 500, 500, 500],
@@ -138,14 +192,13 @@ generate some instances and sweep a parameter, and export the resulting geometry
     dir_path = create_or_empty_tmp_directory("swissmon_simulation_output")
     export_simulation_oas(simulations, dir_path)
 
-This script can be run as a regular python script, or in the KLayout macro editor. To run the example, place the
-``SwissmonSimulation`` class definition above in the same file. The output files will be written to a folder in the
-KQCircuits ``tmp`` folder.
+This script can be run as a regular python script, or in the KLayout macro editor.
+The output files will be written to a folder in the KQCircuits ``tmp`` folder.
 
 The example above only exports an OAS file with the geometry. See the following sections for information on exporting
 to different simulation tools.
 
-More example scripts are available in :git_url:`scripts/simulations`.
+More example scripts are available in :git_url:`klayout_package/python/scripts/simulations`.
 
 Geometry from Klayout GUI
 ^^^^^^^^^^^^^^^^^^^^^^^^^
