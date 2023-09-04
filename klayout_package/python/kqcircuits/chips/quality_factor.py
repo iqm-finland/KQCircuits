@@ -153,19 +153,20 @@ class QualityFactor(Chip):
             if res_term[i] == "airbridge":
                 node_end = Node(pos_res_end, AirbridgeConnection, with_side_airbridges=False,
                                 with_right_waveguide=False, n_bridges=n_ab[i],
-                                bridge_length=bridge_length, length_increment=length_increment,
-                                ground_grid_in_trace=int(self.ground_grid_in_trace[i]))
+                                bridge_length=bridge_length, length_increment=length_increment)
             else:
                 node_end = Node(pos_res_end, n_bridges=n_ab[i],
                                 bridge_length=bridge_length,
-                                length_increment=length_increment,
-                                ground_grid_in_trace=int(self.ground_grid_in_trace[i]))
+                                length_increment=length_increment)
 
             airbridge_type = default_airbridge_type
             if i < len(self.res_airbridge_types):
                 airbridge_type = self.res_airbridge_types[i]
-            wg = self.add_element(WaveguideComposite, nodes=[node_beg, node_end], a=res_a[i], b=res_b[i],
-                airbridge_type=airbridge_type)
+            wg = self.add_element(WaveguideComposite,
+                                  nodes=[node_beg, node_end],
+                                  a=res_a[i], b=res_b[i],
+                                  ground_grid_in_trace=int(self.ground_grid_in_trace[i]),
+                                  airbridge_type=airbridge_type)
             self.insert_cell(wg)
 
             # Feedline
@@ -173,7 +174,8 @@ class QualityFactor(Chip):
                 "path": pya.DPath(points_fl + [
                     cross_refpoints_abs["port_left"]
                 ], 1),
-                "term2": 0
+                "term2": 0,
+                "ground_grid_in_trace": False
             }})
             points_fl = [cross_refpoints_abs["port_right"]]
 
