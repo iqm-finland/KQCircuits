@@ -312,6 +312,7 @@
 <li class="toctree-l3 current"><a class="reference internal" href="kqcircuits.elements.markers.html">kqcircuits.elements.markers</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kqcircuits.elements.markers.marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.markers.marker_standard.html">kqcircuits.elements.markers.marker_standard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.markers.mask_marker_fc.html">kqcircuits.elements.markers.mask_marker_fc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.elements.markers.html#module-kqcircuits.elements.markers">Module contents</a></li>
 </ul>
 </li>
@@ -332,7 +333,6 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.hanger_resonator.html">kqcircuits.elements.hanger_resonator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
@@ -369,6 +369,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.concentric_transmon.html">kqcircuits.qubits.concentric_transmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.double_pads_splines.html">kqcircuits.qubits.double_pads_splines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
@@ -391,6 +392,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.concentrictransmon_couplings_sim.html">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
@@ -559,6 +561,50 @@
 <dt class="sig sig-object py" id="kqcircuits.elements.markers.marker.Marker.produce_geometry">
 <span class="sig-name descname"><span class="pre">produce_geometry</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/markers/marker.html#Marker.produce_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.markers.marker.Marker.produce_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce common marker geometry.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.markers.marker.Marker.get_marker_locations">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_marker_locations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cell_marker</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/markers/marker.html#Marker.get_marker_locations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.markers.marker.Marker.get_marker_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locations in the wafer for this marker type.
+By default, places four markers at the corners as close as possible
+to the edge clearance.
+Implement this method for your own Marker subclass if you wish to
+have customized placement for your specific marker type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>cls - class that houses this class</em>) – </p></li>
+<li><p><strong>Cell</strong> (<em>cell_marker - Marker</em>) – </p></li>
+<li><p><strong>locations</strong> (<em>kwargs - keyword arguments needed to determine the mask</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of placement encoded as DTrans objects that will
+transform the marker cells at their preferred location</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.elements.markers.marker.Marker.get_marker_region">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_marker_region</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inst</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/markers/marker.html#Marker.get_marker_region"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.markers.marker.Marker.get_marker_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Region covered by the marker and surrounding area to be removed from the ground plane.
+By default, a box around the marker extended by the parameter box_margin.
+Implement this method for your own Marker subclass if you wish to
+have a different Region for your specific marker type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>cls - class that houses this class</em>) – </p></li>
+<li><p><strong>marker</strong> (<em>inst - instance of the</em>) – </p></li>
+<li><p><strong>region</strong> (<em>kwargs - keyword arguments possibly needed for the</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>pya.Region that can be used to subtract from the ground plane</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

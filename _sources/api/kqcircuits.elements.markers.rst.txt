@@ -6,6 +6,7 @@ kqcircuits.elements.markers
 
    kqcircuits.elements.markers.marker
    kqcircuits.elements.markers.marker_standard
+   kqcircuits.elements.markers.mask_marker_fc
 
 Module contents
 ---------------

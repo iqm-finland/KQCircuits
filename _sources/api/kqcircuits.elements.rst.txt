@@ -22,7 +22,6 @@ kqcircuits.elements
    kqcircuits.elements.hanger_resonator
    kqcircuits.elements.launcher
    kqcircuits.elements.launcher_dc
-   kqcircuits.elements.mask_marker_fc
    kqcircuits.elements.meander
    kqcircuits.elements.smooth_capacitor
    kqcircuits.elements.spiral_resonator_polygon

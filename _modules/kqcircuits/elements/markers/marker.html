@@ -310,6 +310,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.markers.html">kqcircuits.elements.markers</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.markers.marker.html">kqcircuits.elements.markers.marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.markers.marker_standard.html">kqcircuits.elements.markers.marker_standard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.markers.mask_marker_fc.html">kqcircuits.elements.markers.mask_marker_fc</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../../api/kqcircuits.elements.markers.html#module-kqcircuits.elements.markers">Module contents</a></li>
 </ul>
 </li>
@@ -330,7 +331,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.hanger_resonator.html">kqcircuits.elements.hanger_resonator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.launcher.html">kqcircuits.elements.launcher</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.launcher_dc.html">kqcircuits.elements.launcher_dc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.mask_marker_fc.html">kqcircuits.elements.mask_marker_fc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.meander.html">kqcircuits.elements.meander</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.smooth_capacitor.html">kqcircuits.elements.smooth_capacitor</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.elements.spiral_resonator_polygon.html">kqcircuits.elements.spiral_resonator_polygon</a></li>
@@ -367,6 +367,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../api/kqcircuits.qubits.html">kqcircuits.qubits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.qubits.concentric_transmon.html">kqcircuits.qubits.concentric_transmon</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.qubits.double_pads.html">kqcircuits.qubits.double_pads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.qubits.double_pads_splines.html">kqcircuits.qubits.double_pads_splines</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.qubits.qubit.html">kqcircuits.qubits.qubit</a></li>
@@ -389,6 +390,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.airbridges_sim.html">kqcircuits.simulations.airbridges_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.capacitive_x_coupler_sim.html">kqcircuits.simulations.capacitive_x_coupler_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.circular_capacitor_sim.html">kqcircuits.simulations.circular_capacitor_sim</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.concentrictransmon_couplings_sim.html">kqcircuits.simulations.concentrictransmon_couplings_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.cross_section_simulation.html">kqcircuits.simulations.cross_section_simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.double_pads_sim.html">kqcircuits.simulations.double_pads_sim</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.simulations.empty_simulation.html">kqcircuits.simulations.empty_simulation</a></li>
@@ -550,6 +552,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_marker_type</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="Marker"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker">[docs]</a><span class="nd">@logged</span>
@@ -640,7 +643,59 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_pads</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">diagonals</span> <span class="o">+=</span> <span class="n">ds</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer_protection</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span>
-                <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">50</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="mi">6</span><span class="p">))</span> <span class="o">*</span> <span class="n">sqr</span><span class="p">)</span></div></div>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">50</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">50</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">20</span> <span class="o">*</span> <span class="mi">6</span><span class="p">))</span> <span class="o">*</span> <span class="n">sqr</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Marker.get_marker_locations"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker.get_marker_locations">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_marker_locations</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">cell_marker</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Locations in the wafer for this marker type.</span>
+<span class="sd">        By default, places four markers at the corners as close as possible</span>
+<span class="sd">        to the edge clearance.</span>
+<span class="sd">        Implement this method for your own Marker subclass if you wish to</span>
+<span class="sd">        have customized placement for your specific marker type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls - class that houses this class method</span>
+<span class="sd">            cell_marker - Marker Cell</span>
+<span class="sd">            kwargs - keyword arguments needed to determine the mask locations</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A list of placement encoded as DTrans objects that will</span>
+<span class="sd">            transform the marker cells at their preferred location</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wafer_center_x</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wafer_center_x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">wafer_center_y</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wafer_center_y&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">wafer_rad</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;wafer_rad&#39;</span><span class="p">,</span> <span class="mi">75000</span><span class="p">)</span>
+        <span class="n">edge_clearance</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;edge_clearance&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;box_margin&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="n">_h</span> <span class="o">=</span> <span class="n">cell_marker</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
+        <span class="n">_w</span> <span class="o">=</span> <span class="n">cell_marker</span><span class="o">.</span><span class="n">dbbox</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
+        <span class="n">coordinate</span> <span class="o">=</span> <span class="p">(</span><span class="n">wafer_rad</span> <span class="o">-</span> <span class="n">edge_clearance</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">wafer_center_x</span> <span class="o">-</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_w</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">),</span> <span class="n">wafer_center_y</span> <span class="o">-</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_h</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R180</span><span class="p">,</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">wafer_center_x</span> <span class="o">+</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_w</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">),</span> <span class="n">wafer_center_y</span> <span class="o">-</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_h</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R270</span><span class="p">,</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">wafer_center_x</span> <span class="o">-</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_w</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">),</span> <span class="n">wafer_center_y</span> <span class="o">+</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_h</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R90</span><span class="p">,</span>
+                <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="p">(</span><span class="n">wafer_center_x</span> <span class="o">+</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_w</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">),</span> <span class="n">wafer_center_y</span> <span class="o">+</span> <span class="p">(</span><span class="n">coordinate</span> <span class="o">-</span> <span class="n">_h</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">margin</span><span class="p">))</span>
+                <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DTrans</span><span class="o">.</span><span class="n">R0</span><span class="p">,</span>
+                <span class="p">]</span></div>
+
+<div class="viewcode-block" id="Marker.get_marker_region"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.markers.marker.html#kqcircuits.elements.markers.marker.Marker.get_marker_region">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_marker_region</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inst</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The Region covered by the marker and surrounding area to be removed from the ground plane.</span>
+<span class="sd">        By default, a box around the marker extended by the parameter box_margin.</span>
+<span class="sd">        Implement this method for your own Marker subclass if you wish to</span>
+<span class="sd">        have a different Region for your specific marker type.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cls - class that houses this class method</span>
+<span class="sd">            inst - instance of the marker</span>
+<span class="sd">            kwargs - keyword arguments possibly needed for the region</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            pya.Region that can be used to subtract from the ground plane</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">margin</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;box_margin&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">bbox</span><span class="p">())</span><span class="o">.</span><span class="n">extents</span><span class="p">(</span><span class="n">margin</span> <span class="o">/</span> <span class="n">inst</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

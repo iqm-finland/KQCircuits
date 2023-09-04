@@ -1,0 +1,10 @@
+kqcircuits.qubits.concentric\_transmon
+======================================
+
+.. automodule:: kqcircuits.qubits.concentric_transmon
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.qubits.concentric_transmon
+.. image:: ../pcell_images/kqcircuits.qubits.concentric_transmon.png
