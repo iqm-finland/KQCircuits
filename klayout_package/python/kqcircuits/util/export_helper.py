@@ -189,7 +189,7 @@ def write_export_machine_versions_file(path: Path):
 
 def open_with_klayout_or_default_application(filepath):
     """
-    Tries to open file with Klayout. If Klayout is not found, opens file with operating system's default application.
+    Tries to open file with KLayout. If KLayout is not found, opens file with operating system's default application.
     Implementation supports Windows, macOS, and Linux.
     """
     if argv[-1] == "-q":  # quiet mode, do not run viewer
@@ -197,7 +197,7 @@ def open_with_klayout_or_default_application(filepath):
 
     exe = klayout_executable_command()
     if not exe:
-        logging.warning("Klayout executable not found.")
+        logging.warning("KLayout executable not found.")
     else:
         subprocess.call((exe, filepath))
 
