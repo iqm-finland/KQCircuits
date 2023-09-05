@@ -7,6 +7,13 @@ else
 	cmd=$(basename "$0")
 fi
 
+
+if [ -e "$HOME/singularity_private.pem" ]; then
+    run_cmd="singularity exec --pem-path=$HOME/singularity_private.pem"
+else
+    run_cmd="singularity exec"
+fi
+
 # Check if running on WSL and use higher compatibility then
 if grep -qi "microsoft" /proc/version; then
 
@@ -16,13 +23,13 @@ if grep -qi "microsoft" /proc/version; then
     single_cmd="mpirun $2 $3 $cmd $1"
   else
     # If in wsl but using other tool than ElmerSolver
-    single_cmd="$cmd $*" 
+    single_cmd="$cmd $*"
   fi
-  run_cmd="singularity exec --containall --home ${PWD} ${dir}/${img} $single_cmd"
+  run_cmd+=" --containall --home ${PWD} ${dir}/${img} $single_cmd"
   echo running: "$run_cmd"
   $run_cmd
 else
-  run_cmd="singularity exec --home $HOME ${dir}/${img} $cmd $*"
+  run_cmd+=" --home $HOME ${dir}/${img} $cmd $*"
   echo running: "$run_cmd"
   $run_cmd
 fi

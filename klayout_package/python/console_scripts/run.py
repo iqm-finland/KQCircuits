@@ -120,14 +120,14 @@ def run():
     elif args.command == "singularity":
         if args.build:
             chdir(Path(ROOT_PATH / "singularity"))
-            with open('install_kqcircuits.sh','r') as f:
+            with open('install_software.sh','r') as f:
                 for line in f:
                     if 'export MPI_VERSION=' in line:
                         mpi_v = line.partition('export MPI_VERSION=')[2].strip()
                         print((f"Singularity will use MPI version {mpi_v}. "
                                 "Make sure this corresponds to the MPI version on the target machine\n"
                                 "MPI and other package versions used by singularity can be changed "
-                                "in the beginning of the /singularity/install_kqcircuits.sh script"))
+                                "in the beginning of the /singularity/install_software.sh script"))
                         break
             subprocess.call("./singularity.sh", shell=True)
         elif args.push is not None:

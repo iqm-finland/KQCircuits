@@ -8,8 +8,6 @@ define_variables () {
     export PYTHON_VERSION="3.10.11"
     export OPENSSL_VERSION="1.1.1t"
     # KLayout version
-    export KL_FILE="klayout-0.28.8-0.x86_64.rpm"
-    export KL_HASH="8e5083035046f806d16072f3203ad782"
     # Target CPU architecture for compilation, see https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html
     # Examples include `znver3` for AMD Zen 3, and `alderlake` for Intel 12th gen.
     #export MARCH="znver2"
@@ -52,31 +50,28 @@ install_yum_packages () {
 }
 
 install_deb_packages () {
-    echo "deb http://fi.archive.ubuntu.com/ubuntu/ jammy main universe multiverse" > /etc/apt/sources.list
-    apt-get update && apt-get install -y apt-utils && apt-get upgrade -y && \
-    DEBIAN_FRONTEND=noninteractive apt install -y tzdata && \ # TODO: region data can be setup non-interactively
-    apt-get install -y wget xvfb python-is-python3 python3-pip git libcurl4 libglu1-mesa libxft-dev && \
-    apt-get install -y paraview && \
-    wget -q https://www.klayout.org/downloads/Ubuntu-20/klayout_0.27.3-1_amd64.deb && \
-    echo "5779feaecc03d85e31b174088b6232c7  klayout_0.27.3-1_amd64.deb" > klayout.md5 && \
-    md5sum --check klayout.md5  && \
-    apt-get install -y ./klayout_0.27.3-1_amd64.deb && \
-    apt-get clean -y && rm -rf /var/lib/apt/lists/* ./klayout* && apt-get clean && \
-    python -m pip install --upgrade pip && \
+    KL_FILE="klayout_0.28.11-1_amd64.deb"
+    KL_HASH="78ea7cb55a1f21353e1b8ed5bf30a8ee"
+
+    apt update ; apt install -y apt-utils; apt upgrade -y
+    DEBIAN_FRONTEND=noninteractive apt install -y tzdata
+    apt install -y wget python-is-python3 python3-pip git libcurl4 libglu1-mesa libxft-dev
+    apt install -y libopenblas-dev m4 libhdf5-dev gfortran paraview build-essential cmake
+
+    wget -q https://www.klayout.org/downloads/Ubuntu-22/$KL_FILE
+    echo "$KL_HASH  $KL_FILE" > klayout.md5
+    md5sum --check klayout.md5 || exit
+    apt install -y ./$KL_FILE
+    apt clean -y
+    rm -rf /var/lib/apt/lists/* ./klayout*
+
+    python -m pip install --upgrade pip
     rm -rf /usr/lib/python3/dist-packages/klayout /usr/lib/python3/dist-packages/klayout.egg-info
-    git clone https://github.com/iqm-finland/KQCircuits.git && cd KQCircuits && \
-    python -m pip install -e klayout_package/python && \
-    python -m pip install gmsh pandas && \
-    ln -sf /usr/bin/python /usr/bin/kqclib && \
-    apt-get install -y libopenblas-dev && \
-    apt-get install -y m4 && \
-    #apt-get install -y libcurl-dev && \
-    apt-get install -y libhdf5-dev && \
-    apt-get install -y gfortran && \
-    apt-get install -y build-essential && \
-    apt-get install -y cmake && \
-    apt-get install -y wget && \
-    apt-get install -y git
+    git clone https://github.com/iqm-finland/KQCircuits.git
+    cd KQCircuits || exit
+    python -m pip install -e klayout_package/python
+    python -m pip install gmsh pandas
+    ln -sf /usr/bin/python /usr/bin/kqclib
 }
 
 ######################
@@ -86,8 +81,8 @@ install_deb_packages () {
 
 # Install mpich
 compile_mpich () {
-    
-    wget -qO- http://www.mpich.org/static/downloads/$MPI_VERSION/mpich-$MPI_VERSION.tar.gz | tar xvz
+
+    wget -qO- "http://www.mpich.org/static/downloads/$MPI_VERSION/mpich-$MPI_VERSION.tar.gz" | tar xvz
     cd $MPI_VERSION || exit
 
     ./configure --enable-fast=all,O3 --prefix=/usr FFLAGS="-std=legacy" FCFLAGS="-std=legacy"
@@ -100,8 +95,8 @@ compile_mpich () {
 compile_openmpi () {
     MPI_VERSION_FOLDER="v${MPI_VERSION%.*}"
     MPI_TARBALL="openmpi-$MPI_VERSION.tar.gz"
-    wget -qO- https://download.open-mpi.org/release/open-mpi/$MPI_VERSION_FOLDER/$MPI_TARBALL | tar xvz
-    cd openmpi-$MPI_VERSION || exit
+    wget -qO- "https://download.open-mpi.org/release/open-mpi/$MPI_VERSION_FOLDER/$MPI_TARBALL" | tar xvz
+    cd "openmpi-$MPI_VERSION" || exit
 
     ./configure --enable-fast=all,O3 --prefix=/usr FFLAGS="-std=legacy" FCFLAGS="-std=legacy"
 
@@ -122,12 +117,12 @@ compile_mpi () {
         echo "TARGET_MPI environment variable is not found! Choosing 'openmpi'."
         TARGET_MPI='openmpi'
     fi
-    
+
     if [[ "${TARGET_MPI}" = "mpich" ]]; then
-        echo "TARGET_MPI environment variable is set to 'mpich'. If you need a specific version, you need to modify install_kqcircuits.sh:compile_mpich()"
+        echo "TARGET_MPI environment variable is set to 'mpich'. If you need a specific version, you need to modify install_software.sh:compile_mpich()"
         compile_mpich
     elif [[ "${TARGET_MPI}" = "openmpi" ]]; then
-        echo "TARGET_MPI environment variable is set to 'openmpi'. If you need a specific version, you need to modify install_kqcircuits.sh:compile_openmpi()"
+        echo "TARGET_MPI environment variable is set to 'openmpi'. If you need a specific version, you need to modify install_software.sh:compile_openmpi()"
         compile_openmpi
     else
         echo "TARGET_MPI environment variable is neither 'mpich' nor 'openmpi'! Choosing 'openmpi'."
@@ -149,7 +144,8 @@ compile_netcdf () {
     cd netcdf-fortran/ || exit
     mkdir build
     cd build/ || exit
-    cmake -DCMAKE_INSTALL_PREFIX=/opt/netcdf   -DENABLE_HDF5:BOOL=FALSE -DUSE_HDF5:BOOL=FALSE -DCMAKE_Fortran_FLAGS="-std=legacy -O3 -fopenmp -funroll-loops" -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops"  ..
+    cmake -DCMAKE_INSTALL_PREFIX=/opt/netcdf -DENABLE_HDF5:BOOL=FALSE -DUSE_HDF5:BOOL=FALSE \
+          -DCMAKE_Fortran_FLAGS="-std=legacy -O3 -fopenmp -funroll-loops" -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops"  ..
     make -j "$(nproc)"
     make install
     cd /opt/src || exit
@@ -173,7 +169,8 @@ compile_scalapack () {
     cd scalapack || exit
     mkdir build
     cd build || exit
-    cmake -DCMAKE_INSTALL_PREFIX=/opt/scalapack  -DBUILD_SHARED_LIBS=ON -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops" -DCMAKE_Fortran_FLAGS="-O3 -fPIC -funroll-loops" ..
+    cmake -DCMAKE_INSTALL_PREFIX=/opt/scalapack  -DBUILD_SHARED_LIBS=ON -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops" \
+          -DCMAKE_Fortran_FLAGS="-O3 -fPIC -funroll-loops" ..
     make -j "$(nproc)" install
     cd /opt/src || exit
     #rm -rf scalapack
@@ -186,7 +183,7 @@ compile_MUMPS () {
     cd MUMPS_5.6.0 || exit
     cp /opt/Makefile.inc ./
     # this hack is needed because include directory is again wrongly set up
-    ln -sf /usr/include /include 
+    ln -sf /usr/include /include
     make -j "$(nproc)"
     mkdir /opt/mumps
     mv lib /opt/mumps
@@ -204,7 +201,8 @@ compile_mmg_and_parmmg () {
     git checkout develop
     mkdir build
     cd build || exit
-    cmake -DCMAKE_INSTALL_PREFIX="/opt/mmg" -D CMAKE_BUILD_TYPE=RelWithDebInfo -D BUILD_SHARED_LIBS:BOOL=TRUE -D MMG_INSTALL_PRIVATE_HEADERS=ON -D CMAKE_C_FLAGS="-fPIC  -g" -D CMAKE_CXX_FLAGS="-fPIC -std=c++11 -g"  ..
+    cmake -DCMAKE_INSTALL_PREFIX="/opt/mmg" -D CMAKE_BUILD_TYPE=RelWithDebInfo -D BUILD_SHARED_LIBS:BOOL=TRUE \
+          -D MMG_INSTALL_PRIVATE_HEADERS=ON -D CMAKE_C_FLAGS="-fPIC  -g" -D CMAKE_CXX_FLAGS="-fPIC -std=c++11 -g"  ..
     make -j "$(nproc)" install
     cd /opt/src || exit
     git clone https://github.com/MmgTools/ParMmg.git
@@ -213,7 +211,9 @@ compile_mmg_and_parmmg () {
     git checkout develop
     mkdir build
     cd build || exit
-    cmake -D CMAKE_INSTALL_PREFIX="/opt/parmmg" -D CMAKE_BUILD_TYPE=RelWithDebInfo -D USE_VTK:BOOL=FALSE -D BUILD_SHARED_LIBS:BOOL=TRUE -D DOWNLOAD_MMG=OFF  -D MMG_DIR="/opt/mmg"  -D MMG_DIR_FOUND="/opt/mmg" -D MMG_libmmgtypes.h_DIRS="/opt/mmg/include/mmg/common" -D MMG_mmg_LIBRARY="/opt/mmg/lib/libmmg.so"  ..
+    cmake -D CMAKE_INSTALL_PREFIX="/opt/parmmg" -D CMAKE_BUILD_TYPE=RelWithDebInfo -D USE_VTK:BOOL=FALSE \
+          -D BUILD_SHARED_LIBS:BOOL=TRUE -D DOWNLOAD_MMG=OFF  -D MMG_DIR="/opt/mmg"  -D MMG_DIR_FOUND="/opt/mmg" \
+          -D MMG_libmmgtypes.h_DIRS="/opt/mmg/include/mmg/common" -D MMG_mmg_LIBRARY="/opt/mmg/lib/libmmg.so"  ..
     make -j "$(nproc)" install
     export LD_LIBRARY_PATH="/opt/mmg/lib:/opt/parmmg/lib:$LD_LIBRARY_PATH"
     cd /opt/src || exit
@@ -257,8 +257,8 @@ compile_elmer () {
             -DWITH_MPI:BOOL=TRUE \
             -DWITH_LUA:BOOL=TRUE \
             -DWITH_OpenMP:BOOL=TRUE \
-        -DWITH_ElmerIce:BOOL=TRUE \
-        -DWITH_NETCDF:BOOL=TRUE \
+            -DWITH_ElmerIce:BOOL=TRUE \
+            -DWITH_NETCDF:BOOL=TRUE \
             -DWITH_GridDataReader:BOOL=TRUE \
             -DNETCDF_INCLUDE_DIR="/opt/netcdf/include" \
             -DNETCDF_LIBRARY="/opt/netcdf/lib/libnetcdf.so" \
@@ -274,12 +274,12 @@ compile_elmer () {
             -DCSA_INCLUDE_DIR="/opt/csa/include" \
             -DNN_INCLUDE_DIR="/opt/nn/include" \
             -DNN_LIBRARY="/opt/nn/lib/libnn.a" \
-	    -DWITH_MMG:BOOL=TRUE \
-	    -DMMG_ROOT="/opt/mmg" \
-	    -DMMG_LIBRARY="/opt/mmg/lib/libmmg.so" \
-	    -DMMG_INCLUDE_DIR="/opt/mmg/include" \
-	    -DWITH_PARMMG:BOOL=TRUE \
-	    -DPARMMGROOT="/opt/parmmg" \
+            -DWITH_MMG:BOOL=TRUE \
+            -DMMG_ROOT="/opt/mmg" \
+            -DMMG_LIBRARY="/opt/mmg/lib/libmmg.so" \
+            -DMMG_INCLUDE_DIR="/opt/mmg/include" \
+            -DWITH_PARMMG:BOOL=TRUE \
+            -DPARMMGROOT="/opt/parmmg" \
             -DCMAKE_C_FLAGS="-O3 -fopenmp -funroll-loops -march=$MARCH" \
             -DCMAKE_Fortran_FLAGS="-O3 -fPIC -funroll-loops -march=$MARCH"
 
@@ -295,6 +295,9 @@ install_kqcircuits_compile () {
     ###########################
     # KQCircuits installation #
     ###########################
+
+    KL_FILE="klayout-0.28.8-0.x86_64.rpm"
+    KL_HASH="8e5083035046f806d16072f3203ad782"
 
     yum -y install -y xorg-x11-server-Xvfb mesa-libGL libXft-devel
     yum -y install -y paraview

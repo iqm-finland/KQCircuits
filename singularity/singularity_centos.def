@@ -1,9 +1,10 @@
-BootStrap: debootstrap
-OSVersion: jammy
-MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+Bootstrap: docker
+From: centos:7.9.2009
 
 %help
-    This container can be used to run Elmer simulations for KQCircuits simulations
+    This container can be used to run Elmer simulations for KQCircuits.
+
+    The main `runscript` corresponds to using the `kqc` command provided by KQCircuits. Alternatively, to get into a shell in the container use `singularity shell image`
 
 %labels
     org.opencontainers.image.title "KQCircuits simulations image"
@@ -15,7 +16,7 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 
 %files
     MUMPS_Makefile.inc /opt/Makefile.inc
-    install_kqcircuits.sh /opt/install_kqcircuits.sh
+    install_software.sh /opt/install_software.sh
 
 %runscript
     exec kqc "$@"
@@ -23,13 +24,15 @@ MirrorURL: http://us.archive.ubuntu.com/ubuntu/
 %environment
     export SLURM_MPI_TYPE=pmi2
     export PMIX_MCA_gds=hash
+    source /opt/rh/devtoolset-11/enable
+    source /opt/rh/rh-git218/enable
     export ELMER_HOME="/opt/elmer"
     export PATH=$ELMER_HOME/bin:$PATH
-    export LD_LIBRARY_PATH=/usr/lib/:$ELMER_HOME/include:$ELMER_HOME/lib:/opt/elmer/share/elmersolver/lib:/opt/hypre/lib:/opt/scalapack/lib:/opt/mumps/lib:/opt/netcdf/lib:/opt/mmg/lib:/opt/parmmg/lib:/opt/nn/lib:/opt/csa/lib:$LD_LIBRARY_PATH
+    export LD_LIBRARY_PATH=$ELMER_HOME/include:$ELMER_HOME/lib:/opt/elmer/share/elmersolver/lib:/opt/hypre/lib:/opt/scalapack/lib:/opt/mumps/lib:/opt/netcdf/lib64:/opt/mmg/lib64:/opt/parmmg/lib64:/opt/nn/lib:/opt/csa/lib:$LD_LIBRARY_PATH
 
 %post -c /bin/bash
     #!/bin/bash
-    chmod u+x /opt/install_kqcircuits.sh
-    /opt/install_kqcircuits.sh
+    chmod u+x /opt/install_software.sh
+    /opt/install_software.sh
 
 
