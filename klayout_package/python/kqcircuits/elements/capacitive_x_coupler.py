@@ -25,9 +25,8 @@ from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSpl
 from kqcircuits.elements.finger_capacitor_taper import FingerCapacitorTaper
 from kqcircuits.util.refpoints import RefpointToEdgePort
 
-
-@add_parameters_from(FingerCapacitorSquare, ground_padding=6)
-@add_parameters_from(FingerCapacitorTaper, finger_width=10, finger_number=2)
+@add_parameters_from(FingerCapacitorSquare, finger_gap_end=3)
+@add_parameters_from(FingerCapacitorTaper, finger_width=10, finger_number=2, finger_gap=3)
 class CapacitiveXCoupler(Element):
     """
     Capacitive coupler for testing FEM computations.
@@ -99,42 +98,38 @@ class CapacitiveXCoupler(Element):
         self.refpoints['p31'] = pya.DPoint(*p31)
         self.refpoints['p41'] = pya.DPoint(*p41)
 
+        def _add_capacitor_node(p):
+            return Node(p, FingerCapacitorSquare,
+                    finger_number=self.finger_number,
+                    finger_width=self.finger_width,
+                    finger_gap_end=self.finger_gap_end,
+                    finger_gap=self.finger_gap,
+                    a2=self.a,
+                    b2=self.b,
+                    a=self.a,
+                    b=self.b,
+                    ground_padding=self.b)
+
+        splitter_port_length = self.a/2 + self.b
+
         nodes1 = [Node(p11),
                   Node(p12),
-                  Node(p13, FingerCapacitorSquare,
-                        finger_number=self.finger_number,
-                        finger_width=self.finger_width,
-                        a2=self.a,
-                        b2=self.b,
-                        ground_padding=self.ground_padding),
+                  _add_capacitor_node(p13),
                   Node(p0, WaveguideCoplanarSplitter,
                         angles=[0, 180, 90, 270],
-                        lengths=[11, 11, 11, 11]),
-                  Node(p33, FingerCapacitorSquare,
-                        finger_number=self.finger_number,
-                        finger_width=self.finger_width,
-                        a2=self.a,
-                        b2=self.b,
-                        ground_padding=self.ground_padding),
+                        lengths=4*[splitter_port_length],
+                        a=self.a,
+                        b=self.b),
+                  _add_capacitor_node(p33),
                   Node(p32),
                   Node(p31)]
         nodes2 = [Node(p41),
                   Node(p42),
-                  Node(p43, FingerCapacitorSquare,
-                       finger_number=self.finger_number,
-                       finger_width=self.finger_width,
-                       a2=self.a,
-                       b2=self.b,
-                       ground_padding=self.ground_padding),
+                  _add_capacitor_node(p43),
                   Node(p04)]
         nodes3 = [Node(p21),
                   Node(p22),
-                  Node(p23, FingerCapacitorSquare,
-                       finger_number=self.finger_number,
-                       finger_width=self.finger_width,
-                       a2=self.a,
-                       b2=self.b,
-                       ground_padding=self.ground_padding),
+                  _add_capacitor_node(p23),
                   Node(p02)]
 
         if self.remove_capacitors:
