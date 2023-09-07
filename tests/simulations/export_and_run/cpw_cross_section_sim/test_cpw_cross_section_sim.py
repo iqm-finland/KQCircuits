@@ -24,8 +24,8 @@ from export_and_run_helper import assert_sim_script, export_and_run_test
 generate_ref_results = False # set to True if you wish to update the
                              # reference results with what you get from your tests
 
-def test_n_guides_1():
-    _, export_path = export_and_run_test("cpw_cross_section_sim", ['--number-of-cpws', '1'])
+def test_n_guides_1(tmp_path):
+    export_and_run_test(tmp_path, "cpw_cross_section_sim", ['--number-of-cpws', '1'])
 
     project_ref_info = {
             'project_results_file': 'cpw_cross_section_1_0_result.json',
@@ -37,12 +37,12 @@ def test_n_guides_1():
 
     assert_sim_script("cpw_cross_section_sim",
                       export_script_dir,
-                      export_path,
+                      tmp_path,
                       project_ref_info,
                       generate_ref_results=generate_ref_results)
 
-def test_n_guides_2():
-    _, export_path = export_and_run_test("cpw_cross_section_sim", ['--number-of-cpws', '2'])
+def test_n_guides_2(tmp_path):
+    export_and_run_test(tmp_path, "cpw_cross_section_sim", ['--number-of-cpws', '2'])
 
     project_ref_info = {
             'project_results_file': 'cpw_cross_section_2_0_result.json',
@@ -54,14 +54,14 @@ def test_n_guides_2():
 
     assert_sim_script("cpw_cross_section_sim",
                       export_script_dir,
-                      export_path,
+                      tmp_path,
                       project_ref_info,
                       generate_ref_results=generate_ref_results)
 
 
-def test_vertical_over_etching():
-    _, export_path = export_and_run_test("cpw_cross_section_sim",
-                            ['--number-of-cpws', '1', '--vertical-over-etching', '10'])
+def test_vertical_over_etching(tmp_path):
+    export_and_run_test(tmp_path, "cpw_cross_section_sim",
+                        ['--number-of-cpws', '1', '--vertical-over-etching', '10'])
 
     project_ref_info = {
             'project_results_file': 'cpw_cross_section_1_10.0_result.json',
@@ -72,12 +72,12 @@ def test_vertical_over_etching():
         }
     assert_sim_script("cpw_cross_section_sim",
                       export_script_dir,
-                      export_path,
+                      tmp_path,
                       project_ref_info,
                       generate_ref_results=generate_ref_results)
 
-def test_n_guides_1_axisymmetric():
-    _, export_path = export_and_run_test("cpw_cross_section_sim", ['--axisymmetric-test'])
+def test_n_guides_1_axisymmetric(tmp_path):
+    export_and_run_test(tmp_path, "cpw_cross_section_sim", ['--axisymmetric-test'])
 
     project_ref_info = {
             'project_results_file': 'cpw_cross_section_80_30.0_result.json',
@@ -89,6 +89,6 @@ def test_n_guides_1_axisymmetric():
 
     assert_sim_script("cpw_cross_section_sim",
                       export_script_dir,
-                      export_path,
+                      tmp_path,
                       project_ref_info,
                       generate_ref_results=generate_ref_results)

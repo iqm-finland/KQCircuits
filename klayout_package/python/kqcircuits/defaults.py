@@ -39,7 +39,7 @@ ROOT_PATH = Path(os.getenv('KQC_ROOT_PATH', os.getcwd()))  # "current dir" or se
 if _kqcircuits_path.parts[-3] == "klayout_package":  # developer setup
     ROOT_PATH = _kqcircuits_path.parents[2]
 
-TMP_PATH = Path(os.getenv('KQC_TMP_PATH', ROOT_PATH.joinpath("tmp")))  # specify alternative tmp directory
+TMP_PATH = Path(os.getenv('KQC_TMP_PATH', str(ROOT_PATH.joinpath("tmp"))))  # specify alternative tmp directory
 _py_path = ROOT_PATH.joinpath("klayout_package/python")
 
 if _kqcircuits_path.parts[-4] == "salt":  # KQC Salt package

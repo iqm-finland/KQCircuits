@@ -15,8 +15,10 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+import pytest
 from kqcircuits.simulations.xmons_direct_coupling_full_chip_sim import XMonsDirectCouplingFullChipSim
 
 
+@pytest.mark.slow
 def test_can_create(get_simulation):
     get_simulation(XMonsDirectCouplingFullChipSim)

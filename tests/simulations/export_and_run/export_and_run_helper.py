@@ -15,11 +15,10 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 import json
-import uuid
 from pathlib import Path
 import numpy as np
 from kqcircuits.simulations.export.export_and_run import export_and_run
-from kqcircuits.defaults import SIM_SCRIPT_PATH, TMP_PATH
+from kqcircuits.defaults import SIM_SCRIPT_PATH
 
 
 def assert_dicts(d1, d2, rtol, atol, ignore_keys=None, only_keys=None):
@@ -91,11 +90,12 @@ def assert_project_results_equal(project_results_path: Path,
 
     return assert_dicts(ref_results, results, rtol, atol, ignore_keys=ignore_keys)
 
-def export_and_run_test(export_script_name: str, args:list):
+def export_and_run_test(tmp_path: Path, export_script_name: str, args:list):
     """
     Exports, runs and asserts a KQC simulation.
 
     Args:
+        tmp_path: temporary directory for the output files
         export_script_name(str): Name of the export script (has to be located in SIM_SCRIPT_PATH)
         args(list): list of arguments passed to the export script
 
@@ -103,14 +103,13 @@ def export_and_run_test(export_script_name: str, args:list):
         a tuple containing
 
             * export_script(Path): path to the simulation export script
-            * export_path(Path): path where simulation files are exported
+            * tmp_path(Path): path where simulation files are exported
 
     """
 
     export_script = SIM_SCRIPT_PATH / f'{export_script_name}.py'
-    export_path = TMP_PATH / f"{export_script_name}_{uuid.uuid4()}"
 
-    return export_and_run(export_script, export_path, quiet=True, args=args)
+    return export_and_run(export_script, tmp_path, quiet=True, args=args)
 
 def assert_sim_script(export_script_name: str,
                       export_script_dir: Path,

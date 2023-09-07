@@ -18,8 +18,6 @@
 
 import logging
 
-import pytest
-
 from kqcircuits.pya_resolver import pya
 
 from kqcircuits.util.library_helper import load_libraries, delete_library, delete_all_libraries
@@ -55,7 +53,6 @@ def test_load_all():
     assert "Junction Library" in pya.Library.library_names()
 
 
-@pytest.mark.slow
 def test_delete_all():
     load_libraries()
     assert len(pya.Library.library_names()) > 1
