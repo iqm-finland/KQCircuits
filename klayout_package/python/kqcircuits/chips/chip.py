@@ -534,6 +534,33 @@ class Chip(Element):
          placed) TSVs.
          """
         self.__log.info(f'Starting ground TSV generation on face(s) {[self.face_ids[f_id] for f_id in face_id]}')
+
+        def region_from_layer(layer_name, f_id):
+            return pya.Region(self.cell.begin_shapes_rec(self.get_layer(layer_name, f_id)))
+
+        # Produce avoidance regions before adding tsv elements
+        avoidance_region = pya.Region()
+        avoidance_to_element_region = pya.Region()
+        avoidance_existing_tsv_region = pya.Region()
+        for f_id in face_id:
+            avoidance_region += (region_from_layer("ground_grid_avoidance", f_id)
+                                 + region_from_layer("through_silicon_via_avoidance", f_id))
+            avoidance_to_element_region += (region_from_layer("indium_bump", f_id)
+                                            + region_from_layer("base_metal_gap_wo_grid", f_id))
+            avoidance_existing_tsv_region += region_from_layer("through_silicon_via", f_id)
+        avoidance_region.merge()
+        avoidance_to_element_region.merge()
+        avoidance_existing_tsv_region.merge()
+        existing_tsv_count = avoidance_existing_tsv_region.count()
+
+        def filter_locations(filter_region, separation, input_locations):
+            sized_tsv = tsv_size_polygon.sized(separation / self.layout.dbu)
+            test_region = pya.Region([sized_tsv.moved(pos) for pos in input_locations])
+            test_region.merged_semantics = False
+            pass_region = test_region.outside(filter_region)
+            output_locations = [p.bbox().center() for p in pass_region]
+            return output_locations
+
         tsv = self.add_element(Tsv, n=self.n, face_ids=[self.face_ids[f_id] for f_id in face_id])
 
         # Determine the shape of the tsv from its through_silicon_via layer. Assumes that when merged the tsv
@@ -551,29 +578,6 @@ class Chip(Element):
 
         locations = self.get_ground_tsv_locations(tsv_box)
         locations_itype = [pya.Vector(pos.to_itype(self.layout.dbu)) for pos in locations]
-
-        def region_from_layer(layer_name, f_id):
-            return pya.Region(self.cell.begin_shapes_rec(self.get_layer(layer_name, f_id))).merged()
-
-        avoidance_region = (region_from_layer("ground_grid_avoidance", face_id[0])
-                            + region_from_layer("through_silicon_via_avoidance", face_id[0])
-                            + region_from_layer("ground_grid_avoidance", face_id[1])
-                            + region_from_layer("through_silicon_via_avoidance", face_id[1])).merged()
-
-        avoidance_to_element_region = (region_from_layer("base_metal_gap_wo_grid", face_id[0])
-                                       + region_from_layer("indium_bump", face_id[0])
-                                       + region_from_layer("base_metal_gap_wo_grid", face_id[0])
-                                       + region_from_layer("indium_bump", face_id[1])).merged()
-        avoidance_existing_tsv_region = region_from_layer("through_silicon_via", face_id[1])
-        existing_tsv_count = avoidance_existing_tsv_region.count()
-
-        def filter_locations(filter_region, separation, input_locations):
-            sized_tsv = tsv_size_polygon.sized(separation / self.layout.dbu)
-            test_region = pya.Region([sized_tsv.moved(pos) for pos in input_locations])
-            test_region.merged_semantics = False
-            pass_region = test_region.outside(filter_region)
-            output_locations = [p.bbox().center() for p in pass_region]
-            return output_locations
 
         locations_itype = filter_locations(avoidance_region, 0, locations_itype)
         locations_itype = filter_locations(avoidance_existing_tsv_region,
