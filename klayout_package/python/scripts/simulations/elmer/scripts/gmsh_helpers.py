@@ -988,7 +988,7 @@ def export_gmsh_msh(sim_data: dict, path: Path, mesh_size: dict, show: bool = Fa
         'body_materials': body_materials,
         'ground_names': ground_names,
         'gap_names': gap_names,
-        'substrate_permittivity': sim_data['material_dict'][sim_data['layers']['substrate']['material']][
+        'substrate_permittivity': sim_data['material_dict']['silicon'][
             'permittivity'],
     }
     return Path(filepath), model_data

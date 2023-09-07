@@ -830,7 +830,7 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
 
     if 'dielectric_surfaces' in json_data and not with_zero:  # no EPR for inductance
         solvers += get_save_energy_solver(ordinate=4,
-                                          energy_file=f'{folder_path}/energy.dat',
+                                          energy_file='energy.dat',
                                           bodies=body_list)
 
 
@@ -921,7 +921,7 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     )
 
     solvers += get_circuit_output_solver(ordinate=5, exec_solver='Always')
-    solvers += get_save_data_solver(ordinate=6, result_file=f'{folder_path}/inductance.dat')
+    solvers += get_save_data_solver(ordinate=6, result_file='inductance.dat')
 
     # Divide layers into different materials
     signals = get_signals(json_data, dim=2)
