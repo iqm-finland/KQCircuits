@@ -39,7 +39,7 @@ def add_parameters_from(cls, /, *param_names, **param_with_default_value):
         param_names = param_names[1:]
         invert = True
 
-    unknown = (set(param_names) or set(param_with_default_value.keys())) - set(cls.get_schema().keys())
+    unknown = (set(param_names) | set(param_with_default_value.keys())) - set(cls.get_schema().keys())
     if unknown:
         raise ValueError(f"Parameter(s) {unknown} not available in '{cls.__name__}'")
 
