@@ -22,6 +22,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import add_parameters_from
 
 @add_parameters_from(Chip, frames_enabled=[0, 1])
+@add_parameters_from(LithographyTest, 'stripe_test')
 class LithographyTestTwoface(Chip):
     """Optical lithography test chip in a flip chip architecture.
 
