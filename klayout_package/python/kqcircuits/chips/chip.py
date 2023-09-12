@@ -462,10 +462,11 @@ class Chip(Element):
         sides = [_w, _h, _w, _h]
 
         return self._insert_launchers(dirs, enabled, launcher_assignments, launcher_cell, launcher_indent,
-                                      launcher_width, pad_pitch, pads_per_side, sides, trans)
+                                      launcher_width, pad_pitch, pads_per_side, sides, trans,
+                                      face_id=face_id)
 
     def _insert_launchers(self, dirs, enabled, launcher_assignments, launcher_cell, launcher_indent, launcher_width,
-                          pad_pitch, pads_per_side, sides, trans):
+                          pad_pitch, pads_per_side, sides, trans, face_id=0):
 
         """Inserts launcher cell at predefined parameters and returns launcher cells
 
@@ -491,7 +492,7 @@ class Chip(Element):
                 transf = pya.DCplxTrans(1, dr, False, loc)
                 launcher_inst, launcher_refpoints = self.insert_cell(launcher_cell, transf, name)
                 launcher_inst.set_property("port_id", port_id)
-                self.add_port(name, launcher_refpoints["port"])
+                self.add_port(name, launcher_refpoints["port"], face_id=face_id)
         return launchers
 
     def make_grid_locations(self, box, delta_x=100, delta_y=100):  # pylint: disable=no-self-use
