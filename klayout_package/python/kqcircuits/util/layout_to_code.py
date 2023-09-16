@@ -20,7 +20,7 @@ import textwrap
 
 from kqcircuits.defaults import default_layers
 from kqcircuits.elements.chip_frame import ChipFrame
-from kqcircuits.elements.element import Element, get_refpoints
+from kqcircuits.elements.element import Element, get_refpoints, insert_cell_into
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 from kqcircuits.util.parameters import pdt
@@ -380,3 +380,52 @@ def get_node_params(node: Node):
             for kk, vv in v.items():
                 node_params += f", {kk}={repr(vv)}"
     return node_params, elem
+
+
+def extract_pcell_data_from_views():
+    """Remove all PCells and return their data.
+
+    Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of
+        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position and
+        parameters of a single PCell in the "Top Cell" of this view.
+    """
+
+    views = []
+    main_window = pya.Application.instance().main_window()
+    for vid in range(main_window.views()):
+        top_cell = main_window.view(vid).active_cellview().cell
+        pcells = []
+        for inst in top_cell.each_inst():
+            pc = inst.pcell_declaration()
+            if pc:
+                params = inst.pcell_parameters_by_name()
+                def_params = pc.__class__.get_schema()
+                for k, v in def_params.items():
+                    if params[k] == v.default:
+                        del params[k]
+                pcells.append((pc.__class__, inst.dtrans, params))
+                inst.delete()
+        views.append(pcells)
+
+    return views
+
+
+def restore_pcells_to_views(views):
+    """Re-populate each view's Top Cell with PCells as extracted by ``extract_pcell_data_from_views``.
+
+    Args:
+        views: List of list of ``(type, location, parameters)`` tuples.
+    """
+
+    main_window = pya.Application.instance().main_window()
+    if main_window.views() != len(views):
+        raise ValueError("Number of views in KLayout unexpectedly changed during reload.")
+
+    for vid in range(main_window.views()):
+        top_cell = main_window.view(vid).active_cellview().cell
+        pcells = views[vid]
+        for pc in pcells:
+            def_params = {k:v.default for k, v in pc[0].get_schema().items()}
+            params = {**def_params, **pc[2]}
+            insert_cell_into(top_cell, pc[0], pc[1], **params)
+        top_cell.refresh()

@@ -37,6 +37,10 @@ Note that this does not reload the ``defaults`` file.
 """
 
 from kqcircuits.util.library_helper import load_libraries
+from kqcircuits.util.layout_to_code import extract_pcell_data_from_views, restore_pcells_to_views
+
+views = extract_pcell_data_from_views()
 load_libraries(flush=True)
+restore_pcells_to_views(views)
 </text>
 </klayout-macro>
