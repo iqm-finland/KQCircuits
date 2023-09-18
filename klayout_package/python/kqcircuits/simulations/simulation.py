@@ -585,12 +585,16 @@ class Simulation:
                 layer_name = face_id + "_layer" + layer_id
                 layer_z = [z[face_id][1], z[face_id][0], z[face_id][0] - sign * self.vertical_over_etching][layer_num]
                 thickness = float(self.ith_value(self.tls_layer_thickness, layer_num))
+                sheet_thickness = float(self.ith_value(self.tls_layer_thickness, layer_num))
                 signed_thickness = [sign, -sign, -sign][layer_num] * thickness
+                material = self.ith_value(self.tls_layer_material, layer_num)
                 if self.tls_sheet_approximation:
                     params = {'z': layer_z + signed_thickness,
-                              'thickness': 0.0}
+                              'thickness': 0.0,
+                              'sheet thickness': sheet_thickness,
+                              **(dict() if material is None else {'sheet material': material})
+                              }
                 elif thickness != 0.0:
-                    material = self.ith_value(self.tls_layer_material, layer_num)
                     params = {'z': layer_z,
                               'thickness': signed_thickness,
                               **(dict() if material is None else {'material': material})}

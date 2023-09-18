@@ -46,6 +46,13 @@ try:
         'eps_r': 10,  # relative permittivity
     })
 
+    # Rough correction factors from comparing to cross-section EPR. For more info, see Niko Savola M.Sc. thesis
+    correction_factor = {
+        'layerMA': 1 / 2.5,
+        'layerMS': 1 / 0.35,
+        'layerSA': 1 / 0.7,
+    }
+
     pinfo = epr.ProjectInfo(
         project_path = project_path,
         project_name = project_name,
@@ -106,8 +113,6 @@ try:
 
         df = pd.concat([df, pd.DataFrame({
             'variation': eprh.get_variation_string(variation),
-            # Total quality factor (harmonic sum)
-            'Q_total': (1 / (1 / data['sol'].filter(regex='^Q(dielectric|surf).*')).sum(axis=1)).values.flatten(),
 
             # Substrate quality factor and participation
             **{(Q_bulk := data['sol'].filter(regex=bulk+'$')).columns[0]: Q_bulk.values.flatten()
@@ -118,13 +123,15 @@ try:
                 for bulk in pinfo.dissipative['dielectrics_bulk']},
 
             # Surface quality factors and participation
-            **{(Q_surf := data['sol'].filter(regex=surface)).columns[0]: Q_surf.values.flatten()
+            **{(Q_surf := data['sol'].filter(regex=surface)).columns[0]: Q_surf.values.flatten() \
+                    / correction_factor.get(surface, 1)
                 for surface in pinfo.dissipative['dielectric_surfaces'].keys()},
             **{f'p_surf_{surface}': (1 / (  # th & eps_r still affect
                     data['sol'].filter(regex=surface) \
                     * (pinfo.dissipative['dielectric_surfaces'][surface]['tan_delta_surf']
                         if isinstance(pinfo.dissipative['dielectric_surfaces'], dict)
                         else epr.config['dissipation']['tan_delta_surf'])
+                    * correction_factor.get(surface, 1)
                 )).values.flatten()
                 for surface in pinfo.dissipative['dielectric_surfaces'].keys()},
 
@@ -142,6 +149,9 @@ try:
             'f_ND': f_ND,
             # 'n_zpf': ZPF from capacitive participation, small compared to inductive
         }).rename_axis('mode')])
+
+        # Total quality factor (harmonic sum) after corrected values
+        df['Q_total'] = (1 / (1 / df.filter(regex='^Q(dielectric|surf).*')).sum(axis=1)).values.flatten()
 
 
     # Convert to multi-index

@@ -50,7 +50,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                       max_delta_f=0.1, n_modes=2, mesh_size=None, substrate_loss_tangent=0,
                       dielectric_surfaces=None, simulation_flags=None, ansys_project_template=None,
-                      integrate_energies=False, hfss_capacitance_export=False):
+                      integrate_energies=False, hfss_capacitance_export=False,
+                      mer_coefficients=None, mer_correction_path=None):
     r"""
     Export Ansys simulation into json and gds files.
 
@@ -98,6 +99,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         ansys_project_template: path to the simulation template
         integrate_energies: Calculate energy integrals over each layer and save them into a file
         hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
+        mer_coefficients: dict of coefficients to fix metal edge region participation ratios
+        mer_correction_path: path to metal edge region case that contains participation results
 
     Returns:
          Path to exported json file.
@@ -133,7 +136,9 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         'dielectric_surfaces': dielectric_surfaces,
         'simulation_flags': simulation_flags,
         'integrate_energies': integrate_energies,
-        'hfss_capacitance_export': hfss_capacitance_export
+        'hfss_capacitance_export': hfss_capacitance_export,
+        'mer_coefficients': mer_coefficients,
+        'mer_correction_path': mer_correction_path,
     }
 
     if ansys_project_template is not None:
@@ -237,7 +242,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
                  ansys_project_template=None, integrate_energies=False, hfss_capacitance_export=False,
-                 skip_errors=False):
+                 skip_errors=False, mer_coefficients=None, mer_correction_path=None):
     r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -304,6 +309,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
 
                **Use this carefully**, some of your simulations might not make sense physically and
                you might end up wasting time on bad simulations.
+        mer_coefficients: dict of coefficients to fix metal edge region participation ratios
+        mer_correction_path: path to metal edge region case that contains participation results
 
     Returns:
         Path to exported bat file.
@@ -328,7 +335,10 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template,
                                             integrate_energies=integrate_energies,
-                                            hfss_capacitance_export=hfss_capacitance_export))
+                                            hfss_capacitance_export=hfss_capacitance_export,
+                                            mer_coefficients=mer_coefficients,
+                                            mer_correction_path=mer_correction_path,
+                                            ))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

@@ -159,7 +159,6 @@ for lname, ldata in layers.items():
     elif lname not in mesh_size:
         set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
-
 # Assign perfect electric conductor to metal sheets
 if pec_sheets:
     pec_color = color_by_material('pec')
@@ -385,9 +384,13 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
 
     # Create energy integral terms for each object
     total_solids = []
+    mer_total = []
     epsilon_0 = 8.8541878128e-12
     for lname, ldata in layers.items():
         material = ldata.get('material', None)
+        if material is None:
+            material = ldata.get('sheet material', None)
+
         if material == 'pec':
             continue
 
@@ -402,16 +405,33 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
             if n > 0:
                 oModule.CalcOp("+")
 
-        epsilon = epsilon_0 * material_dict.get(material, {}).get('permittivity', 1.0)
+        permittivity = material_dict.get(material, {}).get('permittivity', 1.0)
+        epsilon = epsilon_0 * permittivity
+        sheet_thickness = ldata.get('sheet thickness', None)
+
+        # in case of non model sheets, we have to calculate the field assuming
+        # d_sheet=epsilon_0 * epsilon_sheet * e_vac
+        # thus,
+        # energy = 0.5 * epsilon_0/epsilon_sheet e**2. * sheet_thickness
+        # and we can have an additional scalar
+        # sheet_thickness/epsilon_sheet
+        if sheet_thickness is not None:
+            sheet_thickness *= 1e-6 # thickness in um
+            sheet_constant = sheet_thickness/permittivity
+            epsilon = epsilon_0
+        else:
+            sheet_constant = 1.0
         if objects[lname]:
-            oModule.EnterScalar(epsilon / 2)
+            oModule.EnterScalar(epsilon / 2 * sheet_constant)
             oModule.CalcOp("*")
         else:
             oModule.EnterScalar(0.0)
         oModule.AddNamedExpression("E_{}".format(lname), "Fields")
 
-        if thickness != 0.0 and material is not None:
+        if not (thickness == 0.0 and sheet_thickness == 0) and material is not None:
             total_solids.append("E_{}".format(lname))
+            if 'mer' in lname:
+                mer_total.append("E_{}".format(lname))
 
     # Create term for total energy
     for n, tname in enumerate(total_solids):
@@ -420,6 +440,12 @@ if data.get('integrate_energies', False) and ansys_tool in {'hfss', 'eigenmode'}
             oModule.CalcOp("+")
     oModule.AddNamedExpression("total_energy", "Fields")
 
+    # Create term for mer total energy
+    for n, tname in enumerate(mer_total):
+        oModule.CopyNamedExprToStack(tname)
+        if n > 0:
+            oModule.CalcOp("+")
+    oModule.AddNamedExpression("total_mer_energy", "Fields")
 
 # Manual mesh refinement
 for mesh_layer, mesh_length in mesh_size.items():

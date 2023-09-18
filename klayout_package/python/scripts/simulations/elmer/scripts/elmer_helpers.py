@@ -386,6 +386,7 @@ def get_electrostatics_solver(
     if useVectorised:
         solver_lines += ['Vector Assembly = True']
         solver_lines += ['Element = p:$pn']
+        solver_lines += ['Calculate Elemental Fields = True']
 
     return sif_block(f'Solver {ordinate}', solver_lines)
 
@@ -879,20 +880,31 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
     boundary_conditions = ""
     grounds = get_grounds(json_data, dim=dim, mesh_names=mesh_names)
     ground_boundaries = [f'{g}_boundary' for g in grounds] if dim == 2 else grounds
-    boundary_conditions += sif_boundary_condition(
-        ordinate=1,
-        target_boundaries=ground_boundaries,
-        conditions=['Potential = 0.0'])
-    n_boundaries = 1
+    n_boundaries = 0
+    if len(ground_boundaries) > 0:
+        boundary_conditions += sif_boundary_condition(
+            ordinate=1,
+            target_boundaries=ground_boundaries,
+            conditions=['Potential = 0.0'])
+        n_boundaries = 1
 
     signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
     signals_boundaries = [f'{s}_boundary' for s in signals] if dim == 2 else signals
+
+    cbody_map = {}
+    for i, s in enumerate(signals_boundaries, 1):
+        s_wo_mer = s.replace('_mer','')
+        if s_wo_mer in cbody_map.keys():
+            cbody_map[s]=cbody_map[s_wo_mer]
+        else:
+            cbody_map[s]=len(cbody_map.keys())+1
+
     for i, s in enumerate(signals_boundaries, 1):
         boundary_conditions += sif_boundary_condition(
             ordinate=i + n_boundaries,
             target_boundaries=[s],
-            conditions=[f'Capacitance Body = {i}'])
-    n_boundaries += len(signals)
+            conditions=[f'Capacitance Body = {cbody_map[s]}'])
+    n_boundaries += len(cbody_map)
 
     bc_dict = json_data.get('boundary conditions', None)
     if bc_dict is not None:

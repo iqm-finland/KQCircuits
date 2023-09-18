@@ -62,7 +62,8 @@ def export_elmer_json(simulation,
                       maximum_passes=1,
                       minimum_passes=1,
                       dielectric_surfaces=None,
-                      is_axisymmetric=False):
+                      is_axisymmetric=False,
+                      ):
     """
     Export Elmer simulation into json and gds files.
 
@@ -162,11 +163,14 @@ def export_elmer_json(simulation,
     return json_filename
 
 
-def export_elmer_script(json_filenames, path: Path,
+def export_elmer_script(json_filenames,
+                        path: Path,
                         workflow=None,
                         file_prefix='simulation',
                         script_file='scripts/run.py',
-                        n_simulations = 1):
+                        post_process_script=None,
+                        n_simulations = 1
+                        ):
     """
     Create script files for running one or more simulations.
     Create also a main script to launch all the simulations at once.
@@ -178,6 +182,7 @@ def export_elmer_script(json_filenames, path: Path,
         file_prefix: Name of the script file to be created.
         script_file: Name of the script file to run.
         n_simulations: Total number of simulations
+        post_process_script: Name of post processing script file.
 
     Returns:
 
@@ -460,6 +465,9 @@ def export_elmer_script(json_filenames, path: Path,
                 main_file.write('source "{}" &\n'.format(Path(script_filename).relative_to(path)))
                 if (i + 1) % n_workers_full == 0:
                     main_file.write('wait\n')
+            if post_process_script is not None:
+                main_file.write('echo "Running post process script \"scripts/{}\""\n'.format(post_process_script))
+                main_file.write('python scripts/{}\n'.format(post_process_script))
 
     else:
         n_workers = workflow.get('n_workers', 1)
@@ -546,6 +554,10 @@ def export_elmer_script(json_filenames, path: Path,
                     main_file.write('echo "--------------------------------------------"\n')
                     main_file.write('"./{}"\n'.format(Path(script_filename).relative_to(path)))
 
+            if post_process_script is not None:
+                main_file.write('echo "Running post process script \"scripts/{}\""\n'.format(post_process_script))
+                main_file.write('python scripts/{}\n'.format(post_process_script))
+
     # change permission
     os.chmod(main_script_filename, os.stat(main_script_filename).st_mode | stat.S_IEXEC)
 
@@ -570,7 +582,9 @@ def export_elmer(simulations: Sequence[Simulation],
                  minimum_passes=1,
                  dielectric_surfaces=None,
                  is_axisymmetric=False,
-                 skip_errors=False):
+                 skip_errors=False,
+                 post_process_script=None,
+                 ):
     """
     Exports an elmer simulation model to the simulation path.
 
@@ -615,6 +629,8 @@ def export_elmer(simulations: Sequence[Simulation],
 
                **Use this carefully**, some of your simulations might not make sense physically and
                you might end up wasting time on bad simulations.
+        post_process_script: Name of post processing script file.
+
 
     Returns:
 
@@ -734,7 +750,7 @@ def export_elmer(simulations: Sequence[Simulation],
                     maximum_passes=maximum_passes,
                     minimum_passes=minimum_passes,
                     dielectric_surfaces=dielectric_surfaces,
-                    is_axisymmetric=is_axisymmetric
+                    is_axisymmetric=is_axisymmetric,
                 )
             )
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
@@ -751,7 +767,10 @@ def export_elmer(simulations: Sequence[Simulation],
                     'geometry files.'
                 ) from e
 
-    return export_elmer_script(json_filenames, path, workflow,
+    return export_elmer_script(json_filenames,
+                               path,
+                               workflow,
                                file_prefix=file_prefix,
                                script_file=script_file,
-                               n_simulations=n_worker_lim)
+                               n_simulations=n_worker_lim,
+                               post_process_script=post_process_script)
