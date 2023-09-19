@@ -104,10 +104,10 @@ if use_elmer:
     }
     if use_sbatch:  # if simulation is run in a HPC system, sbatch_parameters can be given here
         workflow['sbatch_parameters'] = {
-            '--job-name':sim_parameters['name'],
             '--account':'project_0',
             '--partition':'test',
             '--time':'00:10:00',
+            '--nodes':'1',
             '--ntasks':'40',
             '--cpus-per-task':'1',
             '--mem':'64G',

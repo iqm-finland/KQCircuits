@@ -21,8 +21,6 @@ import stat
 import logging
 import json
 import argparse
-import random
-import string
 
 from pathlib import Path
 from distutils.dir_util import copy_tree
@@ -193,10 +191,6 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
             main_file.write('#!/bin/bash\n')
             if sbatch_parameters.get('--account', 'project_0') == 'project_0':
                 logging.warning('Remote account not set or "project_0"!')
-
-            # generate random string for job name
-            sbatch_parameters['--job-name'] = \
-                ''.join(random.choice(string.ascii_lowercase) for _ in range(random.randint(6, 12)))
 
             for s_key, s_value in sbatch_parameters.items():
                 main_file.write(f'#SBATCH {s_key}={s_value}\n')

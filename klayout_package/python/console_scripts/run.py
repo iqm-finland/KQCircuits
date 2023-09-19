@@ -54,6 +54,9 @@ def run():
                                  help='Run the simulation at remote host "user@host"')
     simulate_parser.add_argument('--kqc-remote-tmp-path', type=str, help='Path to the used tmp directory on remote')
 
+    simulate_parser.add_argument('--detach', action="store_true",
+                                 help='Detach the remote simulation from terminal, not waiting for it to finish')
+
     mask_parser.add_argument('mask_script', type=str, help='Name of the mask script')
     mask_parser.add_argument('-d', '--debug', action="store_true", help="Debug mode. Use a single process and "
                              "print logs to standard output too.")
@@ -77,11 +80,11 @@ def run():
 
         if args.remote:
             remote_host = str(args.export_script)
-            remote_export_and_run(remote_host, args.kqc_remote_tmp_path, args_for_script)
+            remote_export_and_run(remote_host, args.kqc_remote_tmp_path, args.detach, args_for_script)
             return
         if args.remote_run_only:
             remote_host = str(args.export_script)
-            remote_run_only(remote_host, args_for_script, args.kqc_remote_tmp_path)
+            remote_run_only(remote_host, args_for_script, args.kqc_remote_tmp_path, args.detach)
             return
 
         script_file = Path(args.export_script)

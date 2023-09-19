@@ -25,6 +25,9 @@ Run simulations:
     * for each n simulations: `kqc sim sim_i.py -e --export-path-basename sim_i_tmp_folder`
     * `kqc sim --remote-run-only user@host sim_1_tmp_folder... sim_n_tmp_folder`
 
+- The simulations can be run on background with `--detach` flag in which case the output is saved to a `sim_i_tmp_folder/../nohup_runid.out` file, 
+  where `runid` is an unique run identifier. This can be followed for example with `watch cat sim_i_tmp_folder/../nohup_runid.out`
+
 .. note:: 
 
     Simulations need an empty folder on remote that will be cleared once all simulations are finsihed. By default `~/KQCircuits/tmp` is used, 

@@ -87,14 +87,15 @@ def _get_sbatch_time(export_tmp_paths: str) -> int:
 
     return sbatch_time
 
-def _remote_run(ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str):
+def _remote_run(ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str, detach_simulation: bool=False):
     """
     Internal helper function to copy and run simulations to remote and back
 
     Args:
         ssh_login              (str): ssh login info "user@hostname"
         export_tmp_paths (list[str]): list of local tmp simulation export paths for the simulations to be run
-        kqc_remote_tmp_path         (str): tmp directory on remote
+        kqc_remote_tmp_path    (str): tmp directory on remote
+        detach_simulation      (bool): Detach the remote simulation from terminal, not waiting for it to finish
     """
     if platform.system() == 'Windows':  # Windows
         logging.error("Connecting to remote host not supported on Windows")
@@ -106,7 +107,8 @@ def _remote_run(ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str
 
     # Add uuid to the remote path for this run
     # Allows simultaneous calls to "kqc sim --remote"
-    kqc_remote_tmp_path = str(Path(kqc_remote_tmp_path) / ('run_' + str(uuid.uuid4())))
+    run_uuid = str(uuid.uuid4())
+    kqc_remote_tmp_path = str(Path(kqc_remote_tmp_path) / ('run_' + run_uuid))
     # Create remote tmp if it doesnt exist, and check that its empty
     _prepare_remote_tmp(ssh_login,kqc_remote_tmp_path)
 
@@ -118,74 +120,100 @@ def _remote_run(ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str
     print("\x1b[0m")
 
 
-    remote_script_name = "remote_simulation.sh"
+    remote_script_name = f"remote_simulation_{run_uuid}.sh"
     remote_simulation_script = str(TMP_PATH / remote_script_name)
     simlist = ' '.join(dirs_remote)
 
-    # hardcoded option for copying back the vtu and pvtu files from remote
-    copy_vtus = False
-    copy_vtus = '#' if copy_vtus else ''
-
     remote_simulation = f"""#!/bin/bash
-    date
     sim_list=({simlist})
 
     for i in "${{sim_list[@]}}"; do
         cd "${{i}}" || exit
-        sbatch -W ./simulation.sh &
+        sbatch --job-name="{run_uuid}" ./simulation.sh
     done;
-    wait
-
-    # delete meshes and vtus
-    for i in "${{sim_list[@]}}"; do
-        cd "${{i}}" || exit
-        find . -name 'mesh.*' -delete
-        {copy_vtus}find . -name '*.vtu' -delete
-        {copy_vtus}find . -name '*.pvtu' -delete
-        rm -r scripts
-        rm ./*.msh || true
-        find . -name 'partitioning.*' -exec rm -r "{{}}" +
-    done;
-
-    echo "Finished all batch jobs at"
-    date
     """
-
     with open(remote_simulation_script, "w") as file:
         file.write(remote_simulation)
 
     os.chmod(remote_simulation_script, os.stat(remote_simulation_script).st_mode | stat.S_IEXEC)
 
-
     copy_cmd = ['scp', '-r'] + export_tmp_paths + [remote_simulation_script, ssh_login + ':' + kqc_remote_tmp_path]
-
-    sbatch_time = _get_sbatch_time(export_tmp_paths)
-    ssh_options = f'-o ServerAliveInterval={sbatch_time} -tt' if sbatch_time != 0 else '-tt'
-    run_cmd =  f"""ssh {ssh_login} {ssh_options} 'bash -l -c "cd {kqc_remote_tmp_path} && ./{remote_script_name}"'"""
+    run_cmd =  f"""ssh {ssh_login} -tt 'bash -l -c "cd {kqc_remote_tmp_path} && ./{remote_script_name}"'"""
     copy_to_local_cmd = f"""scp -r {ssh_login}:"{simlist}" {str(TMP_PATH)}"""
 
-    data_at_remote = False
+    # hardcoded option for copying back the vtu and pvtu files from remote
+    copy_vtus = False
+    skip_patterns = '-name "mesh.*" -o -name "*.msh" -o -name "scripts" -o -name "partitioning.*"'
+    if not copy_vtus:
+        skip_patterns = skip_patterns + ' -o -name "*.vtu" -o -name "*.pvtu"'
+    skip_patterns = r'\( ' + skip_patterns +  r' \)'
+
+    # time between ssh polling calls
+    wait_time = 60
+    # Write script to run in the background and copy results back once simulation is finished
+    wait_and_copy_back_script = str(TMP_PATH / f"fetch_remote_simulation_data_{run_uuid}.sh")
+    wait_and_copy_back = f"""#!/bin/bash
+    echo "---------START-WAIT-SCRIPT---------"
+    echo "simulations sent to queue at:"
+    date +"%d-%m-%y %T"
+    sleep 5
+
+    jobs_states=$(ssh {ssh_login} "squeue -h -n {run_uuid} -o%t")
+    n_all=$(echo "$jobs_states" | wc -w)
+    n_pd=$(echo "$jobs_states" | grep PD | wc -w)
+    n_run=$(echo "$jobs_states" | grep R | wc -w)
+
+    while [[ "$n_all" -gt 0  && $counter -le {_get_sbatch_time(export_tmp_paths)} ]]
+    do
+        echo -n "[ALL: $n_all, PD: $n_pd, R: $n_run] " && date +"%d-%m-%y %T"
+
+        if [[ "$n_run" -gt 0 ]]
+        then
+            counter=$((counter + {wait_time}))
+        fi
+
+        sleep {wait_time}
+
+        jobs_states=$(ssh {ssh_login} "squeue -h -n {run_uuid} -o%t")
+        n_all=$(echo "$jobs_states" | wc -w)
+        n_pd=$(echo "$jobs_states" | grep PD | wc -w)
+        n_run=$(echo "$jobs_states" | grep R | wc -w)
+    done
+
+    ssh {ssh_login} 'find {kqc_remote_tmp_path} {skip_patterns} -exec rm -r "{{}}" +'
+
+    {copy_to_local_cmd}
+    ssh {ssh_login} "rm -r {kqc_remote_tmp_path}"
+    echo "simulations finished at (accuracy 60s):"
+    date +"%d-%m-%y %T"
+    echo "---------STOP-WAIT-SCRIPT---------"
+    rm -- "$0"
+    """
+
+    with open(wait_and_copy_back_script, "w") as file:
+        file.write(wait_and_copy_back)
+    os.chmod(wait_and_copy_back_script, os.stat(wait_and_copy_back_script).st_mode | stat.S_IEXEC)
+
+
     try:
         # COPY (dirs_local) -> (dirs_remote)
         subprocess.check_call(copy_cmd)
-        data_at_remote = True
-
+        # Remove local simulation script (just to not clutter tmp folder)
+        subprocess.check_call(['rm',  remote_simulation_script])
         # Force to use login shell on remote
-        subprocess.call(run_cmd, shell=True)
-        # copy results back
-        subprocess.check_call(copy_to_local_cmd, shell=True) # Couldnt get this to work without shell
-        _clear_remote_tmp(ssh_login, kqc_remote_tmp_path)
-    except: # pylint: disable=bare-except
-        logging.warning("Remote run not succesfull")
-        if data_at_remote:
-            try:
-                _clear_remote_tmp(ssh_login, kqc_remote_tmp_path)
-                logging.warning("Data automatically deleted on remote")
-            except: # pylint: disable=bare-except
-                logging.warning("Can't connect to the remote. Please manually delete data")
-        else:
-            logging.warning("Exit before moving data to remote")
+        subprocess.check_call(run_cmd, shell=True)
 
+        # start ssh poll and wait script
+        if detach_simulation:
+            nohup_file = str(TMP_PATH / f"nohup_{run_uuid}.out")
+            wait_and_copy_back_script = "nohup " + wait_and_copy_back_script + " > " + nohup_file + " 2>&1 &"
+
+        subprocess.check_call(wait_and_copy_back_script, shell=True)
+        if detach_simulation:
+            print(f"Simulations sent to remote. You can follow the job state with 'watch cat {nohup_file}'")
+
+    except Exception as exc:
+        raise RuntimeError("Starting remote run failed. Please manually fetch and delete data from remote") from exc
 
 def _allowed_simulations():
     """
@@ -224,6 +252,7 @@ def _allowed_simulations():
 
 def remote_export_and_run(ssh_login: str,
                           kqc_remote_tmp_path: str='~/KQCircuits/tmp/',
+                          detach_simulation :bool=False,
                           args=None):
     """
     Exports locally and runs KQC simulations on a remote host. Froced to use no GUI (--quiet, -q option)
@@ -231,6 +260,7 @@ def remote_export_and_run(ssh_login: str,
     Args:
         ssh_login              (str): ssh login info "user@hostname"
         kqc_remote_tmp_path    (str): tmp directory on remote
+        detach_simulation     (bool): Detach the remote simulation from terminal, not waiting for it to finish
         args                  (list): a list of strings:
                                         - If starts with a letter and ends with ".py"  -> export script
                                         - If starts with "-" or "--"                   -> script option
@@ -276,12 +306,13 @@ def remote_export_and_run(ssh_login: str,
         subprocess.call(export_cmd)
 
     # Run on remote
-    _remote_run(ssh_login, export_tmp_paths, kqc_remote_tmp_path)
+    _remote_run(ssh_login, export_tmp_paths, kqc_remote_tmp_path, detach_simulation=detach_simulation)
 
 
 def remote_run_only(ssh_login: str,
-                    export_tmp_dirs: list = None,
-                    kqc_remote_tmp_path: str=None):
+                    export_tmp_dirs: list=None,
+                    kqc_remote_tmp_path: str=None,
+                    detach_simulation: bool=False):
     """
     Runs already locally exported simulations on remote host
 
@@ -290,6 +321,7 @@ def remote_run_only(ssh_login: str,
         export_tmp_dirs  (list[str]): list of local tmp simulation folder names
                                       Could contain other arguments from console script which are filtered out
         kqc_remote_tmp_path    (str): tmp directory on remote
+        detach_simulation      (bool): Detach the remote simulation from terminal, not waiting for it to finish
     """
     if kqc_remote_tmp_path is None:
         kqc_remote_tmp_path = '~/KQCircuits/tmp/'
@@ -316,4 +348,4 @@ def remote_run_only(ssh_login: str,
         sys.exit()
 
     # Run on remote
-    _remote_run(ssh_login, paths_filtered, kqc_remote_tmp_path)
+    _remote_run(ssh_login, paths_filtered, kqc_remote_tmp_path, detach_simulation=detach_simulation)
