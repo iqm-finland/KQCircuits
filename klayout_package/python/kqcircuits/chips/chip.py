@@ -1,4 +1,4 @@
-# This code is part of KQCircuits
+﻿# This code is part of KQCircuits
 # Copyright (C) 2021 IQM Finland Oy
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public
@@ -407,8 +407,8 @@ class Chip(Element):
         return {}
 
     def produce_n_launchers(self, n, launcher_type, launcher_width, launcher_gap, launcher_indent, pad_pitch,
-                            launcher_assignments=None, launcher_frame_gap=None, enabled=None, chip_box=None,
-                            face_id=0):
+                            launcher_assignments=None, port_id_remap=None, launcher_frame_gap=None, enabled=None,
+                            chip_box=None, face_id=0):
         """Produces n launchers at default locations and optionally changes the chip size.
 
         Launcher pads are equally distributed around the chip. This may be overridden by specifying
@@ -426,6 +426,13 @@ class Chip(Element):
             pad_pitch: distance between pad centers
             launcher_frame_gap: gap of the launcher pad at the frame
             launcher_assignments: dictionary of (port_id: name) that assigns a name to some of the launchers
+            port_id_remap: by default, left-most top edge launcher has port_id set to 1 and port_ids
+                increment for other launchers in clockwise order.
+                port_id_remap is a dictionary [1..n] -> [1..n] such that for port_id_remap[x] = y,
+                x is the port_id of the launcher in default order and y is the port_id of that launcher
+                in your desired order.
+                For example, to flip the launcher order by chip's y-axis, set port_id_remap to
+                ``{i+1: ((n - i + n/4-1) % n) + 1 for i in range(n)}``
             enabled: optional list of enabled launchers
             chip_box: optionally changes the chip size (``self.box``)
             face_id: index of face_ids in which to insert the launchers
@@ -461,20 +468,24 @@ class Chip(Element):
         _h = self.box.p2.y - self.box.p1.y
         sides = [_w, _h, _w, _h]
 
-        return self._insert_launchers(dirs, enabled, launcher_assignments, launcher_cell, launcher_indent,
-                                      launcher_width, pad_pitch, pads_per_side, sides, trans,
+        return self._insert_launchers(dirs, enabled, launcher_assignments, port_id_remap, launcher_cell,
+                                      launcher_indent, launcher_width, pad_pitch, pads_per_side, sides, trans,
                                       face_id=face_id)
 
-    def _insert_launchers(self, dirs, enabled, launcher_assignments, launcher_cell, launcher_indent, launcher_width,
-                          pad_pitch, pads_per_side, sides, trans, face_id=0):
-
+    def _insert_launchers(self, dirs, enabled, launcher_assignments, port_id_remap, launcher_cell, launcher_indent,
+                          launcher_width, pad_pitch, pads_per_side, sides, trans, face_id):
         """Inserts launcher cell at predefined parameters and returns launcher cells
 
         """
-        port_id, launchers = 0, {}
+        launcher_order_idx, launchers = 0, {}
         for np, dr, tr, si in zip(pads_per_side, dirs, trans, sides):
             for i in range(np):
-                port_id += 1
+                launcher_order_idx += 1
+                if port_id_remap:
+                    port_id = port_id_remap.get(launcher_order_idx, launcher_order_idx)
+                else:
+                    port_id = launcher_order_idx
+
                 if launcher_assignments:
                     if port_id not in launcher_assignments:
                         continue
