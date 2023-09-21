@@ -1033,10 +1033,6 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     header = sif_common_header(json_data, folder_path)
     constants = sif_block('Constants', [f'Permittivity Of Vacuum = {epsilon_0}'])
 
-    # vacuum and substrates
-    n_bodies = 0
-    n_boundaries = 0
-
     # Bodies and materials
     mesh_names = read_mesh_names(folder_path)
     body_list = get_body_list(json_data, dim=dim, mesh_names=mesh_names)
