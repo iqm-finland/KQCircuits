@@ -194,5 +194,6 @@ class QualityFactor(Chip):
 
         self.insert_cell(WaveguideCoplanar, **{**self.cell.pcell_parameters_by_name(), **{
             "path": pya.DPath(points_fl + points_fl_end, 1),
-            "term2": 0
+            "term2": 0,
+            "ground_grid_in_trace": False
         }})
