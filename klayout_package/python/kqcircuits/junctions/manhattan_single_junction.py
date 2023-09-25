@@ -31,6 +31,7 @@ class ManhattanSingleJunction(Junction):
 
     finger_overshoot = Param(pdt.TypeDouble, "Length of fingers after the junction.", 1.0, unit="μm")
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer.", True)
+    include_base_metal_addition = Param(pdt.TypeBoolean, "Include base metal addition layer.", True)
     shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads.", 0.5, unit="μm")
     separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", False)
     offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
@@ -158,22 +159,28 @@ class ManhattanSingleJunction(Junction):
             pya.DPoint(x0, y0 - 4),
             pya.DPoint(x0, 0)
         ]
-        shape = polygon_with_vsym(bottom_pts)
-        self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
-        # metal additions top
-        top_pts = [
-            pya.DPoint(x0 + 2, y0 + 7),
-            pya.DPoint(x0 + 2, y0 + 5),
-            pya.DPoint(x0 + 3, y0 + 5),
-            pya.DPoint(x0 + 3, y0 + 4),
-            pya.DPoint(x0, y0 + 4),
-            pya.DPoint(x0, self.height),
-        ]
-        shape = polygon_with_vsym(top_pts)
-        self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+        if self.include_base_metal_addition:
+            shape = polygon_with_vsym(bottom_pts)
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
+            # metal additions top
+            top_pts = [
+                pya.DPoint(x0 + 2, y0 + 7),
+                pya.DPoint(x0 + 2, y0 + 5),
+                pya.DPoint(x0 + 3, y0 + 5),
+                pya.DPoint(x0 + 3, y0 + 4),
+                pya.DPoint(x0, y0 + 4),
+                pya.DPoint(x0, self.height),
+            ]
+
+            shape = polygon_with_vsym(top_pts)
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(shape)
         # metal gap
         if self.include_base_metal_gap:
-            pts = bottom_pts + [pya.DPoint(-self.width/2, 0), pya.DPoint(-self.width/2, self.height)] + top_pts[::-1]
+            if self.include_base_metal_addition:
+                pts = bottom_pts + [pya.DPoint(-self.width / 2, 0), pya.DPoint(-self.width / 2, self.height)] \
+                      + top_pts[::-1]
+            else:
+                pts = [pya.DPoint(-self.width / 2, 0), pya.DPoint(-self.width / 2, self.height)]
             shape = polygon_with_vsym(pts)
             self.cell.shapes(self.get_layer("base_metal_gap_wo_grid")).insert(shape)
 
