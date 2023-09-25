@@ -36,6 +36,7 @@ length = 500.
 p_element_order = 3
 gmsh_n_threads = -1
 elmer_n_processes = 1
+elmer_n_threads = 1
 box_size_x = length
 box_size_y = height
 use_elmer = True
@@ -97,6 +98,7 @@ if use_elmer:
                                                  #         the physical cores (based on
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
+        'elmer_n_threads': elmer_n_threads,  # <------ This defines the number of omp threads per process
 #        'n_workers': 2, # <--------- This defines the number of
                         #            parallel independent processes.
                         #            Moreover, adding this line activates

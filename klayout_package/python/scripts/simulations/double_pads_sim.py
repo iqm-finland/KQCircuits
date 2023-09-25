@@ -120,6 +120,7 @@ for sim_tool in sim_tools:
             'n_workers': 4,
             'elmer_n_processes': 4,
             'gmsh_n_threads': 4,
+            'elmer_n_threads': 1,
         },
         'mesh_size': {
             'global_max': 50.,

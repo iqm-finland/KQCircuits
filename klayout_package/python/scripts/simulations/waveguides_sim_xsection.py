@@ -74,6 +74,7 @@ workflow = {
     'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
     'python_executable': 'python', # use 'kqclib' when using singularity image (you can also put a full path)
     'elmer_n_processes': -1,  # -1 means all the physical cores
+    'elmer_n_threads': 1,  # number of omp threads
 }
 
 mesh_size = {

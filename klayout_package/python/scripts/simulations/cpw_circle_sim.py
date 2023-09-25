@@ -93,6 +93,7 @@ if use_elmer:
         'run_paraview': True,  # this is visual view of the results which can be removed to speed up the process
         'gmsh_n_threads': -1,  # -1 means all the physical cores
         'elmer_n_processes': -1,  # -1 means all the physical cores
+        'elmer_n_threads': 1,  # number of omp threads per process
     }
     export_elmer(
         simulations,

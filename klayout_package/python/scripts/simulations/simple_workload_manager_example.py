@@ -62,6 +62,7 @@ workflow = {
     'n_workers': 4,  # workers for first-level parallelisation, using Slurm would override this
     'gmsh_n_threads': 2,
     'elmer_n_processes': 2,  # processes for second-level parallelisation
+    'elmer_n_threads': 1,  # number of omp threads per process
     'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
 }
 

@@ -51,6 +51,7 @@ parser.add_argument('--no-edge-ports', action="store_true", help='Do not use edg
 parser.add_argument('--flip-chip', action="store_true", help='Make a flip chip')
 parser.add_argument('--ansys', action="store_true", help='Use Ansys (otherwise Elmer)')
 parser.add_argument('--use-sbatch', action="store_true", help='Use sbatch (Slurm)')
+parser.add_argument('--adaptive-remeshing', action="store_true", help='Use adaptive remeshing')
 parser.add_argument('--port-termination', action="store_true", help='Port termination')
 parser.add_argument('--wave-equation', action="store_true",
         help='Compute wave equation (otherwise electrostatics)')
@@ -62,6 +63,8 @@ parser.add_argument('--cpw-length', default=100., type=float, help='Length of cp
 parser.add_argument('--p-element-order', default=3, type=int, help='Order of p-elements in the FEM computation')
 parser.add_argument('--elmer-n-processes', default=-1, type=int,
         help='Number of processes in Elmer simulations, -1 means all physical cores')
+parser.add_argument('--elmer-n-threads', default=1, type=int,
+        help='Number of threads per process in Elmer simulations')
 parser.add_argument('--gmsh-n-threads', default=-1, type=int, help='Number of threads in Gmsh simulations, \
         -1 means all physical cores')
 
@@ -122,6 +125,7 @@ sim_parameters = {
 
 if use_elmer:
     elmer_n_processes = args.elmer_n_processes
+    elmer_n_threads = args.elmer_n_threads
     mesh_size = {
         'global_max': args.global_mesh_size,
         '1t1_gap': args.gap_mesh_size,
@@ -141,7 +145,7 @@ if use_elmer:
             'linear_system_method': 'mg',
             'p_element_order': args.p_element_order,
         }
-        if elmer_n_processes == 1:
+        if args.adaptive_remeshing and elmer_n_processes == 1:
             export_parameters_elmer.update(
                 {
                     'percent_error': 0.0001,
@@ -170,6 +174,7 @@ if use_elmer:
                                                  #         the physical cores (based on
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
+        'elmer_n_threads': elmer_n_threads,  # <------ This defines the number of omp threads per task
 #        'n_workers': 2, # <--------- This defines the number of
                         #            parallel independent processes.
                         #            Moreover, adding this line activates

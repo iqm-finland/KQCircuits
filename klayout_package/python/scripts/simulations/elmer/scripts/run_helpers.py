@@ -19,6 +19,7 @@
 import logging
 import shutil
 import subprocess
+import os
 import sys
 import platform
 import json
@@ -98,20 +99,29 @@ def is_singularity(exec_path_override=None) -> bool:
         raise RuntimeError(f'Unexpected return code {ret} is_singularity() subprocess call')
     return not ret
 
-def run_elmer_solver(sif_path, n_processes, exec_path_override=None):
+def run_elmer_solver(sif_path, n_processes, n_threads=1, exec_path_override=None):
+    my_env = os.environ.copy()
+    my_env["OMP_NUM_THREADS"]=str(n_threads)
+
     elmersolver_executable = shutil.which('ElmerSolver')
     elmersolver_mpi_executable = shutil.which('ElmerSolver_mpi')
     if n_processes > 1 and elmersolver_mpi_executable is not None:
         if is_microsoft(exec_path_override) and is_singularity(exec_path_override):
             # If using wsl and singularity the mpi command needs to be given inside singularity
-            run_cmd = [elmersolver_mpi_executable, sif_path, '-np', str(n_processes)]
+            run_cmd = [elmersolver_mpi_executable,
+                       sif_path,
+                       '-np',
+                       str(n_processes)]
         else:
             mpi_command = 'mpirun' if shutil.which('mpirun') is not None else 'mpiexec'
-            run_cmd = [mpi_command, '-np', str(n_processes), elmersolver_mpi_executable,
-                                sif_path]
-        subprocess.check_call(run_cmd, cwd=exec_path_override)
+            run_cmd = [mpi_command,
+                       '-np',
+                       str(n_processes),
+                       elmersolver_mpi_executable,
+                       sif_path]
+        subprocess.check_call(run_cmd, cwd=exec_path_override, env=my_env)
     elif elmersolver_executable is not None:
-        subprocess.check_call([elmersolver_executable, sif_path], cwd=exec_path_override)
+        subprocess.check_call([elmersolver_executable, sif_path], cwd=exec_path_override, env=my_env)
     else:
         logging.warning("ElmerSolver was not found! Make sure you have ElmerFEM installed: "
                         "https://github.com/ElmerCSC/elmerfem")

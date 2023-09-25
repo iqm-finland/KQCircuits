@@ -116,6 +116,8 @@ if args.q:
 
 # Set number of processes for elmer
 elmer_n_processes = workflow.get('elmer_n_processes', 1)
+elmer_n_threads = workflow.get('elmer_n_threads', 1)
+
 if elmer_n_processes == -1:
     elmer_n_processes = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
 
@@ -136,7 +138,10 @@ if tool == 'cross-section':
 
     if workflow.get('run_elmer', True):
         for sif_file in json_data['sif_names']:
-            run_elmer_solver(name.joinpath(f'{sif_file}.sif'), elmer_n_processes, path)
+            run_elmer_solver(name.joinpath(f'{sif_file}.sif'),
+                             elmer_n_processes,
+                             elmer_n_threads,
+                             path)
 
     if workflow.get('run_paraview', False):
         run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
@@ -165,7 +170,10 @@ else:
 
     if workflow.get('run_elmer', True):
         for sif_file in json_data['sif_names']:
-            run_elmer_solver(name.joinpath(f'{sif_file}.sif'), elmer_n_processes, path)
+            run_elmer_solver(name.joinpath(f'{sif_file}.sif'),
+                             elmer_n_processes,
+                             elmer_n_threads,
+                             path)
 
     if workflow.get('run_paraview', False):
         run_paraview(path / name / name, elmer_n_processes, path)

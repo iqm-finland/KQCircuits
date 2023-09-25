@@ -116,6 +116,7 @@ if use_elmer:
                                                  #         the physical cores (based on
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
+        'elmer_n_threads': 1,  # <------ This defines the number of omp threads per process
 #        'n_workers': 2, # <--------- This defines the number of
                         #            parallel independent processes.
                         #            Moreover, adding this line activates

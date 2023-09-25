@@ -71,6 +71,7 @@ elmer_export_parameters = {
         'n_workers': 1,  # workers for first-level parallelisation
         'gmsh_n_threads': 4,  # -1 means all the physical cores
         'elmer_n_processes': 4,  # processes for second-level parallelisation
+        'elmer_n_threads': 1,  # the number of omp threads per process
         'python_executable': 'python' # use 'kqclib' when using singularity image (you can also put a full path)
     },
     'linear_system_method': 'mg',  # Multigrid solver in Elmer, details in Elmer docs

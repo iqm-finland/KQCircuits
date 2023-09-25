@@ -177,6 +177,9 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
     if sbatch:
         sbatch_parameters = workflow['sbatch_parameters']
         elmer_n_processes = sbatch_parameters['--ntasks']
+        elmer_n_threads = sbatch_parameters.get('--cpus-per-task', 1)
+    else:
+        elmer_n_threads = workflow.get('elmer_n_threads', 1)
     python_executable = workflow.get('python_executable', 'python')
     parallelize_workload = 'n_workers' in workflow
 
@@ -228,22 +231,25 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
                                 '"{2}_ElmerGrid_part.log"\n'.format(
                             simulation_name,
                             str(elmer_n_processes),
-                            Path(json_filename).relative_to(path))
+                            Path(json_filename).relative_to(path),
+                            )
                         )
                     file.write('echo "Simulation {}/{} Write Elmer sif files"\n'.format(i + 1, len(json_filenames)))
                     file.write('srun -n 1 {2} "{0}" "{1}" --only-elmer-sifs -q 2>&1 >> "{1}_Elmer.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
-                        python_executable)
+                        python_executable,
+                        elmer_n_threads)
                         )
                     file.write('echo "Simulation {}/{} Elmer"\n'.format(i + 1, len(json_filenames)))
                     for sif in sif_names:
-                        file.write('srun --cpu-bind none -n {0} ElmerSolver_mpi "{1}/{2}.sif" 2>&1 >> '\
-                                '"{3}_Elmer.log"\n'.format(
+                        file.write('OMP_NUM_THREADS={4} srun --cpu-bind none -n {0} ElmerSolver_mpi '\
+                                '"{1}/{2}.sif" 2>&1 >> "{3}_Elmer.log"\n'.format(
                                     elmer_n_processes,
                                     simulation_name,
                                     sif,
-                                    Path(json_filename).relative_to(path)
+                                    Path(json_filename).relative_to(path),
+                                    elmer_n_threads
                                     ))
                     file.write('echo "Simulation {}/{} write results json"\n'.format(i + 1, len(json_filenames)))
                     file.write('srun -n 1 {2} "{0}" "{1}" --write-project-results 2>&1 >> '\
