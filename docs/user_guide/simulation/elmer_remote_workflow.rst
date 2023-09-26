@@ -1,5 +1,12 @@
+.. _elmer_remote_workflow:
+
 Elmer remote simulations workflow
 =================================
+
+Elmer simulations can be run on a remotely on a computing cluster using SLURM workload manager. 
+Below are some steps on how to get started with the workflow
+
+See :ref:`gmsh_elmer_export`. for explanation of the Slurm settings controlling the amount of computing resources requested
 
 Setup:
 

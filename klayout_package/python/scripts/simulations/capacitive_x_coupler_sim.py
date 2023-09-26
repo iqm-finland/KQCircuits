@@ -39,9 +39,12 @@ elmer_n_processes = 1
 elmer_n_threads = 1
 box_size_x = length
 box_size_y = height
+
 use_elmer = True
 wave_equation = True
 use_sbatch = False
+quiet = True
+
 path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 
 sim_parameters = {
@@ -80,11 +83,11 @@ if use_elmer:
         }
 
     workflow = {
-        'run_gmsh_gui': True,  # For GMSH: if true, the mesh is shown after it is done
+        'run_gmsh_gui': not quiet,  # For GMSH: if true, the mesh is shown after it is done
                                # (for large meshes this can take a long time)
         'run_elmergrid': True,
         'run_elmer': True,
-        'run_paraview': True,  # this is visual view of the results
+        'run_paraview': not quiet,  # this is visual view of the results
                                # which can be removed to speed up the process
         'python_executable': 'python', # use 'kqclib' when using singularity
                                        # image (you can also put a full path)
@@ -108,11 +111,16 @@ if use_elmer:
         workflow['sbatch_parameters'] = {
             '--account':'project_0',
             '--partition':'test',
-            '--time':'00:10:00',
-            '--nodes':'1',
-            '--ntasks':'40',
-            '--cpus-per-task':'1',
-            '--mem':'64G',
+
+            'elmer_n_nodes':'1',
+            'elmer_n_processes':'20',
+            'elmer_n_threads':'1',
+            'elmer_mem':'64G',
+            'elmer_time':'00:10:00',
+
+            'gmsh_n_threads':'20',
+            'gmsh_mem':'64G',
+            'gmsh_time':'00:10:00',
         }
 
 else:

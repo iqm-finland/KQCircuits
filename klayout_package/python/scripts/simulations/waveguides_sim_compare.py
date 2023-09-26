@@ -184,11 +184,16 @@ if use_elmer:
         workflow['sbatch_parameters'] = {
             '--account':'project_0',
             '--partition':'test',
-            '--time':'00:10:00',
-            '--nodes':'1',
-            '--ntasks':'40',
-            '--cpus-per-task':'1',
-            '--mem':'64G',
+
+            'elmer_n_nodes':'1',
+            'elmer_n_processes':'20',
+            'elmer_n_threads':'1',
+            'elmer_mem':'64G',
+            'elmer_time':'00:10:00',
+
+            'gmsh_n_threads':'20',
+            'gmsh_mem':'64G',
+            'gmsh_time':'00:10:00',
         }
 
 else:

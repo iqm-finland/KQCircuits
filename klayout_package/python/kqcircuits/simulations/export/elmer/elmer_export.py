@@ -174,28 +174,48 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
     if workflow is None:
         workflow = dict()
     sbatch = 'sbatch_parameters' in workflow
-    if sbatch:
-        sbatch_parameters = workflow['sbatch_parameters']
-        elmer_n_processes = sbatch_parameters['--ntasks']
-        elmer_n_threads = sbatch_parameters.get('--cpus-per-task', 1)
-    else:
-        elmer_n_threads = workflow.get('elmer_n_threads', 1)
     python_executable = workflow.get('python_executable', 'python')
     parallelize_workload = 'n_workers' in workflow
 
-
     main_script_filename = str(path.joinpath(file_prefix + '.sh'))
-    with open(main_script_filename, 'w') as main_file:
 
-        if parallelize_workload and not sbatch:
-            main_file.write('{} scripts/simple_workload_manager.py {}'.format(python_executable, workflow['n_workers']))
+    if sbatch:
+        sbatch_parameters = workflow['sbatch_parameters']
 
-        if sbatch:
+        if sbatch_parameters.get('--account', 'project_0') == 'project_0':
+            logging.warning('Remote account not set or "project_0"!')
+
+        common_keys = [k for k in sbatch_parameters.keys() if k.startswith('--')]
+        sbatch_settings_elmer = {k: sbatch_parameters.pop(k) for k in common_keys}
+
+        sbatch_settings_meshes = sbatch_settings_elmer.copy()
+
+        sbatch_settings_elmer['--time'] = sbatch_parameters.pop('elmer_time', '00:10:00')
+        sbatch_settings_elmer['--nodes'] = sbatch_parameters.pop('elmer_n_nodes', 1)
+        sbatch_settings_elmer['--ntasks'] = sbatch_parameters.pop('elmer_n_processes', 10)
+        sbatch_settings_elmer['--cpus-per-task'] = sbatch_parameters.pop('elmer_n_threads', 1)
+        sbatch_settings_elmer['--mem'] = sbatch_parameters.pop('elmer_mem', '64G')
+
+        sbatch_settings_meshes['--time'] = sbatch_parameters.pop('gmsh_time', '00:10:00')
+        sbatch_settings_meshes['--nodes'] = 1
+        sbatch_settings_meshes['--ntasks'] = 1
+        sbatch_settings_meshes['--cpus-per-task'] = sbatch_parameters.pop('gmsh_n_threads', 10)
+        sbatch_settings_meshes['--mem'] = sbatch_parameters.pop('gmsh_mem', '64G')
+
+        if len(sbatch_parameters) > 0:
+            logging.warning("Unused sbatch parameters: ")
+            for k, v in sbatch_parameters.items():
+                logging.warning(f"{k} : {v}")
+
+        gmsh_n_threads = sbatch_settings_meshes['--cpus-per-task']
+        elmer_n_processes = sbatch_settings_elmer['--ntasks']
+        elmer_n_threads = sbatch_settings_elmer['--cpus-per-task']
+
+        main_script_filename_meshes = str(path.joinpath(file_prefix + '_meshes.sh'))
+        with open(main_script_filename_meshes, 'w') as main_file:
             main_file.write('#!/bin/bash\n')
-            if sbatch_parameters.get('--account', 'project_0') == 'project_0':
-                logging.warning('Remote account not set or "project_0"!')
 
-            for s_key, s_value in sbatch_parameters.items():
+            for s_key, s_value in sbatch_settings_meshes.items():
                 main_file.write(f'#SBATCH {s_key}={s_value}\n')
 
             main_file.write('\n')
@@ -203,47 +223,76 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
             main_file.write('export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK\n')
             main_file.write('\n')
 
-        script_filenames = []
-        for i, json_filename in enumerate(json_filenames):
-            with open(json_filename) as f:
-                json_data = json.load(f)
-                simulation_name = json_data['parameters']['name']
+            for i, json_filename in enumerate(json_filenames):
+                with open(json_filename) as f:
+                    json_data = json.load(f)
+                    simulation_name = json_data['parameters']['name']
 
-            sif_names = json_data['sif_names']
+                sif_names = json_data['sif_names']
 
-            script_filename = str(path.joinpath(simulation_name + '.sh'))
-            script_filenames.append(script_filename)
-            with open(script_filename, 'w') as file:
-                if sbatch:
+                script_filename_meshes = str(path.joinpath(simulation_name + '_meshes.sh'))
+                with open(script_filename_meshes, 'w') as file:
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 {2} "{0}" "{1}" --only-gmsh -q 2>&1 >> "{1}_Gmsh.log"\n'.format(
+                    file.write('srun -c {3} {2} "{0}" "{1}" --only-gmsh -q 2>&1 >> '\
+                            '"{1}_Gmsh.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
-                        python_executable)
-                        )
+                        python_executable,
+                        str(gmsh_n_threads)
+                        ))
                     file.write('echo "Simulation {}/{} ElmerGrid"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 ElmerGrid 14 2 "{0}" 2>&1 >> "{1}_ElmerGrid.log"\n'.format(
+                    file.write('srun -c {2} ElmerGrid 14 2 "{0}" 2>&1 >> "{1}_ElmerGrid.log"\n'.format(
                         simulation_name + ".msh",
-                        Path(json_filename).relative_to(path))
-                    )
+                        Path(json_filename).relative_to(path),
+                        str(gmsh_n_threads)
+                    ))
                     if int(elmer_n_processes) > 1:
-                        file.write('srun -n 1 ElmerGrid 2 2 "{0}" 2>&1 -metis {1} 4 --partdual --removeunused >> '\
+                        file.write('srun -c {3} ElmerGrid 2 2 "{0}" 2>&1 -metis {1} 4 --partdual --removeunused >> '\
                                 '"{2}_ElmerGrid_part.log"\n'.format(
                             simulation_name,
                             str(elmer_n_processes),
                             Path(json_filename).relative_to(path),
-                            )
-                        )
+                            str(gmsh_n_threads)
+                        ))
                     file.write('echo "Simulation {}/{} Write Elmer sif files"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 {2} "{0}" "{1}" --only-elmer-sifs -q 2>&1 >> "{1}_Elmer.log"\n'.format(
+                    file.write('srun -c {3} {2} "{0}" "{1}" --only-elmer-sifs -q 2>&1 >> "{1}_Elmer.log"\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
                         python_executable,
-                        elmer_n_threads)
-                        )
+                        str(gmsh_n_threads)
+                    ))
+                os.chmod(script_filename_meshes, os.stat(script_filename_meshes).st_mode | stat.S_IEXEC)
+
+                main_file.write('echo "Submitting gmsh and ElmerGrid part {}/{}"\n'
+                            .format(i + 1, len(json_filenames)))
+                main_file.write('echo "--------------------------------------------"\n')
+                main_file.write('source "{}"\n'.format(Path(script_filename_meshes).relative_to(path)))
+
+        # change permission
+        os.chmod(main_script_filename_meshes, os.stat(main_script_filename_meshes).st_mode | stat.S_IEXEC)
+
+        with open(main_script_filename, 'w') as main_file:
+            main_file.write('#!/bin/bash\n')
+
+            for s_key, s_value in sbatch_settings_elmer.items():
+                main_file.write(f'#SBATCH {s_key}={s_value}\n')
+
+            main_file.write('\n')
+            main_file.write('# set the number of threads based on --cpus-per-task\n')
+            main_file.write('export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK\n')
+            main_file.write('\n')
+            for i, json_filename in enumerate(json_filenames):
+                with open(json_filename) as f:
+                    json_data = json.load(f)
+                    simulation_name = json_data['parameters']['name']
+
+                sif_names = json_data['sif_names']
+                script_filename = str(path.joinpath(simulation_name + '.sh'))
+                with open(script_filename, 'w') as file:
+
                     file.write('echo "Simulation {}/{} Elmer"\n'.format(i + 1, len(json_filenames)))
                     for sif in sif_names:
-                        file.write('OMP_NUM_THREADS={4} srun --cpu-bind none -n {0} ElmerSolver_mpi '\
+                        file.write('srun --cpu-bind none -n {0} -c {4} ElmerSolver_mpi '\
                                 '"{1}/{2}.sif" 2>&1 >> "{3}_Elmer.log"\n'.format(
                                     elmer_n_processes,
                                     simulation_name,
@@ -252,21 +301,49 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
                                     elmer_n_threads
                                     ))
                     file.write('echo "Simulation {}/{} write results json"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 {2} "{0}" "{1}" --write-project-results 2>&1 >> '\
+                    file.write('srun -n 1 -c {3} {2} "{0}" "{1}" --write-project-results 2>&1 >> '\
                             '{1}_write_project_results.log\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
-                        python_executable)
-                    )
+                        python_executable,
+                        elmer_n_threads
+                    ))
 
                     file.write('echo "Simulation {}/{} write versions json"\n'.format(i + 1, len(json_filenames)))
-                    file.write('srun -n 1 {2} "{0}" "{1}" --write-versions-file 2>&1 >> '\
+                    file.write('srun -n 1 -c {3} {2} "{0}" "{1}" --write-versions-file 2>&1 >> '\
                             '{1}_write_versions_file.log\n'.format(
                         script_file,
                         Path(json_filename).relative_to(path),
-                        python_executable)
-                    )
-                else:
+                        python_executable,
+                        elmer_n_threads
+                    ))
+                os.chmod(script_filename, os.stat(script_filename).st_mode | stat.S_IEXEC)
+
+            main_file.write('echo "Submitting ElmerSolver part{}/{}"\n'
+                        .format(i + 1, len(json_filenames)))
+            main_file.write('echo "--------------------------------------------"\n')
+            main_file.write('source "{}"\n'.format(Path(script_filename).relative_to(path)))
+
+
+    else:
+
+        with open(main_script_filename, 'w') as main_file:
+
+            if parallelize_workload and not sbatch:
+                main_file.write('{} scripts/simple_workload_manager.py {}'.format(
+                    python_executable,
+                    workflow['n_workers']
+                ))
+
+            for i, json_filename in enumerate(json_filenames):
+                with open(json_filename) as f:
+                    json_data = json.load(f)
+                    simulation_name = json_data['parameters']['name']
+
+                sif_names = json_data['sif_names']
+
+                script_filename = str(path.joinpath(simulation_name + '.sh'))
+                with open(script_filename, 'w') as file:
                     file.write('echo "Simulation {}/{} Gmsh"\n'.format(i + 1, len(json_filenames)))
                     file.write('{2} "{0}" "{1}" --only-gmsh 2>&1 >> "{1}_Gmsh.log"\n'.format(
                         script_file,
@@ -312,25 +389,17 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
                         Path(json_filename).relative_to(path),
                         python_executable)
                     )
-
-            # change permission
-            os.chmod(script_filename, os.stat(script_filename).st_mode | stat.S_IEXEC)
-
-            if sbatch:
-                main_file.write('echo "Submitting the main script of simulation {}/{}"\n'
-                        .format(i + 1, len(json_filenames)))
-                main_file.write('echo "--------------------------------------------"\n')
-                main_file.write('source "{}"\n'.format(Path(script_filename).relative_to(path)))
-            elif parallelize_workload:
-                main_file.write(' "./{}"'.format(
-                    Path(script_filename).relative_to(path))
-                )
-            else:
-                main_file.write('echo "Submitting the main script of simulation {}/{}"\n'
-                        .format(i + 1, len(json_filenames)))
-                main_file.write('echo "--------------------------------------------"\n')
-                main_file.write('"./{}"\n'.format(Path(script_filename).relative_to(path)))
-
+                # change permission
+                os.chmod(script_filename, os.stat(script_filename).st_mode | stat.S_IEXEC)
+                if parallelize_workload:
+                    main_file.write(' "./{}"'.format(
+                        Path(script_filename).relative_to(path))
+                    )
+                else:
+                    main_file.write('echo "Submitting the main script of simulation {}/{}"\n'
+                            .format(i + 1, len(json_filenames)))
+                    main_file.write('echo "--------------------------------------------"\n')
+                    main_file.write('"./{}"\n'.format(Path(script_filename).relative_to(path)))
 
     # change permission
     os.chmod(main_script_filename, os.stat(main_script_filename).st_mode | stat.S_IEXEC)

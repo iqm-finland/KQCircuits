@@ -81,25 +81,48 @@ Note that Elmer has `elmer_n_processes` and `elmer_n_threads`. The first is numb
 is number of OMP threads per process. It is usually most efficient to prefer MPI processes than threads.
 However, when the mesh is small, it may be beneficial to increase the use of threads.
 
-Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems).
-For example, in the `waveguides_sim_compare.py` in case ``use_sbatch=True`` then the ``workflow['sbatch_parameters']`` is defined:
+Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems). Slurm can be used by
+defining ``workflow['sbatch_parameters']`` in the export script. An example can be found in ``waveguides_sim_compare.py``
+
+When using Slurm the simulation is run in 2 parts as Gmsh benefits from using multiple threads while Elmer benefits from using multiple processes.
+
+1. "Gmsh" part, also contains ElmerGrid calls and writing Elmer sifs. Only multithreading with single task and node
+2. "Elmer" part. Runs ElmerSolver with any requested resources. Also runs writing the results and project version with single thread
+
+Instead of forwarding the settings directly to ``sbatch`` command from ``workflow[sbatch_parameters]``, the following custom options are used:
 
 .. code-block::
 
-    if use_sbatch:  # if simulation is run in a HPC system,
-                    # sbatch_parameters can be given here
-        workflow['sbatch_parameters'] = {
-            '--job-name':sim_parameters['name'],
-            '--account':'project_0',
-            '--partition':'test',
-            '--time':'00:10:00',
-            '--ntasks':'40',
-            '--cpus-per-task':'1',
-            '--mem-per-cpu':'4000',
-        }
+    workflow['sbatch_parameters'] = {
+        'elmer_n_nodes': '1'        # Number of computing nodes
+        'elmer_n_processes': '10'   # Total number of task (separate processes)
+        'elmer_n_threads': '1'      # Number of threads per task                  
+        'elmer_mem': '64G'          # Memory allocated for running Elmer
+        'elmer_time': '00:10:00'    # Timeout for the elmer batch job
 
-And consequently, running `simulation.sh`, the tasks will be sent to Slurm workload manager.
-Note that here `--ntasks` is `elmer_n_processes` and `--cpus-per-task` is `elmer_n_threads` in slurm terminology.
+        'gmsh_n_threads':           # Number of threads used for gmsh
+                                    # Note that this cannot exceed the available number
+                                    # of threads per node on the used partition
+        'gmsh_mem': '64G'           # Memory allocated for running gmsh          
+        'gmsh_time': '00:10:00'     # Timeout for the gmsh batch job                    
+    }
+
+Additionally the account and partition info must be given:
+
+.. code-block:: 
+
+    workflow['sbatch_parameters'] = {
+        '--account':   'project_0'
+        '--partition': 'partition'
+    }
+
+All other keys in ``workflow['sbatch_parameters']`` starting with ``--`` are used directly in both parts of the simulation. 
+However, note that the custom parameters might overwrite these. Keys without ``--``, which are none of the above are ignored.
+
+By running ``RES=$(sbatch ./simulation_meshes.sh) && sbatch -d afterok:${RES##* } ./simulation.sh``, the tasks will be sent to 
+Slurm workload manager such that the Elmer part will only start once processign the meshes is finished. 
+For running the simulations on a remote machine see :ref:`elmer_remote_workflow`.
+
 
 We recommend using the `n_workers` approach for simple systems when computing queues are not needed (no shared resources),
 and Slurm approach for more complicated resource allocations (for example multiple users using the same machine).

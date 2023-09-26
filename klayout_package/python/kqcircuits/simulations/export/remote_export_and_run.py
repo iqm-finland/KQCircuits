@@ -54,7 +54,7 @@ def _prepare_remote_tmp(ssh_login, kqc_remote_tmp_path):
         logging.error("Either delete its contents manually or use another directory")
         sys.exit()
 
-def _get_sbatch_time(export_tmp_paths: str) -> int:
+def _get_sbatch_time(export_tmp_paths) -> int:
     """
     Internal helper function to extract sbatch time limit from simulation.sh files
 
@@ -65,23 +65,24 @@ def _get_sbatch_time(export_tmp_paths: str) -> int:
         sbatch_time (int) Number of seconds for setting ssh timeout.
                           This is equal to total amount of time reserved for all batch jobs sent to remote
     """
-    def _get_single_sbatch_time(tmp_path: str):
-        with open(Path(tmp_path)/"simulation.sh" , 'r') as f:
+    def _get_single_sbatch_time(simulation_script):
+        with open(simulation_script , 'r') as f:
             for line in f:
                 res = line.strip().partition("#SBATCH --time=")[2]
                 if len(res) == 8:
                     times = res.split(':')
                     if len(times)==3:
                         return 3600*int(times[0]) + 60*int(times[1]) + int(times[2])
-
-        logging.warning("Could not extract the sbatch time limit from simulation.sh. Ssh default timeout will be used")
         return 0
 
     sbatch_time = 0
     for d in export_tmp_paths:
-        t = _get_single_sbatch_time(d)
-        if t == 0:
-            return 0
+        t_meshes = _get_single_sbatch_time(Path(d)/"simulation_meshes.sh")
+        t = _get_single_sbatch_time(Path(d)/"simulation.sh")
+        if t == 0 or t_meshes == 0:
+            logging.warning("Could not extract the sbatch time limit from simulation.sh or simulation_meshes.sh")
+            logging.warning("Wait script timeout of 60 minutes will be used")
+            return 3600
         else:
             sbatch_time += t
 
@@ -104,6 +105,11 @@ def _remote_run(ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str
         logging.error("Connecting to remote host not supported on Mac OS")
         sys.exit()
     # Else linux
+
+    # Check if we sugin sbatch by checking if all export folders have `simulation_meshes.sh`
+    if not all(((Path(d)/"simulation_meshes.sh").is_file() for d in export_tmp_paths)):
+        logging.error('Simulation not exported with "sbatch" (simulation_meshes.sh does not exist)' )
+        sys.exit()
 
     # Add uuid to the remote path for this run
     # Allows simultaneous calls to "kqc sim --remote"
@@ -129,7 +135,7 @@ def _remote_run(ssh_login: str, export_tmp_paths: list, kqc_remote_tmp_path: str
 
     for i in "${{sim_list[@]}}"; do
         cd "${{i}}" || exit
-        sbatch --job-name="{run_uuid}" ./simulation.sh
+        RES=$(sbatch -J "{run_uuid}" ./simulation_meshes.sh) && sbatch -d afterok:${{RES##* }} -J "{run_uuid}" ./simulation.sh
     done;
     """
     with open(remote_simulation_script, "w") as file:
