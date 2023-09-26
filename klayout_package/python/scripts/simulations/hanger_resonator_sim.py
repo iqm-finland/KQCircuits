@@ -149,7 +149,7 @@ else:
             'sweep_count': 1001,
             'maximum_passes': 20,
             'exit_after_run': True,
-            'gap_max_element_length': 1
+            'mesh_size': {'1t1_gap': 1}
         }
     else:
         export_parameters_ansys = {

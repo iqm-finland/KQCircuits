@@ -25,8 +25,7 @@ from kqcircuits.simulations.waveguides_sim import WaveGuidesSim
 from kqcircuits.util.export_helper import create_or_empty_tmp_directory, get_active_or_new_layout, \
     open_with_klayout_or_default_application
 
-# This is a test case for initial mesh refinement (Ansys) via
-# `gap_max_element_length` that restricts the element length in the gap.
+# This is a test case for initial mesh refinement in Ansys
 
 sim_class = WaveGuidesSim  # pylint: disable=invalid-name
 path = create_or_empty_tmp_directory("waveguide_eig_mesh_test")
@@ -55,7 +54,7 @@ export_parameters_ansys = {
     'ansys_tool': 'eigenmode',
     'maximum_passes': 2,
     'percent_refinement': 30,
-    'gap_max_element_length': 4,
+    'mesh_size': {'1t1_gap': 4},
     'exit_after_run': True,
     'max_delta_f': 0.1,  # maximum relative difference for convergence in %
     'n_modes': 1,  # eigenmodes to solve

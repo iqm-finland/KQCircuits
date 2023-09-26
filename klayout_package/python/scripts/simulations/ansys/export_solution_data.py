@@ -54,66 +54,71 @@ basename = oProject.GetName()
 matrix_filename = os.path.join(path, basename + '_CMatrix.txt')
 json_filename = os.path.join(path, basename + '_results.json')
 eig_filename = os.path.join(path, basename + '_modes.eig')
+energy_filename = os.path.join(path, basename + '_energy.csv')
 
 # Export solution data separately for HFSS and Q3D
 design_type = oDesign.GetDesignType()
-if design_type == "HFSS" and oDesign.GetSolutionType() == "HFSS Terminal Network":
+if design_type == "HFSS":
+    if oDesign.GetSolutionType() == "HFSS Terminal Network":
+        freq = '1GHz'  # export frequency
+        (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
+        solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
+        context = [] if sweep is None else ["Domain:=", "Sweep"]
+        families = ["Freq:=", [freq]]
 
-    freq = '1GHz'  # export frequency
-    (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
-    solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
-    context = [] if sweep is None else ["Domain:=", "Sweep"]
-    families = ["Freq:=", [freq]]
+        # Get list of ports
+        ports = oBoundarySetup.GetExcitations()[::2]
 
-    # Get list of ports
-    ports = oBoundarySetup.GetExcitations()[::2]
+        # Get solution data
+        yyMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
+                                       "yy_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
+        CMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
+                                      "C_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
 
-    # Get solution data
-    yyMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                   "yy_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
-    CMatrix = [[get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                  "C_{}_{}".format(port_i, port_j))[0] for port_j in ports] for port_i in ports]
+        # Save capacitance matrix into readable format
+        save_capacitance_matrix(matrix_filename, CMatrix, detail=' at ' + freq)
 
-    # Save capacitance matrix into readable format
-    save_capacitance_matrix(matrix_filename, CMatrix, detail=' at ' + freq)
+        # Save results in json format
+        with open(json_filename, 'w') as outfile:
+            json.dump({'CMatrix': CMatrix,
+                       'yyMatrix': yyMatrix,
+                       'freq': freq,
+                       'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
+                                                   ["yy_{}_{}".format(port_i, port_j) for port_j in ports
+                                                    for port_i in ports]),
+                       'Cdata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
+                                                  ["C_{}_{}".format(port_i, port_j) for port_j in ports
+                                                   for port_i in ports])
+                       }, outfile, cls=ComplexEncoder, indent=4)
 
-    # Save results in json format
-    with open(json_filename, 'w') as outfile:
-        json.dump({'CMatrix': CMatrix,
-                   'yyMatrix': yyMatrix,
-                   'freq': freq,
-                   'yydata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                               ["yy_{}_{}".format(port_i, port_j) for port_j in ports
-                                                for port_i in ports]),
-                   'Cdata': get_solution_data(oReportSetup, "Terminal Solution Data", solution, context, families,
-                                              ["C_{}_{}".format(port_i, port_j) for port_j in ports
-                                               for port_i in ports])
-                   }, outfile, cls=ComplexEncoder, indent=4)
+        # S-parameter export (only for HFSS)
+        file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
+        file_name = os.path.join(path, basename + '_SMatrix.s{}p'.format(len(ports)))
+        frequencies = ["All"]
+        do_renormalize = False
+        renorm_impedance = 50
+        data_type = "S"
+        pass_number = -1  # -1 = all passes
+        complex_format = 0  # 0 = magnitude/phase, 1 = real/imag, 2 = dB/phase
+        precision = 8
+        show_gamma_and_impedance = False
 
-    # S-parameter export (only for HFSS)
-    file_format = 3  # 2 = Tab delimited (.tab), 3 = Touchstone (.sNp), 4 = CitiFile (.cit), 7 = Matlab  (.m), ...
-    file_name = os.path.join(path, basename + '_SMatrix.s{}p'.format(len(ports)))
-    frequencies = ["All"]
-    do_renormalize = False
-    renorm_impedance = 50
-    data_type = "S"
-    pass_number = -1  # -1 = all passes
-    complex_format = 0  # 0 = magnitude/phase, 1 = real/imag, 2 = dB/phase
-    precision = 8
-    show_gamma_and_impedance = False
+        oSolutions.ExportNetworkData("", solution, file_format, file_name, frequencies, do_renormalize,
+                                     renorm_impedance, data_type, pass_number, complex_format, precision, True,
+                                     show_gamma_and_impedance, True)
 
-    oSolutions.ExportNetworkData("", solution, file_format, file_name, frequencies, do_renormalize, renorm_impedance,
-                                 data_type, pass_number, complex_format, precision, True, show_gamma_and_impedance,
-                                 True)
+    elif  oDesign.GetSolutionType() == "Eigenmode":
+        solution = get_enabled_setup(oDesign, tab="HfssTab") + " : LastAdaptive"
+        context = []
+        oSolutions.ExportEigenmodes(solution, oSolutions.ListVariations(solution)[0], eig_filename)
 
-elif design_type == "HFSS" and oDesign.GetSolutionType() == "Eigenmode":
-
-    solution = get_enabled_setup(oDesign, tab="HfssTab") + " : LastAdaptive"
-    oSolutions.ExportEigenmodes(
-        solution,
-        oSolutions.ListVariations(solution)[0],
-        eig_filename
-    )
+    # Save energy integrals
+    energies = oReportSetup.GetAllQuantities("Fields", "Data Table", solution, context, "Calculator Expressions")
+    if energies:
+        oReportSetup.CreateReport("Energy Integrals", "Fields", "Data Table", solution, context,
+                                  ["Freq:=", ["All"], "Phase:=", ["0deg"]],
+                                  ["X Component:=", "Freq", "Y Component:=", energies])
+        oReportSetup.ExportToFile("Energy Integrals", energy_filename, False)
 
 elif design_type == "Q3D Extractor":
     solution = get_enabled_setup(oDesign) + " : LastAdaptive"

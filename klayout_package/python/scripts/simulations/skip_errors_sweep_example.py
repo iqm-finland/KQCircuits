@@ -47,7 +47,7 @@ dir_path = create_or_empty_tmp_directory(Path(__file__).stem + "_output")
 export_parameters = {
     'path': dir_path,
     'exit_after_run': True,
-    'gap_max_element_length': 20,  # converges fast
+    'mesh_size': {face_id + '_gap': 20 for face_id in ['1t1', '2b1']},  # converges fast
     'ansys_tool': 'eigenmode',
     'max_delta_f': 0.5,
     'maximum_passes': 2,

@@ -44,8 +44,8 @@ for sim_tool in sim_tools:
         'box': pya.DBox(pya.DPoint(0, 0), pya.DPoint(2000, 2000)),
 
         'separate_island_internal_ports': sim_tool != 'eigenmode',  # DoublePads specific
-        'participation_sheet_distance': 5e-3 if sim_tool == 'eigenmode' else 0.0,  # in µm
-        'participation_sheet_thickness': 0.0,
+        'tls_layer_thickness': 5e-3 if sim_tool == 'eigenmode' else 0.0,  # in µm
+        'tls_sheet_approximation': sim_tool == 'eigenmode',
         'waveguide_length': 200,
     }
 
@@ -61,7 +61,7 @@ for sim_tool in sim_tools:
         'max_delta_f': 0.008,
 
         # do two passes with tight mesh
-        'gap_max_element_length': 25,
+        'mesh_size': {'1t1_gap': 25},
         'maximum_passes': 17,
         'minimum_passes': 1,
         'minimum_converged_passes': 2,

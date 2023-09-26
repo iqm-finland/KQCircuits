@@ -66,7 +66,9 @@ try:
                     any(e in [f'Port{i}', f'Junction{i}'] for i in junction_numbers))
         ]
     else:
-        pinfo.dissipative['dielectric_surfaces'] = data['dielectric_surfaces']
+        pinfo.dissipative['dielectric_surfaces'] = {
+            e: v for e in pinfo.get_all_object_names() for k, v in data['dielectric_surfaces'].items() if k in e
+        }
 
     oEditor = oDesign.modeler._modeler
     for j in junction_numbers:
