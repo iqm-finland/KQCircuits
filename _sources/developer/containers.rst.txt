@@ -59,7 +59,7 @@ whether they break the image.
 Singularity usage
 -----------------
 
-Singularity images are like docker images (https://sylabs.io/guides/3.0/user-guide/quick_start.html) that work better 
+Singularity images are like docker images (https://sylabs.io/guides/3.0/user-guide/quick_start.html) that work better
 in HPC environments (https://singularity-tutorial.github.io/).
 The latest image can be downloaded from the GitHub Container registry. It should be downloaded to a `libexec` folder
 under :git_url:`singularity` with the name `kqclib`. This is performed as follows at the root of the repo::
@@ -69,6 +69,11 @@ under :git_url:`singularity` with the name `kqclib`. This is performed as follow
 The image can also be built manually in the :git_url:`singularity` folder by running::
 
    ./singularity.sh
+
+.. note::
+    If a `singularity.pem` RSA public key is present in the `singularity` folder then the image will be encrypted. To
+    successfully use this image the user also needs the corresponding `$HOME/singularity_private.pem` private key. See
+    the `Singularity docs <https://docs.sylabs.io/guides/3.4/user-guide/encryption.html>`_ for further details.
 
 After pulling or building, you can now run (again, in the :git_url:`singularity` folder)::
 

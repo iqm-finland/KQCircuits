@@ -7,7 +7,7 @@ Setup:
 * Build and push singularity image to the remote using
     * `kqc singularity --build`: Compile singularity image
        The desired package versions such as OpenMPI can be chosen by modifying
-       the definitions in the beginning of `KQCircuits/singularity/install_kqcircuits.sh` script
+       the definitions in the beginning of `KQCircuits/singularity/install_software.sh` script
        (**NOTE that MPI implementation and its version has to match those of the remote machine!**).
     * `kqc singularity --push user@host`: Send singularity image to remote and setup symbolic links. 
        You can directory choose the remote directory by specifying `--singularity-remote-path SINGULARITY_PATH`.

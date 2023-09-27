@@ -587,6 +587,12 @@ under <a class="reference external" href="https://github.com/iqm-finland/KQCircu
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">singularity</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If a <cite>singularity.pem</cite> RSA public key is present in the <cite>singularity</cite> folder then the image will be encrypted. To
+successfully use this image the user also needs the corresponding <cite>$HOME/singularity_private.pem</cite> private key. See
+the <a class="reference external" href="https://docs.sylabs.io/guides/3.4/user-guide/encryption.html">Singularity docs</a> for further details.</p>
+</div>
 <p>After pulling or building, you can now run (again, in the <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/singularity">singularity</a> folder):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">create_links</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
