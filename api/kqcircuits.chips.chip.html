@@ -190,6 +190,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -384,6 +385,8 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -412,6 +415,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -731,7 +735,7 @@ Contains methods for producing launchers in face 0 and connectors between faces 
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.produce_n_launchers">
-<span class="sig-name descname"><span class="pre">produce_n_launchers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_gap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_indent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_pitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_assignments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_frame_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">produce_n_launchers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_gap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_indent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_pitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_assignments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port_id_remap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">launcher_frame_gap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_box</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.produce_n_launchers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.produce_n_launchers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces n launchers at default locations and optionally changes the chip size.</p>
 <p>Launcher pads are equally distributed around the chip. This may be overridden by specifying
 the number of pads desired per chip side if <code class="docutils literal notranslate"><span class="pre">n</span></code> is an array of 4 numbers.</p>
@@ -748,6 +752,13 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>pad_pitch</strong> – distance between pad centers</p></li>
 <li><p><strong>launcher_frame_gap</strong> – gap of the launcher pad at the frame</p></li>
 <li><p><strong>launcher_assignments</strong> – dictionary of (port_id: name) that assigns a name to some of the launchers</p></li>
+<li><p><strong>port_id_remap</strong> – by default, left-most top edge launcher has port_id set to 1 and port_ids
+increment for other launchers in clockwise order.
+port_id_remap is a dictionary [1..n] -&gt; [1..n] such that for port_id_remap[x] = y,
+x is the port_id of the launcher in default order and y is the port_id of that launcher
+in your desired order.
+For example, to flip the launcher order by chip’s y-axis, set port_id_remap to
+<code class="docutils literal notranslate"><span class="pre">{i+1:</span> <span class="pre">((n</span> <span class="pre">-</span> <span class="pre">i</span> <span class="pre">+</span> <span class="pre">n/4-1)</span> <span class="pre">%</span> <span class="pre">n)</span> <span class="pre">+</span> <span class="pre">1</span> <span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">range(n)}</span></code></p></li>
 <li><p><strong>enabled</strong> – optional list of enabled launchers</p></li>
 <li><p><strong>chip_box</strong> – optionally changes the chip size (<code class="docutils literal notranslate"><span class="pre">self.box</span></code>)</p></li>
 <li><p><strong>face_id</strong> – index of face_ids in which to insert the launchers</p></li>
@@ -787,6 +798,20 @@ override this. If neither argument is defined then all pads are enabled with def
 <p>Returns: list of DPoint coordinates where a ground bump can be placed</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.chips.chip.Chip.insert_tsvs">
+<span class="sig-name descname"><span class="pre">insert_tsvs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translations</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/chips/chip.html#Chip.insert_tsvs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.chips.chip.Chip.insert_tsvs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert the tsv element at locations specified in the translations list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tsv</strong> – An instance of a TSV class</p></li>
+<li><p><strong>translations</strong> – A list of pya.DVector elements specifying</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </dd></dl>
 
 <strong>PCell parameters:</strong><div class="line"><br /></div>
@@ -819,7 +844,9 @@ override this. If neither argument is defined then all pads are enabled with def
 <li><p><strong>marker_types</strong><em> (List)</em><span> - Marker type for each chip corner, clockwise starting from lower left</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard',</span> <span class="pre">'Marker</span> <span class="pre">Standard']</span></code></p></li>
 <li><p><strong>box</strong><em> (Shape)</em><span> - Bounding box of the chip frame</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">(0,0;10000,10000)</span></code></p></li>
 <li><p><strong>connector_type</strong><em> (String)</em><span> - Connector type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Coax</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Single',</span> <span class="pre">'GSG',</span> <span class="pre">'Coax']</span></code></p></li>
+<li><p><strong>tsv_elliptical_width</strong><em> (Double)</em><span> - TSV elliptical width</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">30</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 <li><p><strong>tsv_type</strong><em> (String)</em><span> - TSV type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Tsv</span> <span class="pre">Standard</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['Tsv</span> <span class="pre">Standard',</span> <span class="pre">'Tsv</span> <span class="pre">Ellipse']</span></code></p></li>
+<li><p><strong>tsv_diameter</strong><em> (Double)</em><span> - TSV diameter</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">100</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.chips.chip.png" src="../_images/kqcircuits.chips.chip.png" />
 </div>

@@ -1,0 +1,10 @@
+kqcircuits.test\_structures.stripes\_test\_increasing\_width
+============================================================
+
+.. automodule:: kqcircuits.test_structures.stripes_test_increasing_width
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.test_structures.stripes_test_increasing_width
+.. image:: ../pcell_images/kqcircuits.test_structures.stripes_test_increasing_width.png

@@ -11,6 +11,7 @@ kqcircuits.test\_structures
    kqcircuits.test_structures.airbridge_dc
    kqcircuits.test_structures.cross_test
    kqcircuits.test_structures.stripes_test
+   kqcircuits.test_structures.stripes_test_increasing_width
    kqcircuits.test_structures.test_structure
    kqcircuits.test_structures.tsv_test_pattern
 

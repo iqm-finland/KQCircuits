@@ -3,15 +3,18 @@ Run and export in one line
 
 KQC simulations are first exported to a folder and then run as a shell script.
 It is convenient to run KQC simulations as a one liner. This can be done
-with the :git_url:`export_and_run.py <klayout_package/python/kqcircuits/simulations/export/export_and_run.py>` script.
+with the :git_url:`export_and_run.py <klayout_package/python/kqcircuits/simulations/export/export_and_run.py>`
+script, usually called with the console script::
 
-Go to directory 'klayout_package/python' and run::
+    kqc sim waveguides_sim_compare.py
 
-    kqc sim klayout_package/python/scripts/simulations/waveguides_sim_compare.py
+or if you do not want the GUI dialogs and prefer typing full path to the simulation script::
 
-or if you do not want the GUI dialogs::
-    
     kqc sim klayout_package/python/scripts/simulations/waveguides_sim_compare.py -q
+
+All this will only work if you have initialised KQCircuits with the simulation module as described
+in the Installation section of :ref:`standalone`, and you have installed the necessary binary
+packages: Gmsh, Elmer and ParaView.
 
 .. note::
    On Windows you may need to install KQC (``pip install -e .``) with admin priviledges

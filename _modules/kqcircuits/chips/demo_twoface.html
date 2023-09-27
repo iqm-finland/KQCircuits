@@ -188,6 +188,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -382,6 +383,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -410,6 +413,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -543,6 +547,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_square</span> <span class="kn">import</span> <span class="n">FingerCapacitorSquare</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.finger_capacitor_taper</span> <span class="kn">import</span> <span class="n">FingerCapacitorTaper</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.meander</span> <span class="kn">import</span> <span class="n">Meander</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.junctions.junction</span> <span class="kn">import</span> <span class="n">Junction</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.qubits.swissmon</span> <span class="kn">import</span> <span class="n">Swissmon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar_splitter</span> <span class="kn">import</span> <span class="n">WaveguideCoplanarSplitter</span><span class="p">,</span> <span class="n">t_cross_parameters</span>
@@ -552,6 +557,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.demo</span> <span class="kn">import</span> <span class="n">Demo</span>
 
 <div class="viewcode-block" id="DemoTwoface"><a class="viewcode-back" href="../../../api/kqcircuits.chips.demo_twoface.html#kqcircuits.chips.demo_twoface.DemoTwoface">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Demo</span><span class="p">,</span> <span class="s2">&quot;readout_res_lengths&quot;</span><span class="p">,</span> <span class="s2">&quot;include_couplers&quot;</span><span class="p">,</span> <span class="n">frames_enabled</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Junction</span><span class="p">,</span> <span class="s2">&quot;junction_type&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">DemoTwoface</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Demonstration chip for 3D-integration (multi-face) features.&quot;&quot;&quot;</span>
 

@@ -190,6 +190,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -384,6 +385,8 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -412,6 +415,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -603,6 +607,7 @@
 <strong>PCell parameters:</strong><div class="line"><br /></div>
 <ul class="simple">
 <li><p><strong>name_chip</strong><em> (String)</em><span> - Name of the chip</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">DT</span></code></p></li>
+<li><p><strong>junction_type</strong><em> (String)</em><span> - Junction Type</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">Manhattan</span></code><em>, choices=</em><code class="docutils literal notranslate"><span class="pre">['NoSquid',</span> <span class="pre">'Manhattan',</span> <span class="pre">'Manhattan</span> <span class="pre">Single</span> <span class="pre">Junction',</span> <span class="pre">'Sim']</span></code></p></li>
 <li><p><strong>frames_enabled</strong><em> (List)</em><span> - List of face ids (integers) for which a ChipFrame is drawn</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code></p></li>
 <li><p><strong>readout_res_lengths</strong><em> (List)</em><span> - Readout resonator lengths</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[5000,</span> <span class="pre">5100,</span> <span class="pre">5200,</span> <span class="pre">5300]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[μm]</span></code></p></li>
 <li><p><strong>include_couplers</strong><em> (Boolean)</em><span> - Include couplers between qubits</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>

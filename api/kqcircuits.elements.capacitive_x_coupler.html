@@ -190,6 +190,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -384,6 +385,8 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -412,6 +415,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -578,7 +582,8 @@ for RefpointToSimPort objects based on simulation’s parameters</p></li>
 <li><p><strong>remove_capacitors</strong><em> (Boolean)</em><span> - Remove capacitors from the X Coupler</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 <li><p><strong>finger_number</strong><em> (Int)</em><span> - Number of fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">2</span></code></p></li>
 <li><p><strong>finger_width</strong><em> (Double)</em><span> - Width of a finger</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">10</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
-<li><p><strong>ground_padding</strong><em> (Double)</em><span> - Ground plane padding</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">6</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_gap</strong><em> (Double)</em><span> - Gap between the fingers</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
+<li><p><strong>finger_gap_end</strong><em> (Double)</em><span> - Gap between the finger and other pad</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">3</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">μm</span></code></p></li>
 </ul>
 <img alt="../_images/kqcircuits.elements.capacitive_x_coupler.png" src="../_images/kqcircuits.elements.capacitive_x_coupler.png" />
 </div>

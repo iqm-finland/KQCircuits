@@ -70,11 +70,16 @@ For example in `waveguides_sim_compare.py` defining the following will use two p
                                                  #         the physical cores (based on 
                                                  #         the machine which was used to 
                                                  #         prepare the simulation)
+        'elmer_n_threads': elmer_n_threads,  # <------ This defines the number of omp threads per process
         'n_workers': 2, # <--------- This defines the number of 
                         #            parallel independent processes.
                         #            Moreover, adding this line activates
                         #            the use of the simple workload manager.
     }
+
+Note that Elmer has `elmer_n_processes` and `elmer_n_threads`. The first is number of MPI processes and the second
+is number of OMP threads per process. It is usually most efficient to prefer MPI processes than threads.
+However, when the mesh is small, it may be beneficial to increase the use of threads.
 
 Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems).
 For example, in the `waveguides_sim_compare.py` in case ``use_sbatch=True`` then the ``workflow['sbatch_parameters']`` is defined:
@@ -94,6 +99,7 @@ For example, in the `waveguides_sim_compare.py` in case ``use_sbatch=True`` then
         }
 
 And consequently, running `simulation.sh`, the tasks will be sent to Slurm workload manager.
+Note that here `--ntasks` is `elmer_n_processes` and `--cpus-per-task` is `elmer_n_threads` in slurm terminology.
 
 We recommend using the `n_workers` approach for simple systems when computing queues are not needed (no shared resources),
 and Slurm approach for more complicated resource allocations (for example multiple users using the same machine).

@@ -1,0 +1,10 @@
+kqcircuits.simulations.export.export\_singularity
+=================================================
+
+.. automodule:: kqcircuits.simulations.export.export_singularity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.simulations.export.export_singularity
+.. image:: ../pcell_images/kqcircuits.simulations.export.export_singularity.png

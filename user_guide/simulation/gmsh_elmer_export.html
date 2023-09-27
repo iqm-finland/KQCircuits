@@ -190,6 +190,7 @@
 <li class="toctree-l3"><a class="reference internal" href="sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -384,6 +385,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -412,6 +415,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../api/kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -906,6 +910,7 @@ For example in <cite>waveguides_sim_compare.py</cite> defining the following wil
                                              <span class="c1">#         the physical cores (based on</span>
                                              <span class="c1">#         the machine which was used to</span>
                                              <span class="c1">#         prepare the simulation)</span>
+    <span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">:</span> <span class="n">elmer_n_threads</span><span class="p">,</span>  <span class="c1"># &lt;------ This defines the number of omp threads per process</span>
     <span class="s1">&#39;n_workers&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1"># &lt;--------- This defines the number of</span>
                     <span class="c1">#            parallel independent processes.</span>
                     <span class="c1">#            Moreover, adding this line activates</span>
@@ -913,6 +918,9 @@ For example in <cite>waveguides_sim_compare.py</cite> defining the following wil
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>Note that Elmer has <cite>elmer_n_processes</cite> and <cite>elmer_n_threads</cite>. The first is number of MPI processes and the second
+is number of OMP threads per process. It is usually most efficient to prefer MPI processes than threads.
+However, when the mesh is small, it may be beneficial to increase the use of threads.</p>
 <p>Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems).
 For example, in the <cite>waveguides_sim_compare.py</cite> in case <code class="docutils literal notranslate"><span class="pre">use_sbatch=True</span></code> then the <code class="docutils literal notranslate"><span class="pre">workflow['sbatch_parameters']</span></code> is defined:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">use_sbatch</span><span class="p">:</span>  <span class="c1"># if simulation is run in a HPC system,</span>
@@ -928,7 +936,8 @@ For example, in the <cite>waveguides_sim_compare.py</cite> in case <code class="
     <span class="p">}</span>
 </pre></div>
 </div>
-<p>And consequently, running <cite>simulation.sh</cite>, the tasks will be sent to Slurm workload manager.</p>
+<p>And consequently, running <cite>simulation.sh</cite>, the tasks will be sent to Slurm workload manager.
+Note that here <cite>–ntasks</cite> is <cite>elmer_n_processes</cite> and <cite>–cpus-per-task</cite> is <cite>elmer_n_threads</cite> in slurm terminology.</p>
 <p>We recommend using the <cite>n_workers</cite> approach for simple systems when computing queues are not needed (no shared resources),
 and Slurm approach for more complicated resource allocations (for example multiple users using the same machine).</p>
 <p>Gmsh can also be parallelized (second level of parallelization) using OpenMP:</p>

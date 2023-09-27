@@ -188,6 +188,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../../../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -382,6 +383,8 @@
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../../../api/kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -410,6 +413,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -676,19 +680,20 @@
             <span class="k">if</span> <span class="n">res_term</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;airbridge&quot;</span><span class="p">:</span>
                 <span class="n">node_end</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">pos_res_end</span><span class="p">,</span> <span class="n">AirbridgeConnection</span><span class="p">,</span> <span class="n">with_side_airbridges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                 <span class="n">with_right_waveguide</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_bridges</span><span class="o">=</span><span class="n">n_ab</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                <span class="n">bridge_length</span><span class="o">=</span><span class="n">bridge_length</span><span class="p">,</span> <span class="n">length_increment</span><span class="o">=</span><span class="n">length_increment</span><span class="p">,</span>
-                                <span class="n">ground_grid_in_trace</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_in_trace</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                                <span class="n">bridge_length</span><span class="o">=</span><span class="n">bridge_length</span><span class="p">,</span> <span class="n">length_increment</span><span class="o">=</span><span class="n">length_increment</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">node_end</span> <span class="o">=</span> <span class="n">Node</span><span class="p">(</span><span class="n">pos_res_end</span><span class="p">,</span> <span class="n">n_bridges</span><span class="o">=</span><span class="n">n_ab</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                                 <span class="n">bridge_length</span><span class="o">=</span><span class="n">bridge_length</span><span class="p">,</span>
-                                <span class="n">length_increment</span><span class="o">=</span><span class="n">length_increment</span><span class="p">,</span>
-                                <span class="n">ground_grid_in_trace</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_in_trace</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                                <span class="n">length_increment</span><span class="o">=</span><span class="n">length_increment</span><span class="p">)</span>
 
             <span class="n">airbridge_type</span> <span class="o">=</span> <span class="n">default_airbridge_type</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_airbridge_types</span><span class="p">):</span>
                 <span class="n">airbridge_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_airbridge_types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">wg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="p">[</span><span class="n">node_beg</span><span class="p">,</span> <span class="n">node_end</span><span class="p">],</span> <span class="n">a</span><span class="o">=</span><span class="n">res_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="o">=</span><span class="n">res_b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                <span class="n">airbridge_type</span><span class="o">=</span><span class="n">airbridge_type</span><span class="p">)</span>
+            <span class="n">wg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_element</span><span class="p">(</span><span class="n">WaveguideComposite</span><span class="p">,</span>
+                                  <span class="n">nodes</span><span class="o">=</span><span class="p">[</span><span class="n">node_beg</span><span class="p">,</span> <span class="n">node_end</span><span class="p">],</span>
+                                  <span class="n">a</span><span class="o">=</span><span class="n">res_a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">b</span><span class="o">=</span><span class="n">res_b</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                  <span class="n">ground_grid_in_trace</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ground_grid_in_trace</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                                  <span class="n">airbridge_type</span><span class="o">=</span><span class="n">airbridge_type</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">wg</span><span class="p">)</span>
 
             <span class="c1"># Feedline</span>
@@ -696,7 +701,8 @@
                 <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points_fl</span> <span class="o">+</span> <span class="p">[</span>
                     <span class="n">cross_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_left&quot;</span><span class="p">]</span>
                 <span class="p">],</span> <span class="mi">1</span><span class="p">),</span>
-                <span class="s2">&quot;term2&quot;</span><span class="p">:</span> <span class="mi">0</span>
+                <span class="s2">&quot;term2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                <span class="s2">&quot;ground_grid_in_trace&quot;</span><span class="p">:</span> <span class="kc">False</span>
             <span class="p">}})</span>
             <span class="n">points_fl</span> <span class="o">=</span> <span class="p">[</span><span class="n">cross_refpoints_abs</span><span class="p">[</span><span class="s2">&quot;port_right&quot;</span><span class="p">]]</span>
 
@@ -715,7 +721,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">WaveguideCoplanar</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">(),</span> <span class="o">**</span><span class="p">{</span>
             <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPath</span><span class="p">(</span><span class="n">points_fl</span> <span class="o">+</span> <span class="n">points_fl_end</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="s2">&quot;term2&quot;</span><span class="p">:</span> <span class="mi">0</span>
+            <span class="s2">&quot;term2&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s2">&quot;ground_grid_in_trace&quot;</span><span class="p">:</span> <span class="kc">False</span>
         <span class="p">}})</span></div></div>
 </pre></div>
 

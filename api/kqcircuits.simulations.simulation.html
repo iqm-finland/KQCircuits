@@ -190,6 +190,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/sonnet_export.html">Sonnet export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/gmsh_elmer_export.html">Gmsh/Elmer export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/export_and_run.html">Run and export in one line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../user_guide/simulation/elmer_remote_workflow.html">Elmer remote simulations workflow</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../user_guide/file_system_and_utilities.html">General Structure and Miscellaneous Utilities</a><ul>
@@ -384,6 +385,8 @@
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.sonnet.html">kqcircuits.simulations.export.sonnet</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.xsection.html">kqcircuits.simulations.export.xsection</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_and_run.html">kqcircuits.simulations.export.export_and_run</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.export_singularity.html">kqcircuits.simulations.export.export_singularity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.remote_export_and_run.html">kqcircuits.simulations.export.remote_export_and_run</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.simulation_export.html">kqcircuits.simulations.export.simulation_export</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.util.html">kqcircuits.simulations.export.util</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kqcircuits.simulations.export.html#module-kqcircuits.simulations.export">Module contents</a></li>
@@ -412,6 +415,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.airbridge_dc.html">kqcircuits.test_structures.airbridge_dc</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.cross_test.html">kqcircuits.test_structures.cross_test</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test.html">kqcircuits.test_structures.stripes_test</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.stripes_test_increasing_width.html">kqcircuits.test_structures.stripes_test_increasing_width</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.test_structure.html">kqcircuits.test_structures.test_structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.tsv_test_pattern.html">kqcircuits.test_structures.tsv_test_pattern</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.test_structures.html#module-kqcircuits.test_structures">Module contents</a></li>
@@ -932,6 +936,7 @@ access more than one sub-cell sharing the same ‘name’, but with different ap
 <li><p><strong>lower_box_height</strong><em> (Double)</em><span> - Set &gt; 0 to start face counting from substrate bottom layer.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">0</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">µm</span></code></p></li>
 <li><p><strong>face_stack</strong><em> (List)</em><span> - The parameter can be set as list of lists to enable multi-face stack-up on substrate surfaces. Set term to empty list to not have metal on the surface.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['1t1']</span></code></p></li>
 <li><p><strong>substrate_height</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual substrate heights from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[550.0,</span> <span class="pre">375.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[µm]</span></code></p></li>
+<li><p><strong>substrate_box</strong><em> (List)</em><span> - Set as a list of pya.DBox objects to give substrate dimensions individually from bottom to top. If a value in the list is not pya.DBox object, the correspondingsubstrate covers fully the general boundary box.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[None]</span></code></p></li>
 <li><p><strong>substrate_material</strong><em> (List)</em><span> - Value can be string or list of strings. Use only keywords introduced in material_dict. Set as list to use individual materials from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">['silicon']</span></code></p></li>
 <li><p><strong>material_dict</strong><em> (String)</em><span> - Material property keywords follow Ansys Electromagnetics property names. For example ‘permittivity’, ‘dielectric_loss_tangent’, etc.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">{'silicon':</span> <span class="pre">{'permittivity':</span> <span class="pre">11.45}}</span></code></p></li>
 <li><p><strong>chip_distance</strong><em> (List)</em><span> - The value can be scalar or list of scalars. Set as list to use individual chip distances from bottom to top.</span><em>, default=</em><code class="docutils literal notranslate"><span class="pre">[8.0]</span></code><em>, unit=</em><code class="docutils literal notranslate"><span class="pre">[µm]</span></code></p></li>
