@@ -718,6 +718,11 @@ def get_permittivities(json_data, with_zero, dim, mesh_names):
     """
     Returns permittivities of bodies.
 
+    If permittivity for the body with name "abcd_1_extra" is not found, check the available permittivities in json
+    and if a key corresponding to beginning of the searched permittivity is found use that.
+
+    If such hit is also not found default to 1.0
+
     Args:
         json_data(json): all the model data produced by `export_elmer_json`
         with_zero(bool): without dielectrics if true
@@ -727,9 +732,18 @@ def get_permittivities(json_data, with_zero, dim, mesh_names):
     Returns:
         (list(str)): list of body permittivities
     """
+    def _search_permittivity(json_data, body):
+        json_bodies = [k[:-13] for k in json_data.keys() if k.endswith('_permittivity')]
+        for p in json_bodies:
+            if body.startswith(p):
+                used_perm = json_data[f'{p}_permittivity']
+                return used_perm
+        return 1.0
+
     bodies = get_body_list(json_data, dim, mesh_names)
     if dim == 2:
-        return [1.0 if with_zero else json_data.get(f'{s}_permittivity', 1.0) for s in bodies]
+        return [1.0 if with_zero else json_data.get(f'{s}_permittivity', _search_permittivity(json_data, s))
+                for s in bodies]
     elif dim == 3:
         return [1.0 if with_zero else json_data['material_dict'].get(n, dict()).get('permittivity', 1.0)
                 for n in bodies]
@@ -923,7 +937,8 @@ def sif_inductance(json_data, folder_path, angular_frequency, circuit_definition
     mesh_names = read_mesh_names(folder_path)
     signals = get_signals(json_data, dim=2, mesh_names=mesh_names)
     grounds = get_grounds(json_data, dim=2, mesh_names=mesh_names)
-    others = ['vacuum', *[n for n in json_data['layers'].keys() if n not in signals + grounds and n != 'vacuum']]
+    body_list = get_body_list(json_data, dim=2, mesh_names=mesh_names)
+    others = list((set(body_list) - set(signals) - set(grounds)).union(['vacuum']))
 
     bodies = sif_body(ordinate=1, target_bodies=others, equation=1, material=1)
     bodies += sif_body(ordinate=2, target_bodies=grounds, equation=1, material=2)

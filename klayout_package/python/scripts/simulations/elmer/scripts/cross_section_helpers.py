@@ -261,7 +261,6 @@ def get_interface_quality_factors(json_data, path):
         (dict): energies stored, participations and quality factors of the lossy layers
     """
     interfaces = json_data['dielectric_surfaces']
-
     try:
         energy_data, energy_layer_data = Path(path) / 'energy.dat', Path(path) / 'energy.dat.names'
         energies = pd.read_csv(energy_data, delim_whitespace=True, header=None).values.flatten()
@@ -270,11 +269,26 @@ def get_interface_quality_factors(json_data, path):
             energy_layers = [
                 match.group(1)
                 for line in fp
-                for match in re.finditer("diffusive energy: potential mask ([a-z_]+)", line)
+                for match in re.finditer("diffusive energy: potential mask ([a-z_0-9]+)", line)
             ]
 
         total_energy = energies.sum()
         energy_dict = dict(zip(energy_layers, energies))
+
+        # Sum the energies of interface sub-layers
+        for i_key in interfaces.keys():
+            e_tot = energy_dict.pop(i_key, 0.)
+            for e_key, e_val in list(energy_dict.items()):
+                if e_key.startswith(i_key):
+                    e_tot += e_val
+                    del energy_dict[e_key]
+                    energy_dict[e_key + f' (contained in {i_key})'] = e_val
+
+            energy_dict[i_key] = e_tot
+
+            if energy_dict[i_key] != 0:
+                energy_layers.append(i_key)
+
         all_energies = {f'E_{k}': energy for k, energy in energy_dict.items()}
         all_participations = {f'p_{k}': energy / total_energy for k, energy in energy_dict.items()}
         # remove non-interface bodies after getting total energy
