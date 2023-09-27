@@ -60,6 +60,8 @@ def run():
     mask_parser.add_argument('mask_script', type=str, help='Name of the mask script')
     mask_parser.add_argument('-d', '--debug', action="store_true", help="Debug mode. Use a single process and "
                              "print logs to standard output too.")
+    mask_parser.add_argument('-m', '--mock_chips', action="store_true", help="Replace all chips with empty frames for "
+                                                                             "faster testing of the mask layout")
     mask_parser.add_argument('-c N', action="store_true", help="Limit the number of used CPUs to 'N'")
 
     singularity_parser.add_argument('--build', action="store_true", help='build singularity image locally')

@@ -27,6 +27,7 @@ from pathlib import Path
 from autologging import logged
 from tqdm import tqdm
 
+from kqcircuits.chips.chip import Chip
 from kqcircuits.util.log_router import route_log
 from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.defaults import default_bar_format, TMP_PATH, default_face_id
@@ -94,6 +95,8 @@ class MaskSet:
 
         self._extra_params["enable_debug"] = '-d' in argv
         self._single_process = self._extra_params["enable_debug"] or not is_standalone_session()
+
+        self._extra_params["mock_chips"] = '-m' in argv
 
         self._cpu_override = 0
         if '-c' in argv and len(argv) > argv.index('-c') + 1:
@@ -181,6 +184,8 @@ class MaskSet:
         logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
         route_log(filename=chip_path/f"{variant_name}.log", stdout=_extra_params["enable_debug"])
 
+        mock_chips = _extra_params['mock_chips']
+
         view = KLayoutView()
         layout = view.layout
 
@@ -195,7 +200,15 @@ class MaskSet:
             }
             if chip_params:
                 params.update(chip_params)
-            cell = chip_class.create(layout, **params)
+
+            if mock_chips:
+                chip_params = chip_class().pcell_params_by_name(**params)
+                mock_params = {k: chip_params[k] for k in ['box', 'face_boxes', 'frames_enabled', 'frames_marker_dist',
+                                                           'frames_diagonal_squares', 'frames_mirrored', 'face_ids']}
+                mock_params['with_grid'] = False
+                cell = Chip.create(layout, **mock_params)
+            else:
+                cell = chip_class.create(layout, **params)
         else:  # its a file name, load it
             load_opts = pya.LoadLayoutOptions()
             if hasattr(pya.LoadLayoutOptions, "CellConflictResolution"):
