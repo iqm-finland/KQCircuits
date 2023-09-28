@@ -598,6 +598,28 @@ element: class that implements the node’s element, or None if the node has no 
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.extract_pcell_data_from_views">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">extract_pcell_data_from_views</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#extract_pcell_data_from_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.extract_pcell_data_from_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all PCells and return their data.</p>
+<dl class="simple">
+<dt>Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of</dt><dd><p><code class="docutils literal notranslate"><span class="pre">(type,</span> <span class="pre">location,</span> <span class="pre">parameters)</span></code> tuples. These tuples completely describe the type, position and
+parameters of a single PCell in the “Top Cell” of this view.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kqcircuits.util.layout_to_code.restore_pcells_to_views">
+<span class="sig-prename descclassname"><span class="pre">kqcircuits.util.layout_to_code.</span></span><span class="sig-name descname"><span class="pre">restore_pcells_to_views</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">views</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/util/layout_to_code.html#restore_pcells_to_views"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.util.layout_to_code.restore_pcells_to_views" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-populate each view’s Top Cell with PCells as extracted by <code class="docutils literal notranslate"><span class="pre">extract_pcell_data_from_views</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>views</strong> – List of list of <code class="docutils literal notranslate"><span class="pre">(type,</span> <span class="pre">location,</span> <span class="pre">parameters)</span></code> tuples.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <img alt="../_images/kqcircuits.util.layout_to_code.png" src="../_images/kqcircuits.util.layout_to_code.png" />
 </div>
 

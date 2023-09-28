@@ -547,7 +547,7 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.chip_frame</span> <span class="kn">import</span> <span class="n">ChipFrame</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">Element</span><span class="p">,</span> <span class="n">get_refpoints</span><span class="p">,</span> <span class="n">insert_cell_into</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_coplanar</span> <span class="kn">import</span> <span class="n">WaveguideCoplanar</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">pdt</span>
@@ -907,6 +907,55 @@
             <span class="k">for</span> <span class="n">kk</span><span class="p">,</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">node_params</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, </span><span class="si">{</span><span class="n">kk</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="k">return</span> <span class="n">node_params</span><span class="p">,</span> <span class="n">elem</span></div>
+
+
+<div class="viewcode-block" id="extract_pcell_data_from_views"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.extract_pcell_data_from_views">[docs]</a><span class="k">def</span> <span class="nf">extract_pcell_data_from_views</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove all PCells and return their data.</span>
+
+<span class="sd">    Returns: A list of lists. Each element corresponds to a view in KLayout and it is a list of</span>
+<span class="sd">        ``(type, location, parameters)`` tuples. These tuples completely describe the type, position and</span>
+<span class="sd">        parameters of a single PCell in the &quot;Top Cell&quot; of this view.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">views</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">main_window</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">vid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">views</span><span class="p">()):</span>
+        <span class="n">top_cell</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">vid</span><span class="p">)</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">pcells</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">each_inst</span><span class="p">():</span>
+            <span class="n">pc</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_declaration</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">pc</span><span class="p">:</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">pcell_parameters_by_name</span><span class="p">()</span>
+                <span class="n">def_params</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">def_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span><span class="o">.</span><span class="n">default</span><span class="p">:</span>
+                        <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="n">pcells</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pc</span><span class="o">.</span><span class="vm">__class__</span><span class="p">,</span> <span class="n">inst</span><span class="o">.</span><span class="n">dtrans</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                <span class="n">inst</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+        <span class="n">views</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pcells</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">views</span></div>
+
+
+<div class="viewcode-block" id="restore_pcells_to_views"><a class="viewcode-back" href="../../../api/kqcircuits.util.layout_to_code.html#kqcircuits.util.layout_to_code.restore_pcells_to_views">[docs]</a><span class="k">def</span> <span class="nf">restore_pcells_to_views</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Re-populate each view&#39;s Top Cell with PCells as extracted by ``extract_pcell_data_from_views``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        views: List of list of ``(type, location, parameters)`` tuples.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Application</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span><span class="o">.</span><span class="n">main_window</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">main_window</span><span class="o">.</span><span class="n">views</span><span class="p">()</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">views</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of views in KLayout unexpectedly changed during reload.&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">vid</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">main_window</span><span class="o">.</span><span class="n">views</span><span class="p">()):</span>
+        <span class="n">top_cell</span> <span class="o">=</span> <span class="n">main_window</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">vid</span><span class="p">)</span><span class="o">.</span><span class="n">active_cellview</span><span class="p">()</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">pcells</span> <span class="o">=</span> <span class="n">views</span><span class="p">[</span><span class="n">vid</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">pc</span> <span class="ow">in</span> <span class="n">pcells</span><span class="p">:</span>
+            <span class="n">def_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span><span class="o">.</span><span class="n">default</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_schema</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">def_params</span><span class="p">,</span> <span class="o">**</span><span class="n">pc</span><span class="p">[</span><span class="mi">2</span><span class="p">]}</span>
+            <span class="n">insert_cell_into</span><span class="p">(</span><span class="n">top_cell</span><span class="p">,</span> <span class="n">pc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">top_cell</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
