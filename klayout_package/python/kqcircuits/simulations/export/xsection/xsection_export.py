@@ -129,6 +129,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
                                       ma_thickness: float = 0,
                                       ms_thickness: float = 0,
                                       sa_thickness: float = 0,
+                                      vertical_cull: Union[None, Tuple[float, float]] = None,
                                       london_penetration_depth: float = 0,
                                       magnification_order: int = 0
                                     ) -> List[Simulation]:
@@ -153,6 +154,8 @@ def create_xsections_from_simulations(simulations: List[Simulation],
         ma_thickness: Thickness of metal–vacuum (air) interface
         ms_thickness: Thickness of metal–substrate interface
         sa_thickness: Thickness of substrate–vacuum (air) interface
+        vertical_cull: Tuple of two y-coordinates, will cull all geometry not in-between the y-coordinates.
+            None by default, which means all geometry is retained.
         london_penetration_depth: London penetration depth of the superconducting material
         magnification_order: Increase magnification of simulation geometry to accomodate more precise spacial units.
             0 =   no magnification with 1e-3 dbu
@@ -203,6 +206,7 @@ def create_xsections_from_simulations(simulations: List[Simulation],
                 ma_thickness,
                 ms_thickness,
                 sa_thickness,
+                vertical_cull,
                 london_penetration_depth,
                 magnification_order)
         for idx, xsection_cell in enumerate(layout.top_cells())]
@@ -418,7 +422,7 @@ def _construct_cross_section_simulation(layout, xsection_cell, simulation,
         oxidise_layers_function,
         ma_permittivity, ms_permittivity, sa_permittivity,
         ma_thickness, ms_thickness, sa_thickness,
-        london_penetration_depth, magnification_order):
+        vertical_cull, london_penetration_depth, magnification_order):
     """Produce CrossSectionSimulation object"""
     if magnification_order > 0:
         layout.dbu = 10 ** (-3 - magnification_order)
@@ -430,6 +434,13 @@ def _construct_cross_section_simulation(layout, xsection_cell, simulation,
     #cell_bbox.p1 -= pya.DPoint(0, xsection_parameters['lower_box_height'])
     if len(xsection_parameters['face_stack']) == 1:
         cell_bbox.p2 += pya.DPoint(0, xsection_parameters['upper_box_height'])
+    if vertical_cull is not None:
+        cell_bbox.p1 = pya.DPoint(cell_bbox.p1.x, min(vertical_cull))
+        cell_bbox.p2 = pya.DPoint(cell_bbox.p2.x, max(vertical_cull))
+        for layer in layout.layer_infos():
+            region = (pya.Region(xsection_cell.shapes(layout.layer(layer))) & cell_bbox.to_itype(layout.dbu))
+            xsection_cell.shapes(layout.layer(layer)).clear()
+            xsection_cell.shapes(layout.layer(layer)).insert(region)
     xsection_parameters['box'] = cell_bbox
     xsection_parameters['cell'] = xsection_cell
     xsection_simulation = CrossSectionSimulation(layout, **xsection_parameters)
