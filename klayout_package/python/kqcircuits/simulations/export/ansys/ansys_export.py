@@ -15,6 +15,8 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
+import os
+import stat
 
 import json
 import logging
@@ -216,6 +218,9 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
             run_cmd,
             str(Path(import_script_folder).joinpath(post_process_script)))
         file.write(command)
+
+    # Make the bat file executable in linux
+    os.chmod(bat_filename, os.stat(bat_filename).st_mode | stat.S_IEXEC)
 
     return bat_filename
 
