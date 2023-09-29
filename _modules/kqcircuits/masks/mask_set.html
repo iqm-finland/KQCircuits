@@ -554,6 +554,7 @@
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
+<span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.log_router</span> <span class="kn">import</span> <span class="n">route_log</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">default_face_id</span>
@@ -621,6 +622,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-d&#39;</span> <span class="ow">in</span> <span class="n">argv</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_single_process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_standalone_session</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;mock_chips&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-m&#39;</span> <span class="ow">in</span> <span class="n">argv</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="s1">&#39;-c&#39;</span> <span class="ow">in</span> <span class="n">argv</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
@@ -708,6 +711,8 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>  <span class="c1"># this level is NOT actually used</span>
         <span class="n">route_log</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">chip_path</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.log&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">])</span>
 
+        <span class="n">mock_chips</span> <span class="o">=</span> <span class="n">_extra_params</span><span class="p">[</span><span class="s1">&#39;mock_chips&#39;</span><span class="p">]</span>
+
         <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">layout</span>
 
@@ -722,7 +727,15 @@
             <span class="p">}</span>
             <span class="k">if</span> <span class="n">chip_params</span><span class="p">:</span>
                 <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chip_params</span><span class="p">)</span>
-            <span class="n">cell</span> <span class="o">=</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">mock_chips</span><span class="p">:</span>
+                <span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip_class</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+                <span class="n">mock_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">chip_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="s1">&#39;face_boxes&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_marker_dist&#39;</span><span class="p">,</span>
+                                                           <span class="s1">&#39;frames_diagonal_squares&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_mirrored&#39;</span><span class="p">,</span> <span class="s1">&#39;face_ids&#39;</span><span class="p">]}</span>
+                <span class="n">mock_params</span><span class="p">[</span><span class="s1">&#39;with_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">cell</span> <span class="o">=</span> <span class="n">Chip</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">mock_params</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cell</span> <span class="o">=</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># its a file name, load it</span>
             <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">,</span> <span class="s2">&quot;CellConflictResolution&quot;</span><span class="p">):</span>
