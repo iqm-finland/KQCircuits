@@ -49,6 +49,8 @@ class QualityFactorTwoface(Chip):
     waveguide_indentation = Param(pdt.TypeDouble, "Waveguide indentation from top chip edge", 500)
     extra_resonator_avoidance = Param(pdt.TypeList, "Added avoidance", [0, 0, 0, 0, 0, 0], unit="[μm]",
                                       docstring="Added avoidance around resonators [μm]")
+    etch_opposite_face_margin = Param(pdt.TypeDouble, "Margin around the waveguide to etch on the opposite face " +
+                                                      "for 'etched' type resonators", 5)
 
     def build(self):
         self._produce_resonators()
@@ -159,7 +161,7 @@ class QualityFactorTwoface(Chip):
             res_params = {
                 "airbridge_type": "Airbridge Multi Face",
                 "include_bumps": False,
-                "bridge_length": a + 2 * (b + self.margin + extra_resonator_avoidance),
+                "bridge_length": a + 2 * (b + self.etch_opposite_face_margin + extra_resonator_avoidance),
                 "bridge_width": 2,
                 "pad_length": 2,
                 "bridge_spacing": self.bridge_spacing,
@@ -194,6 +196,7 @@ class QualityFactorTwoface(Chip):
             l0 = self.get_layer("ground_grid_avoidance", int(self.resonator_faces[0]))
             region = pya.Region(inst_res.cell.begin_shapes_rec(l0)).transformed(inst_res.trans)
             region += pya.Region(inst_cplr.cell.begin_shapes_rec(l0)).transformed(inst_cplr.trans)
+            region = region.sized((self.etch_opposite_face_margin - self.margin) / self.layout.dbu)
             protection_region = region.sized(self.margin / self.layout.dbu)
             opposite_face = int(self.resonator_faces[1])
             self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face)).insert(protection_region)
