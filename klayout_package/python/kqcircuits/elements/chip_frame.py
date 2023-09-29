@@ -53,6 +53,7 @@ class ChipFrame(Element):
     chip_dicing_width = Param(pdt.TypeDouble, "Width of the chip dicing reference line", 10.0, unit="µm")
     chip_dicing_line_length = Param(pdt.TypeDouble, "Length of the chip dicing reference line", 100.0, unit="µm")
     chip_dicing_gap_length = Param(pdt.TypeDouble, "Gap between two chip dicing reference dashes", 50.0, unit="µm")
+    chip_dicing_in_base_metal = Param(pdt.TypeBoolean, "Insert chip dicing lines in base metal addition", False)
 
     def build(self):
         """Produces dicing edge, markers, labels and ground grid for the chip face."""
@@ -200,3 +201,5 @@ class ChipFrame(Element):
         else:
             box = pya.DBox(start, position.y - self.chip_dicing_width/2, end, position.y + self.chip_dicing_width/2)
         self.cell.shapes(self.get_layer("chip_dicing")).insert(box)
+        if self.chip_dicing_in_base_metal:
+            self.cell.shapes(self.get_layer("base_metal_addition")).insert(box)

@@ -43,7 +43,7 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import Flip
 @add_parameters_from(TsvEllipse, "tsv_elliptical_width")
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
-@add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand",
+@add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand", "chip_dicing_in_base_metal",
                      "dice_grid_margin", marker_types=[default_marker_type] * 8)
 class Chip(Element):
     """Base PCell declaration for chips.
