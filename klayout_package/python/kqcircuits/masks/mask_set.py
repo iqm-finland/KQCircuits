@@ -198,18 +198,22 @@ class MaskSet:
                 'display_name': variant_name,
                 'name_copy': None,
             }
-            if chip_params:
-                params.update(chip_params)
-
             if mock_chips:
-                chip_params = chip_class().pcell_params_by_name(**params)
-                mock_params = {k: chip_params[k] for k in ['box', 'face_boxes', 'frames_enabled', 'frames_marker_dist',
-                                                           'frames_diagonal_squares', 'frames_mirrored', 'face_ids']}
-                mock_params['with_grid'] = False
+                mock_params = chip_class().pcell_params_by_name(Chip, **params)
+                if chip_params:
+                    # Pass through parameters only if they exist in Chip
+                    mock_params.update({k: v for k, v in chip_params.items() if k in mock_params})
+                mock_params.update({
+                    'with_grid': False,
+                    'with_gnd_bumps': False,
+                    'with_gnd_tsvs': False,
+                })
                 cell = Chip.create(layout, **mock_params)
             else:
+                if chip_params:
+                    params.update(chip_params)
                 cell = chip_class.create(layout, **params)
-        else:  # its a file name, load it
+        else:  # it's a file name, load it
             load_opts = pya.LoadLayoutOptions()
             if hasattr(pya.LoadLayoutOptions, "CellConflictResolution"):
                 load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
