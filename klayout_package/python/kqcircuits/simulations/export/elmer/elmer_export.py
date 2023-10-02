@@ -53,6 +53,7 @@ def export_elmer_json(simulation,
                       p_element_order=1,
                       frequency=5,
                       mesh_size=None,
+                      boundary_conditions=None,
                       workflow=None,
                       percent_error=0.005,
                       max_error_scale=2,
@@ -72,6 +73,7 @@ def export_elmer_json(simulation,
         p_element_order(int): polynomial order of p-elements (Default: 1)
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         mesh_size(dict): Parameters to determine mesh element sizes
+        boundary_conditions(dict): Parameters to determine boundary conditions
         workflow(dict): Parameters for simulation workflow
         percent_error(float): Stopping criterion in adaptive meshing.
         max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
@@ -113,6 +115,7 @@ def export_elmer_json(simulation,
         **simulation.get_simulation_data(),
         **({'layers': {k: (v.layer, v.datatype) for k, v in layers.items()}} if is_cross_section else {}),
         'mesh_size': {} if mesh_size is None else mesh_size,
+        'boundary conditions': boundary_conditions,
         'workflow': {} if workflow is None else workflow,
         'percent_error': percent_error,
         'max_error_scale': max_error_scale,
@@ -416,6 +419,7 @@ def export_elmer(simulations: Sequence[Simulation],
                  file_prefix='simulation',
                  script_file='scripts/run.py',
                  mesh_size=None,
+                 boundary_conditions=None,
                  workflow=None,
                  percent_error=0.005,
                  max_error_scale=2,
@@ -439,6 +443,7 @@ def export_elmer(simulations: Sequence[Simulation],
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.
         mesh_size(dict): Parameters to determine mesh element sizes
+        boundary_conditions(dict): Parameters to determine boundary conditions
         workflow(dict): Parameters for simulation workflow
         percent_error(float): Stopping criterion in adaptive meshing.
         max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.
@@ -500,6 +505,7 @@ def export_elmer(simulations: Sequence[Simulation],
                     p_element_order=p_element_order,
                     frequency=frequency,
                     mesh_size=mesh_size,
+                    boundary_conditions=boundary_conditions,
                     workflow=workflow,
                     percent_error=percent_error,
                     max_error_scale=max_error_scale,

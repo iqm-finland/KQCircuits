@@ -876,6 +876,20 @@ def sif_capacitance(json_data: dict, folder_path: Path, vtu_name: str,
             conditions=[f'Capacitance Body = {i}'])
     n_boundaries += len(signals)
 
+    bc_dict = json_data.get('boundary conditions', None)
+    if bc_dict is not None:
+        for bc in ['xmin', 'xmax', 'ymin', 'ymax']:
+            bc_name = f'{bc}_boundary'
+            b = bc_dict.get(bc, None)
+            if b is not None:
+                if 'potential' in b:
+                    conditions = [f"Potential = {b['potential']}"]
+                    boundary_conditions += sif_boundary_condition(
+                        ordinate= 1 + n_boundaries,
+                        target_boundaries=[bc_name],
+                        conditions=conditions)
+                    n_boundaries += 1
+
     # Add place-holder boundaries (if additional physical groups are given)
     other_groups = [n for n in mesh_names if n not in body_list + grounds + signals and not n.startswith('port_')]
     for i, s in enumerate(other_groups, 1):

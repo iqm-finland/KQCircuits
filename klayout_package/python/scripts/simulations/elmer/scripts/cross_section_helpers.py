@@ -78,6 +78,7 @@ def produce_cross_section_mesh(json_data, msh_file):
 
     # Create mesh using geometries in gds file
     gmsh.model.add("cross_section")
+
     dim_tags = {}
     for name, num in layers.items():
         reg = pya.Region(cell.shapes(layout.layer(*num))) & bbox
@@ -152,6 +153,8 @@ def produce_cross_section_mesh(json_data, msh_file):
         metal_boundary = gmsh.model.getBoundary(new_tags[n], combined=False, oriented=False, recursive=False)
         gmsh.model.addPhysicalGroup(1, [t[1] for t in metal_boundary], name=f'{n}_boundary')
 
+    set_outer_bcs(bbox, layout)
+
     # Generate and save mesh
     gmsh.model.mesh.generate(2)
     gmsh.write(str(msh_file))
@@ -161,6 +164,55 @@ def produce_cross_section_mesh(json_data, msh_file):
         gmsh.fltk.run()
 
     gmsh.finalize()
+
+def set_outer_bcs(bbox, layout, beps=1e-6):
+    """
+    Sets the outer boundaries so that `xmin`, `xmax`, `ymin` and `ymax` can be accessed as physical groups.
+    This is a desperate attempt because occ module seems buggy: tried to new draw lines and add them to the
+    fragment then fetch the correct `dim_tags`, but the fragment breaks down. So, now we search each boundary
+    using a bounding box search.
+
+    Args:
+        bbox(pya.DBox): bounding box in klayout format
+        layout(pya.Layout): klayout layout
+        beps(float): tolerance for the search bounding box
+    """
+    outer_bc_dim_tags = {}
+    outer_bc_dim_tags['xmin'] = gmsh.model.occ.getEntitiesInBoundingBox(
+                                                         bbox.p1.x * layout.dbu-beps,
+                                                         bbox.p1.y * layout.dbu-beps,
+                                                         -beps,
+                                                         bbox.p1.x * layout.dbu+beps,
+                                                         bbox.p2.y * layout.dbu+beps,
+                                                         beps,
+                                                         dim=1)
+    outer_bc_dim_tags['xmax'] = gmsh.model.occ.getEntitiesInBoundingBox(
+                                                         bbox.p2.x * layout.dbu-beps,
+                                                         bbox.p1.y * layout.dbu-beps,
+                                                         -beps,
+                                                         bbox.p2.x * layout.dbu+beps,
+                                                         bbox.p2.y * layout.dbu+beps,
+                                                         beps,
+                                                         dim=1)
+    outer_bc_dim_tags['ymin'] = gmsh.model.occ.getEntitiesInBoundingBox(
+                                                         bbox.p1.x * layout.dbu-beps,
+                                                         bbox.p1.y * layout.dbu-beps,
+                                                         -beps,
+                                                         bbox.p2.x * layout.dbu+beps,
+                                                         bbox.p1.y * layout.dbu+beps,
+                                                         beps,
+                                                         dim=1)
+    outer_bc_dim_tags['ymax'] = gmsh.model.occ.getEntitiesInBoundingBox(
+                                                         bbox.p1.x * layout.dbu-beps,
+                                                         bbox.p2.y * layout.dbu-beps,
+                                                         -beps,
+                                                         bbox.p2.x * layout.dbu+beps,
+                                                         bbox.p2.y * layout.dbu+beps,
+                                                         beps,
+                                                         dim=1)
+
+    for n, v in outer_bc_dim_tags.items():
+        gmsh.model.addPhysicalGroup(1, [t[1] for t in v], name=f'{n}_boundary')
 
 def produce_cross_section_sif_files(json_data, folder_path):
     """
