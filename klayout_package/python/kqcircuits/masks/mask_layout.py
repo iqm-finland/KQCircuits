@@ -199,11 +199,14 @@ class MaskLayout:
                                        pya.DTrans(submask_pos - submask_layout.wafer_center + self.wafer_center))
                 )
 
+        maskextra_cell: pya.Cell = self.layout.create_cell("MaskExtra")
+        marker_region = self._add_all_markers_to_mask(maskextra_cell)
+
         self._insert_mask_name_label(self.top_cell, default_layers["mask_graphical_rep"], 'G')
         # add chips from chips_map
-        self._add_chips_from_map(self.chips_map, self.chip_size, None, self.align_to)
+        self._add_chips_from_map(self.chips_map, self.chip_size, None, self.align_to, marker_region)
         for (chips_map, chip_size, align, align_to) in self.extra_chips_maps:
-            self._add_chips_from_map(chips_map, chip_size, align, align_to)
+            self._add_chips_from_map(chips_map, chip_size, align, align_to, marker_region)
 
         # add chips outside chips_map
         for name, pos, *optional in self.extra_chips:
@@ -220,7 +223,7 @@ class MaskLayout:
                 self.region_covered -= self._add_chip(name, pos, trans, position_label)[1]
                 self.chip_counts[name] += 1
 
-        maskextra_cell: pya.Cell = self.layout.create_cell("MaskExtra")
+        self.region_covered -= marker_region
         self._mask_create_covered_region(maskextra_cell, self.region_covered, self.layers_to_mask)
         convert_child_instances_to_static(self.layout, maskextra_cell, only_elements=True, prune=True)
         merge_layout_layers_on_face(self.layout, maskextra_cell, self.face())
@@ -321,7 +324,7 @@ class MaskLayout:
         region_covered = pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
         return region_covered
 
-    def _add_chips_from_map(self, chips_map, chip_size, align, align_to):
+    def _add_chips_from_map(self, chips_map, chip_size, align, align_to, marker_region):
         orig = pya.DVector(-self.wafer_rad, self.wafer_rad) - self.chips_map_offset
         if align_to:
             orig = pya.DVector(*align_to)
@@ -357,6 +360,9 @@ class MaskLayout:
                 elif pos.y + chip_size > self._mask_name_box_bottom_y:
                     print(f" Warning, dropping chip {name} at ({i}, {j}), '{self.face_id}' - too close to mask label "
                           f" {(pos.y + chip_size):.2f} < {self._mask_name_box_bottom_y}")
+                elif pya.Region(pya.Box(pos.x, pos.y, pos.x + chip_size, pos.y + chip_size) * (1 / self.layout.dbu)) \
+                        & marker_region:
+                    print(f" Warning, dropping chip {name} at ({i}, {j}), '{self.face_id}' - overlaps with marker ")
                 else:
                     added_chip, region_chip = self._add_chip(name, position, self.chip_trans)
                     region_used += region_chip
@@ -382,6 +388,21 @@ class MaskLayout:
             return True, chip_region
         return False, chip_region
 
+    def _add_all_markers_to_mask(self, maskextra_cell):
+        marker_region = pya.Region()
+        for marker, m_kwargs in self.mask_markers_dict.items():
+            # load values into kwargs
+            m_kwargs['window'] = m_kwargs.get("window", True)
+            m_kwargs['face_ids'] = m_kwargs.get("face_ids", [self.face_id])
+            m_kwargs['wafer_rad'] = m_kwargs.get("wafer_rad", self.wafer_rad)
+            m_kwargs['edge_clearance'] = m_kwargs.get("edge_clearance", self.edge_clearance)
+            cell_marker = marker.create(self.layout, **m_kwargs)
+            marker_transes = marker.get_marker_locations(cell_marker, **m_kwargs)
+            for trans in marker_transes:
+                inst = maskextra_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans))
+                marker_region += marker.get_marker_region(inst, **m_kwargs)
+        return marker_region
+
     def _mask_create_covered_region(self, maskextra_cell, region_covered, layers_dict):
         dbu = self.layout.dbu
 
@@ -402,19 +423,6 @@ class MaskLayout:
             [pya.DPoint(math.cos(a / 32 * math.pi) * self.wafer_rad, math.sin(a / 32 * math.pi) * self.wafer_rad)
              for a in range(0, 64 + 1)], 100)
         maskextra_cell.shapes(self.layout.layer(default_layers["mask_graphical_rep"])).insert(circle)
-
-        # add all markers to the mask
-        for marker, m_kwargs in self.mask_markers_dict.items():
-            # load values into kwargs
-            m_kwargs['window'] = m_kwargs.get("window", True)
-            m_kwargs['face_ids'] = m_kwargs.get("face_ids", [self.face_id])
-            m_kwargs['wafer_rad'] = m_kwargs.get("wafer_rad", self.wafer_rad)
-            m_kwargs['edge_clearance'] = m_kwargs.get("edge_clearance", self.edge_clearance)
-            cell_marker = marker.create(self.layout, **m_kwargs)
-            marker_transes = marker.get_marker_locations(cell_marker, **m_kwargs)
-            for trans in marker_transes:
-                inst = maskextra_cell.insert(pya.DCellInstArray(cell_marker.cell_index(), trans))
-                region_covered -= marker.get_marker_region(inst, **m_kwargs)
 
         maskextra_cell.shapes(self.layout.layer(default_layers["mask_graphical_rep"])).insert(region_covered)
         # remove unwanted circle boundary and filling from `layers_to_mask` which have been excluded in
