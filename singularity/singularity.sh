@@ -5,7 +5,11 @@ if [ -e singularity.pem ]; then
     sudo singularity build --pem-path singularity.pem kqclib singularity.def
 else
     echo "Building singularity image."
-    singularity build --fakeroot kqclib singularity.def
+    if (( EUID == 0 )); then
+        singularity build kqclib singularity.def
+    else
+        singularity build --fakeroot kqclib singularity.def
+    fi
 fi
 
 mv kqclib libexec
