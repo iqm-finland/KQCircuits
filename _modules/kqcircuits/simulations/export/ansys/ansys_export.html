@@ -542,6 +542,8 @@
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">stat</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -743,6 +745,9 @@
             <span class="n">run_cmd</span><span class="p">,</span>
             <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">import_script_folder</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">post_process_script</span><span class="p">)))</span>
         <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+    <span class="c1"># Make the bat file executable in linux</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">bat_filename</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">bat_filename</span></div>
 

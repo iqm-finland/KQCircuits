@@ -921,23 +921,41 @@ For example in <cite>waveguides_sim_compare.py</cite> defining the following wil
 <p>Note that Elmer has <cite>elmer_n_processes</cite> and <cite>elmer_n_threads</cite>. The first is number of MPI processes and the second
 is number of OMP threads per process. It is usually most efficient to prefer MPI processes than threads.
 However, when the mesh is small, it may be beneficial to increase the use of threads.</p>
-<p>Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems).
-For example, in the <cite>waveguides_sim_compare.py</cite> in case <code class="docutils literal notranslate"><span class="pre">use_sbatch=True</span></code> then the <code class="docutils literal notranslate"><span class="pre">workflow['sbatch_parameters']</span></code> is defined:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">use_sbatch</span><span class="p">:</span>  <span class="c1"># if simulation is run in a HPC system,</span>
-                <span class="c1"># sbatch_parameters can be given here</span>
-    <span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;--job-name&#39;</span><span class="p">:</span><span class="n">sim_parameters</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;--account&#39;</span><span class="p">:</span><span class="s1">&#39;project_0&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--partition&#39;</span><span class="p">:</span><span class="s1">&#39;test&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--time&#39;</span><span class="p">:</span><span class="s1">&#39;00:10:00&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--ntasks&#39;</span><span class="p">:</span><span class="s1">&#39;40&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--cpus-per-task&#39;</span><span class="p">:</span><span class="s1">&#39;1&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;--mem-per-cpu&#39;</span><span class="p">:</span><span class="s1">&#39;4000&#39;</span><span class="p">,</span>
-    <span class="p">}</span>
+<p>Additionally, Slurm is supported for cluster computing (also available for desktop computers with Linux/BSD operating systems). Slurm can be used by
+defining <code class="docutils literal notranslate"><span class="pre">workflow['sbatch_parameters']</span></code> in the export script. An example can be found in <code class="docutils literal notranslate"><span class="pre">waveguides_sim_compare.py</span></code></p>
+<p>When using Slurm the simulation is run in 2 parts as Gmsh benefits from using multiple threads while Elmer benefits from using multiple processes.</p>
+<ol class="arabic simple">
+<li><p>“Gmsh” part, also contains ElmerGrid calls and writing Elmer sifs. Only multithreading with single task and node</p></li>
+<li><p>“Elmer” part. Runs ElmerSolver with any requested resources. Also runs writing the results and project version with single thread</p></li>
+</ol>
+<p>Instead of forwarding the settings directly to <code class="docutils literal notranslate"><span class="pre">sbatch</span></code> command from <code class="docutils literal notranslate"><span class="pre">workflow[sbatch_parameters]</span></code>, the following custom options are used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;elmer_n_nodes&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span>        <span class="c1"># Number of computing nodes</span>
+    <span class="s1">&#39;elmer_n_processes&#39;</span><span class="p">:</span> <span class="s1">&#39;10&#39;</span>   <span class="c1"># Total number of task (separate processes)</span>
+    <span class="s1">&#39;elmer_n_threads&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span>      <span class="c1"># Number of threads per task</span>
+    <span class="s1">&#39;elmer_mem&#39;</span><span class="p">:</span> <span class="s1">&#39;64G&#39;</span>          <span class="c1"># Memory allocated for running Elmer</span>
+    <span class="s1">&#39;elmer_time&#39;</span><span class="p">:</span> <span class="s1">&#39;00:10:00&#39;</span>    <span class="c1"># Timeout for the elmer batch job</span>
+
+    <span class="s1">&#39;gmsh_n_threads&#39;</span><span class="p">:</span>           <span class="c1"># Number of threads used for gmsh</span>
+                                <span class="c1"># Note that this cannot exceed the available number</span>
+                                <span class="c1"># of threads per node on the used partition</span>
+    <span class="s1">&#39;gmsh_mem&#39;</span><span class="p">:</span> <span class="s1">&#39;64G&#39;</span>           <span class="c1"># Memory allocated for running gmsh</span>
+    <span class="s1">&#39;gmsh_time&#39;</span><span class="p">:</span> <span class="s1">&#39;00:10:00&#39;</span>     <span class="c1"># Timeout for the gmsh batch job</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-<p>And consequently, running <cite>simulation.sh</cite>, the tasks will be sent to Slurm workload manager.
-Note that here <cite>–ntasks</cite> is <cite>elmer_n_processes</cite> and <cite>–cpus-per-task</cite> is <cite>elmer_n_threads</cite> in slurm terminology.</p>
+<p>Additionally the account and partition info must be given:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">workflow</span><span class="p">[</span><span class="s1">&#39;sbatch_parameters&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;--account&#39;</span><span class="p">:</span>   <span class="s1">&#39;project_0&#39;</span>
+    <span class="s1">&#39;--partition&#39;</span><span class="p">:</span> <span class="s1">&#39;partition&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>All other keys in <code class="docutils literal notranslate"><span class="pre">workflow['sbatch_parameters']</span></code> starting with <code class="docutils literal notranslate"><span class="pre">--</span></code> are used directly in both parts of the simulation.
+However, note that the custom parameters might overwrite these. Keys without <code class="docutils literal notranslate"><span class="pre">--</span></code>, which are none of the above are ignored.</p>
+<p>By running <code class="docutils literal notranslate"><span class="pre">RES=$(sbatch</span> <span class="pre">./simulation_meshes.sh)</span> <span class="pre">&amp;&amp;</span> <span class="pre">sbatch</span> <span class="pre">-d</span> <span class="pre">afterok:${RES##*</span> <span class="pre">}</span> <span class="pre">./simulation.sh</span></code>, the tasks will be sent to
+Slurm workload manager such that the Elmer part will only start once processign the meshes is finished.
+For running the simulations on a remote machine see <a class="reference internal" href="elmer_remote_workflow.html#elmer-remote-workflow"><span class="std std-ref">Elmer remote simulations workflow</span></a>.</p>
 <p>We recommend using the <cite>n_workers</cite> approach for simple systems when computing queues are not needed (no shared resources),
 and Slurm approach for more complicated resource allocations (for example multiple users using the same machine).</p>
 <p>Gmsh can also be parallelized (second level of parallelization) using OpenMP:</p>

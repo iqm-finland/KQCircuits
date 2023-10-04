@@ -581,7 +581,7 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Either delete its contents manually or use another directory&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-<span class="k">def</span> <span class="nf">_get_sbatch_time</span><span class="p">(</span><span class="n">export_tmp_paths</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_get_sbatch_time</span><span class="p">(</span><span class="n">export_tmp_paths</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal helper function to extract sbatch time limit from simulation.sh files</span>
 
@@ -592,23 +592,24 @@
 <span class="sd">        sbatch_time (int) Number of seconds for setting ssh timeout.</span>
 <span class="sd">                          This is equal to total amount of time reserved for all batch jobs sent to remote</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">_get_single_sbatch_time</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;simulation.sh&quot;</span> <span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_get_single_sbatch_time</span><span class="p">(</span><span class="n">simulation_script</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">simulation_script</span> <span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s2">&quot;#SBATCH --time=&quot;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
                     <span class="n">times</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
                         <span class="k">return</span> <span class="mi">3600</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">60</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">times</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not extract the sbatch time limit from simulation.sh. Ssh default timeout will be used&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span>
 
     <span class="n">sbatch_time</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">export_tmp_paths</span><span class="p">:</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">_get_single_sbatch_time</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">t_meshes</span> <span class="o">=</span> <span class="n">_get_single_sbatch_time</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;simulation_meshes.sh&quot;</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">_get_single_sbatch_time</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;simulation.sh&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">t_meshes</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Could not extract the sbatch time limit from simulation.sh or simulation_meshes.sh&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Wait script timeout of 60 minutes will be used&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">3600</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sbatch_time</span> <span class="o">+=</span> <span class="n">t</span>
 
@@ -631,6 +632,11 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Mac OS&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
     <span class="c1"># Else linux</span>
+
+    <span class="c1"># Check if we sugin sbatch by checking if all export folders have `simulation_meshes.sh`</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(((</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;simulation_meshes.sh&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">export_tmp_paths</span><span class="p">)):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Simulation not exported with &quot;sbatch&quot; (simulation_meshes.sh does not exist)&#39;</span> <span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="c1"># Add uuid to the remote path for this run</span>
     <span class="c1"># Allows simultaneous calls to &quot;kqc sim --remote&quot;</span>
@@ -656,7 +662,7 @@
 
 <span class="s2">    for i in &quot;$</span><span class="se">{{</span><span class="s2">sim_list[@]</span><span class="se">}}</span><span class="s2">&quot;; do</span>
 <span class="s2">        cd &quot;$</span><span class="se">{{</span><span class="s2">i</span><span class="se">}}</span><span class="s2">&quot; || exit</span>
-<span class="s2">        sbatch --job-name=&quot;</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">&quot; ./simulation.sh</span>
+<span class="s2">        RES=$(sbatch -J &quot;</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">&quot; ./simulation_meshes.sh) &amp;&amp; sbatch -d afterok:$</span><span class="se">{{</span><span class="s2">RES##* </span><span class="se">}}</span><span class="s2"> -J &quot;</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">&quot; ./simulation.sh</span>
 <span class="s2">    done;</span>
 <span class="s2">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">remote_simulation_script</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>

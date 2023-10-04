@@ -548,6 +548,7 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">import</span> <span class="nn">csv</span>
 
 <span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
@@ -833,8 +834,16 @@
                 <span class="k">if</span> <span class="n">file_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.png&quot;</span><span class="p">):</span>
                     <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;+ [</span><span class="si">{}</span><span class="s2">](</span><span class="si">{}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mask_layout_str</span><span class="p">,</span> <span class="n">file_name</span><span class="p">)))</span>
 
-        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
+    <span class="k">for</span> <span class="n">mask_layout</span> <span class="ow">in</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">:</span>
+        <span class="n">mask_layout_str</span> <span class="o">=</span> <span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span>
+        <span class="n">chips_map_file_name</span> <span class="o">=</span> <span class="n">mask_set</span><span class="o">.</span><span class="n">_mask_set_dir</span> <span class="o">/</span> <span class="n">mask_layout_str</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mask_layout_str</span><span class="si">}</span><span class="s2">-chips_map.csv&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">chips_map_file_name</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">g</span><span class="p">:</span>
+            <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span>
+                <span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;Active/Inactive&#39;</span><span class="p">,</span> <span class="s1">&#39;pixel id&#39;</span><span class="p">,</span> <span class="s1">&#39;pixel type&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="export_bitmaps"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_bitmaps">[docs]</a><span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">export_bitmaps</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">spec_layers</span><span class="o">=</span><span class="n">mask_bitmap_export_layers</span><span class="p">):</span>
