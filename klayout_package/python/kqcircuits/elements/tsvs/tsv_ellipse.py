@@ -16,10 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import math
+
 import numpy
+
+from kqcircuits.elements.tsvs.tsv import Tsv
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
-from kqcircuits.elements.tsvs.tsv import Tsv
 
 
 class TsvEllipse(Tsv):
@@ -42,26 +44,21 @@ class TsvEllipse(Tsv):
         # shorthand
         r = self.tsv_diameter / 2
         w = self.tsv_elliptical_width / 2
-        m = self.margin
         n = self.n
 
         # parametric representation is taken from https://en.wikipedia.org/wiki/Superellipse
         p1 = 6
         p2 = 2
-        # Protection layer
-        tsv_pts_avoidance = [pya.DPoint(
-            numpy.abs(math.cos(a)) ** (2 / p1) * (w + m) * numpy.sign(math.cos(a)),
-            numpy.abs(math.sin(a)) ** (2 / p2) * (r + m) * numpy.sign(math.sin(a))) for a in
-            (x / n * 2 * math.pi for x in range(0, n + 1))]
-
         tsv_pts = [
             pya.DPoint(numpy.abs(math.cos(a)) ** (2 / p1) * w * numpy.sign(math.cos(a)),
                        numpy.abs(math.sin(a)) ** (2 / p2) * r * numpy.sign(math.sin(a))) for
             a in (x / n * 2 * math.pi for x in range(0, n + 1))]
 
-        shape = pya.DPolygon(tsv_pts_avoidance)
-        # ground avoidance layer 1t1 face
-        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(shape)
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(shape)
-        self.cell.shapes(self.get_layer("through_silicon_via")).insert(pya.DPolygon(tsv_pts))
-        self.cell.shapes(self.get_layer("through_silicon_via", 1)).insert(pya.DPolygon(tsv_pts))
+        tsv_region = pya.Region(pya.DPolygon(tsv_pts).to_itype(self.layout.dbu))
+
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(
+            tsv_region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2))
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(
+            tsv_region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2))
+        self.cell.shapes(self.get_layer("through_silicon_via")).insert(tsv_region)
+        self.cell.shapes(self.get_layer("through_silicon_via", 1)).insert(tsv_region)
