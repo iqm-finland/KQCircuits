@@ -25,7 +25,7 @@ import time
 import ScriptEnv
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from util import get_enabled_setup_and_sweep  # pylint: disable=wrong-import-position,no-name-in-module
+from util import get_enabled_setup, get_enabled_sweep  # pylint: disable=wrong-import-position,no-name-in-module
 
 
 def create_z_vs_time_plot(report_setup, report_type, solution_name, context_array, y_label, y_components):
@@ -116,24 +116,26 @@ oDesign.ChangeProperty(
 # Create model only for HFSS
 design_type = oDesign.GetDesignType()
 if design_type == "HFSS":
-    (setup, sweep) = get_enabled_setup_and_sweep(oDesign)
-    solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
-    context = [] if sweep is None else [
-        "Domain:=", "Time",
-        "HoldTime:=", 1,
-        "RiseTime:=", 10e-12,  # picoseconds
-        "StepTime:=", 2e-12,
-        "Step:=", True,
-        "WindowWidth:=", 1,
-        "WindowType:=", 4,  # Hanning
-        "KaiserParameter:=", 4.44659081257122E-323,
-        "MaximumTime:=", 200e-12
-    ]
+    setup = get_enabled_setup(oDesign)
+    if oDesign.GetSolutionType() == "HFSS Terminal Network":
+        sweep = get_enabled_sweep(oDesign, setup)
+        solution = setup + (" : LastAdaptive" if sweep is None else " : " + sweep)
+        context = [] if sweep is None else [
+            "Domain:=", "Time",
+            "HoldTime:=", 1,
+            "RiseTime:=", 10e-12,  # picoseconds
+            "StepTime:=", 2e-12,
+            "Step:=", True,
+            "WindowWidth:=", 1,
+            "WindowType:=", 4,  # Hanning
+            "KaiserParameter:=", 4.44659081257122E-323,
+            "MaximumTime:=", 200e-12
+        ]
 
-    ports = oBoundarySetup.GetExcitations()[::2]
+        ports = oBoundarySetup.GetExcitations()[::2]
 
-    create_z_vs_time_plot(oReportSetup, "Terminal Solution Data", solution, context, "Z [Ohm]",
-                          ["TDRZt(%s)" % (port) for port in ports])
+        create_z_vs_time_plot(oReportSetup, "Terminal Solution Data", solution, context, "Z [Ohm]",
+                              ["TDRZt(%s)" % (port) for port in ports])
 
 # Notify the end of script
 oDesktop.AddMessage("", "", 0, "TDR created (%s)" % time.asctime(time.localtime()))

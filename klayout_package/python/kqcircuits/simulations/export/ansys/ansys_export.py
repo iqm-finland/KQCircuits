@@ -50,7 +50,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
                       sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                       max_delta_f=0.1, n_modes=2, mesh_size=None, substrate_loss_tangent=0,
                       dielectric_surfaces=None, simulation_flags=None, ansys_project_template=None,
-                      integrate_energies=False):
+                      integrate_energies=False, hfss_capacitance_export=False):
     r"""
     Export Ansys simulation into json and gds files.
 
@@ -97,6 +97,7 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         simulation_flags: Optional export processing, given as list of strings
         ansys_project_template: path to the simulation template
         integrate_energies: Calculate energy integrals over each layer and save them into a file
+        hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
 
     Returns:
          Path to exported json file.
@@ -131,7 +132,8 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
         'substrate_loss_tangent': substrate_loss_tangent,
         'dielectric_surfaces': dielectric_surfaces,
         'simulation_flags': simulation_flags,
-        'integrate_energies': integrate_energies
+        'integrate_energies': integrate_energies,
+        'hfss_capacitance_export': hfss_capacitance_export
     }
 
     if ansys_project_template is not None:
@@ -234,7 +236,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  dielectric_surfaces=None, exit_after_run=False,
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
-                 ansys_project_template=None, integrate_energies=False, skip_errors=False):
+                 ansys_project_template=None, integrate_energies=False, hfss_capacitance_export=False,
+                 skip_errors=False):
     r"""
     Export Ansys simulations by writing necessary scripts and json, gds, and bat files.
 
@@ -294,6 +297,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
         simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.
         ansys_project_template: path to the simulation template
         integrate_energies: Calculate energy integrals over each layer and save them into a file
+        hfss_capacitance_export: If True, the capacitance matrices are exported from HFSS simulations
         skip_errors: Skip simulations that cause errors. Default is False.
 
             .. warning::
@@ -323,7 +327,8 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                                             dielectric_surfaces=dielectric_surfaces,
                                             simulation_flags=simulation_flags,
                                             ansys_project_template=ansys_project_template,
-                                            integrate_energies=integrate_energies))
+                                            integrate_energies=integrate_energies,
+                                            hfss_capacitance_export=hfss_capacitance_export))
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except
             if skip_errors:
                 logging.warning(

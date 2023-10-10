@@ -19,7 +19,7 @@
 import json
 
 
-def get_enabled_setup(oDesign, tab="General"):
+def get_enabled_setup(oDesign, tab="HfssTab"):
     """Returns enabled analysis setup. Returns None if not enabled."""
     setup_names = oDesign.GetModule("AnalysisSetup").GetSetups()
     for name in setup_names:
@@ -28,17 +28,13 @@ def get_enabled_setup(oDesign, tab="General"):
     return None
 
 
-def get_enabled_setup_and_sweep(oDesign, tab="HfssTab"):
-    """Returns enabled analysis setup and sweep. Returns None if not enabled."""
-    setup = get_enabled_setup(oDesign, tab)
-    if setup is None:
-        return (None, None)
-
+def get_enabled_sweep(oDesign, setup, tab="HfssTab"):
+    """Returns enabled analysis sweep. Returns None if not enabled."""
     sweep_names = oDesign.GetModule("AnalysisSetup").GetSweeps(str(setup))
     for name in sweep_names:
         if oDesign.GetPropertyValue(tab, "AnalysisSetup:" + setup + ":" + name, "Enabled") == 'true':
-            return (setup, name)
-    return (setup, None)
+            return name
+    return None
 
 
 def get_solution_data(report_setup, report_type, solution_name, context_array, families_array, expression):
@@ -99,6 +95,38 @@ def create_x_vs_y_plot(report_setup, plot_name, report_type, solution_name, cont
            ]
           ]
          ])
+
+
+def find_varied_parameters(json_files):
+    """Finds the parameters that vary between the definitions in the json files.
+
+    Args:
+        json_files: List of json file names
+
+    Returns:
+        tuple (list, dict)
+        - list of parameter names
+        - dictionary with json file prefix as key and list of parameter values as value
+    """
+    keys = [f.replace('.json', '') for f in json_files]
+    nominal = min(keys, key=len)
+
+    # Load data from json files
+    parameter_dict = {}
+    for key, json_file in zip(keys, json_files):
+        with open(json_file, 'r') as f:
+            definition = json.load(f)
+        parameter_dict[key] = definition['parameters']
+
+    # Find parameters that are varied
+    parameters = []
+    for parameter in parameter_dict[nominal]:
+        if not all(parameter_dict[key][parameter] == parameter_dict[nominal][parameter] for key in keys):
+            parameters.append(parameter)
+
+    # Return compressed parameter_dict including only varied parameters
+    parameter_values = {k: [v[p] for p in parameters] for k, v in parameter_dict.items()}
+    return parameters, parameter_values
 
 
 # Helper class to encode complex data in json output

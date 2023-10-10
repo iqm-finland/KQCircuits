@@ -46,13 +46,18 @@ basename = os.path.splitext(os.path.basename(jsonfile))[0]
 
 # Read simulation_flags settings from .json
 with open(jsonfile, 'r') as fp:
-    simulation_flags = json.load(fp)['simulation_flags']
+    data = json.load(fp)
+simulation_flags = data['simulation_flags']
 
 # Create project and geometry
 oDesktop.RunScriptWithArguments(os.path.join(scriptpath, 'import_simulation_geometry.py'), jsonfile)
 
-# Set up capacitive PI model results
-oDesktop.RunScript(os.path.join(scriptpath, 'create_capacitive_pi_model.py'))
+# Set up capacitive PI model
+if data.get('ansys_tool', 'hfss') == 'q3d' or data.get('hfss_capacitance_export', False):
+    oDesktop.RunScript(os.path.join(scriptpath, 'create_capacitive_pi_model.py'))
+
+# Create reports
+oDesktop.RunScript(os.path.join(scriptpath, 'create_reports.py'))
 oDesktop.TileWindows(0)
 
 # Save project
