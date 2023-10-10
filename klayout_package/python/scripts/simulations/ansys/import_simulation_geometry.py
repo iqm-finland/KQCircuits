@@ -197,14 +197,20 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                 str(port['number']),
                 False)
 
-            if ("deembed_len" in port) and (port["deembed_len"] is not None):
-                oBoundarySetup.EditWavePort(
-                    str(port['number']),
-                    ["Name:%d" % port['number'],
-                     "DoDeembed:=", True,
-                     "DeembedDist:=", "%f%s" % (port["deembed_len"], units)
-                     ]
-                )
+            if ansys_tool == 'hfss':
+                renorm = port.get("renormalization", None)
+                oBoundarySetup.SetTerminalReferenceImpedances("" if renorm is None else "{}ohm".format(renorm),
+                                                              str(port['number']), renorm is not None)
+
+                deembed_len = port.get("renormalization", None)
+                if deembed_len is not None:
+                    oBoundarySetup.EditWavePort(
+                        str(port['number']),
+                        ["Name:%d" % port['number'],
+                         "DoDeembed:=", True,
+                         "DeembedDist:=", "%f%s" % (deembed_len, units)
+                         ]
+                    )
 
             # Turn junctions to lumped RLC
             if port['junction'] and ansys_tool == 'eigenmode':

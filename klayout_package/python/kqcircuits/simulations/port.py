@@ -27,7 +27,7 @@ class Port:
     """
     def __init__(self, number: int,
                  resistance: float = 50, reactance: float = 0, inductance: float = 0, capacitance: float = 0,
-                 face: int = 0, junction: bool = False):
+                 face: int = 0, junction: bool = False, renormalization: float = 50):
         """
         Args:
             number: Port number.
@@ -37,6 +37,7 @@ class Port:
             capacitance: Capacitance of the element. Given in Farads (:math:`\\text{F}`).
             face: Integer-valued face index for the port.
             junction: Whether this port models a SQUID/Junction. Used in EPR calculations.
+            renormalization: Port renormalization in Ohms or None to not re-normalize the port.
         """
         self.number = number
         self.resistance = resistance
@@ -45,6 +46,7 @@ class Port:
         self.capacitance = capacitance
         self.face = face
         self.junction = junction
+        self.renormalization = renormalization
         self.type = type(self).__name__
 
     def as_dict(self):
