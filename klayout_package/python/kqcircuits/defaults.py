@@ -52,6 +52,8 @@ DRC_PATH = _py_path.joinpath("drc")
 
 TMP_PATH.mkdir(parents=True, exist_ok=True)  # TODO move elsewhere?
 
+ANSYS_EXECUTABLE = r"%PROGRAMFILES%\AnsysEM\v232\Win64\ansysedt.exe"  # default Ansys executable location in Windows
+# ANSYS_EXECUTABLE = "/opt/AnsysEM/v232/Linux64/ansysedt"  # default Ansys executable location in Linux
 ANSYS_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("ansys")]
 ELMER_SCRIPT_PATHS = [SCRIPTS_PATH.joinpath("simulations").joinpath("elmer")]
 XSECTION_PROCESS_PATH = ROOT_PATH.joinpath("xsection/kqc_process.xs")

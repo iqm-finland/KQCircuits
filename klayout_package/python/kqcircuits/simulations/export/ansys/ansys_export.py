@@ -27,7 +27,7 @@ from pathlib import Path
 from kqcircuits.util.export_helper import write_commit_reference_file
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.simulations.export.util import export_layers
-from kqcircuits.defaults import ANSYS_SCRIPT_PATHS
+from kqcircuits.defaults import ANSYS_EXECUTABLE, ANSYS_SCRIPT_PATHS
 from kqcircuits.simulations.simulation import Simulation
 
 
@@ -153,7 +153,6 @@ def export_ansys_json(simulation: Simulation, path: Path, ansys_tool='hfss',
 
 
 def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_after_run=False,
-                     ansys_executable=r"%PROGRAMFILES%\AnsysEM\v232\Win64\ansysedt.exe",
                      import_script_folder='scripts', import_script='import_and_simulate.py',
                      post_process_script='export_batch_results.py', intermediate_processing_command=None,
                      use_rel_path=True):
@@ -165,7 +164,6 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
         path: Location where to write the bat file.
         file_prefix: Name of the batch file to be created.
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
-        ansys_executable: Path to the Ansys Electronics Desktop executable.
         import_script_folder: Path to the Ansys-scripts folder.
         import_script: Name of import script file.
         post_process_script: Name of post processing script file.
@@ -202,7 +200,7 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
                 str(Path(json_filename).relative_to(path)))
             file.write(printing)
             command = '"{}" -scriptargs "{}" -{} "{}"\n'.format(
-                ansys_executable,
+                ANSYS_EXECUTABLE,
                 str(Path(json_filename).relative_to(path) if use_rel_path else json_filename),
                 run_cmd,
                 str(Path(import_script_folder).joinpath(import_script)))
@@ -217,7 +215,7 @@ def export_ansys_bat(json_filenames, path: Path, file_prefix='simulation', exit_
 
         # Post-process command
         command = '"{}" -{} "{}"\n'.format(
-            ansys_executable,
+            ANSYS_EXECUTABLE,
             run_cmd,
             str(Path(import_script_folder).joinpath(post_process_script)))
         file.write(command)
@@ -234,7 +232,6 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                  sweep_enabled=True, sweep_start=0, sweep_end=10, sweep_count=101, sweep_type='interpolating',
                  max_delta_f=0.1, n_modes=2, mesh_size=None, substrate_loss_tangent=0,
                  dielectric_surfaces=None, exit_after_run=False,
-                 ansys_executable=r"%PROGRAMFILES%\AnsysEM\v232\Win64\ansysedt.exe",
                  import_script='import_and_simulate.py', post_process_script='export_batch_results.py',
                  intermediate_processing_command=None, use_rel_path=True, simulation_flags=None,
                  ansys_project_template=None, integrate_energies=False, skip_errors=False):
@@ -285,7 +282,6 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                 },
 
         exit_after_run: Defines if the Ansys Electronics Desktop is automatically closed after running the script.
-        ansys_executable: Path to the Ansys Electronics Desktop executable.
         import_script: Name of import script file.
         post_process_script: Name of post processing script file.
         intermediate_processing_command: Command for intermediate steps between simulations.
@@ -343,7 +339,7 @@ def export_ansys(simulations, path: Path, ansys_tool='hfss', import_script_folde
                 ) from e
 
     return export_ansys_bat(json_filenames, path, file_prefix=file_prefix, exit_after_run=exit_after_run,
-                            ansys_executable=ansys_executable, import_script_folder=import_script_folder,
+                            import_script_folder=import_script_folder,
                             import_script=import_script, post_process_script=post_process_script,
                             intermediate_processing_command=intermediate_processing_command,
                             use_rel_path=use_rel_path)
