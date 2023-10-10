@@ -122,6 +122,7 @@ class Simulation:
     upper_box_height = Param(pdt.TypeDouble, "Height of vacuum above top substrate", 1000.0, unit="µm")
     lower_box_height = Param(pdt.TypeDouble, "Height of vacuum below bottom substrate", 0, unit="µm",
                              docstring="Set > 0 to start face counting from substrate bottom layer.")
+    fixed_level_stackup = Param(pdt.TypeBoolean, "Use fixed level multi-face stack-up", True)
     face_stack = Param(pdt.TypeList, "Face IDs on the substrate surfaces from bottom to top", ["1t1"],
                        docstring="The parameter can be set as list of lists to enable multi-face stack-up on substrate "
                                  "surfaces. Set term to empty list to not have metal on the surface.")
@@ -522,21 +523,40 @@ class Simulation:
                 ground_region -= tsv_region
                 dielectric_region -= tsv_region
 
-                # Insert signal, ground, and dielectric layers to model via splitter
+                # Insert vertical over etching layer
                 if j == 0 and self.vertical_over_etching > 0.0:
                     self.add_layer_to_splitter(splitter, etch_region, face_id + "_etch",
                                                thickness=-sign * self.vertical_over_etching)
 
+                # Insert signal, ground and dielectric layers
                 metal_thickness = z[face_id][1] - z[face_id][0]
-                self.add_layer_to_splitter(splitter, signal_region, face_id + "_signal", thickness=metal_thickness,
-                                           material='pec')
-                self.add_layer_to_splitter(splitter, ground_region, face_id + "_ground", thickness=metal_thickness,
-                                           material='pec')
                 dielectric_thickness = z[face_id][2] - z[face_id][1]
-                if dielectric_thickness != 0.0:
-                    self.add_layer_to_splitter(splitter, dielectric_region, face_id + "_dielectric",
-                                               thickness=dielectric_thickness,
-                                               material=self.ith_value(dielectric_material, j))
+                if self.fixed_level_stackup:
+                    # Use fixed level stack-up
+                    self.insert_layer(signal_region, face_id + "_signal", z=z[face_id][0], thickness=metal_thickness,
+                                      material='pec')
+                    self.insert_layer(ground_region, face_id + "_ground", z=z[face_id][0], thickness=metal_thickness,
+                                      material='pec')
+                    if dielectric_thickness != 0.0:
+                        self.insert_layer(ground_box_region - dielectric_region, face_id + "_via", z=z[face_id][1],
+                                          thickness=dielectric_thickness, material='pec')
+                        subtract = [n for n in [face_id + "_signal", face_id + "_ground", face_id + "_via"]
+                                    if n in self.layers and self.layers[n].get('thickness', 0.0) != 0.0]
+                        self.insert_layer(dielectric_region, face_id + "_dielectric", z=z[face_id][0],
+                                          thickness=z[face_id][2] - z[face_id][0],
+                                          material=self.ith_value(dielectric_material, j),
+                                          **({'subtract': subtract} if subtract else dict()))
+
+                else:
+                    # Use splitter to produce drop-down stack-up
+                    self.add_layer_to_splitter(splitter, signal_region, face_id + "_signal", thickness=metal_thickness,
+                                               material='pec')
+                    self.add_layer_to_splitter(splitter, ground_region, face_id + "_ground", thickness=metal_thickness,
+                                               material='pec')
+                    if dielectric_thickness != 0.0:
+                        self.add_layer_to_splitter(splitter, dielectric_region, face_id + "_dielectric",
+                                                   thickness=dielectric_thickness,
+                                                   material=self.ith_value(dielectric_material, j))
 
                 # Insert gap layer only on the first face of the stack-up (no material)
                 if j == 0:
