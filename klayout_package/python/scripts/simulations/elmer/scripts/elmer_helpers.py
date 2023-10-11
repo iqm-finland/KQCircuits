@@ -18,9 +18,12 @@
 import csv
 import json
 import logging
+import copy
+import time
 from pathlib import Path
 from typing import Union, Sequence, Any, Dict
 from scipy.constants import epsilon_0
+import numpy as np
 
 
 def read_mesh_names(path):
@@ -243,7 +246,7 @@ def get_port_solver(ordinate,
                                           minimum_passes=minimum_passes)
     return sif_block(f'Solver {ordinate}', solver_lines)
 
-def get_vector_helmholtz(ordinate, angular_frequency) -> str:
+def get_vector_helmholtz(ordinate, angular_frequency, result_file) -> str:
     """
     Returns a vector Helmholtz equation solver in sif file format.
 
@@ -296,7 +299,7 @@ def get_vector_helmholtz(ordinate, angular_frequency) -> str:
         '  Constraint Modes EM Wave = Logical True',
         '  Constraint Modes Fluxes Results = Logical True',
         '!  Constraint Modes Fluxes Symmetric = Logical True',
-        '  Constraint Modes Fluxes Filename = File "SMatrix.dat"',
+        f'  Constraint Modes Fluxes Filename = File "{result_file}"',
         ]
     return sif_block(f'Solver {ordinate}', solver_lines)
 
@@ -675,22 +678,36 @@ def produce_sif_files(json_data: dict, path: Path):
         sif_filepaths: Paths to exported sif files
 
     """
+    # we modify json_data in this call, copying to prevent side effects
+    json_data = copy.deepcopy(json_data)
+
     sif_names = json_data['sif_names']
-    if len(sif_names) != 1:
-        logging.warning(f"Wave-equation and capacitance tools only support 1 sif name, given {len(sif_names)}")
-    if sif_names[0] != path.stem:
-        logging.warning(f"Coflicting sif file names: given {path.stem}, should be {sif_names[0]}")
 
-    if json_data['tool'] == 'capacitance':
-        content = sif_capacitance(json_data, path, vtu_name=path, angular_frequency=0, dim=3, with_zero=False)
-    if json_data['tool'] == 'wave_equation':
-        content = sif_wave_equation(json_data, path)
+    if json_data['tool'] == 'capacitance' and len(sif_names) != 1:
+        logging.warning(f"Capacitance tool only supports 1 sif name, given {len(sif_names)}")
 
-    sif_filepath = path.joinpath('{}.sif'.format(sif_names[0]))
+    freqs = json_data.get('frequency', None)
 
-    sif_filepath.parent.mkdir(exist_ok=True, parents=True)
-    with open(sif_filepath, 'w') as f:
-        f.write(content)
+    for ind, sif in enumerate(sif_names):
+        if json_data['tool'] == 'capacitance':
+            json_data['sif_names'] = sif
+            content = sif_capacitance(json_data, path, vtu_name=path, angular_frequency=0, dim=3, with_zero=False)
+        elif json_data['tool'] == 'wave_equation':
+            if len(freqs) != len(sif_names):
+                logging.warning(f"Number of sif names ({len(sif_names)})"
+                                 "does not match the number of frequencies ({len(freqs)})")
+
+            json_data['sif_names'] = sif
+            json_data['frequency'] = freqs[ind]
+            content = sif_wave_equation(json_data, path)
+        else:
+            logging.warning(f"Unkown tool: {json_data['tool']}. No sif file created")
+            return []
+
+        sif_filepath = path.joinpath(f'{sif}.sif')
+        sif_filepath.parent.mkdir(exist_ok=True, parents=True)
+        with open(sif_filepath, 'w') as f:
+            f.write(content)
 
     return [sif_filepath]
 
@@ -1165,38 +1182,116 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
         max_error_scale=json_data['max_error_scale'],
         max_outlier_fraction=json_data['max_outlier_fraction'],
     )
-    solvers += get_vector_helmholtz(ordinate=2, angular_frequency='$ w')
+    result_file = f'SMatrix_f{str(json_data["frequency"]).replace(".", "_")}.dat'
+    solvers += get_vector_helmholtz(ordinate=2, angular_frequency='$ w', result_file=result_file)
     solvers += get_vector_helmholtz_calc_fields(ordinate=3, angular_frequency='$ w')
+
     solvers += get_result_output_solver(
                     ordinate=4,
-                    output_file_name=folder_path,
+                    output_file_name= Path(str(folder_path) + '_f' + str(json_data["frequency"]).replace('.', '_')),
                     exec_solver='Always',)
 
     return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
 
-def write_project_results_json(path: Path, msh_filepath):
+def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_form: bool=True):
     """
-    Writes the solution data in '_project_results.json' format for one Elmer capacitance matrix computation.
+    Writes the solution data in '_project_results.json' format for one Elmer simulation.
+
+    If tool is capacitance, writes capacitance matrix
+    If tool is wave_equation, writes S-matrix both in '_project_results.json' and touchstone format
 
     Args:
+        json_data(dict): Complete parameter json for simulation
         path(Path): Location where to output the simulation model
         msh_filepath(Path): Location of msh file in `Path` format
+        polar_form  (bool): Save Smatrix in polar or cartesian form
     """
-    c_matrix_filename = path.joinpath(msh_filepath.stem).joinpath('capacitance.dat')
-    json_filename = path.joinpath(msh_filepath.stem)
-    json_filename = json_filename.parent / (json_filename.name + '_project_results.json')
+    tool = json_data['tool']
+    if tool == 'capacitance':
+        c_matrix_filename = path.joinpath(msh_filepath.stem).joinpath('capacitance.dat')
+        json_filename = path.joinpath(msh_filepath.stem)
+        json_filename = json_filename.parent / (json_filename.name + '_project_results.json')
 
-    if c_matrix_filename.exists():
+        if c_matrix_filename.exists():
 
-        with open(c_matrix_filename, 'r') as file:
-            my_reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
-            c_matrix = list(my_reader)
+            with open(c_matrix_filename, 'r') as file:
+                my_reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
+                c_matrix = list(my_reader)
 
-        c_data = {"C_Net{}_Net{}".format(net_i+1, net_j+1): [c_matrix[net_j][net_i]] for net_j in range(len(c_matrix))
-                for net_i in range(len(c_matrix))}
+            c_data = {"C_Net{}_Net{}".format(net_i+1, net_j+1): [c_matrix[net_j][net_i]]
+                      for net_j in range(len(c_matrix))
+                      for net_i in range(len(c_matrix))}
+
+            with open(json_filename, 'w') as outfile:
+                json.dump({'CMatrix': c_matrix,
+                        'Cdata': c_data,
+                        'Frequency': [0],
+                        }, outfile, indent=4)
+    elif tool == 'wave_equation':
+
+        json_filename = path.joinpath(msh_filepath.stem)
+        json_filename = json_filename.parent / (json_filename.name + '_project_results.json')
+
+        ports = json_data['ports']
+        renormalizations = [p['renormalization'] for p in ports]
+
+        if renormalizations[:-1] != renormalizations[1:]:
+            logging.warning("Port renormalizations are not equal")
+            logging.warning(f"Renormalizations: {renormalizations}")
+
+        results = []
+        for f in json_data['frequency']:
+            s_matrix_filename = f'SMatrix_f{str(f).replace(".", "_")}.dat'
+
+            if not Path(s_matrix_filename).exists():
+                s_matrix_filename = path.joinpath(msh_filepath.stem).joinpath(s_matrix_filename)
+
+            with open(s_matrix_filename, 'r') as file:
+                reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
+                s_matrix_re = np.array([[x for x in row if isinstance(x, float)] for row in reader])
+
+            with open(str(s_matrix_filename) + '_im', 'r') as file:
+                reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
+                s_matrix_im = np.array([[x for x in row if isinstance(x, float)] for row in reader])
+
+            if polar_form:
+                s_matrix_mag = np.hypot(s_matrix_re,s_matrix_im)
+                s_matrix_angle = np.degrees(np.arctan2(s_matrix_im,s_matrix_re))
+
+            smatrix_full = np.zeros_like(s_matrix_re).tolist()
+            for i1, i2 in np.ndindex(s_matrix_re.shape):
+                if polar_form:
+                    smatrix_full[i1][i2] = (s_matrix_mag[i1, i2], s_matrix_angle[i1, i2])
+                else:
+                    smatrix_full[i1][i2] = (s_matrix_re[i1, i2], s_matrix_im[i1, i2])
+
+            results.append({
+                'frequency': f,
+                'renormalization': renormalizations[0],
+                'format': 'polar' if polar_form else 'cartesian',
+                'smatrix': smatrix_full,
+            })
 
         with open(json_filename, 'w') as outfile:
-            json.dump({'CMatrix': c_matrix,
-                       'Cdata': c_data,
-                       'Frequency': [0],
-                       }, outfile, indent=4)
+            json.dump(results, outfile, indent=4)
+
+        touchstone_filename = f"{path.joinpath(msh_filepath.stem)}.s{len(ports)}p"
+        with open(touchstone_filename, 'w') as touchstone_file:
+            touchstone_file.write("! Touchstone file exported from KQCircuits Elmer Simulation\n")
+            touchstone_file.write(f"! Generated: {time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())}\n")
+            touchstone_file.write("! Warning: Currently renormalization not implemented in Elmer "
+                                  "(R on the next line might not correspond to the real port impedance)\n")
+            touchstone_file.write(f"# GHz S {'MA' if polar_form else 'IR'} R {renormalizations[0]} \n")
+            for p in ports:
+                touchstone_file.write(f"! Port {p['number']}: {p['type']} R {p['resistance']} "
+                                      f"X {p['reactance']} L {p['inductance']} C {p['capacitance']}\n")
+            for res in results:
+                smatrix_full = res['smatrix']
+                for row_ind, row in enumerate(smatrix_full):
+                    if row_ind == 0:
+                        touchstone_file.write("{:30s} ".format(str(res['frequency'])))
+                    else:
+                        touchstone_file.write("{:30s} ".format(' '))
+                    for elem in row:
+                        touchstone_file.write("{:25s} {:35s}".format(str(elem[0]),str(elem[1])))
+                    touchstone_file.write("\n")

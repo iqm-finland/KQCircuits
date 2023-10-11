@@ -63,12 +63,14 @@ workflow = json_data['workflow']
 if args.write_project_results:
     args.skip_gmsh = True
     args.skip_elmergrid = True
+    args.skip_elmer_sifs = True
     args.skip_elmer = True
     args.skip_paraview = True
 
 if args.write_versions_file:
     args.skip_gmsh = True
     args.skip_elmergrid = True
+    args.skip_elmer_sifs = True
     args.skip_elmer = True
     args.skip_paraview = True
     args.write_project_results = False
@@ -180,7 +182,7 @@ else:
 
     # Write result file
     if args.write_project_results:
-        write_project_results_json(path, path.joinpath(msh_file))
+        write_project_results_json(json_data, path, path.joinpath(msh_file))
 
 if args.write_versions_file:
     write_simulation_machine_versions_file(path, json_data['parameters']['name'])

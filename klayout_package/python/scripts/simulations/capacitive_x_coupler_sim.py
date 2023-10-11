@@ -35,7 +35,7 @@ height = 500.
 length = 500.
 p_element_order = 3
 gmsh_n_threads = -1
-elmer_n_processes = 1
+elmer_n_processes = -1
 elmer_n_threads = 1
 box_size_x = length
 box_size_y = height
@@ -72,7 +72,7 @@ if use_elmer:
         export_parameters_elmer = {
             'path': path,
             'tool': 'wave_equation',
-            'frequency': 10,
+            'frequency': [8, 10, 12],
         }
     else:
         export_parameters_elmer = {

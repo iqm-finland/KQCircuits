@@ -21,7 +21,7 @@ from pathlib import Path
 
 from kqcircuits.elements.hanger_resonator import HangerResonator
 from kqcircuits.pya_resolver import pya
-from kqcircuits.simulations.export.simulation_export import export_simulation_oas, sweep_simulation
+from kqcircuits.simulations.export.simulation_export import export_simulation_oas
 from kqcircuits.simulations.export.elmer.elmer_export import export_elmer
 from kqcircuits.simulations.export.ansys.ansys_export import export_ansys
 from kqcircuits.simulations.single_element_simulation import get_single_element_sim_class
@@ -110,7 +110,7 @@ if use_elmer:
                                #             second level of parallelization. -1 uses all
                                #             the physical cores (based on the machine which
                                #             was used to prepare the simulation).
-        'elmer_n_processes': 1,  # <------ This defines the number of
+        'elmer_n_processes': -1,  # <------ This defines the number of
                                                  #         processes in the second level
                                                  #         of parallelization. -1 uses all
                                                  #         the physical cores (based on
@@ -149,7 +149,7 @@ else:
             'sweep_count': 1001,
             'maximum_passes': 20,
             'exit_after_run': True,
-            'mesh_size': {'1t1_gap': 1}
+            'mesh_size': {'1t1_gap': 5}
         }
     else:
         export_parameters_ansys = {
@@ -164,11 +164,7 @@ else:
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 layout = get_active_or_new_layout()
 
-sweep_parameters = {
-    'r': [50]
-}
-
-simulations = sweep_simulation(layout, sim_class, sim_parameters, sweep_parameters)
+simulations = [sim_class(layout, **sim_parameters)]
 
 # Write and open oas file
 open_with_klayout_or_default_application(export_simulation_oas(simulations, path))

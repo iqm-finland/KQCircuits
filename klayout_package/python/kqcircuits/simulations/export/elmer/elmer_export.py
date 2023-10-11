@@ -110,6 +110,9 @@ def export_elmer_json(simulation,
     if is_cross_section:
         layers = simulation.layer_dict
 
+    if not isinstance(frequency, list):
+        frequency = [frequency]
+
     json_data = {
         'tool': tool,
         **simulation.get_simulation_data(),
@@ -134,6 +137,9 @@ def export_elmer_json(simulation,
             sif_names = ['capacitance', 'inductance']
         else:
             sif_names = ['capacitance', 'capacitance0']
+    elif tool=='wave_equation':
+        stem = json_data['parameters']['name']
+        sif_names = [stem + '_f' + str(f).replace('.', '_') for f in frequency]
     else:
         sif_names = [json_data['parameters']['name']]
 
