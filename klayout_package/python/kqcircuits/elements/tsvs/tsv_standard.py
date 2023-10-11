@@ -31,7 +31,7 @@ class TsvStandard(Tsv):
         tsv = circle_polygon(self.tsv_diameter / 2, self.n)
         self.cell.shapes(self.get_layer("through_silicon_via")).insert(tsv)
         self.cell.shapes(self.get_layer("through_silicon_via", 1)).insert(tsv)
-        margin = circle_polygon(self.tsv_diameter / 2 + self.margin, self.n)
+        margin = circle_polygon(self.tsv_diameter / 2 + self.tsv_margin, self.n)
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(margin)
         self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(margin)
         del self.refpoints['base']

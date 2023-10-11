@@ -57,8 +57,8 @@ class TsvEllipse(Tsv):
         tsv_region = pya.Region(pya.DPolygon(tsv_pts).to_itype(self.layout.dbu))
 
         self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(
-            tsv_region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2))
+            tsv_region.sized(self.tsv_margin / self.layout.dbu, self.tsv_margin / self.layout.dbu, 2))
         self.cell.shapes(self.get_layer("ground_grid_avoidance", 1)).insert(
-            tsv_region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2))
+            tsv_region.sized(self.tsv_margin / self.layout.dbu, self.tsv_margin / self.layout.dbu, 2))
         self.cell.shapes(self.get_layer("through_silicon_via")).insert(tsv_region)
         self.cell.shapes(self.get_layer("through_silicon_via", 1)).insert(tsv_region)
