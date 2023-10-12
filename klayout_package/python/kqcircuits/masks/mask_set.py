@@ -28,6 +28,7 @@ from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.chips.chip import Chip
+from kqcircuits.masks.multi_face_mask_layout import MultiFaceMaskLayout
 from kqcircuits.util.log_router import route_log
 from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.defaults import default_bar_format, TMP_PATH, default_face_id
@@ -102,7 +103,6 @@ class MaskSet:
         if '-c' in argv and len(argv) > argv.index('-c') + 1:
             self._cpu_override = int(argv[argv.index('-c') + 1])
 
-
     def add_mask_layout(self, chips_map, face_id=default_face_id, mask_layout_type=MaskLayout, **kwargs):
         """Creates a mask layout from chips_map and adds it to self.mask_layouts.
 
@@ -122,6 +122,34 @@ class MaskSet:
                                        **kwargs)
         self.mask_layouts.append(mask_layout)
         return mask_layout
+
+    def add_multi_face_mask_layout(self, face_ids, chips_map=None, extra_face_params=None, mask_layout_type=MaskLayout,
+                                   **kwargs):
+        """Create a multi face mask layout, which can be used to make masks with matching chip maps on multiple faces.
+
+        A ``MaskLayout`` is created of each face in ``face_ids``. By default, the individual mask layouts all have
+        identical parameters, but parameters can be overwritten for a single face id through ``extra_face_params``.
+
+        By default, ``bbox_face_ids`` is set to ``face_ids`` for all mask layouts.
+
+        Args:
+            face_ids: list of face ids to include
+            chips_map: Chips map to use, or None to use an empty chips map.
+            extra_face_params: a dictionary of ``{face_id: extra_kwargs}``, where ``extra_kwargs`` is a dictionary of
+                 keyword arguments to apply only to the mask layout for ``face_id``.
+            mask_layout_type: optional subclass of MaskLayout to use
+            kwargs: any keyword arguments are passed to all containing mask layouts.
+
+        Returns: a ``MultiFaceMaskLayout`` instance
+        """
+        if ("mask_export_layers" not in kwargs) and self.mask_export_layers:
+            kwargs["mask_export_layers"] = self.mask_export_layers
+
+        mfml = MultiFaceMaskLayout(self.layout, self.name, self.version, self.with_grid, face_ids,
+                                   chips_map, extra_face_params, mask_layout_type, **kwargs)
+        for face_id in mfml.face_ids:
+            self.mask_layouts.append(mfml.mask_layouts[face_id])
+        return mfml
 
     def add_chip(self, chips, variant_name=None, cpus=None, **parameters):
         """Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.

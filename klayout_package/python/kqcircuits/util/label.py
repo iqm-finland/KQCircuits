@@ -27,7 +27,8 @@ class LabelOrigin(Enum):
     TOPLEFT = auto()
     TOPRIGHT = auto()
 
-def produce_label(cell, label, location, origin, origin_offset, margin, layers, layer_protection, size=350):
+def produce_label(cell, label, location, origin, origin_offset, margin, layers, layer_protection, size=350,
+                  mirror=False):
     """Produces a Text PCell accounting for desired relative position of the text respect to the given location
     and the spacing.
 
@@ -47,7 +48,6 @@ def produce_label(cell, label, location, origin, origin_offset, margin, layers, 
     """
 
     layout = cell.layout()
-    dbu = layout.dbu
 
     if not label:
         label = "A13"  # longest label on 6 inch wafer
@@ -65,35 +65,32 @@ def produce_label(cell, label, location, origin, origin_offset, margin, layers, 
         }))
 
     # relative placement with margin
-    margin = margin / dbu
-    origin_offset = origin_offset / dbu
-
-    trans = pya.DTrans(location + {
+    relative_placement = {
         LabelOrigin.BOTTOMLEFT: pya.Vector(
-            subcells[0].bbox().p1.x - margin - origin_offset,
-            subcells[0].bbox().p1.y - margin - origin_offset),
+            subcells[0].dbbox().p1.x - margin - origin_offset,
+            subcells[0].dbbox().p1.y - margin - origin_offset),
         LabelOrigin.TOPLEFT: pya.Vector(
-            subcells[0].bbox().p1.x - margin - origin_offset,
-            subcells[0].bbox().p2.y + margin + origin_offset),
+            subcells[0].dbbox().p1.x - margin - origin_offset,
+            subcells[0].dbbox().p2.y + margin + origin_offset),
         LabelOrigin.TOPRIGHT: pya.Vector(
-            subcells[0].bbox().p2.x + margin + origin_offset,
-            subcells[0].bbox().p2.y + margin + origin_offset),
+            subcells[0].dbbox().p2.x + margin + origin_offset,
+            subcells[0].dbbox().p2.y + margin + origin_offset),
         LabelOrigin.BOTTOMRIGHT: pya.Vector(
-            subcells[0].bbox().p2.x + margin + origin_offset,
-            subcells[0].bbox().p1.y - margin - origin_offset),
-    }[origin] * dbu * (-1))
+            subcells[0].dbbox().p2.x + margin + origin_offset,
+            subcells[0].dbbox().p1.y - margin - origin_offset),
+    }[origin] * (-1)
+
+    if mirror:
+        trans = pya.DTrans(2, True, location.x - relative_placement.x, location.y + relative_placement.y)
+    else:
+        trans = pya.DTrans(location + relative_placement)
 
     if not protection_only:
         for subcell in subcells:
             cell.insert(pya.DCellInstArray(subcell.cell_index(), trans))
 
     # protection layer with margin
-    protection = pya.DBox(pya.Point(
-        subcells[0].bbox().p1.x - margin,
-        subcells[0].bbox().p1.y - margin) * dbu,
-                          pya.Point(
-                              subcells[0].bbox().p2.x + margin,
-                              subcells[0].bbox().p2.y + margin) * dbu
-                          )
+    protection = pya.DBox(pya.DPoint(subcells[0].dbbox().p1.x - margin, subcells[0].dbbox().p1.y - margin),
+                          pya.DPoint(subcells[0].dbbox().p2.x + margin, subcells[0].dbbox().p2.y + margin))
     cell.shapes(layout.layer(layer_protection)).insert(
         trans.trans(protection))

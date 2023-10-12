@@ -171,7 +171,9 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
 
     Args:
         export_dir: directory for the files
-        layer_name: name of the layer exported as a mask, if starts with '-' then it will be inverted
+        layer_name: name of the layer exported as a mask. The following prefixes can be used to modify the export:
+           * Prefix ``-``: invert the shapes on this layer
+           * Prefix ``^``: mirror the layer (left-right)
         mask_layout: MaskLayout object for the cell and face reference
         mask_set: MaskSet object for the name and version attributes to be included in the filename
     """
@@ -179,6 +181,10 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
     if layer_name.startswith('-'):
         layer_name = layer_name[1:]
         invert = True
+    mirror = False
+    if layer_name.startswith('^'):
+        layer_name = layer_name[1:]
+        mirror = True
 
     top_cell = mask_layout.top_cell
     layout = top_cell.layout()
@@ -192,6 +198,12 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         layout.copy_layer(layer, tmp_layer)
         layout.clear_layer(layer)
         top_cell.shapes(layer).insert(wafer ^ disc)
+
+    if mirror:
+        wafer = pya.Region(top_cell.begin_shapes_rec(layer)).merged()
+        layout.copy_layer(layer, tmp_layer)
+        layout.clear_layer(layer)
+        top_cell.shapes(layer).insert(wafer.transformed(pya.Trans(2, True, 0, 0)))
 
     layers_to_export = {layer_info.name: layer}
     path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f"-{layer_info.name}.oas")

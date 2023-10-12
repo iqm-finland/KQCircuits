@@ -15,6 +15,8 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 import math
+from collections.abc import Sequence
+
 from autologging import logged
 from tqdm import tqdm
 
@@ -23,6 +25,7 @@ from kqcircuits.defaults import default_layers, default_brand, default_faces, de
     default_layers_to_mask, default_covered_region_excluded_layers, default_mask_export_layers, default_bar_format
 from kqcircuits.elements.markers.marker import Marker
 from kqcircuits.elements.markers.mask_marker_fc import MaskMarkerFc
+from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.merge import merge_layout_layers_on_face, convert_child_instances_to_static
 
@@ -51,10 +54,12 @@ class MaskLayout:
         wafer_bottom_flat_length: length of flat edge at the bottom of the wafer
         dice_width: Dicing width for this mask layout
         text_margin: Text margin for this mask layout
-        chip_size: side width of the chips (assuming square chips)
+        chip_size: side width of the chips (for square chips), or tuple (width, height) for rectangular chips
         chip_array_to_export: List of lists where for each chip in the array we have the following record - (row,
          column, Active/inactive, chip ID, chip type). Gets exported as an external csv file
         edge_clearance: minimum clearance of outer chips from the edge of the mask
+        remove_chips: if True (default), chips that violate edge_clearance or conflict with markers are removed from
+            chip maps. Note that ``extra_chips`` are never removed.
         chip_box_offset: Offset (pya.DVector) from chip origin of the chip frame boxes for this face
         chip_trans: DTrans applied to all chips
         mask_name_offset: (DEPRECATED) mask name label offset from default position (DPoint)
@@ -74,6 +79,8 @@ class MaskLayout:
         top_cell: Top cell of this mask layout
         added_chips: List of (chip name, chip position, chip bounding box, chip dtrans, position_label)
             populated by chips added during build()
+        mirror_labels: Boolean, if True mask and chip copy labels are mirrored. Default False.
+        bbox_face_ids: List of face_ids to consider when calcualting the bounding box of chips. Defaults to [face_id]
     """
 
     def __init__(self, layout, name, version, with_grid, chips_map, face_id, **kwargs):
@@ -85,6 +92,7 @@ class MaskLayout:
         self.face_id = face_id
         self.chips_map = chips_map
         self.chips_map_legend = None
+        self.chip_bounding_boxes = None
 
         self.layers_to_mask = kwargs.get("layers_to_mask", default_layers_to_mask)
         self.covered_region_excluded_layers = kwargs.get("covered_region_excluded_layers",
@@ -98,7 +106,12 @@ class MaskLayout:
         self.dice_width = kwargs.get("dice_width", default_mask_parameters[self.face_id]["dice_width"])
         self.text_margin = kwargs.get("text_margin", default_mask_parameters[self.face_id]["text_margin"])
         self.chip_size = kwargs.get("chip_size", default_mask_parameters[self.face_id]["chip_size"])
-        self.edge_clearance = kwargs.get("edge_clearance", self.chip_size / 2)
+        if isinstance(self.chip_size, Sequence):
+            self.chip_width, self.chip_height = self.chip_size
+        else:
+            self.chip_width, self.chip_height = self.chip_size, self.chip_size
+        self.edge_clearance = kwargs.get("edge_clearance", (self.chip_width + self.chip_height) / 4)
+        self.remove_chips = kwargs.get("remove_chips", True)
         self.chip_box_offset = kwargs.get("chip_box_offset", default_mask_parameters[self.face_id]["chip_box_offset"])
         self.chip_trans = kwargs.get("chip_trans", default_mask_parameters[self.face_id]["chip_trans"])
         self.mask_name_offset = kwargs.get("mask_name_offset", pya.DPoint(0, 0))  # DEPRECATED
@@ -114,6 +127,8 @@ class MaskLayout:
         self.submasks = kwargs.get("submasks", [])
         self.extra_id = kwargs.get("extra_id", "")
         self.extra_chips = kwargs.get("extra_chips", [])
+        self.mirror_labels = kwargs.get("mirror_labels", False)
+        self.bbox_face_ids = kwargs.get("bbox_face_ids", [self.face_id])
 
         self.top_cell = self.layout.create_cell(f"{self.name} {self.face_id}")
         self.added_chips = []
@@ -131,7 +146,7 @@ class MaskLayout:
         self._min_x = 0
         self._min_y = 0
 
-    def add_chips_map(self, chips_map, align=None, align_to=None, chip_size=None):
+    def add_chips_map(self, chips_map, align=None, align_to=None, chip_size=None, chip_trans=None):
         """Add additional chip maps to the main chip map.
 
         The specified extra chip map, a.k.a. sub-grid, will be attached to the main grid. It may use
@@ -143,9 +158,10 @@ class MaskLayout:
             align: to what side of the main grid this sub-grid attaches. Allowed values: top, left, right and bottom.
             align_to: optional exact point of placement. (x,  y) coordinate tuple
             chip_size: a different chip size may be used in each sub-grid
+            chip_trans: chip transformation to use for chips in this sub-grid, defaults to self.chip_trans.
         """
         chip_size = self.chip_size if not chip_size else chip_size
-        self.extra_chips_maps.append((chips_map, chip_size, align, align_to))
+        self.extra_chips_maps.append((chips_map, chip_size, align, align_to, chip_trans))
 
     def build(self, chips_map_legend):
         """Builds the cell hierarchy for this mask layout.
@@ -160,6 +176,7 @@ class MaskLayout:
 
         """
         self.chips_map_legend = {}
+        self.chip_bounding_boxes = {}
 
         for name, cell in tqdm(chips_map_legend.items(), desc='Building cell hierarchy', bar_format=default_bar_format):
             self.chip_counts[name] = 0
@@ -168,6 +185,17 @@ class MaskLayout:
                 # create copies of the chips, so that modifying these only affects the ones in this MaskLayout
                 new_cell = self.layout.create_cell(name)
                 new_cell.copy_tree(cell)
+
+                # Find the bounding box encompassing base metal gap shapes in all in bbox_face_ids
+                bboxes = [new_cell.dbbox_per_layer(self.layout.layer(default_faces[face_id]["base_metal_gap_wo_grid"]))
+                          for face_id in self.bbox_face_ids]
+                if not all(b.empty() for b in bboxes):
+                    p1_xs, p1_ys, p2_xs, p2_ys = zip(*[(b.p1.x, b.p1.y, b.p2.x, b.p2.y)
+                                                       for b in bboxes if not b.empty()])
+                    self.chip_bounding_boxes[name] = pya.DBox(min(p1_xs), min(p1_ys), max(p2_xs), max(p2_ys))
+                else:
+                    self.chip_bounding_boxes[name] = pya.DBox()
+
                 # remove layers belonging to another face
                 for face_id, face_dictionary in default_faces.items():
                     if face_id != self.face_id:
@@ -205,8 +233,8 @@ class MaskLayout:
         self._insert_mask_name_label(self.top_cell, default_layers["mask_graphical_rep"], 'G')
         # add chips from chips_map
         self._add_chips_from_map(self.chips_map, self.chip_size, None, self.align_to, marker_region)
-        for (chips_map, chip_size, align, align_to) in self.extra_chips_maps:
-            self._add_chips_from_map(chips_map, chip_size, align, align_to, marker_region)
+        for (chips_map, chip_size, align, align_to, chip_trans) in self.extra_chips_maps:
+            self._add_chips_from_map(chips_map, chip_size, align, align_to, marker_region, chip_trans)
 
         # add chips outside chips_map
         for name, pos, *optional in self.extra_chips:
@@ -280,11 +308,11 @@ class MaskLayout:
                 raise ValueError(f"Duplicate use of chip position label {position_label}. "
                                  f"When using extra_chips, please make sure to only use unreserved position labels")
             used_position_labels.add(position_label)
-            bbox_x1 = bbox.left if dtrans.is_mirror() else bbox.right
+            bbox_x1 = bbox.left if (bool(dtrans.is_mirror()) ^ bool(self.mirror_labels)) else bbox.right
             produce_label(labels_cell_2, position_label, dtrans * (pya.DPoint(bbox_x1, bbox.bottom)),
                           LabelOrigin.BOTTOMRIGHT, mask_layout.dice_width, mask_layout.text_margin,
                           [mask_layout.face()[layer] for layer in layers],
-                          mask_layout.face()["ground_grid_avoidance"])
+                          mask_layout.face()["ground_grid_avoidance"], mirror=self.mirror_labels)
             bbox_x2 = bbox.right if dtrans.is_mirror() else bbox.left
             mask_layout._add_chip_graphical_representation_layer(chip_name,
                                                                  dtrans * (pya.DPoint(bbox_x2, bbox.bottom)),
@@ -324,13 +352,19 @@ class MaskLayout:
         region_covered = pya.Region(pya.DPolygon(points).to_itype(self.layout.dbu))
         return region_covered
 
-    def _add_chips_from_map(self, chips_map, chip_size, align, align_to, marker_region):
+    def _add_chips_from_map(self, chips_map, chip_size, align, align_to, marker_region, chip_trans=None):
+        if chip_trans is None:
+            chip_trans = self.chip_trans
+        if isinstance(chip_size, Sequence):
+            chip_width, chip_height = chip_size
+        else:
+            chip_width, chip_height = chip_size, chip_size
         orig = pya.DVector(-self.wafer_rad, self.wafer_rad) - self.chips_map_offset
         if align_to:
             orig = pya.DVector(*align_to)
         elif align:  # autoalign to the specified side of the existing layout
-            w = len(chips_map[0]) * chip_size / 2
-            h = len(chips_map) * chip_size
+            w = len(chips_map[0]) * chip_width / 2
+            h = len(chips_map) * chip_height
             if align == "top":
                 orig = pya.DVector(-w, h + self._max_y * self.layout.dbu)
             elif align == "bottom":
@@ -342,48 +376,42 @@ class MaskLayout:
         if align in ("left", "right"):  # rotate clockwise
             chips_map = zip(*reversed(chips_map))
 
-        orig_chip_size = self.chip_size
-        self.chip_size = chip_size
         region_used = pya.Region()
+        allowed_region = pya.Region([circle_polygon(self.wafer_rad - self.edge_clearance).to_itype(self.layout.dbu)]) \
+            - marker_region \
+            - pya.Region(pya.DBox(-self.wafer_rad, self._mask_name_box_bottom_y,
+                                  self.wafer_rad, self.wafer_rad).to_itype(self.layout.dbu))
         for (i, row) in enumerate(tqdm(chips_map, desc='Adding chips to mask', bar_format=default_bar_format)):
             for (j, name) in enumerate(row):
                 if name == "---":
                     continue
-                position = pya.DPoint(chip_size * j, -chip_size * (i + 1)) + orig
-                pos = position - self.wafer_center
-                test_x = chip_size if pos.x + chip_size / 2 > 0 else 0
-                test_y = chip_size if pos.y + chip_size / 2 > 0 else 0
-                d_edge = self.wafer_rad - (pos + pya.DVector(test_x, test_y)).abs()
-                if d_edge < self.edge_clearance:
-                    print(f" Warning, dropping chip {name} at ({i}, {j}), '{self.face_id}' - too close to edge "
-                          f" {d_edge:.2f} < {self.edge_clearance}")
-                elif pos.y + chip_size > self._mask_name_box_bottom_y:
-                    print(f" Warning, dropping chip {name} at ({i}, {j}), '{self.face_id}' - too close to mask label "
-                          f" {(pos.y + chip_size):.2f} < {self._mask_name_box_bottom_y}")
-                elif pya.Region(pya.Box(pos.x, pos.y, pos.x + chip_size, pos.y + chip_size) * (1 / self.layout.dbu)) \
-                        & marker_region:
-                    print(f" Warning, dropping chip {name} at ({i}, {j}), '{self.face_id}' - overlaps with marker ")
-                else:
-                    added_chip, region_chip = self._add_chip(name, position, self.chip_trans)
-                    region_used += region_chip
-                    if added_chip:
-                        self.chip_counts[name] += 1
+                position = pya.DPoint(chip_width * j, -chip_height * (i + 1)) + orig
+                added_chip, region_chip = self._add_chip(name, position, chip_trans, allowed_region=allowed_region,
+                                                         chip_width=chip_width)
+                region_used += region_chip
+                if added_chip:
+                    self.chip_counts[name] += 1
         self.region_covered -= region_used
         box = region_used.bbox()
         self._min_x = min(box.p1.x, self._min_x)
         self._min_y = min(box.p1.y, self._min_y)
         self._max_x = max(box.p2.x, self._max_x)
         self._max_y = max(box.p2.y, self._max_y)
-        self.chip_size = orig_chip_size
 
-    def _add_chip(self, name, position, trans, position_label=None):
+    def _add_chip(self, name, position, trans, position_label=None, allowed_region=None, chip_width=None):
         """Returns a tuple (Boolean telling if the chip was added, Region which the chip covers)."""
+        if chip_width is None:
+            chip_width = self.chip_width
         chip_region = pya.Region()
         if name in self.chips_map_legend.keys():
-            chip_cell, bounding_box, bbox_offset = self._get_chip_cell_and_bbox(name)
+            chip_cell = self.chips_map_legend[name]
+            bounding_box = self.chip_bounding_boxes[name]
+            bbox_offset = chip_width - bounding_box.width()
             trans = pya.DTrans(position + pya.DVector(bbox_offset, 0) - self.chip_box_offset) * trans
-            self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
             chip_region = pya.Region(pya.Box(trans * bounding_box * (1 / self.layout.dbu)))
+            if self.remove_chips and allowed_region is not None and chip_region.inside(allowed_region).is_empty():
+                return False, pya.Region()
+            self.top_cell.insert(pya.DCellInstArray(chip_cell.cell_index(), trans))
             self.added_chips.append((name, position, bounding_box, trans, position_label))
             return True, chip_region
         return False, chip_region
@@ -439,13 +467,7 @@ class MaskLayout:
                 return chip_name
         return ""
 
-    def _get_chip_cell_and_bbox(self, chip_name):
-        chip_cell = self.chips_map_legend[chip_name]
-        bounding_box = chip_cell.dbbox_per_layer(self.layout.layer(self.face()["base_metal_gap_wo_grid"]))
-        bbox_offset = self.chip_size - bounding_box.width()  # for chips that are smaller than self.chip_size
-        return chip_cell, bounding_box, bbox_offset
-
-    def _add_chip_graphical_representation_layer(self, chip_name, position, pos_index_name, chip_size, cell):
+    def _add_chip_graphical_representation_layer(self, chip_name, position, pos_index_name, chip_width, cell):
         chip_name_text = self.layout.create_cell("TEXT", "Basic", {
             "layer": default_layers["mask_graphical_rep"],
             "text": chip_name,
@@ -456,10 +478,10 @@ class MaskLayout:
             "text": pos_index_name,
             "mag": 4000 * self.mask_text_scale,
         })
-        chip_name_trans = pya.DTrans(position + pya.DVector((chip_size - chip_name_text.dbbox().width()) / 2,
+        chip_name_trans = pya.DTrans(position + pya.DVector((chip_width - chip_name_text.dbbox().width()) / 2,
                                                             self.mask_text_scale * 750))
         cell.insert(pya.DCellInstArray(chip_name_text.cell_index(), chip_name_trans))
-        pos_index_trans = pya.DTrans(position + pya.DVector((chip_size - pos_index_name_text.dbbox().width()) / 2,
+        pos_index_trans = pya.DTrans(position + pya.DVector((chip_width - pos_index_name_text.dbbox().width()) / 2,
                                                             self.mask_text_scale * 6000))
         cell.insert(pya.DCellInstArray(pos_index_name_text.cell_index(), pos_index_trans))
 
@@ -484,5 +506,6 @@ class MaskLayout:
         self._mask_name_box_bottom_y = cell_mask_name_y - cell_mask_name_h - 2 * self.mask_name_box_margin
         trans = pya.DTrans(- self._mask_name_letter_I_offset - cell_mask_name_w / 2,
                            cell_mask_name_y - cell_mask_name_h - self.mask_name_box_margin)
-
+        if self.mirror_labels:
+            trans *= pya.DTrans(2, True, -2 * trans.disp.x, 0)
         return cell_mask_name, trans
