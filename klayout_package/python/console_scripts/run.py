@@ -56,6 +56,8 @@ def run():
 
     simulate_parser.add_argument('--detach', action="store_true",
                                  help='Detach the remote simulation from terminal, not waiting for it to finish')
+    simulate_parser.add_argument('--poll-interval', type=int,
+                                 help='Interval for polling the job state of remote simulation in seconds')
 
     mask_parser.add_argument('mask_script', type=str, help='Name of the mask script')
     mask_parser.add_argument('-d', '--debug', action="store_true", help="Debug mode. Use a single process and "
@@ -82,11 +84,19 @@ def run():
 
         if args.remote:
             remote_host = str(args.export_script)
-            remote_export_and_run(remote_host, args.kqc_remote_tmp_path, args.detach, args_for_script)
+            remote_export_and_run(remote_host,
+                                  args.kqc_remote_tmp_path,
+                                  args.detach,
+                                  args.poll_interval,
+                                  args_for_script)
             return
         if args.remote_run_only:
             remote_host = str(args.export_script)
-            remote_run_only(remote_host, args_for_script, args.kqc_remote_tmp_path, args.detach)
+            remote_run_only(remote_host,
+                            args.kqc_remote_tmp_path,
+                            args.detach,
+                            args.poll_interval,
+                            args_for_script)
             return
 
         script_file = Path(args.export_script)
