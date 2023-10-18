@@ -50,7 +50,7 @@ class AirbridgeMultiFace(Airbridge):
         self.cell.shapes(self.get_layer("base_metal_addition", 1)).insert(shape)
 
         # Add ground grid avoidance to second face
-        self.add_protection(shape.enlarged(self.margin, self.margin), 1, 0)
+        self.add_protection(shape.enlarged(self.margin, self.margin), 1)
 
         # Flip-chip bump
         if self.include_bumps:

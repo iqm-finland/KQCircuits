@@ -114,6 +114,8 @@ class Element(pya.PCellDeclarationHelper):
     face_ids = Param(pdt.TypeList, "Chip face IDs list", ["1t1", "2b1", "1b1", "2t1"])
     display_name = Param(pdt.TypeString, "Name displayed in GUI (empty for default)", "")
     protect_opposite_face = Param(pdt.TypeBoolean, "Add opposite face protection too", False)
+    opposing_face_id_groups = Param(pdt.TypeList, "Opposing face ID groups (list of lists)", [["1t1", "2b1"]],
+                                    hidden=True)
 
     def __init__(self):
         ""
@@ -518,18 +520,23 @@ class Element(pya.PCellDeclarationHelper):
         self.insert_cell(error_text_cell, pya.DTrans(position - text_center))
         raise ValueError(error_msg)
 
-    def add_protection(self, shape, face_id=0, opposite_face_id=1):
+    def add_protection(self, shape, face_id=0):
         """Add ground grid protection shape
 
         Args:
              shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer
              face_id: primary face index of ground_grid_avoidance layer, default=0
-             opposite_face_id: opposite face index, will be used if protect_opposite_face is True, default=1
         """
 
         self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id)).insert(shape)
-        if self.protect_opposite_face and len(self.face_ids) > opposite_face_id:
-            self.cell.shapes(self.get_layer("ground_grid_avoidance", opposite_face_id)).insert(shape)
+        if self.protect_opposite_face:
+            for group in self.opposing_face_id_groups:
+                if self.face_ids[face_id] in group:
+                    for other_face_id in group:
+                        if other_face_id != self.face_ids[face_id] and other_face_id in self.face_ids:
+                            self.cell.shapes(self.get_layer("ground_grid_avoidance",
+                                                            self.face_ids.index(other_face_id))).insert(shape)
+                    break
 
     def sync_parameters(self, abc):
         """Syncronise the calling class' parameters with a JSON representation.

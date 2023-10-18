@@ -160,7 +160,7 @@ class WaveguideCoplanar(Element):
         return v1, v2, alpha1, alpha2, corner_pos
 
     @staticmethod
-    def produce_end_termination(elem, point_1, point_2, term_len, face_index=0, opp_face_index=1):
+    def produce_end_termination(elem, point_1, point_2, term_len, face_index=0):
         """Produces termination for a waveguide.
 
         The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.
@@ -173,7 +173,6 @@ class WaveguideCoplanar(Element):
             point_2: DPoint after which termination is produced
             term_len (double): termination length, assumed positive
             face_index (int): face index of the face in elem where the termination is created
-            opp_face_index (int): face index of the opposite face
         """
         a = elem.a
         b = elem.b
@@ -192,7 +191,7 @@ class WaveguideCoplanar(Element):
         term_len += elem.margin
         poly2 = pya.DPolygon([u*(a/2 + b + elem.margin), u*(a/2 + b + elem.margin) + v*term_len,
                               u*(-a/2 - b - elem.margin) + v*term_len, u*(-a/2 - b - elem.margin)])
-        elem.add_protection(poly2.transform(shift_start), face_index, opp_face_index)
+        elem.add_protection(poly2.transform(shift_start), face_index)
 
     @staticmethod
     def is_continuous(waveguide_cell, annotation_layer, tolerance):
