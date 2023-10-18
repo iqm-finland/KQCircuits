@@ -50,8 +50,8 @@ sim_parameters = {
     'head_length': head_length,
     'resonator_length': resonator_length,
     'r': turn_radius,
-    'pl_a': 10,
-    'pl_b': 6,
+    'res_a': 10,
+    'res_b': 6,
     'a': 10,
     'b': 6,
     'ground_width': 10
