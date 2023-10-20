@@ -251,10 +251,16 @@ def match_points_on_edges(cell, layout, layers):
                 edge = pya.Edge(p0, p1)
                 # Travel from p0 to p1 in Voronoi diagram
                 while p0 != p1:
-                    # Update p0 to be the neighbour closest to p1
-                    p0 = min(all_points[p0], key=lambda x, y=p1: x.sq_distance(y))
-                    if edge.contains(p0):
-                        new_points.append(p0)  # Add point if edge contains it. Finally, p0 is equal to p1 here.
+                    # List points that are on the edge towards p1
+                    sq_dist = p0.sq_distance(p1)
+                    p_on_edge = [p for p in all_points[p0] if edge.contains(p) and p.sq_distance(p1) < sq_dist]
+                    if p_on_edge:
+                        # Update p0 to be the point on edge towards p1 that is furthest from p1
+                        p0 = max(p_on_edge, key=lambda x, y=p1: x.sq_distance(y))
+                        new_points.append(p0)  # Add the point to the polygon. Finally, p0 is equal to p1 here.
+                    else:
+                        # Update p0 to be the neighbour closest to p1
+                        p0 = min(all_points[p0], key=lambda x, y=p1: x.sq_distance(y))
 
             # Replace polygon if any points are added
             if len(new_points) != len(points):
