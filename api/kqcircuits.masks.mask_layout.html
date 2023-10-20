@@ -366,6 +366,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -647,7 +648,7 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.chip_size">
 <span class="sig-name descname"><span class="pre">chip_size</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.chip_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>side width of the chips (assuming square chips)</p>
+<dd><p>side width of the chips (for square chips), or tuple (width, height) for rectangular chips</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -661,6 +662,13 @@ column, Active/inactive, chip ID, chip type). Gets exported as an external csv f
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.edge_clearance">
 <span class="sig-name descname"><span class="pre">edge_clearance</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.edge_clearance" title="Permalink to this definition">¶</a></dt>
 <dd><p>minimum clearance of outer chips from the edge of the mask</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.remove_chips">
+<span class="sig-name descname"><span class="pre">remove_chips</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.remove_chips" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True (default), chips that violate edge_clearance or conflict with markers are removed from
+chip maps. Note that <code class="docutils literal notranslate"><span class="pre">extra_chips</span></code> are never removed.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -757,9 +765,21 @@ position_label is an optional string that overrides the automatic chip position 
 populated by chips added during build()</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.mirror_labels">
+<span class="sig-name descname"><span class="pre">mirror_labels</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.mirror_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean, if True mask and chip copy labels are mirrored. Default False.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.bbox_face_ids">
+<span class="sig-name descname"><span class="pre">bbox_face_ids</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.bbox_face_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of face_ids to consider when calcualting the bounding box of chips. Defaults to [face_id]</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.add_chips_map">
-<span class="sig-name descname"><span class="pre">add_chips_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.add_chips_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.add_chips_map" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">add_chips_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">align_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chip_trans</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.add_chips_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.add_chips_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add additional chip maps to the main chip map.</p>
 <p>The specified extra chip map, a.k.a. sub-grid, will be attached to the main grid. It may use
 different chip size than the main grid. For convenience left and rigtht sub-grids will be
@@ -771,6 +791,7 @@ rotated 90 degrees clockwise.</p>
 <li><p><strong>align</strong> – to what side of the main grid this sub-grid attaches. Allowed values: top, left, right and bottom.</p></li>
 <li><p><strong>align_to</strong> – optional exact point of placement. (x,  y) coordinate tuple</p></li>
 <li><p><strong>chip_size</strong> – a different chip size may be used in each sub-grid</p></li>
+<li><p><strong>chip_trans</strong> – chip transformation to use for chips in this sub-grid, defaults to self.chip_trans.</p></li>
 </ul>
 </dd>
 </dl>

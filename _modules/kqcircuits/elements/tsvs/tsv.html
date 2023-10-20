@@ -364,6 +364,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../api/kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -559,6 +560,7 @@
 
     <span class="n">tsv_type</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeString</span><span class="p">,</span> <span class="s2">&quot;TSV type&quot;</span><span class="p">,</span> <span class="n">default_tsv_type</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="n">tsv_type_choices</span><span class="p">)</span>
     <span class="n">tsv_diameter</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV diameter&quot;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
+    <span class="n">tsv_margin</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;TSV margin&quot;</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;μm&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Tsv.create"><a class="viewcode-back" href="../../../../api/kqcircuits.elements.tsvs.tsv.html#kqcircuits.elements.tsvs.tsv.Tsv.create">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tsv_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>

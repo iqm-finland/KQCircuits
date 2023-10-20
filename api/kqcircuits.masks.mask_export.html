@@ -366,6 +366,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -578,7 +579,9 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>export_dir</strong> – directory for the files</p></li>
-<li><p><strong>layer_name</strong> – name of the layer exported as a mask, if starts with ‘-‘ then it will be inverted</p></li>
+<li><p><strong>layer_name</strong> – name of the layer exported as a mask. The following prefixes can be used to modify the export:
+* Prefix <code class="docutils literal notranslate"><span class="pre">-</span></code>: invert the shapes on this layer
+* Prefix <code class="docutils literal notranslate"><span class="pre">^</span></code>: mirror the layer (left-right)</p></li>
 <li><p><strong>mask_layout</strong> – MaskLayout object for the cell and face reference</p></li>
 <li><p><strong>mask_set</strong> – MaskSet object for the name and version attributes to be included in the filename</p></li>
 </ul>

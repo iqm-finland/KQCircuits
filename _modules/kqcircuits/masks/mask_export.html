@@ -364,6 +364,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -698,7 +699,9 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        export_dir: directory for the files</span>
-<span class="sd">        layer_name: name of the layer exported as a mask, if starts with &#39;-&#39; then it will be inverted</span>
+<span class="sd">        layer_name: name of the layer exported as a mask. The following prefixes can be used to modify the export:</span>
+<span class="sd">           * Prefix ``-``: invert the shapes on this layer</span>
+<span class="sd">           * Prefix ``^``: mirror the layer (left-right)</span>
 <span class="sd">        mask_layout: MaskLayout object for the cell and face reference</span>
 <span class="sd">        mask_set: MaskSet object for the name and version attributes to be included in the filename</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -706,6 +709,10 @@
     <span class="k">if</span> <span class="n">layer_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
         <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layer_name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
         <span class="n">invert</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">mirror</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">layer_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;^&#39;</span><span class="p">):</span>
+        <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layer_name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">mirror</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="n">top_cell</span> <span class="o">=</span> <span class="n">mask_layout</span><span class="o">.</span><span class="n">top_cell</span>
     <span class="n">layout</span> <span class="o">=</span> <span class="n">top_cell</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span>
@@ -719,6 +726,12 @@
         <span class="n">layout</span><span class="o">.</span><span class="n">copy_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">tmp_layer</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
         <span class="n">top_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">wafer</span> <span class="o">^</span> <span class="n">disc</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">mirror</span><span class="p">:</span>
+        <span class="n">wafer</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">top_cell</span><span class="o">.</span><span class="n">begin_shapes_rec</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span><span class="o">.</span><span class="n">merged</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">copy_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">tmp_layer</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">clear_layer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+        <span class="n">top_cell</span><span class="o">.</span><span class="n">shapes</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">wafer</span><span class="o">.</span><span class="n">transformed</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Trans</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
 
     <span class="n">layers_to_export</span> <span class="o">=</span> <span class="p">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">layer</span><span class="p">}</span>
     <span class="n">path</span> <span class="o">=</span> <span class="n">export_dir</span> <span class="o">/</span> <span class="p">(</span><span class="n">_get_mask_layout_full_name</span><span class="p">(</span><span class="n">mask_set</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">layer_info</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>

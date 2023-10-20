@@ -364,6 +364,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -555,6 +556,7 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.masks.multi_face_mask_layout</span> <span class="kn">import</span> <span class="n">MultiFaceMaskLayout</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.log_router</span> <span class="kn">import</span> <span class="n">route_log</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_bar_format</span><span class="p">,</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">default_face_id</span>
@@ -629,7 +631,6 @@
         <span class="k">if</span> <span class="s1">&#39;-c&#39;</span> <span class="ow">in</span> <span class="n">argv</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
 
-
 <div class="viewcode-block" id="MaskSet.add_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips_map</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="n">default_face_id</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a mask layout from chips_map and adds it to self.mask_layouts.</span>
 
@@ -649,6 +650,34 @@
                                        <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_layout</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mask_layout</span></div>
+
+<div class="viewcode-block" id="MaskSet.add_multi_face_mask_layout"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_multi_face_mask_layout">[docs]</a>    <span class="k">def</span> <span class="nf">add_multi_face_mask_layout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">face_ids</span><span class="p">,</span> <span class="n">chips_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extra_face_params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="o">=</span><span class="n">MaskLayout</span><span class="p">,</span>
+                                   <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a multi face mask layout, which can be used to make masks with matching chip maps on multiple faces.</span>
+
+<span class="sd">        A ``MaskLayout`` is created of each face in ``face_ids``. By default, the individual mask layouts all have</span>
+<span class="sd">        identical parameters, but parameters can be overwritten for a single face id through ``extra_face_params``.</span>
+
+<span class="sd">        By default, ``bbox_face_ids`` is set to ``face_ids`` for all mask layouts.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            face_ids: list of face ids to include</span>
+<span class="sd">            chips_map: Chips map to use, or None to use an empty chips map.</span>
+<span class="sd">            extra_face_params: a dictionary of ``{face_id: extra_kwargs}``, where ``extra_kwargs`` is a dictionary of</span>
+<span class="sd">                 keyword arguments to apply only to the mask layout for ``face_id``.</span>
+<span class="sd">            mask_layout_type: optional subclass of MaskLayout to use</span>
+<span class="sd">            kwargs: any keyword arguments are passed to all containing mask layouts.</span>
+
+<span class="sd">        Returns: a ``MultiFaceMaskLayout`` instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;mask_export_layers&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;mask_export_layers&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_export_layers</span>
+
+        <span class="n">mfml</span> <span class="o">=</span> <span class="n">MultiFaceMaskLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_grid</span><span class="p">,</span> <span class="n">face_ids</span><span class="p">,</span>
+                                   <span class="n">chips_map</span><span class="p">,</span> <span class="n">extra_face_params</span><span class="p">,</span> <span class="n">mask_layout_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">face_id</span> <span class="ow">in</span> <span class="n">mfml</span><span class="o">.</span><span class="n">face_ids</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask_layouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mfml</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">[</span><span class="n">face_id</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">mfml</span></div>
 
 <div class="viewcode-block" id="MaskSet.add_chip"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet.add_chip">[docs]</a>    <span class="k">def</span> <span class="nf">add_chip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chips</span><span class="p">,</span> <span class="n">variant_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cpus</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">parameters</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.</span>

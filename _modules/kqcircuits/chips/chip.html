@@ -364,6 +364,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -570,7 +571,7 @@
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">TsvEllipse</span><span class="p">,</span> <span class="s2">&quot;tsv_elliptical_width&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">FlipChipConnectorRf</span><span class="p">,</span> <span class="s2">&quot;connector_type&quot;</span><span class="p">)</span>
 <span class="nd">@add_parameter</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;box&quot;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;name_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;name_chip&quot;</span><span class="p">,</span> <span class="s2">&quot;name_copy&quot;</span><span class="p">,</span> <span class="s2">&quot;name_brand&quot;</span><span class="p">,</span>
+<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">ChipFrame</span><span class="p">,</span> <span class="s2">&quot;name_mask&quot;</span><span class="p">,</span> <span class="s2">&quot;name_chip&quot;</span><span class="p">,</span> <span class="s2">&quot;name_copy&quot;</span><span class="p">,</span> <span class="s2">&quot;name_brand&quot;</span><span class="p">,</span> <span class="s2">&quot;chip_dicing_in_base_metal&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;dice_grid_margin&quot;</span><span class="p">,</span> <span class="n">marker_types</span><span class="o">=</span><span class="p">[</span><span class="n">default_marker_type</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Chip</span><span class="p">(</span><span class="n">Element</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base PCell declaration for chips.</span>

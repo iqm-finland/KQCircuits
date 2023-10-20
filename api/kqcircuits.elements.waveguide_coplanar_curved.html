@@ -366,6 +366,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -590,7 +591,7 @@ left_gap_outer, right_gap_inner, right_gap_outer, left_protection, right_protect
 
 <dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_curve_termination">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">produce_curve_termination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opp_face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar_curved.html#WaveguideCoplanarCurved.produce_curve_termination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_curve_termination" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">produce_curve_termination</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elem</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">term_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">face_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/elements/waveguide_coplanar_curved.html#WaveguideCoplanarCurved.produce_curve_termination"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_curve_termination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produces termination for a curved waveguide.</p>
 <p>The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.
 The termination is placed at the position where a curved waveguide with alpha=angle and trans=trans would end.</p>
@@ -602,7 +603,6 @@ The termination is placed at the position where a curved waveguide with alpha=an
 <li><p><strong>term_len</strong> (<em>double</em>) – termination length, assumed positive</p></li>
 <li><p><strong>trans</strong> (<em>DTrans</em>) – transformation applied to the termination</p></li>
 <li><p><strong>face_index</strong> (<em>int</em>) – face index of the face in elem where the termination is created</p></li>
-<li><p><strong>opp_face_index</strong> (<em>int</em>) – face index of the opposite face</p></li>
 </ul>
 </dd>
 </dl>

@@ -364,6 +364,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -554,7 +555,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
                  <span class="n">resistance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">reactance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">inductance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">capacitance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                 <span class="n">face</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">junction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+                 <span class="n">face</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">junction</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">renormalization</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">50</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
 <span class="sd">            number: Port number.</span>
@@ -564,6 +565,7 @@
 <span class="sd">            capacitance: Capacitance of the element. Given in Farads (:math:`\\text{F}`).</span>
 <span class="sd">            face: Integer-valued face index for the port.</span>
 <span class="sd">            junction: Whether this port models a SQUID/Junction. Used in EPR calculations.</span>
+<span class="sd">            renormalization: Port renormalization in Ohms or None to not re-normalize the port.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resistance</span> <span class="o">=</span> <span class="n">resistance</span>
@@ -572,6 +574,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">capacitance</span> <span class="o">=</span> <span class="n">capacitance</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">face</span> <span class="o">=</span> <span class="n">face</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">junction</span> <span class="o">=</span> <span class="n">junction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">renormalization</span> <span class="o">=</span> <span class="n">renormalization</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
 
 <div class="viewcode-block" id="Port.as_dict"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.port.html#kqcircuits.simulations.port.Port.as_dict">[docs]</a>    <span class="k">def</span> <span class="nf">as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

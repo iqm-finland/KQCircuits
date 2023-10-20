@@ -7,6 +7,7 @@ kqcircuits.masks
    kqcircuits.masks.mask_export
    kqcircuits.masks.mask_layout
    kqcircuits.masks.mask_set
+   kqcircuits.masks.multi_face_mask_layout
 
 Module contents
 ---------------

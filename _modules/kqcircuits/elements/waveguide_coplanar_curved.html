@@ -364,6 +364,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.mask_set.html">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../api/kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -643,7 +644,7 @@
             <span class="n">annotation</span></div>
 
 <div class="viewcode-block" id="WaveguideCoplanarCurved.produce_curve_termination"><a class="viewcode-back" href="../../../api/kqcircuits.elements.waveguide_coplanar_curved.html#kqcircuits.elements.waveguide_coplanar_curved.WaveguideCoplanarCurved.produce_curve_termination">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">produce_curve_termination</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">term_len</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">face_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">opp_face_index</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">produce_curve_termination</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">term_len</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">face_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Produces termination for a curved waveguide.</span>
 
 <span class="sd">        The termination consists of a rectangular polygon in the metal gap layer, and grid avoidance around it.</span>
@@ -655,7 +656,6 @@
 <span class="sd">            term_len (double): termination length, assumed positive</span>
 <span class="sd">            trans (DTrans): transformation applied to the termination</span>
 <span class="sd">            face_index (int): face index of the face in elem where the termination is created</span>
-<span class="sd">            opp_face_index (int): face index of the opposite face</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">left_inner_arc</span><span class="p">,</span> <span class="n">left_outer_arc</span><span class="p">,</span> <span class="n">right_inner_arc</span><span class="p">,</span> <span class="n">right_outer_arc</span><span class="p">,</span> <span class="n">left_protection_arc</span><span class="p">,</span> <span class="n">right_protection_arc</span><span class="p">,</span>\
             <span class="n">_</span> <span class="o">=</span> <span class="n">WaveguideCoplanarCurved</span><span class="o">.</span><span class="n">create_curve_arcs</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
@@ -683,7 +683,7 @@
             <span class="n">right_protection_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">term_len</span> <span class="o">+</span> <span class="n">elem</span><span class="o">.</span><span class="n">margin</span><span class="p">)</span><span class="o">*</span><span class="n">term_dir</span><span class="p">,</span>
             <span class="n">right_protection_arc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="p">]</span>
-        <span class="n">elem</span><span class="o">.</span><span class="n">add_protection</span><span class="p">(</span><span class="n">trans</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">protection_pts</span><span class="p">),</span> <span class="n">face_index</span><span class="p">,</span> <span class="n">opp_face_index</span><span class="p">)</span></div></div>
+        <span class="n">elem</span><span class="o">.</span><span class="n">add_protection</span><span class="p">(</span><span class="n">trans</span> <span class="o">*</span> <span class="n">pya</span><span class="o">.</span><span class="n">DPolygon</span><span class="p">(</span><span class="n">protection_pts</span><span class="p">),</span> <span class="n">face_index</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

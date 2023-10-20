@@ -1,0 +1,10 @@
+kqcircuits.masks.multi\_face\_mask\_layout
+==========================================
+
+.. automodule:: kqcircuits.masks.multi_face_mask_layout
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. kqc_elem_params:: kqcircuits.masks.multi_face_mask_layout
+.. image:: ../pcell_images/kqcircuits.masks.multi_face_mask_layout.png

@@ -46,7 +46,7 @@
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kqcircuits.qubits" href="kqcircuits.qubits.html" />
+    <link rel="next" title="kqcircuits.masks.multi_face_mask_layout" href="kqcircuits.masks.multi_face_mask_layout.html" />
     <link rel="prev" title="kqcircuits.masks.mask_layout" href="kqcircuits.masks.mask_layout.html" /> 
 </head>
 
@@ -366,6 +366,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_export.html">kqcircuits.masks.mask_export</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.mask_layout.html">kqcircuits.masks.mask_layout</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kqcircuits.masks.mask_set</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.multi_face_mask_layout.html">kqcircuits.masks.multi_face_mask_layout</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kqcircuits.masks.html#module-kqcircuits.masks">Module contents</a></li>
 </ul>
 </li>
@@ -635,6 +636,28 @@ mask.export()</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_set.MaskSet.add_multi_face_mask_layout">
+<span class="sig-name descname"><span class="pre">add_multi_face_mask_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">face_ids</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chips_map=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extra_face_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_layout_type=&lt;class</span> <span class="pre">'kqcircuits.masks.mask_layout.MaskLayout'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_multi_face_mask_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_multi_face_mask_layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a multi face mask layout, which can be used to make masks with matching chip maps on multiple faces.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">MaskLayout</span></code> is created of each face in <code class="docutils literal notranslate"><span class="pre">face_ids</span></code>. By default, the individual mask layouts all have
+identical parameters, but parameters can be overwritten for a single face id through <code class="docutils literal notranslate"><span class="pre">extra_face_params</span></code>.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">bbox_face_ids</span></code> is set to <code class="docutils literal notranslate"><span class="pre">face_ids</span></code> for all mask layouts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>face_ids</strong> – list of face ids to include</p></li>
+<li><p><strong>chips_map</strong> – Chips map to use, or None to use an empty chips map.</p></li>
+<li><p><strong>extra_face_params</strong> – a dictionary of <code class="docutils literal notranslate"><span class="pre">{face_id:</span> <span class="pre">extra_kwargs}</span></code>, where <code class="docutils literal notranslate"><span class="pre">extra_kwargs</span></code> is a dictionary of
+keyword arguments to apply only to the mask layout for <code class="docutils literal notranslate"><span class="pre">face_id</span></code>.</p></li>
+<li><p><strong>mask_layout_type</strong> – optional subclass of MaskLayout to use</p></li>
+<li><p><strong>kwargs</strong> – any keyword arguments are passed to all containing mask layouts.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Returns: a <code class="docutils literal notranslate"><span class="pre">MultiFaceMaskLayout</span></code> instance</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_set.MaskSet.add_chip">
 <span class="sig-name descname"><span class="pre">add_chip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chips</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variant_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cpus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">parameters</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_set.html#MaskSet.add_chip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_set.MaskSet.add_chip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a chip (or list of chips) with parameters to self.chips_map_legend and exports the files for each chip.</p>
@@ -705,7 +728,7 @@ lists) where each element is a string identifying the chip type</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kqcircuits.qubits.html" class="btn btn-neutral float-right" title="kqcircuits.qubits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kqcircuits.masks.multi_face_mask_layout.html" class="btn btn-neutral float-right" title="kqcircuits.masks.multi_face_mask_layout" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kqcircuits.masks.mask_layout.html" class="btn btn-neutral float-left" title="kqcircuits.masks.mask_layout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
