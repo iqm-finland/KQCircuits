@@ -725,18 +725,22 @@
                 <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="n">variant_name</span><span class="p">,</span>
                 <span class="s1">&#39;name_copy&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
             <span class="p">}</span>
-            <span class="k">if</span> <span class="n">chip_params</span><span class="p">:</span>
-                <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chip_params</span><span class="p">)</span>
-
             <span class="k">if</span> <span class="n">mock_chips</span><span class="p">:</span>
-                <span class="n">chip_params</span> <span class="o">=</span> <span class="n">chip_class</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
-                <span class="n">mock_params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">chip_params</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">,</span> <span class="s1">&#39;face_boxes&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_enabled&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_marker_dist&#39;</span><span class="p">,</span>
-                                                           <span class="s1">&#39;frames_diagonal_squares&#39;</span><span class="p">,</span> <span class="s1">&#39;frames_mirrored&#39;</span><span class="p">,</span> <span class="s1">&#39;face_ids&#39;</span><span class="p">]}</span>
-                <span class="n">mock_params</span><span class="p">[</span><span class="s1">&#39;with_grid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">mock_params</span> <span class="o">=</span> <span class="n">chip_class</span><span class="p">()</span><span class="o">.</span><span class="n">pcell_params_by_name</span><span class="p">(</span><span class="n">Chip</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">chip_params</span><span class="p">:</span>
+                    <span class="c1"># Pass through parameters only if they exist in Chip</span>
+                    <span class="n">mock_params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">chip_params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mock_params</span><span class="p">})</span>
+                <span class="n">mock_params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                    <span class="s1">&#39;with_grid&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s1">&#39;with_gnd_bumps&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s1">&#39;with_gnd_tsvs&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="p">})</span>
                 <span class="n">cell</span> <span class="o">=</span> <span class="n">Chip</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">mock_params</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">chip_params</span><span class="p">:</span>
+                    <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">chip_params</span><span class="p">)</span>
                 <span class="n">cell</span> <span class="o">=</span> <span class="n">chip_class</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># its a file name, load it</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># it&#39;s a file name, load it</span>
             <span class="n">load_opts</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="p">,</span> <span class="s2">&quot;CellConflictResolution&quot;</span><span class="p">):</span>
                 <span class="n">load_opts</span><span class="o">.</span><span class="n">cell_conflict_resolution</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">LoadLayoutOptions</span><span class="o">.</span><span class="n">CellConflictResolution</span><span class="o">.</span><span class="n">RenameCell</span>

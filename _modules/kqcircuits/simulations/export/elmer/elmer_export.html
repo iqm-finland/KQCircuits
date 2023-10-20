@@ -580,6 +580,7 @@
                       <span class="n">p_element_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                       <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">boundary_conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">percent_error</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
                       <span class="n">max_error_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -599,6 +600,7 @@
 <span class="sd">        p_element_order(int): polynomial order of p-elements (Default: 1)</span>
 <span class="sd">        frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.</span>
 <span class="sd">        mesh_size(dict): Parameters to determine mesh element sizes</span>
+<span class="sd">        boundary_conditions(dict): Parameters to determine boundary conditions</span>
 <span class="sd">        workflow(dict): Parameters for simulation workflow</span>
 <span class="sd">        percent_error(float): Stopping criterion in adaptive meshing.</span>
 <span class="sd">        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.</span>
@@ -640,6 +642,7 @@
         <span class="o">**</span><span class="n">simulation</span><span class="o">.</span><span class="n">get_simulation_data</span><span class="p">(),</span>
         <span class="o">**</span><span class="p">({</span><span class="s1">&#39;layers&#39;</span><span class="p">:</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">layer</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">datatype</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">layers</span><span class="o">.</span><span class="n">items</span><span class="p">()}}</span> <span class="k">if</span> <span class="n">is_cross_section</span> <span class="k">else</span> <span class="p">{}),</span>
         <span class="s1">&#39;mesh_size&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
+        <span class="s1">&#39;boundary conditions&#39;</span><span class="p">:</span> <span class="n">boundary_conditions</span><span class="p">,</span>
         <span class="s1">&#39;workflow&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">workflow</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">workflow</span><span class="p">,</span>
         <span class="s1">&#39;percent_error&#39;</span><span class="p">:</span> <span class="n">percent_error</span><span class="p">,</span>
         <span class="s1">&#39;max_error_scale&#39;</span><span class="p">:</span> <span class="n">max_error_scale</span><span class="p">,</span>
@@ -943,6 +946,7 @@
                  <span class="n">file_prefix</span><span class="o">=</span><span class="s1">&#39;simulation&#39;</span><span class="p">,</span>
                  <span class="n">script_file</span><span class="o">=</span><span class="s1">&#39;scripts/run.py&#39;</span><span class="p">,</span>
                  <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">boundary_conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">workflow</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">percent_error</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
                  <span class="n">max_error_scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
@@ -966,6 +970,7 @@
 <span class="sd">        file_prefix: File prefix of the script file to be created.</span>
 <span class="sd">        script_file: Name of the script file to run.</span>
 <span class="sd">        mesh_size(dict): Parameters to determine mesh element sizes</span>
+<span class="sd">        boundary_conditions(dict): Parameters to determine boundary conditions</span>
 <span class="sd">        workflow(dict): Parameters for simulation workflow</span>
 <span class="sd">        percent_error(float): Stopping criterion in adaptive meshing.</span>
 <span class="sd">        max_error_scale(float): Maximum element error, relative to percent_error, allowed in individual elements.</span>
@@ -1027,6 +1032,7 @@
                     <span class="n">p_element_order</span><span class="o">=</span><span class="n">p_element_order</span><span class="p">,</span>
                     <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
                     <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
+                    <span class="n">boundary_conditions</span><span class="o">=</span><span class="n">boundary_conditions</span><span class="p">,</span>
                     <span class="n">workflow</span><span class="o">=</span><span class="n">workflow</span><span class="p">,</span>
                     <span class="n">percent_error</span><span class="o">=</span><span class="n">percent_error</span><span class="p">,</span>
                     <span class="n">max_error_scale</span><span class="o">=</span><span class="n">max_error_scale</span><span class="p">,</span>

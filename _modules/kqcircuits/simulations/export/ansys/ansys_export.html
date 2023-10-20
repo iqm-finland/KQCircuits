@@ -575,8 +575,9 @@
                       <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                       <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                       <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                      <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                      <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                      <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulation into json and gds files.</span>
 
@@ -599,8 +600,8 @@
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
 <span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
 <span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;pyepr&#39;.</span>
-<span class="sd">        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units</span>
-<span class="sd">            (if None is given, then the mesh element size is not restricted in the gap).</span>
+<span class="sd">        mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and</span>
+<span class="sd">            value as the maximal mesh element length inside the layer.</span>
 <span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
 <span class="sd">        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations</span>
 <span class="sd">            from the participation sheets. Default is None. Input is of the form::</span>
@@ -622,6 +623,7 @@
 <span class="sd">                },</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
+<span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">         Path to exported json file.</span>
@@ -652,10 +654,11 @@
             <span class="s1">&#39;max_delta_f&#39;</span><span class="p">:</span> <span class="n">max_delta_f</span><span class="p">,</span>
             <span class="s1">&#39;n_modes&#39;</span><span class="p">:</span> <span class="n">n_modes</span><span class="p">,</span>
         <span class="p">},</span>
-        <span class="s1">&#39;gap_max_element_length&#39;</span><span class="p">:</span> <span class="n">gap_max_element_length</span><span class="p">,</span>
+        <span class="s1">&#39;mesh_size&#39;</span><span class="p">:</span> <span class="p">{}</span> <span class="k">if</span> <span class="n">mesh_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mesh_size</span><span class="p">,</span>
         <span class="s1">&#39;substrate_loss_tangent&#39;</span><span class="p">:</span> <span class="n">substrate_loss_tangent</span><span class="p">,</span>
         <span class="s1">&#39;dielectric_surfaces&#39;</span><span class="p">:</span> <span class="n">dielectric_surfaces</span><span class="p">,</span>
-        <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span>
+        <span class="s1">&#39;simulation_flags&#39;</span><span class="p">:</span> <span class="n">simulation_flags</span><span class="p">,</span>
+        <span class="s1">&#39;integrate_energies&#39;</span><span class="p">:</span> <span class="n">integrate_energies</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">ansys_project_template</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -756,12 +759,12 @@
                  <span class="n">frequency_units</span><span class="o">=</span><span class="s2">&quot;GHz&quot;</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_delta_s</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">percent_error</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">percent_refinement</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
                  <span class="n">maximum_passes</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">minimum_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">minimum_converged_passes</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">sweep_enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sweep_end</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="s1">&#39;interpolating&#39;</span><span class="p">,</span>
-                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gap_max_element_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">max_delta_f</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mesh_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                  <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exit_after_run</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">ansys_executable</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;%PROGRAMFILES%\AnsysEM\v232\Win64\ansysedt.exe&quot;</span><span class="p">,</span>
                  <span class="n">import_script</span><span class="o">=</span><span class="s1">&#39;import_and_simulate.py&#39;</span><span class="p">,</span> <span class="n">post_process_script</span><span class="o">=</span><span class="s1">&#39;export_batch_results.py&#39;</span><span class="p">,</span>
                  <span class="n">intermediate_processing_command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_rel_path</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">simulation_flags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">ansys_project_template</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">integrate_energies</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Export Ansys simulations by writing necessary scripts and json, gds, and bat files.</span>
 
@@ -786,8 +789,8 @@
 <span class="sd">        sweep_type: choices are &quot;interpolating&quot;, &quot;discrete&quot; or &quot;fast&quot;</span>
 <span class="sd">        max_delta_f: Maximum allowed relative difference in eigenfrequency (%). Used when ``ansys_tool`` is *eigenmode*.</span>
 <span class="sd">        n_modes: Number of eigenmodes to solve. Used when ``ansys_tool`` is &#39;eigenmode&#39;.</span>
-<span class="sd">        gap_max_element_length: Largest mesh element length allowed in the gaps given in simulation units</span>
-<span class="sd">            (if None is given, then the mesh element size is not restricted in the gap).</span>
+<span class="sd">        mesh_size(dict): Dictionary to determine manual mesh refinement on layers. Set key as the layer name and</span>
+<span class="sd">            value as the maximal mesh element length inside the layer.</span>
 <span class="sd">        substrate_loss_tangent: Bulk loss tangent (:math:`\tan{\delta}`) material parameter. 0 is off.</span>
 <span class="sd">        dielectric_surfaces: Material parameters for TLS interfaces, used in post-processing field calculations</span>
 <span class="sd">            from the participation sheets. Default is None. Input is of the form::</span>
@@ -821,6 +824,7 @@
 <span class="sd">        use_rel_path: Determines if to use relative paths.</span>
 <span class="sd">        simulation_flags: Optional export processing, given as list of strings. See Simulation Export in docs.</span>
 <span class="sd">        ansys_project_template: path to the simulation template</span>
+<span class="sd">        integrate_energies: Calculate energy integrals over each layer and save them into a file</span>
 <span class="sd">        skip_errors: Skip simulations that cause errors. Default is False.</span>
 
 <span class="sd">            .. warning::</span>
@@ -845,11 +849,12 @@
                                             <span class="n">sweep_enabled</span><span class="o">=</span><span class="n">sweep_enabled</span><span class="p">,</span> <span class="n">sweep_start</span><span class="o">=</span><span class="n">sweep_start</span><span class="p">,</span>
                                             <span class="n">sweep_end</span><span class="o">=</span><span class="n">sweep_end</span><span class="p">,</span> <span class="n">sweep_count</span><span class="o">=</span><span class="n">sweep_count</span><span class="p">,</span> <span class="n">sweep_type</span><span class="o">=</span><span class="n">sweep_type</span><span class="p">,</span>
                                             <span class="n">max_delta_f</span><span class="o">=</span><span class="n">max_delta_f</span><span class="p">,</span> <span class="n">n_modes</span><span class="o">=</span><span class="n">n_modes</span><span class="p">,</span>
-                                            <span class="n">gap_max_element_length</span><span class="o">=</span><span class="n">gap_max_element_length</span><span class="p">,</span>
+                                            <span class="n">mesh_size</span><span class="o">=</span><span class="n">mesh_size</span><span class="p">,</span>
                                             <span class="n">substrate_loss_tangent</span><span class="o">=</span><span class="n">substrate_loss_tangent</span><span class="p">,</span>
                                             <span class="n">dielectric_surfaces</span><span class="o">=</span><span class="n">dielectric_surfaces</span><span class="p">,</span>
                                             <span class="n">simulation_flags</span><span class="o">=</span><span class="n">simulation_flags</span><span class="p">,</span>
-                                            <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">))</span>
+                                            <span class="n">ansys_project_template</span><span class="o">=</span><span class="n">ansys_project_template</span><span class="p">,</span>
+                                            <span class="n">integrate_energies</span><span class="o">=</span><span class="n">integrate_energies</span><span class="p">))</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
             <span class="k">if</span> <span class="n">skip_errors</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
