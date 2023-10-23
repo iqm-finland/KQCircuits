@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 import re
-import os
 import logging
 from pathlib import Path
 
@@ -140,9 +139,8 @@ def produce_cross_section_mesh(json_data, msh_file):
 
     # Set meshing options
     workflow = json_data.get('workflow', dict())
-    gmsh_n_threads = workflow.get('gmsh_n_threads', 1)
-    if gmsh_n_threads == -1:
-        gmsh_n_threads = int(os.cpu_count() / 2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
+    n_threads_dict = workflow['sbatch_parameters'] if 'sbatch_parameters' in workflow else workflow
+    gmsh_n_threads = int(n_threads_dict.get('gmsh_n_threads', 1))
     set_meshing_options(mesh_field_ids, mesh_global_max_size, gmsh_n_threads)
 
     # Add physical groups

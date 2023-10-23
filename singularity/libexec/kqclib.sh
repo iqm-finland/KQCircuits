@@ -25,7 +25,7 @@ if grep -qi "microsoft" /proc/version; then
     # If in wsl but using other tool than ElmerSolver
     single_cmd="$cmd $*"
   fi
-  run_cmd+=" --containall --home ${PWD} ${dir}/${img} $single_cmd"
+  run_cmd+=" --home ${PWD} ${dir}/${img} $single_cmd"
   echo running: "$run_cmd"
   $run_cmd
 else

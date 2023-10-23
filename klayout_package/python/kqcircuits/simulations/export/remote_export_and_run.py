@@ -269,6 +269,7 @@ def remote_export_and_run(ssh_login: str,
                           kqc_remote_tmp_path: str=None,
                           detach_simulation :bool=False,
                           poll_interval: int=None,
+                          export_path_basename: str=None,
                           args=None):
     """
     Exports locally and runs KQC simulations on a remote host. Froced to use no GUI (--quiet, -q option)
@@ -278,6 +279,8 @@ def remote_export_and_run(ssh_login: str,
         kqc_remote_tmp_path    (str): tmp directory on remote
         detach_simulation     (bool): Detach the remote simulation from terminal, not waiting for it to finish
         poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish
+        export_path_basename   (str): Alternative export folder name for the simulation
+                                      If None, the simulation script name will be used
         args                  (list): a list of strings:
                                         - If starts with a letter and ends with ".py"  -> export script
                                         - If starts with "-" or "--"                   -> script option
@@ -306,8 +309,10 @@ def remote_export_and_run(ssh_login: str,
             else:
                 logging.warning(f"Skipping unkown argument: {arg}")
 
-
-    export_tmp_paths = [str(Path(tmpdir) / str(script.stem)) for script in export_scripts]
+    if export_path_basename is not None and len(export_scripts) == 1:
+        export_tmp_paths = [str(Path(tmpdir) / str(export_path_basename))]
+    else:
+        export_tmp_paths = [str(Path(tmpdir) / str(script.stem)) for script in export_scripts]
 
     if len(export_scripts) == 0:
         logging.error("No valid simulation script provided in remote_export_and_run")

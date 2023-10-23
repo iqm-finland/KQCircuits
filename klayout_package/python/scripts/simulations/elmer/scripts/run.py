@@ -14,7 +14,6 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-import os
 import json
 from pathlib import Path
 import argparse
@@ -118,10 +117,6 @@ if args.q:
 
 # Set number of processes for elmer
 elmer_n_processes = workflow.get('elmer_n_processes', 1)
-elmer_n_threads = workflow.get('elmer_n_threads', 1)
-
-if elmer_n_processes == -1:
-    elmer_n_processes = int(os.cpu_count()/2 + 0.5)  # for the moment avoid psutil.cpu_count(logical=False)
 
 tool = json_data.get('tool', 'capacitance')
 if tool == 'cross-section':
@@ -139,11 +134,7 @@ if tool == 'cross-section':
         produce_cross_section_sif_files(json_data, path.joinpath(name))
 
     if workflow.get('run_elmer', True):
-        for sif_file in json_data['sif_names']:
-            run_elmer_solver(name.joinpath(f'{sif_file}.sif'),
-                             elmer_n_processes,
-                             elmer_n_threads,
-                             path)
+        run_elmer_solver(json_data, path)
 
     if workflow.get('run_paraview', False):
         run_paraview(name.joinpath('capacitance'), elmer_n_processes, path)
@@ -171,11 +162,7 @@ else:
         produce_sif_files(json_data, path.joinpath(name))
 
     if workflow.get('run_elmer', True):
-        for sif_file in json_data['sif_names']:
-            run_elmer_solver(name.joinpath(f'{sif_file}.sif'),
-                             elmer_n_processes,
-                             elmer_n_threads,
-                             path)
+        run_elmer_solver(json_data, path)
 
     if workflow.get('run_paraview', False):
         run_paraview(path / name / name, elmer_n_processes, path)

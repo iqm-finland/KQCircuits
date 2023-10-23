@@ -175,25 +175,34 @@ if use_elmer:
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
         'elmer_n_threads': elmer_n_threads,  # <------ This defines the number of omp threads per task
-#        'n_workers': 2, # <--------- This defines the number of
-                        #            parallel independent processes.
-                        #            Moreover, adding this line activates
-                        #            the use of the simple workload manager.
+        'n_workers': 1,               # <--------- This defines the number of
+                                      #            parallel independent processes.
+                                      #            Setting this larger than 1 activates
+                                      #            the use of the simple workload manager.
     }
-    if use_sbatch:  # if simulation is run in a HPC system, sbatch_parameters can be given here
+    if use_sbatch:
+        # if simulation is run in a HPC system, sbatch_parameters can be given here
+        # The values given here are all per simulation (except n_workers)
+        # and the real allocation size is calculated and requested automatically.
+
+        # If a job submission fails with "sbatch: error: Batch job submission failed: "it is most probably
+        # due to reserving too much memory per node or exceeding partitions time limit.
+        # You might need to check the remote for the limits and adjust these settings to fit the restrictions
         workflow['sbatch_parameters'] = {
-            '--account':'project_0',
-            '--partition':'test',
+            '--account':'project_0',    # <-- Remote account for billing
+            '--partition':'test',       # <-- Slurm partition used, options depend on the remote
+            'n_workers': 2,             # <-- Number of parallel simulations, the total amount of resources requested
+                                        #     is `n_workers` times the definitions below for single simulation
+            'max_threads_per_node': 40, # <-- Max number of tasks allowed on a node. dependent on the used remote host
+                                        #     Automatically divides the tasks to as few nodes as possible
+            'elmer_n_processes':10,     # <-- Number of tasks per simulation
+            'elmer_n_threads':1,        # <-- Number of threads per task
+            'elmer_mem':'32G',          # <-- Amount of memory per simulation
+            'elmer_time':'00:05:00',    # <-- Maximum time per simulation
 
-            'elmer_n_nodes':'1',
-            'elmer_n_processes':'20',
-            'elmer_n_threads':'1',
-            'elmer_mem':'64G',
-            'elmer_time':'00:10:00',
-
-            'gmsh_n_threads':'20',
-            'gmsh_mem':'64G',
-            'gmsh_time':'00:10:00',
+            'gmsh_n_threads':10,        # <-- Threads per simulation
+            'gmsh_mem':'32G',           # <-- Allocated memory per simulation
+            'gmsh_time':'00:05:00',     # <-- Maximum time per simulation
         }
 
 else:

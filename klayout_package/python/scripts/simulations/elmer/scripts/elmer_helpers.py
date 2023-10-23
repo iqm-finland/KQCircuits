@@ -20,6 +20,7 @@ import json
 import logging
 import copy
 import time
+import shutil
 from pathlib import Path
 from typing import Union, Sequence, Any, Dict
 from scipy.constants import epsilon_0
@@ -1182,7 +1183,7 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
         max_error_scale=json_data['max_error_scale'],
         max_outlier_fraction=json_data['max_outlier_fraction'],
     )
-    result_file = f'SMatrix_f{str(json_data["frequency"]).replace(".", "_")}.dat'
+    result_file = f'SMatrix_{json_data["parameters"]["name"]}_f{str(json_data["frequency"]).replace(".", "_")}.dat'
     solvers += get_vector_helmholtz(ordinate=2, angular_frequency='$ w', result_file=result_file)
     solvers += get_vector_helmholtz_calc_fields(ordinate=3, angular_frequency='$ w')
 
@@ -1207,10 +1208,12 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
         polar_form  (bool): Save Smatrix in polar or cartesian form
     """
     tool = json_data['tool']
+    sif_folder = path.joinpath(msh_filepath.stem)
+    main_sim_folder = sif_folder.parent
+    json_filename =  main_sim_folder / (sif_folder.name + '_project_results.json')
+
     if tool == 'capacitance':
-        c_matrix_filename = path.joinpath(msh_filepath.stem).joinpath('capacitance.dat')
-        json_filename = path.joinpath(msh_filepath.stem)
-        json_filename = json_filename.parent / (json_filename.name + '_project_results.json')
+        c_matrix_filename = sif_folder.joinpath('capacitance.dat')
 
         if c_matrix_filename.exists():
 
@@ -1229,9 +1232,6 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                         }, outfile, indent=4)
     elif tool == 'wave_equation':
 
-        json_filename = path.joinpath(msh_filepath.stem)
-        json_filename = json_filename.parent / (json_filename.name + '_project_results.json')
-
         ports = json_data['ports']
         renormalizations = [p['renormalization'] for p in ports]
 
@@ -1239,12 +1239,19 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
             logging.warning("Port renormalizations are not equal")
             logging.warning(f"Renormalizations: {renormalizations}")
 
+        data_folder = main_sim_folder.joinpath('elmer_data')
+        data_folder.mkdir(parents=True, exist_ok=True)
+
         results = []
-        for f in json_data['frequency']:
-            s_matrix_filename = f'SMatrix_f{str(f).replace(".", "_")}.dat'
+        for f, sif in zip(json_data['frequency'], json_data['sif_names']):
+            s_matrix_filename = main_sim_folder.joinpath(
+                f'SMatrix_{json_data["parameters"]["name"]}_f{str(f).replace(".", "_")}.dat')
 
             if not Path(s_matrix_filename).exists():
-                s_matrix_filename = path.joinpath(msh_filepath.stem).joinpath(s_matrix_filename)
+                s_matrix_subfolder = sif_folder.joinpath(s_matrix_filename)
+                if not Path(s_matrix_subfolder).exists():
+                    raise FileNotFoundError(f"SMatrix not found in either {s_matrix_filename} or {s_matrix_subfolder}")
+                s_matrix_filename = s_matrix_subfolder
 
             with open(s_matrix_filename, 'r') as file:
                 reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
@@ -1272,10 +1279,16 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                 'smatrix': smatrix_full,
             })
 
+            shutil.move(s_matrix_filename, data_folder)
+            shutil.move(str(s_matrix_filename) + '_im', data_folder)
+            if Path(str(s_matrix_filename) + '_abs').exists():
+                shutil.move(str(s_matrix_filename) + '_abs', data_folder)
+            shutil.move(f'{sif}.Elmer.log', data_folder)
+
         with open(json_filename, 'w') as outfile:
             json.dump(results, outfile, indent=4)
-
-        touchstone_filename = f"{path.joinpath(msh_filepath.stem)}.s{len(ports)}p"
+        # write touchstone
+        touchstone_filename = f"{sif_folder}.s{len(ports)}p"
         with open(touchstone_filename, 'w') as touchstone_file:
             touchstone_file.write("! Touchstone file exported from KQCircuits Elmer Simulation\n")
             touchstone_file.write(f"! Generated: {time.strftime('%a, %d %b %Y %H:%M:%S', time.localtime())}\n")

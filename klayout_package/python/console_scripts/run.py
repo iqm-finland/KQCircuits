@@ -89,6 +89,7 @@ def run():
                                   args.kqc_remote_tmp_path,
                                   args.detach,
                                   args.poll_interval,
+                                  args.export_path_basename,
                                   args_for_script)
             return
         if args.remote_run_only:
