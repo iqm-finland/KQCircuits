@@ -98,6 +98,7 @@ class MaskSet:
         self._single_process = self._extra_params["enable_debug"] or not is_standalone_session()
 
         self._extra_params["mock_chips"] = '-m' in argv
+        self._extra_params["skip_extras"] = '-s' in argv
 
         self._cpu_override = 0
         if '-c' in argv and len(argv) > argv.index('-c') + 1:
@@ -213,6 +214,7 @@ class MaskSet:
         route_log(filename=chip_path/f"{variant_name}.log", stdout=_extra_params["enable_debug"])
 
         mock_chips = _extra_params['mock_chips']
+        skip_extras = _extra_params['skip_extras']
 
         view = KLayoutView()
         layout = view.layout
@@ -248,7 +250,7 @@ class MaskSet:
             layout.read(chip_class, load_opts)
             cell = layout.top_cells()[-1]
 
-        export_chip(cell, variant_name, chip_path, layout, export_drc, alt_netlists)
+        export_chip(cell, variant_name, chip_path, layout, export_drc, alt_netlists, skip_extras)
         view.close()
 
         return variant_name, str(chip_path / f"{variant_name}.oas")
@@ -336,7 +338,7 @@ class MaskSet:
         self._time['EXPORT'] = perf_counter()
 
         print("Exporting mask set...")
-        export_mask_set(self)
+        export_mask_set(self, self._extra_params["skip_extras"])
 
         self._time['END'] = perf_counter()
 
