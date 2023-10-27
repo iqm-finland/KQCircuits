@@ -604,9 +604,9 @@ def export_elmer(simulations: Sequence[Simulation],
 
         simulations(list(Simulation)): list of all the simulations
         path(Path): Location where to output the simulation model
-        tool(str): Available: "capacitance", "wave_equation" and "cross-section" (Default: capacitance)
-        linear_system_method(str): Available: 'bicgstab', 'mg' (Default: bicgstab)
-        p_element_order(int): polynomial order of p-elements (Default: 1)
+        tool(str): Available: "capacitance", "wave_equation" and "cross-section"
+        linear_system_method(str): Available: 'bicgstab', 'mg'
+        p_element_order(int): polynomial order of p-elements
         frequency: Units are in GHz. To set up multifrequency analysis, use list of numbers.
         file_prefix: File prefix of the script file to be created.
         script_file: Name of the script file to run.

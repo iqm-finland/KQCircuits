@@ -56,7 +56,7 @@ class Simulation:
     """Base class for simulation geometries.
 
     Generally, this class is intended to be subclassed by a specific simulation implementation; the
-    implementation defines the simulation geometry ad ports in `build`.
+    implementation defines the simulation geometry and ports in `build`.
 
     A convenience class method `Simulation.from_cell` is provided to create a Simulation from an
     existing cell. In this case no ports will be added.
