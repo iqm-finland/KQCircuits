@@ -20,7 +20,7 @@ from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 
 from kqcircuits.chips.chip import Chip
-from kqcircuits.defaults import default_airbridge_type
+from kqcircuits.defaults import default_airbridge_type, default_sampleholders
 from kqcircuits.elements.waveguide_coplanar import WaveguideCoplanar
 from kqcircuits.elements.waveguide_coplanar_splitter import WaveguideCoplanarSplitter, t_cross_parameters
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -81,10 +81,17 @@ class QualityFactor(Chip):
         else:
             wg_top_y = (chip_side + max_res_len) / 2
 
+        # support resizable chip keeping pad distances from the top constant
         if self.sample_holder_type == "ARD24":
-            launchers = self.produce_launchers("ARD24", {24: "PL-1-IN", 7: "PL-1-OUT"})
+            launchers = self.produce_n_launchers(**{**default_sampleholders["ARD24"],
+                                                    "pad_pitch": (chip_side - 4000) / 5,
+                                                    "chip_box": self.box},
+                                                launcher_assignments={24: "PL-1-IN", 7: "PL-1-OUT"})
         elif self.sample_holder_type == "SMA8":
-            launchers = self.produce_launchers("SMA8", {8: "PL-1-IN", 3: "PL-1-OUT"})
+            launchers = self.produce_n_launchers(**{**default_sampleholders["SMA8"],
+                                                    "pad_pitch": chip_side - 2 * 2800,
+                                                    "chip_box": self.box},
+                                                 launcher_assignments={8: "PL-1-IN", 3: "PL-1-OUT"})
 
         # Define start and end of feedline
         points_fl = [launchers["PL-1-IN"][0]]
