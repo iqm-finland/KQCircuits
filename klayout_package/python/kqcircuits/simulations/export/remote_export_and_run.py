@@ -24,7 +24,7 @@ import logging
 import os
 import stat
 import uuid
-from kqcircuits.defaults import TMP_PATH, SCRIPTS_PATH
+from kqcircuits.defaults import TMP_PATH, SCRIPTS_PATH, KQC_REMOTE_TMP_PATH
 
 logging.basicConfig(level=logging.WARN, stream=sys.stdout)
 
@@ -102,7 +102,7 @@ def _remote_run(ssh_login: str,
 
     # set defaults
     if kqc_remote_tmp_path is None:
-        kqc_remote_tmp_path = '~/KQCircuits/tmp/'
+        kqc_remote_tmp_path = KQC_REMOTE_TMP_PATH
 
     if poll_interval is None:
         poll_interval = 60
@@ -156,6 +156,7 @@ def _remote_run(ssh_login: str,
     # Write script to run in the background and copy results back once simulation is finished
     wait_and_copy_back_script = str(TMP_PATH / f"fetch_remote_simulation_data_{run_uuid}.sh")
     wait_and_copy_back = f"""#!/bin/bash
+    set -e
     echo "\n---------START-WAIT-SCRIPT---------"
     echo "Simulations sent to queue at:"
     date +"%d-%m-%y %T"

@@ -28,7 +28,7 @@ from typing import Sequence
 
 from kqcircuits.simulations.export.util import export_layers
 from kqcircuits.util.export_helper import write_commit_reference_file
-from kqcircuits.defaults import ELMER_SCRIPT_PATHS
+from kqcircuits.defaults import ELMER_SCRIPT_PATHS, KQC_REMOTE_ACCOUNT
 from kqcircuits.simulations.simulation import Simulation
 from kqcircuits.simulations.cross_section_simulation import CrossSectionSimulation
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
@@ -192,7 +192,7 @@ def export_elmer_script(json_filenames, path: Path, workflow=None, file_prefix='
         sbatch_parameters = workflow['sbatch_parameters']
 
         if sbatch_parameters.get('--account', 'project_0') == 'project_0':
-            logging.warning('Remote account not set or "project_0"!')
+            sbatch_parameters['--account'] = KQC_REMOTE_ACCOUNT
 
         common_keys = [k for k in sbatch_parameters.keys() if k.startswith('--')]
         sbatch_settings_elmer = {k: sbatch_parameters.pop(k) for k in common_keys}

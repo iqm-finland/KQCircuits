@@ -62,6 +62,11 @@ VERSION_PATHS = {}
 VERSION_PATHS['KQC'] = ROOT_PATH
 SIM_SCRIPT_PATH = ROOT_PATH / 'klayout_package' / 'python' / 'scripts' / 'simulations'
 
+# Default path on remote
+KQC_REMOTE_TMP_PATH = os.getenv('KQC_REMOTE_TMP_PATH', '~/KQCircuits/tmp')
+# Remote account for slurm
+KQC_REMOTE_ACCOUNT = os.getenv('KQC_REMOTE_ACCOUNT')
+
 # Given to subprocess.Popen calls, hides terminals on Windows
 STARTUPINFO = None
 if os.name == "nt":

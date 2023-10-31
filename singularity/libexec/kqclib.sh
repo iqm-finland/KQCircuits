@@ -29,7 +29,7 @@ if grep -qi "microsoft" /proc/version; then
   echo running: "$run_cmd"
   $run_cmd
 else
-  run_cmd+=" --home $HOME ${dir}/${img} $cmd $*"
+  run_cmd+=" --home ${PWD} ${dir}/${img} $cmd $*"
   echo running: "$run_cmd"
   $run_cmd
 fi
