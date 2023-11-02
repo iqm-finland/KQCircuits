@@ -35,10 +35,11 @@ class Manhattan(Squid):
     include_base_metal_gap = Param(pdt.TypeBoolean, "Include base metal gap layer", True)
     shadow_margin = Param(pdt.TypeDouble, "Shadow layer margin near the the pads", 1.0, unit="μm")
     compact_geometry = Param(pdt.TypeBoolean, "Compact geometry for metal addition.", False)
-    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer.", False)
+    separate_junctions = Param(pdt.TypeBoolean, "Junctions to separate layer", False)
     offset_compensation = Param(pdt.TypeDouble, "Junction lead offset from junction width", 0, unit="μm")
     mirror_offset = Param(pdt.TypeBoolean, "Move the junction lead offset to the other lead", False)
-    finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads.", 0.2, unit="μm")
+    finger_overlap = Param(pdt.TypeDouble, "Length of fingers inside the pads", 0.2, unit="μm")
+    single_junction = Param(pdt.TypeBoolean, "Disable the second junction", False)
 
     def build(self):
         self.produce_manhattan_squid(top_pad_layer="SIS_junction")
@@ -65,7 +66,7 @@ class Manhattan(Squid):
         }
 
         # convenience variables
-        delta_j = self.loop_area / big_loop_height  # junction distance, a.k.a. loop width
+        delta_j = self.loop_area / big_loop_height # junction distance, a.k.a. loop width
         tp_height = self.height - loop_bottom_y - big_loop_height  # top pad height
         bp_gap_x = -self.width / 2 + (self.width - delta_j) / 2  # bottom gap left edge x-coordinate
         bp_gap_x_min = -self.width / 2 + 7  # fixed at minimum size
@@ -198,21 +199,32 @@ class Manhattan(Squid):
         finger_bottom = pya.DTrans(-jx, -jy) * pya.DPolygon(finger_points(ddb))
         finger_top = pya.DTrans(-jx, -jy) * pya.DPolygon(finger_points(ddt))
 
-        junction_shapes = [(pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
-                           (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
-                           (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
-                           (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger_bottom).to_itype(self.layout.dbu)]
+        squa = sqrt(2) / 2
+        if self.single_junction:
+            junction_shapes = [
+                (pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
+                (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
+            ]
+            # place refpoints at the middle of the junction. In this case, "l" and "r" coincide.
+            self.refpoints["l"] = pya.DPoint(jx - fo - finger_margin + self.finger_overshoot * squa,
+                                            jy - fo + self.finger_overshoot * squa)
+            self.refpoints["r"] = self.refpoints["l"]
+        else:
+            junction_shapes = [
+                (pya.DTrans(jx - finger_margin, jy) * finger_top).to_itype(self.layout.dbu),
+                (pya.DTrans(0, False, jx - 2 * top_corner.x, jy) * finger_top).to_itype(self.layout.dbu),
+                (pya.DTrans(3, False, jx - finger_margin, jy) * finger_bottom).to_itype(self.layout.dbu),
+                (pya.DTrans(3, False, jx - 2 * top_corner.x, jy) * finger_bottom).to_itype(self.layout.dbu)
+            ]
+            # place refpoints at the middle of the left and right junctions
+            self.refpoints["l"] = pya.DPoint(jx - fo - finger_margin + self.finger_overshoot * squa,
+                                            jy - fo + self.finger_overshoot * squa)
+            self.refpoints["r"] = pya.DPoint(jx - fo - 2 * top_corner.x + self.finger_overshoot * squa,
+                                            jy - fo + self.finger_overshoot * squa)
 
         junction_region = pya.Region(junction_shapes).merged()
         layer_name = "SIS_junction_2" if self.separate_junctions else "SIS_junction"
         self.cell.shapes(self.get_layer(layer_name)).insert(junction_region)
-
-        # place refpoints at the middle of the left and right junctions
-        squa = sqrt(2) / 2
-        self.refpoints["l"] = pya.DPoint(jx - fo - finger_margin + self.finger_overshoot * squa,
-                                         jy - fo + self.finger_overshoot * squa)
-        self.refpoints["r"] = pya.DPoint(jx - fo - 2 * top_corner.x + self.finger_overshoot * squa,
-                                         jy - fo + self.finger_overshoot * squa)
 
     def _add_shapes(self, shapes, layer):
         """Merge shapes into a region and add it to layer."""
