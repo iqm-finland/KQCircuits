@@ -358,65 +358,58 @@ class Simulation:
             return  # ignore the layer
         layer = get_simulation_layer_by_name(layer_name)
         self.cell.shapes(self.layout.layer(layer)).insert(region)
-        self.layers[layer_name] = {'layer': layer.layer, **params}
+        if (pya.Region(self.box.to_itype(self.layout.dbu)) - region).is_empty():
+            self.layers[layer_name] = params  # region cover self.box totally, so set layer without shape
+        else:
+            self.layers[layer_name] = {'layer': layer.layer, **params}
 
-    @staticmethod
-    def add_layer_to_splitter(splitter, region, layer_name, **params):
-        """Add layer to the splitter, which splits the region into different z-levels. The params are forwarded to
-        the 'self.layers' dictionary.
+    def insert_stacked_up_layers(self, stack, z0):
+        """Produces the layer stack-up and adds the layers into 'self.layers' dictionary.
+        Each layer is split into sub-layers by their z-level.
 
-        Before calling first time, the splitter should be set as empty splitter, which is a list of empty dictionary and
-        empty list, that is [dict(), []].
+        Args:
+            stack: list of layers in form of tuples containing (region, layer name, thickness, material)
+            z0: the base z-level for the layer stack-up
         """
-        if region.is_empty():
-            return  # ignore the layer
+        levels = dict()  # existing z-levels based on layers underneath (z-level as key and region as value)
+        for region, layer_name, thickness, material in stack:
+            if region.is_empty():
+                continue
 
-        # the first term in splitter is dictionary of parameters
-        splitter[0][layer_name] = params
-
-        # the second term in splitter is list of tuples containing (reg, list of keys)
-        region_and_keys = []
-        left_region = region.dup()
-        for reg, keys in splitter[1]:
-            intersection = reg & region
-            if not intersection.is_empty():
-                left_region -= intersection
-                subtraction = reg - intersection
+            # Split the layer into z-levels
+            region_levels = dict()  # the layer region divided into z-levels
+            non_region_levels = dict()  # the z-levels outside the layer region
+            sum_reg = pya.Region()
+            for z, reg in levels.items():
+                intersection = reg & region
+                if not intersection.is_empty():
+                    region_levels[z] = intersection
+                subtraction = reg - region
                 if not subtraction.is_empty():
-                    region_and_keys.append((subtraction, keys))
-                region_and_keys.append((intersection, keys + [layer_name]))
-            else:
-                region_and_keys.append((reg, keys))
-        if not left_region.is_empty():
-            region_and_keys.append((left_region, [layer_name]))
-        splitter[1] = region_and_keys
+                    non_region_levels[z] = subtraction
+                sum_reg += reg
+            on_base_level = region - sum_reg
+            if not on_base_level.is_empty():
+                region_levels[round(z0, 12)] = on_base_level
 
-    def insert_splitter_layers(self, splitter, z0):
-        """Inserts the layers in the splitter to the 'self.layers' dictionary. Each layer are split into sub-layers
-        by their z-level. Parameter 'z0' is the base z-level for layer stack-up."""
-        for key, params in splitter[0].items():
-            z_region_map = dict()
-            for reg, keys in splitter[1]:
-                if key in keys:
-                    # round z-value to avoid differences due to floating point number inaccuracy
-                    z = round(sum(splitter[0][i].get('thickness', 0.0) for i in keys[0: keys.index(key)]), 12)
-                    if z not in z_region_map:
-                        z_region_map[z] = pya.Region()
-                    z_region_map[z] += reg
+            # Create collective layer for klayout visualization if the layer is split
+            if len(region_levels) > 1:
+                self.cell.shapes(self.layout.layer(get_simulation_layer_by_name(layer_name))).insert(region)
 
-            # Insert combined region if there are multiple levels
-            if len(z_region_map) > 1:
-                region = pya.Region()
-                for reg in z_region_map.values():
-                    region += reg
-                self.cell.shapes(self.layout.layer(get_simulation_layer_by_name(key))).insert(region.merged())
+            # Apply parts of divided layers into self.layers
+            for i, (z, reg) in enumerate(sorted(region_levels.items())):
+                self.insert_layer(reg, f'{layer_name}_{i}' if len(region_levels) > 1 else layer_name,
+                                  z=z, thickness=thickness, material=material)
 
-            # Insert split parts of the region and add layer
-            for i, (z, reg) in enumerate(z_region_map.items()):
-                layer_name = key + f'_{i}' if len(z_region_map) > 1 else key
-                layer = get_simulation_layer_by_name(layer_name)
-                self.cell.shapes(self.layout.layer(layer)).insert(reg.merged())
-                self.layers[layer_name] = {'layer': layer.layer, 'z': z0 + z, **params}
+            # Update existing z-levels dictionary
+            if thickness != 0.0:
+                levels = non_region_levels
+                for z, reg in region_levels.items():
+                    top_z = round(z + thickness, 12)
+                    if top_z in levels:
+                        levels[top_z] += reg
+                    else:
+                        levels[top_z] = reg
 
     def insert_layers_between_faces(self, i, opp_i, layer_name, **params):
         """Helper function to be used to produce indium bumps and TSVs"""
@@ -467,16 +460,16 @@ class Simulation:
         face_stack = self.face_stack_list_of_lists()
         for i, face_ids in enumerate(face_stack):
             sign = (-1) ** (i + int(self.lower_box_height > 0))
-            splitter = [dict(), []]
+            stack = []
             dielectric_material = self.ith_value(self.dielectric_material, i)
 
             # insert TSVs and indium bumps
             tsv_params = {'edge_material': 'pec'} if self.hollow_tsv else {'material': 'pec'}
             tsv_region = self.insert_layers_between_faces(i, i - sign, "through_silicon_via", **tsv_params)
             bump_region = self.insert_layers_between_faces(i, i + sign, "indium_bump", material='pec')
+            ground_box_region = pya.Region(self._face_box(i).to_itype(self.layout.dbu))
 
             for j, face_id in enumerate(face_ids):
-                ground_box_region = pya.Region(self._face_box(i).to_itype(self.layout.dbu))
                 metal_gap_region = self.region_from_layer(face_id, "base_metal_gap_wo_grid")
                 metal_add_region = self.region_from_layer(face_id, "base_metal_addition")
                 lithography_region = self.simplified_region(metal_gap_region - metal_add_region, self.over_etching)
@@ -523,11 +516,6 @@ class Simulation:
                 ground_region -= tsv_region
                 dielectric_region -= tsv_region
 
-                # Insert vertical over etching layer
-                if j == 0 and self.vertical_over_etching > 0.0:
-                    self.add_layer_to_splitter(splitter, etch_region, face_id + "_etch",
-                                               thickness=-sign * self.vertical_over_etching)
-
                 # Insert signal, ground and dielectric layers
                 metal_thickness = z[face_id][1] - z[face_id][0]
                 dielectric_thickness = z[face_id][2] - z[face_id][1]
@@ -542,25 +530,25 @@ class Simulation:
                                           thickness=dielectric_thickness, material='pec')
                         subtract = [n for n in [face_id + "_signal", face_id + "_ground", face_id + "_via"]
                                     if n in self.layers and self.layers[n].get('thickness', 0.0) != 0.0]
-                        self.insert_layer(dielectric_region, face_id + "_dielectric", z=z[face_id][0],
+                        self.insert_layer(ground_box_region, face_id + "_dielectric", z=z[face_id][0],
                                           thickness=z[face_id][2] - z[face_id][0],
                                           material=self.ith_value(dielectric_material, j),
                                           **({'subtract': subtract} if subtract else dict()))
 
                 else:
-                    # Use splitter to produce drop-down stack-up
-                    self.add_layer_to_splitter(splitter, signal_region, face_id + "_signal", thickness=metal_thickness,
-                                               material='pec')
-                    self.add_layer_to_splitter(splitter, ground_region, face_id + "_ground", thickness=metal_thickness,
-                                               material='pec')
+                    # Use stack to produce drop-down stack-up
+                    stack.append((signal_region, face_id + "_signal", metal_thickness, 'pec'))
+                    stack.append((ground_region, face_id + "_ground", metal_thickness, 'pec'))
                     if dielectric_thickness != 0.0:
-                        self.add_layer_to_splitter(splitter, dielectric_region, face_id + "_dielectric",
-                                                   thickness=dielectric_thickness,
-                                                   material=self.ith_value(dielectric_material, j))
+                        stack.append((dielectric_region, face_id + "_dielectric", dielectric_thickness,
+                                      self.ith_value(dielectric_material, j)))
 
-                # Insert gap layer only on the first face of the stack-up (no material)
+                # Insert gap and etch layers only on the first face of the stack-up (no material)
                 if j == 0:
                     gap_z = z[face_id][0] - sign * self.vertical_over_etching
+                    if self.vertical_over_etching > 0.0:
+                        self.insert_layer(etch_region, face_id + "_etch", z=gap_z,
+                                          thickness=sign * self.vertical_over_etching)
                     self.insert_layer(gap_region, face_id + "_gap", z=gap_z, thickness=z[face_id][1] - gap_z)
 
                 # Insert airbridges
@@ -574,7 +562,7 @@ class Simulation:
                 self.insert_layer(ab_pads_region, face_id + "_airbridge_pads", z=z[face_id][1], thickness=bridge_z,
                                   material='pec')
 
-            self.insert_splitter_layers(splitter, z[i + 1])
+            self.insert_stacked_up_layers(stack, z[i + 1])
 
             # Rest of the features are not available with multilayer stack-up
             if len(face_ids) != 1:
@@ -668,20 +656,15 @@ class Simulation:
 
             # insert substrate layer
             name = 'substrate' if len(face_stack) - int(self.lower_box_height > 0) < 2 else f'substrate_{i // 2}'
-            params = {'z': z[i],
-                      'thickness': z[i + 1] - z[i],
-                      'material': self.ith_value(self.substrate_material, i // 2),
-                      **({'subtract': subtract} if subtract else dict())}
-            box = self._face_box(i)
-            if box == self.box:
-                self.layers[name] = params
-            else:
-                self.insert_layer(pya.Region(self._face_box(i).to_itype(self.layout.dbu)), name, **params)
+            self.insert_layer(pya.Region(self._face_box(i).to_itype(self.layout.dbu)), name, z=z[i],
+                              thickness=z[i + 1] - z[i], material=self.ith_value(self.substrate_material, i // 2),
+                              **({'subtract': subtract} if subtract else dict()))
 
         # Insert vacuum
         subtract = [n for n, v in self.layers.items() if v.get('material', None) is not None and
                     v.get('thickness', 0.0) != 0.0]
-        self.layers['vacuum'] = {'z': z[0], 'thickness': z[-1] - z[0], 'material': 'vacuum', 'subtract': subtract}
+        self.insert_layer(pya.Region(self.box.to_itype(self.layout.dbu)), 'vacuum', z=z[0], thickness=z[-1] - z[0],
+                          material='vacuum', **({'subtract': subtract} if subtract else dict()))
 
         # Eliminate gaps and overlaps caused by transformation to simple_polygon
         match_points_on_edges(self.cell, self.layout, [get_simulation_layer_by_name(n) for n in self.layers])

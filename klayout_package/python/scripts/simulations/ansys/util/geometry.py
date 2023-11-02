@@ -92,6 +92,7 @@ def create_box(oEditor, name, x, y, z, sx, sy, sz, units):
              ],
             ["NAME:Attributes",
              "Name:=", name,
+             "MaterialValue:=", "\"\"",
              "Flags:=", "",
              "PartCoordinateSystem:=", "Global"
              ])

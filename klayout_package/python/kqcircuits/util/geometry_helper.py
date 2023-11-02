@@ -232,6 +232,8 @@ def match_points_on_edges(cell, layout, layers):
         shapes = cell.shapes(layout.layer(layer))
         for shape in shapes:
             all_points.update({point: list() for point in shape.simple_polygon.each_point()})
+    if not all_points:
+        return  # nothing is done if no points exist
 
     # For each point, assign a list of surrounding points using Voronoi diagram
     point_list = list(all_points)
