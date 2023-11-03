@@ -33,14 +33,12 @@ from kqcircuits.test_structures.junction_test_pads.junction_test_pads import Jun
 from kqcircuits.test_structures.stripes_test import StripesTest
 from kqcircuits.util.groundgrid import make_grid
 from kqcircuits.elements.tsvs.tsv import Tsv
-from kqcircuits.elements.tsvs.tsv_ellipse import TsvEllipse
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 
 
 @logged
-@add_parameters_from(Tsv, "tsv_type", "tsv_diameter")
-@add_parameters_from(TsvEllipse, "tsv_elliptical_width")
+@add_parameters_from(Tsv, "tsv_type")
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
 @add_parameters_from(ChipFrame, "name_mask", "name_chip", "name_copy", "name_brand", "chip_dicing_in_base_metal",
