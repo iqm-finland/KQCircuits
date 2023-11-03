@@ -83,6 +83,14 @@ pull`` just run :git_url:`setup_within_klayout.py` again. This will take care of
 KQCircuit's Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits' dependencies in its own Python environment.
 
+If the above didn't work (usually in case of downgrading dependencies), there is an alternative way.
+If you see warnings displaying
+``WARNING: Target directory xyz already exists. Specify --upgrade to force replacement.``,
+this usually indicates that KQCircuits's Python dependencies were not properly upgraded (or downgraded).
+In that case run the following:
+
+    python3 setup_within_klayout.py --force-package-reinstall
+
 .. note::
     If a new version of KQCircuits has stopped using a certain Python dependency that will **not**
     be removed automatically. The user has to remove that manually if it causes any problem.

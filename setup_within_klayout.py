@@ -57,6 +57,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='KQC setup within klayout')
     parser.add_argument('--unlink', action="store_true", help='remove links')
+    parser.add_argument('--force-package-reinstall', action="store_true",
+                        help='force reinstalling packages that KQCircuits depends on')
     args = parser.parse_args()
 
     configdir = klayout_configdir(kqc_root_path)
@@ -89,6 +91,8 @@ if __name__ == "__main__":
         else:
             raise SystemError("Unsupported operating system.")
 
+        if args.force_package_reinstall:
+            pip_args += " --upgrade"
         print(f'Required packages will be installed in "{target_dir}".')
         os.system(f"pip install -r {pip_args}")
         print("Finished setting up KQC.")
