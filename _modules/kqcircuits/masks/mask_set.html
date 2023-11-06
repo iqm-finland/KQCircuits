@@ -626,6 +626,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_single_process</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_standalone_session</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;mock_chips&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-m&#39;</span> <span class="ow">in</span> <span class="n">argv</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;skip_extras&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;-s&#39;</span> <span class="ow">in</span> <span class="n">argv</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_override</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="s1">&#39;-c&#39;</span> <span class="ow">in</span> <span class="n">argv</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">argv</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
@@ -741,6 +742,7 @@
         <span class="n">route_log</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">chip_path</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.log&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">])</span>
 
         <span class="n">mock_chips</span> <span class="o">=</span> <span class="n">_extra_params</span><span class="p">[</span><span class="s1">&#39;mock_chips&#39;</span><span class="p">]</span>
+        <span class="n">skip_extras</span> <span class="o">=</span> <span class="n">_extra_params</span><span class="p">[</span><span class="s1">&#39;skip_extras&#39;</span><span class="p">]</span>
 
         <span class="n">view</span> <span class="o">=</span> <span class="n">KLayoutView</span><span class="p">()</span>
         <span class="n">layout</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">layout</span>
@@ -776,7 +778,7 @@
             <span class="n">layout</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chip_class</span><span class="p">,</span> <span class="n">load_opts</span><span class="p">)</span>
             <span class="n">cell</span> <span class="o">=</span> <span class="n">layout</span><span class="o">.</span><span class="n">top_cells</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-        <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="p">)</span>
+        <span class="n">export_chip</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">variant_name</span><span class="p">,</span> <span class="n">chip_path</span><span class="p">,</span> <span class="n">layout</span><span class="p">,</span> <span class="n">export_drc</span><span class="p">,</span> <span class="n">alt_netlists</span><span class="p">,</span> <span class="n">skip_extras</span><span class="p">)</span>
         <span class="n">view</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">variant_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">chip_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
@@ -864,7 +866,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="s1">&#39;EXPORT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exporting mask set...&quot;</span><span class="p">)</span>
-        <span class="n">export_mask_set</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">export_mask_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;skip_extras&quot;</span><span class="p">])</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_time</span><span class="p">[</span><span class="s1">&#39;END&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">perf_counter</span><span class="p">()</span>
 

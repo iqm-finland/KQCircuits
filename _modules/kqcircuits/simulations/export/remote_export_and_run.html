@@ -556,17 +556,6 @@
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">_clear_remote_tmp</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Internal helper function to delete temp directory on remote</span>
-
-<span class="sd">    Args:</span>
-<span class="sd">        ssh_login              (str): ssh login info &quot;user@hostname&quot;</span>
-<span class="sd">        kqc_remote_tmp_path    (str): current run tmp directory on remote</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;ssh&#39;</span><span class="p">,</span> <span class="n">ssh_login</span><span class="p">,</span> <span class="s1">&#39;rm&#39;</span><span class="p">,</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="n">Path</span><span class="p">(</span><span class="n">kqc_remote_tmp_path</span><span class="p">)])</span>
-
 <span class="k">def</span> <span class="nf">_prepare_remote_tmp</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal helper function to create remote tmp directory if it doesnt exist and raise error if its not empty</span>
@@ -616,7 +605,11 @@
 
     <span class="k">return</span> <span class="n">sbatch_time</span>
 
-<span class="k">def</span> <span class="nf">_remote_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">export_tmp_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_remote_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">export_tmp_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal helper function to copy and run simulations to remote and back</span>
 
@@ -625,6 +618,7 @@
 <span class="sd">        export_tmp_paths (list[str]): list of local tmp simulation export paths for the simulations to be run</span>
 <span class="sd">        kqc_remote_tmp_path    (str): tmp directory on remote</span>
 <span class="sd">        detach_simulation      (bool): Detach the remote simulation from terminal, not waiting for it to finish</span>
+<span class="sd">        poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Windows&#39;</span><span class="p">:</span>  <span class="c1"># Windows</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Windows&quot;</span><span class="p">)</span>
@@ -633,6 +627,13 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Connecting to remote host not supported on Mac OS&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
     <span class="c1"># Else linux</span>
+
+    <span class="c1"># set defaults</span>
+    <span class="k">if</span> <span class="n">kqc_remote_tmp_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kqc_remote_tmp_path</span> <span class="o">=</span> <span class="s1">&#39;~/KQCircuits/tmp/&#39;</span>
+
+    <span class="k">if</span> <span class="n">poll_interval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">poll_interval</span> <span class="o">=</span> <span class="mi">60</span>
 
     <span class="c1"># Check if we sugin sbatch by checking if all export folders have `simulation_meshes.sh`</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(((</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="s2">&quot;simulation_meshes.sh&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">export_tmp_paths</span><span class="p">)):</span>
@@ -648,10 +649,11 @@
 
     <span class="n">dirs_remote</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">kqc_remote_tmp_path</span><span class="p">)</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">export_tmp_paths</span><span class="p">]</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0;32;40mFollowing simulations will be run in </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">FEM simulations prepared successfully.</span><span class="se">\n</span><span class="s1">&#39;</span>
+          <span class="s1">&#39;Submitting the following simulations to the remote host (can take some time):&#39;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">d1</span><span class="p">,</span><span class="n">d2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">export_tmp_paths</span><span class="p">,</span> <span class="n">dirs_remote</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d1</span><span class="si">}</span><span class="s2">   ---&gt;   </span><span class="si">{</span><span class="n">d2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\x1b</span><span class="s2">[0m&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">d1</span><span class="si">}</span><span class="s2">   ---&gt;   user@remote:</span><span class="si">{</span><span class="n">d2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
     <span class="n">remote_script_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;remote_simulation_</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">.sh&quot;</span>
@@ -671,10 +673,6 @@
 
     <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">remote_simulation_script</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">remote_simulation_script</span><span class="p">)</span><span class="o">.</span><span class="n">st_mode</span> <span class="o">|</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IEXEC</span><span class="p">)</span>
 
-    <span class="n">copy_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">,</span> <span class="s1">&#39;-r&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">export_tmp_paths</span> <span class="o">+</span> <span class="p">[</span><span class="n">remote_simulation_script</span><span class="p">,</span> <span class="n">ssh_login</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">kqc_remote_tmp_path</span><span class="p">]</span>
-    <span class="n">run_cmd</span> <span class="o">=</span>  <span class="sa">f</span><span class="s2">&quot;&quot;&quot;ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> -tt &#39;bash -l -c &quot;cd </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> &amp;&amp; ./</span><span class="si">{</span><span class="n">remote_script_name</span><span class="si">}</span><span class="s2">&quot;&#39;&quot;&quot;&quot;</span>
-    <span class="n">copy_to_local_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;scp -r </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2">:&quot;</span><span class="si">{</span><span class="n">simlist</span><span class="si">}</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
-
     <span class="c1"># hardcoded option for copying back the vtu and pvtu files from remote</span>
     <span class="n">copy_vtus</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">skip_patterns</span> <span class="o">=</span> <span class="s1">&#39;-name &quot;mesh.*&quot; -o -name &quot;*.msh&quot; -o -name &quot;scripts&quot; -o -name &quot;partitioning.*&quot;&#39;</span>
@@ -682,15 +680,18 @@
         <span class="n">skip_patterns</span> <span class="o">=</span> <span class="n">skip_patterns</span> <span class="o">+</span> <span class="s1">&#39; -o -name &quot;*.vtu&quot; -o -name &quot;*.pvtu&quot;&#39;</span>
     <span class="n">skip_patterns</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;\( &#39;</span> <span class="o">+</span> <span class="n">skip_patterns</span> <span class="o">+</span>  <span class="sa">r</span><span class="s1">&#39; \)&#39;</span>
 
-    <span class="c1"># time between ssh polling calls</span>
-    <span class="n">wait_time</span> <span class="o">=</span> <span class="mi">60</span>
+    <span class="n">poll_interval_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">poll_interval</span><span class="si">}</span><span class="s2">s&quot;</span> <span class="k">if</span> <span class="n">poll_interval</span> <span class="o">&lt;=</span> <span class="mi">60</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">poll_interval</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2"> min&quot;</span>
     <span class="c1"># Write script to run in the background and copy results back once simulation is finished</span>
     <span class="n">wait_and_copy_back_script</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">TMP_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;fetch_remote_simulation_data_</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">.sh&quot;</span><span class="p">)</span>
     <span class="n">wait_and_copy_back</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;#!/bin/bash</span>
-<span class="s2">    echo &quot;---------START-WAIT-SCRIPT---------&quot;</span>
-<span class="s2">    echo &quot;simulations sent to queue at:&quot;</span>
+<span class="s2">    echo &quot;</span><span class="se">\n</span><span class="s2">---------START-WAIT-SCRIPT---------&quot;</span>
+<span class="s2">    echo &quot;Simulations sent to queue at:&quot;</span>
 <span class="s2">    date +&quot;%d-%m-%y %T&quot;</span>
 <span class="s2">    sleep 5</span>
+<span class="s2">    echo &quot;</span><span class="se">\n</span><span class="s2">Explanation of Slurm job states&quot;</span>
+<span class="s2">    echo &quot;ALL: Number of all unfinished jobs&quot;</span>
+<span class="s2">    echo &quot; PD: Number of pending jobs&quot;</span>
+<span class="s2">    echo &quot;  R: Number of currently running jobs</span><span class="se">\n</span><span class="s2">&quot;</span>
 
 <span class="s2">    jobs_states=$(ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> &quot;squeue -h -n </span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2"> -o%t&quot;)</span>
 <span class="s2">    n_all=$(echo &quot;$jobs_states&quot; | wc -w)</span>
@@ -703,10 +704,10 @@
 
 <span class="s2">        if [[ &quot;$n_run&quot; -gt 0 ]]</span>
 <span class="s2">        then</span>
-<span class="s2">            counter=$((counter + </span><span class="si">{</span><span class="n">wait_time</span><span class="si">}</span><span class="s2">))</span>
+<span class="s2">            counter=$((counter + </span><span class="si">{</span><span class="n">poll_interval</span><span class="si">}</span><span class="s2">))</span>
 <span class="s2">        fi</span>
 
-<span class="s2">        sleep </span><span class="si">{</span><span class="n">wait_time</span><span class="si">}</span>
+<span class="s2">        sleep </span><span class="si">{</span><span class="n">poll_interval</span><span class="si">}</span>
 
 <span class="s2">        jobs_states=$(ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> &quot;squeue -h -n </span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2"> -o%t&quot;)</span>
 <span class="s2">        n_all=$(echo &quot;$jobs_states&quot; | wc -w)</span>
@@ -716,9 +717,9 @@
 
 <span class="s2">    ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> &#39;find </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">skip_patterns</span><span class="si">}</span><span class="s2"> -exec rm -r &quot;</span><span class="se">{{}}</span><span class="s2">&quot; +&#39;</span>
 
-<span class="s2">    </span><span class="si">{</span><span class="n">copy_to_local_cmd</span><span class="si">}</span>
+<span class="s2">    scp -r -q </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2">:&quot;</span><span class="si">{</span><span class="n">simlist</span><span class="si">}</span><span class="s2">&quot; </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">TMP_PATH</span><span class="p">)</span><span class="si">}</span>
 <span class="s2">    ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> &quot;rm -r </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="s2">    echo &quot;simulations finished at (accuracy 60s):&quot;</span>
+<span class="s2">    echo &quot;</span><span class="se">\n</span><span class="s2">Simulations finished at:&quot;</span>
 <span class="s2">    date +&quot;%d-%m-%y %T&quot;</span>
 <span class="s2">    echo &quot;---------STOP-WAIT-SCRIPT---------&quot;</span>
 <span class="s2">    rm -- &quot;$0&quot;</span>
@@ -730,21 +731,28 @@
 
 
     <span class="k">try</span><span class="p">:</span>
+        <span class="n">copy_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;scp&#39;</span><span class="p">,</span> <span class="s1">&#39;-r&#39;</span><span class="p">,</span> <span class="s1">&#39;-q&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">export_tmp_paths</span> <span class="o">+</span> \
+                   <span class="p">[</span><span class="n">remote_simulation_script</span><span class="p">,</span> <span class="n">ssh_login</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">kqc_remote_tmp_path</span><span class="p">]</span>
+        <span class="n">run_cmd</span> <span class="o">=</span>  <span class="sa">f</span><span class="s2">&quot;&quot;&quot;ssh </span><span class="si">{</span><span class="n">ssh_login</span><span class="si">}</span><span class="s2"> -tt -q &#39;bash -l -c &quot;cd </span><span class="si">{</span><span class="n">kqc_remote_tmp_path</span><span class="si">}</span><span class="s2"> &amp;&amp; ./</span><span class="si">{</span><span class="n">remote_script_name</span><span class="si">}</span><span class="s2">&quot;&#39;&quot;&quot;&quot;</span>
         <span class="c1"># COPY (dirs_local) -&gt; (dirs_remote)</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">copy_cmd</span><span class="p">)</span>
-        <span class="c1"># Remove local simulation script (just to not clutter tmp folder)</span>
+        <span class="c1"># Remove remote simulation script from local tmp folder</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s1">&#39;rm&#39;</span><span class="p">,</span>  <span class="n">remote_simulation_script</span><span class="p">])</span>
-        <span class="c1"># Force to use login shell on remote</span>
+        <span class="c1"># Force to use login shell on remote to get correct env variables</span>
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">run_cmd</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulations started and connection to remote closed.</span><span class="se">\n</span><span class="s2">&quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Starting a script to follow the submitted jobs with </span><span class="si">{</span><span class="n">poll_interval_str</span><span class="si">}</span><span class="s2"> interval&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1"># start ssh poll and wait script</span>
         <span class="k">if</span> <span class="n">detach_simulation</span><span class="p">:</span>
             <span class="n">nohup_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">TMP_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;nohup_</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">.out&quot;</span><span class="p">)</span>
             <span class="n">wait_and_copy_back_script</span> <span class="o">=</span> <span class="s2">&quot;nohup &quot;</span> <span class="o">+</span> <span class="n">wait_and_copy_back_script</span> <span class="o">+</span> <span class="s2">&quot; &gt; &quot;</span> <span class="o">+</span> <span class="n">nohup_file</span> <span class="o">+</span> <span class="s2">&quot; 2&gt;&amp;1 &amp;&quot;</span>
 
         <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">(</span><span class="n">wait_and_copy_back_script</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">detach_simulation</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Simulations sent to remote. You can follow the job state with &#39;watch cat </span><span class="si">{</span><span class="n">nohup_file</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Simulation wait script sent to background. You can follow the job state with&quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot; &#39;watch cat </span><span class="si">{</span><span class="n">nohup_file</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Starting remote run failed. Please manually fetch and delete data from remote&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">exc</span>
@@ -785,8 +793,9 @@
 
 
 <div class="viewcode-block" id="remote_export_and_run"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.remote_export_and_run.html#kqcircuits.simulations.export.remote_export_and_run.remote_export_and_run">[docs]</a><span class="k">def</span> <span class="nf">remote_export_and_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                          <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="s1">&#39;~/KQCircuits/tmp/&#39;</span><span class="p">,</span>
+                          <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">detach_simulation</span> <span class="p">:</span><span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Exports locally and runs KQC simulations on a remote host. Froced to use no GUI (--quiet, -q option)</span>
@@ -795,13 +804,11 @@
 <span class="sd">        ssh_login              (str): ssh login info &quot;user@hostname&quot;</span>
 <span class="sd">        kqc_remote_tmp_path    (str): tmp directory on remote</span>
 <span class="sd">        detach_simulation     (bool): Detach the remote simulation from terminal, not waiting for it to finish</span>
+<span class="sd">        poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish</span>
 <span class="sd">        args                  (list): a list of strings:</span>
 <span class="sd">                                        - If starts with a letter and ends with &quot;.py&quot;  -&gt; export script</span>
 <span class="sd">                                        - If starts with &quot;-&quot; or &quot;--&quot;                   -&gt; script option</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">if</span> <span class="n">kqc_remote_tmp_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kqc_remote_tmp_path</span> <span class="o">=</span> <span class="s1">&#39;~/KQCircuits/tmp/&#39;</span>
 
     <span class="n">allowed_simulations</span><span class="p">,</span> <span class="n">simdir</span><span class="p">,</span> <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">_allowed_simulations</span><span class="p">()</span>
 
@@ -840,26 +847,29 @@
         <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">export_cmd</span><span class="p">)</span>
 
     <span class="c1"># Run on remote</span>
-    <span class="n">_remote_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">export_tmp_paths</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">,</span> <span class="n">detach_simulation</span><span class="o">=</span><span class="n">detach_simulation</span><span class="p">)</span></div>
+    <span class="n">_remote_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span>
+                <span class="n">export_tmp_paths</span><span class="p">,</span>
+                <span class="n">kqc_remote_tmp_path</span><span class="p">,</span>
+                <span class="n">detach_simulation</span><span class="p">,</span>
+                <span class="n">poll_interval</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="remote_run_only"><a class="viewcode-back" href="../../../../api/kqcircuits.simulations.export.remote_export_and_run.html#kqcircuits.simulations.export.remote_export_and_run.remote_run_only">[docs]</a><span class="k">def</span> <span class="nf">remote_run_only</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-                    <span class="n">export_tmp_dirs</span><span class="p">:</span> <span class="nb">list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                     <span class="n">kqc_remote_tmp_path</span><span class="p">:</span> <span class="nb">str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                    <span class="n">detach_simulation</span><span class="p">:</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">poll_interval</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">export_tmp_dirs</span><span class="p">:</span> <span class="nb">list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Runs already locally exported simulations on remote host</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ssh_login              (str): ssh login info &quot;user@hostname&quot;</span>
-<span class="sd">        export_tmp_dirs  (list[str]): list of local tmp simulation folder names</span>
-<span class="sd">                                      Could contain other arguments from console script which are filtered out</span>
 <span class="sd">        kqc_remote_tmp_path    (str): tmp directory on remote</span>
 <span class="sd">        detach_simulation      (bool): Detach the remote simulation from terminal, not waiting for it to finish</span>
+<span class="sd">        poll_interval           (int): Polling interval in seconds when waiting for the remote simulation to finish</span>
+<span class="sd">        export_tmp_dirs   (list[str]): list of local tmp simulation folder names</span>
+<span class="sd">                                       Could contain other arguments from console script which are filtered out</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">kqc_remote_tmp_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kqc_remote_tmp_path</span> <span class="o">=</span> <span class="s1">&#39;~/KQCircuits/tmp/&#39;</span>
-
     <span class="n">allowed_simulations</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">_allowed_simulations</span><span class="p">()</span>
 
     <span class="n">allowed_simulations</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span><span class="o">.</span><span class="n">stem</span><span class="p">)</span> <span class="k">for</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">allowed_simulations</span><span class="p">]</span>
@@ -882,7 +892,11 @@
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="c1"># Run on remote</span>
-    <span class="n">_remote_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span> <span class="n">paths_filtered</span><span class="p">,</span> <span class="n">kqc_remote_tmp_path</span><span class="p">,</span> <span class="n">detach_simulation</span><span class="o">=</span><span class="n">detach_simulation</span><span class="p">)</span></div>
+    <span class="n">_remote_run</span><span class="p">(</span><span class="n">ssh_login</span><span class="p">,</span>
+                <span class="n">paths_filtered</span><span class="p">,</span>
+                <span class="n">kqc_remote_tmp_path</span><span class="p">,</span>
+                <span class="n">detach_simulation</span><span class="p">,</span>
+                <span class="n">poll_interval</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
