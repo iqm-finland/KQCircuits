@@ -602,6 +602,14 @@ installation automatically. If you wish to unlink, then write in your terminal:<
 <span class="pre">pull</span></code> just run <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/setup_within_klayout.py">setup_within_klayout.py</a> again. This will take care of upgrading (or downgrading)
 KQCircuit’s Python dependencies and installing new ones, as needed. Running KLayout will similarly
 update KQCircuits’ dependencies in its own Python environment.</p>
+<p>If the above didn’t work (usually in case of downgrading dependencies), there is an alternative way.
+If you see warnings displaying
+<code class="docutils literal notranslate"><span class="pre">WARNING:</span> <span class="pre">Target</span> <span class="pre">directory</span> <span class="pre">xyz</span> <span class="pre">already</span> <span class="pre">exists.</span> <span class="pre">Specify</span> <span class="pre">--upgrade</span> <span class="pre">to</span> <span class="pre">force</span> <span class="pre">replacement.</span></code>,
+this usually indicates that KQCircuits’s Python dependencies were not properly upgraded (or downgraded).
+In that case run the following:</p>
+<blockquote>
+<div><p>python3 setup_within_klayout.py –force-package-reinstall</p>
+</div></blockquote>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If a new version of KQCircuits has stopped using a certain Python dependency that will <strong>not</strong>

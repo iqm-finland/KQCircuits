@@ -569,6 +569,14 @@ provide a path to the parameters json file as well.</p></li>
 </div></blockquote>
 <p>An example of using XSection tool to produce cross-section simulation files is
 demonstrated in <a class="reference external" href="https://github.com/iqm-finland/KQCircuits/blob/main/klayout_package/python/scripts/simulations/waveguides_sim_xsection.py">klayout_package/python/scripts/simulations/waveguides_sim_xsection.py</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>XSection 1.7 does not work immediately after package install due to the improvement
+to backwards compatibility with older Ruby versions. To mitigate the issue,
+you need to make a change in the XSection code. From you KLayout environment directory,
+open <code class="docutils literal notranslate"><span class="pre">KLayout/salt/xsetion/ruby/xsection.rb</span></code> file in editor and change line 200
+from <code class="docutils literal notranslate"><span class="pre">pts</span> <span class="pre">&lt;&lt;</span> <span class="pre">[[[</span> <span class="pre">p1,</span> <span class="pre">p2</span> <span class="pre">]]]</span></code> to <code class="docutils literal notranslate"><span class="pre">pts</span> <span class="pre">&lt;&lt;</span> <span class="pre">[[</span> <span class="pre">p1,</span> <span class="pre">p2</span> <span class="pre">]]</span></code></p>
+</div>
 </div>
 <div class="section" id="process-files-xs">
 <h2>Process files (.xs)<a class="headerlink" href="#process-files-xs" title="Permalink to this headline">¶</a></h2>
