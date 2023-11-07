@@ -21,7 +21,6 @@ import os
 import subprocess
 from importlib import import_module
 from math import pi
-import csv
 
 from autologging import logged
 
@@ -141,10 +140,10 @@ def export_masks_of_face(export_dir, mask_layout, mask_set):
         mask_layout: MaskLayout object for the cell and face reference
         mask_set: MaskSet object for the name and version attributes to be included in the filename
     """
-    subdir_name_for_face = _get_mask_layout_full_name(mask_set, mask_layout)
+    subdir_name_for_face = get_mask_layout_full_name(mask_set, mask_layout)
     export_dir_for_face = _get_directory(export_dir / str(subdir_name_for_face))
     # export .oas file with all layers
-    path = export_dir_for_face / f"{_get_mask_layout_full_name(mask_set, mask_layout)}.oas"
+    path = export_dir_for_face / f"{get_mask_layout_full_name(mask_set, mask_layout)}.oas"
     _export_cell(path, mask_layout.top_cell, "all")
     # export .oas files for individual optical lithography layers
     for layer_name in mask_layout.mask_export_layers:
@@ -208,7 +207,7 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
         top_cell.shapes(layer).insert(wafer.transformed(pya.Trans(2, True, 0, 0)))
 
     layers_to_export = {layer_info.name: layer}
-    path = export_dir / (_get_mask_layout_full_name(mask_set, mask_layout) + f"-{layer_info.name}.oas")
+    path = export_dir / (get_mask_layout_full_name(mask_set, mask_layout) + f"-{layer_info.name}.oas")
     _export_cell(path, top_cell, layers_to_export)
 
     if invert:
@@ -229,7 +228,7 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
         for mask_layout in mask_set.mask_layouts:
 
             f.write("## Mask Layout {}:\n".format(mask_layout.face_id + mask_layout.extra_id))
-            mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout)
+            mask_layout_str = get_mask_layout_full_name(mask_set, mask_layout)
             f.write(f"![alt text]({mask_layout_str}/{mask_layout_str}-mask_graphical_rep.png)\n")
 
             f.write("### Number of Chips in Mask Layout {}\n".format(mask_layout.face_id + mask_layout.extra_id))
@@ -307,7 +306,7 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
 
         f.write("## Links\n")
         for mask_layout in mask_set.mask_layouts:
-            mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout)
+            mask_layout_str = get_mask_layout_full_name(mask_set, mask_layout)
             mask_layout_path = mask_set._mask_set_dir / mask_layout_str
 
             f.write("### Mask Files:\n")
@@ -323,14 +322,6 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
 
         f.close()
 
-    for mask_layout in mask_set.mask_layouts:
-        mask_layout_str = _get_mask_layout_full_name(mask_set, mask_layout)
-        chips_map_file_name = mask_set._mask_set_dir / mask_layout_str / f"{mask_layout_str}-chips_map.csv"
-        with open(chips_map_file_name, "w+", encoding="utf-8", newline="") as g:
-            writer = csv.writer(g)
-            writer.writerows(
-                [['x', 'y', 'Active/Inactive', 'pixel id', 'pixel type']] + mask_layout.chip_array_to_export)
-        g.close()
 
 @logged
 def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
@@ -339,9 +330,9 @@ def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
 
     # export bitmaps for mask layouts
     for mask_layout in mask_set.mask_layouts:
-        mask_layout_dir_name = _get_mask_layout_full_name(mask_set, mask_layout)
+        mask_layout_dir_name = get_mask_layout_full_name(mask_set, mask_layout)
         mask_layout_dir = _get_directory(mask_set._mask_set_dir / str(mask_layout_dir_name))
-        filename = _get_mask_layout_full_name(mask_set, mask_layout)
+        filename = get_mask_layout_full_name(mask_set, mask_layout)
         view = mask_set.view
         if view:
             view.focus(mask_layout.top_cell)
@@ -411,5 +402,5 @@ def _get_directory(directory):
     return directory
 
 
-def _get_mask_layout_full_name(mask_set, mask_layout):
+def get_mask_layout_full_name(mask_set, mask_layout):
     return f"{mask_set.name}_v{mask_set.version}-{mask_layout.face_id}{mask_layout.extra_id}"
