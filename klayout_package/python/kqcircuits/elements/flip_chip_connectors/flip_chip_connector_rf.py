@@ -82,7 +82,6 @@ class FlipChipConnectorRf(FlipChipConnector):
                 trace_dtrans = pya.DCplxTrans(1, trace_rotation, False, - bumps_length / 2, 0)
                 trace_itrans = trace_dtrans.to_itrans(self.layout.dbu)
                 region = rounded_plate(0, w, length) + trace(0, a + 2 * b, - w / 2).transformed(trace_itrans)
-                logging.info(f'{str(trace_itrans)=}')
 
                 # Ground grid avoidance
                 avoid_region = region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)
