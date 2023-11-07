@@ -18,7 +18,6 @@
 """Functions for exporting mask sets."""
 import json
 import os
-import subprocess
 from importlib import import_module
 from math import pi
 
@@ -26,15 +25,16 @@ from autologging import logged
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
-    default_mask_parameters, default_drc_runset, DRC_PATH, STARTUPINFO
+    default_mask_parameters
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.klayout_view import resolve_default_layer_info
-from kqcircuits.pya_resolver import pya, klayout_executable_command
+from kqcircuits.pya_resolver import pya
 from kqcircuits.util.area import get_area_and_density
 from kqcircuits.util.count_instances import count_instances_in_cell
 from kqcircuits.util.geometry_helper import circle_polygon
 from kqcircuits.util.geometry_json_encoder import GeometryJsonEncoder
 from kqcircuits.util.netlist_extraction import export_cell_netlist
+from kqcircuits.util.export_helper import export_drc_report
 
 
 @logged
@@ -347,23 +347,6 @@ def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
             view.export_all_layers_bitmap(chip_dir, cell, filename=name)
     if view:
         view.focus(mask_set.mask_layouts[0].top_cell)
-
-
-@logged
-def export_drc_report(name, path):
-    drc_runset_path = os.path.join(DRC_PATH, default_drc_runset)
-    input_file = os.path.join(path, f"{name}.oas")
-    output_file = os.path.join(path, f"{name}_drc_report.lyrdb")
-    export_drc_report._log.info("Exporting DRC report to %s", output_file)
-
-    try:
-        subprocess.run([klayout_executable_command(), "-b",
-                        "-rm", drc_runset_path,
-                        "-rd", f"input={input_file}",
-                        "-rd", f"output={output_file}"
-                        ], check=True, startupinfo=STARTUPINFO)
-    except subprocess.CalledProcessError as e:
-        export_drc_report._log.error(e.output)
 
 
 def _export_cell(path, cell=None, layers_to_export=None):
