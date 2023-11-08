@@ -39,8 +39,6 @@ def create_rectangle(oEditor, name, x, y, z, w, h, axis, units):
              ],
             ["NAME:Attributes",
              "Name:=", name,
-             "Color:=", "(143 175 143)",
-             "Transparency:=", 0,
              "PartCoordinateSystem:=", "Global"
              ])
 
@@ -77,8 +75,6 @@ def create_polygon(oEditor, name, points, units):
         ["NAME:Attributes",
          "Name:=", name,
          "Flags:=", "",
-         "Color:=", "(143 175 143)",
-         "Transparency:=", 0,
          "PartCoordinateSystem:=", "Global"
          ])
 
@@ -97,8 +93,6 @@ def create_box(oEditor, name, x, y, z, sx, sy, sz, units):
             ["NAME:Attributes",
              "Name:=", name,
              "Flags:=", "",
-             "Color:=", "(143 175 143)",
-             "Transparency:=", 0.6,
              "PartCoordinateSystem:=", "Global"
              ])
 
@@ -238,3 +232,16 @@ def add_material(oDefinitionManager, name, **parameters):
     for key, value in parameters.items():
         param_list += ["{}:=".format(key), str(value)]
     oDefinitionManager.AddMaterial(param_list)
+
+
+def set_color(oEditor, objects, red, green, blue, transparency):
+    """Sets color and transparency for given objects."""
+    if objects:
+        oEditor.ChangeProperty(
+            ["NAME:AllTabs",
+             ["NAME:Geometry3DAttributeTab",
+              ["NAME:PropServers"] + objects,
+              ["NAME:ChangedProps",
+               ["NAME:Color", "R:=", red, "G:=", green, "B:=", blue],
+               ["NAME:Transparent", "Value:=", transparency]
+               ]]])

@@ -17,6 +17,7 @@
 
 
 # This is a Python 2.7 script that should be run in Ansys Electronic Desktop in order to import and run the simulation
+from math import cos, pi
 import time
 import os
 import sys
@@ -25,8 +26,8 @@ import ScriptEnv
 
 # TODO: Figure out how to set the python path for the Ansys internal IronPython
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'util'))
-from geometry import create_box, create_rectangle, create_polygon, thicken_sheet, set_material, add_layer, delete, \
-    move_vertically, subtract, objects_from_sheet_edges, add_material  # pylint: disable=wrong-import-position
+from geometry import create_box, create_rectangle, create_polygon, thicken_sheet, set_material, add_layer, subtract, \
+    move_vertically, delete, objects_from_sheet_edges, add_material, set_color  # pylint: disable=wrong-import-position
 
 # Set up environment
 ScriptEnv.Initialize("Ansoft.ElectronicsDesktop")
@@ -72,6 +73,13 @@ oAnalysisSetup = oDesign.GetModule("AnalysisSetup")
 oOutputVariable = oDesign.GetModule("OutputVariable")
 oSolutions = oDesign.GetModule("Solutions")
 oReportSetup = oDesign.GetModule("ReportSetup")
+
+# Define colors
+def color_by_material(material):
+    if material == 'pec':
+        return 240, 120, 240, 0.5
+    n = 0.3 * (material_dict.get(material, dict()).get('permittivity', 1.0) - 1.0)
+    return tuple(int(100 + 80 * c) for c in [cos(n-pi/3), cos(n+pi), cos(n+pi/3)]) + (0.93 ** n,)
 
 # Set units
 oEditor.SetModelUnits(['NAME:Units Parameter', 'Units:=', units, 'Rescale:=', False])
@@ -145,12 +153,15 @@ for lname, ldata in layers.items():
         # Solve Inside doesn't exist in 'q3d', so we use None to ignore the parameter.
         solve_inside = material != 'pec' if ansys_tool in ['hfss', 'eigenmode'] else None
         set_material(oEditor, objects[lname], material, solve_inside)
+        set_color(oEditor, objects[lname], *color_by_material(material))
     elif material == 'pec':
         pec_sheets += objects[lname]
 
 
 # Assign perfect electric conductor to metal sheets
 if pec_sheets:
+    pec_color = color_by_material('pec')
+    set_color(oEditor, pec_sheets, pec_color[0], pec_color[1], pec_color[2], pec_color[3]**2)
     if ansys_tool in {'hfss', 'eigenmode'}:
         oBoundarySetup.AssignPerfectE(
             ["NAME:PerfE1",
@@ -187,8 +198,8 @@ if ansys_tool in {'hfss', 'eigenmode'}:
             polyname = 'Port%d' % port['number']
 
             # Create polygon spanning the two edges
-            create_polygon(oEditor, polyname,
-                           [list(p) for p in port['polygon']], units)
+            create_polygon(oEditor, polyname, [list(p) for p in port['polygon']], units)
+            set_color(oEditor, [polyname], 240, 180, 180, 0.8)
 
             oBoundarySetup.AutoIdentifyPorts(
                 ["NAME:Faces", int(oEditor.GetFaceIDs(polyname)[0])],
