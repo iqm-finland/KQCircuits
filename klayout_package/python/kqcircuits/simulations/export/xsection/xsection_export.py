@@ -374,6 +374,22 @@ def _remove_shared_points(target_edge, acting_edges, is_adjacent):
     return edge_bits
 
 
+def _normal_of_edge(simulation, p1, p2, scale):
+    """Returns a normal of edge p1->p2.
+
+    If (p1, p2) are in same polygon in given order,
+    the returned normal will stick out of polygon.
+    The magnitude of the normal will be set to `scale`.
+
+    p1, p2 are pya.Point (integer) objects, however
+    scale is scaled according to pya.DPoint domain.
+    """
+    edge_dir = p2 - p1
+    normal = pya.Point(-edge_dir.y, edge_dir.x)
+    dnormal = normal.to_dtype(simulation.layout.dbu)
+    return (dnormal * (scale / dnormal.abs())).to_itype(simulation.layout.dbu)
+
+
 def _thicken_edges(simulation, edges, thickness, grow):
     """Take edges and add thickness to produce a region.
 
@@ -390,34 +406,68 @@ def _thicken_edges(simulation, edges, thickness, grow):
         path_graph[edge.p1] = edge
 
     result_region = pya.Region()
+    processed_edges = []
     # Take each start_point and follow the path until the end
     for current_point in start_points:
         inner_path = [current_point]
         normals = []
         while True:
+            current_edge = path_graph[current_point]
+            processed_edges.append(current_edge)
             # First collect path points for the region polygon
-            inner_path.append(path_graph[current_point].p2)
-            edge_dir = path_graph[current_point].p2 - path_graph[current_point].p1
-            # Store edge normal, assuming edges go clock-wise around the shape hull
-            normal = pya.Point(-edge_dir.y, edge_dir.x)
-            if not grow: # Flip normal if growing inward
-                normal = -normal
-            # Set normal length to thickness
-            dnormal = normal.to_dtype(simulation.layout.dbu)
-            normals.append(dnormal * (thickness / dnormal.abs()))
+            inner_path.append(current_edge.p2)
+            # Also collect their normals
+            normals.append((1. if grow else -1.) *
+                           _normal_of_edge(simulation, current_edge.p1, current_edge.p2, thickness))
             # At the end point, terminate
-            if path_graph[current_point].p2 not in path_graph:
+            if current_edge.p2 not in path_graph:
                 break
             # Otherwise proceed to next point in path
-            current_point = path_graph[current_point].p2
+            current_point = current_edge.p2
         # Connect to the second layer of the path to add thickness
-        outer_path = [inner_path[-1] + normals[-1].to_itype(simulation.layout.dbu)]
+        outer_path = [inner_path[-1] + normals[-1]]
         # Backtrack the path for the second layer of the polygon
         for idx in range(len(normals) - 1, 0, -1):
             normal_sum = normals[idx] + normals[idx - 1] # Sum normals of surrounding edges of the point
-            outer_path.append(inner_path[idx] + normal_sum.to_itype(simulation.layout.dbu))
-        outer_path.append(inner_path[0] + normals[0].to_itype(simulation.layout.dbu))
+            outer_path.append(inner_path[idx] + normal_sum)
+        outer_path.append(inner_path[0] + normals[0])
         result_region += pya.Region(pya.Polygon(inner_path + outer_path))
+
+    # Handle edges in loops separately
+    loop_edges = [e for e in edges if e not in processed_edges]
+    processed_edges = []
+    for start_edge in loop_edges:
+        if start_edge in processed_edges:
+            continue
+        current_edge = start_edge
+        loop = [current_edge.p1]
+        while current_edge.p2 != start_edge.p1:
+            loop.append(current_edge.p2)
+            current_edge = path_graph[current_edge.p2]
+            processed_edges.append(current_edge)
+        loop_poly = pya.Polygon(loop)
+        if grow:
+            # We are growing on the rim of the loop. Take the rim, then copy the
+            # shrinked rim, then subtract shrinked rim from original rim.
+            # To shrink, we have to rely on normals
+            loop_sized = []
+            for i, p in enumerate(loop):
+                j = 0 if i+1 == len(loop) else i+1
+                normal_next =  _normal_of_edge(simulation, p, loop[j], thickness)
+                normal_prev =  _normal_of_edge(simulation, loop[i-1], p, thickness)
+                loop_sized.append(p + normal_prev + normal_next)
+            loop_sized = pya.Polygon(loop_sized)
+        else:
+            # We are "growing" out of the rim of the loop. Take the rim,
+            # then copy the magnified rim, subtracting original rim from
+            # the magnified rim. We can just use `sized` method.
+            loop_sized = loop_poly.to_dtype(simulation.layout.dbu)
+            loop_sized = loop_sized.sized(thickness)
+            loop_sized = loop_sized.to_itype(simulation.layout.dbu)
+        if grow:
+            result_region += (pya.Region(loop_poly) - pya.Region(loop_sized))
+        else:
+            result_region += (pya.Region(loop_sized) - pya.Region(loop_poly))
     return result_region
 
 
