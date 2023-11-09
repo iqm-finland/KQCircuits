@@ -40,7 +40,8 @@ class ManhattanSingleJunction(Junction):
     pad_height = Param(pdt.TypeDouble, "Height of the junction pad.", 6.0, unit="μm")
     pad_width = Param(pdt.TypeDouble, "Width of the junction pad.", 12.0, unit="μm")
     pad_to_pad_separation = Param(pdt.TypeDouble, "Pad separation.", 6.0, unit="μm")
-    x_offset = Param(pdt.TypeDouble, "Horizontal junction offset", 0, unit="μm")
+    x_offset = Param(pdt.TypeDouble, "Horizontal junction offset.", 0, unit="μm")
+    pad_rounding_radius = Param(pdt.TypeDouble, "Rounding radius of the junction pad.", 0.5, unit="μm")
 
     def build(self):
         self.produce_manhattan_junction()
@@ -49,8 +50,8 @@ class ManhattanSingleJunction(Junction):
 
         # corner rounding parameters
         rounding_params = {
-            "rinner": 0.5,  # inner corner rounding radius
-            "router": 0.5,  # outer corner rounding radius
+            "rinner": self.pad_rounding_radius,  # inner corner rounding radius
+            "router": self.pad_rounding_radius,  # outer corner rounding radius
             "n": 64,  # number of point per rounded corner
         }
 
