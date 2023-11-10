@@ -15,7 +15,7 @@
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
-from autologging import logged
+import logging
 
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
@@ -24,7 +24,6 @@ from kqcircuits.chips.chip import Chip
 from kqcircuits.elements.waveguide_composite import WaveguideComposite, Node
 
 
-@logged
 class SampleHolderTest(Chip):
     """
     The PCell declaration for a SampleHolderTest chip.
@@ -65,7 +64,7 @@ class SampleHolderTest(Chip):
             ])
             self.insert_cell(cell)
 
-            self.__log.info(f"{self.name_chip}: Waveguide PL-{i} length: {cell.length()}")
+            logging.info(f"{self.name_chip}: Waveguide PL-{i} length: {cell.length()}")
 
         for i in range(1, nr_pads_per_side + 1):
             _produce_waveguide(i, -1200, first_port="IN", second_port="OUT")

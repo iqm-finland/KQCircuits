@@ -20,7 +20,6 @@ from importlib import util, import_module
 # Record dependencies in setup.py too
 kqc_python_dependencies = {
     "numpy": "numpy>=1.16",
-    "autologging": "Autologging~=1.3",
     "scipy": "scipy>=1.2",
     "tqdm": "tqdm>=4.61",
     "networkx": "networkx>=2.7",

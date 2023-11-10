@@ -16,7 +16,7 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
+import logging
 
 from kqcircuits.elements.finger_capacitor_square import FingerCapacitorSquare
 from kqcircuits.elements.flip_chip_connectors import connector_type_choices
@@ -29,7 +29,6 @@ from kqcircuits.util.refpoints import WaveguideToSimPort
 
 
 @add_parameters_from(FingerCapacitorSquare, "a2", "b2")
-@logged
 class FlipChipConnectorRf(FlipChipConnector):
     """PCell declaration for an inter-chip rf connector.
 
@@ -59,7 +58,7 @@ class FlipChipConnectorRf(FlipChipConnector):
         for i in range(self.n_center_bumps):
             self.insert_cell(bump, pya.DTrans((i - (self.n_center_bumps - 1) / 2) * self.inter_bump_distance, 0))
         bump_ref = self.get_refpoints(bump)
-        self.__log.debug("bump_ref: %s", bump_ref)
+        logging.debug("bump_ref: %s", bump_ref)
 
         a2 = self.a2 if self.a2 >= 0 else self.a
         b2 = self.b2 if self.b2 >= 0 else self.b
@@ -83,7 +82,7 @@ class FlipChipConnectorRf(FlipChipConnector):
                 trace_dtrans = pya.DCplxTrans(1, trace_rotation, False, - bumps_length / 2, 0)
                 trace_itrans = trace_dtrans.to_itrans(self.layout.dbu)
                 region = rounded_plate(0, w, length) + trace(0, a + 2 * b, - w / 2).transformed(trace_itrans)
-                self.__log.info(f'{str(trace_itrans)=}')
+                logging.info(f'{str(trace_itrans)=}')
 
                 # Ground grid avoidance
                 avoid_region = region.sized(self.margin / self.layout.dbu, self.margin / self.layout.dbu, 2)

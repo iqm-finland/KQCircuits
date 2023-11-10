@@ -16,15 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.elements.element import Element
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.defaults import default_tsv_type
 from kqcircuits.elements.tsvs import tsv_type_choices
 
 
-@logged
 class Tsv(Element):
     """Base Class for TSVs."""
 

@@ -16,13 +16,10 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 
 
-@logged
 class FluxlineStandard(Fluxline):
     """Fluxline variant "standard".
 

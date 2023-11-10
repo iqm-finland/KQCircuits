@@ -14,7 +14,6 @@
 # The software distribution should follow IQM trademark policy for open-source software
 # (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
-from autologging import logged
 
 from kqcircuits.elements.element import Element
 from kqcircuits.util.geometry_helper import circle_polygon
@@ -22,7 +21,6 @@ from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.defaults import default_bump_parameters
 
 
-@logged
 class FlipChipConnector(Element):
     """Connector between matching faces of two chips.
 

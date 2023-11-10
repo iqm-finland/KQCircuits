@@ -21,7 +21,7 @@ import os
 from importlib import import_module
 from math import pi
 
-from autologging import logged
+import logging
 
 from kqcircuits.chips.chip import Chip
 from kqcircuits.defaults import mask_bitmap_export_layers, chip_export_layer_clusters, default_layers, \
@@ -37,7 +37,6 @@ from kqcircuits.util.netlist_extraction import export_cell_netlist
 from kqcircuits.util.export_helper import export_drc_report
 
 
-@logged
 def export_mask_set(mask_set, skip_extras=False):
     """Exports the designs, bitmap and documentation for the mask_set."""
 
@@ -47,7 +46,6 @@ def export_mask_set(mask_set, skip_extras=False):
         export_docs(mask_set)
 
 
-@logged
 def export_designs(mask_set):
     """Exports .oas and .gds files of the mask_set."""
     # export mask layouts
@@ -216,7 +214,6 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
     layout.delete_layer(tmp_layer)
 
 
-@logged
 def export_docs(mask_set, filename="Mask_Documentation.md"):
     """Exports mask documentation containing mask layouts and parameters of all chips in the mask_set."""
     file_location = str(mask_set._mask_set_dir / filename)
@@ -323,7 +320,6 @@ def export_docs(mask_set, filename="Mask_Documentation.md"):
         f.close()
 
 
-@logged
 def export_bitmaps(mask_set, spec_layers=mask_bitmap_export_layers):
     """Exports bitmaps for the mask_set."""
     # pylint: disable=dangerous-default-value
@@ -353,7 +349,7 @@ def _export_cell(path, cell=None, layers_to_export=None):
     if cell is None:
         error_text = "Cannot export nil cell."
         error = ValueError(error_text)
-        _export_cell._log.exception(error_text, exc_info=error)
+        logging.exception(error_text, exc_info=error)
         raise error
     layout = cell.layout()
     if (layers_to_export is None) or (layers_to_export == ""):

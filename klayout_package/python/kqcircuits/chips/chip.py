@@ -17,8 +17,8 @@
 # pylint: disable=R0904
 # TODO: Consider refactoring to reduce number of public methods
 
+import logging
 import numpy
-from autologging import logged
 
 from kqcircuits.defaults import default_layers, default_junction_type, default_sampleholders, default_mask_parameters, \
     default_bump_parameters, default_marker_type
@@ -37,7 +37,6 @@ from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import Flip
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_rf import FlipChipConnectorRf
 
 
-@logged
 @add_parameters_from(Tsv, "tsv_type")
 @add_parameters_from(FlipChipConnectorRf, "connector_type")
 @add_parameter(ChipFrame, "box", hidden=True)
@@ -307,7 +306,7 @@ class Chip(Element):
         The bumps avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
         placed) bumps.
         """
-        self.__log.info('Starting ground bump generation')
+        logging.info('Starting ground bump generation')
         bump = self.add_element(FlipChipConnectorDc)
 
         bump_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_bump, -self.edge_from_bump))
@@ -348,7 +347,7 @@ class Chip(Element):
         for location in bump_locations:
             self.insert_cell(bump, pya.DTrans(location))
 
-        self.__log.info(f'Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} ground bumps, '
+        logging.info(f'Found {existing_bump_count} existing bumps and inserted {len(bump_locations)} ground bumps, '
                         + f'totalling {existing_bump_count + len(bump_locations)} bumps.')
 
     def post_build(self):
@@ -557,7 +556,7 @@ class Chip(Element):
          The TSVs avoid ground grid avoidance on both faces, and keep a minimum distance to any existing (manually
          placed) TSVs.
          """
-        self.__log.info(f'Starting ground TSV generation on face(s) {[self.face_ids[f_id] for f_id in face_id]}')
+        logging.info(f'Starting ground TSV generation on face(s) {[self.face_ids[f_id] for f_id in face_id]}')
 
         def region_from_layer(layer_name, f_id):
             return pya.Region(self.cell.begin_shapes_rec(self.get_layer(layer_name, f_id)))
@@ -613,7 +612,7 @@ class Chip(Element):
 
         self.insert_tsvs(tsv, tsv_locations)
 
-        self.__log.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} ground TSVs, '
+        logging.info(f'Found {existing_tsv_count} existing TSVs and inserted {len(tsv_locations)} ground TSVs, '
                         + f'totalling {existing_tsv_count + len(tsv_locations)} TSVs.')
 
         return tsv_locations

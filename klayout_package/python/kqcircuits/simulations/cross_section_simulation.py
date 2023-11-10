@@ -18,7 +18,7 @@
 
 import abc
 
-from autologging import logged
+import logging
 
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
@@ -26,7 +26,6 @@ from kqcircuits.simulations.simulation import Simulation, get_simulation_layer_b
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
-@logged
 @add_parameters_from(Simulation, 'name', 'box', 'extra_json_data')
 class CrossSectionSimulation:
     """Class for co-planar waveguide cross-section simulations.
@@ -71,7 +70,7 @@ class CrossSectionSimulation:
         if layout is None or not isinstance(layout, pya.Layout):
             error_text = "Cannot create simulation with invalid or nil layout."
             error = ValueError(error_text)
-            self.__log.exception(error_text, exc_info=error)
+            logging.error(error_text)
             raise error
 
         self.layout = layout

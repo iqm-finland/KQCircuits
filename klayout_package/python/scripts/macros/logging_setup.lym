@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -43,6 +44,7 @@ lowest_visible_level = "INFO"  # use this to change the logging level
 # calling logging.basicConfig with "level" argument seems to be required (but not enough) to make logs show in KLayout console
 logging.basicConfig(
   level=logging.DEBUG,  # this level is NOT actually used, instead lowest_visible_level is used
+  force=True,
 )
 
 route_log(lowest_visible_level=lowest_visible_level)

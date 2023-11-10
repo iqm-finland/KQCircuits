@@ -16,8 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.elements.element import Element
@@ -25,7 +23,6 @@ from kqcircuits.defaults import default_fluxline_type
 from kqcircuits.elements.fluxlines import fluxline_type_choices
 
 
-@logged
 class Fluxline(Element):
     """Base class for fluxline objects without actual produce function."""
 

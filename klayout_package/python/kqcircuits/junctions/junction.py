@@ -16,15 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.elements.element import Element
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.defaults import default_junction_type
 from kqcircuits.junctions import junction_type_choices
 
 
-@logged
 class Junction(Element):
     """Base class for junctions without actual produce function.
 

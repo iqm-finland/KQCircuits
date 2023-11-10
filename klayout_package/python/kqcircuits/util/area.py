@@ -18,12 +18,9 @@ import logging
 from os import cpu_count
 from time import perf_counter
 
-from autologging import logged
-
 from kqcircuits.pya_resolver import pya
 
 
-@logged
 class AreaReceiver(pya.TileOutputReceiver):
     """ Class for handling and storing output from :class:`TilingProcessor` """
 
@@ -34,7 +31,7 @@ class AreaReceiver(pya.TileOutputReceiver):
     def put(self, ix, iy, tile, obj, dbu, clip):
         """ Function called by :class:`TilingProcessor` on output """
         #pylint: disable=unused-argument
-        self.__log.debug(f"Area for tile {ix},{iy}: {obj} ({dbu})")
+        logging.debug(f"Area for tile {ix},{iy}: {obj} ({dbu})")
         self.area = obj * (dbu * dbu)  # report as um^2
 
 

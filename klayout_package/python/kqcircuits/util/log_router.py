@@ -43,7 +43,7 @@ def route_log(lowest_visible_level="INFO", remove_old_handlers=True, filename=""
         while root_logger.hasHandlers():
             root_logger.removeHandler(root_logger.handlers[0])
 
-    message_format = "%(asctime)s:%(levelname)s:%(name)s:%(funcName)s:%(message)s"
+    message_format = "%(asctime)s:%(levelname)s:%(module)s:%(funcName)s:%(message)s"
     date_format = "%Y-%m-%d %H:%M:%S"
     formatter = logging.Formatter(message_format, date_format)
 

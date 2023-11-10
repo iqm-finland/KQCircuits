@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.geometry_helper import get_angle
 from kqcircuits.util.parameters import Param, pdt
@@ -25,7 +24,6 @@ from kqcircuits.elements.airbridges import airbridge_type_choices
 from kqcircuits.elements.element import Element, get_refpoints
 
 
-@logged
 class Airbridge(Element):
     """Airbridge base class without actual produce function.
 

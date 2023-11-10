@@ -17,7 +17,6 @@
 import math
 from collections.abc import Sequence
 
-from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
@@ -30,7 +29,6 @@ from kqcircuits.util.label import produce_label, LabelOrigin
 from kqcircuits.util.merge import merge_layout_layers_on_face, convert_child_instances_to_static
 
 
-@logged
 class MaskLayout:
     """Class representing the mask for a certain face.
 

@@ -19,8 +19,6 @@
 import json
 from inspect import isclass
 
-from autologging import logged
-
 from kqcircuits.defaults import default_layers, default_faces, default_parameter_values
 from kqcircuits.pya_resolver import pya, is_standalone_session
 from kqcircuits.util.geometry_helper import get_cell_path_length
@@ -94,7 +92,6 @@ def insert_cell_into(target_cell, cell, trans=None, inst_name=None, label_trans=
             cell_inst.set_property("label_trans", label_trans_str)
     return cell_inst, refpoints_abs
 
-@logged
 class Element(pya.PCellDeclarationHelper):
     """Element PCell declaration.
 

@@ -16,15 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.junctions.junction import Junction
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
 
-@logged
 class Sim(Junction):
     """The PCell declaration for a simulation type SQUID.
 

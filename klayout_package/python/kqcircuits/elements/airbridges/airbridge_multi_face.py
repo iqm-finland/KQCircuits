@@ -16,15 +16,12 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.elements.airbridges.airbridge import Airbridge
 from kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc import FlipChipConnectorDc
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 
 
-@logged
 @add_parameters_from(FlipChipConnectorDc)
 @add_parameters_from(Airbridge, bridge_width=40, pad_length=40)
 class AirbridgeMultiFace(Airbridge):

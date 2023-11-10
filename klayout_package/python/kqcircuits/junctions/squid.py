@@ -16,13 +16,10 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.junctions.junction import Junction
 from kqcircuits.util.parameters import Param, pdt
 
 
-@logged
 class Squid(Junction):
     """Base class for SQUIDs without actual produce function.
 

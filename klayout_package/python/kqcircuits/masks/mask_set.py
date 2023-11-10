@@ -24,7 +24,6 @@ from inspect import isclass
 from multiprocessing import Pool
 from pathlib import Path
 
-from autologging import logged
 from tqdm import tqdm
 
 from kqcircuits.chips.chip import Chip
@@ -37,7 +36,6 @@ from kqcircuits.masks.mask_layout import MaskLayout
 from kqcircuits.klayout_view import KLayoutView
 
 
-@logged
 class MaskSet:
     """Class representing a set of masks for different chip faces.
 
@@ -210,7 +208,7 @@ class MaskSet:
         chip_path = _mask_set_dir/"Chips"/f"{variant_name}"
         chip_path.mkdir(parents=True, exist_ok=True)
 
-        logging.basicConfig(level=logging.DEBUG)  # this level is NOT actually used
+        logging.basicConfig(level=logging.DEBUG, force=True)  # this level is NOT actually used
         route_log(filename=chip_path/f"{variant_name}.log", stdout=_extra_params["enable_debug"])
 
         mock_chips = _extra_params['mock_chips']

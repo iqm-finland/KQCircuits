@@ -17,14 +17,12 @@
 
 
 from math import sqrt
-from autologging import logged
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.junctions.junction import Junction
 from kqcircuits.util.symmetric_polygons import polygon_with_vsym
 
 
-@logged
 class ManhattanSingleJunction(Junction):
     """The PCell declaration for a Manhattan style single junction.
     """

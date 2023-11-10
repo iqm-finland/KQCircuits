@@ -16,7 +16,6 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 import importlib
 import warnings
-from autologging import logged
 
 from kqcircuits.elements.element import insert_cell_into
 from kqcircuits.pya_resolver import pya, lay, is_standalone_session
@@ -25,7 +24,6 @@ from kqcircuits.defaults import default_layers, default_png_dimensions, mask_bit
     all_layers_bitmap_hide_layers, default_faces, default_layer_props
 
 
-@logged
 class KLayoutView:
     """Helper object to represent the KLayout rendering environment.
 
@@ -411,7 +409,6 @@ class MissingUILibraryException(Exception):
         Exception.__init__(self, message)
 
 
-@logged
 def resolve_default_layer_info(layer_name, face_id=None):
     """Returns LayerInfo based on default_layers.
 

@@ -33,7 +33,7 @@
             # Do something with validated parameters...
 """
 
-from autologging import logged
+import logging
 
 from kqcircuits.pya_resolver import pya
 
@@ -59,7 +59,6 @@ def normalize_rules(name, rules):
     }
 
 
-@logged
 class Validator():
     """Validates KLayout parameters according to specified schema.
 
@@ -86,24 +85,24 @@ class Validator():
         """
         for name, rules in self.schema.items():
             rules = normalize_rules(name, rules)
-            self.__log.debug("Validating {} using rules [{}].".format(name, rules))
+            logging.debug(f"Validating {name} using rules [{rules}].")
             if name in parameters:
                 value = parameters[name]
                 if value is None:
                     if rules["required"]:
                         raise ValueError(_generate_missing_parameter_message(name))
-                    self.__log.debug("Validated {}.".format(name))
+                    logging.debug(f"Validated {name}.")
                     return True
                 else:
                     if _is_of_type(value, rules["type"]):
-                        self.__log.debug("Validated {}.".format(name))
+                        logging.debug(f"Validated {name}.")
                         return True
                     else:
                         raise ValueError(_generate_invalid_parameter_message(name, value))
             else:
                 if rules["required"]:
                     raise ValueError(_generate_missing_parameter_message(name))
-                self.__log.debug("Validated {}.".format(name))
+                logging.debug(f"Validated {name}.")
                 return True
 
     def __validate_schema(self):

@@ -20,7 +20,7 @@ import ast
 from itertools import zip_longest
 from typing import Tuple
 from math import pi, tan
-from autologging import logged
+import logging
 
 from scipy.optimize import root_scalar
 
@@ -179,7 +179,6 @@ class Node:
 @add_parameters_from(Airbridge, "airbridge_type")
 @add_parameters_from(WaveguideCoplanar, "term1", "term2", "add_metal", "ground_grid_in_trace")
 @add_parameters_from(FlipChipConnectorRf)
-@logged
 class WaveguideComposite(Element):
     """A composite waveguide made of waveguides and other elements.
 
@@ -446,7 +445,7 @@ class WaveguideComposite(Element):
         self.old_id = self.face_ids[0]
 
         for i, node in enumerate(self._nodes):
-            self.__log.debug(f' Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},'
+            logging.debug(f' Node #{i}: ({node.position.x:.2f}, {node.position.y:.2f}), {node.element.__class__},'
                              f' {node.params}')
             if 'face_id' in node.params:
                 self.new_id = node.params['face_id']

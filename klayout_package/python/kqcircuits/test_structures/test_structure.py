@@ -16,13 +16,10 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.elements.element import Element
 from kqcircuits.pya_resolver import pya
 
 
-@logged
 class TestStructure(Element):
     """Base PCell declaration for test structures."""
 

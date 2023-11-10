@@ -26,14 +26,13 @@
 """
 
 from os import path
-from autologging import logged
+import logging
 from kqcircuits.pya_resolver import pya
 from kqcircuits.junctions import junction_type_choices
 from kqcircuits.junctions.junction import Junction
 from kqcircuits.chips.chip import Chip
 
 
-@logged
 def replace_squids(cell, junction_type, parameter_name, parameter_start, parameter_step, parameter_end=None):
     """Replaces squids by code generated squids with the given parameter sweep.
 
@@ -83,13 +82,12 @@ def replace_squids(cell, junction_type, parameter_name, parameter_start, paramet
             squid_cell = Junction.create(layout, junction_type=junction_type, face_ids=inst.pcell_parameter("face_ids"),
                                       **parameters)
             cell.insert(pya.DCellInstArray(squid_cell.cell_index(), dtrans))
-            replace_squids._log.info("Replaced squid \"{}\" with dtrans={} by a squid \"{}\" with {}={}."
-                                     .format(name, dtrans, junction_type, parameter_name, parameter_value))
+            logging.info("Replaced squid \"%s\" with dtrans=%s by a squid \"%s\" with %s=%s.",
+                         name, dtrans, junction_type, parameter_name, parameter_value)
             parameter_value += parameter_step
         # delete old squid
         inst.delete()
 
-@logged
 def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=0, **params):
     """Replaces a SQUID by the requested alternative in the named instance.
 
@@ -119,13 +117,13 @@ def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=
 
     cells = find_cells_with_squids(top_cell, inst_name)
     if not cells:
-        replace_squid._log.warn(f"Could not find anything named '{inst_name}'!")
+        logging.warning(f"Could not find anything named '{inst_name}'!")
 
     layout = top_cell.layout()
     file_cell = None
     if junction_type.endswith(".oas") or junction_type.endswith(".gds"):  # try to load from file
         if not path.exists(junction_type):
-            replace_squid._log.warn(f"No file found at '{path.realpath(junction_type)}!")
+            logging.warning(f"No file found at '{path.realpath(junction_type)}!")
             return
         load_opts = pya.LoadLayoutOptions()
         load_opts.cell_conflict_resolution = pya.LoadLayoutOptions.CellConflictResolution.RenameCell
@@ -147,14 +145,14 @@ def replace_squid(top_cell, inst_name, junction_type, mirror=False, squid_index=
         squids = [sq for sq in ccell.each_inst() if sq.cell.qname().find("Junction Library") != -1]
         squids.sort(key=lambda q: q.property("squid_index"))
         if not squids or squid_index >= len(squids) or squid_index < 0:
-            replace_squid._log.warn(f"No SQUID found in '{inst_name}' or squid_index={squid_index} is out of range!")
+            logging.warning(f"No SQUID found in '{inst_name}' or squid_index={squid_index} is out of range!")
             continue
         old_squid = squids[squid_index]
         if old_squid.is_pcell():
             params = {"face_ids": old_squid.pcell_parameter("face_ids"), **params}
         trans = old_squid.dcplx_trans * pya.DCplxTrans.M90 if mirror else old_squid.dcplx_trans
         squid_pos = (orig_trans * trans).disp
-        replace_squid._log.info(f"Replaced SQUID of '{inst_name}' with {junction_type} at {squid_pos}.")
+        logging.info(f"Replaced SQUID of '{inst_name}' with {junction_type} at {squid_pos}.")
         old_squid.delete()
         if file_cell:
             new_squid = ccell.insert(pya.DCellInstArray(file_cell.cell_index(), trans))

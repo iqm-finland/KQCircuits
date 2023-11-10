@@ -16,14 +16,11 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt
 from kqcircuits.junctions.junction import Junction
 
 
-@logged
 class NoSquid(Junction):
     """The PCell declaration for a No SQUID junction.
 

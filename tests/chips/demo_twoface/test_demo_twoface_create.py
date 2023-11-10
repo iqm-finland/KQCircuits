@@ -20,7 +20,7 @@ from tests.chips.chip_test_helpers import errors_test, box_existence_test
 
 from kqcircuits.chips.demo_twoface import DemoTwoface
 
-from autologging import logging
+import logging
 
 
 def test_errors(capfd, caplog):

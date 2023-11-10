@@ -16,14 +16,11 @@
 # for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).
 
 
-from autologging import logged
-
 from kqcircuits.pya_resolver import pya
 from kqcircuits.util.parameters import Param, pdt, add_parameters_from
 from kqcircuits.elements.fluxlines.fluxline import Fluxline
 
 
-@logged
 @add_parameters_from(Fluxline, fluxline_gap_width=3)
 class FluxlineStraight(Fluxline):
     """Fluxline variant "straight vertical".

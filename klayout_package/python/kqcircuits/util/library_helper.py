@@ -32,7 +32,7 @@ import types
 import inspect
 import importlib
 from pathlib import Path
-from autologging import logged
+import logging
 
 from kqcircuits.defaults import SRC_PATHS, kqc_library_names, excluded_module_names
 from kqcircuits.pya_resolver import pya
@@ -72,7 +72,6 @@ if SRC_PATHS[0].parts[-4] == "salt":
         SRC_PATHS.append(Path(os.path.join(user_dirs, ud)))
 
 
-@logged
 def load_libraries(flush=False, path=""):
     """Load all KQCircuits libraries from the given path.
 
@@ -88,7 +87,7 @@ def load_libraries(flush=False, path=""):
     if flush:
         delete_all_libraries()
         _kqc_libraries.clear()
-        load_libraries._log.debug("Deleted all libraries.")
+        logging.debug("Deleted all libraries.")
     else:
         # if a library with the given path already exist, use it
         for _, lib_path in _kqc_libraries.values():
@@ -103,11 +102,11 @@ def load_libraries(flush=False, path=""):
         library = pya.Library.library_by_name(library_name)  # returns only registered libraries
         if (library is None) or flush:
             if library_name in _kqc_libraries.keys():
-                load_libraries._log.debug("Using created library \"{}\".".format(library_name))
+                logging.debug("Using created library \"%s\".", library_name)
                 library, _ = _kqc_libraries[library_name]
             else:
                 # create a library, but do not register it yet
-                load_libraries._log.debug("Creating new library \"{}\".".format(library_name))
+                logging.debug(f"Creating new library \"{library_name}\".")
                 library = pya.Library()
                 library.description = cls.LIBRARY_DESCRIPTION
                 _kqc_libraries[library_name] = (library, library_path)
@@ -136,7 +135,6 @@ def delete_all_libraries():
         delete_library(name)
 
 
-@logged
 def delete_library(name=None):
     """Delete a KQCircuits library.
 
@@ -157,7 +155,7 @@ def delete_library(name=None):
     if name in _kqc_libraries:
         _kqc_libraries.pop(name)
     if library._destroyed():
-        delete_library._log.info("Successfully deleted library '{}'.".format(name))
+        logging.info(f"Successfully deleted library '{name}'.")
     else:
         raise SystemError("Failed to delete library '[]'.".format(name))
 
@@ -182,7 +180,6 @@ def element_by_class_name(class_name: str, library_path: str = "elements", libra
     return None
 
 
-@logged
 def to_module_name(class_name=None):
     """Converts class name to module name.
 
@@ -203,13 +200,12 @@ def to_module_name(class_name=None):
     try:
         _is_valid_class_name(class_name)
     except ValueError as e:
-        to_module_name._log.exception("Failed to convert class name to module name.")
+        logging.exception("Failed to convert class name to module name.")
         raise e
     words = re.sub(r"(?<!^)(?=[A-Z])", "_", class_name).split("_")
     return _join_module_words(words)
 
 
-@logged
 def to_library_name(class_name=None):
     """Converts class name to library name.
 
@@ -231,7 +227,7 @@ def to_library_name(class_name=None):
     try:
         _is_valid_class_name(class_name)
     except ValueError as e:
-        to_library_name._log.exception("Failed to convert class name to library name.")
+        logging.exception("Failed to convert class name to library name.")
         raise e
     words = re.sub(r"(?<!^)(?=[A-Z])", "_", class_name).split("_")
     return _join_library_words(words)
@@ -242,7 +238,6 @@ def to_library_name(class_name=None):
 # ********************************************************************************
 
 
-@logged
 def _register_pcell(pcell_class, library, library_name):
     """Registers the PCell to the library.
 
@@ -254,10 +249,10 @@ def _register_pcell(pcell_class, library, library_name):
     try:
         pcell_name = to_library_name(pcell_class.__name__)
         library.layout().register_pcell(pcell_name, pcell_class())
-        _register_pcell._log.debug("Registered pcell [{}] to library {}.".format(pcell_name, library_name))
+        logging.debug(f"Registered pcell [{pcell_name}] to library {library_name}.")
     except Exception:  # pylint: disable=broad-except
-        _register_pcell._log.warning(
-            "Failed to register pcell in class {} to library {}.".format(pcell_class, library_name),
+        logging.warning(
+            f"Failed to register pcell in class {pcell_class} to library {library_name}.",
             exc_info=True
         )
 
@@ -275,7 +270,6 @@ def _load_manual_designs(library_name):
             library.layout().read(str(path.absolute()))
 
 
-@logged
 def _get_all_pcell_classes(reload=False, path="", skip_modules=False):
     """Returns all PCell classes in the given path.
 
@@ -312,7 +306,7 @@ def _get_all_pcell_classes(reload=False, path="", skip_modules=False):
                 module = importlib.import_module(import_path)
                 if reload:
                     importlib.reload(module)
-                    _get_all_pcell_classes._log.debug("Reloaded module '{}'.".format(module_name))
+                    logging.debug(f"Reloaded module '{module_name}'.")
 
                 classes = _get_pcell_classes(module)
                 if classes:
@@ -426,7 +420,6 @@ def _join_library_words(words=None):
     return name
 
 
-@logged
 def _clean_words(words=None):
     """Clean word list by removing None values, empty strings, and non-string values.
 

@@ -20,7 +20,7 @@ import abc
 import ast
 from typing import List
 
-from autologging import logged
+import logging
 
 from kqcircuits.defaults import default_faces
 from kqcircuits.elements.airbridges.airbridge import Airbridge
@@ -48,7 +48,6 @@ def get_simulation_layer_by_name(layer_name):
     return simulation_layer_dict[layer_name]
 
 
-@logged
 @add_parameters_from(Element)
 @add_parameters_from(Sim, "junction_total_length")
 class Simulation:
@@ -201,7 +200,7 @@ class Simulation:
         if layout is None or not isinstance(layout, pya.Layout):
             error_text = "Cannot create simulation with invalid or nil layout."
             error = ValueError(error_text)
-            self.__log.exception(error_text, exc_info=error)
+            logging.error(error_text)
             raise error
 
         self.layout = layout
@@ -898,9 +897,9 @@ class Simulation:
                             p_data['ground_edge'] = ((ground_edge.x1, ground_edge.y1, port_z),
                                                      (ground_edge.x2, ground_edge.y2, port_z))
                         except ValueError as e:
-                            self.__log.warning('Unable to create polygon for port {}, because either signal or ground '
-                                               'edge is not found.'.format(port.number))
-                            self.__log.debug(e)
+                            logging.warning('Unable to create polygon for port %s, because either signal or ground '
+                                                'edge is not found.', port.number)
+                            logging.debug(e)
                 else:
                     raise ValueError("Port {} has unsupported port class {}".format(port.number, type(port).__name__))
 

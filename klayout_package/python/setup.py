@@ -46,7 +46,6 @@ setup(
     install_requires=[                # Record dependencies in kqcircuits/util/dependencies.py too
         "klayout>=0.28",
         "numpy>=1.16",
-        "Autologging~=1.3",
         "scipy>=1.2",
         "tqdm>=4.61",
         # psutil was considered when cpu_count(logical=False), was implemented in an alternative way

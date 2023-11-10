@@ -25,8 +25,6 @@ import argparse
 from sys import argv
 from pathlib import Path
 
-from autologging import logged
-
 from kqcircuits.elements.element import get_refpoints
 from kqcircuits.defaults import default_layers, TMP_PATH, STARTUPINFO, default_probe_types, default_probe_suffixes, \
     VERSION_PATHS, default_drc_runset, DRC_PATH
@@ -34,13 +32,12 @@ from kqcircuits.klayout_view import KLayoutView, MissingUILibraryException
 from kqcircuits.pya_resolver import pya, is_standalone_session, klayout_executable_command
 
 
-@logged
 def generate_probepoints_json(cell, face='1t1'):
     # make autoprober json string for cell with reference points with magical names
     if cell is None or face not in ['1t1', '2b1']:
         error_text = f"Invalid face '{face}' or 'nil' cell ."
         error = ValueError(error_text)
-        generate_probepoints_json._log.exception(error_text, exc_info=error)
+        logging.exception(error_text, exc_info=error)
         raise error
 
     layout = cell.layout()
@@ -51,7 +48,7 @@ def generate_probepoints_json(cell, face='1t1'):
     if f"{face}_marker_nw" in refpoints and f"{face}_marker_se" in refpoints:
         markers = {'NW': refpoints[f"{face}_marker_nw"], 'SE': refpoints[f"{face}_marker_se"]}
     else:
-        generate_probepoints_json._log.error(f"There are no usable markers in {face}-face of the cell! Not a Chip?")
+        logging.error(f"There are no usable markers in {face}-face of the cell! Not a Chip?")
         return {}
 
     # flip top-markers back to top side
@@ -209,14 +206,13 @@ def get_klayout_version():
         return pya.Application.instance().version()
 
 
-@logged
 def export_drc_report(name, path, drc_script=default_drc_runset):
     """Run a DRC script on ``path/name.oas`` and export results in ``path/name_drc_report.lyrdb``."""
 
     drc_runset_path = os.path.join(DRC_PATH, drc_script)
     input_file = os.path.join(path, f"{name}.oas")
     output_file = os.path.join(path, f"{name}_drc_report.lyrdb")
-    export_drc_report._log.info("Exporting DRC report to %s", output_file)
+    logging.info("Exporting DRC report to %s", output_file)
 
     try:
         subprocess.run([klayout_executable_command(), "-b", "-i",
@@ -225,4 +221,4 @@ def export_drc_report(name, path, drc_script=default_drc_runset):
                         input_file
                         ], check=True, startupinfo=STARTUPINFO)
     except subprocess.CalledProcessError as e:
-        export_drc_report._log.error(e.output)
+        logging.error(e.output)
