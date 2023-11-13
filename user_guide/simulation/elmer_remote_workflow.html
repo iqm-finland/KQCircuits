@@ -541,59 +541,51 @@
 Below are some steps on how to get started with the workflow</p>
 <p>See <a class="reference internal" href="gmsh_elmer_export.html#gmsh-elmer-export"><span class="std std-ref">Gmsh/Elmer export</span></a>. for explanation of the Slurm settings controlling the amount of computing resources requested</p>
 <p>Setup:</p>
-<ul class="simple">
-<li><p>Add your ssh-key to the remote</p></li>
+<ol class="arabic simple">
+<li><p>Add ssh-key without password on the remote</p></li>
 <li><dl class="simple">
-<dt>Build and push singularity image to the remote using</dt><dd><ul>
-<li><dl class="simple">
-<dt><cite>kqc singularity –build</cite>: Compile singularity image</dt><dd><p>The desired package versions such as OpenMPI can be chosen by modifying
-the definitions in the beginning of <cite>KQCircuits/singularity/install_software.sh</cite> script
+<dt>Build and push singularity image to the remote using</dt><dd><dl class="simple">
+<dt>2.1. <code class="docutils literal notranslate"><span class="pre">kqc</span> <span class="pre">singularity</span> <span class="pre">--build</span></code>: Compile singularity image</dt><dd><p>The desired package versions such as OpenMPI can be chosen by modifying
+the definitions in the beginning of <code class="docutils literal notranslate"><span class="pre">KQCircuits/singularity/install_software.sh</span></code> script
 (<strong>NOTE that MPI implementation and its version has to match those of the remote machine!</strong>).</p>
 </dd>
+<dt>2.2. <code class="docutils literal notranslate"><span class="pre">kqc</span> <span class="pre">singularity</span> <span class="pre">--push</span> <span class="pre">user&#64;host</span></code>: Send singularity image to remote and setup symbolic links.</dt><dd><p>You can directory choose the remote directory by specifying <code class="docutils literal notranslate"><span class="pre">--singularity-remote-path</span> <span class="pre">SINGULARITY_PATH</span></code>.
+By default uses <code class="docutils literal notranslate"><span class="pre">user&#64;host:~/KQCircuits/singularity</span></code>.</p>
+</dd>
 </dl>
-</li>
-<li><dl class="simple">
-<dt><cite>kqc singularity –push user&#64;host</cite>: Send singularity image to remote and setup symbolic links.</dt><dd><p>You can directory choose the remote directory by specifying <cite>–singularity-remote-path SINGULARITY_PATH</cite>.
-By default uses <cite>user&#64;host:~/KQCircuits/singularity</cite>.</p>
 </dd>
 </dl>
 </li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Make sure that <cite>user&#64;host:SINGULARITY_PATH/bin</cite> is added to the PATH when using login shell on remote</p></li>
-<li><p>Make sure the export script has <cite>workflow[‘sbatch_parameter’]</cite> defined and the account field is modified to have correct project</p></li>
-</ul>
-<p>Run simulations:</p>
-<ul>
-<li><p>In 1 step:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><cite>kqc sim –remote user&#64;host sim_1.py sim_2.py …</cite></p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>Or in 2 steps:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>for each n simulations: <cite>kqc sim sim_i.py -e –export-path-basename sim_i_tmp_folder</cite></p></li>
-<li><p><cite>kqc sim –remote-run-only user&#64;host sim_1_tmp_folder… sim_n_tmp_folder</cite></p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>The simulations can be run on background with <cite>–detach</cite> flag in which case the output is saved to a <cite>sim_i_tmp_folder/../nohup_runid.out</cite> file,
-where <cite>runid</cite> is an unique run identifier. This can be followed for example with <cite>watch cat sim_i_tmp_folder/../nohup_runid.out</cite></p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Simulations need an empty folder on remote that will be cleared once all simulations are finsihed. By default <cite>~/KQCircuits/tmp</cite> is used,
-but this can be changed by using option <cite>–kqc-remote-tmp-path KQC_REMOTE_TMP_PATH</cite> with commands <cite>kqc sim –remote-run-only</cite> and <cite>kqc sim –remote</cite></p>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">user&#64;host:SINGULARITY_PATH/bin</span></code> to the PATH on your bash profile on remote</p></li>
+<li><p>When running simulations, make sure the export script has <code class="docutils literal notranslate"><span class="pre">workflow['sbatch_parameter']</span></code> defined and the account field is
+modified to have correct project. The account can be also set in a local environment variable <code class="docutils literal notranslate"><span class="pre">KQC_REMOTE_ACCOUNT</span></code> such that
+it is not needed separately in each export script</p></li>
+</ol>
+<p>Running the simulations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">sim</span> <span class="o">--</span><span class="n">remote</span> <span class="n">user</span><span class="nd">@host</span> <span class="n">sim_1</span><span class="o">.</span><span class="n">py</span> <span class="n">sim_2</span><span class="o">.</span><span class="n">py</span> <span class="o">...</span>
+</pre></div>
 </div>
+<p>You can also export and run with separate commands, but export exporting with <code class="docutils literal notranslate"><span class="pre">kqc</span> <span class="pre">sim</span> <span class="pre">-e</span></code> is only supported
+for a single simulations script at a time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">kqc</span> <span class="n">sim</span> <span class="n">sim_1</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">e</span>
+<span class="o">...</span>
+<span class="n">kqc</span> <span class="n">sim</span> <span class="n">sim_n</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">e</span>
+<span class="n">kqc</span> <span class="n">sim</span> <span class="o">--</span><span class="n">remote</span><span class="o">-</span><span class="n">run</span><span class="o">-</span><span class="n">only</span> <span class="n">user</span><span class="nd">@host</span> <span class="n">sim_1</span><span class="o">...</span> <span class="n">sim_n</span>
+</pre></div>
+</div>
+<p>On local machine the default export folder name is the same as the export script name without the <code class="docutils literal notranslate"><span class="pre">.py</span></code> extension, which
+can be changed with <code class="docutils literal notranslate"><span class="pre">--export-path-basename</span></code> option. On remote machine the name of the export folder cannot be modified,
+but the path where it’s copied can with the option <code class="docutils literal notranslate"><span class="pre">--kqc-remote-tmp-path</span></code>, which defaults to <code class="docutils literal notranslate"><span class="pre">~/KQCircuits/tmp/</span></code>. There is also
+a possibility to override this default by setting a local environment variable <code class="docutils literal notranslate"><span class="pre">KQC_REMOTE_TMP_PATH</span></code>, which will be used instead.</p>
+<p>The simulations are run in the background such that a script on the local machine polls the the remote via ssh for
+job state and automatically copies the results back once the simulation is finished. The polling interval in seconds
+can be determined with the option <code class="docutils literal notranslate"><span class="pre">--poll-interval</span></code>. The output of the polling script can be detached from the current
+terminal with <code class="docutils literal notranslate"><span class="pre">--detach</span></code> option in which case the output is saved to a <code class="docutils literal notranslate"><span class="pre">sim_i_tmp_folder/../nohup_runid.out</span></code> file,
+where <code class="docutils literal notranslate"><span class="pre">runid</span></code> is an unique run identifier. This can be followed for example with <code class="docutils literal notranslate"><span class="pre">watch</span> <span class="pre">cat</span> <span class="pre">sim_i_tmp_folder/../nohup_runid.out</span></code></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Only simulations in the folder <cite>KQCircuits/klayout_package/python/scripts/simulations</cite>
-can be exported and exported simulations from <cite>KQCircuits/tmp</cite> can be copied and run on remote.</p>
+<p>Only simulations in the folder <code class="docutils literal notranslate"><span class="pre">KQCircuits/klayout_package/python/scripts/simulations</span></code>
+can be exported and only exported simulations from <code class="docutils literal notranslate"><span class="pre">KQCircuits/tmp</span></code> can be copied and run on remote.</p>
 </div>
 </div>
 

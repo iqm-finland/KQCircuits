@@ -552,7 +552,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">stat</span>
 <span class="kn">import</span> <span class="nn">uuid</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">TMP_PATH</span><span class="p">,</span> <span class="n">SCRIPTS_PATH</span><span class="p">,</span> <span class="n">KQC_REMOTE_TMP_PATH</span>
 
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
 
@@ -630,7 +630,7 @@
 
     <span class="c1"># set defaults</span>
     <span class="k">if</span> <span class="n">kqc_remote_tmp_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">kqc_remote_tmp_path</span> <span class="o">=</span> <span class="s1">&#39;~/KQCircuits/tmp/&#39;</span>
+        <span class="n">kqc_remote_tmp_path</span> <span class="o">=</span> <span class="n">KQC_REMOTE_TMP_PATH</span>
 
     <span class="k">if</span> <span class="n">poll_interval</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">poll_interval</span> <span class="o">=</span> <span class="mi">60</span>
@@ -684,6 +684,7 @@
     <span class="c1"># Write script to run in the background and copy results back once simulation is finished</span>
     <span class="n">wait_and_copy_back_script</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">TMP_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;fetch_remote_simulation_data_</span><span class="si">{</span><span class="n">run_uuid</span><span class="si">}</span><span class="s2">.sh&quot;</span><span class="p">)</span>
     <span class="n">wait_and_copy_back</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;#!/bin/bash</span>
+<span class="s2">    set -e</span>
 <span class="s2">    echo &quot;</span><span class="se">\n</span><span class="s2">---------START-WAIT-SCRIPT---------&quot;</span>
 <span class="s2">    echo &quot;Simulations sent to queue at:&quot;</span>
 <span class="s2">    date +&quot;%d-%m-%y %T&quot;</span>

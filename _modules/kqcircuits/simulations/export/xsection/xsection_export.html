@@ -902,6 +902,22 @@
     <span class="k">return</span> <span class="n">edge_bits</span>
 
 
+<span class="k">def</span> <span class="nf">_normal_of_edge</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a normal of edge p1-&gt;p2.</span>
+
+<span class="sd">    If (p1, p2) are in same polygon in given order,</span>
+<span class="sd">    the returned normal will stick out of polygon.</span>
+<span class="sd">    The magnitude of the normal will be set to `scale`.</span>
+
+<span class="sd">    p1, p2 are pya.Point (integer) objects, however</span>
+<span class="sd">    scale is scaled according to pya.DPoint domain.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">edge_dir</span> <span class="o">=</span> <span class="n">p2</span> <span class="o">-</span> <span class="n">p1</span>
+    <span class="n">normal</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="n">edge_dir</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">edge_dir</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">dnormal</span> <span class="o">=</span> <span class="n">normal</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">dnormal</span> <span class="o">*</span> <span class="p">(</span><span class="n">scale</span> <span class="o">/</span> <span class="n">dnormal</span><span class="o">.</span><span class="n">abs</span><span class="p">()))</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">_thicken_edges</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">grow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Take edges and add thickness to produce a region.</span>
 
@@ -918,34 +934,68 @@
         <span class="n">path_graph</span><span class="p">[</span><span class="n">edge</span><span class="o">.</span><span class="n">p1</span><span class="p">]</span> <span class="o">=</span> <span class="n">edge</span>
 
     <span class="n">result_region</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">()</span>
+    <span class="n">processed_edges</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="c1"># Take each start_point and follow the path until the end</span>
     <span class="k">for</span> <span class="n">current_point</span> <span class="ow">in</span> <span class="n">start_points</span><span class="p">:</span>
         <span class="n">inner_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">current_point</span><span class="p">]</span>
         <span class="n">normals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">current_edge</span> <span class="o">=</span> <span class="n">path_graph</span><span class="p">[</span><span class="n">current_point</span><span class="p">]</span>
+            <span class="n">processed_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_edge</span><span class="p">)</span>
             <span class="c1"># First collect path points for the region polygon</span>
-            <span class="n">inner_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">path_graph</span><span class="p">[</span><span class="n">current_point</span><span class="p">]</span><span class="o">.</span><span class="n">p2</span><span class="p">)</span>
-            <span class="n">edge_dir</span> <span class="o">=</span> <span class="n">path_graph</span><span class="p">[</span><span class="n">current_point</span><span class="p">]</span><span class="o">.</span><span class="n">p2</span> <span class="o">-</span> <span class="n">path_graph</span><span class="p">[</span><span class="n">current_point</span><span class="p">]</span><span class="o">.</span><span class="n">p1</span>
-            <span class="c1"># Store edge normal, assuming edges go clock-wise around the shape hull</span>
-            <span class="n">normal</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="o">-</span><span class="n">edge_dir</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">edge_dir</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">grow</span><span class="p">:</span> <span class="c1"># Flip normal if growing inward</span>
-                <span class="n">normal</span> <span class="o">=</span> <span class="o">-</span><span class="n">normal</span>
-            <span class="c1"># Set normal length to thickness</span>
-            <span class="n">dnormal</span> <span class="o">=</span> <span class="n">normal</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
-            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dnormal</span> <span class="o">*</span> <span class="p">(</span><span class="n">thickness</span> <span class="o">/</span> <span class="n">dnormal</span><span class="o">.</span><span class="n">abs</span><span class="p">()))</span>
+            <span class="n">inner_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span><span class="p">)</span>
+            <span class="c1"># Also collect their normals</span>
+            <span class="n">normals</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mf">1.</span> <span class="k">if</span> <span class="n">grow</span> <span class="k">else</span> <span class="o">-</span><span class="mf">1.</span><span class="p">)</span> <span class="o">*</span>
+                           <span class="n">_normal_of_edge</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">current_edge</span><span class="o">.</span><span class="n">p1</span><span class="p">,</span> <span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span><span class="p">,</span> <span class="n">thickness</span><span class="p">))</span>
             <span class="c1"># At the end point, terminate</span>
-            <span class="k">if</span> <span class="n">path_graph</span><span class="p">[</span><span class="n">current_point</span><span class="p">]</span><span class="o">.</span><span class="n">p2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path_graph</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">path_graph</span><span class="p">:</span>
                 <span class="k">break</span>
             <span class="c1"># Otherwise proceed to next point in path</span>
-            <span class="n">current_point</span> <span class="o">=</span> <span class="n">path_graph</span><span class="p">[</span><span class="n">current_point</span><span class="p">]</span><span class="o">.</span><span class="n">p2</span>
+            <span class="n">current_point</span> <span class="o">=</span> <span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span>
         <span class="c1"># Connect to the second layer of the path to add thickness</span>
-        <span class="n">outer_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">inner_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">normals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)]</span>
+        <span class="n">outer_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">inner_path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">normals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
         <span class="c1"># Backtrack the path for the second layer of the polygon</span>
         <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normals</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">normal_sum</span> <span class="o">=</span> <span class="n">normals</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">normals</span><span class="p">[</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># Sum normals of surrounding edges of the point</span>
-            <span class="n">outer_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_path</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">normal_sum</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
-        <span class="n">outer_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">normals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">))</span>
+            <span class="n">outer_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_path</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="n">normal_sum</span><span class="p">)</span>
+        <span class="n">outer_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">normals</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">result_region</span> <span class="o">+=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">inner_path</span> <span class="o">+</span> <span class="n">outer_path</span><span class="p">))</span>
+
+    <span class="c1"># Handle edges in loops separately</span>
+    <span class="n">loop_edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">edges</span> <span class="k">if</span> <span class="n">e</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">processed_edges</span><span class="p">]</span>
+    <span class="n">processed_edges</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">start_edge</span> <span class="ow">in</span> <span class="n">loop_edges</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start_edge</span> <span class="ow">in</span> <span class="n">processed_edges</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">current_edge</span> <span class="o">=</span> <span class="n">start_edge</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="p">[</span><span class="n">current_edge</span><span class="o">.</span><span class="n">p1</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span> <span class="o">!=</span> <span class="n">start_edge</span><span class="o">.</span><span class="n">p1</span><span class="p">:</span>
+            <span class="n">loop</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span><span class="p">)</span>
+            <span class="n">current_edge</span> <span class="o">=</span> <span class="n">path_graph</span><span class="p">[</span><span class="n">current_edge</span><span class="o">.</span><span class="n">p2</span><span class="p">]</span>
+            <span class="n">processed_edges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_edge</span><span class="p">)</span>
+        <span class="n">loop_poly</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">grow</span><span class="p">:</span>
+            <span class="c1"># We are growing on the rim of the loop. Take the rim, then copy the</span>
+            <span class="c1"># shrinked rim, then subtract shrinked rim from original rim.</span>
+            <span class="c1"># To shrink, we have to rely on normals</span>
+            <span class="n">loop_sized</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loop</span><span class="p">):</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
+                <span class="n">normal_next</span> <span class="o">=</span>  <span class="n">_normal_of_edge</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">loop</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">thickness</span><span class="p">)</span>
+                <span class="n">normal_prev</span> <span class="o">=</span>  <span class="n">_normal_of_edge</span><span class="p">(</span><span class="n">simulation</span><span class="p">,</span> <span class="n">loop</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">,</span> <span class="n">thickness</span><span class="p">)</span>
+                <span class="n">loop_sized</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="n">normal_prev</span> <span class="o">+</span> <span class="n">normal_next</span><span class="p">)</span>
+            <span class="n">loop_sized</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Polygon</span><span class="p">(</span><span class="n">loop_sized</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># We are &quot;growing&quot; out of the rim of the loop. Take the rim,</span>
+            <span class="c1"># then copy the magnified rim, subtracting original rim from</span>
+            <span class="c1"># the magnified rim. We can just use `sized` method.</span>
+            <span class="n">loop_sized</span> <span class="o">=</span> <span class="n">loop_poly</span><span class="o">.</span><span class="n">to_dtype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+            <span class="n">loop_sized</span> <span class="o">=</span> <span class="n">loop_sized</span><span class="o">.</span><span class="n">sized</span><span class="p">(</span><span class="n">thickness</span><span class="p">)</span>
+            <span class="n">loop_sized</span> <span class="o">=</span> <span class="n">loop_sized</span><span class="o">.</span><span class="n">to_itype</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">dbu</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">grow</span><span class="p">:</span>
+            <span class="n">result_region</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">loop_poly</span><span class="p">)</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">loop_sized</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result_region</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">loop_sized</span><span class="p">)</span> <span class="o">-</span> <span class="n">pya</span><span class="o">.</span><span class="n">Region</span><span class="p">(</span><span class="n">loop_poly</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">result_region</span>
 
 
