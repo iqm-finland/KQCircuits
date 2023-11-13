@@ -546,7 +546,6 @@
 <span class="sd">&quot;&quot;&quot;Functions for exporting mask sets.&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
 
@@ -554,15 +553,16 @@
 
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">mask_bitmap_export_layers</span><span class="p">,</span> <span class="n">chip_export_layer_clusters</span><span class="p">,</span> <span class="n">default_layers</span><span class="p">,</span> \
-    <span class="n">default_mask_parameters</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">,</span> <span class="n">DRC_PATH</span><span class="p">,</span> <span class="n">STARTUPINFO</span>
+    <span class="n">default_mask_parameters</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.flip_chip_connectors.flip_chip_connector_dc</span> <span class="kn">import</span> <span class="n">FlipChipConnectorDc</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">resolve_default_layer_info</span>
-<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">klayout_executable_command</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.area</span> <span class="kn">import</span> <span class="n">get_area_and_density</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.count_instances</span> <span class="kn">import</span> <span class="n">count_instances_in_cell</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">circle_polygon</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_json_encoder</span> <span class="kn">import</span> <span class="n">GeometryJsonEncoder</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.netlist_extraction</span> <span class="kn">import</span> <span class="n">export_cell_netlist</span>
+<span class="kn">from</span> <span class="nn">kqcircuits.util.export_helper</span> <span class="kn">import</span> <span class="n">export_drc_report</span>
 
 
 <div class="viewcode-block" id="export_mask_set"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_mask_set">[docs]</a><span class="nd">@logged</span>
@@ -875,23 +875,6 @@
             <span class="n">view</span><span class="o">.</span><span class="n">export_all_layers_bitmap</span><span class="p">(</span><span class="n">chip_dir</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">view</span><span class="p">:</span>
         <span class="n">view</span><span class="o">.</span><span class="n">focus</span><span class="p">(</span><span class="n">mask_set</span><span class="o">.</span><span class="n">mask_layouts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">top_cell</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="export_drc_report"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_export.html#kqcircuits.masks.mask_export.export_drc_report">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">export_drc_report</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-    <span class="n">drc_runset_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DRC_PATH</span><span class="p">,</span> <span class="n">default_drc_runset</span><span class="p">)</span>
-    <span class="n">input_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.oas&quot;</span><span class="p">)</span>
-    <span class="n">output_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_drc_report.lyrdb&quot;</span><span class="p">)</span>
-    <span class="n">export_drc_report</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Exporting DRC report to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
-
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="n">klayout_executable_command</span><span class="p">(),</span> <span class="s2">&quot;-b&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;-rm&quot;</span><span class="p">,</span> <span class="n">drc_runset_path</span><span class="p">,</span>
-                        <span class="s2">&quot;-rd&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;input=</span><span class="si">{</span><span class="n">input_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-                        <span class="s2">&quot;-rd&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;output=</span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">&quot;</span>
-                        <span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">startupinfo</span><span class="o">=</span><span class="n">STARTUPINFO</span><span class="p">)</span>
-    <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">export_drc_report</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">output</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_export_cell</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">layers_to_export</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

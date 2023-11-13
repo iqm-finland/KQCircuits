@@ -784,19 +784,18 @@ More precisely:
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.add_layer_to_splitter">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">add_layer_to_splitter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">splitter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.add_layer_to_splitter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.add_layer_to_splitter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add layer to the splitter, which splits the region into different z-levels. The params are forwarded to
-the ‘self.layers’ dictionary.</p>
-<p>Before calling first time, the splitter should be set as empty splitter, which is a list of empty dictionary and
-empty list, that is [dict(), []].</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_splitter_layers">
-<span class="sig-name descname"><span class="pre">insert_splitter_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">splitter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_splitter_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_splitter_layers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inserts the layers in the splitter to the ‘self.layers’ dictionary. Each layer are split into sub-layers
-by their z-level. Parameter ‘z0’ is the base z-level for layer stack-up.</p>
+<dt class="sig sig-object py" id="kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers">
+<span class="sig-name descname"><span class="pre">insert_stacked_up_layers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kqcircuits/simulations/simulation.html#Simulation.insert_stacked_up_layers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.simulations.simulation.Simulation.insert_stacked_up_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces the layer stack-up and adds the layers into ‘self.layers’ dictionary.
+Each layer is split into sub-layers by their z-level.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stack</strong> – list of layers in form of tuples containing (region, layer name, thickness, material)</p></li>
+<li><p><strong>z0</strong> – the base z-level for the layer stack-up</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
