@@ -652,13 +652,6 @@
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.chip_array_to_export">
-<span class="sig-name descname"><span class="pre">chip_array_to_export</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.chip_array_to_export" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of lists where for each chip in the array we have the following record - (row,
-column, Active/inactive, chip ID, chip type). Gets exported as an external csv file</p>
-</dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.edge_clearance">
 <span class="sig-name descname"><span class="pre">edge_clearance</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.edge_clearance" title="Permalink to this definition">¶</a></dt>
 <dd><p>minimum clearance of outer chips from the edge of the mask</p>
@@ -763,6 +756,13 @@ position_label is an optional string that overrides the automatic chip position 
 <span class="sig-name descname"><span class="pre">added_chips</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.added_chips" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of (chip name, chip position, chip bounding box, chip dtrans, position_label)
 populated by chips added during build()</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.chip_copies">
+<span class="sig-name descname"><span class="pre">chip_copies</span></span><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.chip_copies" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary of <code class="docutils literal notranslate"><span class="pre">{name_copy:</span> <span class="pre">properties}</span></code> where <code class="docutils literal notranslate"><span class="pre">properties</span></code> contains the name and location data
+for each chip that was actually added to the mask.</p>
 </dd></dl>
 
 <dl class="py attribute">

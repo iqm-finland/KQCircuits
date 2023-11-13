@@ -583,8 +583,6 @@
 <span class="sd">        dice_width: Dicing width for this mask layout</span>
 <span class="sd">        text_margin: Text margin for this mask layout</span>
 <span class="sd">        chip_size: side width of the chips (for square chips), or tuple (width, height) for rectangular chips</span>
-<span class="sd">        chip_array_to_export: List of lists where for each chip in the array we have the following record - (row,</span>
-<span class="sd">         column, Active/inactive, chip ID, chip type). Gets exported as an external csv file</span>
 <span class="sd">        edge_clearance: minimum clearance of outer chips from the edge of the mask</span>
 <span class="sd">        remove_chips: if True (default), chips that violate edge_clearance or conflict with markers are removed from</span>
 <span class="sd">            chip maps. Note that ``extra_chips`` are never removed.</span>
@@ -607,6 +605,8 @@
 <span class="sd">        top_cell: Top cell of this mask layout</span>
 <span class="sd">        added_chips: List of (chip name, chip position, chip bounding box, chip dtrans, position_label)</span>
 <span class="sd">            populated by chips added during build()</span>
+<span class="sd">        chip_copies: Dictionary of ``{name_copy: properties}`` where ``properties`` contains the name and location data</span>
+<span class="sd">            for each chip that was actually added to the mask.</span>
 <span class="sd">        mirror_labels: Boolean, if True mask and chip copy labels are mirrored. Default False.</span>
 <span class="sd">        bbox_face_ids: List of face_ids to consider when calcualting the bounding box of chips. Defaults to [face_id]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -665,6 +665,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">chip_counts</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_chips_maps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chip_copies</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># For mask name the letter I stats at x=750</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mask_name_letter_I_offset</span> <span class="o">=</span> <span class="mi">750</span>
 
@@ -826,11 +827,14 @@
         <span class="n">used_position_labels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">chip_name</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">dtrans</span><span class="p">,</span> <span class="n">position_label</span><span class="p">,</span> <span class="n">mask_layout</span><span class="p">)</span> <span class="ow">in</span> <span class="n">chips_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">labels_cell_2</span> <span class="o">=</span> <span class="n">labels_cells</span><span class="p">[</span><span class="n">mask_layout</span><span class="p">]</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">position_label</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">xvals</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yvals</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No position_label override yet label was not automatically generated&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">xvals</span> <span class="ow">or</span> <span class="n">y</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">yvals</span><span class="p">:</span>
+                <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">i</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">yvals</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
                 <span class="n">j</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">xvals</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">position_label</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">j</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No position_label override yet label was not automatically generated&quot;</span><span class="p">)</span>
                 <span class="n">position_label</span> <span class="o">=</span> <span class="n">get_position_label</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">position_label</span> <span class="ow">in</span> <span class="n">used_position_labels</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duplicate use of chip position label </span><span class="si">{</span><span class="n">position_label</span><span class="si">}</span><span class="s2">. &quot;</span>
@@ -845,22 +849,16 @@
             <span class="n">mask_layout</span><span class="o">.</span><span class="n">_add_chip_graphical_representation_layer</span><span class="p">(</span><span class="n">chip_name</span><span class="p">,</span>
                                                                  <span class="n">dtrans</span> <span class="o">*</span> <span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="n">bbox_x2</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">bottom</span><span class="p">)),</span>
                                                                  <span class="n">position_label</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">labels_cell_2</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="s2">&quot;Active&quot;</span><span class="p">,</span> <span class="n">position_label</span><span class="p">,</span> <span class="n">chip_name</span><span class="p">])</span>
-
-        <span class="c1"># Fill in gaps in the grid and mark them as inactive</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">max</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
-                <span class="n">entry_found</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">for</span> <span class="n">chip_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">chip_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span> <span class="ow">and</span> <span class="n">chip_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
-                        <span class="n">entry_found</span> <span class="o">=</span> <span class="kc">True</span>
-                        <span class="k">break</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">entry_found</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="s2">&quot;Inactive&quot;</span><span class="p">,</span> <span class="n">get_position_label</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">),</span> <span class="s2">&quot;---&quot;</span><span class="p">])</span>
-        <span class="c1"># Sort entries primarily by row and secondarily by column</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">chip_array_to_export</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
-
+            <span class="n">chip_box</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DBox</span><span class="p">(</span><span class="n">dtrans</span> <span class="o">*</span> <span class="n">bbox</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chip_copies</span><span class="p">[</span><span class="n">position_label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;name_chip&#39;</span><span class="p">:</span> <span class="n">chip_name</span><span class="p">,</span>
+                <span class="s1">&#39;i&#39;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span>
+                <span class="s1">&#39;j&#39;</span><span class="p">:</span> <span class="n">j</span><span class="p">,</span>
+                <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">chip_box</span><span class="o">.</span><span class="n">left</span><span class="p">,</span>
+                <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">chip_box</span><span class="o">.</span><span class="n">bottom</span><span class="p">,</span>
+                <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">chip_box</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span>
+                <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">chip_box</span><span class="o">.</span><span class="n">height</span><span class="p">(),</span>
+            <span class="p">}</span></div>
 
 <div class="viewcode-block" id="MaskLayout.face"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_layout.html#kqcircuits.masks.mask_layout.MaskLayout.face">[docs]</a>    <span class="k">def</span> <span class="nf">face</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the face dictionary for this mask layout&quot;&quot;&quot;</span>
