@@ -228,6 +228,7 @@ default_path_length_layers = [
     "1b1_waveguide_path",
     "1t1_waveguide_path",
     "2b1_waveguide_path",
+    "2t1_waveguide_path",
     "waveguide_length"  # AirbridgeConnection uses this
 ]
 
