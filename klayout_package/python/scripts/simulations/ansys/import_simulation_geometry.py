@@ -213,7 +213,7 @@ if ansys_tool in {'hfss', 'eigenmode'}:
                 oBoundarySetup.SetTerminalReferenceImpedances("" if renorm is None else "{}ohm".format(renorm),
                                                               str(port['number']), renorm is not None)
 
-                deembed_len = port.get("renormalization", None)
+                deembed_len = port.get("deembed_len", None)
                 if deembed_len is not None:
                     oBoundarySetup.EditWavePort(
                         str(port['number']),
