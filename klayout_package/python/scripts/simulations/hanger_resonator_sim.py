@@ -65,6 +65,7 @@ sim_parameters = {
 
 use_elmer = True
 wave_equation = True
+interpolating_sweep = True
 use_sbatch = args.use_sbatch
 
 if use_elmer:
@@ -81,20 +82,30 @@ else:
 
 
 if use_elmer:
-
     mesh_size = {
         'global_max': 100.,
-        '1t1_gap': 10.,
-        **{f'port_{i}': 50 for i in [1, 2]},  # edge ports
-        **{f'port_{i}': 10 for i in [3, 4]},  # internal ports
+        '1t1_gap': 5.,
+        **{f'port_{i}': 5 for i in [1, 2]},  # edge ports
+        **{f'port_{i}': 5 for i in [3, 4]},  # internal ports
     }
 
     if wave_equation:
-        export_parameters_elmer = {
-            'path': path,
-            'tool': 'wave_equation',
-            'frequency': np.linspace(5,15,5),
-        }
+        if interpolating_sweep:
+            export_parameters_elmer = {
+                'path': path,
+                'tool': 'wave_equation',
+                'frequency': np.linspace(5,15,1001),
+                'sweep_type': 'interpolating',
+                'max_delta_s':1e-6,
+                'frequency_batch': 3,
+            }
+        else:
+            export_parameters_elmer = {
+                'path': path,
+                'tool': 'wave_equation',
+                'frequency': np.linspace(5,15,5),
+                'sweep_type': 'explicit',
+            }
     else:
         export_parameters_elmer = {
             'path': path,
@@ -116,14 +127,14 @@ if use_elmer:
                                #             second level of parallelization. -1 uses all
                                #             the physical cores (based on the machine which
                                #             was used to prepare the simulation).
-        'elmer_n_processes': -1,  # <------ This defines the number of
+        'elmer_n_processes': 3,  # <------ This defines the number of
                                                  #         processes in the second level
                                                  #         of parallelization. -1 uses all
                                                  #         the physical cores (based on
                                                  #         the machine which was used to
                                                  #         prepare the simulation)
         'elmer_n_threads': 1,  # <------ This defines the number of omp threads per process
-        'n_workers': 1,               # <--------- This defines the number of
+        'n_workers': 3,              # <--------- This defines the number of
                                       #            parallel independent processes.
                                       #            Setting this larger than 1 activates
                                       #            the use of the simple workload manager.

@@ -138,10 +138,10 @@ def worker(command, outfile, cwd, env):
                 cwd=cwd
             )
     except subprocess.CalledProcessError as err:
-        print(f'The worker for {err.cmd} exited with code {err.returncode}')
-        print(err)
+        logging.warning(f'The worker for {err.cmd} exited with code {err.returncode}')
+        logging.warning(err)
         if is_windows and 'is not recognized as an internal or external command' in err.stderr:
-            print('Do you have Bash (e.g. Git Bash or MSYS2) installed?')
+            logging.warning('Do you have Bash (e.g. Git Bash or MSYS2) installed?')
         return err
 
 def pool_run_cmds(n_workers: int, cmds: list, output_files: list=None, cwd=None, env=None):
@@ -153,6 +153,7 @@ def pool_run_cmds(n_workers: int, cmds: list, output_files: list=None, cwd=None,
         cmds           (list[str]):  list of commands
         output_files   (list[str]):  list of output files, if none will print to stdout
         cwd             (str/Path):  Working directory where the commands will be executed
+                                     (usually KQCircuits/tmp/sim_name)
         env                 (dict):  Environment variables
 
     """
@@ -181,19 +182,24 @@ def pool_run_cmds(n_workers: int, cmds: list, output_files: list=None, cwd=None,
     pool.join()
 
 
-def run_elmer_solver(json_data, exec_path_override=None):
+def _run_elmer_solver(sim_name,
+                      sif_names,
+                      n_parallel_simulations,
+                      n_processes,
+                      n_threads,
+                      exec_path_override=None):
     """
-    Runs Elmersolver for the sif files defined in json_data
-    The meshes and .sif files must be already prepared and found in `exec_path_override` directory
+    Internal function for running ElmerSolver based on explicit variables instead of the json file
 
     Args:
-        json_data (dict): Simulation data loaded from the .json in simulation tmp folder
-        exec_path_override(Path): Working directory from where the simulations are run
-
+        sim_name (str): Simulation name e.g name of the folder with sif files
+        sif_names (list[str]): Simulation sif names. These sifs need to already exist when calling this function
+        n_parallel_simulations (int): Number of parallel simulations
+        n_processes (int): Number of dependent processes for each simulation
+        n_threads (int): Number of threads to be used with elmer
+        exec_path_override (str/Path): Working directory where the commands will be executed
+                                       (usually KQCircuits/tmp/sim_name)
     """
-    n_processes = json_data['workflow'].get('elmer_n_processes', 1)
-    n_threads = json_data['workflow'].get('elmer_n_threads', 1)
-    n_parallel_simulations = json_data['workflow'].get('n_workers', 1)
 
     my_env = os.environ.copy()
     my_env["OMP_NUM_THREADS"]=str(n_threads)
@@ -201,8 +207,7 @@ def run_elmer_solver(json_data, exec_path_override=None):
     elmersolver_executable = shutil.which('ElmerSolver')
     elmersolver_mpi_executable = shutil.which('ElmerSolver_mpi')
 
-    sif_names = json_data['sif_names']
-    sif_paths = [Path(json_data['parameters']["name"]).joinpath(f'{sif_file}.sif')
+    sif_paths = [Path(sim_name).joinpath(f'{sif_file}.sif')
                  for sif_file in sif_names]
 
     if n_processes > 1 and elmersolver_mpi_executable is not None:
@@ -228,12 +233,37 @@ def run_elmer_solver(json_data, exec_path_override=None):
         sys.exit()
     output_files = [f"{sif}.Elmer.log" for sif in sif_names]
 
-    if json_data['workflow']['_parallelization_level'] == 'elmer':
+    if n_parallel_simulations > 1:
         pool_run_cmds(n_parallel_simulations, run_cmds, output_files=output_files, cwd=exec_path_override, env=my_env)
     else:
         for cmd, out in zip(run_cmds, output_files):
             with open(out, 'w') as f:
                 subprocess.check_call(cmd, cwd=exec_path_override, env=my_env, stdout=f)
+
+def run_elmer_solver(json_data, exec_path_override=None):
+    """
+    Runs Elmersolver for the sif files defined in json_data
+    The meshes and .sif files must be already prepared and found in `exec_path_override` directory
+
+    Args:
+        json_data (dict): Simulation data loaded from the .json in simulation tmp folder
+        exec_path_override(Path): Working directory from where the simulations are run (usually KQCircuits/tmp/sim_name)
+
+    """
+    if json_data['workflow']['_parallelization_level'] == 'elmer':
+        n_parallel_simulations = json_data['workflow'].get('n_workers', 1)
+    else:
+        n_parallel_simulations = 1
+
+    n_processes = json_data['workflow'].get('elmer_n_processes', 1)
+    n_threads = json_data['workflow'].get('elmer_n_threads', 1)
+
+    _run_elmer_solver(sim_name=json_data['parameters']['name'],
+                        sif_names=json_data['sif_names'],
+                        n_parallel_simulations=n_parallel_simulations,
+                        n_processes=n_processes,
+                        n_threads=n_threads,
+                        exec_path_override=exec_path_override)
 
 
 def run_paraview(result_path, n_processes, exec_path_override=None):

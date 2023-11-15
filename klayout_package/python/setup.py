@@ -57,7 +57,7 @@ setup(
                   "networkx>=2.7,<3.2", "matplotlib>=3.5.1"],
         "notebooks": ["jupyter~=1.0.0", "klayout>=0.28"],
         "graphs": ["networkx>=3.0,<3.2", "matplotlib>=3.6.3"],
-        "simulations": ["gmsh>=4.11.1", "pandas>=1.5.3"],
+        "simulations": ["gmsh>=4.11.1", "pandas>=1.5.3", "matplotlib>=3.5.1"],
     },
     entry_points={
         'console_scripts':[

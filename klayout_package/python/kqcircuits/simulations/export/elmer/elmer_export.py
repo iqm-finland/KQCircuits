@@ -53,6 +53,9 @@ def export_elmer_json(simulation,
                       linear_system_method='bicgstab',
                       p_element_order=1,
                       frequency=5,
+                      frequency_batch=3,
+                      sweep_type='explicit',
+                      max_delta_s=0.01,
                       mesh_size=None,
                       boundary_conditions=None,
                       workflow=None,
@@ -120,8 +123,11 @@ def export_elmer_json(simulation,
         else:
             sif_names = ['capacitance', 'capacitance0']
     elif tool=='wave_equation':
-        stem = sim_data['parameters']['name']
-        sif_names = [stem + '_f' + str(f).replace('.', '_') for f in frequency]
+        if sweep_type == 'interpolating':
+            sif_names = []
+        else:
+            stem = sim_data['parameters']['name']
+            sif_names = [stem + '_f' + str(f).replace('.', '_') for f in frequency]
     else:
         sif_names = [sim_data['parameters']['name']]
 
@@ -138,6 +144,9 @@ def export_elmer_json(simulation,
         'maximum_passes': maximum_passes,
         'minimum_passes': minimum_passes,
         'frequency': frequency,
+        'frequency_batch': frequency_batch,
+        'sweep_type': sweep_type,
+        'max_delta_s': max_delta_s,
         **({} if dielectric_surfaces is None else {'dielectric_surfaces': dielectric_surfaces}),
         'linear_system_method': linear_system_method,
         'p_element_order': p_element_order,
@@ -570,6 +579,9 @@ def export_elmer(simulations: Sequence[Simulation],
                  linear_system_method='bicgstab',
                  p_element_order=3,
                  frequency=5,
+                 frequency_batch=3,
+                 sweep_type='explicit',
+                 max_delta_s=0.01,
                  file_prefix='simulation',
                  script_file='scripts/run.py',
                  mesh_size=None,
@@ -741,6 +753,9 @@ def export_elmer(simulations: Sequence[Simulation],
                     linear_system_method=linear_system_method,
                     p_element_order=p_element_order,
                     frequency=frequency,
+                    frequency_batch=frequency_batch,
+                    sweep_type=sweep_type,
+                    max_delta_s=max_delta_s,
                     mesh_size=mesh_size,
                     boundary_conditions=boundary_conditions,
                     workflow=workflow,

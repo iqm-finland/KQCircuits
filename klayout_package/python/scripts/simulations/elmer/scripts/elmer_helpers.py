@@ -690,6 +690,7 @@ def produce_sif_files(json_data: dict, path: Path):
 
     freqs = json_data.get('frequency', None)
 
+    sif_filepaths = []
     for ind, sif in enumerate(sif_names):
         if json_data['tool'] == 'capacitance':
             json_data['sif_names'] = sif
@@ -710,8 +711,9 @@ def produce_sif_files(json_data: dict, path: Path):
         sif_filepath.parent.mkdir(exist_ok=True, parents=True)
         with open(sif_filepath, 'w') as f:
             f.write(content)
+        sif_filepaths.append(sif_filepath)
 
-    return [sif_filepath]
+    return sif_filepaths
 
 
 def get_body_list(json_data, dim, mesh_names):
@@ -1206,6 +1208,34 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
 
     return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
 
+
+def read_result_smatrix(s_matrix_filename, path: Path = None, polar_form: bool=True):
+
+    if not Path(s_matrix_filename).exists() and path is not None:
+        s_matrix_filename = path.joinpath(s_matrix_filename)
+
+    with open(s_matrix_filename, 'r') as file:
+        reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
+        s_matrix_re = np.array([[x for x in row if isinstance(x, float)] for row in reader])
+
+    with open(str(s_matrix_filename) + '_im', 'r') as file:
+        reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
+        s_matrix_im = np.array([[x for x in row if isinstance(x, float)] for row in reader])
+
+    if polar_form:
+        s_matrix_mag = np.hypot(s_matrix_re, s_matrix_im)
+        s_matrix_angle = np.degrees(np.arctan2(s_matrix_im, s_matrix_re))
+
+    smatrix_full = np.zeros_like(s_matrix_re).tolist()
+    for i1, i2 in np.ndindex(s_matrix_re.shape):
+        if polar_form:
+            smatrix_full[i1][i2] = (s_matrix_mag[i1, i2], s_matrix_angle[i1, i2])
+        else:
+            smatrix_full[i1][i2] = (s_matrix_re[i1, i2], s_matrix_im[i1, i2])
+
+    return smatrix_full
+
+
 def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_form: bool=True):
     """
     Writes the solution data in '_project_results.json' format for one Elmer simulation.
@@ -1244,6 +1274,10 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                         }, outfile, indent=4)
     elif tool == 'wave_equation':
 
+        sweep_type = json_data['sweep_type']
+        frequencies = json_data['frequency']
+        simname = json_data["parameters"]["name"]
+
         ports = json_data['ports']
         renormalizations = [p['renormalization'] for p in ports]
 
@@ -1254,36 +1288,15 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
         data_folder = main_sim_folder.joinpath('elmer_data')
         data_folder.mkdir(parents=True, exist_ok=True)
 
+
         results = []
-        for f, sif in zip(json_data['frequency'], json_data['sif_names']):
+        for ind, f in enumerate(frequencies):
             s_matrix_filename = main_sim_folder.joinpath(
-                f'SMatrix_{json_data["parameters"]["name"]}_f{str(f).replace(".", "_")}.dat')
-
-            if not Path(s_matrix_filename).exists():
-                s_matrix_subfolder = sif_folder.joinpath(s_matrix_filename)
-                if not Path(s_matrix_subfolder).exists():
-                    raise FileNotFoundError(f"SMatrix not found in either {s_matrix_filename} or {s_matrix_subfolder}")
-                s_matrix_filename = s_matrix_subfolder
-
-            with open(s_matrix_filename, 'r') as file:
-                reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
-                s_matrix_re = np.array([[x for x in row if isinstance(x, float)] for row in reader])
-
-            with open(str(s_matrix_filename) + '_im', 'r') as file:
-                reader = csv.reader(file, delimiter=' ', skipinitialspace=True, quoting=csv.QUOTE_NONNUMERIC)
-                s_matrix_im = np.array([[x for x in row if isinstance(x, float)] for row in reader])
-
-            if polar_form:
-                s_matrix_mag = np.hypot(s_matrix_re,s_matrix_im)
-                s_matrix_angle = np.degrees(np.arctan2(s_matrix_im,s_matrix_re))
-
-            smatrix_full = np.zeros_like(s_matrix_re).tolist()
-            for i1, i2 in np.ndindex(s_matrix_re.shape):
-                if polar_form:
-                    smatrix_full[i1][i2] = (s_matrix_mag[i1, i2], s_matrix_angle[i1, i2])
-                else:
-                    smatrix_full[i1][i2] = (s_matrix_re[i1, i2], s_matrix_im[i1, i2])
-
+                f'SMatrix_{simname}_f{str(f).replace(".", "_")}.dat')
+            print(f"opening {s_matrix_filename}")
+            smatrix_full = read_result_smatrix(s_matrix_filename,
+                                               path=path.joinpath(msh_filepath.stem),
+                                               polar_form=polar_form)
             results.append({
                 'frequency': f,
                 'renormalization': renormalizations[0],
@@ -1291,11 +1304,12 @@ def write_project_results_json(json_data: dict, path: Path, msh_filepath, polar_
                 'smatrix': smatrix_full,
             })
 
-            shutil.move(s_matrix_filename, data_folder)
-            shutil.move(str(s_matrix_filename) + '_im', data_folder)
-            if Path(str(s_matrix_filename) + '_abs').exists():
-                shutil.move(str(s_matrix_filename) + '_abs', data_folder)
-            shutil.move(f'{sif}.Elmer.log', data_folder)
+            shutil.move(s_matrix_filename, data_folder.joinpath(s_matrix_filename))
+            shutil.move(str(s_matrix_filename) + '_im', data_folder.joinpath(str(s_matrix_filename) + '_im'))
+            shutil.move(str(s_matrix_filename) + '_abs', data_folder.joinpath(str(s_matrix_filename) + '_abs'))
+            if sweep_type != 'interpolating':
+                sif_names = json_data['sif_names']
+                shutil.move(f'{sif_names[ind]}.Elmer.log', data_folder)
 
         with open(json_filename, 'w') as outfile:
             json.dump(results, outfile, indent=4)
