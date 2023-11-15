@@ -17,6 +17,7 @@
 import math
 from collections.abc import Sequence
 
+from typing import Tuple
 from tqdm import tqdm
 
 from kqcircuits.pya_resolver import pya
@@ -291,8 +292,6 @@ class MaskLayout:
                     xvals.add(pos2.x)
                     yvals.add(pos2.y)
                 chips_dict[(pos2.x, pos2.y)] = chip_name, pos, bbox, dtrans, position_label, submask_layout
-        def get_position_label(i, j):
-            return chr(ord("A") + i) + ("{:02d}".format(j))
         # produce the labels such that chips with identical x-coordinate (y-coordinate) have identical number (letter)
         used_position_labels = set()
         for (x, y), (chip_name, _, bbox, dtrans, position_label, mask_layout) in chips_dict.items():
@@ -305,7 +304,7 @@ class MaskLayout:
             if not position_label:
                 if i is None or j is None:
                     raise ValueError("No position_label override yet label was not automatically generated")
-                position_label = get_position_label(i, j)
+                position_label = MaskLayout.two_coordinates_to_position_label(i, j)
             if position_label in used_position_labels:
                 raise ValueError(f"Duplicate use of chip position label {position_label}. "
                                  f"When using extra_chips, please make sure to only use unreserved position labels")
@@ -333,6 +332,25 @@ class MaskLayout:
     def face(self):
         """Returns the face dictionary for this mask layout"""
         return default_faces[self.face_id]
+
+    @staticmethod
+    def two_coordinates_to_position_label(row: int, column: int) -> str:
+        """Converts two integers to chip position label, e.g. (2,3) -> 'C03'"""
+        if row < 0 or ord("A") + row > ord("Z"):
+            raise ValueError(f"Row coordinate {row} out of bounds")
+        if column < 0 or column > 99:
+            raise ValueError(f"Column coordinate {column} out of bounds")
+        return chr(ord("A") + row) + ("{:02d}".format(column))
+
+    @staticmethod
+    def position_label_to_two_coordinates(position_label: str) -> Tuple[int, int]:
+        """Converts chip position label to two integer coordinate, e.g. 'C03' -> (2,3)"""
+        row, col = ord(position_label[0]) - ord("A"), int(position_label[1:])
+        if row < 0 or ord("A") + row > ord("Z"):
+            raise ValueError(f"Letter part in {position_label} out of bounds")
+        if col < 0 or col > 99:
+            raise ValueError(f"Number part in {position_label} out of bounds")
+        return row, col
 
     def _mask_create_geometry(self):
         y_clip = -14.5e4
