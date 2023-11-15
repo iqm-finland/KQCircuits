@@ -156,6 +156,8 @@ for lname, ldata in layers.items():
         set_color(oEditor, objects[lname], *color_by_material(material))
     elif material == 'pec':
         pec_sheets += objects[lname]
+    elif lname not in mesh_size:
+        set_material(oEditor, objects[lname], None, None)  # set sheet as non-model
 
 
 # Assign perfect electric conductor to metal sheets
