@@ -225,26 +225,34 @@ def produce_mesh(json_data, msh_file):
             counter += 1
 
     # set domain boundary as ground for wave equation simulations
+    ports_dts = [dt for port in ports for dt in new_tags.get(f'port_{port["number"]}', [])]
     if json_data.get("tool", "capacitance") == "wave_equation":
         solid_dts = [(d, t) for dts in material_dim_tags.values() for d, t in dts if d == 3]
         face_dts = [(d, t) for dt in solid_dts for d, t in get_recursive_children([dt]) if d == 2]
-        port_dts = [dt for port in ports for dt in new_tags.get(f'port_{port["number"]}', [])]
-        material_dim_tags[f"ground_{counter}"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in port_dts]
+        material_dim_tags[f"ground_{counter}"] = [d for d in face_dts if face_dts.count(d) == 1 and d not in ports_dts]
 
     # Add physical groups
     for mat, dts in material_dim_tags.items():
-        if dts:
-            gmsh.model.addPhysicalGroup(max(dt[0] for dt in dts), [dt[1] for dt in dts], name=f"{mat}")
+        no_port_dts = [dt for dt in dts if dt not in ports_dts]
+        if no_port_dts:
+            gmsh.model.addPhysicalGroup(max(dt[0] for dt in no_port_dts), [dt[1] for dt in no_port_dts], name=f"{mat}")
 
     for port in ports:
         port_name = f'port_{port["number"]}'
         if port_name in new_tags:
             if port["type"] == "EdgePort":
                 port_dts = set(new_tags[port_name])
+                key_dts = {"signal": [], "ground": []}
                 for mat, dts in material_dim_tags.items():
-                    common_dts = [(d, t) for d, t in port_dts.intersection(get_recursive_children(dts)) if d == 2]
-                    if common_dts:
-                        gmsh.model.addPhysicalGroup(2, [dt[1] for dt in common_dts], name=f"{port_name}_{mat}")
+                    if mat.startswith("signal"):
+                        key_dts["signal"] += [(d, t) for d, t in port_dts.intersection(dts) if d == 2]
+                    elif mat.startswith("ground"):
+                        key_dts["ground"] += [(d, t) for d, t in port_dts.intersection(dts) if d == 2]
+                    elif mat != "pec":
+                        key_dts[mat] = [(d, t) for d, t in port_dts.intersection(get_recursive_children(dts)) if d == 2]
+                for key, dts in key_dts.items():
+                    if dts:
+                        gmsh.model.addPhysicalGroup(2, [dt[1] for dt in dts], name=f"{port_name}_{key}")
             else:
                 gmsh.model.addPhysicalGroup(2, [dt[1] for dt in new_tags[port_name]], name=port_name)
 

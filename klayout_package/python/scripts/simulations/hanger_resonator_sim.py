@@ -42,7 +42,8 @@ args, unknown = parser.parse_known_args()
 # Simulation parameters
 coupling_length = 500.0
 head_length = 500.0
-resonator_length = 5800.0  # internal ports add automatically 100um so in total this is 6000um
+# If resonator ports are used the real length of the resonator will be `resonator_length` + 200um
+resonator_length = 6000.0
 turn_radius = 50
 
 box_size_x = coupling_length + 2 * turn_radius + 2000
@@ -52,6 +53,9 @@ box_y2 = 1000.0
 sim_class = get_single_element_sim_class(
     HangerResonator,
     transformation_from_center=lambda cell: pya.DTrans(0, False, -coupling_length / 2.0, -(box_y1 + box_y2) / 2.0),
+    # To make the simulation faster the resonator ports are ignored.
+    # Remove to get the full 4x4 S-matrix
+    ignore_ports=["port_resonator_a", "port_resonator_b"],
 )  # pylint: disable=invalid-name
 
 sim_parameters = {

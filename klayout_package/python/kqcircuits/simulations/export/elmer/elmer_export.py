@@ -56,6 +56,7 @@ def export_elmer_json(
     minimum_passes=1,
     integrate_energies=False,
     is_axisymmetric=False,
+    solver_options=None,
 ):
     """
     Export Elmer simulation into json and gds files.
@@ -77,6 +78,11 @@ def export_elmer_json(
         minimum_passes(int): Minimum number of adaptive meshing iterations.
         integrate_energies: Calculate energy integrals over each object
         is_axisymmetric(bool): Simulate with Axi Symmetric coordinates along :math:`y\\Big|_{x=0}` (Default: False)
+
+        solver_options (dict): Can be used to set experimental solver options for Elmer wave-equation tool.
+                               Supports the options `use_av` (bool), `london_penetration_depth` (float),
+                               `conductivity` (float),`nested_iteration` (bool), `convergence_tolerance` (float),
+                               `max_iterations` (int), `quadratic_approximation` (bool), `second_kind_basis` (bool)
 
     Returns:
          Path to exported json file.
@@ -128,6 +134,7 @@ def export_elmer_json(
         "is_axisymmetric": is_axisymmetric,
         "sif_names": sif_names,
         "gds_file": gds_file,
+        "solver_options": solver_options,
     }
 
     # write .json file
@@ -586,6 +593,7 @@ def export_elmer(
     is_axisymmetric=False,
     skip_errors=False,
     post_process=None,
+    solver_options=None,
 ):
     """
     Exports an elmer simulation model to the simulation path.
@@ -619,6 +627,10 @@ def export_elmer(
                you might end up wasting time on bad simulations.
         post_process: List of PostProcess objects, a single PostProcess object, or None to be executed after simulations
 
+        solver_options (dict): Can be used to set experimental solver options for Elmer wave-equation tool.
+                    Supports the options `use_av` (bool), `london_penetration_depth` (float),
+                    `conductivity` (float),`nested_iteration` (bool), `convergence_tolerance` (float),
+                    `max_iterations` (int), `quadratic_approximation` (bool), `second_kind_basis` (bool)
 
     Returns:
 
@@ -637,6 +649,8 @@ def export_elmer(
                 "run_paraview": False,  # this is visual view of the results
             }
         )
+    if solver_options is None:
+        solver_options = {}
 
     if isinstance(frequency, np.ndarray):
         frequency = frequency.tolist()
@@ -745,6 +759,7 @@ def export_elmer(
                     minimum_passes=minimum_passes,
                     integrate_energies=integrate_energies,
                     is_axisymmetric=is_axisymmetric,
+                    solver_options=solver_options,
                 )
             )
         except (IndexError, ValueError, Exception) as e:  # pylint: disable=broad-except

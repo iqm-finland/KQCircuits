@@ -60,6 +60,7 @@ def sif_common_header(
     angular_frequency=None,
     def_file=None,
     dim="3",
+    discontinuous_boundary=False,
 ) -> str:
     """
     Returns common header and simulation blocks of a sif file in string format.
@@ -100,6 +101,7 @@ def sif_common_header(
             ("" if angular_frequency is None else "Angular Frequency = {}".format(angular_frequency)),
             "Coordinate Scaling = {}".format(coordinate_scaling(json_data)),
             f'Mesh Levels = {json_data.get("mesh_size", {}).get("mesh_levels", 1)}',
+            "Discontinuous Boundary Full Angle = Logical True" if discontinuous_boundary else "",
         ],
     )
     return res
@@ -260,73 +262,139 @@ def get_port_solver(
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
-def get_vector_helmholtz(ordinate, angular_frequency, result_file) -> str:
+def get_vector_helmholtz(ordinate, angular_frequency, result_file, solver_options) -> str:
     """
     Returns a vector Helmholtz equation solver in sif file format.
 
     Args:
         ordinate(int): solver ordinate
         angular_frequency(float): angular frequency of the solution
+        result_file(str): filename for the result S-matrix
+        solver_options(dict): Additional solver options dict
 
     Returns:
         (str): vector Helmholtz in sif file format
     """
-    solver_lines = [
-        "exec solver = Always",
-        'Equation = "VectorHelmholtz"',
-        'Procedure = "VectorHelmholtz" "VectorHelmholtzSolver"',
-        "Variable = E[E re:1 E im:1]",
-        "Optimize Bandwidth = false",
-        "Linear System Symmetric = true",
-        f"Angular Frequency = Real {angular_frequency}",
-        "! Trilinos Parameter File = file belos_ml.xml",
-        "! linear system use trilinos = logical true",
-        "! linear system use hypre = logical true",
-        "! Linear System Preconditioning Damp Coefficient = Real 0.0",
-        "! Linear System Preconditioning Damp Coefficient im = Real 1",
-        '! Linear System Solver = String "iterative"',
-        'Linear System Solver = String "Direct"',
-        'Linear system direct method = "mumps"',
-        '! Linear System Iterative Method = String "idrs"',
-        '! Linear System Iterative Method = String "bicgstabl"',
-        '! Linear System Iterative Method = String "richardson"',
-        "idrs parameter = 6",
-        "BiCGstabl polynomial degree = Integer 4",
-        '! Linear System Preconditioning = String "vanka"',
-        "! Linear System Max Iterations = Integer 4000",
-        "! Linear System Convergence Tolerance = 1.0e-7",
-        "! linear system abort not converged = false",
-        "Steady State Convergence Tolerance = 1e-09",
-        "! Linear System Residual Output = 1",
-        "Calculate Energy Norm = Logical True",
-        "! linear system normwise backward error = logical true",
-        "linear system complex = true",
-        "! options for block system",
-        "! include block.sif ",
-        "! lagrange gauge = logical true",
-        "! lagrange gauge penalization coefficient = real 1",
+    nested_iteration = solver_options.get("nested_iteration", False)
+    use_AV = solver_options.get("use_av", False)
+    second_kind_basis = solver_options.get("second_kind_basis", False)
+    quadratic_approximation = solver_options.get("quadratic_approximation", False)
+    tol = solver_options.get("convergence_tolerance", 1.0e-10)
+    max_iterations = solver_options.get("max_iterations", 2000)
+
+    lumping_lines = [
         "! Model lumping",
         "  Constraint Modes Analysis = Logical True",
-        "Run Control Constraint Modes = Logical True",
+        "  Run Control Constraint Modes = Logical True",
         "  Constraint Modes Lumped = Logical True",
         "  Constraint Modes Fluxes = Logical True",
         "  Constraint Modes EM Wave = Logical True",
         "  Constraint Modes Fluxes Results = Logical True",
-        "!  Constraint Modes Fluxes Symmetric = Logical True",
+        "  Constraint Modes Fluxes Symmetric = Logical False",
         f'  Constraint Modes Fluxes Filename = File "{result_file}"',
+    ]
+
+    linear_system_lines = [
+        "Linear System Symmetric = Logical False",
+        "Steady State Convergence Tolerance = 1e-09",
+    ]
+
+    if use_AV:
+        if nested_iteration:
+            linear_system_lines += [
+                "! Activate nested iteration:",
+                "!-----------------------------------------",
+                "Linear System Block Mode = True",
+                "Block Nested System = True",
+                "Block Preconditioner = True",
+                "Block Scaling = True",
+                "! Specify the perturbation:",
+                "!-----------------------------------------",
+                "Linear System Preconditioning Damp Coefficient = 0.0",
+                "Linear System Preconditioning Damp Coefficient im = -1.0",
+                "Mass-proportional Damping = True",
+                "! Linear system solver for the outer loop:",
+                "!-----------------------------------------",
+                'Outer: Linear System Solver = "Iterative"',
+                f"Outer: Linear System Convergence Tolerance = {tol}",
+                "Outer: Linear System Normwise Backward Error = True",
+                "Outer: Linear System Iterative Method = gcr",
+                "Outer: Linear System GCR Restart =  100",
+                "Outer: Linear System Residual Output =  1",
+                "Outer: Linear System Max Iterations = 20",
+                "Outer: Linear System Pseudo Complex = True",
+                "! Linear system solver for the inner solution:",
+                "!---------------------------------------------",
+                "$blocktol = 5.0e-3",
+                'block 11: Linear System Solver = "Iterative"',
+                "block 11: Linear System Complex = True",
+                "block 11: Linear System Scaling = True	",
+                "block 11: Linear System Row Equilibration = False",
+                "block 11: Linear System Preconditioning = Diagonal",
+                "block 11: Linear System ILUT Tolerance = 5.0e-1",
+                "block 11: Linear System Residual Output = 1",
+                "block 11: Linear System Max Iterations = 100",
+                "block 11: Linear System Iterative Method = GCR !BiCGStabl",
+                "block 11: Linear System GCR Restart = 50",
+                "block 11: BiCGstabl polynomial degree = 4",
+                "block 11: Linear System Normwise Backward Error = False",
+                "block 11: Linear System Convergence Tolerance = $blocktol",
+            ]
+        else:
+            linear_system_lines += [
+                "Linear system complex = Logical True",
+                "Linear System Preconditioning Damp Coefficient im = -0.5",
+                "Mass-proportional Damping = Logical True",
+                'Linear System Solver = String "iterative"',
+                'Linear System Iterative Method = String "GCR"',
+                "Linear System GCR Restart = 200",
+                "Linear System Row Equilibration = Logical True",
+                "linear system normwise backward error = Logical True",
+                "Linear System Preconditioning = ILUT",
+                "Linear System ILUT Tolerance = 1.5e-1",
+                f"Linear System Max Iterations = Integer {max_iterations}",
+                f"Linear System Convergence Tolerance = {tol}",
+                "linear system abort not converged = Logical False",
+                "Linear System Residual Output = 1",
+            ]
+
+        linear_system_lines += [
+            "linear system abort not converged = false",
+            "Linear System Nullify Guess = Logical True",
+        ]
+
+    else:
+        linear_system_lines += [
+            "Linear system complex = Logical True",
+            'Linear System Solver = String "Direct"',
+            'Linear system direct method = "mumps"',
+        ]
+
+    solver_lines = [
+        "exec solver = Always",
+        'Equation = "VectorHelmholtz"',
+        'Procedure = "VectorHelmholtz" "VectorHelmholtzSolver"',
+        "" if use_AV else "Variable = E[E re:1 E im:1]",
+        f"Optimize Bandwidth = Logical {not use_AV}",
+        f"Use Gauss Law = Logical {use_AV}",
+        f"Apply Conservation of Charge = Logical {use_AV}",
+        "Calculate Energy Norm = Logical True",
+        f"Angular Frequency = Real {angular_frequency}",
+        f"Second Kind Basis = Logical {second_kind_basis}",
+        f"Quadratic Approximation = Logical {quadratic_approximation}",
+        *linear_system_lines,
+        *lumping_lines,
     ]
     return sif_block(f"Solver {ordinate}", solver_lines)
 
 
 def get_vector_helmholtz_calc_fields(ordinate: Union[str, int], angular_frequency: Union[str, float]) -> str:
     solver_lines = [
-        "!  exec solver = never",
         'Equation = "calcfields"',
         "Optimize Bandwidth = False",
         'Procedure = "VectorHelmholtz" "VectorHelmholtzCalcFields"',
         "Linear System Symmetric = False",
         'Field Variable =  String "E"',
-        '!Eletric field Variable = String "E"',
         f"Angular Frequency = Real {angular_frequency}",
         "Calculate Elemental Fields = Logical True",
         "Calculate Magnetic Field Strength = Logical True",
@@ -342,7 +410,6 @@ def get_vector_helmholtz_calc_fields(ordinate: Union[str, int], angular_frequenc
         "Linear System Max Iterations = 5000",
         "Linear System Iterative Method = CG",
         "Linear System Convergence Tolerance = 1.0e-9",
-        "! Exported Variable 1 = -dofs 3 Eref_re",
     ]
     return sif_block(f"Solver {ordinate}", solver_lines)
 
@@ -763,11 +830,14 @@ def get_body_list(json_data, dim, mesh_names):
     Returns:
         (list(str)): list of model bodies
     """
+    body_list = []
     if dim == 2:
-        return [n for n in {*json_data["layers"].keys(), "vacuum"} if n in mesh_names]
+        body_list = [n for n in ["vacuum", *json_data["layers"].keys()] if n in mesh_names]
     elif dim == 3:
-        return [n for n in {"vacuum", "pec", *json_data["material_dict"].keys()} if n in mesh_names]
-    return []
+        body_list = [n for n in ["vacuum", "pec", *json_data["material_dict"].keys()] if n in mesh_names]
+
+    unique_bodies = set()
+    return [n for n in body_list if not (n in unique_bodies or unique_bodies.add(n))]
 
 
 def get_permittivities(json_data, with_zero, dim, mesh_names):
@@ -1120,8 +1190,21 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     Returns:
         (str): elmer solver input file for wave equation
     """
+    solver_options = json_data["solver_options"]
+
+    lpd = solver_options.get("london_penetration_depth", 0)
+    cond = solver_options.get("conductivity", 0)
+    use_AV = solver_options.get("use_av", False)
+    metal_height = json_data["parameters"].get("metal_height", 0)
+    if len(metal_height) > 1:
+        logging.warning(
+            "Simulation contains multiple metal layers, This is not yet supported with"
+            f"elmer wave-equation tool. Using thickness {metal_height[0]}um for all ports"
+        )
+    metal_height = metal_height[0]
+
     dim = 3
-    header = sif_common_header(json_data, folder_path)
+    header = sif_common_header(json_data, folder_path, discontinuous_boundary=(use_AV and metal_height == 0))
     constants = sif_block("Constants", [f"Permittivity Of Vacuum = {epsilon_0}"])
 
     # Bodies and materials
@@ -1132,40 +1215,138 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
     bodies = ""
     materials = ""
     betas = []
+
     for i, (body, perm) in enumerate(zip(body_list, permittivity_list), 1):
-        bodies += sif_body(ordinate=i, target_bodies=[body], equation=1, material=i)
-        materials += sif_block(f"Material {i}", [f"Relative Permittivity = {perm}"])
+        material_parameters = [f'Name = "{body}"']
+        if body == "pec" and use_AV:
+            bodies += sif_block(f"Body {i}", [f"Target Bodies(1) = $ {body}", f"Material = {i}"])
+        else:
+            bodies += sif_body(ordinate=i, target_bodies=[body], equation=1, material=i)
+            material_parameters += [f"Relative Permittivity = {perm}"]
+
+        materials += sif_block(f"Material {i}", material_parameters)
         betas.append(f"beta_{body} = w*sqrt({perm}*eps0*mu0)")
+
     n_bodies = len(body_list)
 
     # Matc block
-    matc_blocks = sif_matc_block(
-        [f'f0 = {1e9*json_data["frequency"]}', "w=2*pi*(f0)", "mu0=4e-7*pi", "eps0 = 8.854e-12", *betas]
+    matc_list = [
+        f'f0 = {1e9*json_data["frequency"]}',
+        "w=2*pi*(f0)",
+        "mu0=4e-7*pi",
+        "eps0 = 8.854e-12",
+    ]
+
+    if lpd != 0:
+        matc_list += [
+            f"lambda_l = {lpd}",
+            "sigma = 1/(w*mu0*lambda_l^2)",
+        ]
+    if use_AV:
+        port_area = (json_data["parameters"]["port_size"] * 1e-6) ** 2
+        # Use 200nm thickness for impedance calculation when using sheet metal
+        signal_height = 200e-9 if metal_height == 0 else metal_height
+        signal_area = signal_height * json_data["parameters"].get("a", 10) * 1e-12
+        matc_list += [
+            "V0 = 1",
+            "Z0 = 50",
+            f"port_area = {port_area}",
+            f"signal_area = {signal_area}",
+        ]
+    else:
+        matc_list += [*betas]
+
+    if cond != 0:
+        matc_list += [f"film_conductivity = {cond}"]
+
+    matc_blocks = sif_matc_block(matc_list)
+
+    # Solvers & Equations
+    result_file = f'SMatrix_{json_data["parameters"]["name"]}_f{str(json_data["frequency"]).replace(".", "_")}.dat'
+    solvers = ""
+    solver_ordinate = 1
+    if not use_AV:
+        solvers += get_port_solver(
+            ordinate=solver_ordinate,
+            maximum_passes=json_data["maximum_passes"],
+            minimum_passes=json_data["minimum_passes"],
+            percent_error=json_data["percent_error"],
+            max_error_scale=json_data["max_error_scale"],
+            max_outlier_fraction=json_data["max_outlier_fraction"],
+        )
+        solver_ordinate += 1
+
+    solvers += get_vector_helmholtz(
+        ordinate=solver_ordinate, angular_frequency="$ w", result_file=result_file, solver_options=solver_options
+    )
+    solvers += get_vector_helmholtz_calc_fields(ordinate=solver_ordinate + 1, angular_frequency="$ w")
+
+    solvers += get_result_output_solver(
+        ordinate=solver_ordinate + 2,
+        output_file_name=Path(str(folder_path) + "_f" + str(json_data["frequency"]).replace(".", "_")),
+        exec_solver="Always",
     )
 
     # Equations
-    equations = get_equation(ordinate=1, solver_ids=[2, 3])
-    equations += get_equation(ordinate=2, solver_ids=[1])
+    equations = get_equation(ordinate=1, solver_ids=[solver_ordinate, solver_ordinate + 1])
+    if not use_AV:
+        equations += get_equation(ordinate=2, solver_ids=[1])
 
     # Boundary conditions
     boundary_conditions = ""
     grounds = get_grounds(json_data, dim=dim, mesh_names=mesh_names)
-    boundary_conditions += sif_boundary_condition(
-        ordinate=1, target_boundaries=grounds, conditions=["E re {e} = 0", "E im {e} = 0", "Potential = 0"]
-    )
+
+    pec_box = grounds[-1]
+    sc_grounds = grounds[:-1]
+
+    if use_AV:
+        pec_conditions = ["AV re {e} = 0", "AV im {e} = 0", "AV re = Real 0", "AV im = Real 0"]
+        if lpd > 0:
+            sc_metal_conditions = [
+                "Layer Thickness = $ lambda_l",
+                "Layer Electric Conductivity Im = $ sigma",
+                "Apply Conservation of Charge = Logical True",
+            ]
+        elif cond > 0:
+            sc_metal_conditions = [
+                "Good Conductor BC = True",
+                "Layer Relative Reluctivity = Real 1.0",
+                "Layer Electric Conductivity = $ film_conductivity",
+                "Apply Conservation of Charge = Logical True",
+            ]
+        else:
+            logging.warning("AV without cond or london penetration depth not supported")
+            sc_metal_conditions = ["AV re {e} = 0", "AV im {e} = 0", "AV re = Real 0", "AV im = Real 0"]
+    else:
+        pec_conditions = ["Potential = 0", "E re {e} = 0", "E im {e} = 0"]
+        if lpd > 0:
+            sc_metal_conditions = ["Layer Thickness = $ lambda_l", "Layer Electric Conductivity Im = $ sigma"]
+        else:
+            sc_metal_conditions = ["E re {e} = 0", "E im {e} = 0"]
+
+    boundary_conditions += sif_boundary_condition(ordinate=1, target_boundaries=[pec_box], conditions=pec_conditions)
     n_boundaries = 1
 
+    sc_ground_conditions = sc_metal_conditions + ([] if use_AV else ["Potential = 0"])
+    sc_signal_conditions = sc_metal_conditions + ([] if use_AV else ["Potential = 1"])
+
+    boundary_conditions += sif_boundary_condition(
+        ordinate=2, target_boundaries=sc_grounds, conditions=sc_ground_conditions
+    )
+    n_boundaries += 1
+
+    signal_bc_inds = []
     signals = get_signals(json_data, dim=dim, mesh_names=mesh_names)
     for i, s in enumerate(signals, 1):
+        signal_bc_inds.append(i + n_boundaries)
         boundary_conditions += sif_boundary_condition(
-            ordinate=i + n_boundaries,
-            target_boundaries=[s],
-            conditions=["E re {e} = 0", "E im {e} = 0", "Potential = 1"],
+            ordinate=i + n_boundaries, target_boundaries=[s], conditions=sc_signal_conditions
         )
     n_boundaries += len(signals)
 
     # Port boundaries
     body_ids = {b: None for b in body_list}
+    constraint_ind = 1  # for enumerating edge port constraint modes in av
     for i, port in enumerate(json_data["ports"], 1):
         port_name = f'port_{port["number"]}'
         if port["type"] == "EdgePort":
@@ -1177,31 +1358,79 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
             any_material = "vacuum" if "vacuum" in body_list else body_list[0]
             port_parts = [(port_name, any_material)] if port_name in mesh_names else []
 
+        port_part_bc_indices = {}
         for name, mat in port_parts:
-            # Add body for the port equation, if it doesn't exist yet
-            if body_ids[mat] is None:
-                n_bodies += 1
-                body_ids[mat] = n_bodies
-                bodies += sif_body(
-                    ordinate=body_ids[mat],
-                    target_bodies=[f"{body_ids[mat]}"],
-                    equation=2,
-                    material=body_list.index(mat) + 1,
-                )
-
-            # Add boundary condition for the port
             n_boundaries += 1
+            port_part_bc_indices[mat] = n_boundaries
+            # Add boundary condition for the port
+            if use_AV:
+                conditions = ["AV re {e} = 0", "AV im {e} = 0"]
+            else:
+                # Add body for the port equation, if it doesn't exist yet
+                if mat not in ("signal", "ground"):
+                    if body_ids[mat] is None:
+                        n_bodies += 1
+                        body_ids[mat] = n_bodies
+                        bodies += sif_body(
+                            ordinate=body_ids[mat],
+                            target_bodies=[f"{body_ids[mat]}"],
+                            equation=2,
+                            material=body_list.index(mat) + 1,
+                        )
+
+                    conditions = [f"Body Id = {body_ids[mat]}"]
+                    conditions += [
+                        f'Constraint Mode = Integer {port["number"]}',
+                        "TEM Potential im = variable potential",
+                        f'  real matc "2*beta_{mat}*tx"',
+                        f"electric robin coefficient im = real $ -beta_{mat}",
+                    ]
+                else:
+                    conditions = [
+                        "E re {e} = 0",
+                        "E im {e} = 0",
+                    ]
             boundary_conditions += sif_boundary_condition(
-                ordinate=n_boundaries,
-                target_boundaries=[name],
-                conditions=[
-                    f"Body Id = {body_ids[mat]}",
-                    "TEM Potential im = variable potential",
-                    f'  real matc "2*beta_{mat}*tx"',
-                    f"electric robin coefficient im = real $ beta_{mat}",
-                    f'Constraint Mode = Integer {port["number"]}',
-                ],
+                ordinate=n_boundaries, target_boundaries=[name], conditions=conditions
             )
+
+        # 1D excitation for Av-solver, This will now totally skip edge ports
+        if use_AV and port["type"] == "EdgePort":
+            vacuum_bc_ind = port_part_bc_indices["vacuum"]
+
+            if metal_height == 0:
+                signal_port_bc_inds = signal_bc_inds
+                signal_intersection_bc_inds = [vacuum_bc_ind]
+                material_inds = [1, 2]  # material indices hardcoded for now
+            else:
+                if "silicon" in json_data["material_dict"]:
+                    substrate_bc_ind = port_part_bc_indices["silicon"]
+                else:
+                    first_material = list(json_data["material_dict"].keys())[0]
+                    logging.warning(
+                        '"silicon" not found in material dict, '
+                        f"using for AV solver intersection ports instead {first_material}"
+                    )
+                    substrate_bc_ind = port_part_bc_indices[first_material]
+
+                signal_port_bc_inds = [port_part_bc_indices["signal"]]
+                signal_intersection_bc_inds = [vacuum_bc_ind, substrate_bc_ind]
+                material_inds = [1, 3]
+
+            for signal_ind in signal_port_bc_inds:
+                for signal_edge_bc_ind, material_ind in zip(signal_intersection_bc_inds, material_inds):
+                    conditions = [
+                        f"Constraint Mode = Integer {constraint_ind}",
+                        f"Intersection BC(2) = {signal_ind} {signal_edge_bc_ind}",
+                        "Layer Thickness = Real $ lambda_l",
+                        "Electric Transfer Coefficient = Real $ 1.0/(Z0*signal_area)",
+                        "Incident Voltage = $ V0",
+                        f"Material = Integer {material_ind}",
+                    ]
+                    n_boundaries += 1
+                    boundary_conditions += sif_block(f"Boundary Condition {n_boundaries}", conditions)
+
+            constraint_ind += 1
 
     # Add place-holder boundaries (if additional physical groups are given)
     other_groups = [n for n in mesh_names if n not in body_list + grounds + signals and not n.startswith("port_")]
@@ -1212,25 +1441,6 @@ def sif_wave_equation(json_data: dict, folder_path: Path):
             conditions=["! Default boundary for full wave (PEC)", "E re {e} = 0", "E im {e} = 0", "Potential = 1"],
         )
     n_boundaries += len(other_groups)
-
-    # Solvers
-    solvers = get_port_solver(
-        ordinate=1,
-        maximum_passes=json_data["maximum_passes"],
-        minimum_passes=json_data["minimum_passes"],
-        percent_error=json_data["percent_error"],
-        max_error_scale=json_data["max_error_scale"],
-        max_outlier_fraction=json_data["max_outlier_fraction"],
-    )
-    result_file = f'SMatrix_{json_data["parameters"]["name"]}_f{str(json_data["frequency"]).replace(".", "_")}.dat'
-    solvers += get_vector_helmholtz(ordinate=2, angular_frequency="$ w", result_file=result_file)
-    solvers += get_vector_helmholtz_calc_fields(ordinate=3, angular_frequency="$ w")
-
-    solvers += get_result_output_solver(
-        ordinate=4,
-        output_file_name=Path(str(folder_path) + "_f" + str(json_data["frequency"]).replace(".", "_")),
-        exec_solver="Always",
-    )
 
     return header + constants + matc_blocks + solvers + equations + materials + bodies + boundary_conditions
 
