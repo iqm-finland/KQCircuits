@@ -954,4 +954,8 @@ class Simulation:
             index_name = f'${i}' if i > 0 else ''
             cell_to_be_deleted = cell.layout().cell(f'{name}{index_name}')
             if cell_to_be_deleted is not None:
-                cell_to_be_deleted.delete()
+                # This has started causing errors on KLayout's side, protect with try-except
+                try:
+                    cell_to_be_deleted.delete()
+                except RuntimeError as e:
+                    logging.warning(f"Attempt to delete cell {name}{index_name} caused following error: {e}")
