@@ -280,18 +280,27 @@ class MaskLayout:
         chips_dict = {}  # {(pos_x, pos_y): chip_name, chip_pos (in submask coordinates), chip_inst, mask_layout}
         xvals = set()
         yvals = set()
+        # To not pollute the space of chip positions, rather than assigning a new row letter and column number
+        # for each unique x- and y-coordinate, round the coordinates to the smallest chip dimensions.
+        # This still guarantees that each chip gets unique chip position label, but rows that are closer
+        # together than the smallest chip height will be assigned the same letter.
+        unit_x = min(bbox.p2.x - bbox.p1.x for _,_,bbox,_,_ in self.added_chips)
+        unit_y = min(bbox.p2.y - bbox.p1.y for _,_,bbox,_,_ in self.added_chips)
         for chip_name, pos, bbox, dtrans, position_label in self.added_chips:
+            pos_x = math.floor(pos.x / unit_x) * unit_x
+            pos_y = math.floor(pos.y / unit_y) * unit_y
             if not position_label:
-                xvals.add(pos.x)
-                yvals.add(pos.y)
-            chips_dict[(pos.x, pos.y)] = chip_name, pos, bbox, dtrans, position_label, self
+                xvals.add(pos_x)
+                yvals.add(pos_y)
+            chips_dict[(pos_x, pos_y)] = chip_name, pos, bbox, dtrans, position_label, self
         for submask_layout, submask_pos in self.submasks:
             for chip_name, pos, bbox, dtrans, position_label in submask_layout.added_chips:
-                pos2 = pos + submask_pos
+                pos_x = math.floor((pos + submask_pos).x / unit_x) * unit_x
+                pos_y = math.floor((pos + submask_pos).y / unit_y) * unit_y
                 if not position_label:
-                    xvals.add(pos2.x)
-                    yvals.add(pos2.y)
-                chips_dict[(pos2.x, pos2.y)] = chip_name, pos, bbox, dtrans, position_label, submask_layout
+                    xvals.add(pos_x)
+                    yvals.add(pos_y)
+                chips_dict[(pos_x, pos_y)] = chip_name, pos, bbox, dtrans, position_label, submask_layout
         # produce the labels such that chips with identical x-coordinate (y-coordinate) have identical number (letter)
         used_position_labels = set()
         for (x, y), (chip_name, _, bbox, dtrans, position_label, mask_layout) in chips_dict.items():
