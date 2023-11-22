@@ -60,6 +60,7 @@ class DoublePads(Qubit):
                                          "Second qubit island tapering width on the junction side", 10, unit="µm")
 
     island_island_gap = Param(pdt.TypeDouble, "Island to island gap distance", 70, unit="µm")
+    with_squid = Param(pdt.TypeBoolean, "Boolean whether to include the squid", True)
 
     def build(self):
 
@@ -82,7 +83,9 @@ class DoublePads(Qubit):
         squid_height = temp_squid_ref["port_common"].distance(pya.DPoint(0, 0))
         # Now actually add SQUID
         squid_transf = pya.DCplxTrans(1, 0, False, pya.DVector(0, self.squid_offset - squid_height / 2))
-        self.produce_squid(squid_transf)
+
+        if self.with_squid:
+            self.produce_squid(squid_transf)
 
         taper_height = (self.island_island_gap - squid_height)/2
 
