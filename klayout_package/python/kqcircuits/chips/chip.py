@@ -244,7 +244,7 @@ class Chip(Element):
     def produce_structures(self):
         """Produces chip frame and possibly other structures before the ground grid.
 
-        This method is called in build(). Override this method to produce a different set of chip frames.
+        This method is called in post_build(). Override this method to produce a different set of chip frames.
         """
 
         for i, face in enumerate(self.frames_enabled):
@@ -273,9 +273,6 @@ class Chip(Element):
         if self.with_face1_gnd_tsvs:
             tsv_box = self.get_box(1).enlarged(pya.DVector(-self.edge_from_tsv, -self.edge_from_tsv))
             self._produce_ground_tsvs(face_id=[3, 1], tsv_box=tsv_box)
-
-        if self.with_gnd_bumps:
-            self._produce_ground_bumps()
 
     def get_box(self, face=0):
         """
@@ -352,6 +349,8 @@ class Chip(Element):
 
     def post_build(self):
         self.produce_structures()
+        if self.with_gnd_bumps:
+            self._produce_ground_bumps()
         if self.with_grid:
             self.produce_ground_grid()
         if self.merge_base_metal_gap:
