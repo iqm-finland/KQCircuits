@@ -126,6 +126,13 @@ class DoublePads(Qubit):
         self.add_port("drive", pya.DPoint(float(self.drive_position[0]), float(self.drive_position[1])),
                       direction=pya.DVector(float(self.drive_position[0]), float(self.drive_position[1])))
 
+        # Probepoints
+        self.refpoints["probe_island_1"] = pya.DPoint(0,
+            self.squid_offset + squid_height / 2 + taper_height + float(self.island1_extent[1]) / 2)
+        self.refpoints["probe_island_2"] = pya.DPoint(0,
+            self.squid_offset - squid_height / 2 - taper_height - float(self.island2_extent[1]) / 2)
+
+
     def _build_coupler(self, first_island_top_edge):
         coupler_top_edge = first_island_top_edge + self.coupler_offset + float(self.coupler_extent[1])
         coupler_polygon = pya.DPolygon([

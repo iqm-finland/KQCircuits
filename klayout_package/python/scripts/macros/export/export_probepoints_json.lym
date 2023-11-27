@@ -8,6 +8,7 @@
  <doc/>
  <autorun>false</autorun>
  <autorun-early>false</autorun-early>
+ <priority>0</priority>
  <shortcut/>
  <show-in-menu>false</show-in-menu>
  <group-name/>
@@ -34,13 +35,26 @@
 
 """Prints the probepoints of a chip as JSON. Assumes that a single chip exists in the top cell."""
 
+import json
 from kqcircuits.klayout_view import KLayoutView
 from kqcircuits.util.export_helper import generate_probepoints_json
 
 top_cell = KLayoutView(current=True).active_cell
 
+### Set file location, or leave empty to get probepoint JSON empty
+FILE_LOCATION = ""
 ### Action
-# Note that this works on the bottom face by default. For the top, specify a second 't' argument.
-print(generate_probepoints_json(top_cell))
+# See API docs on how to best call generate_probepoints_json for your purposes
+probepoint_json = generate_probepoints_json(top_cell,
+    face='1t1',
+    references=['nw'],
+    contact=None)
+json_str = json.dumps(probepoint_json, indent=2)
+
+if FILE_LOCATION:
+    with open(FILE_LOCATION, 'w') as file:
+        file.write(json_str)
+else:
+    print(json_str)
 </text>
 </klayout-macro>

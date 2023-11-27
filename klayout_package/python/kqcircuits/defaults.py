@@ -106,11 +106,24 @@ default_netlist_ignore_connections = [
 default_bar_format = '{l_bar}{bar}| {n_fmt}/{total_fmt} [Elapsed: {elapsed}, Left (eta): {remaining}, {rate_inv_fmt}' \
                      '{postfix}]'
 
-# dictionary of probepoint types for probepoint export
-# key is the refpoint name prefix for a type of probepoints, value is a text representation of the probepoint type
-default_probe_types = {"testarray": "testarrays", "qb": "qubits"}
-# tuple of refpoint name suffixes that are used (together with probe_types) to identify refpoints as probepoints
-default_probe_suffixes = ("_c", "_l")
+# refpoint is extracted as probepoint if it contains some string from default_probe_types and
+# ends with some substring from default_probe_suffixes
+
+default_probe_types = ["testarray", "qb"]
+default_probe_suffixes = [
+    "_l", "_r", "_top", # Test array probepoints
+    # Single island qubit probepoints
+    "_probe_ground", "_probe_island",
+    # Double island qubit probepoints
+    "_probe_island_1", "_probe_island_2"
+]
+# for probepoint pair, one is assigned to west and other to east prober based on their x coordinate
+# but we also want to set a standard where ground is consistently probed from one side and island
+# from the other. This dict defines such rules
+recommended_probe_suffix_mapping = {
+    "_probe_ground": "east",
+    "_probe_island": "west"
+}
 
 # Library names in dependency order. Every library should have its dependencies before its own entry.
 kqc_library_names = (

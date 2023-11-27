@@ -39,6 +39,19 @@ class Qubit(Element):
     * possible fluxlines
     * e-beam layers for SQUIDs
     * SQUID name parameter
+
+    It is customary to also define probepoints for a qubit. Simply define two refpoints as appropriate probepoints.
+    For single island qubits::
+
+        self.refpoints["probe_ground"] = pya.DPoint(...)
+        self.refpoints["probe_island"] = pya.DPoint(...)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance")).insert(
+            pya.DBox(-20.0, -20.0, 20.0, 20.0).moved(self.refpoints["probe_ground"]))
+
+    For double island qubits::
+
+        self.refpoints["probe_island_1"] = pya.DPoint(...)
+        self.refpoints["probe_island_2"] = pya.DPoint(...)
     """
 
     LIBRARY_NAME = "Qubit Library"
