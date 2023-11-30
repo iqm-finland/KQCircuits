@@ -35,10 +35,12 @@ from kqcircuits.simulations.export.util import find_edge_from_point_in_cell
 from kqcircuits.simulations.export.util import get_enclosing_polygon
 from kqcircuits.util.groundgrid import make_grid
 from kqcircuits.junctions.sim import Sim
+from kqcircuits.util.library_helper import load_libraries
 
 
 simulation_layer_dict = dict()
 
+load_libraries()  # allows parameter overrides from defaults.py
 
 def get_simulation_layer_by_name(layer_name):
     """Returns layer info of given name. If layer doesn't exist, a new layer is created.
