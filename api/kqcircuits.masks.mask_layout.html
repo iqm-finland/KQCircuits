@@ -832,6 +832,18 @@ area covered by the mask.</p>
 <dd><p>Returns the face dictionary for this mask layout</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.two_coordinates_to_position_label">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">two_coordinates_to_position_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.two_coordinates_to_position_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.two_coordinates_to_position_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts two integers to chip position label, e.g. (2,3) -&gt; ‘C03’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="kqcircuits.masks.mask_layout.MaskLayout.position_label_to_two_coordinates">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position_label_to_two_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/kqcircuits/masks/mask_layout.html#MaskLayout.position_label_to_two_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#kqcircuits.masks.mask_layout.MaskLayout.position_label_to_two_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts chip position label to two integer coordinate, e.g. ‘C03’ -&gt; (2,3)</p>
+</dd></dl>
+
 </dd></dl>
 
 <img alt="../_images/kqcircuits.masks.mask_layout.png" src="../_images/kqcircuits.masks.mask_layout.png" />
