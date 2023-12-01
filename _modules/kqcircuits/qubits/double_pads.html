@@ -588,6 +588,7 @@
                                          <span class="s2">&quot;Second qubit island tapering width on the junction side&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
 
     <span class="n">island_island_gap</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeDouble</span><span class="p">,</span> <span class="s2">&quot;Island to island gap distance&quot;</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;µm&quot;</span><span class="p">)</span>
+    <span class="n">with_squid</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">pdt</span><span class="o">.</span><span class="n">TypeBoolean</span><span class="p">,</span> <span class="s2">&quot;Boolean whether to include the squid&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DoublePads.build"><a class="viewcode-back" href="../../../api/kqcircuits.qubits.double_pads.html#kqcircuits.qubits.double_pads.DoublePads.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
@@ -610,7 +611,9 @@
         <span class="n">squid_height</span> <span class="o">=</span> <span class="n">temp_squid_ref</span><span class="p">[</span><span class="s2">&quot;port_common&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">DPoint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="c1"># Now actually add SQUID</span>
         <span class="n">squid_transf</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">DCplxTrans</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">DVector</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">squid_offset</span> <span class="o">-</span> <span class="n">squid_height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">produce_squid</span><span class="p">(</span><span class="n">squid_transf</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_squid</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">produce_squid</span><span class="p">(</span><span class="n">squid_transf</span><span class="p">)</span>
 
         <span class="n">taper_height</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">island_island_gap</span> <span class="o">-</span> <span class="n">squid_height</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 
