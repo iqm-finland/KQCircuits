@@ -543,7 +543,7 @@
 <span class="c1"># (meetiqm.com/developers/osstmpolicy). IQM welcomes contributions to the code. Please see our contribution agreements</span>
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.parameters</span> <span class="kn">import</span> <span class="n">Param</span><span class="p">,</span> <span class="n">pdt</span>
@@ -552,8 +552,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.waveguide_composite</span> <span class="kn">import</span> <span class="n">WaveguideComposite</span><span class="p">,</span> <span class="n">Node</span>
 
 
-<div class="viewcode-block" id="SampleHolderTest"><a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">SampleHolderTest</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
+<div class="viewcode-block" id="SampleHolderTest"><a class="viewcode-back" href="../../../api/kqcircuits.chips.sample_holder_test.html#kqcircuits.chips.sample_holder_test.SampleHolderTest">[docs]</a><span class="k">class</span> <span class="nc">SampleHolderTest</span><span class="p">(</span><span class="n">Chip</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The PCell declaration for a SampleHolderTest chip.</span>
 
@@ -593,7 +592,7 @@
             <span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">insert_cell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name_chip</span><span class="si">}</span><span class="s2">: Waveguide PL-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> length: </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name_chip</span><span class="si">}</span><span class="s2">: Waveguide PL-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> length: </span><span class="si">{</span><span class="n">cell</span><span class="o">.</span><span class="n">length</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nr_pads_per_side</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="n">_produce_waveguide</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1200</span><span class="p">,</span> <span class="n">first_port</span><span class="o">=</span><span class="s2">&quot;IN&quot;</span><span class="p">,</span> <span class="n">second_port</span><span class="o">=</span><span class="s2">&quot;OUT&quot;</span><span class="p">)</span>

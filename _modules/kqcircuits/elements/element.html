@@ -547,8 +547,6 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isclass</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
-
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_layers</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">default_parameter_values</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">is_standalone_session</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.util.geometry_helper</span> <span class="kn">import</span> <span class="n">get_cell_path_length</span>
@@ -622,8 +620,7 @@
             <span class="n">cell_inst</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span><span class="s2">&quot;label_trans&quot;</span><span class="p">,</span> <span class="n">label_trans_str</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cell_inst</span><span class="p">,</span> <span class="n">refpoints_abs</span></div>
 
-<div class="viewcode-block" id="Element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">Element</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PCellDeclarationHelper</span><span class="p">):</span>
+<div class="viewcode-block" id="Element"><a class="viewcode-back" href="../../../api/kqcircuits.elements.element.html#kqcircuits.elements.element.Element">[docs]</a><span class="k">class</span> <span class="nc">Element</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">PCellDeclarationHelper</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Element PCell declaration.</span>
 
 <span class="sd">    PCell parameters for an element are defined as class attributes of Param type.</span>

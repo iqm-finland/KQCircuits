@@ -546,13 +546,10 @@
 <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">cpu_count</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">perf_counter</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
-
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
 
 
-<div class="viewcode-block" id="AreaReceiver"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.AreaReceiver">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">AreaReceiver</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">TileOutputReceiver</span><span class="p">):</span>
+<div class="viewcode-block" id="AreaReceiver"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.AreaReceiver">[docs]</a><span class="k">class</span> <span class="nc">AreaReceiver</span><span class="p">(</span><span class="n">pya</span><span class="o">.</span><span class="n">TileOutputReceiver</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Class for handling and storing output from :class:`TilingProcessor` &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -562,7 +559,7 @@
 <div class="viewcode-block" id="AreaReceiver.put"><a class="viewcode-back" href="../../../api/kqcircuits.util.area.html#kqcircuits.util.area.AreaReceiver.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ix</span><span class="p">,</span> <span class="n">iy</span><span class="p">,</span> <span class="n">tile</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">dbu</span><span class="p">,</span> <span class="n">clip</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Function called by :class:`TilingProcessor` on output &quot;&quot;&quot;</span>
         <span class="c1">#pylint: disable=unused-argument</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Area for tile </span><span class="si">{</span><span class="n">ix</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">iy</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dbu</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Area for tile </span><span class="si">{</span><span class="n">ix</span><span class="si">}</span><span class="s2">,</span><span class="si">{</span><span class="n">iy</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">obj</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">dbu</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">area</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">*</span> <span class="p">(</span><span class="n">dbu</span> <span class="o">*</span> <span class="n">dbu</span><span class="p">)</span>  <span class="c1"># report as um^2</span></div></div>
 
 

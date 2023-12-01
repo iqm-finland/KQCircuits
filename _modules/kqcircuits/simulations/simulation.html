@@ -548,7 +548,7 @@
 <span class="kn">import</span> <span class="nn">ast</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">default_faces</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.airbridges.airbridge</span> <span class="kn">import</span> <span class="n">Airbridge</span>
@@ -576,8 +576,7 @@
     <span class="k">return</span> <span class="n">simulation_layer_dict</span><span class="p">[</span><span class="n">layer_name</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="Simulation"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation">[docs]</a><span class="nd">@logged</span>
-<span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
+<div class="viewcode-block" id="Simulation"><a class="viewcode-back" href="../../../api/kqcircuits.simulations.simulation.html#kqcircuits.simulations.simulation.Simulation">[docs]</a><span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Element</span><span class="p">)</span>
 <span class="nd">@add_parameters_from</span><span class="p">(</span><span class="n">Sim</span><span class="p">,</span> <span class="s2">&quot;junction_total_length&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">Simulation</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for simulation geometries.</span>
@@ -729,7 +728,7 @@
         <span class="k">if</span> <span class="n">layout</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layout</span><span class="p">,</span> <span class="n">pya</span><span class="o">.</span><span class="n">Layout</span><span class="p">):</span>
             <span class="n">error_text</span> <span class="o">=</span> <span class="s2">&quot;Cannot create simulation with invalid or nil layout.&quot;</span>
             <span class="n">error</span> <span class="o">=</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">error_text</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">error_text</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">error_text</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">error</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span>
@@ -1426,9 +1425,9 @@
                             <span class="n">p_data</span><span class="p">[</span><span class="s1">&#39;ground_edge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x1</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y1</span><span class="p">,</span> <span class="n">port_z</span><span class="p">),</span>
                                                      <span class="p">(</span><span class="n">ground_edge</span><span class="o">.</span><span class="n">x2</span><span class="p">,</span> <span class="n">ground_edge</span><span class="o">.</span><span class="n">y2</span><span class="p">,</span> <span class="n">port_z</span><span class="p">))</span>
                         <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unable to create polygon for port </span><span class="si">{}</span><span class="s1">, because either signal or ground &#39;</span>
-                                               <span class="s1">&#39;edge is not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">))</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">__log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Unable to create polygon for port </span><span class="si">%s</span><span class="s1">, because either signal or ground &#39;</span>
+                                                <span class="s1">&#39;edge is not found.&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+                            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Port </span><span class="si">{}</span><span class="s2"> has unsupported port class </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">port</span><span class="o">.</span><span class="n">number</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">port</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
 

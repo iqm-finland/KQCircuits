@@ -544,7 +544,6 @@
 <span class="c1"># for individuals (meetiqm.com/developers/clas/individual) and organizations (meetiqm.com/developers/clas/organization).</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.elements.element</span> <span class="kn">import</span> <span class="n">insert_cell_into</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span><span class="p">,</span> <span class="n">lay</span><span class="p">,</span> <span class="n">is_standalone_session</span>
@@ -553,8 +552,7 @@
     <span class="n">all_layers_bitmap_hide_layers</span><span class="p">,</span> <span class="n">default_faces</span><span class="p">,</span> <span class="n">default_layer_props</span>
 
 
-<div class="viewcode-block" id="KLayoutView"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">KLayoutView</span><span class="p">:</span>
+<div class="viewcode-block" id="KLayoutView"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.KLayoutView">[docs]</a><span class="k">class</span> <span class="nc">KLayoutView</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper object to represent the KLayout rendering environment.</span>
 
 <span class="sd">    ``KLayoutView`` is a wrapper around the KLayout ``LayoutView`` and ``CellView`` objects, that represent containers</span>
@@ -939,8 +937,7 @@
         <span class="ne">Exception</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="resolve_default_layer_info"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="resolve_default_layer_info"><a class="viewcode-back" href="../../api/kqcircuits.klayout_view.html#kqcircuits.klayout_view.resolve_default_layer_info">[docs]</a><span class="k">def</span> <span class="nf">resolve_default_layer_info</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">face_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns LayerInfo based on default_layers.</span>
 
 <span class="sd">    Assumes that layer_name is valid, and that face_id is valid or None.</span>

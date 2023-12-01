@@ -552,7 +552,6 @@
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.chips.chip</span> <span class="kn">import</span> <span class="n">Chip</span>
@@ -565,8 +564,7 @@
 <span class="kn">from</span> <span class="nn">kqcircuits.klayout_view</span> <span class="kn">import</span> <span class="n">KLayoutView</span>
 
 
-<div class="viewcode-block" id="MaskSet"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet">[docs]</a><span class="nd">@logged</span>
-<span class="k">class</span> <span class="nc">MaskSet</span><span class="p">:</span>
+<div class="viewcode-block" id="MaskSet"><a class="viewcode-back" href="../../../api/kqcircuits.masks.mask_set.html#kqcircuits.masks.mask_set.MaskSet">[docs]</a><span class="k">class</span> <span class="nc">MaskSet</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a set of masks for different chip faces.</span>
 
 <span class="sd">    A mask set consists of one or more MaskLayouts, each of which is for a certain face.</span>
@@ -738,7 +736,7 @@
         <span class="n">chip_path</span> <span class="o">=</span> <span class="n">_mask_set_dir</span><span class="o">/</span><span class="s2">&quot;Chips&quot;</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="n">chip_path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>  <span class="c1"># this level is NOT actually used</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># this level is NOT actually used</span>
         <span class="n">route_log</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">chip_path</span><span class="o">/</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">variant_name</span><span class="si">}</span><span class="s2">.log&quot;</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">_extra_params</span><span class="p">[</span><span class="s2">&quot;enable_debug&quot;</span><span class="p">])</span>
 
         <span class="n">mock_chips</span> <span class="o">=</span> <span class="n">_extra_params</span><span class="p">[</span><span class="s1">&#39;mock_chips&#39;</span><span class="p">]</span>

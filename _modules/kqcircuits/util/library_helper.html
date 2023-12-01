@@ -560,7 +560,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">autologging</span> <span class="kn">import</span> <span class="n">logged</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">kqcircuits.defaults</span> <span class="kn">import</span> <span class="n">SRC_PATHS</span><span class="p">,</span> <span class="n">kqc_library_names</span><span class="p">,</span> <span class="n">excluded_module_names</span>
 <span class="kn">from</span> <span class="nn">kqcircuits.pya_resolver</span> <span class="kn">import</span> <span class="n">pya</span>
@@ -600,8 +600,7 @@
         <span class="n">SRC_PATHS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_dirs</span><span class="p">,</span> <span class="n">ud</span><span class="p">)))</span>
 
 
-<div class="viewcode-block" id="load_libraries"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="load_libraries"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.load_libraries">[docs]</a><span class="k">def</span> <span class="nf">load_libraries</span><span class="p">(</span><span class="n">flush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load all KQCircuits libraries from the given path.</span>
 
 <span class="sd">    Args:</span>
@@ -616,7 +615,7 @@
     <span class="k">if</span> <span class="n">flush</span><span class="p">:</span>
         <span class="n">delete_all_libraries</span><span class="p">()</span>
         <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="n">load_libraries</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Deleted all libraries.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Deleted all libraries.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># if a library with the given path already exist, use it</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">lib_path</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -631,11 +630,11 @@
         <span class="n">library</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="o">.</span><span class="n">library_by_name</span><span class="p">(</span><span class="n">library_name</span><span class="p">)</span>  <span class="c1"># returns only registered libraries</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">library</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">flush</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">library_name</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">load_libraries</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using created library </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">library_name</span><span class="p">))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Using created library </span><span class="se">\&quot;</span><span class="si">%s</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">,</span> <span class="n">library_name</span><span class="p">)</span>
                 <span class="n">library</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_kqc_libraries</span><span class="p">[</span><span class="n">library_name</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># create a library, but do not register it yet</span>
-                <span class="n">load_libraries</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Creating new library </span><span class="se">\&quot;</span><span class="si">{}</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">library_name</span><span class="p">))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating new library </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">.&quot;</span><span class="p">)</span>
                 <span class="n">library</span> <span class="o">=</span> <span class="n">pya</span><span class="o">.</span><span class="n">Library</span><span class="p">()</span>
                 <span class="n">library</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">LIBRARY_DESCRIPTION</span>
                 <span class="n">_kqc_libraries</span><span class="p">[</span><span class="n">library_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">library</span><span class="p">,</span> <span class="n">library_path</span><span class="p">)</span>
@@ -664,8 +663,7 @@
         <span class="n">delete_library</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="delete_library"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_library">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">delete_library</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="delete_library"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.delete_library">[docs]</a><span class="k">def</span> <span class="nf">delete_library</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a KQCircuits library.</span>
 
 <span class="sd">    Calls library.delete() and removes the library from _kqc_libraries dict. Also deletes any libraries which have this</span>
@@ -685,7 +683,7 @@
     <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_kqc_libraries</span><span class="p">:</span>
         <span class="n">_kqc_libraries</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">library</span><span class="o">.</span><span class="n">_destroyed</span><span class="p">():</span>
-        <span class="n">delete_library</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Successfully deleted library &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Successfully deleted library &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">SystemError</span><span class="p">(</span><span class="s2">&quot;Failed to delete library &#39;[]&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span></div>
 
@@ -710,8 +708,7 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="to_module_name"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">to_module_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="to_module_name"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_module_name">[docs]</a><span class="k">def</span> <span class="nf">to_module_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts class name to module name.</span>
 
 <span class="sd">    Converts PascalCase class name to module name</span>
@@ -731,14 +728,13 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_is_valid_class_name</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">to_module_name</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to convert class name to module name.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to convert class name to module name.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
     <span class="n">words</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;!^)(?=[A-Z])&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_join_module_words</span><span class="p">(</span><span class="n">words</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="to_library_name"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_library_name">[docs]</a><span class="nd">@logged</span>
-<span class="k">def</span> <span class="nf">to_library_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="to_library_name"><a class="viewcode-back" href="../../../api/kqcircuits.util.library_helper.html#kqcircuits.util.library_helper.to_library_name">[docs]</a><span class="k">def</span> <span class="nf">to_library_name</span><span class="p">(</span><span class="n">class_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts class name to library name.</span>
 
 <span class="sd">    Converts PascalCase class name to library name</span>
@@ -759,7 +755,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">_is_valid_class_name</span><span class="p">(</span><span class="n">class_name</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">to_library_name</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to convert class name to library name.&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to convert class name to library name.&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
     <span class="n">words</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(?&lt;!^)(?=[A-Z])&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_join_library_words</span><span class="p">(</span><span class="n">words</span><span class="p">)</span></div>
@@ -770,7 +766,6 @@
 <span class="c1"># ********************************************************************************</span>
 
 
-<span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">_register_pcell</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">library</span><span class="p">,</span> <span class="n">library_name</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Registers the PCell to the library.</span>
 
@@ -782,10 +777,10 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pcell_name</span> <span class="o">=</span> <span class="n">to_library_name</span><span class="p">(</span><span class="n">pcell_class</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">register_pcell</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">,</span> <span class="n">pcell_class</span><span class="p">())</span>
-        <span class="n">_register_pcell</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Registered pcell [</span><span class="si">{}</span><span class="s2">] to library </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pcell_name</span><span class="p">,</span> <span class="n">library_name</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Registered pcell [</span><span class="si">{</span><span class="n">pcell_name</span><span class="si">}</span><span class="s2">] to library </span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pylint: disable=broad-except</span>
-        <span class="n">_register_pcell</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-            <span class="s2">&quot;Failed to register pcell in class </span><span class="si">{}</span><span class="s2"> to library </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pcell_class</span><span class="p">,</span> <span class="n">library_name</span><span class="p">),</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Failed to register pcell in class </span><span class="si">{</span><span class="n">pcell_class</span><span class="si">}</span><span class="s2"> to library </span><span class="si">{</span><span class="n">library_name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">,</span>
             <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
 
@@ -803,7 +798,6 @@
             <span class="n">library</span><span class="o">.</span><span class="n">layout</span><span class="p">()</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">()))</span>
 
 
-<span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">_get_all_pcell_classes</span><span class="p">(</span><span class="n">reload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">skip_modules</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns all PCell classes in the given path.</span>
 
@@ -840,7 +834,7 @@
                 <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">import_path</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">reload</span><span class="p">:</span>
                     <span class="n">importlib</span><span class="o">.</span><span class="n">reload</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-                    <span class="n">_get_all_pcell_classes</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Reloaded module &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">module_name</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reloaded module &#39;</span><span class="si">{</span><span class="n">module_name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
 
                 <span class="n">classes</span> <span class="o">=</span> <span class="n">_get_pcell_classes</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">classes</span><span class="p">:</span>
@@ -954,7 +948,6 @@
     <span class="k">return</span> <span class="n">name</span>
 
 
-<span class="nd">@logged</span>
 <span class="k">def</span> <span class="nf">_clean_words</span><span class="p">(</span><span class="n">words</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Clean word list by removing None values, empty strings, and non-string values.</span>
 
