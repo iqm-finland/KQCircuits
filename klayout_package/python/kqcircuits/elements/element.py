@@ -282,16 +282,21 @@ class Element(pya.PCellDeclarationHelper):
                 self.refpoints[new_name] = pos
         return cell_inst, refpoints_abs
 
-    def face(self, face_index=0):
-        """Returns the face dictionary corresponding to self.face_ids[face_index].
+    def _resolve_face(self, face_id):
+        """Returns face_id if the parameter is given as string or self.face_ids[face_id] otherwise.
+        The face_id as a string must be a key in default_faces but does not necessarily need to be in self.face_ids.
+        """
+        return face_id if isinstance(face_id, str) else self.face_ids[face_id]
+
+    def face(self, face_id=0):
+        """Returns the face dictionary corresponding to face_id.
 
         The face dictionary contains key "id" for the face ID and keys for all the available layers in that face.
 
         Args:
-            face_index: index of the face_id in self.face_ids, default=0
-
+            face_id: name or index of the face, default=0
         """
-        return default_faces[self.face_ids[face_index]]
+        return default_faces[self._resolve_face(face_id)]
 
     def pcell_params_by_name(self, cls=None, **parameters):
         """Give PCell parameters as a dictionary.
@@ -329,7 +334,7 @@ class Element(pya.PCellDeclarationHelper):
             direction: direction of the signal going _to_ the port to determine the location of the "corner" reference
                 point which is used for waveguide direction. If evaluates to False as is the default, no corner point is
                 added.
-            face_id: index of the face id, default=0
+            face_id: name or index of the face, default=0
         """
         text = pya.DText(name, pos.x, pos.y)
         self.cell.shapes(self.get_layer("ports", face_id)).insert(text)
@@ -424,12 +429,9 @@ class Element(pya.PCellDeclarationHelper):
             layer_name: layer name text
             face_id: Name or index of the face to use, default=0
         """
-        if isinstance(face_id, str):
-            return self.layout.layer(self.face(self.face_ids.index(face_id))[layer_name])
-        elif (face_id == 0) and (layer_name not in self.face(0)):
+        if (face_id == 0) and (layer_name not in self.face(0)):
             return self.layout.layer(default_layers[layer_name])
-        else:
-            return self.layout.layer(self.face(face_id)[layer_name])
+        return self.layout.layer(self.face(face_id)[layer_name])
 
     @staticmethod
     def _create_cell(elem_cls, layout, library=None, **parameters) -> pya.Cell:
@@ -522,17 +524,16 @@ class Element(pya.PCellDeclarationHelper):
 
         Args:
              shape: The shape (Region, DPolygon, etc.) to add to ground_grid_avoidance layer
-             face_id: primary face index of ground_grid_avoidance layer, default=0
+             face_id: Name or index of the primary face of ground_grid_avoidance layer, default=0
         """
-
-        self.cell.shapes(self.get_layer("ground_grid_avoidance", face_id)).insert(shape)
+        face = self._resolve_face(face_id)
+        self.cell.shapes(self.get_layer("ground_grid_avoidance", face)).insert(shape)
         if self.protect_opposite_face:
             for group in self.opposing_face_id_groups:
-                if self.face_ids[face_id] in group:
-                    for other_face_id in group:
-                        if other_face_id != self.face_ids[face_id] and other_face_id in self.face_ids:
-                            self.cell.shapes(self.get_layer("ground_grid_avoidance",
-                                                            self.face_ids.index(other_face_id))).insert(shape)
+                if face in group:
+                    for other_face in group:
+                        if other_face != face:
+                            self.cell.shapes(self.get_layer("ground_grid_avoidance", other_face)).insert(shape)
                     break
 
     def sync_parameters(self, abc):

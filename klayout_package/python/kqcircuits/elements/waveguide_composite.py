@@ -539,7 +539,7 @@ class WaveguideComposite(Element):
         self._insert_cell_and_waveguide(ind, fc_cell, before=f'{self.old_id}_port', after=f'{self.new_id}_port')
 
         self.a, self.b = new_a, new_b
-        self.face_ids = [self.new_id] + [a for a in self.face_ids if a != self.new_id]
+        self.face_ids = [self.new_id]
 
         if 'r' in node.params:
             self.r = params['r']
