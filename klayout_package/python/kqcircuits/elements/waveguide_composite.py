@@ -19,7 +19,7 @@
 import ast
 from itertools import zip_longest
 from typing import Tuple
-from math import pi, tan
+from math import pi, tan, floor
 import logging
 
 from scipy.optimize import root_scalar
@@ -201,7 +201,9 @@ class WaveguideComposite(Element):
     FlipChipConnector, respectively and change the defaults too.
 
     The ``ab_across=True`` parameter places a single airbridge across the node. The ``n_bridges=N``
-    parameter puts N airbridges evenly distributed across the preceding edge.
+    parameter puts N airbridges evenly distributed across the preceding edge. If ``n_bridges=-1`` the number of bridges
+    will be calculated automatically from ``ab_to_ab_spacing`` and ``ab_to_node_clearance``, with the former defining
+    the density of airbridges and the latter the clearance from the start and end node of the straight segment.
 
     The ``length_before`` parameter of a node can be specified to automatically set the length of
     the waveguide between that node and the previous one. It will in fact create a Meander element
@@ -229,6 +231,8 @@ class WaveguideComposite(Element):
     gui_path_shadow = Param(pdt.TypeShape, "Hidden path to detect GUI operations",
                             pya.DPath([pya.DPoint(0, 0), pya.DPoint(200, 0)], 1), hidden=True)
     tight_routing = Param(pdt.TypeBoolean, "Tight routing for corners", False)
+    ab_to_ab_spacing = Param(pdt.TypeDouble, "Spacing between consecutive airbridges", 500, unit="μm")
+    ab_to_node_clearance = Param(pdt.TypeDouble, "Spacing between an airbridge and a node", 100, unit="μm")
 
     @classmethod
     def create(cls, layout, library=None, **parameters):
@@ -778,7 +782,7 @@ class WaveguideComposite(Element):
                 n0 = n1
                 p0 = p1
                 point0 = [] if end_len < 1e-4 else [meander_end]
-            elif "n_bridges" in node1.params and node1.params["n_bridges"] > 0:
+            elif "n_bridges" in node1.params and node1.params["n_bridges"] != 0:
                 ab_len = node1.params['bridge_length'] if "bridge_length" in node1.params else None
                 self._ab_across(points[p1-1], points[p1], node1.params["n_bridges"], ab_len)
 
@@ -793,24 +797,32 @@ class WaveguideComposite(Element):
         self._wg_start_idx = end_index
 
     def _ab_across(self, start, end, num, ab_len=None):
-        """Creates ``num`` airbridge crossings equally distributed between ``start`` and ``end``.
-        If ``num == 0`` then one airbridge crossing is created at the node. ``ab_len`` is the airbridges' lenght.
+        """Creates airbridges between ``start`` and ``end``.
+        If num > 0, num is the number of airbridges equally distributed between ``start`` and ``end``.
+        If num == 0, then one airbridge is created at the end node.
+        If num < 0, the number of airbridges is determined by self.ab_to_node_clearance and self.ab_to_ab_spacing.
+        ab_len is the length of airbridges.
         """
+        # determine airbridge distribution
+        v_dir = end - start
+        if num > 0:
+            xs = [i / (num + 1) for i in range(1, num + 1)]
+        elif num == 0:
+            xs = [1.0]
+        else:
+            v_length = v_dir.length()
+            final_num = floor((v_length - 2 * self.ab_to_node_clearance) / self.ab_to_ab_spacing) + 1
+            if final_num <= 0:
+                return
+            xs = [(self.ab_to_node_clearance + i * self.ab_to_ab_spacing) / v_length for i in range(final_num)]
 
+        # add airbridges
         params = {'airbridge_type': self.airbridge_type}
         if ab_len:
             params['bridge_length'] = ab_len
         ab_cell = self.add_element(Airbridge, **params)
-        v_dir = end - start
-        alpha = get_angle(v_dir)
-
-        if num > 0:
-            for i in range(1, num + 1):
-                ab_trans = pya.DCplxTrans(1, alpha, False, start + i * v_dir / (num + 1))
-                self.insert_cell(ab_cell, ab_trans)
-        else:
-            ab_trans = pya.DCplxTrans(1, alpha, False, end)
-            self.insert_cell(ab_cell, ab_trans)
+        for x in xs:
+            self.insert_cell(ab_cell, pya.DCplxTrans(1, get_angle(v_dir), False, start + x * v_dir))
 
     def _terminator(self, ind):
         """Terminate the waveguide ending with an Element."""
