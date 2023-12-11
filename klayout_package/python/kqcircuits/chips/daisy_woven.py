@@ -55,7 +55,7 @@ class DaisyWoven(Chip):
             origin_offset_x = 1e3 * (x_max - x_min) / 2.
             origin_offset_y = 1e3 * (y_max - y_min) / 2.
 
-            chip_region = pya.Region([box.to_itype(self.layout.dbu)])  # this is already the shape of the box
+            chip_region = pya.Region(box.to_itype(self.layout.dbu))  # this is already the shape of the box
 
             # Using a static file, so use static layer indices
             daisy_shapes_base_metal_gap_wo_grid  = daisy_cell.shapes(self.layout.layer(11 + face_id * 30, 1))

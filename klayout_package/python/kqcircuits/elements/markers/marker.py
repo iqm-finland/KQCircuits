@@ -79,7 +79,7 @@ class Marker(Element):
         )
         insert_to_main_layers(sqr_uni)
 
-        self.inv_corners = pya.Region([protection_box.to_itype(self.layout.dbu)])
+        self.inv_corners = pya.Region(protection_box.to_itype(self.layout.dbu))
         self.inv_corners -= corners
         self.cell.shapes(layer_pads).insert(self.inv_corners - pya.Region(sqr_uni.to_itype(self.layout.dbu)))
 

@@ -193,7 +193,7 @@ def export_mask(export_dir, layer_name, mask_layout, mask_set):
 
     if invert:
         wafer = pya.Region(top_cell.begin_shapes_rec(layer)).merged()
-        disc = pya.Region([circle_polygon(mask_layout.wafer_rad).to_itype(layout.dbu)])
+        disc = pya.Region(circle_polygon(mask_layout.wafer_rad).to_itype(layout.dbu))
         layout.copy_layer(layer, tmp_layer)
         layout.clear_layer(layer)
         top_cell.shapes(layer).insert(wafer ^ disc)

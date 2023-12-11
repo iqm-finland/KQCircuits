@@ -400,7 +400,7 @@ class MaskLayout:
             chips_map = zip(*reversed(chips_map))
 
         region_used = pya.Region()
-        allowed_region = pya.Region([circle_polygon(self.wafer_rad - self.edge_clearance).to_itype(self.layout.dbu)]) \
+        allowed_region = pya.Region(circle_polygon(self.wafer_rad - self.edge_clearance).to_itype(self.layout.dbu)) \
             - marker_region \
             - pya.Region(pya.DBox(-self.wafer_rad, self._mask_name_box_bottom_y,
                                   self.wafer_rad, self.wafer_rad).to_itype(self.layout.dbu))

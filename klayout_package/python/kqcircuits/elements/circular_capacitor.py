@@ -63,17 +63,17 @@ class CircularCapacitor(Element):
         capacitor_neg = pya.Region([poly.to_itype(self.layout.dbu) for poly in capacitor_region])
 
         # add the waveguides inside the ground padding
-        capacitor_neg += pya.Region([pya.DPolygon([
+        capacitor_neg += pya.Region(pya.DPolygon([
             pya.DPoint(-x_end, -y_left),
             pya.DPoint(-0, -y_left),
             pya.DPoint(-0, y_left),
             pya.DPoint(-x_end, y_left),
-        ]).to_itype(self.layout.dbu)]) + pya.Region([pya.DPolygon([
+        ]).to_itype(self.layout.dbu)) + pya.Region(pya.DPolygon([
             pya.DPoint(x_end, y_right),
             pya.DPoint(self.r_outer - self.outer_island_width / 2, y_right),
             pya.DPoint(self.r_outer - self.outer_island_width / 2, -y_right),
             pya.DPoint(x_end, -y_right),
-        ]).to_itype(self.layout.dbu)])
+        ]).to_itype(self.layout.dbu))
         capacitor_neg.round_corners(5 / self.layout.dbu, 5 / self.layout.dbu, self.n)
         self._add_waveguides(capacitor_neg, x_end, y_left, y_right)
 
@@ -121,17 +121,17 @@ class CircularCapacitor(Element):
         x_guide = self.fixed_length / 2 if (self.fixed_length > 0) else x_end
         if x_guide < x_end:
             raise ValueError(f"Circular capacitor parameters not compatible with fixed_length={self.fixed_length}")
-        region += pya.Region([pya.DPolygon([
+        region += pya.Region(pya.DPolygon([
             pya.DPoint(-x_end + self.margin, -y_left),
             pya.DPoint(-x_guide, -y_left),
             pya.DPoint(-x_guide, y_left),
             pya.DPoint(-x_end + self.margin, y_left),
-        ]).to_itype(self.layout.dbu)]) + pya.Region([pya.DPolygon([
+        ]).to_itype(self.layout.dbu)) + pya.Region(pya.DPolygon([
             pya.DPoint(x_end - self.margin, y_right),
             pya.DPoint(x_guide, y_right),
             pya.DPoint(x_guide, -y_right),
             pya.DPoint(x_end - self.margin, -y_right),
-        ]).to_itype(self.layout.dbu)])
+        ]).to_itype(self.layout.dbu))
 
     @classmethod
     def get_sim_ports(cls, simulation):

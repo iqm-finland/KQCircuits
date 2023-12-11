@@ -87,7 +87,7 @@ class MaskMarkerFc(Element):
             pya.DPoint(-200, -350)
         )
         self.cell.shapes(layer_protection).insert(protection_box)
-        negative_layer = pya.Region([protection_box.to_itype(self.layout.dbu)])
+        negative_layer = pya.Region(protection_box.to_itype(self.layout.dbu))
 
         # crosses
 
@@ -111,7 +111,7 @@ class MaskMarkerFc(Element):
                 self.cell.shapes(layer_insert).insert(inner_corner_shape)
             negative_offset = pya.DCplxTrans(1, 0, False,
                                              pya.DVector(shift)) * self.create_cross(arm_lengths[i], arm_widths[i])
-            negative_layer -= pya.Region([negative_offset.to_itype(self.layout.dbu)])
+            negative_layer -= pya.Region(negative_offset.to_itype(self.layout.dbu))
 
             inner_shapes_offset = pya.DCplxTrans(1, 0, False,
                                                  pya.DVector(shift)) * self.create_cross(arm_lengths[i], arm_widths[i])

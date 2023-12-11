@@ -129,18 +129,18 @@ class ConcentricTransmon(Qubit):
         # Add the waveguides inside the ground padding
         overlapping_margin = 0.5
         for (c_a, c_b, c_angle) in zip(self.couplers_a, self.couplers_b, self.couplers_angle):
-            waveguide_signal = pya.Region([pya.DPolygon([
+            waveguide_signal = pya.Region(pya.DPolygon([
                 pya.DPoint(self.x_end + overlapping_margin, float(c_a) / 2),
                 pya.DPoint(self.couplers_r, float(c_a) / 2),
                 pya.DPoint(self.couplers_r, -float(c_a) / 2),
                 pya.DPoint(self.x_end + overlapping_margin, -float(c_a) / 2),
-            ]).to_itype(self.layout.dbu)]).transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
-            waveguide_gap = pya.Region([pya.DPolygon([
+            ]).to_itype(self.layout.dbu)).transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
+            waveguide_gap = pya.Region(pya.DPolygon([
                 pya.DPoint(self.x_end, float(c_a) / 2 + float(c_b)),
                 pya.DPoint(self.couplers_r, float(c_a) / 2 + float(c_b)),
                 pya.DPoint(self.couplers_r, -float(c_a) / 2 - float(c_b)),
                 pya.DPoint(self.x_end, -float(c_a) / 2 - float(c_b)),
-            ]).to_itype(self.layout.dbu)]).transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
+            ]).to_itype(self.layout.dbu)).transformed(pya.ICplxTrans(1, float(c_angle), False, 0, 0))
             waveguides_signal_region += waveguide_signal
             waveguides_gap_region += waveguide_gap
         return waveguides_signal_region, waveguides_gap_region

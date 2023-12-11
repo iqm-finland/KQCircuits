@@ -77,7 +77,7 @@ class Swissmon(Qubit):
 
         # Location for connecting the waveguides to
         port_shape = pya.DBox(-a / 2, 0, a / 2, b)
-        port_region = pya.Region([port_shape.to_itype(self.layout.dbu)])
+        port_region = pya.Region(port_shape.to_itype(self.layout.dbu))
 
         if l > 0:
             # Horseshoe opened to below
@@ -99,7 +99,7 @@ class Swissmon(Qubit):
             shoe.insert_hole(shoe_points[::-1])
 
             # convert to range and recover CPW port
-            shoe_region = pya.Region([shoe.to_itype(self.layout.dbu)])
+            shoe_region = pya.Region(shoe.to_itype(self.layout.dbu))
             shoe_region.round_corners(self.island_r / self.layout.dbu, self.island_r / self.layout.dbu, self.n)
             shoe_region2 = shoe_region - port_region
 

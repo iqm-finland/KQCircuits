@@ -182,15 +182,19 @@ class WaveguideCoplanar(Element):
         shift_start = pya.DTrans(pya.DVector(point_2))
 
         if term_len > 0:
-            poly = pya.DPolygon([u*(a/2 + b), u*(a/2 + b) + v*term_len, u*(-a/2 - b) + v*term_len,
-                                 u*(-a/2 - b)])
+            poly = pya.DPolygon([pya.DPoint(u*(a/2 + b)),
+                                 pya.DPoint(u*(a/2 + b) + v*term_len),
+                                 pya.DPoint(u*(-a/2 - b) + v*term_len),
+                                 pya.DPoint(u*(-a/2 - b))])
             elem.cell.shapes(elem.layout.layer(elem.face(face_index)["base_metal_gap_wo_grid"])).insert(
                 poly.transform(shift_start))
 
         # protection
         term_len += elem.margin
-        poly2 = pya.DPolygon([u*(a/2 + b + elem.margin), u*(a/2 + b + elem.margin) + v*term_len,
-                              u*(-a/2 - b - elem.margin) + v*term_len, u*(-a/2 - b - elem.margin)])
+        poly2 = pya.DPolygon([pya.DPoint(u*(a/2 + b + elem.margin)),
+                              pya.DPoint(u*(a/2 + b + elem.margin) + v*term_len),
+                              pya.DPoint(u*(-a/2 - b - elem.margin) + v*term_len),
+                              pya.DPoint(u*(-a/2 - b - elem.margin))])
         elem.add_protection(poly2.transform(shift_start), face_index)
 
     @staticmethod
